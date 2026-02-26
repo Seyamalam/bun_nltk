@@ -6,6 +6,7 @@ export {
   ngramsAsciiNative,
   nativeLibraryPath,
   ngramFreqDistHashAscii,
+  topPmiBigramsAscii,
   tokenizeAsciiNative,
   tokenFreqDistHashAscii,
 } from "./src/native";
@@ -19,6 +20,7 @@ export {
   hashTokenAscii,
   ngramsAscii,
   ngramFreqDistHashAscii as ngramFreqDistHashAsciiJs,
+  topPmiBigramsAscii as topPmiBigramsAsciiJs,
   tokenFreqDistHashAscii as tokenFreqDistHashAsciiJs,
   tokenizeAscii,
 } from "./src/reference";

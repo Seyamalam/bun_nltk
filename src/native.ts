@@ -42,6 +42,10 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize", "ptr", "ptr", "usize"],
     returns: "u64",
   },
+  bunnltk_fill_top_pmi_bigrams_ascii: {
+    args: ["ptr", "usize", "u32", "ptr", "ptr", "ptr", "usize"],
+    returns: "u64",
+  },
 });
 
 function toBuffer(text: string): Uint8Array {
@@ -192,6 +196,49 @@ export function ngramsAsciiNative(text: string, n: number): string[][] {
   const out: string[][] = [];
   for (let i = 0; i <= tokens.length - n; i += 1) {
     out.push(tokens.slice(i, i + n));
+  }
+  return out;
+}
+
+export type PmiBigram = {
+  leftHash: bigint;
+  rightHash: bigint;
+  score: number;
+};
+
+export function topPmiBigramsAscii(text: string, topK: number): PmiBigram[] {
+  if (!Number.isInteger(topK) || topK <= 0) {
+    throw new Error("topK must be a positive integer");
+  }
+
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return [];
+
+  const capacity = topK;
+  const left = new BigUint64Array(capacity);
+  const right = new BigUint64Array(capacity);
+  const scores = new Float64Array(capacity);
+
+  const written = toNumber(
+    lib.symbols.bunnltk_fill_top_pmi_bigrams_ascii(
+      ptr(bytes),
+      bytes.length,
+      topK,
+      ptr(left),
+      ptr(right),
+      ptr(scores),
+      capacity,
+    ),
+  );
+  assertNoNativeError("topPmiBigramsAscii");
+
+  const out: PmiBigram[] = [];
+  for (let i = 0; i < written; i += 1) {
+    out.push({
+      leftHash: left[i]!,
+      rightHash: right[i]!,
+      score: scores[i]!,
+    });
   }
   return out;
 }

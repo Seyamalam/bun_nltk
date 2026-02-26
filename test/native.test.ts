@@ -12,6 +12,8 @@ import {
   ngramsAsciiNative,
   ngramFreqDistHashAscii,
   ngramFreqDistHashAsciiJs,
+  topPmiBigramsAscii,
+  topPmiBigramsAsciiJs,
   tokenizeAscii,
   tokenizeAsciiNative,
   tokenFreqDistHashAscii,
@@ -64,6 +66,20 @@ test("native token and ngram materialization matches JS reference", () => {
   }
 });
 
+test("native top PMI bigrams match JS reference", () => {
+  for (const text of cases) {
+    const actual = topPmiBigramsAscii(text, 5);
+    const expected = topPmiBigramsAsciiJs(text, 5);
+
+    expect(actual.length).toBe(expected.length);
+    for (let i = 0; i < expected.length; i += 1) {
+      expect(actual[i]!.leftHash).toBe(expected[i]!.leftHash);
+      expect(actual[i]!.rightHash).toBe(expected[i]!.rightHash);
+      expect(Math.abs(actual[i]!.score - expected[i]!.score)).toBeLessThanOrEqual(1e-12);
+    }
+  }
+});
+
 test("native handles empty input", () => {
   expect(countTokensAscii("")).toBe(0);
   expect(countUniqueTokensAscii("")).toBe(0);
@@ -73,4 +89,5 @@ test("native handles empty input", () => {
   expect(ngramFreqDistHashAscii("", 2).size).toBe(0);
   expect(tokenizeAsciiNative("")).toEqual([]);
   expect(ngramsAsciiNative("", 2)).toEqual([]);
+  expect(topPmiBigramsAscii("", 5)).toEqual([]);
 });

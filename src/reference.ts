@@ -96,3 +96,52 @@ export function ngramFreqDistHashAscii(text: string, n: number): Map<bigint, num
 
   return out;
 }
+
+export type PmiBigram = {
+  leftHash: bigint;
+  rightHash: bigint;
+  score: number;
+};
+
+export function topPmiBigramsAscii(text: string, topK: number): PmiBigram[] {
+  if (!Number.isInteger(topK) || topK <= 0) throw new Error("topK must be a positive integer");
+  const tokens = tokenizeAscii(text);
+  if (tokens.length < 2) return [];
+
+  const tokenTotal = tokens.length;
+  const wordCounts = new Map<bigint, number>();
+  const bigramCounts = new Map<bigint, number>();
+
+  const tokenHashes = tokens.map(hashTokenAscii);
+  for (let i = 0; i < tokenHashes.length; i += 1) {
+    const tokenHash = tokenHashes[i]!;
+    wordCounts.set(tokenHash, (wordCounts.get(tokenHash) ?? 0) + 1);
+    if (i === 0) continue;
+
+    const left = tokenHashes[i - 1]!;
+    const right = tokenHash;
+    const key = (left << 64n) | right;
+    bigramCounts.set(key, (bigramCounts.get(key) ?? 0) + 1);
+  }
+
+  const out: PmiBigram[] = [];
+  for (const [key, count] of bigramCounts.entries()) {
+    const left = key >> 64n;
+    const right = key & MASK_64;
+    const leftCount = wordCounts.get(left);
+    const rightCount = wordCounts.get(right);
+    if (!leftCount || !rightCount) continue;
+
+    const score = Math.log2((count * tokenTotal) / (leftCount * rightCount));
+    out.push({ leftHash: left, rightHash: right, score });
+  }
+
+  out.sort((a, b) => {
+    if (a.score !== b.score) return b.score - a.score;
+    if (a.leftHash !== b.leftHash) return a.leftHash < b.leftHash ? -1 : 1;
+    if (a.rightHash !== b.rightHash) return a.rightHash < b.rightHash ? -1 : 1;
+    return 0;
+  });
+
+  return out.slice(0, topK);
+}

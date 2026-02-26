@@ -10,6 +10,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - ASCII unique n-gram counting
 - Hashed frequency distributions for tokens and n-grams
 - Native token materialization and n-gram materialization APIs
+- Top-K bigram PMI collocation scoring (native)
 - Python baseline comparison on the same dataset
 
 ## Build native Zig library
@@ -34,6 +35,12 @@ bun run bench:generate
 
 ```bash
 bun run bench:compare
+```
+
+## Benchmark collocations vs Python baseline
+
+```bash
+bun run bench:compare:collocations
 ```
 
 ## Notes

@@ -219,6 +219,186 @@ fn fillTokenOffsetsAscii(
     return total;
 }
 
+fn updateCountU128(map: *std.AutoHashMap(u128, u64), key: u128) CountError!void {
+    if (map.getPtr(key)) |count| {
+        count.* += 1;
+        return;
+    }
+    map.put(key, 1) catch return error.OutOfMemory;
+}
+
+fn packBigramKey(left: u64, right: u64) u128 {
+    return (@as(u128, left) << 64) | @as(u128, right);
+}
+
+fn unpackBigramLeft(key: u128) u64 {
+    return @as(u64, @truncate(key >> 64));
+}
+
+fn unpackBigramRight(key: u128) u64 {
+    return @as(u64, @truncate(key & std.math.maxInt(u64)));
+}
+
+const BigramBuildResult = struct {
+    token_total: u64,
+    word_map: std.AutoHashMap(u64, u64),
+    bigram_map: std.AutoHashMap(u128, u64),
+};
+
+fn buildBigramStatsAscii(input: []const u8, allocator: std.mem.Allocator) CountError!BigramBuildResult {
+    var word_map = std.AutoHashMap(u64, u64).init(allocator);
+    errdefer word_map.deinit();
+
+    var bigram_map = std.AutoHashMap(u128, u64).init(allocator);
+    errdefer bigram_map.deinit();
+
+    var in_token = false;
+    var token_hash: u64 = FNV_OFFSET_BASIS;
+    var token_total: u64 = 0;
+    var prev_hash: ?u64 = null;
+
+    for (input) |ch| {
+        if (isTokenChar(ch)) {
+            if (!in_token) {
+                in_token = true;
+                token_hash = FNV_OFFSET_BASIS;
+            }
+            token_hash = tokenHashUpdate(token_hash, ch);
+        } else if (in_token) {
+            try updateCount(&word_map, token_hash);
+            if (prev_hash) |prev| {
+                try updateCountU128(&bigram_map, packBigramKey(prev, token_hash));
+            }
+            prev_hash = token_hash;
+            token_total += 1;
+            in_token = false;
+        }
+    }
+
+    if (in_token) {
+        try updateCount(&word_map, token_hash);
+        if (prev_hash) |prev| {
+            try updateCountU128(&bigram_map, packBigramKey(prev, token_hash));
+        }
+        token_total += 1;
+    }
+
+    return .{
+        .token_total = token_total,
+        .word_map = word_map,
+        .bigram_map = bigram_map,
+    };
+}
+
+const PmiEntry = struct {
+    key: u128,
+    score: f64,
+};
+
+fn pmiEntryBetter(a: PmiEntry, b: PmiEntry) bool {
+    if (a.score > b.score) return true;
+    if (a.score < b.score) return false;
+    return a.key < b.key;
+}
+
+fn pmiEntryWorse(a: PmiEntry, b: PmiEntry) bool {
+    if (a.score < b.score) return true;
+    if (a.score > b.score) return false;
+    return a.key > b.key;
+}
+
+fn worstEntryIndex(entries: []const PmiEntry) usize {
+    var worst_idx: usize = 0;
+    for (1..entries.len) |i| {
+        if (pmiEntryWorse(entries[i], entries[worst_idx])) {
+            worst_idx = i;
+        }
+    }
+    return worst_idx;
+}
+
+fn sortPmiEntriesDesc(entries: []PmiEntry) void {
+    if (entries.len <= 1) return;
+
+    var i: usize = 1;
+    while (i < entries.len) : (i += 1) {
+        var j: usize = i;
+        while (j > 0 and pmiEntryBetter(entries[j], entries[j - 1])) : (j -= 1) {
+            const tmp = entries[j - 1];
+            entries[j - 1] = entries[j];
+            entries[j] = tmp;
+        }
+    }
+}
+
+fn fillTopPmiBigramsAscii(
+    input: []const u8,
+    top_k: usize,
+    out_left_hashes: []u64,
+    out_right_hashes: []u64,
+    out_scores: []f64,
+    allocator: std.mem.Allocator,
+) CountError!u64 {
+    if (top_k == 0 or input.len == 0) return 0;
+    if (out_left_hashes.len != out_right_hashes.len or out_left_hashes.len != out_scores.len) {
+        return error.InsufficientCapacity;
+    }
+    if (out_left_hashes.len == 0) {
+        return error.InsufficientCapacity;
+    }
+
+    var stats = try buildBigramStatsAscii(input, allocator);
+    defer stats.word_map.deinit();
+    defer stats.bigram_map.deinit();
+
+    if (stats.token_total < 2 or stats.bigram_map.count() == 0) {
+        return 0;
+    }
+
+    const target = @min(top_k, out_left_hashes.len);
+    const best = allocator.alloc(PmiEntry, target) catch return error.OutOfMemory;
+    defer allocator.free(best);
+    var best_len: usize = 0;
+
+    var iter = stats.bigram_map.iterator();
+    while (iter.next()) |entry| {
+        const key = entry.key_ptr.*;
+        const left = unpackBigramLeft(key);
+        const right = unpackBigramRight(key);
+
+        const left_count = stats.word_map.get(left) orelse continue;
+        const right_count = stats.word_map.get(right) orelse continue;
+        if (left_count == 0 or right_count == 0) continue;
+
+        const count_bigram = entry.value_ptr.*;
+        const numerator = @as(f64, @floatFromInt(count_bigram)) * @as(f64, @floatFromInt(stats.token_total));
+        const denominator = @as(f64, @floatFromInt(left_count)) * @as(f64, @floatFromInt(right_count));
+        const score = std.math.log2(numerator / denominator);
+        const cand: PmiEntry = .{ .key = key, .score = score };
+
+        if (best_len < target) {
+            best[best_len] = cand;
+            best_len += 1;
+        } else {
+            const idx = worstEntryIndex(best[0..best_len]);
+            if (pmiEntryBetter(cand, best[idx])) {
+                best[idx] = cand;
+            }
+        }
+    }
+
+    const best_slice = best[0..best_len];
+    sortPmiEntriesDesc(best_slice);
+
+    for (best_slice, 0..) |item, i| {
+        out_left_hashes[i] = unpackBigramLeft(item.key);
+        out_right_hashes[i] = unpackBigramRight(item.key);
+        out_scores[i] = item.score;
+    }
+
+    return @as(u64, best_len);
+}
+
 pub export fn bunnltk_last_error_code() u32 {
     return last_error_code;
 }
@@ -391,6 +571,44 @@ pub export fn bunnltk_fill_token_offsets_ascii(
     return total;
 }
 
+pub export fn bunnltk_fill_top_pmi_bigrams_ascii(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    top_k: u32,
+    out_left_hashes_ptr: [*]u64,
+    out_right_hashes_ptr: [*]u64,
+    out_scores_ptr: [*]f64,
+    capacity: usize,
+) u64 {
+    resetError();
+    if (input_len == 0 or top_k == 0) return 0;
+
+    const input = input_ptr[0..input_len];
+    const out_left = out_left_hashes_ptr[0..capacity];
+    const out_right = out_right_hashes_ptr[0..capacity];
+    const out_scores = out_scores_ptr[0..capacity];
+
+    if (@as(usize, top_k) > capacity) {
+        setError(.insufficient_capacity);
+    }
+
+    return fillTopPmiBigramsAscii(
+        input,
+        @as(usize, top_k),
+        out_left,
+        out_right,
+        out_scores,
+        std.heap.c_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.InsufficientCapacity => setError(.insufficient_capacity),
+            error.OutOfMemory => setError(.out_of_memory),
+            else => unreachable,
+        }
+        return 0;
+    };
+}
+
 test "token count and unique token count" {
     const input = "This this is is a a test test";
     try std.testing.expectEqual(@as(u64, 8), bunnltk_count_tokens_ascii(input.ptr, input.len));
@@ -451,4 +669,30 @@ test "fill token offsets materializes token windows" {
     try std.testing.expectEqualStrings("is", input[offsets[2] .. offsets[2] + lengths[2]]);
     try std.testing.expectEqualStrings("a", input[offsets[3] .. offsets[3] + lengths[3]]);
     try std.testing.expectEqualStrings("test", input[offsets[4] .. offsets[4] + lengths[4]]);
+}
+
+test "top pmi bigrams returns expected scores for repeated sentence" {
+    const input = "this this is is a a test test";
+    var left = [_]u64{0} ** 3;
+    var right = [_]u64{0} ** 3;
+    var scores = [_]f64{0} ** 3;
+
+    const written = bunnltk_fill_top_pmi_bigrams_ascii(input.ptr, input.len, 3, &left, &right, &scores, left.len);
+    try std.testing.expectEqual(@as(u64, 3), written);
+    try std.testing.expectEqual(@as(u32, @intFromEnum(ErrorCode.ok)), bunnltk_last_error_code());
+
+    for (scores[0..@as(usize, @intCast(written))]) |score| {
+        try std.testing.expectApproxEqAbs(@as(f64, 1.0), score, 1e-12);
+    }
+}
+
+test "top pmi sets insufficient capacity when top_k exceeds capacity" {
+    const input = "a b c d";
+    var left = [_]u64{0};
+    var right = [_]u64{0};
+    var scores = [_]f64{0};
+
+    const written = bunnltk_fill_top_pmi_bigrams_ascii(input.ptr, input.len, 3, &left, &right, &scores, left.len);
+    try std.testing.expectEqual(@as(u64, 1), written);
+    try std.testing.expectEqual(@as(u32, @intFromEnum(ErrorCode.insufficient_capacity)), bunnltk_last_error_code());
 }
