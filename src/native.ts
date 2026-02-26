@@ -46,6 +46,10 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize", "u32", "ptr", "ptr", "ptr", "usize"],
     returns: "u64",
   },
+  bunnltk_fill_top_pmi_bigrams_window_ascii: {
+    args: ["ptr", "usize", "u32", "u32", "ptr", "ptr", "ptr", "usize"],
+    returns: "u64",
+  },
 });
 
 function toBuffer(text: string): Uint8Array {
@@ -206,9 +210,12 @@ export type PmiBigram = {
   score: number;
 };
 
-export function topPmiBigramsAscii(text: string, topK: number): PmiBigram[] {
+export function topPmiBigramsAscii(text: string, topK: number, windowSize = 2): PmiBigram[] {
   if (!Number.isInteger(topK) || topK <= 0) {
     throw new Error("topK must be a positive integer");
+  }
+  if (!Number.isInteger(windowSize) || windowSize < 2) {
+    throw new Error("windowSize must be an integer >= 2");
   }
 
   const bytes = toBuffer(text);
@@ -220,9 +227,10 @@ export function topPmiBigramsAscii(text: string, topK: number): PmiBigram[] {
   const scores = new Float64Array(capacity);
 
   const written = toNumber(
-    lib.symbols.bunnltk_fill_top_pmi_bigrams_ascii(
+    lib.symbols.bunnltk_fill_top_pmi_bigrams_window_ascii(
       ptr(bytes),
       bytes.length,
+      windowSize,
       topK,
       ptr(left),
       ptr(right),

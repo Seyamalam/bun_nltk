@@ -290,6 +290,64 @@ fn buildBigramStatsAscii(input: []const u8, allocator: std.mem.Allocator) CountE
     };
 }
 
+fn collectTokenHashesAscii(input: []const u8, allocator: std.mem.Allocator) CountError![]u64 {
+    var hashes = std.ArrayListUnmanaged(u64).empty;
+    errdefer hashes.deinit(allocator);
+
+    var in_token = false;
+    var token_hash: u64 = FNV_OFFSET_BASIS;
+
+    for (input) |ch| {
+        if (isTokenChar(ch)) {
+            if (!in_token) {
+                in_token = true;
+                token_hash = FNV_OFFSET_BASIS;
+            }
+            token_hash = tokenHashUpdate(token_hash, ch);
+        } else if (in_token) {
+            hashes.append(allocator, token_hash) catch return error.OutOfMemory;
+            in_token = false;
+        }
+    }
+
+    if (in_token) {
+        hashes.append(allocator, token_hash) catch return error.OutOfMemory;
+    }
+
+    return hashes.toOwnedSlice(allocator) catch return error.OutOfMemory;
+}
+
+fn buildWindowedBigramStatsAscii(input: []const u8, window_size: usize, allocator: std.mem.Allocator) CountError!BigramBuildResult {
+    if (window_size < 2) return error.InvalidN;
+
+    const token_hashes = try collectTokenHashesAscii(input, allocator);
+    defer allocator.free(token_hashes);
+
+    var word_map = std.AutoHashMap(u64, u64).init(allocator);
+    errdefer word_map.deinit();
+    for (token_hashes) |token_hash| {
+        try updateCount(&word_map, token_hash);
+    }
+
+    var bigram_map = std.AutoHashMap(u128, u64).init(allocator);
+    errdefer bigram_map.deinit();
+
+    for (token_hashes, 0..) |left_hash, i| {
+        const end = @min(token_hashes.len, i + window_size);
+        var j = i + 1;
+        while (j < end) : (j += 1) {
+            const right_hash = token_hashes[j];
+            try updateCountU128(&bigram_map, packBigramKey(left_hash, right_hash));
+        }
+    }
+
+    return .{
+        .token_total = @as(u64, token_hashes.len),
+        .word_map = word_map,
+        .bigram_map = bigram_map,
+    };
+}
+
 const PmiEntry = struct {
     key: u128,
     score: f64,
@@ -333,6 +391,7 @@ fn sortPmiEntriesDesc(entries: []PmiEntry) void {
 
 fn fillTopPmiBigramsAscii(
     input: []const u8,
+    window_size: usize,
     top_k: usize,
     out_left_hashes: []u64,
     out_right_hashes: []u64,
@@ -347,7 +406,10 @@ fn fillTopPmiBigramsAscii(
         return error.InsufficientCapacity;
     }
 
-    var stats = try buildBigramStatsAscii(input, allocator);
+    var stats = if (window_size == 2)
+        try buildBigramStatsAscii(input, allocator)
+    else
+        try buildWindowedBigramStatsAscii(input, window_size, allocator);
     defer stats.word_map.deinit();
     defer stats.bigram_map.deinit();
 
@@ -371,7 +433,8 @@ fn fillTopPmiBigramsAscii(
         if (left_count == 0 or right_count == 0) continue;
 
         const count_bigram = entry.value_ptr.*;
-        const numerator = @as(f64, @floatFromInt(count_bigram)) * @as(f64, @floatFromInt(stats.token_total));
+        const window_norm = @as(f64, @floatFromInt(window_size - 1));
+        const numerator = (@as(f64, @floatFromInt(count_bigram)) * @as(f64, @floatFromInt(stats.token_total))) / window_norm;
         const denominator = @as(f64, @floatFromInt(left_count)) * @as(f64, @floatFromInt(right_count));
         const score = std.math.log2(numerator / denominator);
         const cand: PmiEntry = .{ .key = key, .score = score };
@@ -594,6 +657,7 @@ pub export fn bunnltk_fill_top_pmi_bigrams_ascii(
 
     return fillTopPmiBigramsAscii(
         input,
+        2,
         @as(usize, top_k),
         out_left,
         out_right,
@@ -604,6 +668,50 @@ pub export fn bunnltk_fill_top_pmi_bigrams_ascii(
             error.InsufficientCapacity => setError(.insufficient_capacity),
             error.OutOfMemory => setError(.out_of_memory),
             else => unreachable,
+        }
+        return 0;
+    };
+}
+
+pub export fn bunnltk_fill_top_pmi_bigrams_window_ascii(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    window_size: u32,
+    top_k: u32,
+    out_left_hashes_ptr: [*]u64,
+    out_right_hashes_ptr: [*]u64,
+    out_scores_ptr: [*]f64,
+    capacity: usize,
+) u64 {
+    resetError();
+    if (input_len == 0 or top_k == 0) return 0;
+    if (window_size < 2) {
+        setError(.invalid_n);
+        return 0;
+    }
+
+    const input = input_ptr[0..input_len];
+    const out_left = out_left_hashes_ptr[0..capacity];
+    const out_right = out_right_hashes_ptr[0..capacity];
+    const out_scores = out_scores_ptr[0..capacity];
+
+    if (@as(usize, top_k) > capacity) {
+        setError(.insufficient_capacity);
+    }
+
+    return fillTopPmiBigramsAscii(
+        input,
+        @as(usize, window_size),
+        @as(usize, top_k),
+        out_left,
+        out_right,
+        out_scores,
+        std.heap.c_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.InvalidN => setError(.invalid_n),
+            error.InsufficientCapacity => setError(.insufficient_capacity),
+            error.OutOfMemory => setError(.out_of_memory),
         }
         return 0;
     };
@@ -695,4 +803,66 @@ test "top pmi sets insufficient capacity when top_k exceeds capacity" {
     const written = bunnltk_fill_top_pmi_bigrams_ascii(input.ptr, input.len, 3, &left, &right, &scores, left.len);
     try std.testing.expectEqual(@as(u64, 1), written);
     try std.testing.expectEqual(@as(u32, @intFromEnum(ErrorCode.insufficient_capacity)), bunnltk_last_error_code());
+}
+
+fn findScore(
+    left_hashes: []const u64,
+    right_hashes: []const u64,
+    scores: []const f64,
+    left: u64,
+    right: u64,
+) ?f64 {
+    for (left_hashes, 0..) |lh, i| {
+        if (lh == left and right_hashes[i] == right) {
+            return scores[i];
+        }
+    }
+    return null;
+}
+
+test "windowed top pmi matches NLTK sample scores for window=3 and window=5" {
+    const input = "this this is is a a test test";
+    const hash_this = tokenHashUpdate(tokenHashUpdate(tokenHashUpdate(tokenHashUpdate(FNV_OFFSET_BASIS, 't'), 'h'), 'i'), 's');
+    const hash_is = tokenHashUpdate(tokenHashUpdate(FNV_OFFSET_BASIS, 'i'), 's');
+    const hash_a = tokenHashUpdate(FNV_OFFSET_BASIS, 'a');
+    const hash_test = tokenHashUpdate(tokenHashUpdate(tokenHashUpdate(tokenHashUpdate(FNV_OFFSET_BASIS, 't'), 'e'), 's'), 't');
+
+    var left3 = [_]u64{0} ** 16;
+    var right3 = [_]u64{0} ** 16;
+    var scores3 = [_]f64{0} ** 16;
+    const written3 = bunnltk_fill_top_pmi_bigrams_window_ascii(input.ptr, input.len, 3, 16, &left3, &right3, &scores3, left3.len);
+    try std.testing.expectEqual(@as(u64, 7), written3);
+
+    const score_this_is_w3 = findScore(left3[0..@intCast(written3)], right3[0..@intCast(written3)], scores3[0..@intCast(written3)], hash_this, hash_is) orelse {
+        try std.testing.expect(false);
+        return;
+    };
+    const score_is_a_w3 = findScore(left3[0..@intCast(written3)], right3[0..@intCast(written3)], scores3[0..@intCast(written3)], hash_is, hash_a) orelse {
+        try std.testing.expect(false);
+        return;
+    };
+    const score_a_test_w3 = findScore(left3[0..@intCast(written3)], right3[0..@intCast(written3)], scores3[0..@intCast(written3)], hash_a, hash_test) orelse {
+        try std.testing.expect(false);
+        return;
+    };
+    try std.testing.expectApproxEqAbs(@as(f64, 1.584962500721156), score_this_is_w3, 1e-12);
+    try std.testing.expectApproxEqAbs(@as(f64, 1.584962500721156), score_is_a_w3, 1e-12);
+    try std.testing.expectApproxEqAbs(@as(f64, 1.584962500721156), score_a_test_w3, 1e-12);
+
+    var left5 = [_]u64{0} ** 16;
+    var right5 = [_]u64{0} ** 16;
+    var scores5 = [_]f64{0} ** 16;
+    const written5 = bunnltk_fill_top_pmi_bigrams_window_ascii(input.ptr, input.len, 5, 16, &left5, &right5, &scores5, left5.len);
+    try std.testing.expectEqual(@as(u64, 9), written5);
+
+    const score_this_a_w5 = findScore(left5[0..@intCast(written5)], right5[0..@intCast(written5)], scores5[0..@intCast(written5)], hash_this, hash_a) orelse {
+        try std.testing.expect(false);
+        return;
+    };
+    const score_is_test_w5 = findScore(left5[0..@intCast(written5)], right5[0..@intCast(written5)], scores5[0..@intCast(written5)], hash_is, hash_test) orelse {
+        try std.testing.expect(false);
+        return;
+    };
+    try std.testing.expectApproxEqAbs(@as(f64, 0.5849625007211562), score_this_a_w5, 1e-12);
+    try std.testing.expectApproxEqAbs(@as(f64, 0.5849625007211562), score_is_test_w5, 1e-12);
 }

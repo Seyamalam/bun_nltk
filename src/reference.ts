@@ -103,8 +103,9 @@ export type PmiBigram = {
   score: number;
 };
 
-export function topPmiBigramsAscii(text: string, topK: number): PmiBigram[] {
+export function topPmiBigramsAscii(text: string, topK: number, windowSize = 2): PmiBigram[] {
   if (!Number.isInteger(topK) || topK <= 0) throw new Error("topK must be a positive integer");
+  if (!Number.isInteger(windowSize) || windowSize < 2) throw new Error("windowSize must be an integer >= 2");
   const tokens = tokenizeAscii(text);
   if (tokens.length < 2) return [];
 
@@ -116,12 +117,13 @@ export function topPmiBigramsAscii(text: string, topK: number): PmiBigram[] {
   for (let i = 0; i < tokenHashes.length; i += 1) {
     const tokenHash = tokenHashes[i]!;
     wordCounts.set(tokenHash, (wordCounts.get(tokenHash) ?? 0) + 1);
-    if (i === 0) continue;
-
-    const left = tokenHashes[i - 1]!;
-    const right = tokenHash;
-    const key = (left << 64n) | right;
-    bigramCounts.set(key, (bigramCounts.get(key) ?? 0) + 1);
+    const end = Math.min(tokenHashes.length, i + windowSize);
+    for (let j = i + 1; j < end; j += 1) {
+      const left = tokenHash;
+      const right = tokenHashes[j]!;
+      const key = (left << 64n) | right;
+      bigramCounts.set(key, (bigramCounts.get(key) ?? 0) + 1);
+    }
   }
 
   const out: PmiBigram[] = [];
@@ -132,7 +134,7 @@ export function topPmiBigramsAscii(text: string, topK: number): PmiBigram[] {
     const rightCount = wordCounts.get(right);
     if (!leftCount || !rightCount) continue;
 
-    const score = Math.log2((count * tokenTotal) / (leftCount * rightCount));
+    const score = Math.log2((count * tokenTotal) / (leftCount * rightCount * (windowSize - 1)));
     out.push({ leftHash: left, rightHash: right, score });
   }
 
