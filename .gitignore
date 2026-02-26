@@ -10,6 +10,7 @@ native/*.so
 native/*.dylib
 native/*.pdb
 native/*.lib
+native/*.wasm
 
 # code coverage
 coverage

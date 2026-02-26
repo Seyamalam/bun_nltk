@@ -4,6 +4,10 @@ import {
   countTokensAscii,
   countUniqueNgramsAscii,
   countUniqueTokensAscii,
+  bigramWindowStatsAscii,
+  bigramWindowStatsAsciiIds,
+  bigramWindowStatsAsciiIdsJs,
+  bigramWindowStatsAsciiJs,
   countNgramsAsciiJs,
   countTokensAsciiJs,
   countUniqueNgramsAsciiJs,
@@ -12,8 +16,11 @@ import {
   ngramsAsciiNative,
   ngramFreqDistHashAscii,
   ngramFreqDistHashAsciiJs,
+  porterStemAscii,
   topPmiBigramsAscii,
   topPmiBigramsAsciiJs,
+  tokenFreqDistIdsAscii,
+  tokenFreqDistIdsAsciiJs,
   tokenizeAscii,
   tokenizeAsciiNative,
   tokenFreqDistHashAscii,
@@ -80,6 +87,46 @@ test("native top PMI bigrams match JS reference", () => {
   }
 });
 
+test("native token freqdist IDs are reversible and match JS reference", () => {
+  const text = "Apple apple APPLE banana BANANA";
+  const actual = tokenFreqDistIdsAscii(text);
+  const expected = tokenFreqDistIdsAsciiJs(text);
+
+  expect(actual.tokens).toEqual(["apple", "banana"]);
+  expect(actual.counts).toEqual([3, 2]);
+  expect(actual.totalTokens).toBe(5);
+
+  expect(actual.tokens).toEqual(expected.tokens);
+  expect(actual.counts).toEqual(expected.counts);
+  expect(actual.totalTokens).toEqual(expected.totalTokens);
+});
+
+test("native bigram window stats IDs and token view match JS reference", () => {
+  for (const text of cases) {
+    for (const windowSize of [2, 3, 5]) {
+      const actualId = bigramWindowStatsAsciiIds(text, windowSize);
+      const expectedId = bigramWindowStatsAsciiIdsJs(text, windowSize);
+      expect(actualId.length).toBe(expectedId.length);
+      for (let i = 0; i < expectedId.length; i += 1) {
+        expect(actualId[i]!.leftId).toBe(expectedId[i]!.leftId);
+        expect(actualId[i]!.rightId).toBe(expectedId[i]!.rightId);
+        expect(actualId[i]!.count).toBe(expectedId[i]!.count);
+        expect(Math.abs(actualId[i]!.pmi - expectedId[i]!.pmi)).toBeLessThanOrEqual(1e-12);
+      }
+
+      const actualToken = bigramWindowStatsAscii(text, windowSize);
+      const expectedToken = bigramWindowStatsAsciiJs(text, windowSize);
+      expect(actualToken.length).toBe(expectedToken.length);
+      for (let i = 0; i < expectedToken.length; i += 1) {
+        expect(actualToken[i]!.left).toBe(expectedToken[i]!.left);
+        expect(actualToken[i]!.right).toBe(expectedToken[i]!.right);
+        expect(actualToken[i]!.count).toBe(expectedToken[i]!.count);
+        expect(Math.abs(actualToken[i]!.pmi - expectedToken[i]!.pmi)).toBeLessThanOrEqual(1e-12);
+      }
+    }
+  }
+});
+
 test("windowed PMI reproduces NLTK collocation sample values", () => {
   const text = "this this is is a a test test";
   const hash = (token: string) => {
@@ -114,6 +161,38 @@ test("windowed PMI reproduces NLTK collocation sample values", () => {
   expect(score5(isHash, testHash)).toBeCloseTo(0.5849625007211562, 12);
 });
 
+test("native porter stemmer matches NLTK-style vectors", () => {
+  const vectors: Array<[string, string]> = [
+    ["caresses", "caress"],
+    ["ponies", "poni"],
+    ["ties", "ti"],
+    ["cats", "cat"],
+    ["feed", "feed"],
+    ["agreed", "agre"],
+    ["plastered", "plaster"],
+    ["motoring", "motor"],
+    ["sing", "sing"],
+    ["conflated", "conflat"],
+    ["hopping", "hop"],
+    ["filing", "file"],
+    ["happy", "happi"],
+    ["sky", "sky"],
+    ["relational", "relat"],
+    ["triplicate", "triplic"],
+    ["probate", "probat"],
+    ["rate", "rate"],
+    ["controll", "control"],
+    ["roll", "roll"],
+    ["oed", "o"],
+    ["On", "on"],
+    ["Github", "github"],
+  ];
+
+  for (const [word, expected] of vectors) {
+    expect(porterStemAscii(word)).toBe(expected);
+  }
+});
+
 test("native handles empty input", () => {
   expect(countTokensAscii("")).toBe(0);
   expect(countUniqueTokensAscii("")).toBe(0);
@@ -124,4 +203,6 @@ test("native handles empty input", () => {
   expect(tokenizeAsciiNative("")).toEqual([]);
   expect(ngramsAsciiNative("", 2)).toEqual([]);
   expect(topPmiBigramsAscii("", 5, 2)).toEqual([]);
+  expect(tokenFreqDistIdsAscii("").tokens).toEqual([]);
+  expect(bigramWindowStatsAscii("", 2)).toEqual([]);
 });

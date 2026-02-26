@@ -1,6 +1,7 @@
 const std = @import("std");
 const ascii = @import("ascii.zig");
 const freqdist = @import("freqdist.zig");
+const token_ids = @import("token_ids.zig");
 const types = @import("types.zig");
 
 pub fn packBigramKey(left: u64, right: u64) u128 {
@@ -195,6 +196,142 @@ pub fn fillTopPmiBigramsAscii(
     return @as(u64, best_len);
 }
 
+fn packBigramIdKey(left_id: u32, right_id: u32) u64 {
+    return (@as(u64, left_id) << 32) | @as(u64, right_id);
+}
+
+fn unpackBigramLeftId(key: u64) u32 {
+    return @as(u32, @truncate(key >> 32));
+}
+
+fn unpackBigramRightId(key: u64) u32 {
+    return @as(u32, @truncate(key & std.math.maxInt(u32)));
+}
+
+const IdBigramEntry = struct {
+    key: u64,
+    count: u64,
+    pmi: f64,
+};
+
+fn idBigramEntryLess(a: IdBigramEntry, b: IdBigramEntry) bool {
+    return a.key < b.key;
+}
+
+fn sortIdBigramEntries(entries: []IdBigramEntry) void {
+    if (entries.len <= 1) return;
+
+    var i: usize = 1;
+    while (i < entries.len) : (i += 1) {
+        var j: usize = i;
+        while (j > 0 and idBigramEntryLess(entries[j], entries[j - 1])) : (j -= 1) {
+            const tmp = entries[j - 1];
+            entries[j - 1] = entries[j];
+            entries[j] = tmp;
+        }
+    }
+}
+
+fn buildBigramIdCountMap(
+    token_id_sequence: []const u32,
+    window_size: usize,
+    allocator: std.mem.Allocator,
+) types.CountError!std.AutoHashMap(u64, u64) {
+    if (window_size < 2) return error.InvalidN;
+
+    var map = std.AutoHashMap(u64, u64).init(allocator);
+    errdefer map.deinit();
+
+    for (token_id_sequence, 0..) |left_id, i| {
+        const end = @min(token_id_sequence.len, i + window_size);
+        var j = i + 1;
+        while (j < end) : (j += 1) {
+            const right_id = token_id_sequence[j];
+            const key = packBigramIdKey(left_id, right_id);
+            try freqdist.updateCount(&map, key);
+        }
+    }
+
+    return map;
+}
+
+pub fn countUniqueBigramsWindowIdsAscii(
+    input: []const u8,
+    window_size: usize,
+    allocator: std.mem.Allocator,
+) types.CountError!u64 {
+    if (window_size < 2) return error.InvalidN;
+
+    var ids = try token_ids.buildTokenIdDataAscii(input, allocator);
+    defer ids.deinit();
+    if (ids.token_ids.items.len < 2) return 0;
+
+    var map = try buildBigramIdCountMap(ids.token_ids.items, window_size, allocator);
+    defer map.deinit();
+
+    return @as(u64, map.count());
+}
+
+pub fn fillBigramWindowStatsIdsAscii(
+    input: []const u8,
+    window_size: usize,
+    out_left_ids: []u32,
+    out_right_ids: []u32,
+    out_counts: []u64,
+    out_pmis: []f64,
+    allocator: std.mem.Allocator,
+) types.CountError!u64 {
+    if (window_size < 2) return error.InvalidN;
+    if (out_left_ids.len != out_right_ids.len or out_left_ids.len != out_counts.len or out_left_ids.len != out_pmis.len) {
+        return error.InsufficientCapacity;
+    }
+
+    var ids = try token_ids.buildTokenIdDataAscii(input, allocator);
+    defer ids.deinit();
+    if (ids.token_ids.items.len < 2) return 0;
+
+    var bigram_counts = try buildBigramIdCountMap(ids.token_ids.items, window_size, allocator);
+    defer bigram_counts.deinit();
+
+    const unique = bigram_counts.count();
+    if (out_left_ids.len < unique) return error.InsufficientCapacity;
+
+    const entries = allocator.alloc(IdBigramEntry, unique) catch return error.OutOfMemory;
+    defer allocator.free(entries);
+
+    var idx: usize = 0;
+    var iter = bigram_counts.iterator();
+    while (iter.next()) |entry| {
+        const key = entry.key_ptr.*;
+        const count = entry.value_ptr.*;
+        const left_id = unpackBigramLeftId(key);
+        const right_id = unpackBigramRightId(key);
+
+        const left_count = ids.token_counts.items[left_id];
+        const right_count = ids.token_counts.items[right_id];
+        const numerator = @as(f64, @floatFromInt(count)) * @as(f64, @floatFromInt(ids.token_ids.items.len));
+        const denominator = @as(f64, @floatFromInt(left_count)) * @as(f64, @floatFromInt(right_count)) * @as(f64, @floatFromInt(window_size - 1));
+
+        entries[idx] = .{
+            .key = key,
+            .count = count,
+            .pmi = std.math.log2(numerator / denominator),
+        };
+        idx += 1;
+    }
+
+    sortIdBigramEntries(entries);
+
+    for (entries, 0..) |row, i| {
+        out_left_ids[i] = unpackBigramLeftId(row.key);
+        out_right_ids[i] = unpackBigramRightId(row.key);
+        out_counts[i] = row.count;
+        out_pmis[i] = row.pmi;
+    }
+
+    return @as(u64, unique);
+}
+
 fn findScore(left_hashes: []const u64, right_hashes: []const u64, scores: []const f64, left: u64, right: u64) ?f64 {
     for (left_hashes, 0..) |lh, i| {
         if (lh == left and right_hashes[i] == right) return scores[i];
@@ -250,4 +387,32 @@ test "windowed top pmi matches NLTK sample scores" {
     const score_is_test_w5 = findScore(left5[0..@intCast(written5)], right5[0..@intCast(written5)], scores5[0..@intCast(written5)], hash_is, hash_test) orelse return error.TestUnexpectedResult;
     try std.testing.expectApproxEqAbs(@as(f64, 0.5849625007211562), score_this_a_w5, 1e-12);
     try std.testing.expectApproxEqAbs(@as(f64, 0.5849625007211562), score_is_test_w5, 1e-12);
+}
+
+test "windowed id bigram stats include expected counts" {
+    const allocator = std.testing.allocator;
+    const input = "this this is is a a test test";
+
+    const unique = try countUniqueBigramsWindowIdsAscii(input, 3, allocator);
+    try std.testing.expectEqual(@as(u64, 7), unique);
+
+    var left = [_]u32{0} ** 8;
+    var right = [_]u32{0} ** 8;
+    var counts = [_]u64{0} ** 8;
+    var pmis = [_]f64{0} ** 8;
+    const written = try fillBigramWindowStatsIdsAscii(input, 3, &left, &right, &counts, &pmis, allocator);
+    try std.testing.expectEqual(@as(u64, 7), written);
+
+    // First-occurrence ids for this sentence:
+    // this->0, is->1, a->2, test->3
+    // window=3 should include (0,1), (1,2), (2,3) with count 3
+    var found_01 = false;
+    var found_12 = false;
+    var found_23 = false;
+    for (0..@as(usize, @intCast(written))) |i| {
+        if (left[i] == 0 and right[i] == 1 and counts[i] == 3) found_01 = true;
+        if (left[i] == 1 and right[i] == 2 and counts[i] == 3) found_12 = true;
+        if (left[i] == 2 and right[i] == 3 and counts[i] == 3) found_23 = true;
+    }
+    try std.testing.expect(found_01 and found_12 and found_23);
 }

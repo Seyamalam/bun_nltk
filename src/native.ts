@@ -50,6 +50,26 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize", "u32", "u32", "ptr", "ptr", "ptr", "usize"],
     returns: "u64",
   },
+  bunnltk_count_token_blob_bytes_ascii: {
+    args: ["ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_fill_token_freqdist_ids_ascii: {
+    args: ["ptr", "usize", "ptr", "usize", "ptr", "ptr", "ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_count_unique_bigrams_window_ascii_ids: {
+    args: ["ptr", "usize", "u32"],
+    returns: "u64",
+  },
+  bunnltk_fill_bigram_window_stats_ascii_ids: {
+    args: ["ptr", "usize", "u32", "ptr", "ptr", "ptr", "ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_porter_stem_ascii: {
+    args: ["ptr", "usize", "ptr", "usize"],
+    returns: "u32",
+  },
 });
 
 function toBuffer(text: string): Uint8Array {
@@ -249,6 +269,154 @@ export function topPmiBigramsAscii(text: string, topK: number, windowSize = 2): 
     });
   }
   return out;
+}
+
+export type TokenFreqDistIds = {
+  tokens: string[];
+  counts: number[];
+  tokenToId: Map<string, number>;
+  totalTokens: number;
+};
+
+export function tokenFreqDistIdsAscii(text: string): TokenFreqDistIds {
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) {
+    return { tokens: [], counts: [], tokenToId: new Map(), totalTokens: 0 };
+  }
+
+  const unique = countUniqueTokensAscii(text);
+  const blobBytes = toNumber(lib.symbols.bunnltk_count_token_blob_bytes_ascii(ptr(bytes), bytes.length));
+  assertNoNativeError("tokenFreqDistIdsAscii.count_blob_bytes");
+
+  const blob = new Uint8Array(Math.max(1, blobBytes));
+  const offsets = new Uint32Array(Math.max(1, unique));
+  const lengths = new Uint32Array(Math.max(1, unique));
+  const counts = new BigUint64Array(Math.max(1, unique));
+
+  const written = toNumber(
+    lib.symbols.bunnltk_fill_token_freqdist_ids_ascii(
+      ptr(bytes),
+      bytes.length,
+      ptr(blob),
+      blob.length,
+      ptr(offsets),
+      ptr(lengths),
+      ptr(counts),
+      offsets.length,
+    ),
+  );
+  assertNoNativeError("tokenFreqDistIdsAscii.fill");
+
+  const decoder = new TextDecoder();
+  const outTokens: string[] = [];
+  const outCounts: number[] = [];
+  const tokenToId = new Map<string, number>();
+
+  for (let i = 0; i < written; i += 1) {
+    const start = offsets[i]!;
+    const len = lengths[i]!;
+    const token = decoder.decode(blob.subarray(start, start + len));
+    outTokens.push(token);
+    outCounts.push(Number(counts[i]!));
+    tokenToId.set(token, i);
+  }
+
+  return {
+    tokens: outTokens,
+    counts: outCounts,
+    tokenToId,
+    totalTokens: countTokensAscii(text),
+  };
+}
+
+export type BigramWindowStatId = {
+  leftId: number;
+  rightId: number;
+  count: number;
+  pmi: number;
+};
+
+export type BigramWindowStatToken = {
+  left: string;
+  right: string;
+  leftId: number;
+  rightId: number;
+  count: number;
+  pmi: number;
+};
+
+export function bigramWindowStatsAsciiIds(text: string, windowSize = 2): BigramWindowStatId[] {
+  if (!Number.isInteger(windowSize) || windowSize < 2) {
+    throw new Error("windowSize must be an integer >= 2");
+  }
+
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return [];
+
+  const unique = toNumber(
+    lib.symbols.bunnltk_count_unique_bigrams_window_ascii_ids(ptr(bytes), bytes.length, windowSize),
+  );
+  assertNoNativeError("bigramWindowStatsAsciiIds.count");
+  if (unique === 0) return [];
+
+  const left = new Uint32Array(unique);
+  const right = new Uint32Array(unique);
+  const counts = new BigUint64Array(unique);
+  const pmis = new Float64Array(unique);
+
+  const written = toNumber(
+    lib.symbols.bunnltk_fill_bigram_window_stats_ascii_ids(
+      ptr(bytes),
+      bytes.length,
+      windowSize,
+      ptr(left),
+      ptr(right),
+      ptr(counts),
+      ptr(pmis),
+      unique,
+    ),
+  );
+  assertNoNativeError("bigramWindowStatsAsciiIds.fill");
+
+  const out: BigramWindowStatId[] = [];
+  for (let i = 0; i < written; i += 1) {
+    out.push({
+      leftId: left[i]!,
+      rightId: right[i]!,
+      count: Number(counts[i]!),
+      pmi: pmis[i]!,
+    });
+  }
+  return out;
+}
+
+export function bigramWindowStatsAscii(text: string, windowSize = 2): BigramWindowStatToken[] {
+  const vocab = tokenFreqDistIdsAscii(text);
+  const stats = bigramWindowStatsAsciiIds(text, windowSize);
+
+  return stats.map((row) => ({
+    left: vocab.tokens[row.leftId]!,
+    right: vocab.tokens[row.rightId]!,
+    leftId: row.leftId,
+    rightId: row.rightId,
+    count: row.count,
+    pmi: row.pmi,
+  }));
+}
+
+export function porterStemAscii(token: string): string {
+  const bytes = toBuffer(token);
+  if (bytes.length === 0) return "";
+
+  const out = new Uint8Array(bytes.length);
+  const stemLen = lib.symbols.bunnltk_porter_stem_ascii(ptr(bytes), bytes.length, ptr(out), out.length);
+  assertNoNativeError("porterStemAscii");
+
+  return new TextDecoder().decode(out.subarray(0, stemLen));
+}
+
+export function porterStemAsciiTokens(tokens: string[]): string[] {
+  return tokens.map((token) => porterStemAscii(token));
 }
 
 export function nativeLibraryPath(): string {

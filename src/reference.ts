@@ -103,6 +103,106 @@ export type PmiBigram = {
   score: number;
 };
 
+export type TokenFreqDistIds = {
+  tokens: string[];
+  counts: number[];
+  tokenToId: Map<string, number>;
+  totalTokens: number;
+};
+
+export type BigramWindowStatId = {
+  leftId: number;
+  rightId: number;
+  count: number;
+  pmi: number;
+};
+
+export type BigramWindowStatToken = {
+  left: string;
+  right: string;
+  leftId: number;
+  rightId: number;
+  count: number;
+  pmi: number;
+};
+
+export function tokenFreqDistIdsAscii(text: string): TokenFreqDistIds {
+  const tokens = tokenizeAscii(text);
+  const vocab: string[] = [];
+  const counts: number[] = [];
+  const tokenToId = new Map<string, number>();
+
+  for (const token of tokens) {
+    const existing = tokenToId.get(token);
+    if (existing !== undefined) {
+      counts[existing]! += 1;
+      continue;
+    }
+
+    const id = vocab.length;
+    tokenToId.set(token, id);
+    vocab.push(token);
+    counts.push(1);
+  }
+
+  return {
+    tokens: vocab,
+    counts,
+    tokenToId,
+    totalTokens: tokens.length,
+  };
+}
+
+export function bigramWindowStatsAsciiIds(text: string, windowSize = 2): BigramWindowStatId[] {
+  if (!Number.isInteger(windowSize) || windowSize < 2) throw new Error("windowSize must be an integer >= 2");
+  const tokenList = tokenizeAscii(text);
+  if (tokenList.length < 2) return [];
+
+  const vocab = tokenFreqDistIdsAscii(text);
+  const idSeq = tokenList.map((token) => vocab.tokenToId.get(token)!);
+  const countsMap = new Map<string, number>();
+
+  for (let i = 0; i < idSeq.length; i += 1) {
+    const end = Math.min(idSeq.length, i + windowSize);
+    for (let j = i + 1; j < end; j += 1) {
+      const leftId = idSeq[i]!;
+      const rightId = idSeq[j]!;
+      const key = `${leftId}:${rightId}`;
+      countsMap.set(key, (countsMap.get(key) ?? 0) + 1);
+    }
+  }
+
+  const rows: BigramWindowStatId[] = [];
+  for (const [key, count] of countsMap.entries()) {
+    const [leftRaw, rightRaw] = key.split(":");
+    const leftId = Number(leftRaw);
+    const rightId = Number(rightRaw);
+    const leftCount = vocab.counts[leftId]!;
+    const rightCount = vocab.counts[rightId]!;
+    const pmi = Math.log2((count * vocab.totalTokens) / (leftCount * rightCount * (windowSize - 1)));
+    rows.push({ leftId, rightId, count, pmi });
+  }
+
+  rows.sort((a, b) => {
+    if (a.leftId !== b.leftId) return a.leftId - b.leftId;
+    return a.rightId - b.rightId;
+  });
+  return rows;
+}
+
+export function bigramWindowStatsAscii(text: string, windowSize = 2): BigramWindowStatToken[] {
+  const vocab = tokenFreqDistIdsAscii(text);
+  const rows = bigramWindowStatsAsciiIds(text, windowSize);
+  return rows.map((row) => ({
+    left: vocab.tokens[row.leftId]!,
+    right: vocab.tokens[row.rightId]!,
+    leftId: row.leftId,
+    rightId: row.rightId,
+    count: row.count,
+    pmi: row.pmi,
+  }));
+}
+
 export function topPmiBigramsAscii(text: string, topK: number, windowSize = 2): PmiBigram[] {
   if (!Number.isInteger(topK) || topK <= 0) throw new Error("topK must be a positive integer");
   if (!Number.isInteger(windowSize) || windowSize < 2) throw new Error("windowSize must be an integer >= 2");

@@ -5,10 +5,13 @@
   "private": true,
   "scripts": {
     "build:zig": "bun run scripts/build-zig.ts",
+    "build:wasm": "bun run scripts/build-wasm.ts",
     "test": "bun test",
     "bench:generate": "python bench/generate_synthetic.py --size-mb 64 --seed 1337 --out bench/datasets/synthetic.txt",
     "bench:compare": "bun run bench/compare.ts bench/datasets/synthetic.txt 2 5",
-    "bench:compare:collocations": "bun run bench/compare_collocations.ts bench/datasets/synthetic.txt 50 5"
+    "bench:compare:collocations": "bun run bench/compare_collocations.ts bench/datasets/synthetic.txt 50 5",
+    "bench:compare:porter": "bun run bench/compare_porter.ts bench/datasets/synthetic.txt 3",
+    "bench:compare:wasm": "bun run bench/compare_wasm.ts bench/datasets/synthetic.txt 2 5"
   },
   "devDependencies": {
     "@types/bun": "latest"
