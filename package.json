@@ -1,0 +1,18 @@
+{
+  "name": "bun_nltk",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build:zig": "bun run scripts/build-zig.ts",
+    "test": "bun test",
+    "bench:generate": "python bench/generate_synthetic.py --size-mb 64 --seed 1337 --out bench/datasets/synthetic.txt",
+    "bench:compare": "bun run bench/compare.ts bench/datasets/synthetic.txt 2 5"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
