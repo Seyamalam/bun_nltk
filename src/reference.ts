@@ -37,6 +37,18 @@ export function countUniqueNgramsAscii(text: string, n: number): number {
   return ngrams.size;
 }
 
+export function ngramsAscii(text: string, n: number): string[][] {
+  if (!Number.isInteger(n) || n <= 0) throw new Error("n must be a positive integer");
+  const tokens = tokenizeAscii(text);
+  if (tokens.length < n) return [];
+
+  const out: string[][] = [];
+  for (let i = 0; i <= tokens.length - n; i += 1) {
+    out.push(tokens.slice(i, i + n));
+  }
+  return out;
+}
+
 export function hashTokenAscii(token: string): bigint {
   let hash = FNV_OFFSET_BASIS;
   for (let i = 0; i < token.length; i += 1) {

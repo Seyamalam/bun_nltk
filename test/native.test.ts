@@ -8,8 +8,12 @@ import {
   countTokensAsciiJs,
   countUniqueNgramsAsciiJs,
   countUniqueTokensAsciiJs,
+  ngramsAscii,
+  ngramsAsciiNative,
   ngramFreqDistHashAscii,
   ngramFreqDistHashAsciiJs,
+  tokenizeAscii,
+  tokenizeAsciiNative,
   tokenFreqDistHashAscii,
   tokenFreqDistHashAsciiJs,
 } from "../index";
@@ -50,6 +54,16 @@ test("native hash freqdists match JS reference", () => {
   }
 });
 
+test("native token and ngram materialization matches JS reference", () => {
+  for (const text of cases) {
+    expect(tokenizeAsciiNative(text)).toEqual(tokenizeAscii(text));
+
+    for (const n of [1, 2, 3]) {
+      expect(ngramsAsciiNative(text, n)).toEqual(ngramsAscii(text, n));
+    }
+  }
+});
+
 test("native handles empty input", () => {
   expect(countTokensAscii("")).toBe(0);
   expect(countUniqueTokensAscii("")).toBe(0);
@@ -57,4 +71,6 @@ test("native handles empty input", () => {
   expect(countUniqueNgramsAscii("", 2)).toBe(0);
   expect(tokenFreqDistHashAscii("").size).toBe(0);
   expect(ngramFreqDistHashAscii("", 2).size).toBe(0);
+  expect(tokenizeAsciiNative("")).toEqual([]);
+  expect(ngramsAsciiNative("", 2)).toEqual([]);
 });

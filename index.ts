@@ -3,8 +3,10 @@ export {
   countTokensAscii,
   countUniqueNgramsAscii,
   countUniqueTokensAscii,
+  ngramsAsciiNative,
   nativeLibraryPath,
   ngramFreqDistHashAscii,
+  tokenizeAsciiNative,
   tokenFreqDistHashAscii,
 } from "./src/native";
 
@@ -15,6 +17,7 @@ export {
   countUniqueTokensAscii as countUniqueTokensAsciiJs,
   hashNgram,
   hashTokenAscii,
+  ngramsAscii,
   ngramFreqDistHashAscii as ngramFreqDistHashAsciiJs,
   tokenFreqDistHashAscii as tokenFreqDistHashAsciiJs,
   tokenizeAscii,

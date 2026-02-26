@@ -179,6 +179,46 @@ fn fillFromMap(
     }
 }
 
+fn fillTokenOffsetsAscii(
+    input: []const u8,
+    out_offsets: []u32,
+    out_lengths: []u32,
+) u64 {
+    var total: u64 = 0;
+    var written: usize = 0;
+    var in_token = false;
+    var token_start: usize = 0;
+
+    for (input, 0..) |ch, idx| {
+        if (isTokenChar(ch)) {
+            if (!in_token) {
+                in_token = true;
+                token_start = idx;
+            }
+        } else if (in_token) {
+            const token_len = idx - token_start;
+            if (written < out_offsets.len and token_start <= std.math.maxInt(u32) and token_len <= std.math.maxInt(u32)) {
+                out_offsets[written] = @as(u32, @intCast(token_start));
+                out_lengths[written] = @as(u32, @intCast(token_len));
+                written += 1;
+            }
+            total += 1;
+            in_token = false;
+        }
+    }
+
+    if (in_token) {
+        const token_len = input.len - token_start;
+        if (written < out_offsets.len and token_start <= std.math.maxInt(u32) and token_len <= std.math.maxInt(u32)) {
+            out_offsets[written] = @as(u32, @intCast(token_start));
+            out_lengths[written] = @as(u32, @intCast(token_len));
+        }
+        total += 1;
+    }
+
+    return total;
+}
+
 pub export fn bunnltk_last_error_code() u32 {
     return last_error_code;
 }
@@ -325,6 +365,32 @@ pub export fn bunnltk_fill_ngram_freqdist_ascii(
     return @as(u64, unique);
 }
 
+pub export fn bunnltk_fill_token_offsets_ascii(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    out_offsets_ptr: [*]u32,
+    out_lengths_ptr: [*]u32,
+    capacity: usize,
+) u64 {
+    resetError();
+    if (input_len == 0) return 0;
+
+    const input = input_ptr[0..input_len];
+    const out_offsets = out_offsets_ptr[0..capacity];
+    const out_lengths = out_lengths_ptr[0..capacity];
+
+    if (out_offsets.len != out_lengths.len) {
+        setError(.insufficient_capacity);
+        return 0;
+    }
+
+    const total = fillTokenOffsetsAscii(input, out_offsets, out_lengths);
+    if (total > capacity) {
+        setError(.insufficient_capacity);
+    }
+    return total;
+}
+
 test "token count and unique token count" {
     const input = "This this is is a a test test";
     try std.testing.expectEqual(@as(u64, 8), bunnltk_count_tokens_ascii(input.ptr, input.len));
@@ -369,4 +435,20 @@ test "invalid n sets error" {
     const input = "abc";
     _ = bunnltk_count_unique_ngrams_ascii(input.ptr, input.len, 0);
     try std.testing.expectEqual(@as(u32, @intFromEnum(ErrorCode.invalid_n)), bunnltk_last_error_code());
+}
+
+test "fill token offsets materializes token windows" {
+    const input = "This, this is a test.";
+    var offsets = [_]u32{0} ** 5;
+    var lengths = [_]u32{0} ** 5;
+
+    const total = bunnltk_fill_token_offsets_ascii(input.ptr, input.len, &offsets, &lengths, offsets.len);
+    try std.testing.expectEqual(@as(u64, 5), total);
+    try std.testing.expectEqual(@as(u32, @intFromEnum(ErrorCode.ok)), bunnltk_last_error_code());
+
+    try std.testing.expectEqualStrings("This", input[offsets[0] .. offsets[0] + lengths[0]]);
+    try std.testing.expectEqualStrings("this", input[offsets[1] .. offsets[1] + lengths[1]]);
+    try std.testing.expectEqualStrings("is", input[offsets[2] .. offsets[2] + lengths[2]]);
+    try std.testing.expectEqualStrings("a", input[offsets[3] .. offsets[3] + lengths[3]]);
+    try std.testing.expectEqualStrings("test", input[offsets[4] .. offsets[4] + lengths[4]]);
 }

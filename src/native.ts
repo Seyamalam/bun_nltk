@@ -38,6 +38,10 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize", "u32", "ptr", "ptr", "usize"],
     returns: "u64",
   },
+  bunnltk_fill_token_offsets_ascii: {
+    args: ["ptr", "usize", "ptr", "ptr", "usize"],
+    returns: "u64",
+  },
 });
 
 function toBuffer(text: string): Uint8Array {
@@ -147,6 +151,47 @@ export function ngramFreqDistHashAscii(text: string, n: number): Map<bigint, num
   const out = new Map<bigint, number>();
   for (let i = 0; i < unique; i += 1) {
     out.set(hashes[i]!, Number(counts[i]!));
+  }
+  return out;
+}
+
+export function tokenizeAsciiNative(text: string): string[] {
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return [];
+
+  const capacity = Math.max(1, countTokensAscii(text));
+  const offsets = new Uint32Array(capacity);
+  const lengths = new Uint32Array(capacity);
+
+  const total = toNumber(
+    lib.symbols.bunnltk_fill_token_offsets_ascii(
+      ptr(bytes),
+      bytes.length,
+      ptr(offsets),
+      ptr(lengths),
+      capacity,
+    ),
+  );
+  assertNoNativeError("tokenizeAsciiNative");
+
+  const decoder = new TextDecoder();
+  const out = new Array<string>(total);
+  for (let i = 0; i < total; i += 1) {
+    const start = offsets[i]!;
+    const len = lengths[i]!;
+    out[i] = decoder.decode(bytes.subarray(start, start + len)).toLowerCase();
+  }
+  return out;
+}
+
+export function ngramsAsciiNative(text: string, n: number): string[][] {
+  ensureValidN(n);
+  const tokens = tokenizeAsciiNative(text);
+  if (tokens.length < n) return [];
+
+  const out: string[][] = [];
+  for (let i = 0; i <= tokens.length - n; i += 1) {
+    out.push(tokens.slice(i, i + n));
   }
   return out;
 }
