@@ -7,6 +7,7 @@ test {
     _ = @import("core/ascii.zig");
     _ = @import("core/freqdist.zig");
     _ = @import("core/token_ids.zig");
+    _ = @import("core/ngrams.zig");
     _ = @import("core/collocations.zig");
     _ = @import("core/porter.zig");
     _ = @import("ffi_exports.zig");

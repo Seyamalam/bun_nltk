@@ -37,6 +37,22 @@ export function countUniqueNgramsAscii(text: string, n: number): number {
   return ngrams.size;
 }
 
+export type AsciiMetrics = {
+  tokens: number;
+  uniqueTokens: number;
+  ngrams: number;
+  uniqueNgrams: number;
+};
+
+export function computeAsciiMetrics(text: string, n: number): AsciiMetrics {
+  return {
+    tokens: countTokensAscii(text),
+    uniqueTokens: countUniqueTokensAscii(text),
+    ngrams: countNgramsAscii(text, n),
+    uniqueNgrams: countUniqueNgramsAscii(text, n),
+  };
+}
+
 export function ngramsAscii(text: string, n: number): string[][] {
   if (!Number.isInteger(n) || n <= 0) throw new Error("n must be a positive integer");
   const tokens = tokenizeAscii(text);
@@ -46,6 +62,75 @@ export function ngramsAscii(text: string, n: number): string[][] {
   for (let i = 0; i <= tokens.length - n; i += 1) {
     out.push(tokens.slice(i, i + n));
   }
+  return out;
+}
+
+export function everygramsAscii(text: string, minLen = 1, maxLen = Number.MAX_SAFE_INTEGER): string[][] {
+  if (!Number.isInteger(minLen) || minLen <= 0) throw new Error("minLen must be a positive integer");
+  if (!Number.isInteger(maxLen) || maxLen <= 0) throw new Error("maxLen must be a positive integer");
+  const tokens = tokenizeAscii(text);
+  if (tokens.length === 0) return [];
+
+  const realMax = Math.min(maxLen, tokens.length);
+  const out: string[][] = [];
+  for (let start = 0; start < tokens.length; start += 1) {
+    const upper = Math.min(realMax, tokens.length - start);
+    if (upper < minLen) continue;
+    for (let len = minLen; len <= upper; len += 1) {
+      out.push(tokens.slice(start, start + len));
+    }
+  }
+  return out;
+}
+
+function combinations<T>(arr: T[], k: number): T[][] {
+  const out: T[][] = [];
+  const cur: T[] = [];
+
+  const rec = (start: number, need: number) => {
+    if (need === 0) {
+      out.push([...cur]);
+      return;
+    }
+    for (let i = start; i <= arr.length - need; i += 1) {
+      cur.push(arr[i]!);
+      rec(i + 1, need - 1);
+      cur.pop();
+    }
+  };
+
+  rec(0, k);
+  return out;
+}
+
+export function skipgramsAscii(text: string, n: number, k: number): string[][] {
+  if (!Number.isInteger(n) || n <= 0) throw new Error("n must be a positive integer");
+  if (!Number.isInteger(k) || k < 0) throw new Error("k must be an integer >= 0");
+  const tokens = tokenizeAscii(text);
+  if (tokens.length === 0) return [];
+
+  if (n === 1) return tokens.map((t) => [t]);
+
+  const out: string[][] = [];
+  const tailSlots = n + k - 1;
+
+  for (let i = 0; i < tokens.length; i += 1) {
+    const slots = Array.from({ length: tailSlots }, (_, s) => s);
+    for (const combo of combinations(slots, n - 1)) {
+      const gram = [tokens[i]!];
+      let valid = true;
+      for (const slot of combo) {
+        const idx = i + 1 + slot;
+        if (idx >= tokens.length) {
+          valid = false;
+          break;
+        }
+        gram.push(tokens[idx]!);
+      }
+      if (valid) out.push(gram);
+    }
+  }
+
   return out;
 }
 

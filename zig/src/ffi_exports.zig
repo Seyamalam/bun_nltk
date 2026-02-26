@@ -3,6 +3,7 @@ const ascii = @import("core/ascii.zig");
 const freqdist = @import("core/freqdist.zig");
 const collocations = @import("core/collocations.zig");
 const token_ids = @import("core/token_ids.zig");
+const ngrams = @import("core/ngrams.zig");
 const porter = @import("core/porter.zig");
 const types = @import("core/types.zig");
 const error_state = @import("core/error_state.zig");
@@ -15,6 +16,63 @@ pub export fn bunnltk_count_tokens_ascii(input_ptr: [*]const u8, input_len: usiz
     error_state.resetError();
     if (input_len == 0) return 0;
     return ascii.tokenCountAscii(input_ptr[0..input_len]);
+}
+
+pub export fn bunnltk_compute_ascii_metrics(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    n: u32,
+    out_metrics_ptr: [*]u64,
+    out_metrics_len: usize,
+) void {
+    error_state.resetError();
+    if (out_metrics_len < 4) {
+        error_state.setError(.insufficient_capacity);
+        return;
+    }
+
+    const out = out_metrics_ptr[0..out_metrics_len];
+    out[0] = 0;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+
+    if (input_len == 0) return;
+    if (n == 0) {
+        error_state.setError(.invalid_n);
+        return;
+    }
+
+    const input = input_ptr[0..input_len];
+    out[0] = ascii.tokenCountAscii(input);
+
+    var tok_map = freqdist.buildTokenFreqMapAscii(input, std.heap.c_allocator) catch |err| {
+        switch (err) {
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+            else => unreachable,
+        }
+        return;
+    };
+    defer tok_map.deinit();
+    out[1] = @as(u64, tok_map.count());
+
+    const n_usize = @as(usize, n);
+    if (out[0] >= @as(u64, n)) {
+        out[2] = out[0] - @as(u64, n) + 1;
+    } else {
+        out[2] = 0;
+    }
+
+    var ngram_map = freqdist.buildNgramFreqMapAscii(input, n_usize, std.heap.c_allocator) catch |err| {
+        switch (err) {
+            error.InvalidN => error_state.setError(.invalid_n),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+            else => unreachable,
+        }
+        return;
+    };
+    defer ngram_map.deinit();
+    out[3] = @as(u64, ngram_map.count());
 }
 
 pub export fn bunnltk_count_unique_tokens_ascii(input_ptr: [*]const u8, input_len: usize) u64 {
@@ -323,6 +381,202 @@ pub export fn bunnltk_fill_bigram_window_stats_ascii_ids(
         out_right_ids_ptr[0..capacity],
         out_counts_ptr[0..capacity],
         out_pmis_ptr[0..capacity],
+        std.heap.c_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.InvalidN => error_state.setError(.invalid_n),
+            error.InsufficientCapacity => error_state.setError(.insufficient_capacity),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+        }
+        return 0;
+    };
+}
+
+pub export fn bunnltk_count_ngrams_ascii_ids(input_ptr: [*]const u8, input_len: usize, n: u32) u64 {
+    error_state.resetError();
+    if (n == 0) {
+        error_state.setError(.invalid_n);
+        return 0;
+    }
+    if (input_len == 0) return 0;
+
+    return ngrams.countNgramsIdsAscii(input_ptr[0..input_len], @as(usize, n), std.heap.c_allocator) catch |err| {
+        switch (err) {
+            error.InvalidN => error_state.setError(.invalid_n),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+            else => unreachable,
+        }
+        return 0;
+    };
+}
+
+pub export fn bunnltk_fill_ngrams_ascii_ids(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    n: u32,
+    out_flat_ids_ptr: [*]u32,
+    out_ids_capacity: usize,
+) u64 {
+    error_state.resetError();
+    if (n == 0) {
+        error_state.setError(.invalid_n);
+        return 0;
+    }
+    if (input_len == 0) return 0;
+
+    return ngrams.fillNgramsIdsAscii(
+        input_ptr[0..input_len],
+        @as(usize, n),
+        out_flat_ids_ptr[0..out_ids_capacity],
+        std.heap.c_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.InvalidN => error_state.setError(.invalid_n),
+            error.InsufficientCapacity => error_state.setError(.insufficient_capacity),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+        }
+        return 0;
+    };
+}
+
+pub export fn bunnltk_count_everygrams_ascii_ids(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    min_len: u32,
+    max_len: u32,
+) u64 {
+    error_state.resetError();
+    if (min_len == 0 or max_len == 0) {
+        error_state.setError(.invalid_n);
+        return 0;
+    }
+    if (input_len == 0) return 0;
+
+    return ngrams.countEverygramsIdsAscii(
+        input_ptr[0..input_len],
+        @as(usize, min_len),
+        @as(usize, max_len),
+        std.heap.c_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.InvalidN => error_state.setError(.invalid_n),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+            else => unreachable,
+        }
+        return 0;
+    };
+}
+
+pub export fn bunnltk_count_everygram_id_values_ascii(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    min_len: u32,
+    max_len: u32,
+) u64 {
+    error_state.resetError();
+    if (min_len == 0 or max_len == 0) {
+        error_state.setError(.invalid_n);
+        return 0;
+    }
+    if (input_len == 0) return 0;
+
+    return ngrams.countEverygramIdValuesAscii(
+        input_ptr[0..input_len],
+        @as(usize, min_len),
+        @as(usize, max_len),
+        std.heap.c_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.InvalidN => error_state.setError(.invalid_n),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+            else => unreachable,
+        }
+        return 0;
+    };
+}
+
+pub export fn bunnltk_fill_everygrams_ascii_ids(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    min_len: u32,
+    max_len: u32,
+    out_lens_ptr: [*]u32,
+    out_lens_capacity: usize,
+    out_flat_ids_ptr: [*]u32,
+    out_ids_capacity: usize,
+) u64 {
+    error_state.resetError();
+    if (min_len == 0 or max_len == 0) {
+        error_state.setError(.invalid_n);
+        return 0;
+    }
+    if (input_len == 0) return 0;
+
+    return ngrams.fillEverygramsIdsAscii(
+        input_ptr[0..input_len],
+        @as(usize, min_len),
+        @as(usize, max_len),
+        out_lens_ptr[0..out_lens_capacity],
+        out_flat_ids_ptr[0..out_ids_capacity],
+        std.heap.c_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.InvalidN => error_state.setError(.invalid_n),
+            error.InsufficientCapacity => error_state.setError(.insufficient_capacity),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+        }
+        return 0;
+    };
+}
+
+pub export fn bunnltk_count_skipgrams_ascii_ids(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    n: u32,
+    k: u32,
+) u64 {
+    error_state.resetError();
+    if (n == 0) {
+        error_state.setError(.invalid_n);
+        return 0;
+    }
+    if (input_len == 0) return 0;
+
+    return ngrams.countSkipgramsIdsAscii(
+        input_ptr[0..input_len],
+        @as(usize, n),
+        @as(usize, k),
+        std.heap.c_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.InvalidN => error_state.setError(.invalid_n),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+            else => unreachable,
+        }
+        return 0;
+    };
+}
+
+pub export fn bunnltk_fill_skipgrams_ascii_ids(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    n: u32,
+    k: u32,
+    out_flat_ids_ptr: [*]u32,
+    out_ids_capacity: usize,
+) u64 {
+    error_state.resetError();
+    if (n == 0) {
+        error_state.setError(.invalid_n);
+        return 0;
+    }
+    if (input_len == 0) return 0;
+
+    return ngrams.fillSkipgramsIdsAscii(
+        input_ptr[0..input_len],
+        @as(usize, n),
+        @as(usize, k),
+        out_flat_ids_ptr[0..out_ids_capacity],
         std.heap.c_allocator,
     ) catch |err| {
         switch (err) {

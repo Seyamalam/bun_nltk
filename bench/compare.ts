@@ -1,10 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import {
-  countNgramsAscii,
-  countTokensAscii,
-  countUniqueNgramsAscii,
-  countUniqueTokensAscii,
+  computeAsciiMetrics,
   nativeLibraryPath,
 } from "../index";
 
@@ -48,12 +45,7 @@ function runNative(text: string, n: number, rounds: number) {
 
   for (let i = 0; i < rounds; i += 1) {
     const started = performance.now();
-    result = {
-      tokens: countTokensAscii(text),
-      uniqueTokens: countUniqueTokensAscii(text),
-      ngrams: countNgramsAscii(text, n),
-      uniqueNgrams: countUniqueNgramsAscii(text, n),
-    };
+    result = computeAsciiMetrics(text, n);
     const elapsedMs = performance.now() - started;
     timings.push(elapsedMs / 1000);
   }

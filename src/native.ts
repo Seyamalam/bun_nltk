@@ -26,6 +26,10 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize", "u32"],
     returns: "u64",
   },
+  bunnltk_compute_ascii_metrics: {
+    args: ["ptr", "usize", "u32", "ptr", "usize"],
+    returns: "void",
+  },
   bunnltk_count_unique_ngrams_ascii: {
     args: ["ptr", "usize", "u32"],
     returns: "u64",
@@ -64,6 +68,34 @@ const lib = dlopen(nativeLibPath, {
   },
   bunnltk_fill_bigram_window_stats_ascii_ids: {
     args: ["ptr", "usize", "u32", "ptr", "ptr", "ptr", "ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_count_ngrams_ascii_ids: {
+    args: ["ptr", "usize", "u32"],
+    returns: "u64",
+  },
+  bunnltk_fill_ngrams_ascii_ids: {
+    args: ["ptr", "usize", "u32", "ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_count_everygrams_ascii_ids: {
+    args: ["ptr", "usize", "u32", "u32"],
+    returns: "u64",
+  },
+  bunnltk_count_everygram_id_values_ascii: {
+    args: ["ptr", "usize", "u32", "u32"],
+    returns: "u64",
+  },
+  bunnltk_fill_everygrams_ascii_ids: {
+    args: ["ptr", "usize", "u32", "u32", "ptr", "usize", "ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_count_skipgrams_ascii_ids: {
+    args: ["ptr", "usize", "u32", "u32"],
+    returns: "u64",
+  },
+  bunnltk_fill_skipgrams_ascii_ids: {
+    args: ["ptr", "usize", "u32", "u32", "ptr", "usize"],
     returns: "u64",
   },
   bunnltk_porter_stem_ascii: {
@@ -117,6 +149,32 @@ export function countNgramsAscii(text: string, n: number): number {
   const out = toNumber(value);
   assertNoNativeError("countNgramsAscii");
   return out;
+}
+
+export type AsciiMetrics = {
+  tokens: number;
+  uniqueTokens: number;
+  ngrams: number;
+  uniqueNgrams: number;
+};
+
+export function computeAsciiMetrics(text: string, n: number): AsciiMetrics {
+  ensureValidN(n);
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) {
+    return { tokens: 0, uniqueTokens: 0, ngrams: 0, uniqueNgrams: 0 };
+  }
+
+  const metrics = new BigUint64Array(4);
+  lib.symbols.bunnltk_compute_ascii_metrics(ptr(bytes), bytes.length, n, ptr(metrics), metrics.length);
+  assertNoNativeError("computeAsciiMetrics");
+
+  return {
+    tokens: Number(metrics[0]!),
+    uniqueTokens: Number(metrics[1]!),
+    ngrams: Number(metrics[2]!),
+    uniqueNgrams: Number(metrics[3]!),
+  };
 }
 
 export function countUniqueNgramsAscii(text: string, n: number): number {
@@ -214,12 +272,111 @@ export function tokenizeAsciiNative(text: string): string[] {
 
 export function ngramsAsciiNative(text: string, n: number): string[][] {
   ensureValidN(n);
-  const tokens = tokenizeAsciiNative(text);
-  if (tokens.length < n) return [];
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return [];
+
+  const vocab = tokenFreqDistIdsAscii(text);
+  const gramCount = toNumber(lib.symbols.bunnltk_count_ngrams_ascii_ids(ptr(bytes), bytes.length, n));
+  assertNoNativeError("ngramsAsciiNative.count");
+  if (gramCount === 0) return [];
+
+  const flat = new Uint32Array(gramCount * n);
+  const written = toNumber(
+    lib.symbols.bunnltk_fill_ngrams_ascii_ids(ptr(bytes), bytes.length, n, ptr(flat), flat.length),
+  );
+  assertNoNativeError("ngramsAsciiNative.fill");
 
   const out: string[][] = [];
-  for (let i = 0; i <= tokens.length - n; i += 1) {
-    out.push(tokens.slice(i, i + n));
+  let idx = 0;
+  for (let i = 0; i < written; i += 1) {
+    const gram: string[] = [];
+    for (let j = 0; j < n; j += 1) {
+      gram.push(vocab.tokens[flat[idx + j]!]!);
+    }
+    idx += n;
+    out.push(gram);
+  }
+  return out;
+}
+
+export function everygramsAsciiNative(text: string, minLen = 1, maxLen = Number.MAX_SAFE_INTEGER): string[][] {
+  if (!Number.isInteger(minLen) || minLen <= 0) throw new Error("minLen must be a positive integer");
+  if (!Number.isInteger(maxLen) || maxLen <= 0) throw new Error("maxLen must be a positive integer");
+
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return [];
+
+  const vocab = tokenFreqDistIdsAscii(text);
+  const gramCount = toNumber(
+    lib.symbols.bunnltk_count_everygrams_ascii_ids(ptr(bytes), bytes.length, minLen, maxLen),
+  );
+  assertNoNativeError("everygramsAsciiNative.count");
+  if (gramCount === 0) return [];
+
+  const idValues = toNumber(
+    lib.symbols.bunnltk_count_everygram_id_values_ascii(ptr(bytes), bytes.length, minLen, maxLen),
+  );
+  assertNoNativeError("everygramsAsciiNative.count_values");
+
+  const lens = new Uint32Array(gramCount);
+  const flat = new Uint32Array(idValues);
+  const written = toNumber(
+    lib.symbols.bunnltk_fill_everygrams_ascii_ids(
+      ptr(bytes),
+      bytes.length,
+      minLen,
+      maxLen,
+      ptr(lens),
+      lens.length,
+      ptr(flat),
+      flat.length,
+    ),
+  );
+  assertNoNativeError("everygramsAsciiNative.fill");
+
+  const out: string[][] = [];
+  let idx = 0;
+  for (let i = 0; i < written; i += 1) {
+    const len = lens[i]!;
+    const gram: string[] = [];
+    for (let j = 0; j < len; j += 1) {
+      gram.push(vocab.tokens[flat[idx + j]!]!);
+    }
+    idx += len;
+    out.push(gram);
+  }
+  return out;
+}
+
+export function skipgramsAsciiNative(text: string, n: number, k: number): string[][] {
+  ensureValidN(n);
+  if (!Number.isInteger(k) || k < 0) throw new Error("k must be an integer >= 0");
+
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return [];
+
+  const vocab = tokenFreqDistIdsAscii(text);
+  const gramCount = toNumber(
+    lib.symbols.bunnltk_count_skipgrams_ascii_ids(ptr(bytes), bytes.length, n, k),
+  );
+  assertNoNativeError("skipgramsAsciiNative.count");
+  if (gramCount === 0) return [];
+
+  const flat = new Uint32Array(gramCount * n);
+  const written = toNumber(
+    lib.symbols.bunnltk_fill_skipgrams_ascii_ids(ptr(bytes), bytes.length, n, k, ptr(flat), flat.length),
+  );
+  assertNoNativeError("skipgramsAsciiNative.fill");
+
+  const out: string[][] = [];
+  let idx = 0;
+  for (let i = 0; i < written; i += 1) {
+    const gram: string[] = [];
+    for (let j = 0; j < n; j += 1) {
+      gram.push(vocab.tokens[flat[idx + j]!]!);
+    }
+    idx += n;
+    out.push(gram);
   }
   return out;
 }

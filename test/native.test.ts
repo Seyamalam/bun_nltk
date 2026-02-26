@@ -8,15 +8,21 @@ import {
   bigramWindowStatsAsciiIds,
   bigramWindowStatsAsciiIdsJs,
   bigramWindowStatsAsciiJs,
+  computeAsciiMetrics,
+  computeAsciiMetricsJs,
   countNgramsAsciiJs,
   countTokensAsciiJs,
   countUniqueNgramsAsciiJs,
   countUniqueTokensAsciiJs,
+  everygramsAscii,
+  everygramsAsciiNative,
   ngramsAscii,
   ngramsAsciiNative,
   ngramFreqDistHashAscii,
   ngramFreqDistHashAsciiJs,
   porterStemAscii,
+  skipgramsAscii,
+  skipgramsAsciiNative,
   topPmiBigramsAscii,
   topPmiBigramsAsciiJs,
   tokenFreqDistIdsAscii,
@@ -49,6 +55,7 @@ test("native token and ngram counters match JS reference", () => {
     for (const n of [1, 2, 3]) {
       expect(countNgramsAscii(text, n)).toBe(countNgramsAsciiJs(text, n));
       expect(countUniqueNgramsAscii(text, n)).toBe(countUniqueNgramsAsciiJs(text, n));
+      expect(computeAsciiMetrics(text, n)).toEqual(computeAsciiMetricsJs(text, n));
     }
   }
 });
@@ -70,7 +77,33 @@ test("native token and ngram materialization matches JS reference", () => {
     for (const n of [1, 2, 3]) {
       expect(ngramsAsciiNative(text, n)).toEqual(ngramsAscii(text, n));
     }
+
+    expect(everygramsAsciiNative(text, 1, 3)).toEqual(everygramsAscii(text, 1, 3));
+    expect(skipgramsAsciiNative(text, 2, 2)).toEqual(skipgramsAscii(text, 2, 2));
   }
+});
+
+test("native everygrams/skipgrams reproduce NLTK examples", () => {
+  expect(everygramsAsciiNative("a b c", 1, 3)).toEqual([
+    ["a"],
+    ["a", "b"],
+    ["a", "b", "c"],
+    ["b"],
+    ["b", "c"],
+    ["c"],
+  ]);
+
+  expect(skipgramsAsciiNative("Insurgents killed in ongoing fighting", 2, 2)).toEqual([
+    ["insurgents", "killed"],
+    ["insurgents", "in"],
+    ["insurgents", "ongoing"],
+    ["killed", "in"],
+    ["killed", "ongoing"],
+    ["killed", "fighting"],
+    ["in", "ongoing"],
+    ["in", "fighting"],
+    ["ongoing", "fighting"],
+  ]);
 });
 
 test("native top PMI bigrams match JS reference", () => {
@@ -202,6 +235,8 @@ test("native handles empty input", () => {
   expect(ngramFreqDistHashAscii("", 2).size).toBe(0);
   expect(tokenizeAsciiNative("")).toEqual([]);
   expect(ngramsAsciiNative("", 2)).toEqual([]);
+  expect(everygramsAsciiNative("", 1, 3)).toEqual([]);
+  expect(skipgramsAsciiNative("", 2, 2)).toEqual([]);
   expect(topPmiBigramsAscii("", 5, 2)).toEqual([]);
   expect(tokenFreqDistIdsAscii("").tokens).toEqual([]);
   expect(bigramWindowStatsAscii("", 2)).toEqual([]);

@@ -1,0 +1,30 @@
+{
+  "collocations": {
+    "sentence": "this this is is a a test test",
+    "window3_expected_pmi": 1.584962500721156,
+    "window5_expected_pmi": 0.5849625007211562
+  },
+  "tokenizers": {
+    "word_case": {
+      "input": "John's big idea isn't all that bad.",
+      "expected": ["John", "'s", "big", "idea", "is", "n't", "all", "that", "bad", "."]
+    },
+    "tweet_case": {
+      "input": "My number is 601-984-4813, except it's not.",
+      "expected_match_phone_true": ["My", "number", "is", "601-984-4813", ",", "except", "it's", "not", "."],
+      "expected_match_phone_false": ["My", "number", "is", "601", "-", "984", "-", "4813", ",", "except", "it's", "not", "."]
+    }
+  },
+  "porter_vectors": [
+    ["caresses", "caress"],
+    ["ponies", "poni"],
+    ["ties", "ti"],
+    ["agreed", "agre"],
+    ["plastered", "plaster"],
+    ["hopping", "hop"],
+    ["filing", "file"],
+    ["relational", "relat"],
+    ["triplicate", "triplic"],
+    ["controll", "control"]
+  ]
+}
