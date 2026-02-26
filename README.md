@@ -8,6 +8,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - ASCII unique-token counting (`FreqDist`-style cardinality)
 - ASCII n-gram counting
 - ASCII unique n-gram counting
+- Hashed frequency distributions for tokens and n-grams
 - Python baseline comparison on the same dataset
 
 ## Build native Zig library

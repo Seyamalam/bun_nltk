@@ -30,6 +30,14 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize", "u32"],
     returns: "u64",
   },
+  bunnltk_fill_token_freqdist_ascii: {
+    args: ["ptr", "usize", "ptr", "ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_fill_ngram_freqdist_ascii: {
+    args: ["ptr", "usize", "u32", "ptr", "ptr", "usize"],
+    returns: "u64",
+  },
 });
 
 function toBuffer(text: string): Uint8Array {
@@ -46,6 +54,13 @@ function lastError(): number {
   return lib.symbols.bunnltk_last_error_code();
 }
 
+function assertNoNativeError(context: string): void {
+  const code = lastError();
+  if (code !== 0) {
+    throw new Error(`native error code ${code} in ${context}`);
+  }
+}
+
 export function countTokensAscii(text: string): number {
   const bytes = toBuffer(text);
   if (bytes.length === 0) return 0;
@@ -58,9 +73,7 @@ export function countUniqueTokensAscii(text: string): number {
   if (bytes.length === 0) return 0;
   const value = lib.symbols.bunnltk_count_unique_tokens_ascii(ptr(bytes), bytes.length);
   const out = toNumber(value);
-  if (lastError() !== 0) {
-    throw new Error(`native error code ${lastError()} in countUniqueTokensAscii`);
-  }
+  assertNoNativeError("countUniqueTokensAscii");
   return out;
 }
 
@@ -70,9 +83,7 @@ export function countNgramsAscii(text: string, n: number): number {
   if (bytes.length === 0) return 0;
   const value = lib.symbols.bunnltk_count_ngrams_ascii(ptr(bytes), bytes.length, n);
   const out = toNumber(value);
-  if (lastError() !== 0) {
-    throw new Error(`native error code ${lastError()} in countNgramsAscii`);
-  }
+  assertNoNativeError("countNgramsAscii");
   return out;
 }
 
@@ -82,8 +93,60 @@ export function countUniqueNgramsAscii(text: string, n: number): number {
   if (bytes.length === 0) return 0;
   const value = lib.symbols.bunnltk_count_unique_ngrams_ascii(ptr(bytes), bytes.length, n);
   const out = toNumber(value);
-  if (lastError() !== 0) {
-    throw new Error(`native error code ${lastError()} in countUniqueNgramsAscii`);
+  assertNoNativeError("countUniqueNgramsAscii");
+  return out;
+}
+
+export function tokenFreqDistHashAscii(text: string): Map<bigint, number> {
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return new Map();
+
+  const capacity = Math.max(1, countTokensAscii(text));
+  const hashes = new BigUint64Array(capacity);
+  const counts = new BigUint64Array(capacity);
+
+  const unique = toNumber(
+    lib.symbols.bunnltk_fill_token_freqdist_ascii(
+      ptr(bytes),
+      bytes.length,
+      ptr(hashes),
+      ptr(counts),
+      capacity,
+    ),
+  );
+  assertNoNativeError("tokenFreqDistHashAscii");
+
+  const out = new Map<bigint, number>();
+  for (let i = 0; i < unique; i += 1) {
+    out.set(hashes[i]!, Number(counts[i]!));
+  }
+  return out;
+}
+
+export function ngramFreqDistHashAscii(text: string, n: number): Map<bigint, number> {
+  ensureValidN(n);
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return new Map();
+
+  const capacity = Math.max(1, countNgramsAscii(text, n));
+  const hashes = new BigUint64Array(capacity);
+  const counts = new BigUint64Array(capacity);
+
+  const unique = toNumber(
+    lib.symbols.bunnltk_fill_ngram_freqdist_ascii(
+      ptr(bytes),
+      bytes.length,
+      n,
+      ptr(hashes),
+      ptr(counts),
+      capacity,
+    ),
+  );
+  assertNoNativeError("ngramFreqDistHashAscii");
+
+  const out = new Map<bigint, number>();
+  for (let i = 0; i < unique; i += 1) {
+    out.set(hashes[i]!, Number(counts[i]!));
   }
   return out;
 }

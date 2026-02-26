@@ -1,4 +1,7 @@
 const TOKEN_RE = /[A-Za-z0-9']+/g;
+const FNV_OFFSET_BASIS = 14695981039346656037n;
+const FNV_PRIME = 1099511628211n;
+const MASK_64 = 0xffffffffffffffffn;
 
 export function tokenizeAscii(text: string): string[] {
   const matches = text.match(TOKEN_RE);
@@ -32,4 +35,52 @@ export function countUniqueNgramsAscii(text: string, n: number): number {
     ngrams.add(tokens.slice(i, i + n).join("\u0001"));
   }
   return ngrams.size;
+}
+
+export function hashTokenAscii(token: string): bigint {
+  let hash = FNV_OFFSET_BASIS;
+  for (let i = 0; i < token.length; i += 1) {
+    hash ^= BigInt(token.charCodeAt(i));
+    hash = (hash * FNV_PRIME) & MASK_64;
+  }
+  return hash;
+}
+
+export function hashNgram(tokenHashes: bigint[], n: number): bigint {
+  let hash = FNV_OFFSET_BASIS;
+  hash ^= BigInt(n);
+  hash = (hash * FNV_PRIME) & MASK_64;
+
+  for (const tokenHash of tokenHashes) {
+    hash ^= tokenHash;
+    hash = (hash * FNV_PRIME) & MASK_64;
+  }
+
+  return hash;
+}
+
+export function tokenFreqDistHashAscii(text: string): Map<bigint, number> {
+  const tokens = tokenizeAscii(text);
+  const out = new Map<bigint, number>();
+
+  for (const token of tokens) {
+    const key = hashTokenAscii(token);
+    out.set(key, (out.get(key) ?? 0) + 1);
+  }
+
+  return out;
+}
+
+export function ngramFreqDistHashAscii(text: string, n: number): Map<bigint, number> {
+  if (!Number.isInteger(n) || n <= 0) throw new Error("n must be a positive integer");
+  const tokens = tokenizeAscii(text);
+  const tokenHashes = tokens.map(hashTokenAscii);
+  const out = new Map<bigint, number>();
+
+  for (let i = 0; i <= tokenHashes.length - n; i += 1) {
+    const key = hashNgram(tokenHashes.slice(i, i + n), n);
+    out.set(key, (out.get(key) ?? 0) + 1);
+  }
+
+  return out;
 }

@@ -8,6 +8,10 @@ import {
   countTokensAsciiJs,
   countUniqueNgramsAsciiJs,
   countUniqueTokensAsciiJs,
+  ngramFreqDistHashAscii,
+  ngramFreqDistHashAsciiJs,
+  tokenFreqDistHashAscii,
+  tokenFreqDistHashAsciiJs,
 } from "../index";
 
 const cases = [
@@ -16,6 +20,13 @@ const cases = [
   "Emoji test 👨‍👩‍👧‍👧 and accents resumé España München français",
   "Mixed123 CASE and apostrophe words like don't and O'Neill",
 ];
+
+function expectHashMapsEqual(actual: Map<bigint, number>, expected: Map<bigint, number>) {
+  expect(actual.size).toBe(expected.size);
+  for (const [key, value] of expected.entries()) {
+    expect(actual.get(key)).toBe(value);
+  }
+}
 
 test("native token and ngram counters match JS reference", () => {
   for (const text of cases) {
@@ -29,9 +40,21 @@ test("native token and ngram counters match JS reference", () => {
   }
 });
 
+test("native hash freqdists match JS reference", () => {
+  for (const text of cases) {
+    expectHashMapsEqual(tokenFreqDistHashAscii(text), tokenFreqDistHashAsciiJs(text));
+
+    for (const n of [1, 2, 3]) {
+      expectHashMapsEqual(ngramFreqDistHashAscii(text, n), ngramFreqDistHashAsciiJs(text, n));
+    }
+  }
+});
+
 test("native handles empty input", () => {
   expect(countTokensAscii("")).toBe(0);
   expect(countUniqueTokensAscii("")).toBe(0);
   expect(countNgramsAscii("", 2)).toBe(0);
   expect(countUniqueNgramsAscii("", 2)).toBe(0);
+  expect(tokenFreqDistHashAscii("").size).toBe(0);
+  expect(ngramFreqDistHashAscii("", 2).size).toBe(0);
 });
