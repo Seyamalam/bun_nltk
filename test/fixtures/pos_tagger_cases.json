@@ -1,0 +1,19 @@
+{
+  "cases": [
+    {
+      "name": "mixed tags",
+      "input": "Dr Smith is running quickly and he coded 123",
+      "expected_tags": ["NNP", "NNP", "VB", "VBG", "RB", "CC", "PRP", "VBD", "CD"]
+    },
+    {
+      "name": "determiners and nouns",
+      "input": "The quick fox jumped over the lazy dog",
+      "expected_tags": ["DT", "NN", "NN", "VBD", "NN", "DT", "NN", "NN"]
+    },
+    {
+      "name": "pronouns and verbs",
+      "input": "They are here and we have finished",
+      "expected_tags": ["PRP", "VB", "NN", "CC", "PRP", "VB", "VBD"]
+    }
+  ]
+}

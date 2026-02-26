@@ -6,7 +6,10 @@ export {
   bigramWindowStatsAscii,
   bigramWindowStatsAsciiIds,
   computeAsciiMetrics,
+  countNormalizedTokensAscii,
   everygramsAsciiNative,
+  normalizeTokensAsciiNative,
+  posTagAsciiNative,
   skipgramsAsciiNative,
   ngramsAsciiNative,
   nativeLibraryPath,
@@ -30,8 +33,11 @@ export {
   bigramWindowStatsAscii as bigramWindowStatsAsciiJs,
   bigramWindowStatsAsciiIds as bigramWindowStatsAsciiIdsJs,
   everygramsAscii,
+  normalizeTokensAscii,
+  normalizeTokensUnicode,
   ngramsAscii,
   ngramFreqDistHashAscii as ngramFreqDistHashAsciiJs,
+  posTagAscii,
   skipgramsAscii,
   tokenFreqDistIdsAscii as tokenFreqDistIdsAsciiJs,
   topPmiBigramsAscii as topPmiBigramsAsciiJs,
@@ -40,3 +46,6 @@ export {
 } from "./src/reference";
 
 export { tweetTokenizeSubset, wordTokenizeSubset } from "./src/tokenizers";
+export { sentenceTokenizeSubset } from "./src/sentence_tokenizer";
+export { normalizeTokens } from "./src/normalization";
+export { WasmNltk } from "./src/wasm";

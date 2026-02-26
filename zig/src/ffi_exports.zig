@@ -4,7 +4,9 @@ const freqdist = @import("core/freqdist.zig");
 const collocations = @import("core/collocations.zig");
 const token_ids = @import("core/token_ids.zig");
 const ngrams = @import("core/ngrams.zig");
+const normalize = @import("core/normalize.zig");
 const porter = @import("core/porter.zig");
+const tagger = @import("core/tagger.zig");
 const types = @import("core/types.zig");
 const error_state = @import("core/error_state.zig");
 
@@ -210,6 +212,44 @@ pub export fn bunnltk_fill_token_offsets_ascii(
     }
 
     const total = ascii.fillTokenOffsetsAscii(input_ptr[0..input_len], out_offsets, out_lengths);
+    if (total > capacity) error_state.setError(.insufficient_capacity);
+    return total;
+}
+
+pub export fn bunnltk_count_normalized_tokens_ascii(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    remove_stopwords: u32,
+) u64 {
+    error_state.resetError();
+    if (input_len == 0) return 0;
+    return normalize.countNormalizedTokensAscii(input_ptr[0..input_len], remove_stopwords != 0);
+}
+
+pub export fn bunnltk_fill_normalized_token_offsets_ascii(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    remove_stopwords: u32,
+    out_offsets_ptr: [*]u32,
+    out_lengths_ptr: [*]u32,
+    capacity: usize,
+) u64 {
+    error_state.resetError();
+    if (input_len == 0) return 0;
+
+    const out_offsets = out_offsets_ptr[0..capacity];
+    const out_lengths = out_lengths_ptr[0..capacity];
+    if (out_offsets.len != out_lengths.len) {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    }
+
+    const total = normalize.fillNormalizedTokenOffsetsAscii(
+        input_ptr[0..input_len],
+        remove_stopwords != 0,
+        out_offsets,
+        out_lengths,
+    );
     if (total > capacity) error_state.setError(.insufficient_capacity);
     return total;
 }
@@ -586,6 +626,36 @@ pub export fn bunnltk_fill_skipgrams_ascii_ids(
         }
         return 0;
     };
+}
+
+pub export fn bunnltk_count_pos_tags_ascii(input_ptr: [*]const u8, input_len: usize) u64 {
+    error_state.resetError();
+    if (input_len == 0) return 0;
+    return tagger.countPosTagsAscii(input_ptr[0..input_len]);
+}
+
+pub export fn bunnltk_fill_pos_tags_ascii(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    out_offsets_ptr: [*]u32,
+    out_lengths_ptr: [*]u32,
+    out_tag_ids_ptr: [*]u16,
+    capacity: usize,
+) u64 {
+    error_state.resetError();
+    if (input_len == 0) return 0;
+
+    const out_offsets = out_offsets_ptr[0..capacity];
+    const out_lengths = out_lengths_ptr[0..capacity];
+    const out_tag_ids = out_tag_ids_ptr[0..capacity];
+    if (out_offsets.len != out_lengths.len or out_offsets.len != out_tag_ids.len) {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    }
+
+    const total = tagger.fillPosTagsAscii(input_ptr[0..input_len], out_offsets, out_lengths, out_tag_ids);
+    if (total > capacity) error_state.setError(.insufficient_capacity);
+    return total;
 }
 
 pub export fn bunnltk_porter_stem_ascii(

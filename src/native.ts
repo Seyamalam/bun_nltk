@@ -46,6 +46,14 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize", "ptr", "ptr", "usize"],
     returns: "u64",
   },
+  bunnltk_count_normalized_tokens_ascii: {
+    args: ["ptr", "usize", "u32"],
+    returns: "u64",
+  },
+  bunnltk_fill_normalized_token_offsets_ascii: {
+    args: ["ptr", "usize", "u32", "ptr", "ptr", "usize"],
+    returns: "u64",
+  },
   bunnltk_fill_top_pmi_bigrams_ascii: {
     args: ["ptr", "usize", "u32", "ptr", "ptr", "ptr", "usize"],
     returns: "u64",
@@ -96,6 +104,14 @@ const lib = dlopen(nativeLibPath, {
   },
   bunnltk_fill_skipgrams_ascii_ids: {
     args: ["ptr", "usize", "u32", "u32", "ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_count_pos_tags_ascii: {
+    args: ["ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_fill_pos_tags_ascii: {
+    args: ["ptr", "usize", "ptr", "ptr", "ptr", "usize"],
     returns: "u64",
   },
   bunnltk_porter_stem_ascii: {
@@ -270,6 +286,45 @@ export function tokenizeAsciiNative(text: string): string[] {
   return out;
 }
 
+export function countNormalizedTokensAscii(text: string, removeStopwords = true): number {
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return 0;
+  const value = lib.symbols.bunnltk_count_normalized_tokens_ascii(ptr(bytes), bytes.length, removeStopwords ? 1 : 0);
+  const out = toNumber(value);
+  assertNoNativeError("countNormalizedTokensAscii");
+  return out;
+}
+
+export function normalizeTokensAsciiNative(text: string, removeStopwords = true): string[] {
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return [];
+
+  const capacity = Math.max(1, countNormalizedTokensAscii(text, removeStopwords));
+  const offsets = new Uint32Array(capacity);
+  const lengths = new Uint32Array(capacity);
+
+  const total = toNumber(
+    lib.symbols.bunnltk_fill_normalized_token_offsets_ascii(
+      ptr(bytes),
+      bytes.length,
+      removeStopwords ? 1 : 0,
+      ptr(offsets),
+      ptr(lengths),
+      capacity,
+    ),
+  );
+  assertNoNativeError("normalizeTokensAsciiNative");
+
+  const decoder = new TextDecoder();
+  const out = new Array<string>(total);
+  for (let i = 0; i < total; i += 1) {
+    const start = offsets[i]!;
+    const len = lengths[i]!;
+    out[i] = decoder.decode(bytes.subarray(start, start + len)).toLowerCase();
+  }
+  return out;
+}
+
 export function ngramsAsciiNative(text: string, n: number): string[][] {
   ensureValidN(n);
   const bytes = toBuffer(text);
@@ -377,6 +432,50 @@ export function skipgramsAsciiNative(text: string, n: number, k: number): string
     }
     idx += n;
     out.push(gram);
+  }
+  return out;
+}
+
+const POS_TAG_NAMES = ["NN", "NNP", "CD", "VBG", "VBD", "RB", "DT", "CC", "PRP", "VB"] as const;
+export type PosTagName = (typeof POS_TAG_NAMES)[number];
+
+export type PosTag = {
+  token: string;
+  tag: PosTagName;
+  tagId: number;
+  start: number;
+  length: number;
+};
+
+export function posTagAsciiNative(text: string): PosTag[] {
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return [];
+
+  const capacity = Math.max(1, toNumber(lib.symbols.bunnltk_count_pos_tags_ascii(ptr(bytes), bytes.length)));
+  assertNoNativeError("posTagAsciiNative.count");
+
+  const offsets = new Uint32Array(capacity);
+  const lengths = new Uint32Array(capacity);
+  const tagIds = new Uint16Array(capacity);
+
+  const total = toNumber(
+    lib.symbols.bunnltk_fill_pos_tags_ascii(ptr(bytes), bytes.length, ptr(offsets), ptr(lengths), ptr(tagIds), capacity),
+  );
+  assertNoNativeError("posTagAsciiNative.fill");
+
+  const decoder = new TextDecoder();
+  const out: PosTag[] = [];
+  for (let i = 0; i < total; i += 1) {
+    const start = offsets[i]!;
+    const length = lengths[i]!;
+    const tagId = tagIds[i]!;
+    out.push({
+      token: decoder.decode(bytes.subarray(start, start + length)),
+      tag: POS_TAG_NAMES[tagId] ?? "NN",
+      tagId,
+      start,
+      length,
+    });
   }
   return out;
 }

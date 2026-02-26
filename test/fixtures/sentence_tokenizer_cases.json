@@ -1,0 +1,38 @@
+{
+  "cases": [
+    {
+      "name": "basic punctuation",
+      "input": "This is sentence one. This is sentence two! Is this sentence three? Yes.",
+      "expected": [
+        "This is sentence one.",
+        "This is sentence two!",
+        "Is this sentence three?",
+        "Yes."
+      ]
+    },
+    {
+      "name": "abbreviation no split",
+      "input": "Dr. Smith went to Washington. He arrived at 3 p.m. sharp.",
+      "expected": [
+        "Dr. Smith went to Washington.",
+        "He arrived at 3 p.m. sharp."
+      ]
+    },
+    {
+      "name": "decimal no split",
+      "input": "The value is 3.14 in this setup. Then we continue.",
+      "expected": [
+        "The value is 3.14 in this setup.",
+        "Then we continue."
+      ]
+    },
+    {
+      "name": "quotes and closers",
+      "input": "He said, \"Ship it.\" Then they left.",
+      "expected": [
+        "He said, \"Ship it.\"",
+        "Then they left."
+      ]
+    }
+  ]
+}

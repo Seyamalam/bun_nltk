@@ -10,16 +10,21 @@ import {
   bigramWindowStatsAsciiJs,
   computeAsciiMetrics,
   computeAsciiMetricsJs,
+  countNormalizedTokensAscii,
   countNgramsAsciiJs,
   countTokensAsciiJs,
   countUniqueNgramsAsciiJs,
   countUniqueTokensAsciiJs,
   everygramsAscii,
   everygramsAsciiNative,
+  normalizeTokensAscii,
+  normalizeTokensAsciiNative,
   ngramsAscii,
   ngramsAsciiNative,
   ngramFreqDistHashAscii,
   ngramFreqDistHashAsciiJs,
+  posTagAscii,
+  posTagAsciiNative,
   porterStemAscii,
   skipgramsAscii,
   skipgramsAsciiNative,
@@ -73,6 +78,13 @@ test("native hash freqdists match JS reference", () => {
 test("native token and ngram materialization matches JS reference", () => {
   for (const text of cases) {
     expect(tokenizeAsciiNative(text)).toEqual(tokenizeAscii(text));
+    expect(normalizeTokensAsciiNative(text, true)).toEqual(normalizeTokensAscii(text, true));
+    expect(normalizeTokensAsciiNative(text, false)).toEqual(normalizeTokensAscii(text, false));
+    expect(countNormalizedTokensAscii(text, true)).toBe(normalizeTokensAscii(text, true).length);
+    expect(countNormalizedTokensAscii(text, false)).toBe(normalizeTokensAscii(text, false).length);
+    expect(
+      posTagAsciiNative(text).map((row) => ({ token: row.token, tag: row.tag, tagId: row.tagId })),
+    ).toEqual(posTagAscii(text).map((row) => ({ token: row.token, tag: row.tag, tagId: row.tagId })));
 
     for (const n of [1, 2, 3]) {
       expect(ngramsAsciiNative(text, n)).toEqual(ngramsAscii(text, n));
@@ -234,6 +246,8 @@ test("native handles empty input", () => {
   expect(tokenFreqDistHashAscii("").size).toBe(0);
   expect(ngramFreqDistHashAscii("", 2).size).toBe(0);
   expect(tokenizeAsciiNative("")).toEqual([]);
+  expect(normalizeTokensAsciiNative("", true)).toEqual([]);
+  expect(posTagAsciiNative("")).toEqual([]);
   expect(ngramsAsciiNative("", 2)).toEqual([]);
   expect(everygramsAsciiNative("", 1, 3)).toEqual([]);
   expect(skipgramsAsciiNative("", 2, 2)).toEqual([]);

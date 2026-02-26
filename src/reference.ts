@@ -2,11 +2,110 @@ const TOKEN_RE = /[A-Za-z0-9']+/g;
 const FNV_OFFSET_BASIS = 14695981039346656037n;
 const FNV_PRIME = 1099511628211n;
 const MASK_64 = 0xffffffffffffffffn;
+const ASCII_WORD_RE = /[A-Za-z0-9']+/g;
+const UNICODE_WORD_RE = /[\p{L}\p{N}']+/gu;
+
+const STOPWORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "are",
+  "as",
+  "at",
+  "be",
+  "but",
+  "by",
+  "for",
+  "if",
+  "in",
+  "into",
+  "is",
+  "it",
+  "no",
+  "not",
+  "of",
+  "on",
+  "or",
+  "such",
+  "that",
+  "the",
+  "their",
+  "then",
+  "there",
+  "these",
+  "they",
+  "this",
+  "to",
+  "was",
+  "will",
+  "with",
+  "you",
+  "your",
+  "we",
+  "our",
+  "he",
+  "she",
+  "him",
+  "her",
+  "them",
+  "from",
+  "up",
+  "down",
+  "out",
+  "over",
+  "under",
+  "again",
+  "further",
+  "once",
+  "here",
+  "when",
+  "where",
+  "why",
+  "how",
+  "all",
+  "any",
+  "both",
+  "each",
+  "few",
+  "more",
+  "most",
+  "other",
+  "some",
+  "than",
+  "too",
+  "very",
+  "can",
+  "just",
+  "should",
+  "now",
+  "i",
+  "me",
+  "my",
+  "myself",
+  "yours",
+  "ours",
+  "ourselves",
+  "themselves",
+]);
 
 export function tokenizeAscii(text: string): string[] {
   const matches = text.match(TOKEN_RE);
   if (!matches) return [];
   return matches.map((token) => token.toLowerCase());
+}
+
+export function normalizeTokensAscii(text: string, removeStopwords = true): string[] {
+  const tokens = tokenizeAscii(text);
+  if (!removeStopwords) return tokens;
+  return tokens.filter((token) => !STOPWORDS.has(token));
+}
+
+export function normalizeTokensUnicode(text: string, removeStopwords = true): string[] {
+  const normalized = text.normalize("NFKC");
+  const words = normalized.match(UNICODE_WORD_RE) ?? [];
+  const lowered = words.map((token) => token.toLocaleLowerCase("en-US"));
+  if (!removeStopwords) return lowered;
+  return lowered.filter((token) => !STOPWORDS.has(token));
 }
 
 export function countTokensAscii(text: string): number {
@@ -61,6 +160,51 @@ export function ngramsAscii(text: string, n: number): string[][] {
   const out: string[][] = [];
   for (let i = 0; i <= tokens.length - n; i += 1) {
     out.push(tokens.slice(i, i + n));
+  }
+  return out;
+}
+
+const POS_TAG_NAMES = ["NN", "NNP", "CD", "VBG", "VBD", "RB", "DT", "CC", "PRP", "VB"] as const;
+export type PosTagName = (typeof POS_TAG_NAMES)[number];
+
+export type PosTag = {
+  token: string;
+  tag: PosTagName;
+  tagId: number;
+  start: number;
+  length: number;
+};
+
+function classifyPosToken(token: string): PosTagName {
+  const lower = token.toLowerCase();
+
+  if (/^\d+$/.test(token)) return "CD";
+  if (["i", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "them"].includes(lower)) return "PRP";
+  if (["a", "an", "the", "this", "that", "these", "those"].includes(lower)) return "DT";
+  if (["and", "or", "but", "yet", "nor"].includes(lower)) return "CC";
+  if (["is", "am", "are", "was", "were", "be", "been", "being", "do", "does", "did", "have", "has", "had"].includes(lower)) return "VB";
+  if (lower.endsWith("ing")) return "VBG";
+  if (lower.endsWith("ed")) return "VBD";
+  if (lower.endsWith("ly")) return "RB";
+  if (/^[A-Z]/.test(token) && token.length > 1) return "NNP";
+  return "NN";
+}
+
+export function posTagAscii(text: string): PosTag[] {
+  const out: PosTag[] = [];
+  ASCII_WORD_RE.lastIndex = 0;
+  for (const match of text.matchAll(ASCII_WORD_RE)) {
+    const token = match[0]!;
+    const start = match.index ?? 0;
+    const tag = classifyPosToken(token);
+    const tagId = POS_TAG_NAMES.indexOf(tag);
+    out.push({
+      token,
+      tag,
+      tagId: tagId >= 0 ? tagId : 0,
+      start,
+      length: token.length,
+    });
   }
   return out;
 }
