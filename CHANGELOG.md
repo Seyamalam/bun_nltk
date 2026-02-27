@@ -7,12 +7,23 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ## [Unreleased]
 
 ### Added
+- (no entries yet)
+
+## [0.8.0] - 2026-02-27
+
+### Added
 - Native Zig LM ID-evaluation hot loop (`bunnltk_lm_eval_ids`) with Bun bindings (`evaluateLanguageModelIdsNative`) and WASM equivalent.
 - Native Zig chunk IOB hot loop (`bunnltk_chunk_iob_ids`) with Bun bindings (`chunkIobIdsNative`) and WASM equivalent.
 - Packed WordNet corpus pipeline script (`wordnet:pack`) and packed bundle loader (`loadWordNetPacked`).
-- Browser WASM benchmark expansion for Punkt, LM, chunk, and WordNet workloads plus per-workload browser thresholds.
-- Cross-feature SLA gate (`sla:gate`) for p95 latency and memory delta checks; included in `bench:gate`.
-- NLTK parity tracker generator (`parity:tracker`) that exports JSON+Markdown artifacts and uploads in CI.
+- CFG parser and chart parser subset APIs (`parseCfgGrammar`, `chartParse`, `parseTextWithCfg`) with Python parity tests and benchmarks.
+- Naive Bayes text classifier APIs (`NaiveBayesTextClassifier`) with train/predict/evaluate/serialize support and Python parity tests/benchmarks.
+- Global Python parity suite (`bench:parity:all`) covering tokenizer, punkt, lm, chunk, wordnet, parser, classifier, and tagger.
+- Official WordNet deterministic pack workflow (`wordnet:pack:official`) with SHA256 manifest and verification script (`wordnet:verify:pack`).
+
+### Changed
+- Browser WASM benchmark expanded for Punkt, LM, chunk, and WordNet workloads plus per-workload browser thresholds.
+- Cross-feature SLA gate (`sla:gate`) is now part of `bench:gate`.
+- CI now runs global parity suite and uploads official WordNet packed artifacts for validation.
 
 ## [0.7.0] - 2026-02-27
 

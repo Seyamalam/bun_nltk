@@ -37,6 +37,8 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Native/WASM LM ID-evaluation hot loop for batched score + perplexity paths
 - Regexp chunk parser primitives with IOB conversion and Python parity harness
 - Native/WASM chunk IOB hot loop for compiled grammar matching
+- CFG grammar parser + chart parser subset with Python parity harness
+- Naive Bayes text classifier with train/predict/evaluate/serialize APIs and Python parity harness
 - Corpus reader framework (`CorpusReader`) with bundled mini corpora
 - Optional external corpus bundle loader + tagged/chunked corpus readers (`parseConllTagged`, `parseBrownTagged`, `parseConllChunked`)
 - SIMD token counting fast path (`x86_64` vectorized path + scalar fallback)
@@ -46,6 +48,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Browser WASM benchmark harness (Chromium/Firefox in CI strict mode)
 - Performance regression gate script + CI workflow
 - SLA gate script (p95 latency + memory delta) and NLTK parity tracker artifacts
+- Global parity suite on PRs across tokenizer, punkt, lm, chunk, wordnet, parser, classifier, and tagger
 - Python baseline comparison on the same dataset
 
 ## Benchmark results (64MB synthetic dataset)
@@ -78,6 +81,8 @@ Notes:
 | N-gram LM (Kneser-Ney) score+perplexity (`bench:compare:lm`) | 0.1324 | 2.8661 | Zig/Bun | 21.64x | 2064.19% |
 | Regexp chunk parser (`bench:compare:chunk`) | 0.0024 | 1.5511 | Zig/Bun | 643.08x | 64208.28% |
 | WordNet lookup + morphy workload (`bench:compare:wordnet`) | 0.0009 | 0.0835 | Zig/Bun | 91.55x | 9054.67% |
+| CFG chart parser subset (`bench:compare:parser`) | 0.0088 | 0.3292 | Zig/Bun | 37.51x | 3651.05% |
+| Naive Bayes text classifier (`bench:compare:classifier`) | 0.0081 | 0.0112 | Zig/Bun | 1.38x | 38.40% |
 
 ## Build native Zig library
 
@@ -151,11 +156,29 @@ bun run bench:compare:freqdist
 bun run bench:compare:simd
 ```
 
+## Benchmark parser vs Python
+
+```bash
+bun run bench:compare:parser
+```
+
+## Benchmark classifier vs Python
+
+```bash
+bun run bench:compare:classifier
+```
+
 ## Run parity harnesses
 
 ```bash
 bun run bench:parity:sentence
+bun run bench:parity:punkt
+bun run bench:parity:tokenizer
+bun run bench:parity:parser
+bun run bench:parity:classifier
+bun run bench:parity:wordnet
 bun run bench:parity:tagger
+bun run bench:parity:all
 bun run parity:report
 ```
 
@@ -170,6 +193,13 @@ bun run bench:browser:wasm
 
 ```bash
 bun run wordnet:pack
+```
+
+## Pack Official WordNet + Verify
+
+```bash
+bun run wordnet:pack:official
+bun run wordnet:verify:pack
 ```
 
 ## Run regression gate

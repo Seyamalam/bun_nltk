@@ -136,6 +136,25 @@ These functions are pure TypeScript reference implementations.
 - `regexpChunkParse(tokens: Array<{ token: string; tag: string }>, grammar: string): Array<{ token: string; tag: string } | { kind: "chunk"; label: string; tokens: Array<{ token: string; tag: string }> }>`
 - `chunkTreeToIob(tree: ChunkElement[]): Array<{ token: string; tag: string; iob: string }>`
 
+## Parsing (CFG / Chart)
+
+- `parseCfgGrammar(grammarText: string, options?: { startSymbol?: string }): { startSymbol: string; productions: Array<{ lhs: string; rhs: string[] }> }`
+- `chartParse(tokens: string[], grammar: CfgGrammar, options?: { maxTrees?: number; startSymbol?: string }): Array<{ label: string; children: Array<ParseTree | string> }>`
+- `parseTextWithCfg(text: string, grammar: CfgGrammar | string, options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean }): ParseTree[]`
+
+## Classification (Naive Bayes)
+
+- `new NaiveBayesTextClassifier(options?: { smoothing?: number })`
+- `train(examples: Array<{ label: string; text: string }>): this`
+- `labels(): string[]`
+- `classify(text: string): string`
+- `predict(text: string): Array<{ label: string; logProb: number }>`
+- `evaluate(examples: Array<{ label: string; text: string }>): { accuracy: number; total: number; correct: number }`
+- `toJSON(): NaiveBayesSerialized`
+- `NaiveBayesTextClassifier.fromSerialized(payload: NaiveBayesSerialized): NaiveBayesTextClassifier`
+- `trainNaiveBayesTextClassifier(examples: Array<{ label: string; text: string }>, options?: { smoothing?: number }): NaiveBayesTextClassifier`
+- `loadNaiveBayesTextClassifier(payload: NaiveBayesSerialized): NaiveBayesTextClassifier`
+
 ## Corpora
 
 - `new CorpusReader(files: Array<{ id: string; text: string; categories: string[] }>)`
