@@ -1,0 +1,68 @@
+{
+  "tokenizer_cases": [
+    {
+      "name": "apostrophes and numerics",
+      "input": "Don't stop at 42, keep running.",
+      "expected_lower": ["don't", "stop", "at", "42", "keep", "running"]
+    },
+    {
+      "name": "mixed casing",
+      "input": "Alice and BOB are Coding",
+      "expected_lower": ["alice", "and", "bob", "are", "coding"]
+    }
+  ],
+  "sentence_cases": [
+    {
+      "name": "abbreviation and decimal",
+      "input": "Dr. Smith scored 3.14 points. He won.",
+      "expected": ["Dr. Smith scored 3.14 points.", "He won."]
+    },
+    {
+      "name": "quote closure",
+      "input": "She said \"Go now.\" Then left.",
+      "expected": ["She said \"Go now.\"", "Then left."]
+    }
+  ],
+  "everygram_cases": [
+    {
+      "name": "classic everygrams",
+      "input": "a b c",
+      "min_len": 1,
+      "max_len": 3,
+      "expected": [["a"], ["a", "b"], ["a", "b", "c"], ["b"], ["b", "c"], ["c"]]
+    }
+  ],
+  "skipgram_cases": [
+    {
+      "name": "nltk docs subset",
+      "input": "Insurgents killed in ongoing fighting",
+      "n": 2,
+      "k": 2,
+      "expected": [
+        ["insurgents", "killed"],
+        ["insurgents", "in"],
+        ["insurgents", "ongoing"],
+        ["killed", "in"],
+        ["killed", "ongoing"],
+        ["killed", "fighting"],
+        ["in", "ongoing"],
+        ["in", "fighting"],
+        ["ongoing", "fighting"]
+      ]
+    }
+  ],
+  "porter_cases": [
+    { "word": "caresses", "stem": "caress" },
+    { "word": "ponies", "stem": "poni" },
+    { "word": "ties", "stem": "ti" },
+    { "word": "conflated", "stem": "conflat" },
+    { "word": "hopping", "stem": "hop" }
+  ],
+  "pos_cases": [
+    {
+      "name": "heuristic tags",
+      "input": "Dr Smith is running quickly and he coded 123",
+      "expected_tags": ["NNP", "NNP", "VB", "VBG", "RB", "CC", "PRP", "VBD", "CD"]
+    }
+  ]
+}

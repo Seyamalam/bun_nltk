@@ -58,6 +58,7 @@
     "bench:compare:simd": "bun run bench/compare_simd.ts bench/datasets/synthetic.txt 5",
     "bench:parity:sentence": "bun run bench/parity_sentence.ts",
     "bench:parity:tagger": "bun run bench/parity_tagger.ts",
+    "parity:report": "bun run scripts/parity-report.ts",
     "bench:gate": "bun run scripts/bench-gate.ts",
     "bench:dashboard": "bun run scripts/bench-dashboard.ts",
     "npm:smoke": "bun run scripts/npm-smoke-test.ts",
