@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "synsets": [
+    {
+      "id": "entity.n.01",
+      "pos": "n",
+      "lemmas": ["entity"],
+      "gloss": "that which is perceived or known to have its own distinct existence",
+      "examples": [],
+      "hypernyms": [],
+      "hyponyms": ["organism.n.01", "document.n.01"],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "organism.n.01",
+      "pos": "n",
+      "lemmas": ["organism", "being"],
+      "gloss": "a living thing that has (or can develop) the ability to act",
+      "examples": [],
+      "hypernyms": ["entity.n.01"],
+      "hyponyms": ["animal.n.01"],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "animal.n.01",
+      "pos": "n",
+      "lemmas": ["animal", "animate_being", "beast"],
+      "gloss": "a living organism characterized by voluntary movement",
+      "examples": [],
+      "hypernyms": ["organism.n.01"],
+      "hyponyms": ["dog.n.01", "cat.n.01"],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "dog.n.01",
+      "pos": "n",
+      "lemmas": ["dog", "domestic_dog", "canis_familiaris"],
+      "gloss": "a domesticated carnivorous mammal that typically has a long snout",
+      "examples": ["The dog barked all night."],
+      "hypernyms": ["animal.n.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "cat.n.01",
+      "pos": "n",
+      "lemmas": ["cat", "true_cat", "felis_catus"],
+      "gloss": "feline mammal usually having thick soft fur and no ability to roar",
+      "examples": ["The cat slept on the couch."],
+      "hypernyms": ["animal.n.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "document.n.01",
+      "pos": "n",
+      "lemmas": ["document", "written_document", "paper"],
+      "gloss": "writing that provides information",
+      "examples": [],
+      "hypernyms": ["entity.n.01"],
+      "hyponyms": ["research_paper.n.01"],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "research_paper.n.01",
+      "pos": "n",
+      "lemmas": ["research_paper", "scientific_paper"],
+      "gloss": "an academic paper presenting original research",
+      "examples": ["The research paper introduces a new model."],
+      "hypernyms": ["document.n.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "run.v.01",
+      "pos": "v",
+      "lemmas": ["run", "operate"],
+      "gloss": "perform as expected when applied",
+      "examples": ["The code runs quickly."],
+      "hypernyms": [],
+      "hyponyms": ["sprint.v.01"],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "sprint.v.01",
+      "pos": "v",
+      "lemmas": ["sprint", "race"],
+      "gloss": "run very fast",
+      "examples": ["She sprinted to the finish line."],
+      "hypernyms": ["run.v.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "quick.a.01",
+      "pos": "a",
+      "lemmas": ["quick", "fast", "rapid"],
+      "gloss": "accomplished rapidly and without delay",
+      "examples": [],
+      "hypernyms": [],
+      "hyponyms": [],
+      "similarTo": ["speedy.a.01"],
+      "antonyms": ["slow.a.01"]
+    },
+    {
+      "id": "speedy.a.01",
+      "pos": "a",
+      "lemmas": ["speedy"],
+      "gloss": "characterized by speed",
+      "examples": [],
+      "hypernyms": [],
+      "hyponyms": [],
+      "similarTo": ["quick.a.01"],
+      "antonyms": []
+    },
+    {
+      "id": "slow.a.01",
+      "pos": "a",
+      "lemmas": ["slow"],
+      "gloss": "not moving quickly",
+      "examples": [],
+      "hypernyms": [],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": ["quick.a.01"]
+    }
+  ]
+}
