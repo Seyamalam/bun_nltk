@@ -75,6 +75,14 @@ export { parseBrownTagged, parseConllChunked, parseConllTagged } from "./src/cor
 export type { ChunkedSentence, ChunkedToken, TaggedSentence as CorpusTaggedSentence, TaggedToken as CorpusTaggedToken } from "./src/corpus_readers";
 export { NgramLanguageModel, trainNgramLanguageModel } from "./src/lm";
 export type { LanguageModelType, NgramLanguageModelOptions } from "./src/lm";
+export { chartParse, parseCfgGrammar, parseTextWithCfg } from "./src/parse";
+export type { CfgGrammar, CfgProduction, ParseTree } from "./src/parse";
+export {
+  loadNaiveBayesTextClassifier,
+  NaiveBayesTextClassifier,
+  trainNaiveBayesTextClassifier,
+} from "./src/classify";
+export type { NaiveBayesExample, NaiveBayesPrediction, NaiveBayesSerialized } from "./src/classify";
 export { loadWordNetExtended, loadWordNetMini, loadWordNetPacked, WordNet } from "./src/wordnet";
 export type { WordNetMiniPayload, WordNetPos, WordNetSynset } from "./src/wordnet";
 export { WasmNltk } from "./src/wasm";
