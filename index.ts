@@ -53,6 +53,14 @@ export {
 
 export { tweetTokenizeSubset, wordTokenizeSubset } from "./src/tokenizers";
 export { sentenceTokenizeSubset } from "./src/sentence_tokenizer";
+export {
+  defaultPunktModel,
+  parsePunktModel,
+  sentenceTokenizePunkt,
+  serializePunktModel,
+  trainPunktModel,
+} from "./src/punkt";
+export type { PunktModelSerialized, PunktTrainingOptions } from "./src/punkt";
 export { normalizeTokens } from "./src/normalization";
 export { WasmNltk } from "./src/wasm";
 export {
