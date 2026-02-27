@@ -7,6 +7,11 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ## [Unreleased]
 
 ### Added
+- (no entries yet)
+
+## [0.6.2] - 2026-02-27
+
+### Added
 - Native streaming `FreqDist`/`ConditionalFreqDist` builder APIs with JSON export.
 - Python comparison benchmark for streaming distributions (`bench:compare:freqdist`).
 - SIMD/scalar comparison benchmark for tokenizer and normalization fast paths (`bench:compare:simd`).
