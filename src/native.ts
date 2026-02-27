@@ -15,15 +15,14 @@ const prebuiltLibPath = resolve(
   `${process.platform}-${process.arch}`,
   `bun_nltk.${ext}`,
 );
-const localLibPath = resolve(import.meta.dir, "..", "native", `bun_nltk.${ext}`);
-const resolvedDefaultLibPath = existsSync(prebuiltLibPath) ? prebuiltLibPath : localLibPath;
-const nativeLibPath = process.env.BUN_NLTK_NATIVE_LIB ?? resolvedDefaultLibPath;
+const nativeLibPath = process.env.BUN_NLTK_NATIVE_LIB ?? prebuiltLibPath;
 
 if (!existsSync(nativeLibPath)) {
   throw new Error(
     `native library not found for platform=${process.platform} arch=${process.arch}: ${nativeLibPath}.` +
       `\nSupported prebuilt targets: linux-x64, win32-x64.` +
-      `\nFor local development, run: bun run build:zig`,
+      `\nNo install-time native fallback is available.` +
+      `\nFor local development overrides, set BUN_NLTK_NATIVE_LIB to a compiled binary path.`,
   );
 }
 

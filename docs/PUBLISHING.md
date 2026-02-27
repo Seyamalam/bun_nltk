@@ -16,6 +16,7 @@ This package is intended for Bun/Node distribution with native and WASM backends
    - `bun run build:wasm`
 2. Run validation:
    - `bun run release:check`
+   - (or explicitly) `bun run pack:verify:prebuilt`
 3. Ensure docs are current:
    - [CHANGELOG.md](/C:/Users/user/Desktop/bun/bun_nltk/CHANGELOG.md)
    - [docs/API.md](/C:/Users/user/Desktop/bun/bun_nltk/docs/API.md)
@@ -49,7 +50,8 @@ Post-publish verification is defined in [.github/workflows/post-publish-smoke.ym
 
 - Triggered automatically when `Release` succeeds.
 - Also supports manual `workflow_dispatch`.
-- Installs published package from npm (`bun_nltk@<version>`), builds bundled native/wasm outputs, and runs a runtime smoke script.
+- Installs published package from npm (`bun_nltk@<version>`) and runs runtime smoke checks.
+- Smoke matrix targets Linux + Windows only.
 
 ## Required GitHub Secrets
 
@@ -62,5 +64,6 @@ Post-publish verification is defined in [.github/workflows/post-publish-smoke.ym
   - `native/prebuilt/linux-x64/bun_nltk.so`
   - `native/prebuilt/win32-x64/bun_nltk.dll`
   - `native/bun_nltk.wasm`
+- Runtime uses packaged prebuilt native binaries by default; there is no implicit local native fallback path.
 - No install-time lifecycle scripts are required; package consumers do not need `bun pm trust` for this package.
 - Keep `bench:gate` thresholds aligned with current hardware assumptions and CI environment.

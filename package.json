@@ -1,6 +1,6 @@
 {
   "name": "bun_nltk",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "High-performance NLP primitives for Bun/Node with Zig native and WASM backends.",
   "module": "index.ts",
   "type": "module",
@@ -59,8 +59,9 @@
     "bench:gate": "bun run scripts/bench-gate.ts",
     "bench:dashboard": "bun run scripts/bench-dashboard.ts",
     "npm:smoke": "bun run scripts/npm-smoke-test.ts",
+    "pack:verify:prebuilt": "bun run scripts/check-packaged-prebuilt.ts",
     "release:validate": "bun run scripts/release-validate.ts",
-    "release:check": "bun run build:zig && bun run build:wasm && bun run build:prebuilt && bun test && bun run bench:gate"
+    "release:check": "bun run build:zig && bun run build:wasm && bun run build:prebuilt && bun run pack:verify:prebuilt && bun test && bun run bench:gate"
   },
   "devDependencies": {
     "@types/bun": "latest"

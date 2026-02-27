@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -57,6 +57,16 @@ async function main() {
     await installWithRetry(spec, tempDir);
 
     const pkgDir = join(tempDir, "node_modules", "bun_nltk");
+    const installedPkg = JSON.parse(readFileSync(join(pkgDir, "package.json"), "utf8")) as {
+      scripts?: Record<string, string>;
+    };
+    const lifecycleScripts = ["preinstall", "install", "postinstall", "prepare"].filter(
+      (name) => Boolean(installedPkg.scripts?.[name]),
+    );
+    if (lifecycleScripts.length > 0) {
+      throw new Error(`unexpected lifecycle scripts in published package: ${lifecycleScripts.join(", ")}`);
+    }
+
     const linuxPrebuilt = join(pkgDir, "native", "prebuilt", "linux-x64", "bun_nltk.so");
     const windowsPrebuilt = join(pkgDir, "native", "prebuilt", "win32-x64", "bun_nltk.dll");
     const wasmBinary = join(pkgDir, "native", "bun_nltk.wasm");

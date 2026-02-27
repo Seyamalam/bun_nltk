@@ -68,13 +68,8 @@ jobs:
       - name: Run release checks
         run: bun run release:check
 
-      - name: Verify packaged prebuilt binaries
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -f native/prebuilt/linux-x64/bun_nltk.so
-          test -f native/prebuilt/win32-x64/bun_nltk.dll
-          test -f native/bun_nltk.wasm
+      - name: Verify npm package payload
+        run: bun run pack:verify:prebuilt
 
       - name: Resolve npm dist-tag
         id: dist_tag

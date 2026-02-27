@@ -9,6 +9,22 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ### Added
 - (no entries yet)
 
+## [0.6.1] - 2026-02-27
+
+### Added
+- npm package now ships prebuilt native binaries for:
+  - `linux-x64` (`native/prebuilt/linux-x64/bun_nltk.so`)
+  - `win32-x64` (`native/prebuilt/win32-x64/bun_nltk.dll`)
+- Added cross-target prebuilt build script: `bun run build:prebuilt`.
+- Added package payload verification script: `bun run pack:verify:prebuilt`.
+- Added post-publish smoke workflow matrix on Linux + Windows to validate npm package install/runtime behavior without build steps.
+
+### Changed
+- Native runtime now resolves packaged prebuilt binary by platform/arch first.
+- Native runtime no longer falls back implicitly to local build outputs.
+- Release and CI workflows now build/verify prebuilt binaries as part of pipeline.
+- npm package file allowlist now includes only required prebuilt binaries and wasm file.
+
 ## [0.6.0] - 2026-02-27
 
 ### Added

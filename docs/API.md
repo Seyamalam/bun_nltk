@@ -106,6 +106,8 @@ These functions are pure TypeScript reference implementations.
 
 ## Notes
 
-- Native APIs require the built shared library (`native/bun_nltk.{dll|so|dylib}`).
+- Native APIs load packaged prebuilt binaries at `native/prebuilt/<platform>-<arch>/bun_nltk.{so|dll}`.
+- Supported packaged native targets are `linux-x64` and `win32-x64`.
+- There is no implicit runtime fallback to a locally built native artifact.
 - WASM APIs require `native/bun_nltk.wasm`.
 - `Node.js` users should ensure an execution path that supports TS ESM package entrypoints or build/transpile this package as part of their pipeline.

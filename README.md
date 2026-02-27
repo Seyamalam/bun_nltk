@@ -133,5 +133,7 @@ bun run release:check
 
 - Native library output path is `native/bun_nltk.{dll|so|dylib}`.
 - npm package ships prebuilt native binaries for `linux-x64` and `win32-x64`, plus `native/bun_nltk.wasm`.
+- Runtime native loading is prebuilt-first with no implicit local native fallback.
+- No install-time lifecycle scripts are used, so `bun pm trust` is not required for install.
 - Current tokenizer rule is `[A-Za-z0-9']+` (lowercased ASCII).
 - This is the first optimization loop and intentionally scoped.

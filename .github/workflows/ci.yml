@@ -44,6 +44,9 @@ jobs:
           bun run build:wasm
           bun run build:prebuilt
 
+      - name: Verify npm package payload
+        run: bun run pack:verify:prebuilt
+
       - name: Run tests
         run: bun test
 
