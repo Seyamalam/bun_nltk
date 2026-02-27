@@ -9,6 +9,11 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ### Added
 - (no entries yet)
 
+## [0.5.1-beta.2] - 2026-02-27
+
+### Changed
+- Added npm provenance-required package metadata (`repository`, `homepage`, `bugs`) to enable GitHub Actions publish with `--provenance`.
+
 ## [0.5.1-beta.1] - 2026-02-27
 
 ### Added

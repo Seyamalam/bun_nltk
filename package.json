@@ -1,6 +1,6 @@
 {
   "name": "bun_nltk",
-  "version": "0.5.1-beta.1",
+  "version": "0.5.1-beta.2",
   "description": "High-performance NLP primitives for Bun/Node with Zig native and WASM backends.",
   "module": "index.ts",
   "type": "module",
@@ -27,6 +27,14 @@
     "tokenizer",
     "pos-tagger"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Seyamalam/bun_nltk"
+  },
+  "homepage": "https://github.com/Seyamalam/bun_nltk#readme",
+  "bugs": {
+    "url": "https://github.com/Seyamalam/bun_nltk/issues"
+  },
   "exports": {
     ".": "./index.ts"
   },
