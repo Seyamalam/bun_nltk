@@ -15,6 +15,7 @@ const lm = @import("core/lm.zig");
 const chunk = @import("core/chunk.zig");
 const cyk = @import("core/cyk.zig");
 const naive_bayes = @import("core/naive_bayes.zig");
+const linear = @import("core/linear.zig");
 const types = @import("core/types.zig");
 const error_state = @import("core/error_state.zig");
 
@@ -1167,6 +1168,45 @@ pub export fn bunnltk_naive_bayes_log_scores_ids(
         smoothing,
         out_scores_ptr[0..out_scores_len],
     );
+}
+
+pub export fn bunnltk_linear_scores_sparse_ids(
+    doc_offsets_ptr: [*]const u32,
+    doc_offsets_len: usize,
+    feature_ids_ptr: [*]const u32,
+    feature_ids_len: usize,
+    feature_values_ptr: [*]const f64,
+    feature_values_len: usize,
+    class_count: u32,
+    feature_count: u32,
+    weights_ptr: [*]const f64,
+    weights_len: usize,
+    bias_ptr: [*]const f64,
+    bias_len: usize,
+    out_scores_ptr: [*]f64,
+    out_scores_len: usize,
+) void {
+    error_state.resetError();
+    if (doc_offsets_len < 1 or class_count == 0) {
+        error_state.setError(.invalid_n);
+        return;
+    }
+
+    linear.scoresSparseIds(
+        doc_offsets_ptr[0..doc_offsets_len],
+        feature_ids_ptr[0..feature_ids_len],
+        feature_values_ptr[0..feature_values_len],
+        class_count,
+        feature_count,
+        weights_ptr[0..weights_len],
+        bias_ptr[0..bias_len],
+        out_scores_ptr[0..out_scores_len],
+    ) catch |err| {
+        switch (err) {
+            error.InvalidDimensions => error_state.setError(.invalid_n),
+            error.InsufficientCapacity => error_state.setError(.insufficient_capacity),
+        }
+    };
 }
 
 test "ffi error behavior" {

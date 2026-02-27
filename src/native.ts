@@ -213,6 +213,10 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize", "u32", "ptr", "usize", "ptr", "ptr", "usize", "u32", "f64", "ptr", "usize"],
     returns: "void",
   },
+  bunnltk_linear_scores_sparse_ids: {
+    args: ["ptr", "usize", "ptr", "usize", "ptr", "usize", "u32", "u32", "ptr", "usize", "ptr", "usize", "ptr", "usize"],
+    returns: "void",
+  },
   bunnltk_freqdist_stream_new: {
     args: [],
     returns: "u64",
@@ -1057,6 +1061,49 @@ export function naiveBayesLogScoresIdsNative(input: {
     out.length,
   );
   assertNoNativeError("naiveBayesLogScoresIdsNative");
+  return out;
+}
+
+export function linearScoresSparseIdsNative(input: {
+  docOffsets: Uint32Array;
+  featureIds: Uint32Array;
+  featureValues: Float64Array;
+  classCount: number;
+  featureCount: number;
+  weights: Float64Array;
+  bias: Float64Array;
+}): Float64Array {
+  if (input.classCount <= 0 || !Number.isInteger(input.classCount)) {
+    throw new Error("classCount must be a positive integer");
+  }
+  if (input.featureCount < 0 || !Number.isInteger(input.featureCount)) {
+    throw new Error("featureCount must be a non-negative integer");
+  }
+  if (input.docOffsets.length === 0) {
+    throw new Error("docOffsets must include at least one offset");
+  }
+  if (input.featureIds.length !== input.featureValues.length) {
+    throw new Error("featureIds and featureValues must have the same length");
+  }
+  const docCount = input.docOffsets.length - 1;
+  const out = new Float64Array(docCount * input.classCount);
+  lib.symbols.bunnltk_linear_scores_sparse_ids(
+    ptr(input.docOffsets),
+    input.docOffsets.length,
+    ptr(input.featureIds),
+    input.featureIds.length,
+    ptr(input.featureValues),
+    input.featureValues.length,
+    input.classCount,
+    input.featureCount,
+    ptr(input.weights),
+    input.weights.length,
+    ptr(input.bias),
+    input.bias.length,
+    ptr(out),
+    out.length,
+  );
+  assertNoNativeError("linearScoresSparseIdsNative");
   return out;
 }
 

@@ -24,6 +24,7 @@ import {
   chunkIobIdsNative,
   cykRecognizeIdsNative,
   naiveBayesLogScoresIdsNative,
+  linearScoresSparseIdsNative,
   normalizeTokensAscii,
   normalizeTokensAsciiNative,
   ngramsAscii,
@@ -360,6 +361,26 @@ test("native naive bayes log score hot loop prefers expected label", () => {
   });
   expect(scores.length).toBe(2);
   expect(scores[0]!).toBeGreaterThan(scores[1]!);
+});
+
+test("native sparse linear scorer returns expected logits", () => {
+  const out = linearScoresSparseIdsNative({
+    docOffsets: Uint32Array.from([0, 2, 3]),
+    featureIds: Uint32Array.from([0, 2, 1]),
+    featureValues: Float64Array.from([1, 2, 3]),
+    classCount: 2,
+    featureCount: 3,
+    weights: Float64Array.from([
+      1, 0, 1,
+      0, 2, 1,
+    ]),
+    bias: Float64Array.from([0.5, -0.5]),
+  });
+  expect(out.length).toBe(4);
+  expect(out[0]!).toBeCloseTo(3.5, 12);
+  expect(out[1]!).toBeCloseTo(1.5, 12);
+  expect(out[2]!).toBeCloseTo(0.5, 12);
+  expect(out[3]!).toBeCloseTo(5.5, 12);
 });
 
 test("native streaming freqdist builder matches reference counts and json export", () => {

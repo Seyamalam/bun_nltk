@@ -20,5 +20,6 @@ test {
     _ = @import("core/chunk.zig");
     _ = @import("core/cyk.zig");
     _ = @import("core/naive_bayes.zig");
+    _ = @import("core/linear.zig");
     _ = @import("ffi_exports.zig");
 }

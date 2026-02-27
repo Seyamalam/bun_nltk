@@ -17,6 +17,7 @@ export {
   chunkIobIdsNative,
   cykRecognizeIdsNative,
   naiveBayesLogScoresIdsNative,
+  linearScoresSparseIdsNative,
   perceptronPredictBatchNative,
   posTagAsciiNative,
   skipgramsAsciiNative,
@@ -85,12 +86,29 @@ export {
   trainNaiveBayesTextClassifier,
 } from "./src/classify";
 export type { NaiveBayesExample, NaiveBayesPrediction, NaiveBayesSerialized } from "./src/classify";
+export { flattenSparseBatch, TextFeatureVectorizer } from "./src/features";
+export type { SparseVector, VectorizerOptions, VectorizerSerialized } from "./src/features";
+export {
+  loadDecisionTreeTextClassifier,
+  DecisionTreeTextClassifier,
+  trainDecisionTreeTextClassifier,
+} from "./src/decision_tree";
+export type { DecisionTreeExample, DecisionTreeSerialized } from "./src/decision_tree";
 export {
   loadMaxEntTextClassifier,
   MaxEntTextClassifier,
   trainMaxEntTextClassifier,
 } from "./src/maxent";
 export type { MaxEntExample, MaxEntPrediction, MaxEntSerialized } from "./src/maxent";
+export {
+  loadLinearSvmTextClassifier,
+  loadLogisticTextClassifier,
+  LinearSvmTextClassifier,
+  LogisticTextClassifier,
+  trainLinearSvmTextClassifier,
+  trainLogisticTextClassifier,
+} from "./src/linear_models";
+export type { LinearModelExample, LinearSvmSerialized, LogisticSerialized } from "./src/linear_models";
 export { loadWordNetExtended, loadWordNetMini, loadWordNetPacked, WordNet } from "./src/wordnet";
 export type { WordNetMiniPayload, WordNetPos, WordNetSynset } from "./src/wordnet";
 export { WasmNltk } from "./src/wasm";
@@ -99,3 +117,11 @@ export {
   posTagPerceptronAscii,
   preparePerceptronTaggerModel,
 } from "./src/perceptron_tagger";
+export {
+  bracketToTree,
+  collapseUnaryChains,
+  mapTreeLabels,
+  treeDepth,
+  treeLeaves,
+  treeToBracket,
+} from "./src/tree_transforms";
