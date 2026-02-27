@@ -30,6 +30,12 @@ pub export fn bunnltk_count_tokens_ascii(input_ptr: [*]const u8, input_len: usiz
     return ascii.tokenCountAscii(input_ptr[0..input_len]);
 }
 
+pub export fn bunnltk_count_tokens_ascii_scalar(input_ptr: [*]const u8, input_len: usize) u64 {
+    error_state.resetError();
+    if (input_len == 0) return 0;
+    return ascii.tokenCountAsciiScalar(input_ptr[0..input_len]);
+}
+
 pub export fn bunnltk_compute_ascii_metrics(
     input_ptr: [*]const u8,
     input_len: usize,
@@ -234,6 +240,16 @@ pub export fn bunnltk_count_normalized_tokens_ascii(
     error_state.resetError();
     if (input_len == 0) return 0;
     return normalize.countNormalizedTokensAscii(input_ptr[0..input_len], remove_stopwords != 0);
+}
+
+pub export fn bunnltk_count_normalized_tokens_ascii_scalar(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    remove_stopwords: u32,
+) u64 {
+    error_state.resetError();
+    if (input_len == 0) return 0;
+    return normalize.countNormalizedTokensAsciiScalar(input_ptr[0..input_len], remove_stopwords != 0);
 }
 
 pub export fn bunnltk_fill_normalized_token_offsets_ascii(

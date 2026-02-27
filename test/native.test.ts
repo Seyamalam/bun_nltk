@@ -2,6 +2,7 @@ import { expect, test } from "bun:test";
 import {
   countNgramsAscii,
   countTokensAscii,
+  countTokensAsciiScalar,
   countUniqueNgramsAscii,
   countUniqueTokensAscii,
   NativeFreqDistStream,
@@ -12,6 +13,7 @@ import {
   computeAsciiMetrics,
   computeAsciiMetricsJs,
   countNormalizedTokensAscii,
+  countNormalizedTokensAsciiScalar,
   countNgramsAsciiJs,
   countTokensAsciiJs,
   countUniqueNgramsAsciiJs,
@@ -57,6 +59,7 @@ function expectHashMapsEqual(actual: Map<bigint, number>, expected: Map<bigint, 
 test("native token and ngram counters match JS reference", () => {
   for (const text of cases) {
     expect(countTokensAscii(text)).toBe(countTokensAsciiJs(text));
+    expect(countTokensAscii(text)).toBe(countTokensAsciiScalar(text));
     expect(countUniqueTokensAscii(text)).toBe(countUniqueTokensAsciiJs(text));
 
     for (const n of [1, 2, 3]) {
@@ -84,6 +87,8 @@ test("native token and ngram materialization matches JS reference", () => {
     expect(normalizeTokensAsciiNative(text, false)).toEqual(normalizeTokensAscii(text, false));
     expect(countNormalizedTokensAscii(text, true)).toBe(normalizeTokensAscii(text, true).length);
     expect(countNormalizedTokensAscii(text, false)).toBe(normalizeTokensAscii(text, false).length);
+    expect(countNormalizedTokensAscii(text, true)).toBe(countNormalizedTokensAsciiScalar(text, true));
+    expect(countNormalizedTokensAscii(text, false)).toBe(countNormalizedTokensAsciiScalar(text, false));
     expect(
       posTagAsciiNative(text).map((row) => ({ token: row.token, tag: row.tag, tagId: row.tagId })),
     ).toEqual(posTagAscii(text).map((row) => ({ token: row.token, tag: row.tag, tagId: row.tagId })));

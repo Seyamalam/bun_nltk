@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const types = @import("types.zig");
 
 pub const FNV_OFFSET_BASIS: u64 = 14695981039346656037;
@@ -23,6 +24,13 @@ pub fn tokenHashUpdate(hash: u64, ch: u8) u64 {
 }
 
 pub fn tokenCountAscii(input: []const u8) u64 {
+    if (input.len >= 64 and builtin.cpu.arch == .x86_64) {
+        return tokenCountAsciiSimd16(input);
+    }
+    return tokenCountAsciiScalar(input);
+}
+
+pub fn tokenCountAsciiScalar(input: []const u8) u64 {
     var total: u64 = 0;
     var in_token = false;
 
@@ -38,6 +46,59 @@ pub fn tokenCountAscii(input: []const u8) u64 {
     }
 
     return total;
+}
+
+fn tokenCountAsciiSimd16(input: []const u8) u64 {
+    const lanes = 16;
+    const Vec = @Vector(lanes, u8);
+
+    var total: u64 = 0;
+    var in_token = false;
+    var idx: usize = 0;
+    var chunk: [lanes]u8 = undefined;
+
+    while (idx + lanes <= input.len) : (idx += lanes) {
+        @memcpy(chunk[0..], input[idx .. idx + lanes]);
+        const vec: Vec = chunk;
+        const token_flags: [lanes]bool = tokenCharMask16(vec);
+        for (token_flags) |is_token| {
+            if (is_token) {
+                if (!in_token) {
+                    total += 1;
+                    in_token = true;
+                }
+            } else {
+                in_token = false;
+            }
+        }
+    }
+
+    while (idx < input.len) : (idx += 1) {
+        const is_token = isTokenChar(input[idx]);
+        if (is_token) {
+            if (!in_token) {
+                total += 1;
+                in_token = true;
+            }
+        } else {
+            in_token = false;
+        }
+    }
+
+    return total;
+}
+
+fn tokenCharMask16(chunk: @Vector(16, u8)) [16]bool {
+    const upper = (chunk >= @as(@Vector(16, u8), @splat(@as(u8, 'A')))) &
+        (chunk <= @as(@Vector(16, u8), @splat(@as(u8, 'Z'))));
+    const lower = (chunk >= @as(@Vector(16, u8), @splat(@as(u8, 'a')))) &
+        (chunk <= @as(@Vector(16, u8), @splat(@as(u8, 'z'))));
+    const digit = (chunk >= @as(@Vector(16, u8), @splat(@as(u8, '0')))) &
+        (chunk <= @as(@Vector(16, u8), @splat(@as(u8, '9'))));
+    const apostrophe = chunk == @as(@Vector(16, u8), @splat(@as(u8, '\'')));
+
+    const mask = upper | lower | digit | apostrophe;
+    return mask;
 }
 
 pub fn hashNgram(window: []const u64, start: usize, n: usize) u64 {
@@ -140,4 +201,9 @@ test "collect token hashes" {
     defer allocator.free(hashes);
 
     try std.testing.expectEqual(@as(usize, 3), hashes.len);
+}
+
+test "simd and scalar token counting match" {
+    const input = "This this is a test with 123 numbers and contractions like don't over a long sample.";
+    try std.testing.expectEqual(tokenCountAsciiScalar(input), tokenCountAsciiSimd16(input));
 }

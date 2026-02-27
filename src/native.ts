@@ -35,6 +35,10 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize"],
     returns: "u64",
   },
+  bunnltk_count_tokens_ascii_scalar: {
+    args: ["ptr", "usize"],
+    returns: "u64",
+  },
   bunnltk_count_unique_tokens_ascii: {
     args: ["ptr", "usize"],
     returns: "u64",
@@ -64,6 +68,10 @@ const lib = dlopen(nativeLibPath, {
     returns: "u64",
   },
   bunnltk_count_normalized_tokens_ascii: {
+    args: ["ptr", "usize", "u32"],
+    returns: "u64",
+  },
+  bunnltk_count_normalized_tokens_ascii_scalar: {
     args: ["ptr", "usize", "u32"],
     returns: "u64",
   },
@@ -213,6 +221,13 @@ export function countTokensAscii(text: string): number {
   return toNumber(value);
 }
 
+export function countTokensAsciiScalar(text: string): number {
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return 0;
+  const value = lib.symbols.bunnltk_count_tokens_ascii_scalar(ptr(bytes), bytes.length);
+  return toNumber(value);
+}
+
 export function countUniqueTokensAscii(text: string): number {
   const bytes = toBuffer(text);
   if (bytes.length === 0) return 0;
@@ -357,6 +372,15 @@ export function countNormalizedTokensAscii(text: string, removeStopwords = true)
   const value = lib.symbols.bunnltk_count_normalized_tokens_ascii(ptr(bytes), bytes.length, removeStopwords ? 1 : 0);
   const out = toNumber(value);
   assertNoNativeError("countNormalizedTokensAscii");
+  return out;
+}
+
+export function countNormalizedTokensAsciiScalar(text: string, removeStopwords = true): number {
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return 0;
+  const value = lib.symbols.bunnltk_count_normalized_tokens_ascii_scalar(ptr(bytes), bytes.length, removeStopwords ? 1 : 0);
+  const out = toNumber(value);
+  assertNoNativeError("countNormalizedTokensAsciiScalar");
   return out;
 }
 

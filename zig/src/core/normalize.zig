@@ -3,6 +3,11 @@ const ascii = @import("ascii.zig");
 const stopwords = @import("stopwords.zig");
 
 pub fn countNormalizedTokensAscii(input: []const u8, remove_stopwords: bool) u64 {
+    if (!remove_stopwords) return ascii.tokenCountAscii(input);
+    return countNormalizedTokensAsciiScalar(input, remove_stopwords);
+}
+
+pub fn countNormalizedTokensAsciiScalar(input: []const u8, remove_stopwords: bool) u64 {
     var total: u64 = 0;
     var in_token = false;
     var token_hash: u64 = ascii.FNV_OFFSET_BASIS;
@@ -32,6 +37,18 @@ pub fn countNormalizedTokensAscii(input: []const u8, remove_stopwords: bool) u64
 }
 
 pub fn fillNormalizedTokenOffsetsAscii(
+    input: []const u8,
+    remove_stopwords: bool,
+    out_offsets: []u32,
+    out_lengths: []u32,
+) u64 {
+    if (!remove_stopwords) {
+        return ascii.fillTokenOffsetsAscii(input, out_offsets, out_lengths);
+    }
+    return fillNormalizedTokenOffsetsAsciiScalar(input, remove_stopwords, out_offsets, out_lengths);
+}
+
+pub fn fillNormalizedTokenOffsetsAsciiScalar(
     input: []const u8,
     remove_stopwords: bool,
     out_offsets: []u32,
