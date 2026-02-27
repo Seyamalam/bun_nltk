@@ -7,6 +7,11 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ## [Unreleased]
 
 ### Added
+- (no entries yet)
+
+## [0.7.0] - 2026-02-27
+
+### Added
 - Trainable Punkt tokenizer APIs with model serialization/parsing support.
 - Mini WordNet dataset and lookup API (`synsets`, `morphy`, relation traversal).
 - N-gram language model stack with `MLE`, `Lidstone`, and interpolated `Kneser-Ney`.

@@ -1,6 +1,6 @@
 {
   "name": "bun_nltk",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "description": "High-performance NLP primitives for Bun/Node with Zig native and WASM backends.",
   "module": "index.ts",
   "type": "module",
