@@ -29,6 +29,7 @@ import {
 These functions call the dynamic native library through Bun FFI.
 
 - `countTokensAscii(text: string): number`
+- `countTokensAsciiScalar(text: string): number`
 - `countUniqueTokensAscii(text: string): number`
 - `countNgramsAscii(text: string, n: number): number`
 - `countUniqueNgramsAscii(text: string, n: number): number`
@@ -46,8 +47,22 @@ These functions call the dynamic native library through Bun FFI.
 - `porterStemAscii(token: string): string`
 - `porterStemAsciiTokens(tokens: string[]): string[]`
 - `countNormalizedTokensAscii(text: string, removeStopwords?: boolean): number`
+- `countNormalizedTokensAsciiScalar(text: string, removeStopwords?: boolean): number`
 - `normalizeTokensAsciiNative(text: string, removeStopwords?: boolean): string[]`
 - `posTagAsciiNative(text: string): Array<{ token: string; tag: string; tagId: number; start: number; length: number }>`
+- `perceptronPredictBatchNative(featureIds: Uint32Array, tokenOffsets: Uint32Array, weights: Float32Array, modelFeatureCount: number, tagCount: number): Uint16Array`
+- `NativeFreqDistStream`
+- `new NativeFreqDistStream()`
+- `update(text: string): void`
+- `flush(): void`
+- `tokenUniqueCount(): number`
+- `bigramUniqueCount(): number`
+- `conditionalUniqueCount(): number`
+- `tokenFreqDistHash(): Map<bigint, number>`
+- `bigramFreqDistHash(): Array<{ leftHash: bigint; rightHash: bigint; count: number }>`
+- `conditionalFreqDistHash(): Array<{ tagId: number; tokenHash: bigint; count: number }>`
+- `toJson(): string`
+- `dispose(): void`
 - `nativeLibraryPath(): string`
 
 ## JS Reference API
@@ -89,7 +104,7 @@ These functions are pure TypeScript reference implementations.
 
 - `preparePerceptronTaggerModel(payload: PerceptronTaggerModelSerialized): PerceptronTaggerModel`
 - `loadPerceptronTaggerModel(path?: string): PerceptronTaggerModel`
-- `posTagPerceptronAscii(text: string, options?: { model?: PerceptronTaggerModel; wasm?: WasmNltk; useWasm?: boolean }): Array<{ token: string; tag: string; tagId: number; start: number; length: number }>`
+- `posTagPerceptronAscii(text: string, options?: { model?: PerceptronTaggerModel; wasm?: WasmNltk; useWasm?: boolean; useNative?: boolean }): Array<{ token: string; tag: string; tagId: number; start: number; length: number }>`
 
 ## WASM Runtime
 

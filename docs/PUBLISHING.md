@@ -17,6 +17,8 @@ This package is intended for Bun/Node distribution with native and WASM backends
 2. Run validation:
    - `bun run release:check`
    - (or explicitly) `bun run pack:verify:prebuilt`
+   - `bun run wasm:size:check`
+   - `bun run parity:report`
 3. Ensure docs are current:
    - [CHANGELOG.md](/C:/Users/user/Desktop/bun/bun_nltk/CHANGELOG.md)
    - [docs/API.md](/C:/Users/user/Desktop/bun/bun_nltk/docs/API.md)

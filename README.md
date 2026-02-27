@@ -27,8 +27,12 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Native normalization pipeline (ASCII fast path with optional stopword filtering)
 - Unicode normalization fallback pipeline (`normalizeTokensUnicode`)
 - Native POS regex/heuristic tagger baseline (`posTagAsciiNative`)
+- Native streaming `FreqDist`/`ConditionalFreqDist` builder with JSON export (`NativeFreqDistStream`)
+- SIMD token counting fast path (`x86_64` vectorized path + scalar fallback)
+- Shared Zig perceptron inference core used by both native and WASM runtimes
 - Browser-focused WASM API wrapper with memory pool reuse (`WasmNltk`)
 - WASM target for browser/runtime usage with parity benchmarks
+- Browser WASM benchmark harness (Chromium/Firefox in CI strict mode)
 - Performance regression gate script + CI workflow
 - Python baseline comparison on the same dataset
 
@@ -44,11 +48,13 @@ All benchmarks below use `bench/datasets/synthetic.txt` on this machine.
 | WASM token/ngram path (`bench:compare:wasm`) | 4.150 | 13.241 | Zig WASM | 3.19x | 219.06% |
 | Native vs Python in wasm suite (`bench:compare:wasm`) | 1.719 | 13.241 | Zig native | 7.70x | 670.48% |
 | Sentence tokenizer subset (`bench:compare:sentence`) | 1.680 | 16.580 | Zig/Bun subset | 9.87x | 886.70% |
-| POS tagger baseline (`bench:compare:tagger`) | 2.702 | 69.979 | Zig native | 25.90x | 2489.55% |
+| Perceptron POS tagger (`bench:compare:tagger`) | 19.880 | 82.849 | Zig native | 4.17x | 316.75% |
+| Streaming FreqDist + ConditionalFreqDist (`bench:compare:freqdist`) | 3.206 | 20.971 | Zig native | 6.54x | 554.17% |
 
 Notes:
 - Sentence tokenizer is a Punkt-compatible subset, not full Punkt parity on arbitrary corpora.
 - Fixture parity harnesses are available via `bench:parity:sentence` and `bench:parity:tagger`.
+- SIMD fast path benchmark (`bench:compare:simd`) shows `countTokensAscii` at `1.22x` and normalization no-stopword path at `2.73x` over scalar baseline.
 
 ## Build native Zig library
 
@@ -110,11 +116,31 @@ bun run bench:compare:sentence
 bun run bench:compare:tagger
 ```
 
+## Benchmark streaming FreqDist vs Python
+
+```bash
+bun run bench:compare:freqdist
+```
+
+## Benchmark SIMD fast path vs scalar baseline
+
+```bash
+bun run bench:compare:simd
+```
+
 ## Run parity harnesses
 
 ```bash
 bun run bench:parity:sentence
 bun run bench:parity:tagger
+bun run parity:report
+```
+
+## Browser/WASM checks
+
+```bash
+bun run wasm:size:check
+bun run bench:browser:wasm
 ```
 
 ## Run regression gate

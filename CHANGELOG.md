@@ -7,7 +7,19 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ## [Unreleased]
 
 ### Added
-- (no entries yet)
+- Native streaming `FreqDist`/`ConditionalFreqDist` builder APIs with JSON export.
+- Python comparison benchmark for streaming distributions (`bench:compare:freqdist`).
+- SIMD/scalar comparison benchmark for tokenizer and normalization fast paths (`bench:compare:simd`).
+- Shared Zig perceptron inference core reused by native and WASM runtimes.
+- NLTK coverage-slice fixture suite and parity report generator (`parity:report`).
+- Browser WASM benchmark harness and WASM size budget check scripts.
+
+### Changed
+- `countTokensAscii` now uses an x86_64 SIMD fast path with scalar fallback.
+- `countNormalizedTokensAscii(..., false)` now uses a direct token-count/offset fast path.
+- `posTagPerceptronAscii` now uses native Zig inference by default (JS path retained via `useNative: false`).
+- CI now uploads parity and browser-WASM benchmark artifacts and enforces WASM size budget.
+- WASM build uses `ReleaseSmall` + stripped output for browser-focused footprint.
 
 ## [0.6.1] - 2026-02-27
 
