@@ -93,6 +93,32 @@ type WasmExports = {
     outBeginsPtr: number,
     outCapacity: number,
   ) => bigint;
+  bunnltk_wasm_cyk_recognize_ids: (
+    tokenBitsPtr: number,
+    tokenCount: number,
+    binaryLeftPtr: number,
+    binaryRightPtr: number,
+    binaryParentPtr: number,
+    binaryCount: number,
+    unaryChildPtr: number,
+    unaryParentPtr: number,
+    unaryCount: number,
+    startSymbol: number,
+  ) => number;
+  bunnltk_wasm_naive_bayes_log_scores_ids: (
+    docTokenIdsPtr: number,
+    docTokenCount: number,
+    vocabSize: number,
+    tokenCountsMatrixPtr: number,
+    tokenCountsMatrixLen: number,
+    labelDocCountsPtr: number,
+    labelTokenTotalsPtr: number,
+    labelCount: number,
+    totalDocs: number,
+    smoothing: number,
+    outScoresPtr: number,
+    outScoresLen: number,
+  ) => void;
 };
 
 export type AsciiMetrics = {
@@ -516,5 +542,90 @@ export class WasmNltk {
       labelIds: Uint16Array.from(new Uint16Array(this.exports.memory.buffer, outLabelBlock.ptr, input.tokenTagIds.length)),
       begins: Uint8Array.from(new Uint8Array(this.exports.memory.buffer, outBeginBlock.ptr, input.tokenTagIds.length)),
     };
+  }
+
+  cykRecognizeIds(input: {
+    tokenBits: BigUint64Array;
+    binaryLeft: Uint16Array;
+    binaryRight: Uint16Array;
+    binaryParent: Uint16Array;
+    unaryChild: Uint16Array;
+    unaryParent: Uint16Array;
+    startSymbol: number;
+  }): boolean {
+    const tokenBitsBlock = this.ensureBlock("cyk_token_bits", Math.max(1, input.tokenBits.length) * BigUint64Array.BYTES_PER_ELEMENT);
+    const bLeftBlock = this.ensureBlock("cyk_binary_left", Math.max(1, input.binaryLeft.length) * Uint16Array.BYTES_PER_ELEMENT);
+    const bRightBlock = this.ensureBlock("cyk_binary_right", Math.max(1, input.binaryRight.length) * Uint16Array.BYTES_PER_ELEMENT);
+    const bParentBlock = this.ensureBlock("cyk_binary_parent", Math.max(1, input.binaryParent.length) * Uint16Array.BYTES_PER_ELEMENT);
+    const uChildBlock = this.ensureBlock("cyk_unary_child", Math.max(1, input.unaryChild.length) * Uint16Array.BYTES_PER_ELEMENT);
+    const uParentBlock = this.ensureBlock("cyk_unary_parent", Math.max(1, input.unaryParent.length) * Uint16Array.BYTES_PER_ELEMENT);
+
+    if (input.tokenBits.length > 0) {
+      new BigUint64Array(this.exports.memory.buffer, tokenBitsBlock.ptr, input.tokenBits.length).set(input.tokenBits);
+    }
+    if (input.binaryLeft.length > 0) {
+      new Uint16Array(this.exports.memory.buffer, bLeftBlock.ptr, input.binaryLeft.length).set(input.binaryLeft);
+      new Uint16Array(this.exports.memory.buffer, bRightBlock.ptr, input.binaryRight.length).set(input.binaryRight);
+      new Uint16Array(this.exports.memory.buffer, bParentBlock.ptr, input.binaryParent.length).set(input.binaryParent);
+    }
+    if (input.unaryChild.length > 0) {
+      new Uint16Array(this.exports.memory.buffer, uChildBlock.ptr, input.unaryChild.length).set(input.unaryChild);
+      new Uint16Array(this.exports.memory.buffer, uParentBlock.ptr, input.unaryParent.length).set(input.unaryParent);
+    }
+
+    const out = this.exports.bunnltk_wasm_cyk_recognize_ids(
+      tokenBitsBlock.ptr,
+      input.tokenBits.length,
+      bLeftBlock.ptr,
+      bRightBlock.ptr,
+      bParentBlock.ptr,
+      input.binaryLeft.length,
+      uChildBlock.ptr,
+      uParentBlock.ptr,
+      input.unaryChild.length,
+      input.startSymbol,
+    );
+    this.assertNoError("cykRecognizeIds");
+    return out === 1;
+  }
+
+  naiveBayesLogScoresIds(input: {
+    docTokenIds: Uint32Array;
+    vocabSize: number;
+    tokenCountsMatrix: Uint32Array;
+    labelDocCounts: Uint32Array;
+    labelTokenTotals: Uint32Array;
+    totalDocs: number;
+    smoothing: number;
+  }): Float64Array {
+    const docBlock = this.ensureBlock("nb_doc_ids", Math.max(1, input.docTokenIds.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const matrixBlock = this.ensureBlock("nb_matrix", Math.max(1, input.tokenCountsMatrix.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const labelDocBlock = this.ensureBlock("nb_label_docs", Math.max(1, input.labelDocCounts.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const labelTokBlock = this.ensureBlock("nb_label_tok", Math.max(1, input.labelTokenTotals.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const outBlock = this.ensureBlock("nb_out_scores", Math.max(1, input.labelDocCounts.length) * Float64Array.BYTES_PER_ELEMENT);
+
+    if (input.docTokenIds.length > 0) {
+      new Uint32Array(this.exports.memory.buffer, docBlock.ptr, input.docTokenIds.length).set(input.docTokenIds);
+    }
+    new Uint32Array(this.exports.memory.buffer, matrixBlock.ptr, input.tokenCountsMatrix.length).set(input.tokenCountsMatrix);
+    new Uint32Array(this.exports.memory.buffer, labelDocBlock.ptr, input.labelDocCounts.length).set(input.labelDocCounts);
+    new Uint32Array(this.exports.memory.buffer, labelTokBlock.ptr, input.labelTokenTotals.length).set(input.labelTokenTotals);
+
+    this.exports.bunnltk_wasm_naive_bayes_log_scores_ids(
+      docBlock.ptr,
+      input.docTokenIds.length,
+      input.vocabSize,
+      matrixBlock.ptr,
+      input.tokenCountsMatrix.length,
+      labelDocBlock.ptr,
+      labelTokBlock.ptr,
+      input.labelDocCounts.length,
+      input.totalDocs,
+      input.smoothing,
+      outBlock.ptr,
+      input.labelDocCounts.length,
+    );
+    this.assertNoError("naiveBayesLogScoresIds");
+    return Float64Array.from(new Float64Array(this.exports.memory.buffer, outBlock.ptr, input.labelDocCounts.length));
   }
 }

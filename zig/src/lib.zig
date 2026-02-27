@@ -18,5 +18,7 @@ test {
     _ = @import("core/morphy.zig");
     _ = @import("core/lm.zig");
     _ = @import("core/chunk.zig");
+    _ = @import("core/cyk.zig");
+    _ = @import("core/naive_bayes.zig");
     _ = @import("ffi_exports.zig");
 }

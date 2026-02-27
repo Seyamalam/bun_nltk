@@ -22,6 +22,8 @@ import {
   everygramsAsciiNative,
   evaluateLanguageModelIdsNative,
   chunkIobIdsNative,
+  cykRecognizeIdsNative,
+  naiveBayesLogScoresIdsNative,
   normalizeTokensAscii,
   normalizeTokensAsciiNative,
   ngramsAscii,
@@ -319,6 +321,45 @@ test("native chunk iob evaluator emits expected labels", () => {
   expect(out.labelIds[3]!).toBe(0);
   expect(out.labelIds[4]!).toBe(1);
   expect(out.begins[0]!).toBe(1);
+});
+
+test("native cyk recognizer handles simple grammar ids", () => {
+  const tokenBits = new BigUint64Array([
+    1n << 4n, // Name
+    1n << 3n, // V
+    1n << 4n, // Name
+  ]);
+  const out = cykRecognizeIdsNative({
+    tokenBits,
+    binaryLeft: Uint16Array.from([1, 3]),
+    binaryRight: Uint16Array.from([2, 1]),
+    binaryParent: Uint16Array.from([0, 2]),
+    unaryChild: Uint16Array.from([4]),
+    unaryParent: Uint16Array.from([1]),
+    startSymbol: 0,
+  });
+  expect(out).toBeTrue();
+});
+
+test("native naive bayes log score hot loop prefers expected label", () => {
+  const scores = naiveBayesLogScoresIdsNative({
+    docTokenIds: Uint32Array.from([0, 2]), // good, fast
+    vocabSize: 3,
+    tokenCountsMatrix: Uint32Array.from([
+      10,
+      1,
+      8,
+      1,
+      10,
+      1,
+    ]),
+    labelDocCounts: Uint32Array.from([5, 5]),
+    labelTokenTotals: Uint32Array.from([19, 12]),
+    totalDocs: 10,
+    smoothing: 1.0,
+  });
+  expect(scores.length).toBe(2);
+  expect(scores[0]!).toBeGreaterThan(scores[1]!);
 });
 
 test("native streaming freqdist builder matches reference counts and json export", () => {

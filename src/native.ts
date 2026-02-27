@@ -205,6 +205,14 @@ const lib = dlopen(nativeLibPath, {
     ],
     returns: "u64",
   },
+  bunnltk_cyk_recognize_ids: {
+    args: ["ptr", "usize", "ptr", "ptr", "ptr", "usize", "ptr", "ptr", "usize", "u16"],
+    returns: "u32",
+  },
+  bunnltk_naive_bayes_log_scores_ids: {
+    args: ["ptr", "usize", "u32", "ptr", "usize", "ptr", "ptr", "usize", "u32", "f64", "ptr", "usize"],
+    returns: "void",
+  },
   bunnltk_freqdist_stream_new: {
     args: [],
     returns: "u64",
@@ -996,6 +1004,60 @@ export function chunkIobIdsNative(input: {
   assertNoNativeError("chunkIobIdsNative");
 
   return { labelIds, begins };
+}
+
+export function cykRecognizeIdsNative(input: {
+  tokenBits: BigUint64Array;
+  binaryLeft: Uint16Array;
+  binaryRight: Uint16Array;
+  binaryParent: Uint16Array;
+  unaryChild: Uint16Array;
+  unaryParent: Uint16Array;
+  startSymbol: number;
+}): boolean {
+  const out = lib.symbols.bunnltk_cyk_recognize_ids(
+    ptr(input.tokenBits),
+    input.tokenBits.length,
+    ptr(input.binaryLeft),
+    ptr(input.binaryRight),
+    ptr(input.binaryParent),
+    input.binaryLeft.length,
+    ptr(input.unaryChild),
+    ptr(input.unaryParent),
+    input.unaryChild.length,
+    input.startSymbol,
+  );
+  assertNoNativeError("cykRecognizeIdsNative");
+  return Number(out) === 1;
+}
+
+export function naiveBayesLogScoresIdsNative(input: {
+  docTokenIds: Uint32Array;
+  vocabSize: number;
+  tokenCountsMatrix: Uint32Array;
+  labelDocCounts: Uint32Array;
+  labelTokenTotals: Uint32Array;
+  totalDocs: number;
+  smoothing: number;
+}): Float64Array {
+  const labelCount = input.labelDocCounts.length;
+  const out = new Float64Array(labelCount);
+  lib.symbols.bunnltk_naive_bayes_log_scores_ids(
+    ptr(input.docTokenIds),
+    input.docTokenIds.length,
+    input.vocabSize,
+    ptr(input.tokenCountsMatrix),
+    input.tokenCountsMatrix.length,
+    ptr(input.labelDocCounts),
+    ptr(input.labelTokenTotals),
+    labelCount,
+    input.totalDocs,
+    input.smoothing,
+    ptr(out),
+    out.length,
+  );
+  assertNoNativeError("naiveBayesLogScoresIdsNative");
+  return out;
 }
 
 export function porterStemAsciiTokens(tokens: string[]): string[] {

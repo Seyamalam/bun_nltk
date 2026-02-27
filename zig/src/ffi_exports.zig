@@ -13,6 +13,8 @@ const punkt = @import("core/punkt.zig");
 const morphy = @import("core/morphy.zig");
 const lm = @import("core/lm.zig");
 const chunk = @import("core/chunk.zig");
+const cyk = @import("core/cyk.zig");
+const naive_bayes = @import("core/naive_bayes.zig");
 const types = @import("core/types.zig");
 const error_state = @import("core/error_state.zig");
 
@@ -1098,6 +1100,73 @@ pub export fn bunnltk_chunk_iob_ids(
         error_state.setError(.invalid_n);
     }
     return written;
+}
+
+pub export fn bunnltk_cyk_recognize_ids(
+    token_bits_ptr: [*]const u64,
+    token_count: usize,
+    binary_left_ptr: [*]const u16,
+    binary_right_ptr: [*]const u16,
+    binary_parent_ptr: [*]const u16,
+    binary_count: usize,
+    unary_child_ptr: [*]const u16,
+    unary_parent_ptr: [*]const u16,
+    unary_count: usize,
+    start_symbol: u16,
+) u32 {
+    error_state.resetError();
+    if (token_count == 0) return 0;
+    if (start_symbol >= 64) {
+        error_state.setError(.invalid_n);
+        return 0;
+    }
+    const ok = cyk.cykRecognize(
+        token_bits_ptr[0..token_count],
+        binary_left_ptr[0..binary_count],
+        binary_right_ptr[0..binary_count],
+        binary_parent_ptr[0..binary_count],
+        unary_child_ptr[0..unary_count],
+        unary_parent_ptr[0..unary_count],
+        start_symbol,
+        std.heap.c_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+        }
+        return 0;
+    };
+    return if (ok) 1 else 0;
+}
+
+pub export fn bunnltk_naive_bayes_log_scores_ids(
+    doc_token_ids_ptr: [*]const u32,
+    doc_token_count: usize,
+    vocab_size: u32,
+    token_counts_matrix_ptr: [*]const u32,
+    token_counts_matrix_len: usize,
+    label_doc_counts_ptr: [*]const u32,
+    label_token_totals_ptr: [*]const u32,
+    label_count: usize,
+    total_docs: u32,
+    smoothing: f64,
+    out_scores_ptr: [*]f64,
+    out_scores_len: usize,
+) void {
+    error_state.resetError();
+    if (label_count == 0 or out_scores_len < label_count) {
+        error_state.setError(.insufficient_capacity);
+        return;
+    }
+    naive_bayes.logScores(
+        doc_token_ids_ptr[0..doc_token_count],
+        vocab_size,
+        token_counts_matrix_ptr[0..token_counts_matrix_len],
+        label_doc_counts_ptr[0..label_count],
+        label_token_totals_ptr[0..label_count],
+        total_docs,
+        smoothing,
+        out_scores_ptr[0..out_scores_len],
+    );
 }
 
 test "ffi error behavior" {

@@ -62,6 +62,36 @@ test("wasm wrapper metrics and token APIs match native", async () => {
     });
     expect(chunkEval.labelIds[0]!).toBe(0);
     expect(chunkEval.labelIds[3]!).toBe(0);
+
+    const cyk = wasm.cykRecognizeIds({
+      tokenBits: new BigUint64Array([1n << 4n, 1n << 3n, 1n << 4n]),
+      binaryLeft: Uint16Array.from([1, 3]),
+      binaryRight: Uint16Array.from([2, 1]),
+      binaryParent: Uint16Array.from([0, 2]),
+      unaryChild: Uint16Array.from([4]),
+      unaryParent: Uint16Array.from([1]),
+      startSymbol: 0,
+    });
+    expect(cyk).toBeTrue();
+
+    const nbScores = wasm.naiveBayesLogScoresIds({
+      docTokenIds: Uint32Array.from([0, 2]),
+      vocabSize: 3,
+      tokenCountsMatrix: Uint32Array.from([
+        10,
+        1,
+        8,
+        1,
+        10,
+        1,
+      ]),
+      labelDocCounts: Uint32Array.from([5, 5]),
+      labelTokenTotals: Uint32Array.from([19, 12]),
+      totalDocs: 10,
+      smoothing: 1,
+    });
+    expect(nbScores.length).toBe(2);
+    expect(nbScores[0]!).toBeGreaterThan(nbScores[1]!);
   } finally {
     wasm.dispose();
   }

@@ -7,6 +7,8 @@ const punkt = @import("core/punkt.zig");
 const morphy = @import("core/morphy.zig");
 const lm = @import("core/lm.zig");
 const chunk = @import("core/chunk.zig");
+const cyk = @import("core/cyk.zig");
+const naive_bayes = @import("core/naive_bayes.zig");
 const error_state = @import("core/error_state.zig");
 
 var input_buffer: [128 * 1024 * 1024]u8 = undefined;
@@ -358,6 +360,81 @@ pub export fn bunnltk_wasm_chunk_iob_ids(
         ptrFromOffset(u16, rule_label_ids_ptr)[0..@as(usize, rule_count)],
         ptrFromOffset(u16, out_label_ids_ptr)[0..@as(usize, out_capacity)],
         ptrFromOffset(u8, out_begin_ptr)[0..@as(usize, out_capacity)],
+    );
+}
+
+pub export fn bunnltk_wasm_cyk_recognize_ids(
+    token_bits_ptr: u32,
+    token_count: u32,
+    binary_left_ptr: u32,
+    binary_right_ptr: u32,
+    binary_parent_ptr: u32,
+    binary_count: u32,
+    unary_child_ptr: u32,
+    unary_parent_ptr: u32,
+    unary_count: u32,
+    start_symbol: u32,
+) u32 {
+    error_state.resetError();
+    if (token_count == 0) return 0;
+    if (token_bits_ptr == 0 or binary_left_ptr == 0 or binary_right_ptr == 0 or binary_parent_ptr == 0) {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    }
+    if (start_symbol >= 64) {
+        error_state.setError(.invalid_n);
+        return 0;
+    }
+    const ok = cyk.cykRecognize(
+        ptrFromOffset(u64, token_bits_ptr)[0..@as(usize, token_count)],
+        ptrFromOffset(u16, binary_left_ptr)[0..@as(usize, binary_count)],
+        ptrFromOffset(u16, binary_right_ptr)[0..@as(usize, binary_count)],
+        ptrFromOffset(u16, binary_parent_ptr)[0..@as(usize, binary_count)],
+        ptrFromOffset(u16, unary_child_ptr)[0..@as(usize, unary_count)],
+        ptrFromOffset(u16, unary_parent_ptr)[0..@as(usize, unary_count)],
+        @as(u16, @intCast(start_symbol)),
+        std.heap.wasm_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+        }
+        return 0;
+    };
+    return if (ok) 1 else 0;
+}
+
+pub export fn bunnltk_wasm_naive_bayes_log_scores_ids(
+    doc_token_ids_ptr: u32,
+    doc_token_count: u32,
+    vocab_size: u32,
+    token_counts_matrix_ptr: u32,
+    token_counts_matrix_len: u32,
+    label_doc_counts_ptr: u32,
+    label_token_totals_ptr: u32,
+    label_count: u32,
+    total_docs: u32,
+    smoothing: f64,
+    out_scores_ptr: u32,
+    out_scores_len: u32,
+) void {
+    error_state.resetError();
+    if (label_count == 0) {
+        error_state.setError(.insufficient_capacity);
+        return;
+    }
+    if (doc_token_ids_ptr == 0 or token_counts_matrix_ptr == 0 or label_doc_counts_ptr == 0 or label_token_totals_ptr == 0 or out_scores_ptr == 0) {
+        error_state.setError(.insufficient_capacity);
+        return;
+    }
+    naive_bayes.logScores(
+        ptrFromOffset(u32, doc_token_ids_ptr)[0..@as(usize, doc_token_count)],
+        vocab_size,
+        ptrFromOffset(u32, token_counts_matrix_ptr)[0..@as(usize, token_counts_matrix_len)],
+        ptrFromOffset(u32, label_doc_counts_ptr)[0..@as(usize, label_count)],
+        ptrFromOffset(u32, label_token_totals_ptr)[0..@as(usize, label_count)],
+        total_docs,
+        smoothing,
+        ptrFromOffset(f64, out_scores_ptr)[0..@as(usize, out_scores_len)],
     );
 }
 
