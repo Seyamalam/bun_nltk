@@ -62,8 +62,16 @@ jobs:
       - name: Generate parity tracker artifact
         run: bun run parity:tracker
 
+      - name: Run global Python parity suite
+        run: bun run bench:parity:all
+
       - name: Run performance regression gate
         run: bun run bench:gate
+
+      - name: Pack official WordNet corpus artifact
+        run: |
+          bun run wordnet:pack:official
+          bun run wordnet:verify:pack
 
       - name: Generate bench dashboard artifacts
         run: bun run bench:dashboard
@@ -94,3 +102,11 @@ jobs:
         with:
           name: parity-tracker
           path: artifacts/parity-tracker.*
+
+      - name: Upload official wordnet pack artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordnet-official-pack
+          path: |
+            artifacts/wordnet_official.bin
+            artifacts/wordnet_official.sha256.json

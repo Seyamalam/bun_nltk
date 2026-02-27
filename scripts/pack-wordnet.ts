@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
@@ -15,9 +16,17 @@ type SynsetRow = {
   antonyms: string[];
 };
 
-type WordNetMiniPayload = {
+export type WordNetMiniPayload = {
   version: number;
   synsets: SynsetRow[];
+};
+
+export type WordNetPackManifest = {
+  algorithm: "sha256";
+  sha256: string;
+  bytes: number;
+  synset_count: number;
+  source: string;
 };
 
 const MAGIC = "BNWN1";
@@ -26,19 +35,21 @@ function normalizeLemma(lemma: string): string {
   return lemma.toLowerCase().replace(/\s+/g, "_");
 }
 
-function parseArgs(): { dictDir?: string; inJson?: string; out: string } {
+function parseArgs(): { dictDir?: string; inJson?: string; out: string; checksumOut?: string } {
   const args = process.argv.slice(2);
   let dictDir: string | undefined;
   let inJson: string | undefined;
   let out = "models/wordnet_full.bin";
+  let checksumOut: string | undefined;
 
   for (let i = 0; i < args.length; i += 1) {
     const arg = args[i]!;
     if (arg === "--dict-dir") dictDir = args[++i];
     else if (arg === "--in-json") inJson = args[++i];
     else if (arg === "--out") out = args[++i] ?? out;
+    else if (arg === "--checksum-out") checksumOut = args[++i];
   }
-  return { dictDir, inJson, out };
+  return { dictDir, inJson, out, checksumOut };
 }
 
 function mapPos(raw: string): Pos | null {
@@ -47,6 +58,29 @@ function mapPos(raw: string): Pos | null {
   if (raw === "a" || raw === "s") return "a";
   if (raw === "r") return "r";
   return null;
+}
+
+function sortedUnique(values: string[]): string[] {
+  return [...new Set(values)].sort((a, b) => a.localeCompare(b));
+}
+
+function canonicalize(payload: WordNetMiniPayload): WordNetMiniPayload {
+  const synsets = payload.synsets
+    .map((row) => ({
+      ...row,
+      lemmas: sortedUnique(row.lemmas),
+      examples: sortedUnique(row.examples),
+      hypernyms: sortedUnique(row.hypernyms),
+      hyponyms: sortedUnique(row.hyponyms),
+      similarTo: sortedUnique(row.similarTo),
+      antonyms: sortedUnique(row.antonyms),
+    }))
+    .sort((a, b) => a.id.localeCompare(b.id));
+
+  return {
+    version: payload.version,
+    synsets,
+  };
 }
 
 function parseWordNetDataFile(path: string, posRaw: string): SynsetRow[] {
@@ -58,6 +92,7 @@ function parseWordNetDataFile(path: string, posRaw: string): SynsetRow[] {
     pos: Pos;
     lemmas: string[];
     gloss: string;
+    examples: string[];
     pointerTargets: Array<{ symbol: string; target: string }>;
   }> = [];
 
@@ -81,7 +116,7 @@ function parseWordNetDataFile(path: string, posRaw: string): SynsetRow[] {
     const lemmas: string[] = [];
     for (let i = 0; i < wCnt; i += 1) {
       const lemma = parts[cursor++];
-      cursor += 1; // lex_id
+      cursor += 1;
       if (!lemma) continue;
       lemmas.push(normalizeLemma(lemma.replace(/_/g, " ")));
     }
@@ -92,7 +127,7 @@ function parseWordNetDataFile(path: string, posRaw: string): SynsetRow[] {
       const symbol = parts[cursor++] ?? "";
       const targetOffset = parts[cursor++] ?? "";
       const targetPosRaw = parts[cursor++] ?? "";
-      cursor += 1; // source/target
+      cursor += 1;
       const targetPos = mapPos(targetPosRaw);
       if (!symbol || !targetOffset || !targetPos) continue;
       pointerTargets.push({
@@ -108,6 +143,7 @@ function parseWordNetDataFile(path: string, posRaw: string): SynsetRow[] {
       pos: rowPos,
       lemmas,
       gloss,
+      examples,
       pointerTargets,
     });
   }
@@ -120,18 +156,18 @@ function parseWordNetDataFile(path: string, posRaw: string): SynsetRow[] {
     return {
       id: row.id,
       pos: row.pos,
-      lemmas: [...new Set(row.lemmas)],
+      lemmas: sortedUnique(row.lemmas),
       gloss: row.gloss,
-      examples,
-      hypernyms: [...new Set(hypernyms)],
-      hyponyms: [...new Set(hyponyms)],
-      similarTo: [...new Set(similarTo)],
-      antonyms: [...new Set(antonyms)],
+      examples: sortedUnique(row.examples),
+      hypernyms: sortedUnique(hypernyms),
+      hyponyms: sortedUnique(hyponyms),
+      similarTo: sortedUnique(similarTo),
+      antonyms: sortedUnique(antonyms),
     };
   });
 }
 
-function buildFromDictDir(dictDir: string): WordNetMiniPayload {
+export function buildFromDictDir(dictDir: string): WordNetMiniPayload {
   const root = resolve(dictDir);
   const rows = [
     ...parseWordNetDataFile(resolve(root, "data.noun"), "n"),
@@ -139,15 +175,15 @@ function buildFromDictDir(dictDir: string): WordNetMiniPayload {
     ...parseWordNetDataFile(resolve(root, "data.adj"), "a"),
     ...parseWordNetDataFile(resolve(root, "data.adv"), "r"),
   ];
-  return {
+  return canonicalize({
     version: 1,
     synsets: rows,
-  };
+  });
 }
 
-function loadPayload(dictDir?: string, inJson?: string): WordNetMiniPayload {
+export function loadPayload(dictDir?: string, inJson?: string): WordNetMiniPayload {
   if (inJson) {
-    return JSON.parse(readFileSync(resolve(inJson), "utf8")) as WordNetMiniPayload;
+    return canonicalize(JSON.parse(readFileSync(resolve(inJson), "utf8")) as WordNetMiniPayload);
   }
   if (dictDir) {
     return buildFromDictDir(dictDir);
@@ -155,29 +191,67 @@ function loadPayload(dictDir?: string, inJson?: string): WordNetMiniPayload {
   throw new Error("provide --dict-dir <path-to-wordnet-dict> or --in-json <path>");
 }
 
-function writePacked(payload: WordNetMiniPayload, outPath: string): void {
-  const target = resolve(outPath);
-  mkdirSync(dirname(target), { recursive: true });
-  const jsonBytes = new TextEncoder().encode(JSON.stringify(payload));
+export function packPayload(payload: WordNetMiniPayload): Uint8Array {
+  const jsonBytes = new TextEncoder().encode(JSON.stringify(canonicalize(payload)));
   const header = new Uint8Array(MAGIC.length + 4);
   header.set(new TextEncoder().encode(MAGIC), 0);
   new DataView(header.buffer).setUint32(MAGIC.length, jsonBytes.length, true);
   const out = new Uint8Array(header.length + jsonBytes.length);
   out.set(header, 0);
   out.set(jsonBytes, header.length);
-  writeFileSync(target, out);
+  return out;
+}
+
+function sha256Hex(data: Uint8Array): string {
+  const h = createHash("sha256");
+  h.update(data);
+  return h.digest("hex");
+}
+
+export function writePacked(
+  payload: WordNetMiniPayload,
+  outPath: string,
+  source: string,
+): { outPath: string; manifest: WordNetPackManifest } {
+  const target = resolve(outPath);
+  mkdirSync(dirname(target), { recursive: true });
+  const packed = packPayload(payload);
+  writeFileSync(target, packed);
+  const manifest: WordNetPackManifest = {
+    algorithm: "sha256",
+    sha256: sha256Hex(packed),
+    bytes: packed.length,
+    synset_count: payload.synsets.length,
+    source,
+  };
+  return { outPath: target, manifest };
+}
+
+export function writeManifest(path: string, manifest: WordNetPackManifest): string {
+  const target = resolve(path);
+  mkdirSync(dirname(target), { recursive: true });
+  writeFileSync(target, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+  return target;
 }
 
 function main() {
   const args = parseArgs();
   const payload = loadPayload(args.dictDir, args.inJson);
-  writePacked(payload, args.out);
+  const source = args.dictDir ? resolve(args.dictDir) : resolve(args.inJson!);
+  const packed = writePacked(payload, args.out, source);
+
+  let checksumPath: string | undefined;
+  if (args.checksumOut) {
+    checksumPath = writeManifest(args.checksumOut, packed.manifest);
+  }
+
   console.log(
     JSON.stringify(
       {
         ok: true,
-        out: resolve(args.out),
-        synset_count: payload.synsets.length,
+        out: packed.outPath,
+        checksum_out: checksumPath ?? null,
+        ...packed.manifest,
       },
       null,
       2,
@@ -185,5 +259,6 @@ function main() {
   );
 }
 
-main();
-
+if (import.meta.main) {
+  main();
+}
