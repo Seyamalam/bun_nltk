@@ -3,6 +3,8 @@ const ascii = @import("core/ascii.zig");
 const freqdist = @import("core/freqdist.zig");
 const normalize = @import("core/normalize.zig");
 const perceptron = @import("core/perceptron.zig");
+const punkt = @import("core/punkt.zig");
+const morphy = @import("core/morphy.zig");
 const error_state = @import("core/error_state.zig");
 
 var input_buffer: [128 * 1024 * 1024]u8 = undefined;
@@ -138,6 +140,32 @@ pub export fn bunnltk_wasm_fill_token_offsets_ascii(
     return total;
 }
 
+pub export fn bunnltk_wasm_count_sentences_punkt_ascii(input_len: u32) u64 {
+    error_state.resetError();
+    const len = @min(@as(usize, input_len), input_buffer.len);
+    return punkt.countSentenceOffsetsAscii(input_buffer[0..len]);
+}
+
+pub export fn bunnltk_wasm_fill_sentence_offsets_punkt_ascii(
+    input_len: u32,
+    out_offsets_ptr: u32,
+    out_lengths_ptr: u32,
+    capacity: u32,
+) u64 {
+    error_state.resetError();
+    if (out_offsets_ptr == 0 or out_lengths_ptr == 0) {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    }
+    const len = @min(@as(usize, input_len), input_buffer.len);
+    const cap = @as(usize, capacity);
+    const out_offsets = ptrFromOffset(u32, out_offsets_ptr)[0..cap];
+    const out_lengths = ptrFromOffset(u32, out_lengths_ptr)[0..cap];
+    const total = punkt.fillSentenceOffsetsAscii(input_buffer[0..len], out_offsets, out_lengths);
+    if (total > capacity) error_state.setError(.insufficient_capacity);
+    return total;
+}
+
 pub export fn bunnltk_wasm_fill_normalized_token_offsets_ascii(
     input_len: u32,
     remove_stopwords: u32,
@@ -198,6 +226,31 @@ pub export fn bunnltk_wasm_perceptron_predict_batch(
             error.InsufficientCapacity => error_state.setError(.insufficient_capacity),
         }
     };
+}
+
+pub export fn bunnltk_wasm_wordnet_morphy_ascii(
+    input_len: u32,
+    pos: u32,
+    out_ptr: u32,
+    out_capacity: u32,
+) u32 {
+    error_state.resetError();
+    if (out_ptr == 0 or out_capacity == 0) {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    }
+    const len = @min(@as(usize, input_len), input_buffer.len);
+    const out = ptrFromOffset(u8, out_ptr)[0..@as(usize, out_capacity)];
+    const pos_tag: morphy.WordNetPos = switch (pos) {
+        1 => .noun,
+        2 => .verb,
+        3 => .adjective,
+        4 => .adverb,
+        else => .any,
+    };
+    const written = morphy.morphyAscii(input_buffer[0..len], pos_tag, out);
+    if (written == 0) error_state.setError(.insufficient_capacity);
+    return @intCast(written);
 }
 
 test "wasm exports basic counts and metrics" {

@@ -22,6 +22,13 @@ type WasmExports = {
     outLengthsPtr: number,
     capacity: number,
   ) => bigint;
+  bunnltk_wasm_count_sentences_punkt_ascii: (inputLen: number) => bigint;
+  bunnltk_wasm_fill_sentence_offsets_punkt_ascii: (
+    inputLen: number,
+    outOffsetsPtr: number,
+    outLengthsPtr: number,
+    capacity: number,
+  ) => bigint;
   bunnltk_wasm_count_normalized_tokens_ascii: (inputLen: number, removeStopwords: number) => bigint;
   bunnltk_wasm_fill_normalized_token_offsets_ascii: (
     inputLen: number,
@@ -40,6 +47,12 @@ type WasmExports = {
     tagCount: number,
     outTagIdsPtr: number,
   ) => void;
+  bunnltk_wasm_wordnet_morphy_ascii: (
+    inputLen: number,
+    pos: number,
+    outPtr: number,
+    outCapacity: number,
+  ) => number;
 };
 
 export type AsciiMetrics = {
@@ -230,6 +243,36 @@ export class WasmNltk {
     return out;
   }
 
+  sentenceTokenizePunktAscii(text: string): string[] {
+    const inputLen = this.writeInput(text);
+    const total = toNumber(this.exports.bunnltk_wasm_count_sentences_punkt_ascii(inputLen));
+    this.assertNoError("sentenceTokenizePunktAscii.count");
+    if (total === 0) return [];
+
+    const offsetsBlock = this.ensureBlock("sent_offsets", total * Uint32Array.BYTES_PER_ELEMENT);
+    const lengthsBlock = this.ensureBlock("sent_lengths", total * Uint32Array.BYTES_PER_ELEMENT);
+    const written = toNumber(
+      this.exports.bunnltk_wasm_fill_sentence_offsets_punkt_ascii(
+        inputLen,
+        offsetsBlock.ptr,
+        lengthsBlock.ptr,
+        total,
+      ),
+    );
+    this.assertNoError("sentenceTokenizePunktAscii.fill");
+
+    const offsets = new Uint32Array(this.exports.memory.buffer, offsetsBlock.ptr, written);
+    const lengths = new Uint32Array(this.exports.memory.buffer, lengthsBlock.ptr, written);
+    const input = new Uint8Array(this.exports.memory.buffer, this.inputPtr, inputLen);
+    const out = new Array<string>(written);
+    for (let i = 0; i < written; i += 1) {
+      const start = offsets[i]!;
+      const len = lengths[i]!;
+      out[i] = this.decoder.decode(input.subarray(start, start + len));
+    }
+    return out;
+  }
+
   normalizeTokensAscii(text: string, removeStopwords = true): string[] {
     const { total, offsets, lengths, input } = this.normalizedTokenOffsetsAscii(text, removeStopwords);
     const out = new Array<string>(total);
@@ -273,5 +316,15 @@ export class WasmNltk {
     this.assertNoError("perceptronPredictBatch");
 
     return Uint16Array.from(new Uint16Array(this.exports.memory.buffer, outBlock.ptr, tokenCount));
+  }
+
+  wordnetMorphyAscii(word: string, pos?: "n" | "v" | "a" | "r"): string {
+    const inputLen = this.writeInput(word);
+    const outBlock = this.ensureBlock("wordnet_morphy", Math.max(64, inputLen + 8));
+    const posCode = pos === "n" ? 1 : pos === "v" ? 2 : pos === "a" ? 3 : pos === "r" ? 4 : 0;
+    const written = this.exports.bunnltk_wasm_wordnet_morphy_ascii(inputLen, posCode, outBlock.ptr, outBlock.bytes);
+    this.assertNoError("wordnetMorphyAscii");
+    if (written <= 0) return "";
+    return this.decoder.decode(new Uint8Array(this.exports.memory.buffer, outBlock.ptr, written));
   }
 }

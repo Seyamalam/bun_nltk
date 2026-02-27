@@ -1,3 +1,5 @@
+import { sentenceTokenizePunktAsciiNative } from "./native";
+
 const DEFAULT_PUNKT_ABBREVIATIONS = [
   "mr",
   "mrs",
@@ -232,6 +234,9 @@ export function trainPunktModel(text: string, options: PunktTrainingOptions = {}
 }
 
 export function sentenceTokenizePunkt(text: string, model?: PunktModelSerialized): string[] {
+  if (!model) {
+    return sentenceTokenizePunktAsciiNative(text);
+  }
   const prepared = preparePunktModel(model ?? defaultPunktModel());
   const out: string[] = [];
   let start = 0;

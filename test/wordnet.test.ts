@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { loadWordNetMini } from "../index";
+import { loadWordNetExtended, loadWordNetMini } from "../index";
 
 test("wordnet mini returns noun synsets and relation links", () => {
   const wn = loadWordNetMini();
@@ -28,3 +28,8 @@ test("wordnet mini returns antonyms and similar-to edges", () => {
   expect(similarIds).toEqual(["speedy.a.01"]);
 });
 
+test("wordnet extended exposes larger vocabulary", () => {
+  const wn = loadWordNetExtended();
+  expect(wn.synsets("computer", "n").map((row) => row.id)).toContain("computer.n.01");
+  expect(wn.synsets("optimize", "v").map((row) => row.id)).toContain("optimize.v.01");
+});

@@ -67,6 +67,14 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize", "ptr", "ptr", "usize"],
     returns: "u64",
   },
+  bunnltk_count_sentences_punkt_ascii: {
+    args: ["ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_fill_sentence_offsets_punkt_ascii: {
+    args: ["ptr", "usize", "ptr", "ptr", "usize"],
+    returns: "u64",
+  },
   bunnltk_count_normalized_tokens_ascii: {
     args: ["ptr", "usize", "u32"],
     returns: "u64",
@@ -145,6 +153,10 @@ const lib = dlopen(nativeLibPath, {
   },
   bunnltk_porter_stem_ascii: {
     args: ["ptr", "usize", "ptr", "usize"],
+    returns: "u32",
+  },
+  bunnltk_wordnet_morphy_ascii: {
+    args: ["ptr", "usize", "u32", "ptr", "usize"],
     returns: "u32",
   },
   bunnltk_freqdist_stream_new: {
@@ -366,6 +378,36 @@ export function tokenizeAsciiNative(text: string): string[] {
     const start = offsets[i]!;
     const len = lengths[i]!;
     out[i] = decoder.decode(bytes.subarray(start, start + len)).toLowerCase();
+  }
+  return out;
+}
+
+export function sentenceTokenizePunktAsciiNative(text: string): string[] {
+  const bytes = toBuffer(text);
+  if (bytes.length === 0) return [];
+
+  const capacity = Math.max(1, toNumber(lib.symbols.bunnltk_count_sentences_punkt_ascii(ptr(bytes), bytes.length)));
+  assertNoNativeError("sentenceTokenizePunktAsciiNative.count");
+
+  const offsets = new Uint32Array(capacity);
+  const lengths = new Uint32Array(capacity);
+  const total = toNumber(
+    lib.symbols.bunnltk_fill_sentence_offsets_punkt_ascii(
+      ptr(bytes),
+      bytes.length,
+      ptr(offsets),
+      ptr(lengths),
+      capacity,
+    ),
+  );
+  assertNoNativeError("sentenceTokenizePunktAsciiNative.fill");
+
+  const decoder = new TextDecoder();
+  const out = new Array<string>(total);
+  for (let i = 0; i < total; i += 1) {
+    const start = offsets[i]!;
+    const len = lengths[i]!;
+    out[i] = decoder.decode(bytes.subarray(start, start + len));
   }
   return out;
 }
@@ -795,6 +837,30 @@ export function porterStemAscii(token: string): string {
   assertNoNativeError("porterStemAscii");
 
   return new TextDecoder().decode(out.subarray(0, stemLen));
+}
+
+function wordnetPosToCode(pos?: "n" | "v" | "a" | "r"): number {
+  if (pos === "n") return 1;
+  if (pos === "v") return 2;
+  if (pos === "a") return 3;
+  if (pos === "r") return 4;
+  return 0;
+}
+
+export function wordnetMorphyAsciiNative(word: string, pos?: "n" | "v" | "a" | "r"): string {
+  const input = toBuffer(word);
+  if (input.length === 0) return "";
+  const out = new Uint8Array(Math.max(64, input.length + 8));
+  const written = lib.symbols.bunnltk_wordnet_morphy_ascii(
+    ptr(input),
+    input.length,
+    wordnetPosToCode(pos),
+    ptr(out),
+    out.length,
+  );
+  assertNoNativeError("wordnetMorphyAsciiNative");
+  if (written <= 0) return "";
+  return new TextDecoder().decode(out.subarray(0, written));
 }
 
 export function porterStemAsciiTokens(tokens: string[]): string[] {

@@ -12,6 +12,7 @@ export {
   NativeFreqDistStream,
   everygramsAsciiNative,
   normalizeTokensAsciiNative,
+  sentenceTokenizePunktAsciiNative,
   perceptronPredictBatchNative,
   posTagAsciiNative,
   skipgramsAsciiNative,
@@ -24,6 +25,7 @@ export {
   topPmiBigramsAscii,
   tokenizeAsciiNative,
   tokenFreqDistHashAscii,
+  wordnetMorphyAsciiNative,
 } from "./src/native";
 
 export type { StreamBigramFreq, StreamConditionalFreq } from "./src/native";
@@ -64,11 +66,13 @@ export type { PunktModelSerialized, PunktTrainingOptions } from "./src/punkt";
 export { normalizeTokens } from "./src/normalization";
 export { chunkTreeToIob, regexpChunkParse } from "./src/chunk";
 export type { ChunkElement, ChunkNode, IobRow, TaggedToken } from "./src/chunk";
-export { CorpusReader, loadBundledMiniCorpus } from "./src/corpus";
+export { CorpusReader, loadBundledMiniCorpus, loadCorpusBundleFromIndex } from "./src/corpus";
 export type { CorpusFile, CorpusMiniIndex } from "./src/corpus";
+export { parseBrownTagged, parseConllChunked, parseConllTagged } from "./src/corpus_readers";
+export type { ChunkedSentence, ChunkedToken, TaggedSentence as CorpusTaggedSentence, TaggedToken as CorpusTaggedToken } from "./src/corpus_readers";
 export { NgramLanguageModel, trainNgramLanguageModel } from "./src/lm";
 export type { LanguageModelType, NgramLanguageModelOptions } from "./src/lm";
-export { loadWordNetMini, WordNet } from "./src/wordnet";
+export { loadWordNetExtended, loadWordNetMini, WordNet } from "./src/wordnet";
 export type { WordNetMiniPayload, WordNetPos, WordNetSynset } from "./src/wordnet";
 export { WasmNltk } from "./src/wasm";
 export {

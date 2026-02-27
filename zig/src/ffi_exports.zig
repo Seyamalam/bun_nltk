@@ -9,6 +9,8 @@ const porter = @import("core/porter.zig");
 const perceptron = @import("core/perceptron.zig");
 const tagger = @import("core/tagger.zig");
 const stream_freqdist = @import("core/stream_freqdist.zig");
+const punkt = @import("core/punkt.zig");
+const morphy = @import("core/morphy.zig");
 const types = @import("core/types.zig");
 const error_state = @import("core/error_state.zig");
 
@@ -229,6 +231,33 @@ pub export fn bunnltk_fill_token_offsets_ascii(
     }
 
     const total = ascii.fillTokenOffsetsAscii(input_ptr[0..input_len], out_offsets, out_lengths);
+    if (total > capacity) error_state.setError(.insufficient_capacity);
+    return total;
+}
+
+pub export fn bunnltk_count_sentences_punkt_ascii(input_ptr: [*]const u8, input_len: usize) u64 {
+    error_state.resetError();
+    if (input_len == 0) return 0;
+    return punkt.countSentenceOffsetsAscii(input_ptr[0..input_len]);
+}
+
+pub export fn bunnltk_fill_sentence_offsets_punkt_ascii(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    out_offsets_ptr: [*]u32,
+    out_lengths_ptr: [*]u32,
+    capacity: usize,
+) u64 {
+    error_state.resetError();
+    if (input_len == 0) return 0;
+    const out_offsets = out_offsets_ptr[0..capacity];
+    const out_lengths = out_lengths_ptr[0..capacity];
+    if (out_offsets.len != out_lengths.len) {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    }
+
+    const total = punkt.fillSentenceOffsetsAscii(input_ptr[0..input_len], out_offsets, out_lengths);
     if (total > capacity) error_state.setError(.insufficient_capacity);
     return total;
 }
@@ -930,6 +959,27 @@ pub export fn bunnltk_porter_stem_ascii(
     };
 
     return @as(u32, @intCast(stem_len));
+}
+
+pub export fn bunnltk_wordnet_morphy_ascii(
+    input_ptr: [*]const u8,
+    input_len: usize,
+    pos: u32,
+    out_ptr: [*]u8,
+    out_capacity: usize,
+) u32 {
+    error_state.resetError();
+    if (input_len == 0 or out_capacity == 0) return 0;
+    const pos_tag: morphy.WordNetPos = switch (pos) {
+        1 => .noun,
+        2 => .verb,
+        3 => .adjective,
+        4 => .adverb,
+        else => .any,
+    };
+    const written = morphy.morphyAscii(input_ptr[0..input_len], pos_tag, out_ptr[0..out_capacity]);
+    if (written == 0) error_state.setError(.insufficient_capacity);
+    return @intCast(written);
 }
 
 test "ffi error behavior" {

@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import { sentenceTokenizePunkt } from "./punkt";
 import { wordTokenizeSubset } from "./tokenizers";
 
@@ -123,3 +123,14 @@ export function loadBundledMiniCorpus(rootPath?: string): CorpusReader {
   return reader;
 }
 
+export function loadCorpusBundleFromIndex(indexPath: string): CorpusReader {
+  const absIndex = resolve(indexPath);
+  const base = dirname(absIndex);
+  const index = JSON.parse(readFileSync(absIndex, "utf8")) as CorpusMiniIndex;
+  const files: CorpusFile[] = index.files.map((row) => ({
+    id: row.id,
+    text: readFileSync(resolve(base, row.path), "utf8"),
+    categories: row.categories ?? [],
+  }));
+  return new CorpusReader(files);
+}

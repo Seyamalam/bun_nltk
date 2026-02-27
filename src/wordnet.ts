@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { wordnetMorphyAsciiNative } from "./native";
 
 export type WordNetPos = "n" | "v" | "a" | "r";
 
@@ -122,6 +123,13 @@ export class WordNet {
   }
 
   morphy(word: string, pos?: WordNetPos): string | null {
+    const nativeCandidate = wordnetMorphyAsciiNative(word, pos);
+    if (nativeCandidate) {
+      const rows = this.lemmaIndex.get(nativeCandidate);
+      if (rows && rows.length > 0 && (!pos || rows.some((row) => row.pos === pos))) {
+        return nativeCandidate;
+      }
+    }
     for (const candidate of morphCandidates(word, pos)) {
       const rows = this.lemmaIndex.get(candidate);
       if (!rows || rows.length === 0) continue;
@@ -156,6 +164,7 @@ export class WordNet {
 }
 
 let cachedMiniWordNet: WordNet | null = null;
+let cachedExtendedWordNet: WordNet | null = null;
 
 export function loadWordNetMini(path?: string): WordNet {
   if (!path && cachedMiniWordNet) return cachedMiniWordNet;
@@ -166,3 +175,11 @@ export function loadWordNetMini(path?: string): WordNet {
   return db;
 }
 
+export function loadWordNetExtended(path?: string): WordNet {
+  if (!path && cachedExtendedWordNet) return cachedExtendedWordNet;
+  const sourcePath = path ?? resolve(import.meta.dir, "..", "models", "wordnet_extended.json");
+  const payload = JSON.parse(readFileSync(sourcePath, "utf8")) as WordNetMiniPayload;
+  const db = new WordNet(payload);
+  if (!path) cachedExtendedWordNet = db;
+  return db;
+}

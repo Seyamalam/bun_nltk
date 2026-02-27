@@ -29,6 +29,7 @@ import {
   posTagAscii,
   posTagAsciiNative,
   porterStemAscii,
+  sentenceTokenizePunktAsciiNative,
   skipgramsAscii,
   skipgramsAsciiNative,
   topPmiBigramsAscii,
@@ -39,6 +40,7 @@ import {
   tokenizeAsciiNative,
   tokenFreqDistHashAscii,
   tokenFreqDistHashAsciiJs,
+  wordnetMorphyAsciiNative,
   hashTokenAscii,
 } from "../index";
 
@@ -261,6 +263,22 @@ test("native handles empty input", () => {
   expect(topPmiBigramsAscii("", 5, 2)).toEqual([]);
   expect(tokenFreqDistIdsAscii("").tokens).toEqual([]);
   expect(bigramWindowStatsAscii("", 2)).toEqual([]);
+  expect(sentenceTokenizePunktAsciiNative("")).toEqual([]);
+  expect(wordnetMorphyAsciiNative("")).toBe("");
+});
+
+test("native punkt sentence tokenizer aligns with public punkt path", () => {
+  const text = "Dr. Smith lives in the U.S. He works at 9 a.m.";
+  expect(sentenceTokenizePunktAsciiNative(text)).toEqual([
+    "Dr. Smith lives in the U.S.",
+    "He works at 9 a.m.",
+  ]);
+});
+
+test("native wordnet morphy handles inflections", () => {
+  expect(wordnetMorphyAsciiNative("dogs", "n")).toBe("dog");
+  expect(wordnetMorphyAsciiNative("sprinted", "v")).toBe("sprint");
+  expect(wordnetMorphyAsciiNative("faster", "a")).toBe("fast");
 });
 
 test("native streaming freqdist builder matches reference counts and json export", () => {

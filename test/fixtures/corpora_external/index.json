@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "id": "sample_a",
+      "path": "sample_a.txt",
+      "categories": ["alpha"]
+    },
+    {
+      "id": "sample_b",
+      "path": "sample_b.txt",
+      "categories": ["beta"]
+    }
+  ]
+}

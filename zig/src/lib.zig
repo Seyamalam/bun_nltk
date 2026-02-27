@@ -14,5 +14,7 @@ test {
     _ = @import("core/porter.zig");
     _ = @import("core/perceptron.zig");
     _ = @import("core/tagger.zig");
+    _ = @import("core/punkt.zig");
+    _ = @import("core/morphy.zig");
     _ = @import("ffi_exports.zig");
 }

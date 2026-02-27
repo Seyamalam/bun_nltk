@@ -25,6 +25,11 @@ test("wasm wrapper metrics and token APIs match native", async () => {
     expect(wasm.computeAsciiMetrics(text, 2)).toEqual(computeAsciiMetrics(text, 2));
     expect(wasm.tokenizeAscii(text)).toEqual(tokenizeAsciiNative(text));
     expect(wasm.normalizeTokensAscii(text, true)).toEqual(normalizeTokensAsciiNative(text, true));
+    expect(wasm.sentenceTokenizePunktAscii("Dr. Smith went home. He slept.")).toEqual([
+      "Dr. Smith went home.",
+      "He slept.",
+    ]);
+    expect(wasm.wordnetMorphyAscii("dogs", "n")).toBe("dog");
   } finally {
     wasm.dispose();
   }

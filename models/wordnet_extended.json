@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "synsets": [
+    {
+      "id": "entity.n.01",
+      "pos": "n",
+      "lemmas": ["entity"],
+      "gloss": "that which is perceived or known to have its own distinct existence",
+      "examples": [],
+      "hypernyms": [],
+      "hyponyms": ["organism.n.01", "document.n.01", "artifact.n.01"],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "artifact.n.01",
+      "pos": "n",
+      "lemmas": ["artifact", "artefact"],
+      "gloss": "a man-made object",
+      "examples": [],
+      "hypernyms": ["entity.n.01"],
+      "hyponyms": ["computer.n.01"],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "computer.n.01",
+      "pos": "n",
+      "lemmas": ["computer", "computing_machine"],
+      "gloss": "a machine for performing calculations automatically",
+      "examples": ["The computer finished training overnight."],
+      "hypernyms": ["artifact.n.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "organism.n.01",
+      "pos": "n",
+      "lemmas": ["organism", "being"],
+      "gloss": "a living thing that has (or can develop) the ability to act",
+      "examples": [],
+      "hypernyms": ["entity.n.01"],
+      "hyponyms": ["animal.n.01"],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "animal.n.01",
+      "pos": "n",
+      "lemmas": ["animal", "animate_being", "beast"],
+      "gloss": "a living organism characterized by voluntary movement",
+      "examples": [],
+      "hypernyms": ["organism.n.01"],
+      "hyponyms": ["dog.n.01", "cat.n.01"],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "dog.n.01",
+      "pos": "n",
+      "lemmas": ["dog", "domestic_dog", "canis_familiaris"],
+      "gloss": "a domesticated carnivorous mammal that typically has a long snout",
+      "examples": ["The dog barked all night."],
+      "hypernyms": ["animal.n.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "cat.n.01",
+      "pos": "n",
+      "lemmas": ["cat", "true_cat", "felis_catus"],
+      "gloss": "feline mammal usually having thick soft fur and no ability to roar",
+      "examples": ["The cat slept on the couch."],
+      "hypernyms": ["animal.n.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "document.n.01",
+      "pos": "n",
+      "lemmas": ["document", "written_document", "paper"],
+      "gloss": "writing that provides information",
+      "examples": [],
+      "hypernyms": ["entity.n.01"],
+      "hyponyms": ["research_paper.n.01"],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "research_paper.n.01",
+      "pos": "n",
+      "lemmas": ["research_paper", "scientific_paper"],
+      "gloss": "an academic paper presenting original research",
+      "examples": ["The research paper introduces a new model."],
+      "hypernyms": ["document.n.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "model.n.01",
+      "pos": "n",
+      "lemmas": ["model"],
+      "gloss": "a representation used to describe how something works",
+      "examples": ["The language model converged quickly."],
+      "hypernyms": ["document.n.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "algorithm.n.01",
+      "pos": "n",
+      "lemmas": ["algorithm"],
+      "gloss": "a finite sequence of well-defined instructions",
+      "examples": [],
+      "hypernyms": ["document.n.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "speed.n.01",
+      "pos": "n",
+      "lemmas": ["speed", "velocity"],
+      "gloss": "distance traveled per unit time",
+      "examples": [],
+      "hypernyms": ["entity.n.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "run.v.01",
+      "pos": "v",
+      "lemmas": ["run", "operate"],
+      "gloss": "perform as expected when applied",
+      "examples": ["The code runs quickly."],
+      "hypernyms": [],
+      "hyponyms": ["sprint.v.01", "optimize.v.01", "parse.v.01"],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "sprint.v.01",
+      "pos": "v",
+      "lemmas": ["sprint", "race"],
+      "gloss": "run very fast",
+      "examples": ["She sprinted to the finish line."],
+      "hypernyms": ["run.v.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "optimize.v.01",
+      "pos": "v",
+      "lemmas": ["optimize", "optimise"],
+      "gloss": "make the best or most effective use of a resource",
+      "examples": ["We optimized the tokenizer loop."],
+      "hypernyms": ["run.v.01"],
+      "hyponyms": ["improve.v.01"],
+      "similarTo": [],
+      "antonyms": ["slow.v.01"]
+    },
+    {
+      "id": "improve.v.01",
+      "pos": "v",
+      "lemmas": ["improve", "enhance"],
+      "gloss": "to make better",
+      "examples": [],
+      "hypernyms": ["optimize.v.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "slow.v.01",
+      "pos": "v",
+      "lemmas": ["slow", "decelerate"],
+      "gloss": "cause to proceed more slowly",
+      "examples": [],
+      "hypernyms": [],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": ["optimize.v.01"]
+    },
+    {
+      "id": "parse.v.01",
+      "pos": "v",
+      "lemmas": ["parse"],
+      "gloss": "analyze a string according to grammatical rules",
+      "examples": [],
+      "hypernyms": ["run.v.01"],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": []
+    },
+    {
+      "id": "quick.a.01",
+      "pos": "a",
+      "lemmas": ["quick", "fast", "rapid"],
+      "gloss": "accomplished rapidly and without delay",
+      "examples": [],
+      "hypernyms": [],
+      "hyponyms": [],
+      "similarTo": ["speedy.a.01"],
+      "antonyms": ["slow.a.01"]
+    },
+    {
+      "id": "speedy.a.01",
+      "pos": "a",
+      "lemmas": ["speedy"],
+      "gloss": "characterized by speed",
+      "examples": [],
+      "hypernyms": [],
+      "hyponyms": [],
+      "similarTo": ["quick.a.01"],
+      "antonyms": []
+    },
+    {
+      "id": "slow.a.01",
+      "pos": "a",
+      "lemmas": ["slow"],
+      "gloss": "not moving quickly",
+      "examples": [],
+      "hypernyms": [],
+      "hyponyms": [],
+      "similarTo": [],
+      "antonyms": ["quick.a.01"]
+    }
+  ]
+}
