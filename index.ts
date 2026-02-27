@@ -13,6 +13,8 @@ export {
   everygramsAsciiNative,
   normalizeTokensAsciiNative,
   sentenceTokenizePunktAsciiNative,
+  evaluateLanguageModelIdsNative,
+  chunkIobIdsNative,
   perceptronPredictBatchNative,
   posTagAsciiNative,
   skipgramsAsciiNative,
@@ -29,6 +31,7 @@ export {
 } from "./src/native";
 
 export type { StreamBigramFreq, StreamConditionalFreq } from "./src/native";
+export type { NativeLmModelType } from "./src/native";
 
 export {
   countNgramsAscii as countNgramsAsciiJs,
@@ -72,7 +75,7 @@ export { parseBrownTagged, parseConllChunked, parseConllTagged } from "./src/cor
 export type { ChunkedSentence, ChunkedToken, TaggedSentence as CorpusTaggedSentence, TaggedToken as CorpusTaggedToken } from "./src/corpus_readers";
 export { NgramLanguageModel, trainNgramLanguageModel } from "./src/lm";
 export type { LanguageModelType, NgramLanguageModelOptions } from "./src/lm";
-export { loadWordNetExtended, loadWordNetMini, WordNet } from "./src/wordnet";
+export { loadWordNetExtended, loadWordNetMini, loadWordNetPacked, WordNet } from "./src/wordnet";
 export type { WordNetMiniPayload, WordNetPos, WordNetSynset } from "./src/wordnet";
 export { WasmNltk } from "./src/wasm";
 export {

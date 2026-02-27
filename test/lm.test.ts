@@ -75,14 +75,19 @@ function runParityCase(model: LanguageModelType, tolerance: number) {
     endToken: options.endToken ?? "</s>",
   });
 
+  const batch = lm.evaluateBatch(
+    probes.map((probe) => ({ word: probe.word, context: probe.context })),
+    perplexityTokens,
+  );
+
   for (let i = 0; i < probes.length; i += 1) {
     const probe = probes[i]!;
-    const jsScore = lm.score(probe.word, probe.context);
+    const jsScore = batch.scores[i]!;
     const pyScore = python.probeScores[i]!.score;
     expect(Math.abs(jsScore - pyScore)).toBeLessThanOrEqual(tolerance);
   }
 
-  const jsPerplexity = lm.perplexity(perplexityTokens);
+  const jsPerplexity = batch.perplexity;
   expect(Math.abs(jsPerplexity - python.perplexity)).toBeLessThanOrEqual(tolerance * 20);
 }
 

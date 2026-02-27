@@ -5,6 +5,8 @@ const normalize = @import("core/normalize.zig");
 const perceptron = @import("core/perceptron.zig");
 const punkt = @import("core/punkt.zig");
 const morphy = @import("core/morphy.zig");
+const lm = @import("core/lm.zig");
+const chunk = @import("core/chunk.zig");
 const error_state = @import("core/error_state.zig");
 
 var input_buffer: [128 * 1024 * 1024]u8 = undefined;
@@ -251,6 +253,112 @@ pub export fn bunnltk_wasm_wordnet_morphy_ascii(
     const written = morphy.morphyAscii(input_buffer[0..len], pos_tag, out);
     if (written == 0) error_state.setError(.insufficient_capacity);
     return @intCast(written);
+}
+
+fn lmModelTypeFromU32(value: u32) lm.ModelType {
+    return switch (value) {
+        0 => .mle,
+        1 => .lidstone,
+        else => .kneser_ney_interpolated,
+    };
+}
+
+pub export fn bunnltk_wasm_lm_eval_ids(
+    token_ids_ptr: u32,
+    token_ids_len: u32,
+    sentence_offsets_ptr: u32,
+    sentence_offsets_len: u32,
+    order: u32,
+    model_type: u32,
+    gamma: f64,
+    discount: f64,
+    vocab_size: u32,
+    probe_context_flat_ptr: u32,
+    probe_context_flat_len: u32,
+    probe_context_lens_ptr: u32,
+    probe_words_ptr: u32,
+    probe_count: u32,
+    out_scores_ptr: u32,
+    out_scores_len: u32,
+    perplexity_tokens_ptr: u32,
+    perplexity_len: u32,
+    prefix_tokens_ptr: u32,
+    prefix_len: u32,
+) f64 {
+    error_state.resetError();
+    if (token_ids_ptr == 0 or sentence_offsets_ptr == 0 or out_scores_ptr == 0) {
+        error_state.setError(.insufficient_capacity);
+        return std.math.inf(f64);
+    }
+    if (order == 0 or order > 3) {
+        error_state.setError(.invalid_n);
+        return std.math.inf(f64);
+    }
+
+    return lm.evalIds(
+        ptrFromOffset(u32, token_ids_ptr)[0..@as(usize, token_ids_len)],
+        ptrFromOffset(u32, sentence_offsets_ptr)[0..@as(usize, sentence_offsets_len)],
+        order,
+        lmModelTypeFromU32(model_type),
+        gamma,
+        discount,
+        vocab_size,
+        ptrFromOffset(u32, probe_context_flat_ptr)[0..@as(usize, probe_context_flat_len)],
+        ptrFromOffset(u32, probe_context_lens_ptr)[0..@as(usize, probe_count)],
+        ptrFromOffset(u32, probe_words_ptr)[0..@as(usize, probe_count)],
+        ptrFromOffset(f64, out_scores_ptr)[0..@as(usize, out_scores_len)],
+        ptrFromOffset(u32, perplexity_tokens_ptr)[0..@as(usize, perplexity_len)],
+        ptrFromOffset(u32, prefix_tokens_ptr)[0..@as(usize, prefix_len)],
+        std.heap.wasm_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+        }
+        return std.math.inf(f64);
+    };
+}
+
+pub export fn bunnltk_wasm_chunk_iob_ids(
+    token_tag_ids_ptr: u32,
+    token_count: u32,
+    atom_allowed_offsets_ptr: u32,
+    atom_allowed_lengths_ptr: u32,
+    atom_allowed_flat_ptr: u32,
+    atom_allowed_flat_len: u32,
+    atom_mins_ptr: u32,
+    atom_maxs_ptr: u32,
+    atom_count: u32,
+    rule_atom_offsets_ptr: u32,
+    rule_atom_counts_ptr: u32,
+    rule_label_ids_ptr: u32,
+    rule_count: u32,
+    out_label_ids_ptr: u32,
+    out_begin_ptr: u32,
+    out_capacity: u32,
+) u64 {
+    error_state.resetError();
+    if (token_count == 0) return 0;
+    if (token_tag_ids_ptr == 0 or out_label_ids_ptr == 0 or out_begin_ptr == 0) {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    }
+    if (out_capacity < token_count) {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    }
+    return chunk.fillChunkIobIds(
+        ptrFromOffset(u16, token_tag_ids_ptr)[0..@as(usize, token_count)],
+        ptrFromOffset(u32, atom_allowed_offsets_ptr)[0..@as(usize, atom_count)],
+        ptrFromOffset(u32, atom_allowed_lengths_ptr)[0..@as(usize, atom_count)],
+        ptrFromOffset(u16, atom_allowed_flat_ptr)[0..@as(usize, atom_allowed_flat_len)],
+        ptrFromOffset(u8, atom_mins_ptr)[0..@as(usize, atom_count)],
+        ptrFromOffset(u8, atom_maxs_ptr)[0..@as(usize, atom_count)],
+        ptrFromOffset(u32, rule_atom_offsets_ptr)[0..@as(usize, rule_count)],
+        ptrFromOffset(u32, rule_atom_counts_ptr)[0..@as(usize, rule_count)],
+        ptrFromOffset(u16, rule_label_ids_ptr)[0..@as(usize, rule_count)],
+        ptrFromOffset(u16, out_label_ids_ptr)[0..@as(usize, out_capacity)],
+        ptrFromOffset(u8, out_begin_ptr)[0..@as(usize, out_capacity)],
+    );
 }
 
 test "wasm exports basic counts and metrics" {

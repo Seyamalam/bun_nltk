@@ -16,5 +16,7 @@ test {
     _ = @import("core/tagger.zig");
     _ = @import("core/punkt.zig");
     _ = @import("core/morphy.zig");
+    _ = @import("core/lm.zig");
+    _ = @import("core/chunk.zig");
     _ = @import("ffi_exports.zig");
 }

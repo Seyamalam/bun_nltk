@@ -159,6 +159,52 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize", "u32", "ptr", "usize"],
     returns: "u32",
   },
+  bunnltk_lm_eval_ids: {
+    args: [
+      "ptr",
+      "usize",
+      "ptr",
+      "usize",
+      "u32",
+      "u32",
+      "f64",
+      "f64",
+      "u32",
+      "ptr",
+      "usize",
+      "ptr",
+      "ptr",
+      "usize",
+      "ptr",
+      "usize",
+      "ptr",
+      "usize",
+      "ptr",
+      "usize",
+    ],
+    returns: "f64",
+  },
+  bunnltk_chunk_iob_ids: {
+    args: [
+      "ptr",
+      "usize",
+      "ptr",
+      "ptr",
+      "ptr",
+      "usize",
+      "ptr",
+      "ptr",
+      "usize",
+      "ptr",
+      "ptr",
+      "ptr",
+      "usize",
+      "ptr",
+      "ptr",
+      "usize",
+    ],
+    returns: "u64",
+  },
   bunnltk_freqdist_stream_new: {
     args: [],
     returns: "u64",
@@ -861,6 +907,95 @@ export function wordnetMorphyAsciiNative(word: string, pos?: "n" | "v" | "a" | "
   assertNoNativeError("wordnetMorphyAsciiNative");
   if (written <= 0) return "";
   return new TextDecoder().decode(out.subarray(0, written));
+}
+
+export type NativeLmModelType = "mle" | "lidstone" | "kneser_ney_interpolated";
+
+function nativeLmTypeCode(model: NativeLmModelType): number {
+  if (model === "mle") return 0;
+  if (model === "lidstone") return 1;
+  return 2;
+}
+
+export function evaluateLanguageModelIdsNative(input: {
+  tokenIds: Uint32Array;
+  sentenceOffsets: Uint32Array;
+  order: number;
+  model: NativeLmModelType;
+  gamma: number;
+  discount: number;
+  vocabSize: number;
+  probeContextFlat: Uint32Array;
+  probeContextLens: Uint32Array;
+  probeWordIds: Uint32Array;
+  perplexityTokenIds: Uint32Array;
+  prefixTokenIds: Uint32Array;
+}): { scores: Float64Array; perplexity: number } {
+  const scores = new Float64Array(input.probeWordIds.length);
+  const perplexity = lib.symbols.bunnltk_lm_eval_ids(
+    ptr(input.tokenIds),
+    input.tokenIds.length,
+    ptr(input.sentenceOffsets),
+    input.sentenceOffsets.length,
+    input.order,
+    nativeLmTypeCode(input.model),
+    input.gamma,
+    input.discount,
+    input.vocabSize,
+    ptr(input.probeContextFlat),
+    input.probeContextFlat.length,
+    ptr(input.probeContextLens),
+    ptr(input.probeWordIds),
+    input.probeWordIds.length,
+    ptr(scores),
+    scores.length,
+    ptr(input.perplexityTokenIds),
+    input.perplexityTokenIds.length,
+    ptr(input.prefixTokenIds),
+    input.prefixTokenIds.length,
+  );
+  assertNoNativeError("evaluateLanguageModelIdsNative");
+  return {
+    scores,
+    perplexity,
+  };
+}
+
+export function chunkIobIdsNative(input: {
+  tokenTagIds: Uint16Array;
+  atomAllowedOffsets: Uint32Array;
+  atomAllowedLengths: Uint32Array;
+  atomAllowedFlat: Uint16Array;
+  atomMins: Uint8Array;
+  atomMaxs: Uint8Array;
+  ruleAtomOffsets: Uint32Array;
+  ruleAtomCounts: Uint32Array;
+  ruleLabelIds: Uint16Array;
+}): { labelIds: Uint16Array; begins: Uint8Array } {
+  const labelIds = new Uint16Array(input.tokenTagIds.length);
+  const begins = new Uint8Array(input.tokenTagIds.length);
+
+  lib.symbols.bunnltk_chunk_iob_ids(
+    ptr(input.tokenTagIds),
+    input.tokenTagIds.length,
+    ptr(input.atomAllowedOffsets),
+    ptr(input.atomAllowedLengths),
+    ptr(input.atomAllowedFlat),
+    input.atomAllowedFlat.length,
+    ptr(input.atomMins),
+    ptr(input.atomMaxs),
+    input.atomMins.length,
+    ptr(input.ruleAtomOffsets),
+    ptr(input.ruleAtomCounts),
+    ptr(input.ruleLabelIds),
+    input.ruleLabelIds.length,
+    ptr(labelIds),
+    ptr(begins),
+    labelIds.length,
+  );
+  assertNoNativeError("chunkIobIdsNative");
+
+  return { labelIds, begins };
 }
 
 export function porterStemAsciiTokens(tokens: string[]): string[] {

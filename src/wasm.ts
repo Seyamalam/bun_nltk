@@ -53,6 +53,46 @@ type WasmExports = {
     outPtr: number,
     outCapacity: number,
   ) => number;
+  bunnltk_wasm_lm_eval_ids: (
+    tokenIdsPtr: number,
+    tokenIdsLen: number,
+    sentenceOffsetsPtr: number,
+    sentenceOffsetsLen: number,
+    order: number,
+    modelType: number,
+    gamma: number,
+    discount: number,
+    vocabSize: number,
+    probeContextFlatPtr: number,
+    probeContextFlatLen: number,
+    probeContextLensPtr: number,
+    probeWordsPtr: number,
+    probeCount: number,
+    outScoresPtr: number,
+    outScoresLen: number,
+    perplexityTokensPtr: number,
+    perplexityLen: number,
+    prefixTokensPtr: number,
+    prefixLen: number,
+  ) => number;
+  bunnltk_wasm_chunk_iob_ids: (
+    tokenTagIdsPtr: number,
+    tokenCount: number,
+    atomAllowedOffsetsPtr: number,
+    atomAllowedLengthsPtr: number,
+    atomAllowedFlatPtr: number,
+    atomAllowedFlatLen: number,
+    atomMinsPtr: number,
+    atomMaxsPtr: number,
+    atomCount: number,
+    ruleAtomOffsetsPtr: number,
+    ruleAtomCountsPtr: number,
+    ruleLabelIdsPtr: number,
+    ruleCount: number,
+    outLabelIdsPtr: number,
+    outBeginsPtr: number,
+    outCapacity: number,
+  ) => bigint;
 };
 
 export type AsciiMetrics = {
@@ -75,6 +115,8 @@ export type WasmNltkInit = {
   wasmBytes?: Uint8Array;
   wasmPath?: string;
 };
+
+export type WasmLmModelType = "mle" | "lidstone" | "kneser_ney_interpolated";
 
 export class WasmNltk {
   private readonly exports: WasmExports;
@@ -326,5 +368,153 @@ export class WasmNltk {
     this.assertNoError("wordnetMorphyAscii");
     if (written <= 0) return "";
     return this.decoder.decode(new Uint8Array(this.exports.memory.buffer, outBlock.ptr, written));
+  }
+
+  evaluateLanguageModelIds(input: {
+    tokenIds: Uint32Array;
+    sentenceOffsets: Uint32Array;
+    order: number;
+    model: WasmLmModelType;
+    gamma: number;
+    discount: number;
+    vocabSize: number;
+    probeContextFlat: Uint32Array;
+    probeContextLens: Uint32Array;
+    probeWordIds: Uint32Array;
+    perplexityTokenIds: Uint32Array;
+    prefixTokenIds: Uint32Array;
+  }): { scores: Float64Array; perplexity: number } {
+    const tokenBlock = this.ensureBlock("lm_token_ids", input.tokenIds.length * Uint32Array.BYTES_PER_ELEMENT);
+    const sentBlock = this.ensureBlock("lm_sentence_offsets", input.sentenceOffsets.length * Uint32Array.BYTES_PER_ELEMENT);
+    const probeFlatBlock = this.ensureBlock(
+      "lm_probe_flat",
+      Math.max(1, input.probeContextFlat.length) * Uint32Array.BYTES_PER_ELEMENT,
+    );
+    const probeLensBlock = this.ensureBlock(
+      "lm_probe_lens",
+      Math.max(1, input.probeContextLens.length) * Uint32Array.BYTES_PER_ELEMENT,
+    );
+    const probeWordBlock = this.ensureBlock(
+      "lm_probe_words",
+      Math.max(1, input.probeWordIds.length) * Uint32Array.BYTES_PER_ELEMENT,
+    );
+    const scoreBlock = this.ensureBlock("lm_scores", Math.max(1, input.probeWordIds.length) * Float64Array.BYTES_PER_ELEMENT);
+    const pplTokensBlock = this.ensureBlock(
+      "lm_ppl_tokens",
+      Math.max(1, input.perplexityTokenIds.length) * Uint32Array.BYTES_PER_ELEMENT,
+    );
+    const prefixBlock = this.ensureBlock("lm_prefix_tokens", Math.max(1, input.prefixTokenIds.length) * Uint32Array.BYTES_PER_ELEMENT);
+
+    new Uint32Array(this.exports.memory.buffer, tokenBlock.ptr, input.tokenIds.length).set(input.tokenIds);
+    new Uint32Array(this.exports.memory.buffer, sentBlock.ptr, input.sentenceOffsets.length).set(input.sentenceOffsets);
+    if (input.probeContextFlat.length > 0) {
+      new Uint32Array(this.exports.memory.buffer, probeFlatBlock.ptr, input.probeContextFlat.length).set(input.probeContextFlat);
+    }
+    if (input.probeContextLens.length > 0) {
+      new Uint32Array(this.exports.memory.buffer, probeLensBlock.ptr, input.probeContextLens.length).set(input.probeContextLens);
+    }
+    if (input.probeWordIds.length > 0) {
+      new Uint32Array(this.exports.memory.buffer, probeWordBlock.ptr, input.probeWordIds.length).set(input.probeWordIds);
+    }
+    if (input.perplexityTokenIds.length > 0) {
+      new Uint32Array(this.exports.memory.buffer, pplTokensBlock.ptr, input.perplexityTokenIds.length).set(input.perplexityTokenIds);
+    }
+    if (input.prefixTokenIds.length > 0) {
+      new Uint32Array(this.exports.memory.buffer, prefixBlock.ptr, input.prefixTokenIds.length).set(input.prefixTokenIds);
+    }
+
+    const modelType = input.model === "mle" ? 0 : input.model === "lidstone" ? 1 : 2;
+    const perplexity = this.exports.bunnltk_wasm_lm_eval_ids(
+      tokenBlock.ptr,
+      input.tokenIds.length,
+      sentBlock.ptr,
+      input.sentenceOffsets.length,
+      input.order,
+      modelType,
+      input.gamma,
+      input.discount,
+      input.vocabSize,
+      probeFlatBlock.ptr,
+      input.probeContextFlat.length,
+      probeLensBlock.ptr,
+      probeWordBlock.ptr,
+      input.probeWordIds.length,
+      scoreBlock.ptr,
+      input.probeWordIds.length,
+      pplTokensBlock.ptr,
+      input.perplexityTokenIds.length,
+      prefixBlock.ptr,
+      input.prefixTokenIds.length,
+    );
+    this.assertNoError("evaluateLanguageModelIds");
+    const scores = Float64Array.from(new Float64Array(this.exports.memory.buffer, scoreBlock.ptr, input.probeWordIds.length));
+    return { scores, perplexity };
+  }
+
+  chunkIobIds(input: {
+    tokenTagIds: Uint16Array;
+    atomAllowedOffsets: Uint32Array;
+    atomAllowedLengths: Uint32Array;
+    atomAllowedFlat: Uint16Array;
+    atomMins: Uint8Array;
+    atomMaxs: Uint8Array;
+    ruleAtomOffsets: Uint32Array;
+    ruleAtomCounts: Uint32Array;
+    ruleLabelIds: Uint16Array;
+  }): { labelIds: Uint16Array; begins: Uint8Array } {
+    const tokenTagsBlock = this.ensureBlock("chunk_token_tags", Math.max(1, input.tokenTagIds.length) * Uint16Array.BYTES_PER_ELEMENT);
+    const atomOffBlock = this.ensureBlock("chunk_atom_off", Math.max(1, input.atomAllowedOffsets.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const atomLenBlock = this.ensureBlock("chunk_atom_len", Math.max(1, input.atomAllowedLengths.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const atomFlatBlock = this.ensureBlock("chunk_atom_flat", Math.max(1, input.atomAllowedFlat.length) * Uint16Array.BYTES_PER_ELEMENT);
+    const atomMinBlock = this.ensureBlock("chunk_atom_min", Math.max(1, input.atomMins.length));
+    const atomMaxBlock = this.ensureBlock("chunk_atom_max", Math.max(1, input.atomMaxs.length));
+    const ruleOffBlock = this.ensureBlock("chunk_rule_off", Math.max(1, input.ruleAtomOffsets.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const ruleCountBlock = this.ensureBlock("chunk_rule_count", Math.max(1, input.ruleAtomCounts.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const ruleLabelBlock = this.ensureBlock("chunk_rule_label", Math.max(1, input.ruleLabelIds.length) * Uint16Array.BYTES_PER_ELEMENT);
+    const outLabelBlock = this.ensureBlock("chunk_out_label", Math.max(1, input.tokenTagIds.length) * Uint16Array.BYTES_PER_ELEMENT);
+    const outBeginBlock = this.ensureBlock("chunk_out_begin", Math.max(1, input.tokenTagIds.length));
+
+    if (input.tokenTagIds.length > 0) {
+      new Uint16Array(this.exports.memory.buffer, tokenTagsBlock.ptr, input.tokenTagIds.length).set(input.tokenTagIds);
+      new Uint16Array(this.exports.memory.buffer, outLabelBlock.ptr, input.tokenTagIds.length).fill(0xffff);
+      new Uint8Array(this.exports.memory.buffer, outBeginBlock.ptr, input.tokenTagIds.length).fill(0);
+    }
+    if (input.atomAllowedOffsets.length > 0) {
+      new Uint32Array(this.exports.memory.buffer, atomOffBlock.ptr, input.atomAllowedOffsets.length).set(input.atomAllowedOffsets);
+      new Uint32Array(this.exports.memory.buffer, atomLenBlock.ptr, input.atomAllowedLengths.length).set(input.atomAllowedLengths);
+      new Uint16Array(this.exports.memory.buffer, atomFlatBlock.ptr, input.atomAllowedFlat.length).set(input.atomAllowedFlat);
+      new Uint8Array(this.exports.memory.buffer, atomMinBlock.ptr, input.atomMins.length).set(input.atomMins);
+      new Uint8Array(this.exports.memory.buffer, atomMaxBlock.ptr, input.atomMaxs.length).set(input.atomMaxs);
+    }
+    if (input.ruleAtomOffsets.length > 0) {
+      new Uint32Array(this.exports.memory.buffer, ruleOffBlock.ptr, input.ruleAtomOffsets.length).set(input.ruleAtomOffsets);
+      new Uint32Array(this.exports.memory.buffer, ruleCountBlock.ptr, input.ruleAtomCounts.length).set(input.ruleAtomCounts);
+      new Uint16Array(this.exports.memory.buffer, ruleLabelBlock.ptr, input.ruleLabelIds.length).set(input.ruleLabelIds);
+    }
+
+    this.exports.bunnltk_wasm_chunk_iob_ids(
+      tokenTagsBlock.ptr,
+      input.tokenTagIds.length,
+      atomOffBlock.ptr,
+      atomLenBlock.ptr,
+      atomFlatBlock.ptr,
+      input.atomAllowedFlat.length,
+      atomMinBlock.ptr,
+      atomMaxBlock.ptr,
+      input.atomMins.length,
+      ruleOffBlock.ptr,
+      ruleCountBlock.ptr,
+      ruleLabelBlock.ptr,
+      input.ruleLabelIds.length,
+      outLabelBlock.ptr,
+      outBeginBlock.ptr,
+      input.tokenTagIds.length,
+    );
+    this.assertNoError("chunkIobIds");
+
+    return {
+      labelIds: Uint16Array.from(new Uint16Array(this.exports.memory.buffer, outLabelBlock.ptr, input.tokenTagIds.length)),
+      begins: Uint8Array.from(new Uint8Array(this.exports.memory.buffer, outBeginBlock.ptr, input.tokenTagIds.length)),
+    };
   }
 }

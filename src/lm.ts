@@ -1,3 +1,5 @@
+import { evaluateLanguageModelIdsNative } from "./native";
+
 export type LanguageModelType = "mle" | "lidstone" | "kneser_ney_interpolated";
 
 export type NgramLanguageModelOptions = {
@@ -36,6 +38,19 @@ function addToSetMap(map: Map<string, Set<string>>, k: string, value: string): v
   map.set(k, bucket);
 }
 
+export type LmProbe = {
+  word: string;
+  context?: string[];
+};
+
+type NativePrepared = {
+  tokenToId: Map<string, number>;
+  unknownId: number;
+  tokenIds: Uint32Array;
+  sentenceOffsets: Uint32Array;
+  prefixTokenIds: Uint32Array;
+};
+
 export class NgramLanguageModel {
   readonly order: number;
   readonly model: LanguageModelType;
@@ -52,6 +67,7 @@ export class NgramLanguageModel {
   private readonly continuationByWord: Map<string, Set<string>>;
   private readonly continuationTypeCount: number;
   private readonly unigramTotal: number;
+  private readonly nativePrepared: NativePrepared | null;
 
   constructor(sentences: string[][], options: NgramLanguageModelOptions) {
     if (!Number.isInteger(options.order) || options.order <= 0) {
@@ -96,6 +112,7 @@ export class NgramLanguageModel {
     this.vocabulary = [...vocab].sort();
     this.unigramTotal = [...this.countsByOrder[1]!.values()].reduce((acc, count) => acc + count, 0);
     this.continuationTypeCount = [...this.continuationByWord.values()].reduce((acc, set) => acc + set.size, 0);
+    this.nativePrepared = this.order <= 3 ? this.prepareNative(prepared) : null;
   }
 
   private prepareSentences(sentences: string[][]): string[][] {
@@ -111,6 +128,43 @@ export class NgramLanguageModel {
 
   private backoffContext(context: string[]): string[] {
     return tail(context, this.order - 1);
+  }
+
+  private prepareNative(preparedSentences: string[][]): NativePrepared {
+    const tokenToId = new Map<string, number>();
+    for (const token of this.vocabulary) {
+      tokenToId.set(token, tokenToId.size);
+    }
+    if (!tokenToId.has(this.startToken)) tokenToId.set(this.startToken, tokenToId.size);
+    if (!tokenToId.has(this.endToken)) tokenToId.set(this.endToken, tokenToId.size);
+    const unknownId = tokenToId.get(this.endToken) ?? 0;
+
+    const flat: number[] = [];
+    const offsets: number[] = [0];
+    for (const sentence of preparedSentences) {
+      for (const token of sentence) {
+        const id = tokenToId.get(token) ?? unknownId;
+        flat.push(id);
+      }
+      offsets.push(flat.length);
+    }
+
+    const prefix = this.padLeft
+      ? Array.from({ length: Math.max(0, this.order - 1) }, () => tokenToId.get(this.startToken) ?? unknownId)
+      : [];
+
+    return {
+      tokenToId,
+      unknownId,
+      tokenIds: Uint32Array.from(flat),
+      sentenceOffsets: Uint32Array.from(offsets),
+      prefixTokenIds: Uint32Array.from(prefix),
+    };
+  }
+
+  private encodeToken(token: string): number {
+    if (!this.nativePrepared) return 0;
+    return this.nativePrepared.tokenToId.get(token.toLowerCase()) ?? this.nativePrepared.unknownId;
   }
 
   private mleScore(word: string, context: string[]): number {
@@ -177,6 +231,9 @@ export class NgramLanguageModel {
   }
 
   perplexity(tokens: string[]): number {
+    if (this.nativePrepared && this.order <= 3) {
+      return this.evaluateBatch([], tokens).perplexity;
+    }
     if (tokens.length === 0) return Number.POSITIVE_INFINITY;
     const sequence = [...tokens.map((item) => item.toLowerCase())];
     if (this.padRight) sequence.push(this.endToken);
@@ -193,6 +250,50 @@ export class NgramLanguageModel {
 
     return 2 ** (negLog2 / sequence.length);
   }
+
+  evaluateBatch(probes: LmProbe[], perplexityTokens: string[]): { scores: number[]; perplexity: number } {
+    if (!this.nativePrepared || this.order > 3) {
+      const scores = probes.map((probe) => this.score(probe.word, probe.context ?? []));
+      return {
+        scores,
+        perplexity: this.perplexity(perplexityTokens),
+      };
+    }
+
+    const contextsFlat: number[] = [];
+    const contextLens: number[] = [];
+    const words: number[] = [];
+    for (const probe of probes) {
+      const ctx = (probe.context ?? []).map((item) => this.encodeToken(item));
+      contextLens.push(Math.min(ctx.length, this.order - 1));
+      const tailCtx = ctx.length <= this.order - 1 ? ctx : ctx.slice(ctx.length - (this.order - 1));
+      contextsFlat.push(...tailCtx);
+      words.push(this.encodeToken(probe.word));
+    }
+
+    const perplexitySequence = [...perplexityTokens.map((item) => this.encodeToken(item))];
+    if (this.padRight) perplexitySequence.push(this.encodeToken(this.endToken));
+
+    const out = evaluateLanguageModelIdsNative({
+      tokenIds: this.nativePrepared.tokenIds,
+      sentenceOffsets: this.nativePrepared.sentenceOffsets,
+      order: this.order,
+      model: this.model,
+      gamma: this.gamma,
+      discount: this.discount,
+      vocabSize: this.vocabulary.length,
+      probeContextFlat: Uint32Array.from(contextsFlat),
+      probeContextLens: Uint32Array.from(contextLens),
+      probeWordIds: Uint32Array.from(words),
+      perplexityTokenIds: Uint32Array.from(perplexitySequence),
+      prefixTokenIds: this.nativePrepared.prefixTokenIds,
+    });
+
+    return {
+      scores: Array.from(out.scores),
+      perplexity: out.perplexity,
+    };
+  }
 }
 
 export function trainNgramLanguageModel(
@@ -201,4 +302,3 @@ export function trainNgramLanguageModel(
 ): NgramLanguageModel {
   return new NgramLanguageModel(sentences, options);
 }
-

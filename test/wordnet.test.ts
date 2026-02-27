@@ -1,5 +1,8 @@
 import { expect, test } from "bun:test";
-import { loadWordNetExtended, loadWordNetMini } from "../index";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import { loadWordNetExtended, loadWordNetMini, loadWordNetPacked } from "../index";
 
 test("wordnet mini returns noun synsets and relation links", () => {
   const wn = loadWordNetMini();
@@ -32,4 +35,41 @@ test("wordnet extended exposes larger vocabulary", () => {
   const wn = loadWordNetExtended();
   expect(wn.synsets("computer", "n").map((row) => row.id)).toContain("computer.n.01");
   expect(wn.synsets("optimize", "v").map((row) => row.id)).toContain("optimize.v.01");
+});
+
+test("wordnet packed loader parses packed binary payload", () => {
+  const payload = {
+    version: 1,
+    synsets: [
+      {
+        id: "dog.n.01",
+        pos: "n",
+        lemmas: ["dog"],
+        gloss: "dog",
+        examples: [],
+        hypernyms: [],
+        hyponyms: [],
+        similarTo: [],
+        antonyms: [],
+      },
+    ],
+  };
+  const body = new TextEncoder().encode(JSON.stringify(payload));
+  const magic = new TextEncoder().encode("BNWN1");
+  const header = new Uint8Array(magic.length + 4);
+  header.set(magic, 0);
+  new DataView(header.buffer).setUint32(magic.length, body.length, true);
+  const bytes = new Uint8Array(header.length + body.length);
+  bytes.set(header, 0);
+  bytes.set(body, header.length);
+
+  const dir = mkdtempSync(join(tmpdir(), "bun-nltk-wordnet-pack-"));
+  try {
+    const packedPath = join(dir, "wordnet.bin");
+    writeFileSync(packedPath, bytes);
+    const wn = loadWordNetPacked(packedPath);
+    expect(wn.synsets("dog", "n").map((row) => row.id)).toEqual(["dog.n.01"]);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

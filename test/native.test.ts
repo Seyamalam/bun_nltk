@@ -20,6 +20,8 @@ import {
   countUniqueTokensAsciiJs,
   everygramsAscii,
   everygramsAsciiNative,
+  evaluateLanguageModelIdsNative,
+  chunkIobIdsNative,
   normalizeTokensAscii,
   normalizeTokensAsciiNative,
   ngramsAscii,
@@ -279,6 +281,44 @@ test("native wordnet morphy handles inflections", () => {
   expect(wordnetMorphyAsciiNative("dogs", "n")).toBe("dog");
   expect(wordnetMorphyAsciiNative("sprinted", "v")).toBe("sprint");
   expect(wordnetMorphyAsciiNative("faster", "a")).toBe("fast");
+});
+
+test("native lm id evaluator returns finite scores and perplexity", () => {
+  const out = evaluateLanguageModelIdsNative({
+    tokenIds: Uint32Array.from([1, 2, 3, 4, 1, 2, 5, 4]),
+    sentenceOffsets: Uint32Array.from([0, 4, 8]),
+    order: 3,
+    model: "kneser_ney_interpolated",
+    gamma: 0.1,
+    discount: 0.75,
+    vocabSize: 6,
+    probeContextFlat: Uint32Array.from([1, 2]),
+    probeContextLens: Uint32Array.from([2]),
+    probeWordIds: Uint32Array.from([3]),
+    perplexityTokenIds: Uint32Array.from([1, 2, 3, 4]),
+    prefixTokenIds: Uint32Array.from([0, 0]),
+  });
+  expect(out.scores.length).toBe(1);
+  expect(out.scores[0]!).toBeGreaterThan(0);
+  expect(Number.isFinite(out.perplexity)).toBeTrue();
+});
+
+test("native chunk iob evaluator emits expected labels", () => {
+  const out = chunkIobIdsNative({
+    tokenTagIds: Uint16Array.from([1, 2, 2, 3, 4, 5]),
+    atomAllowedOffsets: Uint32Array.from([0, 1, 2, 3, 4]),
+    atomAllowedLengths: Uint32Array.from([1, 1, 1, 1, 1]),
+    atomAllowedFlat: Uint16Array.from([1, 2, 3, 4, 5]),
+    atomMins: Uint8Array.from([0, 0, 1, 1, 0]),
+    atomMaxs: Uint8Array.from([1, 255, 255, 255, 1]),
+    ruleAtomOffsets: Uint32Array.from([0, 3]),
+    ruleAtomCounts: Uint32Array.from([3, 2]),
+    ruleLabelIds: Uint16Array.from([0, 1]),
+  });
+  expect(out.labelIds[0]!).toBe(0);
+  expect(out.labelIds[3]!).toBe(0);
+  expect(out.labelIds[4]!).toBe(1);
+  expect(out.begins[0]!).toBe(1);
 });
 
 test("native streaming freqdist builder matches reference counts and json export", () => {

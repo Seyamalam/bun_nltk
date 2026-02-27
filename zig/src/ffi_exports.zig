@@ -11,6 +11,8 @@ const tagger = @import("core/tagger.zig");
 const stream_freqdist = @import("core/stream_freqdist.zig");
 const punkt = @import("core/punkt.zig");
 const morphy = @import("core/morphy.zig");
+const lm = @import("core/lm.zig");
+const chunk = @import("core/chunk.zig");
 const types = @import("core/types.zig");
 const error_state = @import("core/error_state.zig");
 
@@ -980,6 +982,122 @@ pub export fn bunnltk_wordnet_morphy_ascii(
     const written = morphy.morphyAscii(input_ptr[0..input_len], pos_tag, out_ptr[0..out_capacity]);
     if (written == 0) error_state.setError(.insufficient_capacity);
     return @intCast(written);
+}
+
+fn lmModelTypeFromU32(value: u32) lm.ModelType {
+    return switch (value) {
+        0 => .mle,
+        1 => .lidstone,
+        else => .kneser_ney_interpolated,
+    };
+}
+
+pub export fn bunnltk_lm_eval_ids(
+    token_ids_ptr: [*]const u32,
+    token_ids_len: usize,
+    sentence_offsets_ptr: [*]const u32,
+    sentence_offsets_len: usize,
+    order: u32,
+    model_type: u32,
+    gamma: f64,
+    discount: f64,
+    vocab_size: u32,
+    probe_context_flat_ptr: [*]const u32,
+    probe_context_flat_len: usize,
+    probe_context_lens_ptr: [*]const u32,
+    probe_words_ptr: [*]const u32,
+    probe_count: usize,
+    out_scores_ptr: [*]f64,
+    out_scores_len: usize,
+    perplexity_tokens_ptr: [*]const u32,
+    perplexity_len: usize,
+    prefix_tokens_ptr: [*]const u32,
+    prefix_len: usize,
+) f64 {
+    error_state.resetError();
+    if (order == 0 or order > 3) {
+        error_state.setError(.invalid_n);
+        return std.math.inf(f64);
+    }
+    if (token_ids_len == 0 or sentence_offsets_len < 2) {
+        error_state.setError(.insufficient_capacity);
+        return std.math.inf(f64);
+    }
+
+    const ppl = lm.evalIds(
+        token_ids_ptr[0..token_ids_len],
+        sentence_offsets_ptr[0..sentence_offsets_len],
+        order,
+        lmModelTypeFromU32(model_type),
+        gamma,
+        discount,
+        vocab_size,
+        probe_context_flat_ptr[0..probe_context_flat_len],
+        probe_context_lens_ptr[0..probe_count],
+        probe_words_ptr[0..probe_count],
+        out_scores_ptr[0..out_scores_len],
+        perplexity_tokens_ptr[0..perplexity_len],
+        prefix_tokens_ptr[0..prefix_len],
+        std.heap.c_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+        }
+        return std.math.inf(f64);
+    };
+    return ppl;
+}
+
+pub export fn bunnltk_chunk_iob_ids(
+    token_tag_ids_ptr: [*]const u16,
+    token_count: usize,
+    atom_allowed_offsets_ptr: [*]const u32,
+    atom_allowed_lengths_ptr: [*]const u32,
+    atom_allowed_flat_ptr: [*]const u16,
+    atom_allowed_flat_len: usize,
+    atom_mins_ptr: [*]const u8,
+    atom_maxs_ptr: [*]const u8,
+    atom_count: usize,
+    rule_atom_offsets_ptr: [*]const u32,
+    rule_atom_counts_ptr: [*]const u32,
+    rule_label_ids_ptr: [*]const u16,
+    rule_count: usize,
+    out_label_ids_ptr: [*]u16,
+    out_begin_ptr: [*]u8,
+    out_capacity: usize,
+) u64 {
+    error_state.resetError();
+    if (token_count == 0) return 0;
+    if (out_capacity < token_count) {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    }
+    if (rule_count == 0 or atom_count == 0) {
+        var i: usize = 0;
+        while (i < token_count) : (i += 1) {
+            out_label_ids_ptr[i] = std.math.maxInt(u16);
+            out_begin_ptr[i] = 0;
+        }
+        return @intCast(token_count);
+    }
+
+    const written = chunk.fillChunkIobIds(
+        token_tag_ids_ptr[0..token_count],
+        atom_allowed_offsets_ptr[0..atom_count],
+        atom_allowed_lengths_ptr[0..atom_count],
+        atom_allowed_flat_ptr[0..atom_allowed_flat_len],
+        atom_mins_ptr[0..atom_count],
+        atom_maxs_ptr[0..atom_count],
+        rule_atom_offsets_ptr[0..rule_count],
+        rule_atom_counts_ptr[0..rule_count],
+        rule_label_ids_ptr[0..rule_count],
+        out_label_ids_ptr[0..out_capacity],
+        out_begin_ptr[0..out_capacity],
+    );
+    if (written == 0 and token_count > 0) {
+        error_state.setError(.invalid_n);
+    }
+    return written;
 }
 
 test "ffi error behavior" {

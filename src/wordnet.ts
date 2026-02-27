@@ -165,6 +165,7 @@ export class WordNet {
 
 let cachedMiniWordNet: WordNet | null = null;
 let cachedExtendedWordNet: WordNet | null = null;
+let cachedPackedWordNet: WordNet | null = null;
 
 export function loadWordNetMini(path?: string): WordNet {
   if (!path && cachedMiniWordNet) return cachedMiniWordNet;
@@ -181,5 +182,28 @@ export function loadWordNetExtended(path?: string): WordNet {
   const payload = JSON.parse(readFileSync(sourcePath, "utf8")) as WordNetMiniPayload;
   const db = new WordNet(payload);
   if (!path) cachedExtendedWordNet = db;
+  return db;
+}
+
+const WORDNET_PACK_MAGIC = "BNWN1";
+
+export function loadWordNetPacked(path?: string): WordNet {
+  if (!path && cachedPackedWordNet) return cachedPackedWordNet;
+  const sourcePath = path ?? resolve(import.meta.dir, "..", "models", "wordnet_full.bin");
+  const bytes = readFileSync(sourcePath);
+  const magic = new TextDecoder().decode(bytes.subarray(0, WORDNET_PACK_MAGIC.length));
+  if (magic !== WORDNET_PACK_MAGIC) {
+    throw new Error(`invalid wordnet pack magic: ${magic}`);
+  }
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const len = view.getUint32(WORDNET_PACK_MAGIC.length, true);
+  const start = WORDNET_PACK_MAGIC.length + 4;
+  const end = start + len;
+  if (end > bytes.length) {
+    throw new Error("invalid wordnet pack length");
+  }
+  const payload = JSON.parse(new TextDecoder().decode(bytes.subarray(start, end))) as WordNetMiniPayload;
+  const db = new WordNet(payload);
+  if (!path) cachedPackedWordNet = db;
   return db;
 }

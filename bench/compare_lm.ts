@@ -47,11 +47,12 @@ function runNative(sentences: string[][], probes: Probe[], perplexityTokens: str
       model: "kneser_ney_interpolated",
       discount: 0.75,
     });
-    let local = 0;
-    for (const probe of probes) {
-      local += model.score(probe.word, probe.context);
-    }
-    perplexity = model.perplexity(perplexityTokens);
+    const evalOut = model.evaluateBatch(
+      probes.map((probe) => ({ word: probe.word, context: probe.context })),
+      perplexityTokens,
+    );
+    const local = evalOut.scores.reduce((acc, score) => acc + score, 0);
+    perplexity = evalOut.perplexity;
     checksum = local;
     timings.push((performance.now() - started) / 1000);
   }

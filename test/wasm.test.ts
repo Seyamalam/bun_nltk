@@ -30,6 +30,38 @@ test("wasm wrapper metrics and token APIs match native", async () => {
       "He slept.",
     ]);
     expect(wasm.wordnetMorphyAscii("dogs", "n")).toBe("dog");
+
+    const lmEval = wasm.evaluateLanguageModelIds({
+      tokenIds: Uint32Array.from([1, 2, 3, 4, 1, 2, 5, 4]),
+      sentenceOffsets: Uint32Array.from([0, 4, 8]),
+      order: 3,
+      model: "kneser_ney_interpolated",
+      gamma: 0.1,
+      discount: 0.75,
+      vocabSize: 6,
+      probeContextFlat: Uint32Array.from([1, 2]),
+      probeContextLens: Uint32Array.from([2]),
+      probeWordIds: Uint32Array.from([3]),
+      perplexityTokenIds: Uint32Array.from([1, 2, 3, 4]),
+      prefixTokenIds: Uint32Array.from([0, 0]),
+    });
+    expect(lmEval.scores.length).toBe(1);
+    expect(lmEval.scores[0]!).toBeGreaterThan(0);
+    expect(Number.isFinite(lmEval.perplexity)).toBeTrue();
+
+    const chunkEval = wasm.chunkIobIds({
+      tokenTagIds: Uint16Array.from([1, 2, 2, 3]),
+      atomAllowedOffsets: Uint32Array.from([0, 1, 2]),
+      atomAllowedLengths: Uint32Array.from([1, 1, 1]),
+      atomAllowedFlat: Uint16Array.from([1, 2, 3]),
+      atomMins: Uint8Array.from([0, 0, 1]),
+      atomMaxs: Uint8Array.from([1, 255, 255]),
+      ruleAtomOffsets: Uint32Array.from([0]),
+      ruleAtomCounts: Uint32Array.from([3]),
+      ruleLabelIds: Uint16Array.from([0]),
+    });
+    expect(chunkEval.labelIds[0]!).toBe(0);
+    expect(chunkEval.labelIds[3]!).toBe(0);
   } finally {
     wasm.dispose();
   }
