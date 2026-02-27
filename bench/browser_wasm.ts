@@ -171,6 +171,7 @@ async function runInBrowser(
         const pRuleLabel = alloc(ruleLabelIds.byteLength);
         const pOutLabel = alloc(tokenTagIds.length * 2);
         const pOutBegin = alloc(tokenTagIds.length);
+        const outMorph = alloc(64);
         new Uint16Array(exp.memory.buffer, pTokenTagIds, tokenTagIds.length).set(tokenTagIds);
         new Uint32Array(exp.memory.buffer, pAtomOff, atomAllowedOffsets.length).set(atomAllowedOffsets);
         new Uint32Array(exp.memory.buffer, pAtomLen, atomAllowedLengths.length).set(atomAllowedLengths);
@@ -202,10 +203,9 @@ async function runInBrowser(
           punktTimings.push((performance.now() - punktStart) / 1000);
 
           const morphStart = performance.now();
-          const outMorph = alloc(64);
           for (const w of morphWords) {
             const wBytes = encoder.encode(w);
-            mem.set(wBytes, inputPtr);
+            new Uint8Array(exp.memory.buffer).set(wBytes, inputPtr);
             void exp.bunnltk_wasm_wordnet_morphy_ascii(wBytes.length, 0, outMorph, 64);
             if (Number(exp.bunnltk_wasm_last_error_code()) !== 0) throw new Error("morphy wasm error");
           }
