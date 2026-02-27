@@ -32,8 +32,11 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Native streaming `FreqDist`/`ConditionalFreqDist` builder with JSON export (`NativeFreqDistStream`)
 - Mini WordNet reader with synset lookup, relation traversal, and morphy-style inflection recovery
 - Native Zig morphy accelerator (`wordnetMorphyAsciiNative`) with WASM equivalent
+- Packed WordNet corpus pipeline (`wordnet:pack`) with binary loader (`loadWordNetPacked`)
 - N-gram language model stack (`MLE`, `Lidstone`, `Kneser-Ney Interpolated`) with Python comparison harness
+- Native/WASM LM ID-evaluation hot loop for batched score + perplexity paths
 - Regexp chunk parser primitives with IOB conversion and Python parity harness
+- Native/WASM chunk IOB hot loop for compiled grammar matching
 - Corpus reader framework (`CorpusReader`) with bundled mini corpora
 - Optional external corpus bundle loader + tagged/chunked corpus readers (`parseConllTagged`, `parseBrownTagged`, `parseConllChunked`)
 - SIMD token counting fast path (`x86_64` vectorized path + scalar fallback)
@@ -42,6 +45,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - WASM target for browser/runtime usage with parity benchmarks
 - Browser WASM benchmark harness (Chromium/Firefox in CI strict mode)
 - Performance regression gate script + CI workflow
+- SLA gate script (p95 latency + memory delta) and NLTK parity tracker artifacts
 - Python baseline comparison on the same dataset
 
 ## Benchmark results (64MB synthetic dataset)
@@ -62,6 +66,7 @@ All benchmarks below use `bench/datasets/synthetic.txt` on this machine.
 Notes:
 - Sentence tokenizer is a Punkt-compatible subset, not full Punkt parity on arbitrary corpora.
 - Full WordNet corpus parity is not shipped yet; this milestone includes a bundled mini WordNet dataset.
+- Full WordNet corpus can be packed from upstream dict files with `bun run wordnet:pack`; full upstream dataset is not bundled in npm by default.
 - Fixture parity harnesses are available via `bench:parity:sentence` and `bench:parity:tagger`.
 - SIMD fast path benchmark (`bench:compare:simd`) shows `countTokensAscii` at `1.22x` and normalization no-stopword path at `2.73x` over scalar baseline.
 
@@ -161,10 +166,28 @@ bun run wasm:size:check
 bun run bench:browser:wasm
 ```
 
+## Pack WordNet corpus
+
+```bash
+bun run wordnet:pack
+```
+
 ## Run regression gate
 
 ```bash
 bun run bench:gate
+```
+
+## Run SLA gate only
+
+```bash
+bun run sla:gate
+```
+
+## Generate parity tracker
+
+```bash
+bun run parity:tracker
 ```
 
 ## Release readiness check

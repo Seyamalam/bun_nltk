@@ -51,6 +51,8 @@ These functions call the dynamic native library through Bun FFI.
 - `countNormalizedTokensAsciiScalar(text: string, removeStopwords?: boolean): number`
 - `normalizeTokensAsciiNative(text: string, removeStopwords?: boolean): string[]`
 - `posTagAsciiNative(text: string): Array<{ token: string; tag: string; tagId: number; start: number; length: number }>`
+- `evaluateLanguageModelIdsNative(input: { tokenIds: Uint32Array; sentenceOffsets: Uint32Array; order: number; model: "mle" | "lidstone" | "kneser_ney_interpolated"; gamma?: number; discount?: number; vocabSize: number; probeContextFlat: Uint32Array; probeContextLens: Uint32Array; probeWords: Uint32Array; perplexityTokens: Uint32Array; prefixTokens?: Uint32Array }): { scores: Float64Array; perplexity: number }`
+- `chunkIobIdsNative(input: { tokenTagIds: Uint16Array; atomAllowedOffsets: Uint32Array; atomAllowedLengths: Uint32Array; atomAllowedFlat: Uint16Array; atomMins: Uint8Array; atomMaxs: Uint8Array; ruleAtomOffsets: Uint32Array; ruleAtomCounts: Uint32Array; ruleLabelIds: Uint16Array }): { labelIds: Uint16Array; begins: Uint8Array }`
 - `perceptronPredictBatchNative(featureIds: Uint32Array, tokenOffsets: Uint32Array, weights: Float32Array, modelFeatureCount: number, tagCount: number): Uint16Array`
 - `NativeFreqDistStream`
 - `new NativeFreqDistStream()`
@@ -109,6 +111,7 @@ These functions are pure TypeScript reference implementations.
 
 - `loadWordNetMini(path?: string): WordNet`
 - `loadWordNetExtended(path?: string): WordNet`
+- `loadWordNetPacked(path?: string): WordNet`
 - `new WordNet(payload: WordNetMiniPayload)`
 - `synset(id: string): WordNetSynset | null`
 - `synsets(word: string, pos?: "n" | "v" | "a" | "r"): WordNetSynset[]`
@@ -126,6 +129,7 @@ These functions are pure TypeScript reference implementations.
 - `score(word: string, context?: string[]): number`
 - `logScore(word: string, context?: string[]): number`
 - `perplexity(tokens: string[]): number`
+- `evaluateBatch(probes: Array<{ word: string; context: string[] }>, perplexityTokens: string[]): { scores: number[]; perplexity: number }`
 
 ## Chunking
 
@@ -174,6 +178,8 @@ These functions are pure TypeScript reference implementations.
 - `perceptronPredictBatch(featureIds: Uint32Array, tokenOffsets: Uint32Array, weights: Float32Array, modelFeatureCount: number, tagCount: number): Uint16Array`
 - `sentenceTokenizePunktAscii(text: string): string[]`
 - `wordnetMorphyAscii(word: string, pos?: "n" | "v" | "a" | "r"): string`
+- `evaluateLanguageModelIds(input: { tokenIds: Uint32Array; sentenceOffsets: Uint32Array; order: number; model: 0 | 1 | 2; gamma: number; discount: number; vocabSize: number; probeContextFlat: Uint32Array; probeContextLens: Uint32Array; probeWords: Uint32Array; perplexityTokens: Uint32Array; prefixTokens?: Uint32Array }): { scores: Float64Array; perplexity: number }`
+- `chunkIobIds(input: { tokenTagIds: Uint16Array; atomAllowedOffsets: Uint32Array; atomAllowedLengths: Uint32Array; atomAllowedFlat: Uint16Array; atomMins: Uint8Array; atomMaxs: Uint8Array; ruleAtomOffsets: Uint32Array; ruleAtomCounts: Uint32Array; ruleLabelIds: Uint16Array }): { labelIds: Uint16Array; begins: Uint8Array }`
 
 ## Notes
 

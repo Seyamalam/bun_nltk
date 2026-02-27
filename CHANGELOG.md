@@ -7,7 +7,12 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ## [Unreleased]
 
 ### Added
-- (no entries yet)
+- Native Zig LM ID-evaluation hot loop (`bunnltk_lm_eval_ids`) with Bun bindings (`evaluateLanguageModelIdsNative`) and WASM equivalent.
+- Native Zig chunk IOB hot loop (`bunnltk_chunk_iob_ids`) with Bun bindings (`chunkIobIdsNative`) and WASM equivalent.
+- Packed WordNet corpus pipeline script (`wordnet:pack`) and packed bundle loader (`loadWordNetPacked`).
+- Browser WASM benchmark expansion for Punkt, LM, chunk, and WordNet workloads plus per-workload browser thresholds.
+- Cross-feature SLA gate (`sla:gate`) for p95 latency and memory delta checks; included in `bench:gate`.
+- NLTK parity tracker generator (`parity:tracker`) that exports JSON+Markdown artifacts and uploads in CI.
 
 ## [0.7.0] - 2026-02-27
 
