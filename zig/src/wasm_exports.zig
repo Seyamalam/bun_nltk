@@ -165,6 +165,64 @@ pub export fn bunnltk_wasm_fill_normalized_token_offsets_ascii(
     return total;
 }
 
+pub export fn bunnltk_wasm_perceptron_predict_batch(
+    feature_ids_ptr: u32,
+    feature_ids_len: u32,
+    token_offsets_ptr: u32,
+    token_count: u32,
+    weights_ptr: u32,
+    model_feature_count: u32,
+    tag_count: u32,
+    out_tag_ids_ptr: u32,
+) void {
+    error_state.resetError();
+    if (token_count == 0 or tag_count == 0) return;
+    if (feature_ids_ptr == 0 or token_offsets_ptr == 0 or weights_ptr == 0 or out_tag_ids_ptr == 0) {
+        error_state.setError(.insufficient_capacity);
+        return;
+    }
+
+    const feature_ids = ptrFromOffset(u32, feature_ids_ptr)[0..@as(usize, feature_ids_len)];
+    const offsets = ptrFromOffset(u32, token_offsets_ptr)[0..@as(usize, token_count + 1)];
+    const weights = ptrFromOffset(f32, weights_ptr)[0..@as(usize, model_feature_count * tag_count)];
+    const out = ptrFromOffset(u16, out_tag_ids_ptr)[0..@as(usize, token_count)];
+
+    const scores = std.heap.wasm_allocator.alloc(f32, @as(usize, tag_count)) catch {
+        error_state.setError(.out_of_memory);
+        return;
+    };
+    defer std.heap.wasm_allocator.free(scores);
+
+    for (0..@as(usize, token_count)) |ti| {
+        @memset(scores, 0);
+        const start = offsets[ti];
+        const end = offsets[ti + 1];
+        if (start > end or end > feature_ids_len) {
+            error_state.setError(.insufficient_capacity);
+            return;
+        }
+
+        for (@as(usize, start)..@as(usize, end)) |fi| {
+            const feature_id = feature_ids[fi];
+            if (feature_id >= model_feature_count) continue;
+            const base = @as(usize, feature_id * tag_count);
+            for (0..@as(usize, tag_count)) |tj| {
+                scores[tj] += weights[base + tj];
+            }
+        }
+
+        var best_id: u16 = 0;
+        var best_score: f32 = scores[0];
+        for (1..@as(usize, tag_count)) |tj| {
+            if (scores[tj] > best_score) {
+                best_score = scores[tj];
+                best_id = @as(u16, @intCast(tj));
+            }
+        }
+        out[ti] = best_id;
+    }
+}
+
 test "wasm exports basic counts and metrics" {
     const sample = "this this is is a a test test";
     @memcpy(input_buffer[0..sample.len], sample);
@@ -179,4 +237,36 @@ test "wasm exports basic counts and metrics" {
     const metrics = ptrFromOffset(u64, ptr)[0..4];
     try std.testing.expectEqual(@as(u64, 8), metrics[0]);
     try std.testing.expectEqual(@as(u64, 4), metrics[3]);
+}
+
+test "wasm perceptron batch prediction" {
+    const feature_ids = [_]u32{ 0, 1, 1 };
+    const token_offsets = [_]u32{ 0, 1, 3 };
+    const weights = [_]f32{
+        // feature 0 -> tag0=1, tag1=0
+        1.0, 0.0,
+        // feature 1 -> tag0=0, tag1=1
+        0.0, 1.0,
+    };
+    var out = [_]u16{0} ** 2;
+
+    const fid_ptr = bunnltk_wasm_alloc(@as(u32, @intCast(feature_ids.len * @sizeOf(u32))));
+    defer bunnltk_wasm_free(fid_ptr, @as(u32, @intCast(feature_ids.len * @sizeOf(u32))));
+    const off_ptr = bunnltk_wasm_alloc(@as(u32, @intCast(token_offsets.len * @sizeOf(u32))));
+    defer bunnltk_wasm_free(off_ptr, @as(u32, @intCast(token_offsets.len * @sizeOf(u32))));
+    const w_ptr = bunnltk_wasm_alloc(@as(u32, @intCast(weights.len * @sizeOf(f32))));
+    defer bunnltk_wasm_free(w_ptr, @as(u32, @intCast(weights.len * @sizeOf(f32))));
+    const out_ptr = bunnltk_wasm_alloc(@as(u32, @intCast(out.len * @sizeOf(u16))));
+    defer bunnltk_wasm_free(out_ptr, @as(u32, @intCast(out.len * @sizeOf(u16))));
+
+    @memcpy(ptrFromOffset(u32, fid_ptr)[0..feature_ids.len], feature_ids[0..]);
+    @memcpy(ptrFromOffset(u32, off_ptr)[0..token_offsets.len], token_offsets[0..]);
+    @memcpy(ptrFromOffset(f32, w_ptr)[0..weights.len], weights[0..]);
+
+    bunnltk_wasm_perceptron_predict_batch(fid_ptr, feature_ids.len, off_ptr, 2, w_ptr, 2, 2, out_ptr);
+    try std.testing.expectEqual(@as(u32, 0), bunnltk_wasm_last_error_code());
+
+    @memcpy(out[0..], ptrFromOffset(u16, out_ptr)[0..out.len]);
+    try std.testing.expectEqual(@as(u16, 0), out[0]);
+    try std.testing.expectEqual(@as(u16, 1), out[1]);
 }

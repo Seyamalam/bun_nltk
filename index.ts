@@ -49,3 +49,8 @@ export { tweetTokenizeSubset, wordTokenizeSubset } from "./src/tokenizers";
 export { sentenceTokenizeSubset } from "./src/sentence_tokenizer";
 export { normalizeTokens } from "./src/normalization";
 export { WasmNltk } from "./src/wasm";
+export {
+  loadPerceptronTaggerModel,
+  posTagPerceptronAscii,
+  preparePerceptronTaggerModel,
+} from "./src/perceptron_tagger";

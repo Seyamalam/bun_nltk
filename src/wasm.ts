@@ -30,6 +30,16 @@ type WasmExports = {
     outLengthsPtr: number,
     capacity: number,
   ) => bigint;
+  bunnltk_wasm_perceptron_predict_batch: (
+    featureIdsPtr: number,
+    featureIdsLen: number,
+    tokenOffsetsPtr: number,
+    tokenCount: number,
+    weightsPtr: number,
+    modelFeatureCount: number,
+    tagCount: number,
+    outTagIdsPtr: number,
+  ) => void;
 };
 
 export type AsciiMetrics = {
@@ -229,5 +239,39 @@ export class WasmNltk {
       out[i] = this.decoder.decode(input.subarray(start, start + len)).toLowerCase();
     }
     return out;
+  }
+
+  perceptronPredictBatch(
+    featureIds: Uint32Array,
+    tokenOffsets: Uint32Array,
+    weights: Float32Array,
+    modelFeatureCount: number,
+    tagCount: number,
+  ): Uint16Array {
+    if (tokenOffsets.length === 0) return new Uint16Array(0);
+    const tokenCount = tokenOffsets.length - 1;
+
+    const featureBlock = this.ensureBlock("perceptron_feature_ids", featureIds.length * Uint32Array.BYTES_PER_ELEMENT);
+    const offsetBlock = this.ensureBlock("perceptron_token_offsets", tokenOffsets.length * Uint32Array.BYTES_PER_ELEMENT);
+    const weightBlock = this.ensureBlock("perceptron_weights", weights.length * Float32Array.BYTES_PER_ELEMENT);
+    const outBlock = this.ensureBlock("perceptron_out_tags", tokenCount * Uint16Array.BYTES_PER_ELEMENT);
+
+    new Uint32Array(this.exports.memory.buffer, featureBlock.ptr, featureIds.length).set(featureIds);
+    new Uint32Array(this.exports.memory.buffer, offsetBlock.ptr, tokenOffsets.length).set(tokenOffsets);
+    new Float32Array(this.exports.memory.buffer, weightBlock.ptr, weights.length).set(weights);
+
+    this.exports.bunnltk_wasm_perceptron_predict_batch(
+      featureBlock.ptr,
+      featureIds.length,
+      offsetBlock.ptr,
+      tokenCount,
+      weightBlock.ptr,
+      modelFeatureCount,
+      tagCount,
+      outBlock.ptr,
+    );
+    this.assertNoError("perceptronPredictBatch");
+
+    return Uint16Array.from(new Uint16Array(this.exports.memory.buffer, outBlock.ptr, tokenCount));
   }
 }
