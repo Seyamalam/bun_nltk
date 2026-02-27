@@ -7,7 +7,12 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ## [Unreleased]
 
 ### Added
-- (no entries yet)
+- Trainable Punkt tokenizer APIs with model serialization/parsing support.
+- Mini WordNet dataset and lookup API (`synsets`, `morphy`, relation traversal).
+- N-gram language model stack with `MLE`, `Lidstone`, and interpolated `Kneser-Ney`.
+- Regexp chunk parser primitives with IOB conversion helper.
+- Corpus reader framework with bundled mini corpora (`news`, `science`, `fiction`).
+- Python baseline harnesses for Punkt, LM, and chunk parser parity checks.
 
 ## [0.6.2] - 2026-02-27
 

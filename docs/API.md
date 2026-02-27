@@ -15,12 +15,11 @@ npm install bun_nltk
 ```ts
 import {
   countTokensAscii,
-  tokenizeAsciiNative,
-  sentenceTokenizeSubset,
-  normalizeTokens,
-  WasmNltk,
-  posTagPerceptronAscii,
-  loadPerceptronTaggerModel,
+  sentenceTokenizePunkt,
+  loadWordNetMini,
+  trainNgramLanguageModel,
+  regexpChunkParse,
+  loadBundledMiniCorpus,
 } from "bun_nltk";
 ```
 
@@ -95,6 +94,51 @@ These functions are pure TypeScript reference implementations.
 - `wordTokenizeSubset(text: string): string[]`
 - `tweetTokenizeSubset(text: string, opts?: { stripHandles?: boolean; reduceLen?: boolean; matchPhoneNumbers?: boolean }): string[]`
 - `sentenceTokenizeSubset(text: string, opts?: { abbreviations?: Iterable<string>; learnAbbreviations?: boolean; orthographicHeuristics?: boolean }): string[]`
+
+## Punkt
+
+- `trainPunktModel(text: string, options?: { minAbbrevCount?: number; minCollocationCount?: number; minSentenceStarterCount?: number }): { version: number; abbreviations: string[]; collocations: Array<[string, string]>; sentenceStarters: string[] }`
+- `sentenceTokenizePunkt(text: string, model?: PunktModelSerialized): string[]`
+- `defaultPunktModel(): PunktModelSerialized`
+- `serializePunktModel(model: PunktModelSerialized): string`
+- `parsePunktModel(payload: string | PunktModelSerialized): PunktModelSerialized`
+
+## WordNet
+
+- `loadWordNetMini(path?: string): WordNet`
+- `new WordNet(payload: WordNetMiniPayload)`
+- `synset(id: string): WordNetSynset | null`
+- `synsets(word: string, pos?: "n" | "v" | "a" | "r"): WordNetSynset[]`
+- `lemmas(pos?: "n" | "v" | "a" | "r"): string[]`
+- `morphy(word: string, pos?: "n" | "v" | "a" | "r"): string | null`
+- `hypernyms(idOrSynset: string | WordNetSynset): WordNetSynset[]`
+- `hyponyms(idOrSynset: string | WordNetSynset): WordNetSynset[]`
+- `similarTo(idOrSynset: string | WordNetSynset): WordNetSynset[]`
+- `antonyms(idOrSynset: string | WordNetSynset): WordNetSynset[]`
+
+## Language Models
+
+- `new NgramLanguageModel(sentences: string[][], options: { order: number; model?: "mle" | "lidstone" | "kneser_ney_interpolated"; gamma?: number; discount?: number; padLeft?: boolean; padRight?: boolean; startToken?: string; endToken?: string })`
+- `trainNgramLanguageModel(sentences: string[][], options: NgramLanguageModelOptions): NgramLanguageModel`
+- `score(word: string, context?: string[]): number`
+- `logScore(word: string, context?: string[]): number`
+- `perplexity(tokens: string[]): number`
+
+## Chunking
+
+- `regexpChunkParse(tokens: Array<{ token: string; tag: string }>, grammar: string): Array<{ token: string; tag: string } | { kind: "chunk"; label: string; tokens: Array<{ token: string; tag: string }> }>`
+- `chunkTreeToIob(tree: ChunkElement[]): Array<{ token: string; tag: string; iob: string }>`
+
+## Corpora
+
+- `new CorpusReader(files: Array<{ id: string; text: string; categories: string[] }>)`
+- `loadBundledMiniCorpus(rootPath?: string): CorpusReader`
+- `fileIds(options?: { fileIds?: string[]; categories?: string[] }): string[]`
+- `raw(options?: { fileIds?: string[]; categories?: string[] }): string`
+- `words(options?: { fileIds?: string[]; categories?: string[] }): string[]`
+- `sents(options?: { fileIds?: string[]; categories?: string[] }): string[]`
+- `paras(options?: { fileIds?: string[]; categories?: string[] }): string[]`
+- `categories(): string[]`
 
 ## Normalization
 

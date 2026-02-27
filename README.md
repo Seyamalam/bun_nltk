@@ -24,10 +24,15 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Native Porter stemmer (ASCII, lowercasing)
 - Tokenizer parity layer (`wordTokenizeSubset`, `tweetTokenizeSubset`)
 - Sentence tokenizer parity subset (`sentenceTokenizeSubset`) + Python parity harness
+- Trainable Punkt tokenizer/model APIs (`trainPunktModel`, `sentenceTokenizePunkt`)
 - Native normalization pipeline (ASCII fast path with optional stopword filtering)
 - Unicode normalization fallback pipeline (`normalizeTokensUnicode`)
 - Native POS regex/heuristic tagger baseline (`posTagAsciiNative`)
 - Native streaming `FreqDist`/`ConditionalFreqDist` builder with JSON export (`NativeFreqDistStream`)
+- Mini WordNet reader with synset lookup, relation traversal, and morphy-style inflection recovery
+- N-gram language model stack (`MLE`, `Lidstone`, `Kneser-Ney Interpolated`) with Python comparison harness
+- Regexp chunk parser primitives with IOB conversion and Python parity harness
+- Corpus reader framework (`CorpusReader`) with bundled mini corpora
 - SIMD token counting fast path (`x86_64` vectorized path + scalar fallback)
 - Shared Zig perceptron inference core used by both native and WASM runtimes
 - Browser-focused WASM API wrapper with memory pool reuse (`WasmNltk`)
@@ -53,6 +58,7 @@ All benchmarks below use `bench/datasets/synthetic.txt` on this machine.
 
 Notes:
 - Sentence tokenizer is a Punkt-compatible subset, not full Punkt parity on arbitrary corpora.
+- Full WordNet corpus parity is not shipped yet; this milestone includes a bundled mini WordNet dataset.
 - Fixture parity harnesses are available via `bench:parity:sentence` and `bench:parity:tagger`.
 - SIMD fast path benchmark (`bench:compare:simd`) shows `countTokensAscii` at `1.22x` and normalization no-stopword path at `2.73x` over scalar baseline.
 
