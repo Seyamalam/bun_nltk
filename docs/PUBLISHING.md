@@ -43,6 +43,14 @@ Release automation is defined in [.github/workflows/release.yml](/C:/Users/user/
 
 You can also run it manually via `workflow_dispatch` and override dist-tag.
 
+## Post-Publish Smoke Workflow
+
+Post-publish verification is defined in [.github/workflows/post-publish-smoke.yml](/C:/Users/user/Desktop/bun/bun_nltk/.github/workflows/post-publish-smoke.yml).
+
+- Triggered automatically when `Release` succeeds.
+- Also supports manual `workflow_dispatch`.
+- Installs published package from npm (`bun_nltk@<version>`), builds bundled native/wasm outputs, and runs a runtime smoke script.
+
 ## Required GitHub Secrets
 
 - `NPM_TOKEN`: npm access token with publish permissions for this package.

@@ -54,6 +54,7 @@
     "bench:parity:tagger": "bun run bench/parity_tagger.ts",
     "bench:gate": "bun run scripts/bench-gate.ts",
     "bench:dashboard": "bun run scripts/bench-dashboard.ts",
+    "npm:smoke": "bun run scripts/npm-smoke-test.ts",
     "release:validate": "bun run scripts/release-validate.ts",
     "release:check": "bun run build:zig && bun run build:wasm && bun test && bun run bench:gate"
   },

@@ -1,0 +1,50 @@
+name: Post Publish Smoke
+
+on:
+  workflow_run:
+    workflows: ["Release"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      package_version:
+        description: "Package version to test (e.g. 0.6.0). Defaults to package.json version in checked-out ref."
+        required: false
+
+jobs:
+  smoke:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.ref }}
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Zig
+        uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: "0.15.2"
+
+      - name: Resolve package version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          INPUT_VERSION="${{ github.event_name == 'workflow_dispatch' && inputs.package_version || '' }}"
+          if [[ -n "${INPUT_VERSION}" ]]; then
+            VERSION="${INPUT_VERSION}"
+          else
+            VERSION="$(node -p "require('./package.json').version")"
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Testing bun_nltk@${VERSION}"
+
+      - name: Run npm smoke test
+        run: bun run scripts/npm-smoke-test.ts "bun_nltk@${{ steps.version.outputs.version }}"
