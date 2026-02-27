@@ -8,6 +8,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Versioning policy: [docs/VERSIONING.md](/C:/Users/user/Desktop/bun/bun_nltk/docs/VERSIONING.md)
 - Publishing guide: [docs/PUBLISHING.md](/C:/Users/user/Desktop/bun/bun_nltk/docs/PUBLISHING.md)
 - Changelog: [CHANGELOG.md](/C:/Users/user/Desktop/bun/bun_nltk/CHANGELOG.md)
+- Release workflow: [.github/workflows/release.yml](/C:/Users/user/Desktop/bun/bun_nltk/.github/workflows/release.yml)
 
 ## Implemented in this milestone
 

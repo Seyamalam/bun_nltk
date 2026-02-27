@@ -28,6 +28,7 @@ This project uses Semantic Versioning (`MAJOR.MINOR.PATCH`).
 7. Push commit and tag.
 8. Publish package:
    - `bun publish` or `npm publish`.
+   - Or rely on the tag-triggered GitHub workflow in `.github/workflows/release.yml`.
 
 ## Pre-release Versions
 

@@ -25,6 +25,28 @@ This package is intended for Bun/Node distribution with native and WASM backends
    - `bun publish`
    - or `npm publish`
 
+## Automated GitHub Release Workflow
+
+Release automation is defined in [.github/workflows/release.yml](/C:/Users/user/Desktop/bun/bun_nltk/.github/workflows/release.yml).
+
+- Trigger: push tag `v*` (for example `v0.5.0`, `v0.6.0-beta.1`).
+- It validates:
+  - tag matches `package.json` version
+  - release section exists in `CHANGELOG.md`
+  - full `release:check` passes
+- It publishes to npm with dist-tag rules:
+  - `vX.Y.Z` -> `latest`
+  - `vX.Y.Z-alpha.N` -> `alpha`
+  - `vX.Y.Z-beta.N` -> `beta`
+  - `vX.Y.Z-rc.N` -> `rc`
+  - unknown prerelease suffix -> `next`
+
+You can also run it manually via `workflow_dispatch` and override dist-tag.
+
+## Required GitHub Secrets
+
+- `NPM_TOKEN`: npm access token with publish permissions for this package.
+
 ## Notes
 
 - If shipping prebuilt native binaries, include them in the package payload strategy before publish.
