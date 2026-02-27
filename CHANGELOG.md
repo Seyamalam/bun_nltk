@@ -9,6 +9,15 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ### Added
 - (no entries yet)
 
+## [0.6.0] - 2026-02-27
+
+### Added
+- First stable npm release line for `bun_nltk`.
+- Automated tag-based CI + release workflow with provenance publishing and benchmark dashboard artifacts.
+
+### Changed
+- Package metadata aligned with npm provenance validation (`repository`, `homepage`, `bugs`).
+
 ## [0.5.1-beta.2] - 2026-02-27
 
 ### Changed
