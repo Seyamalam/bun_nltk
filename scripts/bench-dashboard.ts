@@ -99,7 +99,11 @@ function main() {
   const porter = run(["bun", "run", "bench/compare_porter.ts", dataset, "2"], root);
   const wasm = run(["bun", "run", "bench/compare_wasm.ts", dataset, "2", "3"], root);
   const sentence = run(["bun", "run", "bench/compare_sentence.ts", dataset, "3"], root);
+  const punkt = run(["bun", "run", "bench/compare_punkt.ts", dataset, "3"], root);
   const tagger = run(["bun", "run", "bench/compare_tagger.ts", dataset, "1"], root);
+  const lm = run(["bun", "run", "bench/compare_lm.ts", dataset, "2"], root);
+  const chunk = run(["bun", "run", "bench/compare_chunk.ts", "9000", "3"], root);
+  const wordnet = run(["bun", "run", "bench/compare_wordnet.ts", "4"], root);
   const paritySentence = run(["bun", "run", "bench/parity_sentence.ts"], root);
   const parityTagger = run(["bun", "run", "bench/parity_tagger.ts"], root);
 
@@ -123,7 +127,11 @@ function main() {
       porter_x: toNum(porter.speedup_vs_python),
       wasm_x: toNum(wasm.wasm_speedup_vs_python),
       sentence_x: toNum(sentence.speedup_vs_python),
+      punkt_x: toNum(punkt.speedup_vs_python),
       tagger_x: toNum(tagger.speedup_vs_python),
+      lm_x: toNum(lm.speedup_vs_python),
+      chunk_x: toNum(chunk.speedup_vs_python),
+      wordnet_x: toNum(wordnet.speedup_vs_python),
     },
     percent_faster: {
       token_ngram_pct: pctFaster(toNum(compare.speedup_vs_python)),
@@ -131,7 +139,11 @@ function main() {
       porter_pct: pctFaster(toNum(porter.speedup_vs_python)),
       wasm_pct: pctFaster(toNum(wasm.wasm_speedup_vs_python)),
       sentence_pct: pctFaster(toNum(sentence.speedup_vs_python)),
+      punkt_pct: pctFaster(toNum(punkt.speedup_vs_python)),
       tagger_pct: pctFaster(toNum(tagger.speedup_vs_python)),
+      lm_pct: pctFaster(toNum(lm.speedup_vs_python)),
+      chunk_pct: pctFaster(toNum(chunk.speedup_vs_python)),
+      wordnet_pct: pctFaster(toNum(wordnet.speedup_vs_python)),
     },
     throughput: {
       token_per_sec: Number(tokenThroughput.toFixed(2)),
@@ -145,7 +157,11 @@ function main() {
       porter,
       wasm,
       sentence,
+      punkt,
       tagger,
+      lm,
+      chunk,
+      wordnet,
     },
   };
 
@@ -162,7 +178,11 @@ function main() {
     `| porter | ${dashboard.speedups.porter_x.toFixed(2)} | ${dashboard.percent_faster.porter_pct.toFixed(2)} |`,
     `| wasm | ${dashboard.speedups.wasm_x.toFixed(2)} | ${dashboard.percent_faster.wasm_pct.toFixed(2)} |`,
     `| sentence | ${dashboard.speedups.sentence_x.toFixed(2)} | ${dashboard.percent_faster.sentence_pct.toFixed(2)} |`,
+    `| punkt | ${dashboard.speedups.punkt_x.toFixed(2)} | ${dashboard.percent_faster.punkt_pct.toFixed(2)} |`,
     `| tagger | ${dashboard.speedups.tagger_x.toFixed(2)} | ${dashboard.percent_faster.tagger_pct.toFixed(2)} |`,
+    `| lm | ${dashboard.speedups.lm_x.toFixed(2)} | ${dashboard.percent_faster.lm_pct.toFixed(2)} |`,
+    `| chunk | ${dashboard.speedups.chunk_x.toFixed(2)} | ${dashboard.percent_faster.chunk_pct.toFixed(2)} |`,
+    `| wordnet | ${dashboard.speedups.wordnet_x.toFixed(2)} | ${dashboard.percent_faster.wordnet_pct.toFixed(2)} |`,
     "",
     "| Throughput Metric | Value |",
     "|---|---:|",

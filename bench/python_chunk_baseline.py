@@ -9,10 +9,15 @@ import nltk
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--payload", required=True)
+    parser.add_argument("--payload")
+    parser.add_argument("--payload-file")
     args = parser.parse_args()
-
-    payload = json.loads(args.payload)
+    if args.payload_file:
+        payload = json.loads(open(args.payload_file, "r", encoding="utf-8").read())
+    elif args.payload:
+        payload = json.loads(args.payload)
+    else:
+        raise SystemExit("either --payload or --payload-file is required")
     grammar = str(payload["grammar"])
     tagged = [(str(token), str(tag)) for token, tag in payload["tagged"]]
 

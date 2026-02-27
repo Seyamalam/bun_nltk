@@ -60,10 +60,15 @@ def perplexity_from_scores(model, payload: dict[str, Any]) -> float:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--payload", required=True)
+    parser.add_argument("--payload")
+    parser.add_argument("--payload-file")
     args = parser.parse_args()
-
-    payload = json.loads(args.payload)
+    if args.payload_file:
+        payload = json.loads(open(args.payload_file, "r", encoding="utf-8").read())
+    elif args.payload:
+        payload = json.loads(args.payload)
+    else:
+        raise SystemExit("either --payload or --payload-file is required")
     model = build_model(payload)
 
     probe_scores = []
