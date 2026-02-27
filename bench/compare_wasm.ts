@@ -87,6 +87,8 @@ async function main() {
         n,
         rounds,
         parity: true,
+        tokens: python.tokens,
+        ngrams: python.ngrams,
         native_seconds_median: native.medianSeconds,
         wasm_seconds_median: wasm.medianSeconds,
         python_seconds: python.total_seconds,

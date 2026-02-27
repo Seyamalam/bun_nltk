@@ -42,3 +42,12 @@ jobs:
 
       - name: Run performance regression gate
         run: bun run bench:gate
+
+      - name: Generate bench dashboard artifacts
+        run: bun run bench:dashboard
+
+      - name: Upload bench dashboard
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-dashboard
+          path: artifacts/bench-dashboard.*
