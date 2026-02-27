@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import { resolve } from "node:path";
-import { chartParse, parseCfgGrammar, parseTextWithCfg, type ParseTree } from "../index";
+import { chartParse, earleyParse, earleyRecognize, parseCfgGrammar, parseTextWithCfg, parseTextWithEarley, type ParseTree } from "../index";
 
 const grammarText = `
 S -> NP VP
@@ -58,3 +58,22 @@ test("chart parser parity with python nltk CFG chart parser", () => {
   expect(jsTrees[0]).toBe(py.trees[0]);
 });
 
+test("earley recognizer accepts valid tokens and rejects invalid tokens", () => {
+  const grammar = parseCfgGrammar(grammarText);
+  expect(earleyRecognize(["alice", "sees", "the", "dog"], grammar)).toBeTrue();
+  expect(earleyRecognize(["alice", "the", "sees", "dog"], grammar)).toBeFalse();
+});
+
+test("earley parse returns same top parse as chart parser on simple grammar", () => {
+  const grammar = parseCfgGrammar(grammarText);
+  const chart = chartParse(["alice", "sees", "the", "dog"], grammar);
+  const earley = earleyParse(["alice", "sees", "the", "dog"], grammar);
+  expect(earley.length).toBeGreaterThan(0);
+  expect(toBracket(earley[0]!)).toBe(toBracket(chart[0]!));
+});
+
+test("parseTextWithEarley tokenizes and parses text", () => {
+  const trees = parseTextWithEarley("Alice sees a cat.", grammarText);
+  expect(trees.length).toBeGreaterThan(0);
+  expect(toBracket(trees[0]!)).toContain("(V sees)");
+});

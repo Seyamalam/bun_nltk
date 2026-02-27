@@ -66,6 +66,7 @@
     "bench:compare:wordnet": "bun run bench/compare_wordnet.ts 8",
     "bench:compare:parser": "bun run bench/compare_parser.ts 800 4",
     "bench:compare:classifier": "bun run bench/compare_classifier.ts 2400 600 4",
+    "bench:compare:linear": "bun run bench/compare_linear_scores.ts 6000 12000 6 40 5",
     "bench:compare:pcfg": "bun run bench/compare_pcfg.ts 700 3",
     "bench:compare:maxent": "bun run bench/compare_maxent.ts 900 250 2",
     "bench:compare:simd": "bun run bench/compare_simd.ts bench/datasets/synthetic.txt 5",

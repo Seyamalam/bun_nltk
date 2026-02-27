@@ -54,6 +54,7 @@ These functions call the dynamic native library through Bun FFI.
 - `evaluateLanguageModelIdsNative(input: { tokenIds: Uint32Array; sentenceOffsets: Uint32Array; order: number; model: "mle" | "lidstone" | "kneser_ney_interpolated"; gamma?: number; discount?: number; vocabSize: number; probeContextFlat: Uint32Array; probeContextLens: Uint32Array; probeWords: Uint32Array; perplexityTokens: Uint32Array; prefixTokens?: Uint32Array }): { scores: Float64Array; perplexity: number }`
 - `chunkIobIdsNative(input: { tokenTagIds: Uint16Array; atomAllowedOffsets: Uint32Array; atomAllowedLengths: Uint32Array; atomAllowedFlat: Uint16Array; atomMins: Uint8Array; atomMaxs: Uint8Array; ruleAtomOffsets: Uint32Array; ruleAtomCounts: Uint32Array; ruleLabelIds: Uint16Array }): { labelIds: Uint16Array; begins: Uint8Array }`
 - `perceptronPredictBatchNative(featureIds: Uint32Array, tokenOffsets: Uint32Array, weights: Float32Array, modelFeatureCount: number, tagCount: number): Uint16Array`
+- `linearScoresSparseIdsNative(input: { docOffsets: Uint32Array; featureIds: Uint32Array; featureValues: Float64Array; classCount: number; featureCount: number; weights: Float64Array; bias: Float64Array }): Float64Array`
 - `NativeFreqDistStream`
 - `new NativeFreqDistStream()`
 - `update(text: string): void`
@@ -140,7 +141,15 @@ These functions are pure TypeScript reference implementations.
 
 - `parseCfgGrammar(grammarText: string, options?: { startSymbol?: string }): { startSymbol: string; productions: Array<{ lhs: string; rhs: string[] }> }`
 - `chartParse(tokens: string[], grammar: CfgGrammar, options?: { maxTrees?: number; startSymbol?: string }): Array<{ label: string; children: Array<ParseTree | string> }>`
+- `earleyRecognize(tokens: string[], grammar: CfgGrammar, options?: { startSymbol?: string }): boolean`
+- `earleyParse(tokens: string[], grammar: CfgGrammar, options?: { maxTrees?: number; startSymbol?: string }): ParseTree[]`
 - `parseTextWithCfg(text: string, grammar: CfgGrammar | string, options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean }): ParseTree[]`
+- `parseTextWithEarley(text: string, grammar: CfgGrammar | string, options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean }): ParseTree[]`
+
+## Dependency Parsing
+
+- `dependencyParse(tokens: string[], posTags?: string[]): { tokens: string[]; posTags: string[]; root: number; arcs: Array<{ head: number; dep: number; relation: string }> }`
+- `dependencyParseText(text: string, options?: { normalizeTokens?: boolean }): DependencyParse`
 
 ## Classification (Naive Bayes)
 
@@ -155,11 +164,27 @@ These functions are pure TypeScript reference implementations.
 - `trainNaiveBayesTextClassifier(examples: Array<{ label: string; text: string }>, options?: { smoothing?: number }): NaiveBayesTextClassifier`
 - `loadNaiveBayesTextClassifier(payload: NaiveBayesSerialized): NaiveBayesTextClassifier`
 
+## Classification (Decision Tree / Linear)
+
+- `new TextFeatureVectorizer(options?: { ngramMin?: number; ngramMax?: number; binary?: boolean; maxFeatures?: number })`
+- `flattenSparseBatch(rows: SparseVector[]): { docOffsets: Uint32Array; featureIds: Uint32Array; featureValues: Float64Array }`
+- `new DecisionTreeTextClassifier(options?: { maxDepth?: number; minSamples?: number; maxCandidateFeatures?: number; maxFeatures?: number })`
+- `trainDecisionTreeTextClassifier(examples: Array<{ label: string; text: string }>, options?): DecisionTreeTextClassifier`
+- `loadDecisionTreeTextClassifier(payload: DecisionTreeSerialized): DecisionTreeTextClassifier`
+- `new LogisticTextClassifier(options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number })`
+- `new LinearSvmTextClassifier(options?: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number })`
+- `trainLogisticTextClassifier(examples: Array<{ label: string; text: string }>, options?): LogisticTextClassifier`
+- `trainLinearSvmTextClassifier(examples: Array<{ label: string; text: string }>, options?): LinearSvmTextClassifier`
+- `loadLogisticTextClassifier(payload: LogisticSerialized): LogisticTextClassifier`
+- `loadLinearSvmTextClassifier(payload: LinearSvmSerialized): LinearSvmTextClassifier`
+
 ## Corpora
 
 - `new CorpusReader(files: Array<{ id: string; text: string; categories: string[] }>)`
 - `loadBundledMiniCorpus(rootPath?: string): CorpusReader`
 - `loadCorpusBundleFromIndex(indexPath: string): CorpusReader`
+- `loadCorpusRegistryManifest(manifestPath: string): CorpusRegistryManifest`
+- `downloadCorpusRegistry(manifestOrPath: CorpusRegistryManifest | string, outDir: string, options?: { fetchBytes?: (url: string) => Promise<Uint8Array> }): Promise<string>`
 - `fileIds(options?: { fileIds?: string[]; categories?: string[] }): string[]`
 - `raw(options?: { fileIds?: string[]; categories?: string[] }): string`
 - `words(options?: { fileIds?: string[]; categories?: string[] }): string[]`

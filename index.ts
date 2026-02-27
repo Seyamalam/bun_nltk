@@ -72,13 +72,29 @@ export type { PunktModelSerialized, PunktTrainingOptions } from "./src/punkt";
 export { normalizeTokens } from "./src/normalization";
 export { chunkTreeToIob, regexpChunkParse } from "./src/chunk";
 export type { ChunkElement, ChunkNode, IobRow, TaggedToken } from "./src/chunk";
-export { CorpusReader, loadBundledMiniCorpus, loadCorpusBundleFromIndex } from "./src/corpus";
-export type { CorpusFile, CorpusMiniIndex } from "./src/corpus";
+export {
+  CorpusReader,
+  downloadCorpusRegistry,
+  loadBundledMiniCorpus,
+  loadCorpusBundleFromIndex,
+  loadCorpusRegistryManifest,
+} from "./src/corpus";
+export type { CorpusFile, CorpusMiniIndex, CorpusRegistryEntry, CorpusRegistryManifest } from "./src/corpus";
 export { parseBrownTagged, parseConllChunked, parseConllTagged } from "./src/corpus_readers";
 export type { ChunkedSentence, ChunkedToken, TaggedSentence as CorpusTaggedSentence, TaggedToken as CorpusTaggedToken } from "./src/corpus_readers";
 export { NgramLanguageModel, trainNgramLanguageModel } from "./src/lm";
 export type { LanguageModelType, NgramLanguageModelOptions } from "./src/lm";
-export { chartParse, parseCfgGrammar, parsePcfgGrammar, parseTextWithCfg, parseTextWithPcfg, probabilisticChartParse } from "./src/parse";
+export {
+  chartParse,
+  earleyParse,
+  earleyRecognize,
+  parseCfgGrammar,
+  parsePcfgGrammar,
+  parseTextWithCfg,
+  parseTextWithEarley,
+  parseTextWithPcfg,
+  probabilisticChartParse,
+} from "./src/parse";
 export type { CfgGrammar, CfgProduction, ParseTree, PcfgGrammar, PcfgProduction, ProbabilisticParse } from "./src/parse";
 export {
   loadNaiveBayesTextClassifier,
@@ -125,3 +141,5 @@ export {
   treeLeaves,
   treeToBracket,
 } from "./src/tree_transforms";
+export { dependencyParse, dependencyParseText } from "./src/dependency";
+export type { DependencyArc, DependencyParse } from "./src/dependency";

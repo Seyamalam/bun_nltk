@@ -562,6 +562,112 @@ export function chartParse(tokens: string[], grammar: CfgGrammar, options?: { ma
   return (chart[0]![n]!.get(start) ?? []).slice(0, maxTrees).sort((a, b) => treeChildCount(a) - treeChildCount(b));
 }
 
+type EarleyState = {
+  lhs: string;
+  rhs: string[];
+  dot: number;
+  start: number;
+  end: number;
+};
+
+function earleyStateKey(state: EarleyState): string {
+  return `${state.lhs}->${state.rhs.join(" ")}@${state.dot}:${state.start}:${state.end}`;
+}
+
+function earleyAddState(target: Map<string, EarleyState>, queue: EarleyState[], state: EarleyState): void {
+  const key = earleyStateKey(state);
+  if (!target.has(key)) {
+    target.set(key, state);
+    queue.push(state);
+  }
+}
+
+export function earleyRecognize(tokens: string[], grammar: CfgGrammar, options?: { startSymbol?: string }): boolean {
+  const start = options?.startSymbol ?? grammar.startSymbol;
+  const n = tokens.length;
+  const chart: Array<Map<string, EarleyState>> = [];
+  for (let i = 0; i <= n; i += 1) chart.push(new Map());
+
+  const rulesByLhs = new Map<string, string[][]>();
+  const nonterminals = new Set<string>();
+  for (const prod of grammar.productions) {
+    nonterminals.add(prod.lhs);
+    const rows = rulesByLhs.get(prod.lhs) ?? [];
+    rows.push(prod.rhs);
+    rulesByLhs.set(prod.lhs, rows);
+  }
+
+  const seed: EarleyState = {
+    lhs: "__GAMMA__",
+    rhs: [start],
+    dot: 0,
+    start: 0,
+    end: 0,
+  };
+  chart[0]!.set(earleyStateKey(seed), seed);
+
+  for (let i = 0; i <= n; i += 1) {
+    const cell = chart[i]!;
+    const queue = [...cell.values()];
+    let head = 0;
+    while (head < queue.length) {
+      const state = queue[head++]!;
+      if (state.dot < state.rhs.length) {
+        const next = state.rhs[state.dot]!;
+        if (nonterminals.has(next)) {
+          for (const rhs of rulesByLhs.get(next) ?? []) {
+            earleyAddState(cell, queue, {
+              lhs: next,
+              rhs,
+              dot: 0,
+              start: i,
+              end: i,
+            });
+          }
+        } else if (i < n && tokens[i] === next) {
+          const advanced: EarleyState = {
+            lhs: state.lhs,
+            rhs: state.rhs,
+            dot: state.dot + 1,
+            start: state.start,
+            end: i + 1,
+          };
+          const nextCell = chart[i + 1]!;
+          const key = earleyStateKey(advanced);
+          if (!nextCell.has(key)) nextCell.set(key, advanced);
+        }
+      } else {
+        const origin = chart[state.start]!;
+        for (const prev of origin.values()) {
+          if (prev.dot >= prev.rhs.length) continue;
+          if (prev.rhs[prev.dot] !== state.lhs) continue;
+          earleyAddState(cell, queue, {
+            lhs: prev.lhs,
+            rhs: prev.rhs,
+            dot: prev.dot + 1,
+            start: prev.start,
+            end: i,
+          });
+        }
+      }
+    }
+  }
+
+  const acceptKey = earleyStateKey({
+    lhs: "__GAMMA__",
+    rhs: [start],
+    dot: 1,
+    start: 0,
+    end: n,
+  });
+  return chart[n]!.has(acceptKey);
+}
+
+export function earleyParse(tokens: string[], grammar: CfgGrammar, options?: { maxTrees?: number; startSymbol?: string }): ParseTree[] {
+  if (!earleyRecognize(tokens, grammar, options)) return [];
+  return chartParse(tokens, grammar, options);
+}
+
 type WeightedCellEntry = {
   logProb: number;
   tree: ParseTree;
@@ -669,6 +775,17 @@ export function parseTextWithCfg(
   return chartParse(normalized, cfg, options);
 }
 
+export function parseTextWithEarley(
+  text: string,
+  grammar: CfgGrammar | string,
+  options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean },
+): ParseTree[] {
+  const cfg = typeof grammar === "string" ? parseCfgGrammar(grammar, { startSymbol: options?.startSymbol }) : grammar;
+  const tokens = wordTokenizeSubset(text).filter((tok) => /[A-Za-z0-9']/.test(tok));
+  const normalized = options?.normalizeTokens === false ? tokens : tokens.map((tok) => tok.toLowerCase());
+  return earleyParse(normalized, cfg, options);
+}
+
 export function parseTextWithPcfg(
   text: string,
   grammar: PcfgGrammar | string,
@@ -679,4 +796,3 @@ export function parseTextWithPcfg(
   const normalized = options?.normalizeTokens === false ? tokens : tokens.map((tok) => tok.toLowerCase());
   return probabilisticChartParse(normalized, pcfg, options);
 }
-

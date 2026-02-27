@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
 import { sentenceTokenizePunkt } from "./punkt";
 import { wordTokenizeSubset } from "./tokenizers";
@@ -16,6 +17,19 @@ export type CorpusMiniIndex = {
     path: string;
     categories?: string[];
   }>;
+};
+
+export type CorpusRegistryEntry = {
+  id: string;
+  url: string;
+  categories?: string[];
+  sha256?: string;
+  fileName?: string;
+};
+
+export type CorpusRegistryManifest = {
+  version: number;
+  entries: CorpusRegistryEntry[];
 };
 
 type ReadOptions = {
@@ -133,4 +147,66 @@ export function loadCorpusBundleFromIndex(indexPath: string): CorpusReader {
     categories: row.categories ?? [],
   }));
   return new CorpusReader(files);
+}
+
+function sanitizeFileName(input: string): string {
+  return input.replace(/[^a-zA-Z0-9._-]/g, "_");
+}
+
+async function defaultFetchBytes(url: string): Promise<Uint8Array> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`failed to download corpus entry: ${url} (${res.status})`);
+  return new Uint8Array(await res.arrayBuffer());
+}
+
+function sha256Hex(bytes: Uint8Array): string {
+  const hash = createHash("sha256");
+  hash.update(bytes);
+  return hash.digest("hex");
+}
+
+export function loadCorpusRegistryManifest(manifestPath: string): CorpusRegistryManifest {
+  const payload = JSON.parse(readFileSync(resolve(manifestPath), "utf8")) as CorpusRegistryManifest;
+  if (!Array.isArray(payload.entries)) throw new Error("invalid corpus registry manifest: entries must be an array");
+  return payload;
+}
+
+export async function downloadCorpusRegistry(
+  manifestOrPath: CorpusRegistryManifest | string,
+  outDir: string,
+  options?: {
+    fetchBytes?: (url: string) => Promise<Uint8Array>;
+    overwrite?: boolean;
+  },
+): Promise<string> {
+  const manifest = typeof manifestOrPath === "string" ? loadCorpusRegistryManifest(manifestOrPath) : manifestOrPath;
+  if (!manifest.entries || manifest.entries.length === 0) throw new Error("corpus registry has no entries");
+  mkdirSync(outDir, { recursive: true });
+
+  const fetchBytes = options?.fetchBytes ?? defaultFetchBytes;
+  const files: CorpusMiniIndex["files"] = [];
+
+  for (const entry of manifest.entries) {
+    const bytes = await fetchBytes(entry.url);
+    if (!bytes || bytes.length === 0) throw new Error(`downloaded empty corpus entry: ${entry.id}`);
+
+    const digest = sha256Hex(bytes);
+    if (entry.sha256 && digest.toLowerCase() !== entry.sha256.toLowerCase()) {
+      throw new Error(`sha256 mismatch for ${entry.id}: expected=${entry.sha256} actual=${digest}`);
+    }
+
+    const name = sanitizeFileName(entry.fileName ?? `${entry.id}.txt`);
+    const target = resolve(outDir, name);
+    writeFileSync(target, bytes);
+    files.push({
+      id: entry.id,
+      path: name,
+      categories: entry.categories ?? [],
+    });
+  }
+
+  const index: CorpusMiniIndex = { version: 1, files };
+  const indexPath = resolve(outDir, "index.json");
+  writeFileSync(indexPath, `${JSON.stringify(index, null, 2)}\n`, "utf8");
+  return indexPath;
 }

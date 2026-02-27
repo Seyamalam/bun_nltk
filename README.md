@@ -38,9 +38,15 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Regexp chunk parser primitives with IOB conversion and Python parity harness
 - Native/WASM chunk IOB hot loop for compiled grammar matching
 - CFG grammar parser + chart parser subset with Python parity harness
+- Earley recognizer/parser API for non-CNF grammar recognition (`earleyRecognize`, `earleyParse`, `parseTextWithEarley`)
+- Lightweight dependency parser API (`dependencyParse`, `dependencyParseText`)
 - Naive Bayes text classifier with train/predict/evaluate/serialize APIs and Python parity harness
+- Shared sparse text vectorizer (`TextFeatureVectorizer`) + sparse batch flattening utility
+- Decision tree text classifier APIs (`DecisionTreeTextClassifier`)
+- Linear text models (`LogisticTextClassifier`, `LinearSvmTextClassifier`) with native sparse scoring fast path
 - Corpus reader framework (`CorpusReader`) with bundled mini corpora
 - Optional external corpus bundle loader + tagged/chunked corpus readers (`parseConllTagged`, `parseBrownTagged`, `parseConllChunked`)
+- Corpus registry manifest loader/downloader with checksum validation (`loadCorpusRegistryManifest`, `downloadCorpusRegistry`)
 - SIMD token counting fast path (`x86_64` vectorized path + scalar fallback)
 - Shared Zig perceptron inference core used by both native and WASM runtimes
 - Browser-focused WASM API wrapper with memory pool reuse (`WasmNltk`)
@@ -85,6 +91,7 @@ Notes:
 | Naive Bayes text classifier (`bench:compare:classifier`) | 0.0081 | 0.0112 | Zig/Bun | 1.38x | 38.40% |
 | PCFG Viterbi chart parser (`bench:compare:pcfg`) | 0.0191 | 0.4153 | Zig/Bun | 21.80x | 2080.00% |
 | MaxEnt text classifier (`bench:compare:maxent`) | 0.0244 | 0.1824 | Zig/Bun | 7.46x | 646.00% |
+| Sparse linear logits hot loop (`bench:compare:linear`) | 0.0024 | 2.0001 | Zig native | 840.54x | 83954.04% |
 
 ## Build native Zig library
 
@@ -168,6 +175,12 @@ bun run bench:compare:parser
 
 ```bash
 bun run bench:compare:classifier
+```
+
+## Benchmark sparse linear scorer vs Python
+
+```bash
+bun run bench:compare:linear
 ```
 
 ## Run parity harnesses

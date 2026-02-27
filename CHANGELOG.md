@@ -7,7 +7,16 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ## [Unreleased]
 
 ### Added
-- (no entries yet)
+- Earley recognizer/parser APIs for CFG grammars (`earleyRecognize`, `earleyParse`, `parseTextWithEarley`).
+- Dependency parser APIs (`dependencyParse`, `dependencyParseText`) for lightweight arc generation.
+- Sparse text feature vectorizer (`TextFeatureVectorizer`) and sparse-batch flattener (`flattenSparseBatch`).
+- Decision tree and linear text classifier APIs (`DecisionTreeTextClassifier`, `LogisticTextClassifier`, `LinearSvmTextClassifier`).
+- Native Zig sparse linear scoring hot loop (`bunnltk_linear_scores_sparse_ids`) with Bun binding (`linearScoresSparseIdsNative`).
+- Corpus registry manifest loader/downloader with SHA256 validation (`loadCorpusRegistryManifest`, `downloadCorpusRegistry`).
+- Python-vs-native sparse linear scorer benchmark (`bench:compare:linear`, `python_linear_scores_baseline.py`).
+
+### Changed
+- CI/release Python dependencies now include `numpy` to keep MaxEnt parity baselines stable.
 
 ## [0.8.0] - 2026-02-27
 
