@@ -48,7 +48,7 @@ jobs:
           python-version: "3.12"
 
       - name: Setup Zig
-        uses: mlugg/setup-zig@v1
+        uses: goto-bus-stop/setup-zig@v2
         with:
           version: "0.15.2"
 
