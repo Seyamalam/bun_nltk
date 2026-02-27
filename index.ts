@@ -12,6 +12,7 @@ export {
   NativeFreqDistStream,
   everygramsAsciiNative,
   normalizeTokensAsciiNative,
+  perceptronPredictBatchNative,
   posTagAsciiNative,
   skipgramsAsciiNative,
   ngramsAsciiNative,

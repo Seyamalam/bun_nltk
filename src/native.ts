@@ -139,6 +139,10 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize", "ptr", "ptr", "ptr", "usize"],
     returns: "u64",
   },
+  bunnltk_perceptron_predict_batch: {
+    args: ["ptr", "usize", "ptr", "usize", "ptr", "usize", "u32", "u32", "ptr", "usize"],
+    returns: "void",
+  },
   bunnltk_porter_stem_ascii: {
     args: ["ptr", "usize", "ptr", "usize"],
     returns: "u32",
@@ -566,6 +570,39 @@ export function posTagAsciiNative(text: string): PosTag[] {
       length,
     });
   }
+  return out;
+}
+
+export function perceptronPredictBatchNative(
+  featureIds: Uint32Array,
+  tokenOffsets: Uint32Array,
+  weights: Float32Array,
+  modelFeatureCount: number,
+  tagCount: number,
+): Uint16Array {
+  if (tokenOffsets.length === 0) return new Uint16Array(0);
+  if (!Number.isInteger(modelFeatureCount) || modelFeatureCount <= 0) {
+    throw new Error("modelFeatureCount must be a positive integer");
+  }
+  if (!Number.isInteger(tagCount) || tagCount <= 0) {
+    throw new Error("tagCount must be a positive integer");
+  }
+
+  const tokenCount = tokenOffsets.length - 1;
+  const out = new Uint16Array(tokenCount);
+  lib.symbols.bunnltk_perceptron_predict_batch(
+    ptr(featureIds),
+    featureIds.length,
+    ptr(tokenOffsets),
+    tokenOffsets.length,
+    ptr(weights),
+    weights.length,
+    modelFeatureCount,
+    tagCount,
+    ptr(out),
+    out.length,
+  );
+  assertNoNativeError("perceptronPredictBatchNative");
   return out;
 }
 

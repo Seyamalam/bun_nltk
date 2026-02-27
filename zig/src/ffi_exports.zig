@@ -6,6 +6,7 @@ const token_ids = @import("core/token_ids.zig");
 const ngrams = @import("core/ngrams.zig");
 const normalize = @import("core/normalize.zig");
 const porter = @import("core/porter.zig");
+const perceptron = @import("core/perceptron.zig");
 const tagger = @import("core/tagger.zig");
 const stream_freqdist = @import("core/stream_freqdist.zig");
 const types = @import("core/types.zig");
@@ -682,6 +683,42 @@ pub export fn bunnltk_fill_pos_tags_ascii(
     const total = tagger.fillPosTagsAscii(input_ptr[0..input_len], out_offsets, out_lengths, out_tag_ids);
     if (total > capacity) error_state.setError(.insufficient_capacity);
     return total;
+}
+
+pub export fn bunnltk_perceptron_predict_batch(
+    feature_ids_ptr: [*]const u32,
+    feature_ids_len: usize,
+    token_offsets_ptr: [*]const u32,
+    token_offsets_len: usize,
+    weights_ptr: [*]const f32,
+    weights_len: usize,
+    model_feature_count: u32,
+    tag_count: u32,
+    out_tag_ids_ptr: [*]u16,
+    out_tag_ids_len: usize,
+) void {
+    error_state.resetError();
+    if (token_offsets_len == 0) return;
+    if (feature_ids_len == 0 or weights_len == 0 or out_tag_ids_len == 0) {
+        error_state.setError(.insufficient_capacity);
+        return;
+    }
+
+    perceptron.predictBatch(
+        feature_ids_ptr[0..feature_ids_len],
+        token_offsets_ptr[0..token_offsets_len],
+        weights_ptr[0..weights_len],
+        model_feature_count,
+        tag_count,
+        out_tag_ids_ptr[0..out_tag_ids_len],
+        std.heap.c_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.InvalidDimensions => error_state.setError(.invalid_n),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+            error.InsufficientCapacity => error_state.setError(.insufficient_capacity),
+        }
+    };
 }
 
 pub export fn bunnltk_freqdist_stream_new() u64 {

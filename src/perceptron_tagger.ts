@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { perceptronPredictBatchNative } from "./native";
 import { WasmNltk } from "./wasm";
 
 const ASCII_TOKEN_RE = /[A-Za-z0-9']+/g;
@@ -116,10 +117,11 @@ function argmax(scores: Float32Array): number {
   return bestIdx;
 }
 
-function predictTagIdJs(model: PerceptronTaggerModel, fids: number[], scratch: Float32Array): number {
+function predictTagIdJs(model: PerceptronTaggerModel, fids: ArrayLike<number>, scratch: Float32Array): number {
   scratch.fill(0);
   const tc = model.tagCount;
-  for (const fid of fids) {
+  for (let i = 0; i < fids.length; i += 1) {
+    const fid = fids[i]!;
     if (fid < 0 || fid >= model.featureCount) continue;
     const base = fid * tc;
     for (let j = 0; j < tc; j += 1) {
@@ -159,6 +161,7 @@ export type PerceptronTaggerOptions = {
   model?: PerceptronTaggerModel;
   wasm?: WasmNltk;
   useWasm?: boolean;
+  useNative?: boolean;
 };
 
 function buildBatchFeatureBuffers(
@@ -189,8 +192,8 @@ export function posTagPerceptronAscii(text: string, options: PerceptronTaggerOpt
   if (tokens.length === 0) return [];
 
   let tagIds: Uint16Array | null = null;
+  const batch = buildBatchFeatureBuffers(tokens, model.featureIndex);
   if (options.useWasm && options.wasm) {
-    const batch = buildBatchFeatureBuffers(tokens, model.featureIndex);
     tagIds = options.wasm.perceptronPredictBatch(
       batch.featureIds,
       batch.tokenOffsets,
@@ -198,6 +201,18 @@ export function posTagPerceptronAscii(text: string, options: PerceptronTaggerOpt
       model.featureCount,
       model.tagCount,
     );
+  } else if (options.useNative !== false) {
+    try {
+      tagIds = perceptronPredictBatchNative(
+        batch.featureIds,
+        batch.tokenOffsets,
+        model.weights,
+        model.featureCount,
+        model.tagCount,
+      );
+    } catch {
+      tagIds = null;
+    }
   }
 
   const out: PerceptronTaggedToken[] = [];
@@ -208,7 +223,7 @@ export function posTagPerceptronAscii(text: string, options: PerceptronTaggerOpt
       tagIds?.[i] ??
       predictTagIdJs(
         model,
-        featureIds(tokens, i, model.featureIndex),
+        batch.featureIds.subarray(batch.tokenOffsets[i]!, batch.tokenOffsets[i + 1]!),
         scratch,
       );
     out.push({

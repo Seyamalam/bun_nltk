@@ -2,6 +2,7 @@ const std = @import("std");
 const ascii = @import("core/ascii.zig");
 const freqdist = @import("core/freqdist.zig");
 const normalize = @import("core/normalize.zig");
+const perceptron = @import("core/perceptron.zig");
 const error_state = @import("core/error_state.zig");
 
 var input_buffer: [128 * 1024 * 1024]u8 = undefined;
@@ -182,45 +183,21 @@ pub export fn bunnltk_wasm_perceptron_predict_batch(
         return;
     }
 
-    const feature_ids = ptrFromOffset(u32, feature_ids_ptr)[0..@as(usize, feature_ids_len)];
-    const offsets = ptrFromOffset(u32, token_offsets_ptr)[0..@as(usize, token_count + 1)];
-    const weights = ptrFromOffset(f32, weights_ptr)[0..@as(usize, model_feature_count * tag_count)];
-    const out = ptrFromOffset(u16, out_tag_ids_ptr)[0..@as(usize, token_count)];
-
-    const scores = std.heap.wasm_allocator.alloc(f32, @as(usize, tag_count)) catch {
-        error_state.setError(.out_of_memory);
-        return;
+    perceptron.predictBatch(
+        ptrFromOffset(u32, feature_ids_ptr)[0..@as(usize, feature_ids_len)],
+        ptrFromOffset(u32, token_offsets_ptr)[0..@as(usize, token_count + 1)],
+        ptrFromOffset(f32, weights_ptr)[0..@as(usize, model_feature_count * tag_count)],
+        model_feature_count,
+        tag_count,
+        ptrFromOffset(u16, out_tag_ids_ptr)[0..@as(usize, token_count)],
+        std.heap.wasm_allocator,
+    ) catch |err| {
+        switch (err) {
+            error.InvalidDimensions => error_state.setError(.invalid_n),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+            error.InsufficientCapacity => error_state.setError(.insufficient_capacity),
+        }
     };
-    defer std.heap.wasm_allocator.free(scores);
-
-    for (0..@as(usize, token_count)) |ti| {
-        @memset(scores, 0);
-        const start = offsets[ti];
-        const end = offsets[ti + 1];
-        if (start > end or end > feature_ids_len) {
-            error_state.setError(.insufficient_capacity);
-            return;
-        }
-
-        for (@as(usize, start)..@as(usize, end)) |fi| {
-            const feature_id = feature_ids[fi];
-            if (feature_id >= model_feature_count) continue;
-            const base = @as(usize, feature_id * tag_count);
-            for (0..@as(usize, tag_count)) |tj| {
-                scores[tj] += weights[base + tj];
-            }
-        }
-
-        var best_id: u16 = 0;
-        var best_score: f32 = scores[0];
-        for (1..@as(usize, tag_count)) |tj| {
-            if (scores[tj] > best_score) {
-                best_score = scores[tj];
-                best_id = @as(u16, @intCast(tj));
-            }
-        }
-        out[ti] = best_id;
-    }
 }
 
 test "wasm exports basic counts and metrics" {

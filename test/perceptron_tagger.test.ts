@@ -37,17 +37,22 @@ test("perceptron model loads", () => {
   expect(model.weights.length).toBe(model.featureCount * model.tagCount);
 });
 
-test("perceptron JS/WASM/Python parity on fixture cases", async () => {
+test("perceptron Native/JS/WASM/Python parity on fixture cases", async () => {
   const model = loadPerceptronTaggerModel();
   const wasm = await WasmNltk.init();
   try {
     for (const item of fixture.cases) {
-      const js = posTagPerceptronAscii(item.input, { model }).map((row) => ({ token: row.token, tag: row.tag }));
+      const nativeOut = posTagPerceptronAscii(item.input, { model }).map((row) => ({ token: row.token, tag: row.tag }));
+      const js = posTagPerceptronAscii(item.input, { model, useNative: false }).map((row) => ({
+        token: row.token,
+        tag: row.tag,
+      }));
       const wasmOut = posTagPerceptronAscii(item.input, { model, wasm, useWasm: true }).map((row) => ({
         token: row.token,
         tag: row.tag,
       }));
       const py = runPython(item.input).tags;
+      expect(nativeOut).toEqual(py);
       expect(js).toEqual(py);
       expect(wasmOut).toEqual(py);
     }
