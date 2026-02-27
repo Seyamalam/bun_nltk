@@ -1,4 +1,4 @@
-import { tokenizeAsciiNative } from "./native";
+import { naiveBayesLogScoresIdsNative, tokenizeAsciiNative } from "./native";
 
 export type NaiveBayesExample = {
   label: string;
@@ -30,6 +30,17 @@ type InternalState = {
   vocabulary: Set<string>;
 };
 
+type NativeNaiveBayesModel = {
+  labels: string[];
+  tokenToId: Map<string, number>;
+  vocabSize: number;
+  tokenCountsMatrix: Uint32Array;
+  labelDocCounts: Uint32Array;
+  labelTokenTotals: Uint32Array;
+  totalDocs: number;
+  smoothing: number;
+};
+
 function ensureLabel(state: InternalState, label: string): void {
   if (!state.labelDocCounts.has(label)) {
     state.labelDocCounts.set(label, 0);
@@ -44,6 +55,7 @@ function tokenize(text: string): string[] {
 
 export class NaiveBayesTextClassifier {
   private state: InternalState;
+  private nativeModel: NativeNaiveBayesModel | null = null;
 
   constructor(options?: { smoothing?: number }) {
     this.state = {
@@ -83,6 +95,7 @@ export class NaiveBayesTextClassifier {
         local.set(String(tokenCounts[j]), Number(tokenCounts[j + 1]));
       }
     }
+    classifier.nativeModel = null;
     return classifier;
   }
 
@@ -101,6 +114,7 @@ export class NaiveBayesTextClassifier {
         this.state.labelTokenTotals.set(label, (this.state.labelTokenTotals.get(label) ?? 0) + 1);
       }
     }
+    this.nativeModel = null;
     return this;
   }
 
@@ -117,12 +131,46 @@ export class NaiveBayesTextClassifier {
   predict(text: string): NaiveBayesPrediction[] {
     const labels = this.labels();
     if (labels.length === 0) return [];
+    const tokens = tokenize(text);
+    if (tokens.length === 0) {
+      return labels
+        .map((label) => {
+          const docCount = this.state.labelDocCounts.get(label) ?? 0;
+          const totalDocs = Math.max(1, this.state.totalDocs);
+          const logProb = Math.log((docCount + this.state.smoothing) / (totalDocs + this.state.smoothing * labels.length));
+          return { label, logProb };
+        })
+        .sort((a, b) => b.logProb - a.logProb);
+    }
 
+    try {
+      const nativeModel = this.buildNativeModel();
+      const docTokenIds = Uint32Array.from(
+        tokens
+          .map((token) => nativeModel.tokenToId.get(token))
+          .filter((id): id is number => id !== undefined && id >= 0),
+      );
+      const scores = naiveBayesLogScoresIdsNative({
+        docTokenIds,
+        vocabSize: nativeModel.vocabSize,
+        tokenCountsMatrix: nativeModel.tokenCountsMatrix,
+        labelDocCounts: nativeModel.labelDocCounts,
+        labelTokenTotals: nativeModel.labelTokenTotals,
+        totalDocs: nativeModel.totalDocs,
+        smoothing: nativeModel.smoothing,
+      });
+      return nativeModel.labels
+        .map((label, idx) => ({ label, logProb: scores[idx]! }))
+        .sort((a, b) => b.logProb - a.logProb);
+    } catch {
+      return this.predictJs(tokens, labels);
+    }
+  }
+
+  private predictJs(tokens: string[], labels: string[]): NaiveBayesPrediction[] {
     const smoothing = this.state.smoothing;
     const vocabSize = Math.max(1, this.state.vocabulary.size);
     const totalDocs = Math.max(1, this.state.totalDocs);
-    const tokens = tokenize(text);
-
     const scores: NaiveBayesPrediction[] = [];
     for (const label of labels) {
       const docCount = this.state.labelDocCounts.get(label) ?? 0;
@@ -130,7 +178,6 @@ export class NaiveBayesTextClassifier {
       const tokenCounts = this.state.tokenCountsByLabel.get(label)!;
       const tokenTotal = this.state.labelTokenTotals.get(label) ?? 0;
       const denom = tokenTotal + smoothing * vocabSize;
-
       let logProb = labelPrior;
       for (const token of tokens) {
         const count = tokenCounts.get(token) ?? 0;
@@ -138,8 +185,43 @@ export class NaiveBayesTextClassifier {
       }
       scores.push({ label, logProb });
     }
-
     return scores.sort((a, b) => b.logProb - a.logProb);
+  }
+
+  private buildNativeModel(): NativeNaiveBayesModel {
+    if (this.nativeModel) return this.nativeModel;
+    const labels = this.labels();
+    if (labels.length === 0) throw new Error("classifier has no labels");
+    const vocabulary = [...this.state.vocabulary].sort((a, b) => a.localeCompare(b));
+    const tokenToId = new Map(vocabulary.map((token, idx) => [token, idx]));
+    const vocabSize = Math.max(1, vocabulary.length);
+    const tokenCountsMatrix = new Uint32Array(labels.length * vocabSize);
+    const labelDocCounts = new Uint32Array(labels.length);
+    const labelTokenTotals = new Uint32Array(labels.length);
+
+    for (let l = 0; l < labels.length; l += 1) {
+      const label = labels[l]!;
+      const row = this.state.tokenCountsByLabel.get(label) ?? new Map<string, number>();
+      labelDocCounts[l] = this.state.labelDocCounts.get(label) ?? 0;
+      labelTokenTotals[l] = this.state.labelTokenTotals.get(label) ?? 0;
+      for (const [token, count] of row) {
+        const tokId = tokenToId.get(token);
+        if (tokId === undefined) continue;
+        tokenCountsMatrix[l * vocabSize + tokId] = count;
+      }
+    }
+
+    this.nativeModel = {
+      labels,
+      tokenToId,
+      vocabSize,
+      tokenCountsMatrix,
+      labelDocCounts,
+      labelTokenTotals,
+      totalDocs: this.state.totalDocs,
+      smoothing: this.state.smoothing,
+    };
+    return this.nativeModel;
   }
 
   evaluate(examples: NaiveBayesExample[]): { accuracy: number; total: number; correct: number } {
