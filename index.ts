@@ -62,6 +62,8 @@ export {
 } from "./src/punkt";
 export type { PunktModelSerialized, PunktTrainingOptions } from "./src/punkt";
 export { normalizeTokens } from "./src/normalization";
+export { NgramLanguageModel, trainNgramLanguageModel } from "./src/lm";
+export type { LanguageModelType, NgramLanguageModelOptions } from "./src/lm";
 export { loadWordNetMini, WordNet } from "./src/wordnet";
 export type { WordNetMiniPayload, WordNetPos, WordNetSynset } from "./src/wordnet";
 export { WasmNltk } from "./src/wasm";
