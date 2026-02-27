@@ -11,8 +11,8 @@ This package is intended for Bun/Node distribution with native and WASM backends
 
 ## Publish Checklist
 
-1. Build artifacts:
-   - `bun run build:zig`
+1. Build distributable artifacts:
+   - `bun run build:prebuilt` (linux-x64 + win32-x64)
    - `bun run build:wasm`
 2. Run validation:
    - `bun run release:check`
@@ -58,5 +58,9 @@ Post-publish verification is defined in [.github/workflows/post-publish-smoke.ym
 ## Notes
 
 - If shipping prebuilt native binaries, include them in the package payload strategy before publish.
-- If consumers only use WASM, confirm `native/bun_nltk.wasm` packaging and runtime loading paths.
+- Package now ships:
+  - `native/prebuilt/linux-x64/bun_nltk.so`
+  - `native/prebuilt/win32-x64/bun_nltk.dll`
+  - `native/bun_nltk.wasm`
+- No install-time lifecycle scripts are required; package consumers do not need `bun pm trust` for this package.
 - Keep `bench:gate` thresholds aligned with current hardware assumptions and CI environment.

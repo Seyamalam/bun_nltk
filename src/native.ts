@@ -1,4 +1,5 @@
 import { dlopen, ptr } from "bun:ffi";
+import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
 function toNumber(value: number | bigint): number {
@@ -6,8 +7,25 @@ function toNumber(value: number | bigint): number {
 }
 
 const ext = process.platform === "win32" ? "dll" : process.platform === "darwin" ? "dylib" : "so";
-const defaultLibPath = resolve(import.meta.dir, "..", "native", `bun_nltk.${ext}`);
-const nativeLibPath = process.env.BUN_NLTK_NATIVE_LIB ?? defaultLibPath;
+const prebuiltLibPath = resolve(
+  import.meta.dir,
+  "..",
+  "native",
+  "prebuilt",
+  `${process.platform}-${process.arch}`,
+  `bun_nltk.${ext}`,
+);
+const localLibPath = resolve(import.meta.dir, "..", "native", `bun_nltk.${ext}`);
+const resolvedDefaultLibPath = existsSync(prebuiltLibPath) ? prebuiltLibPath : localLibPath;
+const nativeLibPath = process.env.BUN_NLTK_NATIVE_LIB ?? resolvedDefaultLibPath;
+
+if (!existsSync(nativeLibPath)) {
+  throw new Error(
+    `native library not found for platform=${process.platform} arch=${process.arch}: ${nativeLibPath}.` +
+      `\nSupported prebuilt targets: linux-x64, win32-x64.` +
+      `\nFor local development, run: bun run build:zig`,
+  );
+}
 
 const lib = dlopen(nativeLibPath, {
   bunnltk_last_error_code: {

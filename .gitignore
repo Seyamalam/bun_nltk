@@ -11,6 +11,7 @@ native/*.dylib
 native/*.pdb
 native/*.lib
 native/*.wasm
+native/prebuilt/
 
 # code coverage
 coverage

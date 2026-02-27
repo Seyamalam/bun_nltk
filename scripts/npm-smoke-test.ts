@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -57,13 +57,15 @@ async function main() {
     await installWithRetry(spec, tempDir);
 
     const pkgDir = join(tempDir, "node_modules", "bun_nltk");
-    let result = run(["bun", "run", "build:zig"], pkgDir);
-    if (result.exitCode !== 0) {
-      throw new Error(`native build failed\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`);
-    }
-    result = run(["bun", "run", "build:wasm"], pkgDir);
-    if (result.exitCode !== 0) {
-      throw new Error(`wasm build failed\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`);
+    const linuxPrebuilt = join(pkgDir, "native", "prebuilt", "linux-x64", "bun_nltk.so");
+    const windowsPrebuilt = join(pkgDir, "native", "prebuilt", "win32-x64", "bun_nltk.dll");
+    const wasmBinary = join(pkgDir, "native", "bun_nltk.wasm");
+    if (!existsSync(linuxPrebuilt) || !existsSync(windowsPrebuilt) || !existsSync(wasmBinary)) {
+      throw new Error(
+        `missing packaged binaries:\nlinux=${existsSync(linuxPrebuilt)}\nwindows=${existsSync(windowsPrebuilt)}\nwasm=${existsSync(
+          wasmBinary,
+        )}`,
+      );
     }
 
     const smokeScript = `
@@ -108,7 +110,7 @@ console.log(JSON.stringify({ ok: true, spec: "${spec}", tokens: jsCount }, null,
 `;
     writeFileSync(join(tempDir, "smoke.ts"), smokeScript, "utf8");
 
-    result = run(["bun", "run", "smoke.ts"], tempDir);
+    const result = run(["bun", "run", "smoke.ts"], tempDir);
     if (result.exitCode !== 0) {
       throw new Error(`smoke script failed\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`);
     }

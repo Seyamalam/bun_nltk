@@ -132,5 +132,6 @@ bun run release:check
 ## Notes
 
 - Native library output path is `native/bun_nltk.{dll|so|dylib}`.
+- npm package ships prebuilt native binaries for `linux-x64` and `win32-x64`, plus `native/bun_nltk.wasm`.
 - Current tokenizer rule is `[A-Za-z0-9']+` (lowercased ASCII).
 - This is the first optimization loop and intentionally scoped.

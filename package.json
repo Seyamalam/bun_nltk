@@ -8,6 +8,9 @@
   "license": "Apache-2.0",
   "files": [
     "index.ts",
+    "native/prebuilt/linux-x64/bun_nltk.so",
+    "native/prebuilt/win32-x64/bun_nltk.dll",
+    "native/bun_nltk.wasm",
     "src",
     "scripts",
     "models",
@@ -40,6 +43,7 @@
   },
   "scripts": {
     "build:zig": "bun run scripts/build-zig.ts",
+    "build:prebuilt": "bun run scripts/build-prebuilt.ts",
     "build:wasm": "bun run scripts/build-wasm.ts",
     "model:train:tagger": "python scripts/train_perceptron_tagger.py --out models/perceptron_tagger_ascii.json --sentences 7000 --epochs 10 --seed 1337",
     "test": "bun test",
@@ -56,7 +60,7 @@
     "bench:dashboard": "bun run scripts/bench-dashboard.ts",
     "npm:smoke": "bun run scripts/npm-smoke-test.ts",
     "release:validate": "bun run scripts/release-validate.ts",
-    "release:check": "bun run build:zig && bun run build:wasm && bun test && bun run bench:gate"
+    "release:check": "bun run build:zig && bun run build:wasm && bun run build:prebuilt && bun test && bun run bench:gate"
   },
   "devDependencies": {
     "@types/bun": "latest"
