@@ -2,6 +2,13 @@
 
 Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 
+## Package docs
+
+- API reference: [docs/API.md](/C:/Users/user/Desktop/bun/bun_nltk/docs/API.md)
+- Versioning policy: [docs/VERSIONING.md](/C:/Users/user/Desktop/bun/bun_nltk/docs/VERSIONING.md)
+- Publishing guide: [docs/PUBLISHING.md](/C:/Users/user/Desktop/bun/bun_nltk/docs/PUBLISHING.md)
+- Changelog: [CHANGELOG.md](/C:/Users/user/Desktop/bun/bun_nltk/CHANGELOG.md)
+
 ## Implemented in this milestone
 
 - ASCII token counting
@@ -113,6 +120,12 @@ bun run bench:parity:tagger
 
 ```bash
 bun run bench:gate
+```
+
+## Release readiness check
+
+```bash
+bun run release:check
 ```
 
 ## Notes

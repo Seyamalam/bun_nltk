@@ -1,0 +1,111 @@
+# API Reference
+
+This document describes the public API exported by [index.ts](/C:/Users/user/Desktop/bun/bun_nltk/index.ts).
+
+## Installation
+
+```bash
+bun add bun_nltk
+# or
+npm install bun_nltk
+```
+
+## Import
+
+```ts
+import {
+  countTokensAscii,
+  tokenizeAsciiNative,
+  sentenceTokenizeSubset,
+  normalizeTokens,
+  WasmNltk,
+  posTagPerceptronAscii,
+  loadPerceptronTaggerModel,
+} from "bun_nltk";
+```
+
+## Native Zig API
+
+These functions call the dynamic native library through Bun FFI.
+
+- `countTokensAscii(text: string): number`
+- `countUniqueTokensAscii(text: string): number`
+- `countNgramsAscii(text: string, n: number): number`
+- `countUniqueNgramsAscii(text: string, n: number): number`
+- `computeAsciiMetrics(text: string, n: number): { tokens: number; uniqueTokens: number; ngrams: number; uniqueNgrams: number }`
+- `tokenFreqDistHashAscii(text: string): Map<bigint, number>`
+- `ngramFreqDistHashAscii(text: string, n: number): Map<bigint, number>`
+- `tokenizeAsciiNative(text: string): string[]`
+- `ngramsAsciiNative(text: string, n: number): string[][]`
+- `everygramsAsciiNative(text: string, minLen?: number, maxLen?: number): string[][]`
+- `skipgramsAsciiNative(text: string, n: number, k: number): string[][]`
+- `tokenFreqDistIdsAscii(text: string): { tokens: string[]; counts: number[]; tokenToId: Map<string, number>; totalTokens: number }`
+- `bigramWindowStatsAsciiIds(text: string, windowSize?: number): Array<{ leftId: number; rightId: number; count: number; pmi: number }>`
+- `bigramWindowStatsAscii(text: string, windowSize?: number): Array<{ left: string; right: string; leftId: number; rightId: number; count: number; pmi: number }>`
+- `topPmiBigramsAscii(text: string, topK: number, windowSize?: number): Array<{ leftHash: bigint; rightHash: bigint; score: number }>`
+- `porterStemAscii(token: string): string`
+- `porterStemAsciiTokens(tokens: string[]): string[]`
+- `countNormalizedTokensAscii(text: string, removeStopwords?: boolean): number`
+- `normalizeTokensAsciiNative(text: string, removeStopwords?: boolean): string[]`
+- `posTagAsciiNative(text: string): Array<{ token: string; tag: string; tagId: number; start: number; length: number }>`
+- `nativeLibraryPath(): string`
+
+## JS Reference API
+
+These functions are pure TypeScript reference implementations.
+
+- `tokenizeAscii(text: string): string[]`
+- `countTokensAsciiJs(text: string): number`
+- `countUniqueTokensAsciiJs(text: string): number`
+- `countNgramsAsciiJs(text: string, n: number): number`
+- `countUniqueNgramsAsciiJs(text: string, n: number): number`
+- `computeAsciiMetricsJs(text: string, n: number): { tokens: number; uniqueTokens: number; ngrams: number; uniqueNgrams: number }`
+- `hashTokenAscii(token: string): bigint`
+- `hashNgram(tokenHashes: bigint[], n: number): bigint`
+- `tokenFreqDistHashAsciiJs(text: string): Map<bigint, number>`
+- `ngramFreqDistHashAsciiJs(text: string, n: number): Map<bigint, number>`
+- `ngramsAscii(text: string, n: number): string[][]`
+- `everygramsAscii(text: string, minLen?: number, maxLen?: number): string[][]`
+- `skipgramsAscii(text: string, n: number, k: number): string[][]`
+- `tokenFreqDistIdsAsciiJs(text: string): { tokens: string[]; counts: number[]; tokenToId: Map<string, number>; totalTokens: number }`
+- `bigramWindowStatsAsciiIdsJs(text: string, windowSize?: number): Array<{ leftId: number; rightId: number; count: number; pmi: number }>`
+- `bigramWindowStatsAsciiJs(text: string, windowSize?: number): Array<{ left: string; right: string; leftId: number; rightId: number; count: number; pmi: number }>`
+- `topPmiBigramsAsciiJs(text: string, topK: number, windowSize?: number): Array<{ leftHash: bigint; rightHash: bigint; score: number }>`
+- `normalizeTokensAscii(text: string, removeStopwords?: boolean): string[]`
+- `normalizeTokensUnicode(text: string, removeStopwords?: boolean): string[]`
+- `posTagAscii(text: string): Array<{ token: string; tag: string; tagId: number; start: number; length: number }>`
+
+## Tokenizers
+
+- `wordTokenizeSubset(text: string): string[]`
+- `tweetTokenizeSubset(text: string, opts?: { stripHandles?: boolean; reduceLen?: boolean; matchPhoneNumbers?: boolean }): string[]`
+- `sentenceTokenizeSubset(text: string, opts?: { abbreviations?: Iterable<string>; learnAbbreviations?: boolean; orthographicHeuristics?: boolean }): string[]`
+
+## Normalization
+
+- `normalizeTokens(text: string, options?: { removeStopwords?: boolean; preferNativeAscii?: boolean; stem?: boolean }): string[]`
+
+## Perceptron Tagger
+
+- `preparePerceptronTaggerModel(payload: PerceptronTaggerModelSerialized): PerceptronTaggerModel`
+- `loadPerceptronTaggerModel(path?: string): PerceptronTaggerModel`
+- `posTagPerceptronAscii(text: string, options?: { model?: PerceptronTaggerModel; wasm?: WasmNltk; useWasm?: boolean }): Array<{ token: string; tag: string; tagId: number; start: number; length: number }>`
+
+## WASM Runtime
+
+`WasmNltk` loads and executes the WASM build with reusable allocation pools.
+
+- `WasmNltk.init(init?: { wasmBytes?: Uint8Array; wasmPath?: string }): Promise<WasmNltk>`
+- `dispose(): void`
+- `countTokensAscii(text: string): number`
+- `countNgramsAscii(text: string, n: number): number`
+- `computeAsciiMetrics(text: string, n: number): { tokens: number; uniqueTokens: number; ngrams: number; uniqueNgrams: number }`
+- `tokenizeAscii(text: string): string[]`
+- `normalizeTokensAscii(text: string, removeStopwords?: boolean): string[]`
+- `perceptronPredictBatch(featureIds: Uint32Array, tokenOffsets: Uint32Array, weights: Float32Array, modelFeatureCount: number, tagCount: number): Uint16Array`
+
+## Notes
+
+- Native APIs require the built shared library (`native/bun_nltk.{dll|so|dylib}`).
+- WASM APIs require `native/bun_nltk.wasm`.
+- `Node.js` users should ensure an execution path that supports TS ESM package entrypoints or build/transpile this package as part of their pipeline.

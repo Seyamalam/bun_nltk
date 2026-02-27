@@ -1,8 +1,35 @@
 {
   "name": "bun_nltk",
+  "version": "0.5.0",
+  "description": "High-performance NLP primitives for Bun/Node with Zig native and WASM backends.",
   "module": "index.ts",
   "type": "module",
-  "private": true,
+  "private": false,
+  "license": "Apache-2.0",
+  "files": [
+    "index.ts",
+    "src",
+    "scripts",
+    "models",
+    "zig",
+    "README.md",
+    "CHANGELOG.md",
+    "docs",
+    "package.json"
+  ],
+  "keywords": [
+    "nlp",
+    "nltk",
+    "zig",
+    "bun",
+    "node",
+    "wasm",
+    "tokenizer",
+    "pos-tagger"
+  ],
+  "exports": {
+    ".": "./index.ts"
+  },
   "scripts": {
     "build:zig": "bun run scripts/build-zig.ts",
     "build:wasm": "bun run scripts/build-wasm.ts",
@@ -18,7 +45,8 @@
     "bench:parity:sentence": "bun run bench/parity_sentence.ts",
     "bench:parity:tagger": "bun run bench/parity_tagger.ts",
     "bench:gate": "bun run scripts/bench-gate.ts",
-    "bench:dashboard": "bun run scripts/bench-dashboard.ts"
+    "bench:dashboard": "bun run scripts/bench-dashboard.ts",
+    "release:check": "bun run build:zig && bun run build:wasm && bun test && bun run bench:gate"
   },
   "devDependencies": {
     "@types/bun": "latest"
