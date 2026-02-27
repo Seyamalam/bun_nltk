@@ -36,6 +36,8 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # benchmark datasets
 bench/datasets/
+bench/__pycache__/
+test/fixtures/nltk_imported/
 artifacts/
 
 # IntelliJ based IDEs

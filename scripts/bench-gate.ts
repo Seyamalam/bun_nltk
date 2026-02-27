@@ -55,6 +55,8 @@ function main() {
   const wordnet = run(["bun", "run", "bench/compare_wordnet.ts", "4"], root);
   const parser = run(["bun", "run", "bench/compare_parser.ts", "800", "3"], root);
   const classifier = run(["bun", "run", "bench/compare_classifier.ts", "1800", "450", "3"], root);
+  const pcfg = run(["bun", "run", "bench/compare_pcfg.ts", "700", "2"], root);
+  const maxent = run(["bun", "run", "bench/compare_maxent.ts", "900", "250", "1"], root);
   const parityAll = run(["bun", "run", "bench/parity_all.ts"], root);
 
   assertAtLeast(Number(compare.speedup_vs_python), 3.0, "token/ngram");
@@ -69,6 +71,8 @@ function main() {
   assertAtLeast(Number(wordnet.speedup_vs_python), 1.2, "wordnet");
   assertAtLeast(Number(parser.speedup_vs_python), 1.1, "parser");
   assertAtLeast(Number(classifier.speedup_vs_python), 1.1, "classifier");
+  assertAtLeast(Number(pcfg.speedup_vs_python), 1.1, "pcfg");
+  assertAtLeast(Number(maxent.speedup_vs_python), 1.0, "maxent");
 
   if (!parityAll.ok) {
     throw new Error("global parity harness failed");
@@ -91,6 +95,8 @@ function main() {
           wordnet_x: 1.2,
           parser_x: 1.1,
           classifier_x: 1.1,
+          pcfg_x: 1.1,
+          maxent_x: 1.0,
         },
         measured: {
           token_ngram_x: compare.speedup_vs_python,
@@ -105,6 +111,8 @@ function main() {
           wordnet_x: wordnet.speedup_vs_python,
           parser_x: parser.speedup_vs_python,
           classifier_x: classifier.speedup_vs_python,
+          pcfg_x: pcfg.speedup_vs_python,
+          maxent_x: maxent.speedup_vs_python,
         },
       },
       null,

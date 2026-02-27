@@ -106,6 +106,8 @@ function main() {
   const wordnet = run(["bun", "run", "bench/compare_wordnet.ts", "4"], root);
   const parser = run(["bun", "run", "bench/compare_parser.ts", "800", "3"], root);
   const classifier = run(["bun", "run", "bench/compare_classifier.ts", "1800", "450", "3"], root);
+  const pcfg = run(["bun", "run", "bench/compare_pcfg.ts", "700", "2"], root);
+  const maxent = run(["bun", "run", "bench/compare_maxent.ts", "900", "250", "1"], root);
   const paritySentence = run(["bun", "run", "bench/parity_sentence.ts"], root);
   const parityTagger = run(["bun", "run", "bench/parity_tagger.ts"], root);
   const parityAll = run(["bun", "run", "bench/parity_all.ts"], root);
@@ -130,6 +132,9 @@ function main() {
       wordnet: Boolean(parityAll.checks?.wordnet),
       parser: Boolean(parityAll.checks?.parser),
       classifier: Boolean(parityAll.checks?.classifier),
+      pcfg: Boolean(parityAll.checks?.pcfg),
+      maxent: Boolean(parityAll.checks?.maxent),
+      imported: Boolean(parityAll.checks?.imported),
       tagger: Boolean(parityTagger.parity),
     },
     speedups: {
@@ -145,6 +150,8 @@ function main() {
       wordnet_x: toNum(wordnet.speedup_vs_python),
       parser_x: toNum(parser.speedup_vs_python),
       classifier_x: toNum(classifier.speedup_vs_python),
+      pcfg_x: toNum(pcfg.speedup_vs_python),
+      maxent_x: toNum(maxent.speedup_vs_python),
     },
     percent_faster: {
       token_ngram_pct: pctFaster(toNum(compare.speedup_vs_python)),
@@ -159,6 +166,8 @@ function main() {
       wordnet_pct: pctFaster(toNum(wordnet.speedup_vs_python)),
       parser_pct: pctFaster(toNum(parser.speedup_vs_python)),
       classifier_pct: pctFaster(toNum(classifier.speedup_vs_python)),
+      pcfg_pct: pctFaster(toNum(pcfg.speedup_vs_python)),
+      maxent_pct: pctFaster(toNum(maxent.speedup_vs_python)),
     },
     throughput: {
       token_per_sec: Number(tokenThroughput.toFixed(2)),
@@ -179,6 +188,8 @@ function main() {
       wordnet,
       parser,
       classifier,
+      pcfg,
+      maxent,
     },
   };
 
@@ -202,6 +213,8 @@ function main() {
     `| wordnet | ${dashboard.speedups.wordnet_x.toFixed(2)} | ${dashboard.percent_faster.wordnet_pct.toFixed(2)} |`,
     `| parser | ${dashboard.speedups.parser_x.toFixed(2)} | ${dashboard.percent_faster.parser_pct.toFixed(2)} |`,
     `| classifier | ${dashboard.speedups.classifier_x.toFixed(2)} | ${dashboard.percent_faster.classifier_pct.toFixed(2)} |`,
+    `| pcfg | ${dashboard.speedups.pcfg_x.toFixed(2)} | ${dashboard.percent_faster.pcfg_pct.toFixed(2)} |`,
+    `| maxent | ${dashboard.speedups.maxent_x.toFixed(2)} | ${dashboard.percent_faster.maxent_pct.toFixed(2)} |`,
     "",
     "| Throughput Metric | Value |",
     "|---|---:|",
@@ -227,6 +240,9 @@ function main() {
     `Parity wordnet: ${dashboard.parity.wordnet}`,
     `Parity parser: ${dashboard.parity.parser}`,
     `Parity classifier: ${dashboard.parity.classifier}`,
+    `Parity pcfg: ${dashboard.parity.pcfg}`,
+    `Parity maxent: ${dashboard.parity.maxent}`,
+    `Parity imported fixtures: ${dashboard.parity.imported}`,
     `Parity tagger: ${dashboard.parity.tagger}`,
     "",
   ].join("\n");

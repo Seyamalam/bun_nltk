@@ -90,17 +90,17 @@ function main() {
       module: "parse",
       feature: "CFG/PCFG/chart parsing",
       status: "partial",
-      notes: "CFG + chart parser subset implemented; PCFG and advanced parse APIs pending.",
-      tests: ["test/parse.test.ts"],
-      benches: ["bench/compare_parser.ts"],
+      notes: "CFG + PCFG chart parsing implemented; advanced parser families still pending.",
+      tests: ["test/parse.test.ts", "test/pcfg.test.ts"],
+      benches: ["bench/compare_parser.ts", "bench/compare_pcfg.ts"],
     },
     {
       module: "classify",
       feature: "classifiers (NaiveBayes/MaxEnt/etc.)",
       status: "partial",
-      notes: "Naive Bayes text classifier implemented; MaxEnt and additional classifiers pending.",
-      tests: ["test/classify.test.ts"],
-      benches: ["bench/compare_classifier.ts"],
+      notes: "Naive Bayes + MaxEnt text classifiers implemented; additional classifier families pending.",
+      tests: ["test/classify.test.ts", "test/maxent.test.ts"],
+      benches: ["bench/compare_classifier.ts", "bench/compare_maxent.ts"],
     },
   ];
 

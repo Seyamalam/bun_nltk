@@ -48,7 +48,11 @@ function main() {
   const wordnet = run(["bun", "run", "bench/parity_wordnet.ts"], root);
   const parser = run(["bun", "run", "bench/parity_parser.ts"], root);
   const classifier = run(["bun", "run", "bench/parity_classifier.ts"], root);
+  const pcfg = run(["bun", "run", "bench/parity_pcfg.ts"], root);
+  const maxent = run(["bun", "run", "bench/parity_maxent.ts"], root);
   const tagger = run(["bun", "run", "bench/parity_tagger.ts"], root);
+  const importedFixturePath = resolve(root, "test", "fixtures", "nltk_imported", "pcfg_treebank_fixture.json");
+  const imported = existsSync(importedFixturePath) ? run(["bun", "run", "bench/parity_imported.ts"], root) : { parity: true };
 
   const checks = {
     tokenizer: Boolean(tokenizer.parity),
@@ -59,6 +63,9 @@ function main() {
     wordnet: Boolean(wordnet.parity),
     parser: Boolean(parser.parity),
     classifier: Boolean(classifier.parity),
+    pcfg: Boolean(pcfg.parity),
+    maxent: Boolean(maxent.parity),
+    imported: Boolean(imported.parity),
     tagger: Boolean(tagger.parity),
   };
 

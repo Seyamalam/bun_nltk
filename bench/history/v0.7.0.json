@@ -1,0 +1,17 @@
+{
+  "version": "v0.7.0",
+  "generated_at": "2026-02-27T10:24:11Z",
+  "speedups": {
+    "token_ngram_x": 3.64,
+    "collocations_x": 11.46,
+    "porter_x": 10.06,
+    "wasm_x": 3.19,
+    "sentence_x": 9.87,
+    "punkt_x": 15.87,
+    "tagger_x": 4.17,
+    "lm_x": 21.64,
+    "chunk_x": 643.08,
+    "wordnet_x": 91.55
+  }
+}
+
