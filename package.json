@@ -12,6 +12,7 @@
     "native/prebuilt/win32-x64/bun_nltk.dll",
     "native/bun_nltk.wasm",
     "src",
+    "corpora",
     "scripts",
     "models",
     "zig",

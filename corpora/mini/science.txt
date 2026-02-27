@@ -1,0 +1,5 @@
+Researchers built a compact corpus for parser evaluation.
+The dataset contains annotated noun phrases and verb phrases.
+
+Another experiment measured perplexity for trigram models.
+Results showed consistent gains after smoothing.

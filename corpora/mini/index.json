@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "id": "news",
+      "path": "news.txt",
+      "categories": ["news", "report"]
+    },
+    {
+      "id": "science",
+      "path": "science.txt",
+      "categories": ["science", "research"]
+    },
+    {
+      "id": "fiction",
+      "path": "fiction.txt",
+      "categories": ["fiction", "story"]
+    }
+  ]
+}
