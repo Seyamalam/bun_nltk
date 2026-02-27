@@ -25,14 +25,17 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Tokenizer parity layer (`wordTokenizeSubset`, `tweetTokenizeSubset`)
 - Sentence tokenizer parity subset (`sentenceTokenizeSubset`) + Python parity harness
 - Trainable Punkt tokenizer/model APIs (`trainPunktModel`, `sentenceTokenizePunkt`)
+- Native Zig Punkt sentence-splitting fast path (`sentenceTokenizePunktAsciiNative`) with WASM equivalent
 - Native normalization pipeline (ASCII fast path with optional stopword filtering)
 - Unicode normalization fallback pipeline (`normalizeTokensUnicode`)
 - Native POS regex/heuristic tagger baseline (`posTagAsciiNative`)
 - Native streaming `FreqDist`/`ConditionalFreqDist` builder with JSON export (`NativeFreqDistStream`)
 - Mini WordNet reader with synset lookup, relation traversal, and morphy-style inflection recovery
+- Native Zig morphy accelerator (`wordnetMorphyAsciiNative`) with WASM equivalent
 - N-gram language model stack (`MLE`, `Lidstone`, `Kneser-Ney Interpolated`) with Python comparison harness
 - Regexp chunk parser primitives with IOB conversion and Python parity harness
 - Corpus reader framework (`CorpusReader`) with bundled mini corpora
+- Optional external corpus bundle loader + tagged/chunked corpus readers (`parseConllTagged`, `parseBrownTagged`, `parseConllChunked`)
 - SIMD token counting fast path (`x86_64` vectorized path + scalar fallback)
 - Shared Zig perceptron inference core used by both native and WASM runtimes
 - Browser-focused WASM API wrapper with memory pool reuse (`WasmNltk`)
@@ -61,6 +64,15 @@ Notes:
 - Full WordNet corpus parity is not shipped yet; this milestone includes a bundled mini WordNet dataset.
 - Fixture parity harnesses are available via `bench:parity:sentence` and `bench:parity:tagger`.
 - SIMD fast path benchmark (`bench:compare:simd`) shows `countTokensAscii` at `1.22x` and normalization no-stopword path at `2.73x` over scalar baseline.
+
+## Extended benchmark results (8MB gate dataset)
+
+| Workload | Zig/Bun median sec | Python sec | Faster side | Speedup | Percent faster |
+|---|---:|---:|---|---:|---:|
+| Punkt tokenizer default path (`bench:compare:punkt`) | 0.0848 | 1.3463 | Zig native | 15.87x | 1487.19% |
+| N-gram LM (Kneser-Ney) score+perplexity (`bench:compare:lm`) | 0.1324 | 2.8661 | Zig/Bun | 21.64x | 2064.19% |
+| Regexp chunk parser (`bench:compare:chunk`) | 0.0024 | 1.5511 | Zig/Bun | 643.08x | 64208.28% |
+| WordNet lookup + morphy workload (`bench:compare:wordnet`) | 0.0009 | 0.0835 | Zig/Bun | 91.55x | 9054.67% |
 
 ## Build native Zig library
 

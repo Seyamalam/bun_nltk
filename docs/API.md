@@ -36,6 +36,7 @@ These functions call the dynamic native library through Bun FFI.
 - `tokenFreqDistHashAscii(text: string): Map<bigint, number>`
 - `ngramFreqDistHashAscii(text: string, n: number): Map<bigint, number>`
 - `tokenizeAsciiNative(text: string): string[]`
+- `sentenceTokenizePunktAsciiNative(text: string): string[]`
 - `ngramsAsciiNative(text: string, n: number): string[][]`
 - `everygramsAsciiNative(text: string, minLen?: number, maxLen?: number): string[][]`
 - `skipgramsAsciiNative(text: string, n: number, k: number): string[][]`
@@ -45,6 +46,7 @@ These functions call the dynamic native library through Bun FFI.
 - `topPmiBigramsAscii(text: string, topK: number, windowSize?: number): Array<{ leftHash: bigint; rightHash: bigint; score: number }>`
 - `porterStemAscii(token: string): string`
 - `porterStemAsciiTokens(tokens: string[]): string[]`
+- `wordnetMorphyAsciiNative(word: string, pos?: "n" | "v" | "a" | "r"): string`
 - `countNormalizedTokensAscii(text: string, removeStopwords?: boolean): number`
 - `countNormalizedTokensAsciiScalar(text: string, removeStopwords?: boolean): number`
 - `normalizeTokensAsciiNative(text: string, removeStopwords?: boolean): string[]`
@@ -106,6 +108,7 @@ These functions are pure TypeScript reference implementations.
 ## WordNet
 
 - `loadWordNetMini(path?: string): WordNet`
+- `loadWordNetExtended(path?: string): WordNet`
 - `new WordNet(payload: WordNetMiniPayload)`
 - `synset(id: string): WordNetSynset | null`
 - `synsets(word: string, pos?: "n" | "v" | "a" | "r"): WordNetSynset[]`
@@ -133,12 +136,19 @@ These functions are pure TypeScript reference implementations.
 
 - `new CorpusReader(files: Array<{ id: string; text: string; categories: string[] }>)`
 - `loadBundledMiniCorpus(rootPath?: string): CorpusReader`
+- `loadCorpusBundleFromIndex(indexPath: string): CorpusReader`
 - `fileIds(options?: { fileIds?: string[]; categories?: string[] }): string[]`
 - `raw(options?: { fileIds?: string[]; categories?: string[] }): string`
 - `words(options?: { fileIds?: string[]; categories?: string[] }): string[]`
 - `sents(options?: { fileIds?: string[]; categories?: string[] }): string[]`
 - `paras(options?: { fileIds?: string[]; categories?: string[] }): string[]`
 - `categories(): string[]`
+
+## Tagged/Chunked Corpus Parsers
+
+- `parseConllTagged(text: string): Array<Array<{ token: string; tag: string }>>`
+- `parseBrownTagged(text: string): Array<Array<{ token: string; tag: string }>>`
+- `parseConllChunked(text: string): Array<Array<{ token: string; pos: string; chunk: string }>>`
 
 ## Normalization
 
@@ -162,6 +172,8 @@ These functions are pure TypeScript reference implementations.
 - `tokenizeAscii(text: string): string[]`
 - `normalizeTokensAscii(text: string, removeStopwords?: boolean): string[]`
 - `perceptronPredictBatch(featureIds: Uint32Array, tokenOffsets: Uint32Array, weights: Float32Array, modelFeatureCount: number, tagCount: number): Uint16Array`
+- `sentenceTokenizePunktAscii(text: string): string[]`
+- `wordnetMorphyAscii(word: string, pos?: "n" | "v" | "a" | "r"): string`
 
 ## Notes
 

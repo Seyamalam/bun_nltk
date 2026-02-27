@@ -13,6 +13,12 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - Regexp chunk parser primitives with IOB conversion helper.
 - Corpus reader framework with bundled mini corpora (`news`, `science`, `fiction`).
 - Python baseline harnesses for Punkt, LM, and chunk parser parity checks.
+- Zig native Punkt sentence splitting exports + WASM Punkt sentence splitting exports.
+- Zig native WordNet morphy exports + WASM WordNet morphy exports.
+- Extended WordNet bundle (`models/wordnet_extended.json`) and loader (`loadWordNetExtended`).
+- Optional external corpus bundle loader (`loadCorpusBundleFromIndex`).
+- Tagged/chunked corpus format parsers (`parseConllTagged`, `parseBrownTagged`, `parseConllChunked`).
+- Benchmark compare scripts for Punkt, LM, chunk parser, and WordNet.
 
 ## [0.6.2] - 2026-02-27
 
