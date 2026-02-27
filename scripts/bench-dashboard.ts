@@ -104,8 +104,11 @@ function main() {
   const lm = run(["bun", "run", "bench/compare_lm.ts", dataset, "2"], root);
   const chunk = run(["bun", "run", "bench/compare_chunk.ts", "9000", "3"], root);
   const wordnet = run(["bun", "run", "bench/compare_wordnet.ts", "4"], root);
+  const parser = run(["bun", "run", "bench/compare_parser.ts", "800", "3"], root);
+  const classifier = run(["bun", "run", "bench/compare_classifier.ts", "1800", "450", "3"], root);
   const paritySentence = run(["bun", "run", "bench/parity_sentence.ts"], root);
   const parityTagger = run(["bun", "run", "bench/parity_tagger.ts"], root);
+  const parityAll = run(["bun", "run", "bench/parity_all.ts"], root);
 
   const text = readFileSync(datasetAbs, "utf8");
   const mem = memoryProfile(text);
@@ -118,7 +121,15 @@ function main() {
     generated_at: new Date().toISOString(),
     dataset,
     parity: {
+      all: Boolean(parityAll.ok),
+      tokenizer: Boolean(parityAll.checks?.tokenizer),
       sentence: Boolean(paritySentence.parity),
+      punkt: Boolean(parityAll.checks?.punkt),
+      lm: Boolean(parityAll.checks?.lm),
+      chunk: Boolean(parityAll.checks?.chunk),
+      wordnet: Boolean(parityAll.checks?.wordnet),
+      parser: Boolean(parityAll.checks?.parser),
+      classifier: Boolean(parityAll.checks?.classifier),
       tagger: Boolean(parityTagger.parity),
     },
     speedups: {
@@ -132,6 +143,8 @@ function main() {
       lm_x: toNum(lm.speedup_vs_python),
       chunk_x: toNum(chunk.speedup_vs_python),
       wordnet_x: toNum(wordnet.speedup_vs_python),
+      parser_x: toNum(parser.speedup_vs_python),
+      classifier_x: toNum(classifier.speedup_vs_python),
     },
     percent_faster: {
       token_ngram_pct: pctFaster(toNum(compare.speedup_vs_python)),
@@ -144,6 +157,8 @@ function main() {
       lm_pct: pctFaster(toNum(lm.speedup_vs_python)),
       chunk_pct: pctFaster(toNum(chunk.speedup_vs_python)),
       wordnet_pct: pctFaster(toNum(wordnet.speedup_vs_python)),
+      parser_pct: pctFaster(toNum(parser.speedup_vs_python)),
+      classifier_pct: pctFaster(toNum(classifier.speedup_vs_python)),
     },
     throughput: {
       token_per_sec: Number(tokenThroughput.toFixed(2)),
@@ -162,6 +177,8 @@ function main() {
       lm,
       chunk,
       wordnet,
+      parser,
+      classifier,
     },
   };
 
@@ -183,6 +200,8 @@ function main() {
     `| lm | ${dashboard.speedups.lm_x.toFixed(2)} | ${dashboard.percent_faster.lm_pct.toFixed(2)} |`,
     `| chunk | ${dashboard.speedups.chunk_x.toFixed(2)} | ${dashboard.percent_faster.chunk_pct.toFixed(2)} |`,
     `| wordnet | ${dashboard.speedups.wordnet_x.toFixed(2)} | ${dashboard.percent_faster.wordnet_pct.toFixed(2)} |`,
+    `| parser | ${dashboard.speedups.parser_x.toFixed(2)} | ${dashboard.percent_faster.parser_pct.toFixed(2)} |`,
+    `| classifier | ${dashboard.speedups.classifier_x.toFixed(2)} | ${dashboard.percent_faster.classifier_pct.toFixed(2)} |`,
     "",
     "| Throughput Metric | Value |",
     "|---|---:|",
@@ -199,7 +218,15 @@ function main() {
     `| heap peak | ${dashboard.memory_profile.heap_peak_mb} |`,
     `| heap delta | ${dashboard.memory_profile.heap_delta_mb} |`,
     "",
+    `Parity all: ${dashboard.parity.all}`,
+    `Parity tokenizer: ${dashboard.parity.tokenizer}`,
     `Parity sentence: ${dashboard.parity.sentence}`,
+    `Parity punkt: ${dashboard.parity.punkt}`,
+    `Parity lm: ${dashboard.parity.lm}`,
+    `Parity chunk: ${dashboard.parity.chunk}`,
+    `Parity wordnet: ${dashboard.parity.wordnet}`,
+    `Parity parser: ${dashboard.parity.parser}`,
+    `Parity classifier: ${dashboard.parity.classifier}`,
     `Parity tagger: ${dashboard.parity.tagger}`,
     "",
   ].join("\n");

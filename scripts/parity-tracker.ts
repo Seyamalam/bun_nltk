@@ -89,18 +89,18 @@ function main() {
     {
       module: "parse",
       feature: "CFG/PCFG/chart parsing",
-      status: "missing",
-      notes: "Not implemented yet.",
-      tests: [],
-      benches: [],
+      status: "partial",
+      notes: "CFG + chart parser subset implemented; PCFG and advanced parse APIs pending.",
+      tests: ["test/parse.test.ts"],
+      benches: ["bench/compare_parser.ts"],
     },
     {
       module: "classify",
       feature: "classifiers (NaiveBayes/MaxEnt/etc.)",
-      status: "missing",
-      notes: "Not implemented yet.",
-      tests: [],
-      benches: [],
+      status: "partial",
+      notes: "Naive Bayes text classifier implemented; MaxEnt and additional classifiers pending.",
+      tests: ["test/classify.test.ts"],
+      benches: ["bench/compare_classifier.ts"],
     },
   ];
 
@@ -145,4 +145,3 @@ function main() {
 }
 
 main();
-

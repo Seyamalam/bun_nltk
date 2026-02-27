@@ -53,8 +53,9 @@ function main() {
   const lm = run(["bun", "run", "bench/compare_lm.ts", dataset, "2"], root);
   const chunk = run(["bun", "run", "bench/compare_chunk.ts", "9000", "3"], root);
   const wordnet = run(["bun", "run", "bench/compare_wordnet.ts", "4"], root);
-  const sentenceParity = run(["bun", "run", "bench/parity_sentence.ts"], root);
-  const taggerParity = run(["bun", "run", "bench/parity_tagger.ts"], root);
+  const parser = run(["bun", "run", "bench/compare_parser.ts", "800", "3"], root);
+  const classifier = run(["bun", "run", "bench/compare_classifier.ts", "1800", "450", "3"], root);
+  const parityAll = run(["bun", "run", "bench/parity_all.ts"], root);
 
   assertAtLeast(Number(compare.speedup_vs_python), 3.0, "token/ngram");
   assertAtLeast(Number(colloc.speedup_vs_python), 5.0, "collocations");
@@ -66,12 +67,11 @@ function main() {
   assertAtLeast(Number(lm.speedup_vs_python), 1.1, "lm");
   assertAtLeast(Number(chunk.speedup_vs_python), 1.2, "chunk");
   assertAtLeast(Number(wordnet.speedup_vs_python), 1.2, "wordnet");
+  assertAtLeast(Number(parser.speedup_vs_python), 1.1, "parser");
+  assertAtLeast(Number(classifier.speedup_vs_python), 1.1, "classifier");
 
-  if (!sentenceParity.parity) {
-    throw new Error("sentence parity harness failed");
-  }
-  if (!taggerParity.parity) {
-    throw new Error("tagger parity harness failed");
+  if (!parityAll.ok) {
+    throw new Error("global parity harness failed");
   }
 
   console.log(
@@ -89,6 +89,8 @@ function main() {
           lm_x: 1.1,
           chunk_x: 1.2,
           wordnet_x: 1.2,
+          parser_x: 1.1,
+          classifier_x: 1.1,
         },
         measured: {
           token_ngram_x: compare.speedup_vs_python,
@@ -101,6 +103,8 @@ function main() {
           lm_x: lm.speedup_vs_python,
           chunk_x: chunk.speedup_vs_python,
           wordnet_x: wordnet.speedup_vs_python,
+          parser_x: parser.speedup_vs_python,
+          classifier_x: classifier.speedup_vs_python,
         },
       },
       null,
