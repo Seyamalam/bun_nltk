@@ -59,6 +59,9 @@ jobs:
       - name: Generate parity report artifact
         run: bun run parity:report
 
+      - name: Generate parity tracker artifact
+        run: bun run parity:tracker
+
       - name: Run performance regression gate
         run: bun run bench:gate
 
@@ -85,3 +88,9 @@ jobs:
         with:
           name: parity-report
           path: artifacts/parity-report.*
+
+      - name: Upload parity tracker
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-tracker
+          path: artifacts/parity-tracker.*

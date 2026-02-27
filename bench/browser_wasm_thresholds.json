@@ -4,10 +4,18 @@
   "size_bytes_max": 700000,
   "browsers": {
     "chromium": {
-      "max_median_seconds": 5.0
+      "max_median_seconds": 5.0,
+      "max_punkt_median_seconds": 2.0,
+      "max_lm_median_seconds": 2.0,
+      "max_chunk_median_seconds": 2.0,
+      "max_morphy_median_seconds": 2.0
     },
     "firefox": {
-      "max_median_seconds": 6.0
+      "max_median_seconds": 6.0,
+      "max_punkt_median_seconds": 3.0,
+      "max_lm_median_seconds": 3.0,
+      "max_chunk_median_seconds": 3.0,
+      "max_morphy_median_seconds": 3.0
     }
   }
 }
