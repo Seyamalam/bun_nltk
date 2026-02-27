@@ -7,6 +7,7 @@ export {
   bigramWindowStatsAsciiIds,
   computeAsciiMetrics,
   countNormalizedTokensAscii,
+  NativeFreqDistStream,
   everygramsAsciiNative,
   normalizeTokensAsciiNative,
   posTagAsciiNative,
@@ -21,6 +22,8 @@ export {
   tokenizeAsciiNative,
   tokenFreqDistHashAscii,
 } from "./src/native";
+
+export type { StreamBigramFreq, StreamConditionalFreq } from "./src/native";
 
 export {
   countNgramsAscii as countNgramsAsciiJs,

@@ -7,11 +7,21 @@ const ngrams = @import("core/ngrams.zig");
 const normalize = @import("core/normalize.zig");
 const porter = @import("core/porter.zig");
 const tagger = @import("core/tagger.zig");
+const stream_freqdist = @import("core/stream_freqdist.zig");
 const types = @import("core/types.zig");
 const error_state = @import("core/error_state.zig");
 
 pub export fn bunnltk_last_error_code() u32 {
     return error_state.getLastErrorCode();
+}
+
+fn streamHandleFromPtr(ptr: *stream_freqdist.StreamFreqDistBuilder) u64 {
+    return @as(u64, @intCast(@intFromPtr(ptr)));
+}
+
+fn streamPtrFromHandle(handle: u64) ?*stream_freqdist.StreamFreqDistBuilder {
+    if (handle == 0) return null;
+    return @as(*stream_freqdist.StreamFreqDistBuilder, @ptrFromInt(@as(usize, @intCast(handle))));
 }
 
 pub export fn bunnltk_count_tokens_ascii(input_ptr: [*]const u8, input_len: usize) u64 {
@@ -656,6 +666,197 @@ pub export fn bunnltk_fill_pos_tags_ascii(
     const total = tagger.fillPosTagsAscii(input_ptr[0..input_len], out_offsets, out_lengths, out_tag_ids);
     if (total > capacity) error_state.setError(.insufficient_capacity);
     return total;
+}
+
+pub export fn bunnltk_freqdist_stream_new() u64 {
+    error_state.resetError();
+    const stream = stream_freqdist.StreamFreqDistBuilder.create(std.heap.c_allocator) catch |err| {
+        switch (err) {
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+            else => unreachable,
+        }
+        return 0;
+    };
+    return streamHandleFromPtr(stream);
+}
+
+pub export fn bunnltk_freqdist_stream_free(handle: u64) void {
+    error_state.resetError();
+    const stream = streamPtrFromHandle(handle) orelse {
+        error_state.setError(.insufficient_capacity);
+        return;
+    };
+    stream.destroy();
+}
+
+pub export fn bunnltk_freqdist_stream_update_ascii(
+    handle: u64,
+    input_ptr: [*]const u8,
+    input_len: usize,
+) void {
+    error_state.resetError();
+    const stream = streamPtrFromHandle(handle) orelse {
+        error_state.setError(.insufficient_capacity);
+        return;
+    };
+    if (input_len == 0) return;
+
+    stream.updateAscii(input_ptr[0..input_len]) catch |err| {
+        switch (err) {
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+            else => unreachable,
+        }
+    };
+}
+
+pub export fn bunnltk_freqdist_stream_flush(handle: u64) void {
+    error_state.resetError();
+    const stream = streamPtrFromHandle(handle) orelse {
+        error_state.setError(.insufficient_capacity);
+        return;
+    };
+    stream.flush() catch |err| {
+        switch (err) {
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+            else => unreachable,
+        }
+    };
+}
+
+pub export fn bunnltk_freqdist_stream_token_unique(handle: u64) u64 {
+    error_state.resetError();
+    const stream = streamPtrFromHandle(handle) orelse {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    };
+    return @as(u64, @intCast(stream.tokenUniqueCount()));
+}
+
+pub export fn bunnltk_freqdist_stream_bigram_unique(handle: u64) u64 {
+    error_state.resetError();
+    const stream = streamPtrFromHandle(handle) orelse {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    };
+    return @as(u64, @intCast(stream.bigramUniqueCount()));
+}
+
+pub export fn bunnltk_freqdist_stream_conditional_unique(handle: u64) u64 {
+    error_state.resetError();
+    const stream = streamPtrFromHandle(handle) orelse {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    };
+    return @as(u64, @intCast(stream.conditionalUniqueCount()));
+}
+
+pub export fn bunnltk_freqdist_stream_fill_token(
+    handle: u64,
+    out_hashes_ptr: [*]u64,
+    out_counts_ptr: [*]u64,
+    capacity: usize,
+) u64 {
+    error_state.resetError();
+    const stream = streamPtrFromHandle(handle) orelse {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    };
+    const written = stream.fillTokenFreq(out_hashes_ptr[0..capacity], out_counts_ptr[0..capacity]) catch |err| {
+        switch (err) {
+            error.InsufficientCapacity => error_state.setError(.insufficient_capacity),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+        }
+        return 0;
+    };
+    return @as(u64, written);
+}
+
+pub export fn bunnltk_freqdist_stream_fill_bigram(
+    handle: u64,
+    out_left_hashes_ptr: [*]u64,
+    out_right_hashes_ptr: [*]u64,
+    out_counts_ptr: [*]u64,
+    capacity: usize,
+) u64 {
+    error_state.resetError();
+    const stream = streamPtrFromHandle(handle) orelse {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    };
+    const written = stream.fillBigramFreq(
+        out_left_hashes_ptr[0..capacity],
+        out_right_hashes_ptr[0..capacity],
+        out_counts_ptr[0..capacity],
+    ) catch |err| {
+        switch (err) {
+            error.InsufficientCapacity => error_state.setError(.insufficient_capacity),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+        }
+        return 0;
+    };
+    return @as(u64, written);
+}
+
+pub export fn bunnltk_freqdist_stream_fill_conditional(
+    handle: u64,
+    out_tag_ids_ptr: [*]u16,
+    out_hashes_ptr: [*]u64,
+    out_counts_ptr: [*]u64,
+    capacity: usize,
+) u64 {
+    error_state.resetError();
+    const stream = streamPtrFromHandle(handle) orelse {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    };
+    const written = stream.fillConditionalFreq(
+        out_tag_ids_ptr[0..capacity],
+        out_hashes_ptr[0..capacity],
+        out_counts_ptr[0..capacity],
+    ) catch |err| {
+        switch (err) {
+            error.InsufficientCapacity => error_state.setError(.insufficient_capacity),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+        }
+        return 0;
+    };
+    return @as(u64, written);
+}
+
+pub export fn bunnltk_freqdist_stream_count_json_bytes(handle: u64) u64 {
+    error_state.resetError();
+    const stream = streamPtrFromHandle(handle) orelse {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    };
+    const count = stream.countJsonBytes() catch |err| {
+        switch (err) {
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+            error.InsufficientCapacity => error_state.setError(.insufficient_capacity),
+        }
+        return 0;
+    };
+    return @as(u64, count);
+}
+
+pub export fn bunnltk_freqdist_stream_fill_json(
+    handle: u64,
+    out_ptr: [*]u8,
+    capacity: usize,
+) u64 {
+    error_state.resetError();
+    const stream = streamPtrFromHandle(handle) orelse {
+        error_state.setError(.insufficient_capacity);
+        return 0;
+    };
+    const written = stream.fillJson(out_ptr[0..capacity]) catch |err| {
+        switch (err) {
+            error.InsufficientCapacity => error_state.setError(.insufficient_capacity),
+            error.OutOfMemory => error_state.setError(.out_of_memory),
+        }
+        return 0;
+    };
+    return @as(u64, written);
 }
 
 pub export fn bunnltk_porter_stem_ascii(

@@ -54,6 +54,7 @@
     "bench:compare:wasm": "bun run bench/compare_wasm.ts bench/datasets/synthetic.txt 2 5",
     "bench:compare:sentence": "bun run bench/compare_sentence.ts bench/datasets/synthetic.txt 5",
     "bench:compare:tagger": "bun run bench/compare_tagger.ts bench/datasets/synthetic.txt 1",
+    "bench:compare:freqdist": "bun run bench/compare_freqdist_stream.ts bench/datasets/synthetic.txt 2048",
     "bench:parity:sentence": "bun run bench/parity_sentence.ts",
     "bench:parity:tagger": "bun run bench/parity_tagger.ts",
     "bench:gate": "bun run scripts/bench-gate.ts",

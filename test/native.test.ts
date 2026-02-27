@@ -4,6 +4,7 @@ import {
   countTokensAscii,
   countUniqueNgramsAscii,
   countUniqueTokensAscii,
+  NativeFreqDistStream,
   bigramWindowStatsAscii,
   bigramWindowStatsAsciiIds,
   bigramWindowStatsAsciiIdsJs,
@@ -36,6 +37,7 @@ import {
   tokenizeAsciiNative,
   tokenFreqDistHashAscii,
   tokenFreqDistHashAsciiJs,
+  hashTokenAscii,
 } from "../index";
 
 const cases = [
@@ -254,4 +256,59 @@ test("native handles empty input", () => {
   expect(topPmiBigramsAscii("", 5, 2)).toEqual([]);
   expect(tokenFreqDistIdsAscii("").tokens).toEqual([]);
   expect(bigramWindowStatsAscii("", 2)).toEqual([]);
+});
+
+test("native streaming freqdist builder matches reference counts and json export", () => {
+  const text = "This this is a test. This runs quickly.";
+  const stream = new NativeFreqDistStream();
+  try {
+    stream.update("This this is");
+    stream.update(" a test.");
+    stream.update(" This runs qu");
+    stream.update("ickly.");
+    stream.flush();
+
+    expect(stream.tokenUniqueCount()).toBe(countUniqueTokensAscii(text));
+
+    const tokenMap = stream.tokenFreqDistHash();
+    expectHashMapsEqual(tokenMap, tokenFreqDistHashAsciiJs(text));
+
+    const bigramRows = stream.bigramFreqDistHash();
+    const expectedBigram = new Map<string, number>();
+    const tokens = tokenizeAscii(text);
+    for (let i = 0; i + 1 < tokens.length; i += 1) {
+      const left = hashTokenAscii(tokens[i]!);
+      const right = hashTokenAscii(tokens[i + 1]!);
+      const key = `${left}:${right}`;
+      expectedBigram.set(key, (expectedBigram.get(key) ?? 0) + 1);
+    }
+    expect(bigramRows.length).toBe(expectedBigram.size);
+    for (const row of bigramRows) {
+      const key = `${row.leftHash}:${row.rightHash}`;
+      expect(expectedBigram.get(key)).toBe(row.count);
+    }
+
+    const expectedConditional = new Map<string, number>();
+    for (const row of posTagAsciiNative(text)) {
+      const key = `${row.tagId}:${hashTokenAscii(row.token.toLowerCase())}`;
+      expectedConditional.set(key, (expectedConditional.get(key) ?? 0) + 1);
+    }
+    const conditionalRows = stream.conditionalFreqDistHash();
+    expect(conditionalRows.length).toBe(expectedConditional.size);
+    for (const row of conditionalRows) {
+      const key = `${row.tagId}:${row.tokenHash}`;
+      expect(expectedConditional.get(key)).toBe(row.count);
+    }
+
+    const payload = JSON.parse(stream.toJson()) as {
+      tokens: Array<{ hash: string; count: number }>;
+      bigrams: Array<{ left: string; right: string; count: number }>;
+      conditional_tags: Array<{ tag_id: number; hash: string; count: number }>;
+    };
+    expect(payload.tokens.length).toBe(tokenMap.size);
+    expect(payload.bigrams.length).toBe(bigramRows.length);
+    expect(payload.conditional_tags.length).toBe(conditionalRows.length);
+  } finally {
+    stream.dispose();
+  }
 });

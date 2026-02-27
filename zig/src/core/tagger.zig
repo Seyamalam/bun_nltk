@@ -118,6 +118,10 @@ fn classifyToken(token: []const u8, hash: u64) TagId {
     return .nn;
 }
 
+pub fn classifyTokenAscii(token: []const u8, hash: u64) TagId {
+    return classifyToken(token, hash);
+}
+
 pub fn countPosTagsAscii(input: []const u8) u64 {
     return ascii.tokenCountAscii(input);
 }

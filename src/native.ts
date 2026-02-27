@@ -135,6 +135,54 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize", "ptr", "usize"],
     returns: "u32",
   },
+  bunnltk_freqdist_stream_new: {
+    args: [],
+    returns: "u64",
+  },
+  bunnltk_freqdist_stream_free: {
+    args: ["u64"],
+    returns: "void",
+  },
+  bunnltk_freqdist_stream_update_ascii: {
+    args: ["u64", "ptr", "usize"],
+    returns: "void",
+  },
+  bunnltk_freqdist_stream_flush: {
+    args: ["u64"],
+    returns: "void",
+  },
+  bunnltk_freqdist_stream_token_unique: {
+    args: ["u64"],
+    returns: "u64",
+  },
+  bunnltk_freqdist_stream_bigram_unique: {
+    args: ["u64"],
+    returns: "u64",
+  },
+  bunnltk_freqdist_stream_conditional_unique: {
+    args: ["u64"],
+    returns: "u64",
+  },
+  bunnltk_freqdist_stream_fill_token: {
+    args: ["u64", "ptr", "ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_freqdist_stream_fill_bigram: {
+    args: ["u64", "ptr", "ptr", "ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_freqdist_stream_fill_conditional: {
+    args: ["u64", "ptr", "ptr", "ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_freqdist_stream_count_json_bytes: {
+    args: ["u64"],
+    returns: "u64",
+  },
+  bunnltk_freqdist_stream_fill_json: {
+    args: ["u64", "ptr", "usize"],
+    returns: "u64",
+  },
 });
 
 function toBuffer(text: string): Uint8Array {
@@ -690,6 +738,160 @@ export function porterStemAscii(token: string): string {
 
 export function porterStemAsciiTokens(tokens: string[]): string[] {
   return tokens.map((token) => porterStemAscii(token));
+}
+
+export type StreamBigramFreq = {
+  leftHash: bigint;
+  rightHash: bigint;
+  count: number;
+};
+
+export type StreamConditionalFreq = {
+  tagId: number;
+  tokenHash: bigint;
+  count: number;
+};
+
+export class NativeFreqDistStream {
+  private handle: bigint;
+  private disposed = false;
+
+  constructor() {
+    const rawHandle = lib.symbols.bunnltk_freqdist_stream_new();
+    this.handle = BigInt(rawHandle);
+    assertNoNativeError("NativeFreqDistStream.constructor");
+    if (this.handle === 0n) {
+      throw new Error("failed to allocate native freqdist stream");
+    }
+  }
+
+  private ensureOpen(): void {
+    if (this.disposed || this.handle === 0n) {
+      throw new Error("NativeFreqDistStream is already disposed");
+    }
+  }
+
+  update(text: string): void {
+    this.ensureOpen();
+    const bytes = toBuffer(text);
+    if (bytes.length === 0) return;
+    lib.symbols.bunnltk_freqdist_stream_update_ascii(this.handle, ptr(bytes), bytes.length);
+    assertNoNativeError("NativeFreqDistStream.update");
+  }
+
+  flush(): void {
+    this.ensureOpen();
+    lib.symbols.bunnltk_freqdist_stream_flush(this.handle);
+    assertNoNativeError("NativeFreqDistStream.flush");
+  }
+
+  tokenUniqueCount(): number {
+    this.ensureOpen();
+    const out = toNumber(lib.symbols.bunnltk_freqdist_stream_token_unique(this.handle));
+    assertNoNativeError("NativeFreqDistStream.tokenUniqueCount");
+    return out;
+  }
+
+  bigramUniqueCount(): number {
+    this.ensureOpen();
+    const out = toNumber(lib.symbols.bunnltk_freqdist_stream_bigram_unique(this.handle));
+    assertNoNativeError("NativeFreqDistStream.bigramUniqueCount");
+    return out;
+  }
+
+  conditionalUniqueCount(): number {
+    this.ensureOpen();
+    const out = toNumber(lib.symbols.bunnltk_freqdist_stream_conditional_unique(this.handle));
+    assertNoNativeError("NativeFreqDistStream.conditionalUniqueCount");
+    return out;
+  }
+
+  tokenFreqDistHash(): Map<bigint, number> {
+    this.ensureOpen();
+    const capacity = Math.max(1, this.tokenUniqueCount());
+    const hashes = new BigUint64Array(capacity);
+    const counts = new BigUint64Array(capacity);
+    const written = toNumber(
+      lib.symbols.bunnltk_freqdist_stream_fill_token(this.handle, ptr(hashes), ptr(counts), capacity),
+    );
+    assertNoNativeError("NativeFreqDistStream.tokenFreqDistHash");
+
+    const out = new Map<bigint, number>();
+    for (let i = 0; i < written; i += 1) {
+      out.set(hashes[i]!, Number(counts[i]!));
+    }
+    return out;
+  }
+
+  bigramFreqDistHash(): StreamBigramFreq[] {
+    this.ensureOpen();
+    const capacity = Math.max(1, this.bigramUniqueCount());
+    const left = new BigUint64Array(capacity);
+    const right = new BigUint64Array(capacity);
+    const counts = new BigUint64Array(capacity);
+    const written = toNumber(
+      lib.symbols.bunnltk_freqdist_stream_fill_bigram(this.handle, ptr(left), ptr(right), ptr(counts), capacity),
+    );
+    assertNoNativeError("NativeFreqDistStream.bigramFreqDistHash");
+
+    const out: StreamBigramFreq[] = [];
+    for (let i = 0; i < written; i += 1) {
+      out.push({
+        leftHash: left[i]!,
+        rightHash: right[i]!,
+        count: Number(counts[i]!),
+      });
+    }
+    return out;
+  }
+
+  conditionalFreqDistHash(): StreamConditionalFreq[] {
+    this.ensureOpen();
+    const capacity = Math.max(1, this.conditionalUniqueCount());
+    const tagIds = new Uint16Array(capacity);
+    const hashes = new BigUint64Array(capacity);
+    const counts = new BigUint64Array(capacity);
+    const written = toNumber(
+      lib.symbols.bunnltk_freqdist_stream_fill_conditional(
+        this.handle,
+        ptr(tagIds),
+        ptr(hashes),
+        ptr(counts),
+        capacity,
+      ),
+    );
+    assertNoNativeError("NativeFreqDistStream.conditionalFreqDistHash");
+
+    const out: StreamConditionalFreq[] = [];
+    for (let i = 0; i < written; i += 1) {
+      out.push({
+        tagId: tagIds[i]!,
+        tokenHash: hashes[i]!,
+        count: Number(counts[i]!),
+      });
+    }
+    return out;
+  }
+
+  toJson(): string {
+    this.ensureOpen();
+    const byteCount = toNumber(lib.symbols.bunnltk_freqdist_stream_count_json_bytes(this.handle));
+    assertNoNativeError("NativeFreqDistStream.toJson.count");
+    if (byteCount === 0) return '{"tokens":[],"bigrams":[],"conditional_tags":[]}';
+
+    const out = new Uint8Array(byteCount);
+    const written = toNumber(lib.symbols.bunnltk_freqdist_stream_fill_json(this.handle, ptr(out), out.length));
+    assertNoNativeError("NativeFreqDistStream.toJson.fill");
+    return new TextDecoder().decode(out.subarray(0, written));
+  }
+
+  dispose(): void {
+    if (this.disposed || this.handle === 0n) return;
+    lib.symbols.bunnltk_freqdist_stream_free(this.handle);
+    assertNoNativeError("NativeFreqDistStream.dispose");
+    this.disposed = true;
+    this.handle = 0n;
+  }
 }
 
 export function nativeLibraryPath(): string {
