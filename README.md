@@ -83,6 +83,8 @@ Notes:
 | WordNet lookup + morphy workload (`bench:compare:wordnet`) | 0.0009 | 0.0835 | Zig/Bun | 91.55x | 9054.67% |
 | CFG chart parser subset (`bench:compare:parser`) | 0.0088 | 0.3292 | Zig/Bun | 37.51x | 3651.05% |
 | Naive Bayes text classifier (`bench:compare:classifier`) | 0.0081 | 0.0112 | Zig/Bun | 1.38x | 38.40% |
+| PCFG Viterbi chart parser (`bench:compare:pcfg`) | 0.0191 | 0.4153 | Zig/Bun | 21.80x | 2080.00% |
+| MaxEnt text classifier (`bench:compare:maxent`) | 0.0244 | 0.1824 | Zig/Bun | 7.46x | 646.00% |
 
 ## Build native Zig library
 
@@ -171,15 +173,26 @@ bun run bench:compare:classifier
 ## Run parity harnesses
 
 ```bash
+bun run fixtures:import:nltk
 bun run bench:parity:sentence
 bun run bench:parity:punkt
 bun run bench:parity:tokenizer
 bun run bench:parity:parser
 bun run bench:parity:classifier
+bun run bench:parity:pcfg
+bun run bench:parity:maxent
+bun run bench:parity:imported
 bun run bench:parity:wordnet
 bun run bench:parity:tagger
 bun run bench:parity:all
 bun run parity:report
+```
+
+## Benchmark trend tracking
+
+```bash
+bun run bench:trend:check
+bun run bench:trend:record
 ```
 
 ## Browser/WASM checks

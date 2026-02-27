@@ -99,3 +99,26 @@ jobs:
         run: npm publish --access public --tag "${{ steps.dist_tag.outputs.dist_tag }}" --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Record benchmark trend baseline snapshot
+        run: bun run bench:trend:record
+
+      - name: Upload release bench dashboard
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-bench-dashboard
+          path: artifacts/bench-dashboard.*
+
+      - name: Upload release bench trend check
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-bench-trend-check
+          path: artifacts/bench-trend-check.json
+
+      - name: Upload release bench history snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-bench-history
+          path: |
+            bench/history/index.json
+            bench/history/v*.json

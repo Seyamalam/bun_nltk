@@ -38,6 +38,9 @@ jobs:
       - name: Install JS deps
         run: bun install --frozen-lockfile
 
+      - name: Import official NLTK fixtures
+        run: bun run fixtures:import:nltk
+
       - name: Install browser engines
         run: bunx playwright install --with-deps chromium firefox
 
@@ -76,6 +79,9 @@ jobs:
       - name: Generate bench dashboard artifacts
         run: bun run bench:dashboard
 
+      - name: Run benchmark trend check
+        run: bun run bench:trend:check
+
       - name: Run browser wasm benchmark
         run: bun run bench:browser:wasm
 
@@ -90,6 +96,12 @@ jobs:
         with:
           name: browser-wasm-bench
           path: artifacts/browser-wasm-bench.*
+
+      - name: Upload bench trend check
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-trend-check
+          path: artifacts/bench-trend-check.json
 
       - name: Upload parity report
         uses: actions/upload-artifact@v4
@@ -110,3 +122,9 @@ jobs:
           path: |
             artifacts/wordnet_official.bin
             artifacts/wordnet_official.sha256.json
+
+      - name: Upload imported NLTK fixtures
+        uses: actions/upload-artifact@v4
+        with:
+          name: nltk-imported-fixtures
+          path: test/fixtures/nltk_imported/*.json
