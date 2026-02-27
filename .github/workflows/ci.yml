@@ -38,6 +38,9 @@ jobs:
       - name: Install JS deps
         run: bun install --frozen-lockfile
 
+      - name: Install browser engines
+        run: bunx playwright install --with-deps chromium firefox
+
       - name: Build native + wasm + prebuilt
         run: |
           bun run build:zig
@@ -46,6 +49,9 @@ jobs:
 
       - name: Verify npm package payload
         run: bun run pack:verify:prebuilt
+
+      - name: Check wasm size budget
+        run: bun run wasm:size:check
 
       - name: Run tests
         run: bun test
@@ -59,11 +65,20 @@ jobs:
       - name: Generate bench dashboard artifacts
         run: bun run bench:dashboard
 
+      - name: Run browser wasm benchmark
+        run: bun run bench:browser:wasm
+
       - name: Upload bench dashboard
         uses: actions/upload-artifact@v4
         with:
           name: bench-dashboard
           path: artifacts/bench-dashboard.*
+
+      - name: Upload browser wasm benchmark
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-wasm-bench
+          path: artifacts/browser-wasm-bench.*
 
       - name: Upload parity report
         uses: actions/upload-artifact@v4

@@ -56,9 +56,11 @@
     "bench:compare:tagger": "bun run bench/compare_tagger.ts bench/datasets/synthetic.txt 1",
     "bench:compare:freqdist": "bun run bench/compare_freqdist_stream.ts bench/datasets/synthetic.txt 2048",
     "bench:compare:simd": "bun run bench/compare_simd.ts bench/datasets/synthetic.txt 5",
+    "bench:browser:wasm": "bun run bench/browser_wasm.ts",
     "bench:parity:sentence": "bun run bench/parity_sentence.ts",
     "bench:parity:tagger": "bun run bench/parity_tagger.ts",
     "parity:report": "bun run scripts/parity-report.ts",
+    "wasm:size:check": "bun run scripts/wasm-size-check.ts",
     "bench:gate": "bun run scripts/bench-gate.ts",
     "bench:dashboard": "bun run scripts/bench-dashboard.ts",
     "npm:smoke": "bun run scripts/npm-smoke-test.ts",
@@ -67,7 +69,8 @@
     "release:check": "bun run build:zig && bun run build:wasm && bun run build:prebuilt && bun run pack:verify:prebuilt && bun test && bun run bench:gate"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "playwright": "^1.52.0"
   },
   "peerDependencies": {
     "typescript": "^5"

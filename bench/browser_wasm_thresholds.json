@@ -1,0 +1,13 @@
+{
+  "dataset": "bench/datasets/gate_synthetic.txt",
+  "rounds": 3,
+  "size_bytes_max": 700000,
+  "browsers": {
+    "chromium": {
+      "max_median_seconds": 5.0
+    },
+    "firefox": {
+      "max_median_seconds": 6.0
+    }
+  }
+}
