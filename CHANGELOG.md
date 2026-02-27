@@ -7,8 +7,18 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ## [Unreleased]
 
 ### Added
-- Release and versioning documentation under `docs/`.
-- API reference documentation covering native, JS reference, WASM, and perceptron APIs.
+- (no entries yet)
+
+## [0.5.1-beta.1] - 2026-02-27
+
+### Added
+- Tag-based npm publish workflow with prerelease channel mapping (`alpha`, `beta`, `rc`, `next`).
+- Release metadata validator script (`release:validate`) that checks semver, tag/version match, and changelog section presence.
+- Manual `workflow_dispatch` trigger for CI workflow.
+
+### Changed
+- CI and Release workflows now use a reliable Zig setup action.
+- Publishing and versioning docs updated with automated release flow details.
 
 ## [0.5.0] - 2026-02-27
 
