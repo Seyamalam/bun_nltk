@@ -106,6 +106,7 @@ function main() {
   const wordnet = run(["bun", "run", "bench/compare_wordnet.ts", "4"], root);
   const parser = run(["bun", "run", "bench/compare_parser.ts", "800", "3"], root);
   const classifier = run(["bun", "run", "bench/compare_classifier.ts", "1800", "450", "3"], root);
+  const linear = run(["bun", "run", "bench/compare_linear_scores.ts", "6000", "12000", "6", "40", "3"], root);
   const pcfg = run(["bun", "run", "bench/compare_pcfg.ts", "700", "2"], root);
   const maxent = run(["bun", "run", "bench/compare_maxent.ts", "900", "250", "1"], root);
   const paritySentence = run(["bun", "run", "bench/parity_sentence.ts"], root);
@@ -150,6 +151,7 @@ function main() {
       wordnet_x: toNum(wordnet.speedup_vs_python),
       parser_x: toNum(parser.speedup_vs_python),
       classifier_x: toNum(classifier.speedup_vs_python),
+      linear_x: toNum(linear.speedup_vs_python),
       pcfg_x: toNum(pcfg.speedup_vs_python),
       maxent_x: toNum(maxent.speedup_vs_python),
     },
@@ -166,6 +168,7 @@ function main() {
       wordnet_pct: pctFaster(toNum(wordnet.speedup_vs_python)),
       parser_pct: pctFaster(toNum(parser.speedup_vs_python)),
       classifier_pct: pctFaster(toNum(classifier.speedup_vs_python)),
+      linear_pct: pctFaster(toNum(linear.speedup_vs_python)),
       pcfg_pct: pctFaster(toNum(pcfg.speedup_vs_python)),
       maxent_pct: pctFaster(toNum(maxent.speedup_vs_python)),
     },
@@ -188,6 +191,7 @@ function main() {
       wordnet,
       parser,
       classifier,
+      linear,
       pcfg,
       maxent,
     },
@@ -213,6 +217,7 @@ function main() {
     `| wordnet | ${dashboard.speedups.wordnet_x.toFixed(2)} | ${dashboard.percent_faster.wordnet_pct.toFixed(2)} |`,
     `| parser | ${dashboard.speedups.parser_x.toFixed(2)} | ${dashboard.percent_faster.parser_pct.toFixed(2)} |`,
     `| classifier | ${dashboard.speedups.classifier_x.toFixed(2)} | ${dashboard.percent_faster.classifier_pct.toFixed(2)} |`,
+    `| linear | ${dashboard.speedups.linear_x.toFixed(2)} | ${dashboard.percent_faster.linear_pct.toFixed(2)} |`,
     `| pcfg | ${dashboard.speedups.pcfg_x.toFixed(2)} | ${dashboard.percent_faster.pcfg_pct.toFixed(2)} |`,
     `| maxent | ${dashboard.speedups.maxent_x.toFixed(2)} | ${dashboard.percent_faster.maxent_pct.toFixed(2)} |`,
     "",
