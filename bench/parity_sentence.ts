@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { sentenceTokenizeSubset } from "../index";
 
 type Fixture = {
-  cases: Array<{ name: string; input: string; expected: string[] }>;
+  cases: Array<{ name: string; input: string }>;
 };
 
 type PythonResult = {
@@ -27,7 +27,7 @@ function runPython(text: string): PythonResult {
 }
 
 function main() {
-  const fixturePath = resolve(import.meta.dir, "..", "test", "fixtures", "sentence_tokenizer_cases.json");
+  const fixturePath = resolve(import.meta.dir, "..", "test", "fixtures", "sentence_tokenizer_parity_cases.json");
   const fixture = JSON.parse(readFileSync(fixturePath, "utf8")) as Fixture;
 
   const rows: Array<{ name: string; parity: boolean }> = [];

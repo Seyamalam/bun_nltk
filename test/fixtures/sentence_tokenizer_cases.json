@@ -33,6 +33,30 @@
         "He said, \"Ship it.\"",
         "Then they left."
       ]
+    },
+    {
+      "name": "learned abbreviation from lowercase continuation",
+      "input": "Acme Co. ltd. shipped updates. Markets reacted.",
+      "expected": [
+        "Acme Co. ltd. shipped updates.",
+        "Markets reacted."
+      ]
+    },
+    {
+      "name": "initials and period split",
+      "input": "J. R. R. Tolkien wrote The Hobbit. It sold well.",
+      "expected": [
+        "J. R. R. Tolkien wrote The Hobbit.",
+        "It sold well."
+      ]
+    },
+    {
+      "name": "country abbreviation split",
+      "input": "I live in the U.S. This is useful.",
+      "expected": [
+        "I live in the U.S.",
+        "This is useful."
+      ]
     }
   ]
 }
