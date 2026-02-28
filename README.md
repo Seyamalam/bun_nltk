@@ -92,6 +92,8 @@ Notes:
 | PCFG Viterbi chart parser (`bench:compare:pcfg`) | 0.0191 | 0.4153 | Zig/Bun | 21.80x | 2080.00% |
 | MaxEnt text classifier (`bench:compare:maxent`) | 0.0244 | 0.1824 | Zig/Bun | 7.46x | 646.00% |
 | Sparse linear logits hot loop (`bench:compare:linear`) | 0.0024 | 2.0001 | Zig native | 840.54x | 83954.04% |
+| Decision tree text classifier (`bench:compare:decision-tree`) | 0.0725 | 0.5720 | Zig/Bun | 7.89x | 688.55% |
+| Earley parser workload (`bench:compare:earley`) | 0.1149 | 4.6483 | Zig/Bun | 40.47x | 3947.07% |
 
 ## Build native Zig library
 
@@ -171,6 +173,18 @@ bun run bench:compare:simd
 bun run bench:compare:parser
 ```
 
+## Benchmark decision tree classifier vs Python
+
+```bash
+bun run bench:compare:decision-tree
+```
+
+## Benchmark Earley parser vs Python
+
+```bash
+bun run bench:compare:earley
+```
+
 ## Benchmark classifier vs Python
 
 ```bash
@@ -181,6 +195,12 @@ bun run bench:compare:classifier
 
 ```bash
 bun run bench:compare:linear
+```
+
+## Benchmark linear-model training native scoring vs JS scoring
+
+```bash
+bun run bench:compare:linear-train
 ```
 
 ## Run parity harnesses
@@ -194,6 +214,9 @@ bun run bench:parity:parser
 bun run bench:parity:classifier
 bun run bench:parity:pcfg
 bun run bench:parity:maxent
+bun run bench:parity:decision-tree
+bun run bench:parity:earley
+bun run bench:parity:corpus-imported
 bun run bench:parity:imported
 bun run bench:parity:wordnet
 bun run bench:parity:tagger

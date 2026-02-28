@@ -1,0 +1,26 @@
+{
+  "default_max_regression_pct": 55,
+  "metric_max_regression_pct": {
+    "sentence_x": 65,
+    "chunk_x": 90,
+    "wordnet_x": 85
+  },
+  "gate_min_speedup": {
+    "token_ngram_x": 3.0,
+    "collocations_x": 5.0,
+    "porter_x": 3.0,
+    "wasm_x": 3.0,
+    "sentence_x": 1.5,
+    "punkt_x": 1.5,
+    "tagger_x": 2.0,
+    "lm_x": 1.1,
+    "chunk_x": 1.2,
+    "wordnet_x": 1.2,
+    "parser_x": 1.1,
+    "classifier_x": 1.0,
+    "pcfg_x": 1.1,
+    "maxent_x": 1.0,
+    "linear_x": 3.0
+  },
+  "high_variance_multiplier": 20
+}

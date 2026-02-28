@@ -9,7 +9,7 @@ export type LogisticSerialized = {
   vectorizer: VectorizerSerialized;
   weights: number[];
   bias: number[];
-  options: { epochs: number; learningRate: number; l2: number; maxFeatures: number };
+  options: { epochs: number; learningRate: number; l2: number; maxFeatures: number; useNativeScoring?: boolean };
 };
 
 export type LinearSvmSerialized = {
@@ -18,7 +18,7 @@ export type LinearSvmSerialized = {
   vectorizer: VectorizerSerialized;
   weights: number[];
   bias: number[];
-  options: { epochs: number; learningRate: number; l2: number; margin: number; maxFeatures: number };
+  options: { epochs: number; learningRate: number; l2: number; margin: number; maxFeatures: number; useNativeScoring?: boolean };
 };
 
 function sigmoid(x: number): number {
@@ -69,8 +69,29 @@ function scoreBatchNativeOrJs(
   featureCount: number,
   weights: Float64Array,
   bias: Float64Array,
+  preferNative = true,
 ): Float64Array {
   const batch = flattenSparseBatch(rows);
+  return scoreBatchFlatNativeOrJs(rows, batch, classCount, featureCount, weights, bias, preferNative);
+}
+
+function scoreBatchFlatNativeOrJs(
+  rows: SparseVector[],
+  batch: { docOffsets: Uint32Array; featureIds: Uint32Array; featureValues: Float64Array },
+  classCount: number,
+  featureCount: number,
+  weights: Float64Array,
+  bias: Float64Array,
+  preferNative = true,
+): Float64Array {
+  if (!preferNative) {
+    const out = new Float64Array(rows.length * classCount);
+    for (let d = 0; d < rows.length; d += 1) {
+      const local = scoreRowJs(rows[d]!, classCount, featureCount, weights, bias);
+      out.set(local, d * classCount);
+    }
+    return out;
+  }
   try {
     return linearScoresSparseIdsNative({
       docOffsets: batch.docOffsets,
@@ -92,18 +113,19 @@ function scoreBatchNativeOrJs(
 }
 
 export class LogisticTextClassifier {
-  private readonly options: { epochs: number; learningRate: number; l2: number; maxFeatures: number };
+  private readonly options: { epochs: number; learningRate: number; l2: number; maxFeatures: number; useNativeScoring: boolean };
   private readonly vectorizer: TextFeatureVectorizer;
   private labels: string[] = [];
   private weights = new Float64Array(0);
   private bias = new Float64Array(0);
 
-  constructor(options: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number } = {}) {
+  constructor(options: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number; useNativeScoring?: boolean } = {}) {
     this.options = {
       epochs: Math.max(1, Math.floor(options.epochs ?? 20)),
       learningRate: Math.max(1e-6, options.learningRate ?? 0.1),
       l2: Math.max(0, options.l2 ?? 1e-4),
       maxFeatures: Math.max(256, Math.floor(options.maxFeatures ?? 16000)),
+      useNativeScoring: options.useNativeScoring ?? true,
     };
     this.vectorizer = new TextFeatureVectorizer({ ngramMin: 1, ngramMax: 2, binary: false, maxFeatures: this.options.maxFeatures });
   }
@@ -130,24 +152,44 @@ export class LogisticTextClassifier {
     this.weights = new Float64Array(classCount * featureCount);
     this.bias = new Float64Array(classCount);
 
+    const gradW = new Float64Array(classCount * featureCount);
+    const gradB = new Float64Array(classCount);
+    const invN = 1 / Math.max(1, rows.length);
+    const batch = flattenSparseBatch(rows);
     for (let epoch = 0; epoch < this.options.epochs; epoch += 1) {
+      gradW.fill(0);
+      gradB.fill(0);
+      const scores = scoreBatchFlatNativeOrJs(
+        rows,
+        batch,
+        classCount,
+        featureCount,
+        this.weights,
+        this.bias,
+        this.options.useNativeScoring,
+      );
       for (let i = 0; i < rows.length; i += 1) {
         const row = rows[i]!;
         const gold = labelToId.get(examples[i]!.label)!;
-        const scores = scoreRowJs(row, classCount, featureCount, this.weights, this.bias);
+        const rowBase = i * classCount;
         for (let c = 0; c < classCount; c += 1) {
           const y = c === gold ? 1 : 0;
-          const p = sigmoid(scores[c]!);
+          const p = sigmoid(scores[rowBase + c]!);
           const err = y - p;
-          this.bias[c] += this.options.learningRate * err;
+          gradB[c] += err;
           const base = c * featureCount;
           for (let j = 0; j < row.indices.length; j += 1) {
             const f = row.indices[j]!;
-            const idx = base + f;
-            const w = this.weights[idx]!;
-            this.weights[idx] += this.options.learningRate * (err * row.values[j]! - this.options.l2 * w);
+            gradW[base + f] += err * row.values[j]!;
           }
         }
+      }
+      for (let c = 0; c < classCount; c += 1) {
+        this.bias[c] += this.options.learningRate * gradB[c]! * invN;
+      }
+      for (let idx = 0; idx < this.weights.length; idx += 1) {
+        const w = this.weights[idx]!;
+        this.weights[idx] += this.options.learningRate * (gradW[idx]! * invN - this.options.l2 * w);
       }
     }
     return this;
@@ -175,7 +217,7 @@ export class LogisticTextClassifier {
     const rows = this.vectorizer.transformMany(texts);
     const classCount = this.labels.length;
     const featureCount = this.vectorizer.featureCount;
-    const scores = scoreBatchNativeOrJs(rows, classCount, featureCount, this.weights, this.bias);
+    const scores = scoreBatchNativeOrJs(rows, classCount, featureCount, this.weights, this.bias, this.options.useNativeScoring);
     const out: string[] = [];
     for (let d = 0; d < rows.length; d += 1) {
       const slice = scores.subarray(d * classCount, (d + 1) * classCount);
@@ -204,19 +246,20 @@ export class LogisticTextClassifier {
 }
 
 export class LinearSvmTextClassifier {
-  private readonly options: { epochs: number; learningRate: number; l2: number; margin: number; maxFeatures: number };
+  private readonly options: { epochs: number; learningRate: number; l2: number; margin: number; maxFeatures: number; useNativeScoring: boolean };
   private readonly vectorizer: TextFeatureVectorizer;
   private labels: string[] = [];
   private weights = new Float64Array(0);
   private bias = new Float64Array(0);
 
-  constructor(options: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number } = {}) {
+  constructor(options: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number; useNativeScoring?: boolean } = {}) {
     this.options = {
       epochs: Math.max(1, Math.floor(options.epochs ?? 20)),
       learningRate: Math.max(1e-6, options.learningRate ?? 0.05),
       l2: Math.max(0, options.l2 ?? 5e-4),
       margin: Math.max(0.1, options.margin ?? 1),
       maxFeatures: Math.max(256, Math.floor(options.maxFeatures ?? 16000)),
+      useNativeScoring: options.useNativeScoring ?? true,
     };
     this.vectorizer = new TextFeatureVectorizer({ ngramMin: 1, ngramMax: 2, binary: false, maxFeatures: this.options.maxFeatures });
   }
@@ -243,24 +286,44 @@ export class LinearSvmTextClassifier {
     this.weights = new Float64Array(classCount * featureCount);
     this.bias = new Float64Array(classCount);
 
+    const gradW = new Float64Array(classCount * featureCount);
+    const gradB = new Float64Array(classCount);
+    const invN = 1 / Math.max(1, rows.length);
+    const batch = flattenSparseBatch(rows);
     for (let epoch = 0; epoch < this.options.epochs; epoch += 1) {
+      gradW.fill(0);
+      gradB.fill(0);
+      const scores = scoreBatchFlatNativeOrJs(
+        rows,
+        batch,
+        classCount,
+        featureCount,
+        this.weights,
+        this.bias,
+        this.options.useNativeScoring,
+      );
       for (let i = 0; i < rows.length; i += 1) {
         const row = rows[i]!;
         const gold = labelToId.get(examples[i]!.label)!;
-        const scores = scoreRowJs(row, classCount, featureCount, this.weights, this.bias);
+        const rowBase = i * classCount;
         for (let c = 0; c < classCount; c += 1) {
           const y = c === gold ? 1 : -1;
-          const score = scores[c]!;
+          const score = scores[rowBase + c]!;
           const lossGrad = y * score < this.options.margin ? -y : 0;
-          this.bias[c] -= this.options.learningRate * lossGrad;
+          gradB[c] += lossGrad;
           const base = c * featureCount;
           for (let j = 0; j < row.indices.length; j += 1) {
             const f = row.indices[j]!;
-            const idx = base + f;
-            const w = this.weights[idx]!;
-            this.weights[idx] -= this.options.learningRate * (lossGrad * row.values[j]! + this.options.l2 * w);
+            gradW[base + f] += lossGrad * row.values[j]!;
           }
         }
+      }
+      for (let c = 0; c < classCount; c += 1) {
+        this.bias[c] -= this.options.learningRate * gradB[c]! * invN;
+      }
+      for (let idx = 0; idx < this.weights.length; idx += 1) {
+        const w = this.weights[idx]!;
+        this.weights[idx] -= this.options.learningRate * (gradW[idx]! * invN + this.options.l2 * w);
       }
     }
 
@@ -289,7 +352,7 @@ export class LinearSvmTextClassifier {
     const rows = this.vectorizer.transformMany(texts);
     const classCount = this.labels.length;
     const featureCount = this.vectorizer.featureCount;
-    const scores = scoreBatchNativeOrJs(rows, classCount, featureCount, this.weights, this.bias);
+    const scores = scoreBatchNativeOrJs(rows, classCount, featureCount, this.weights, this.bias, this.options.useNativeScoring);
     const out: string[] = [];
     for (let d = 0; d < rows.length; d += 1) {
       const slice = scores.subarray(d * classCount, (d + 1) * classCount);
@@ -319,14 +382,14 @@ export class LinearSvmTextClassifier {
 
 export function trainLogisticTextClassifier(
   examples: LinearModelExample[],
-  options: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number } = {},
+  options: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number; useNativeScoring?: boolean } = {},
 ): LogisticTextClassifier {
   return new LogisticTextClassifier(options).train(examples);
 }
 
 export function trainLinearSvmTextClassifier(
   examples: LinearModelExample[],
-  options: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number } = {},
+  options: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number; useNativeScoring?: boolean } = {},
 ): LinearSvmTextClassifier {
   return new LinearSvmTextClassifier(options).train(examples);
 }

@@ -171,10 +171,10 @@ These functions are pure TypeScript reference implementations.
 - `new DecisionTreeTextClassifier(options?: { maxDepth?: number; minSamples?: number; maxCandidateFeatures?: number; maxFeatures?: number })`
 - `trainDecisionTreeTextClassifier(examples: Array<{ label: string; text: string }>, options?): DecisionTreeTextClassifier`
 - `loadDecisionTreeTextClassifier(payload: DecisionTreeSerialized): DecisionTreeTextClassifier`
-- `new LogisticTextClassifier(options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number })`
-- `new LinearSvmTextClassifier(options?: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number })`
-- `trainLogisticTextClassifier(examples: Array<{ label: string; text: string }>, options?): LogisticTextClassifier`
-- `trainLinearSvmTextClassifier(examples: Array<{ label: string; text: string }>, options?): LinearSvmTextClassifier`
+- `new LogisticTextClassifier(options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number; useNativeScoring?: boolean })`
+- `new LinearSvmTextClassifier(options?: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number; useNativeScoring?: boolean })`
+- `trainLogisticTextClassifier(examples: Array<{ label: string; text: string }>, options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number; useNativeScoring?: boolean }): LogisticTextClassifier`
+- `trainLinearSvmTextClassifier(examples: Array<{ label: string; text: string }>, options?: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number; useNativeScoring?: boolean }): LinearSvmTextClassifier`
 - `loadLogisticTextClassifier(payload: LogisticSerialized): LogisticTextClassifier`
 - `loadLinearSvmTextClassifier(payload: LinearSvmSerialized): LinearSvmTextClassifier`
 

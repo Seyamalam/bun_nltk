@@ -107,6 +107,8 @@ function main() {
   const parser = run(["bun", "run", "bench/compare_parser.ts", "800", "3"], root);
   const classifier = run(["bun", "run", "bench/compare_classifier.ts", "1800", "450", "3"], root);
   const linear = run(["bun", "run", "bench/compare_linear_scores.ts", "6000", "12000", "6", "40", "3"], root);
+  const decisionTree = run(["bun", "run", "bench/compare_decision_tree.ts", "2400", "600", "3"], root);
+  const earley = run(["bun", "run", "bench/compare_earley.ts", "2000", "3"], root);
   const pcfg = run(["bun", "run", "bench/compare_pcfg.ts", "700", "2"], root);
   const maxent = run(["bun", "run", "bench/compare_maxent.ts", "900", "250", "1"], root);
   const paritySentence = run(["bun", "run", "bench/parity_sentence.ts"], root);
@@ -135,6 +137,9 @@ function main() {
       classifier: Boolean(parityAll.checks?.classifier),
       pcfg: Boolean(parityAll.checks?.pcfg),
       maxent: Boolean(parityAll.checks?.maxent),
+      decision_tree: Boolean(parityAll.checks?.decision_tree),
+      earley: Boolean(parityAll.checks?.earley),
+      corpus_imported: Boolean(parityAll.checks?.corpus_imported),
       imported: Boolean(parityAll.checks?.imported),
       tagger: Boolean(parityTagger.parity),
     },
@@ -152,6 +157,8 @@ function main() {
       parser_x: toNum(parser.speedup_vs_python),
       classifier_x: toNum(classifier.speedup_vs_python),
       linear_x: toNum(linear.speedup_vs_python),
+      decision_tree_x: toNum(decisionTree.speedup_vs_python),
+      earley_x: toNum(earley.speedup_vs_python),
       pcfg_x: toNum(pcfg.speedup_vs_python),
       maxent_x: toNum(maxent.speedup_vs_python),
     },
@@ -169,6 +176,8 @@ function main() {
       parser_pct: pctFaster(toNum(parser.speedup_vs_python)),
       classifier_pct: pctFaster(toNum(classifier.speedup_vs_python)),
       linear_pct: pctFaster(toNum(linear.speedup_vs_python)),
+      decision_tree_pct: pctFaster(toNum(decisionTree.speedup_vs_python)),
+      earley_pct: pctFaster(toNum(earley.speedup_vs_python)),
       pcfg_pct: pctFaster(toNum(pcfg.speedup_vs_python)),
       maxent_pct: pctFaster(toNum(maxent.speedup_vs_python)),
     },
@@ -192,6 +201,8 @@ function main() {
       parser,
       classifier,
       linear,
+      decision_tree: decisionTree,
+      earley,
       pcfg,
       maxent,
     },
@@ -218,6 +229,8 @@ function main() {
     `| parser | ${dashboard.speedups.parser_x.toFixed(2)} | ${dashboard.percent_faster.parser_pct.toFixed(2)} |`,
     `| classifier | ${dashboard.speedups.classifier_x.toFixed(2)} | ${dashboard.percent_faster.classifier_pct.toFixed(2)} |`,
     `| linear | ${dashboard.speedups.linear_x.toFixed(2)} | ${dashboard.percent_faster.linear_pct.toFixed(2)} |`,
+    `| decision_tree | ${dashboard.speedups.decision_tree_x.toFixed(2)} | ${dashboard.percent_faster.decision_tree_pct.toFixed(2)} |`,
+    `| earley | ${dashboard.speedups.earley_x.toFixed(2)} | ${dashboard.percent_faster.earley_pct.toFixed(2)} |`,
     `| pcfg | ${dashboard.speedups.pcfg_x.toFixed(2)} | ${dashboard.percent_faster.pcfg_pct.toFixed(2)} |`,
     `| maxent | ${dashboard.speedups.maxent_x.toFixed(2)} | ${dashboard.percent_faster.maxent_pct.toFixed(2)} |`,
     "",
@@ -245,6 +258,9 @@ function main() {
     `Parity wordnet: ${dashboard.parity.wordnet}`,
     `Parity parser: ${dashboard.parity.parser}`,
     `Parity classifier: ${dashboard.parity.classifier}`,
+    `Parity decision_tree: ${dashboard.parity.decision_tree}`,
+    `Parity earley: ${dashboard.parity.earley}`,
+    `Parity corpus_imported: ${dashboard.parity.corpus_imported}`,
     `Parity pcfg: ${dashboard.parity.pcfg}`,
     `Parity maxent: ${dashboard.parity.maxent}`,
     `Parity imported fixtures: ${dashboard.parity.imported}`,

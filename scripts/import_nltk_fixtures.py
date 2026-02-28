@@ -5,6 +5,7 @@ import argparse
 import json
 import re
 from collections import defaultdict
+from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
@@ -175,6 +176,64 @@ def build_classifier_fixture(train_per_label: int, test_per_label: int) -> dict[
     }
 
 
+def build_corpus_subset_fixture(max_brown_sents: int, max_treebank_sents: int) -> dict[str, Any]:
+    nltk.download("brown", quiet=True)
+    nltk.download("treebank", quiet=True)
+    from nltk.corpus import brown, treebank
+
+    def collect_rows(sent_iter: Any, max_sents: int) -> list[list[str]]:
+        rows: list[list[str]] = []
+        for sent in sent_iter:
+            if len(rows) >= max_sents:
+                break
+            cleaned = [tok for tok in (normalize_token(str(t)) for t in sent) if tok and "'" not in tok]
+            if len(cleaned) < 4:
+                continue
+            rows.append(cleaned[:40])
+        return rows
+
+    brown_rows = collect_rows(brown.sents(categories=["news"]), max_brown_sents)
+    treebank_rows = collect_rows(treebank.sents(), max_treebank_sents)
+
+    def pack_doc(doc_id: str, categories: list[str], rows: list[list[str]]) -> dict[str, Any]:
+        text = "\n".join(" ".join(row).capitalize() + "." for row in rows)
+        words = [tok for row in rows for tok in row]
+        return {
+            "id": doc_id,
+            "categories": categories,
+            "sentence_count": len(rows),
+            "token_count": len(words),
+            "text": text,
+            "expected_words": words,
+        }
+
+    docs = [
+        pack_doc("brown_news_subset", ["brown", "news"], brown_rows),
+        pack_doc("treebank_subset", ["treebank", "wsj"], treebank_rows),
+    ]
+    canonical = json.dumps(
+        [
+            {
+                "id": doc["id"],
+                "sentence_count": doc["sentence_count"],
+                "token_count": doc["token_count"],
+                "words": doc["expected_words"],
+            }
+            for doc in docs
+        ],
+        separators=(",", ":"),
+        ensure_ascii=True,
+    ).encode("utf-8")
+    digest = sha256(canonical).hexdigest()
+    return {
+        "source": ["nltk.brown", "nltk.treebank"],
+        "max_brown_sents": max_brown_sents,
+        "max_treebank_sents": max_treebank_sents,
+        "snapshot_sha256": digest,
+        "documents": docs,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out-dir", default="test/fixtures/nltk_imported")
@@ -182,6 +241,8 @@ def main() -> None:
     parser.add_argument("--max-parser-cases", type=int, default=80)
     parser.add_argument("--train-per-label", type=int, default=220)
     parser.add_argument("--test-per-label", type=int, default=80)
+    parser.add_argument("--max-brown-sents", type=int, default=160)
+    parser.add_argument("--max-treebank-sents", type=int, default=160)
     args = parser.parse_args()
 
     out_dir = Path(args.out_dir)
@@ -189,11 +250,14 @@ def main() -> None:
 
     parser_fixture = build_pcfg_fixture(args.max_trees, args.max_parser_cases)
     classifier_fixture = build_classifier_fixture(args.train_per_label, args.test_per_label)
+    corpus_fixture = build_corpus_subset_fixture(args.max_brown_sents, args.max_treebank_sents)
 
     parser_path = out_dir / "pcfg_treebank_fixture.json"
     clf_path = out_dir / "classifier_movie_reviews_fixture.json"
+    corpus_path = out_dir / "corpus_subsets_fixture.json"
     parser_path.write_text(json.dumps(parser_fixture, indent=2) + "\n", encoding="utf-8")
     clf_path.write_text(json.dumps(classifier_fixture, indent=2) + "\n", encoding="utf-8")
+    corpus_path.write_text(json.dumps(corpus_fixture, indent=2) + "\n", encoding="utf-8")
 
     print(
         json.dumps(
@@ -202,9 +266,12 @@ def main() -> None:
                 "out_dir": str(out_dir.resolve()),
                 "pcfg_fixture": str(parser_path.resolve()),
                 "classifier_fixture": str(clf_path.resolve()),
+                "corpus_fixture": str(corpus_path.resolve()),
                 "pcfg_cases": parser_fixture["case_count"],
                 "classifier_train": classifier_fixture["train_size"],
                 "classifier_test": classifier_fixture["test_size"],
+                "corpus_documents": len(corpus_fixture["documents"]),
+                "corpus_snapshot_sha256": corpus_fixture["snapshot_sha256"],
             },
             indent=2,
         )
