@@ -1,0 +1,42 @@
+[
+  {
+    "name": "titles_and_names",
+    "train_text": "Dr. Adams wrote a paper. Dr. Brown reviewed it. Mr. Lee met Ms. Kim in Jan. They discussed results.",
+    "text": "Dr. Adams arrived yesterday. He presented the paper. Mr. Lee agreed."
+  },
+  {
+    "name": "country_abbreviation",
+    "train_text": "The U.S. team won. The U.K. team lost. Prof. Liu wrote notes.",
+    "text": "The U.S. market rose today. The U.K. market closed early."
+  },
+  {
+    "name": "time_abbreviation",
+    "train_text": "He woke at 7 a.m. She slept at 9 p.m. They worked in shifts. The office opened at 8 a.m. The office closed at 6 p.m.",
+    "text": "She arrived at 8 a.m. He left later."
+  },
+  {
+    "name": "initials_sequence",
+    "train_text": "Mr. J. Smith arrived. Mr. K. Brown departed. The meeting ended.",
+    "text": "Mr. J. Smith spoke first. Mr. K. Brown answered."
+  },
+  {
+    "name": "decimal_and_sentence",
+    "train_text": "The value was 3.14 in tests. Another value was 2.71 in logs.",
+    "text": "Revenue rose by 3.14 percent. Costs dropped by 1.5 percent."
+  },
+  {
+    "name": "quotes_and_closers",
+    "train_text": "He said \"go now.\" She replied \"okay.\" They left quickly.",
+    "text": "He said \"we should go.\" Then they left."
+  },
+  {
+    "name": "parentheses_and_titles",
+    "train_text": "Dr. Green (chair) opened the meeting. Prof. White closed it.",
+    "text": "Dr. Green (chair) spoke first. Prof. White responded."
+  },
+  {
+    "name": "multi_sentence_starters",
+    "train_text": "However the team stayed calm. Therefore they won. Meanwhile others waited.",
+    "text": "However the report was late. Therefore we delayed shipping."
+  }
+]

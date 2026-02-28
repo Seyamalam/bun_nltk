@@ -281,3 +281,27 @@ export function parseTextWithFeatureCfg(
     startSymbol: options?.startSymbol,
   });
 }
+
+export function featureEarleyParse(
+  tokens: string[],
+  grammar: FeatureCfgGrammar,
+  options: { maxTrees?: number; maxDepth?: number; startSymbol?: FeatureSymbol | string } = {},
+): ParseTree[] {
+  // Feature chart parsing is used as the deterministic subset backend for feature-earley parity APIs.
+  return featureChartParse(tokens, grammar, options);
+}
+
+export function parseTextWithFeatureEarley(
+  text: string,
+  grammar: FeatureCfgGrammar | string,
+  options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean; maxDepth?: number },
+): ParseTree[] {
+  const fg = typeof grammar === "string" ? parseFeatureCfgGrammar(grammar, { startSymbol: options?.startSymbol }) : grammar;
+  const tokens = wordTokenizeSubset(text).filter((tok) => /[A-Za-z0-9']/.test(tok));
+  const normalized = options?.normalizeTokens === false ? tokens : tokens.map((tok) => tok.toLowerCase());
+  return featureEarleyParse(normalized, fg, {
+    maxTrees: options?.maxTrees,
+    maxDepth: options?.maxDepth,
+    startSymbol: options?.startSymbol,
+  });
+}

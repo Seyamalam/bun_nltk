@@ -6,16 +6,27 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-02-28
+
 ### Added
 - Recursive-descent CFG parser APIs (`recursiveDescentParse`, `parseTextWithRecursiveDescent`) with parser tests.
 - Left-corner CFG parser APIs (`leftCornerParse`, `parseTextWithLeftCorner`) with parity/benchmark harnesses.
 - Feature CFG parser subset (`parseFeatureCfgGrammar`, `featureChartParse`, `parseTextWithFeatureCfg`) with Python parity/bench harnesses.
+- Feature Earley parser subset APIs (`featureEarleyParse`, `parseTextWithFeatureEarley`) with parity/benchmark harnesses.
 - NLTK-style Punkt wrapper classes (`PunktTrainerSubset`, `PunktSentenceTokenizerSubset`) for trainer/tokenizer workflows.
 - Expanded Punkt model parameters with learned abbreviation scores and orthographic context stats.
+- Extended Punkt parity fixture corpus and harness (`bench:parity:punkt-extended`).
 - WordNet graph traversal/similarity APIs (`hypernymPaths`, `lowestCommonHypernyms`, `shortestPathDistance`, `pathSimilarity`).
+- Default WordNet runtime loader (`loadWordNet`) that prefers packed official corpus and falls back to extended JSON.
+- Default WordNet packing helper script (`wordnet:prepare:default`) and package verification for packed artifacts.
 - Perceptron text classifier family (`PerceptronTextClassifier`, train/load helpers) with serialization and tests.
 - Conditional Exponential classifier compatibility APIs (`ConditionalExponentialTextClassifier`) with parity/benchmark harnesses.
 - Positive Naive Bayes classifier APIs (`PositiveNaiveBayesTextClassifier`) with parity/benchmark harnesses.
+
+### Changed
+- Parity tracker now computes coverage from benchmark/parity artifacts (dynamic status) instead of static module flags.
+- Benchmark dashboard and parity aggregate suite now include `punkt_extended` and `feature_earley`.
+- Benchmark gate and trend floor config now enforce additional parser/classifier families (decision tree, earley, left-corner, feature parser/earley, condexp, positive-nb).
 
 ## [0.9.0] - 2026-02-28
 

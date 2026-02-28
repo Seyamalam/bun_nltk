@@ -1,5 +1,5 @@
 import { resolve } from "node:path";
-import { loadWordNetExtended } from "../index";
+import { loadWordNet } from "../index";
 
 function median(values: number[]): number {
   const sorted = [...values].sort((a, b) => a - b);
@@ -10,7 +10,7 @@ function median(values: number[]): number {
 type Query = { word: string; pos?: "n" | "v" | "a" | "r" };
 
 function buildQueries(): Query[] {
-  const wn = loadWordNetExtended();
+  const wn = loadWordNet();
   const lemmas = wn.lemmas();
   const out: Query[] = [];
   for (const lemma of lemmas) {
@@ -23,7 +23,7 @@ function buildQueries(): Query[] {
 }
 
 function runNative(queries: Query[], rounds: number) {
-  const wn = loadWordNetExtended();
+  const wn = loadWordNet();
   const timings: number[] = [];
   let checksum = 0;
   for (let i = 0; i < rounds; i += 1) {

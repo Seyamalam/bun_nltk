@@ -207,6 +207,13 @@ function shouldSplitAt(
   const look = findNextToken(text, punctIdx + 1);
   if (!look) return true;
 
+  if (punct === "." && /^[A-Za-z]$/.test(prevNorm) && look.isUpperStart) {
+    return false;
+  }
+  if (punct === "." && (prevNorm === "a.m" || prevNorm === "p.m")) {
+    return false;
+  }
+
   if (punct === "." && model.abbreviations.has(prevNorm)) {
     const abbrScore = model.abbreviationScores.get(prevNorm) ?? 0;
     const lookCtx = model.orthographicContext.get(look.lower);

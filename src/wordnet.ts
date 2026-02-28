@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { wordnetMorphyAsciiNative } from "./native";
 
@@ -306,6 +306,7 @@ export class WordNet {
 let cachedMiniWordNet: WordNet | null = null;
 let cachedExtendedWordNet: WordNet | null = null;
 let cachedPackedWordNet: WordNet | null = null;
+let cachedDefaultWordNet: WordNet | null = null;
 
 export function loadWordNetMini(path?: string): WordNet {
   if (!path && cachedMiniWordNet) return cachedMiniWordNet;
@@ -346,4 +347,30 @@ export function loadWordNetPacked(path?: string): WordNet {
   const db = new WordNet(payload);
   if (!path) cachedPackedWordNet = db;
   return db;
+}
+
+function loadWordNetFromPath(path: string): WordNet {
+  if (path.endsWith(".bin")) return loadWordNetPacked(path);
+  const payload = JSON.parse(readFileSync(path, "utf8")) as WordNetMiniPayload;
+  return new WordNet(payload);
+}
+
+export function loadWordNet(path?: string): WordNet {
+  if (path) return loadWordNetFromPath(path);
+  if (cachedDefaultWordNet) return cachedDefaultWordNet;
+
+  const envPath = process.env.BUN_NLTK_WORDNET_PATH;
+  if (envPath && existsSync(envPath)) {
+    cachedDefaultWordNet = loadWordNetFromPath(envPath);
+    return cachedDefaultWordNet;
+  }
+
+  const packedPath = resolve(import.meta.dir, "..", "models", "wordnet_full.bin");
+  if (existsSync(packedPath)) {
+    cachedDefaultWordNet = loadWordNetPacked(packedPath);
+    return cachedDefaultWordNet;
+  }
+
+  cachedDefaultWordNet = loadWordNetExtended();
+  return cachedDefaultWordNet;
 }

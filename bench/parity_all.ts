@@ -43,6 +43,7 @@ function main() {
   const tokenizer = run(["bun", "run", "bench/parity_tokenizer.ts"], root);
   const sentence = run(["bun", "run", "bench/parity_sentence.ts"], root);
   const punkt = run(["bun", "run", "bench/parity_punkt.ts"], root);
+  const punktExtended = run(["bun", "run", "bench/parity_punkt_extended.ts"], root);
   const lm = run(["bun", "run", "bench/compare_lm.ts", dataset, "1"], root);
   const chunk = run(["bun", "run", "bench/compare_chunk.ts", "3000", "1"], root);
   const wordnet = run(["bun", "run", "bench/parity_wordnet.ts"], root);
@@ -54,6 +55,7 @@ function main() {
   const earley = run(["bun", "run", "bench/parity_earley.ts"], root);
   const leftcorner = run(["bun", "run", "bench/parity_leftcorner.ts"], root);
   const featureParser = run(["bun", "run", "bench/parity_feature_parser.ts"], root);
+  const featureEarley = run(["bun", "run", "bench/parity_feature_earley.ts"], root);
   const corpusImported = run(["bun", "run", "bench/parity_corpus_imported.ts"], root);
   const tagger = run(["bun", "run", "bench/parity_tagger.ts"], root);
   const condexp = run(["bun", "run", "bench/parity_condexp.ts"], root);
@@ -65,6 +67,7 @@ function main() {
     tokenizer: Boolean(tokenizer.parity),
     sentence: Boolean(sentence.parity),
     punkt: Boolean(punkt.parity),
+    punkt_extended: Boolean(punktExtended.parity),
     lm: Boolean(lm.parity_tolerant),
     chunk: Boolean(chunk.parity_sample_400),
     wordnet: Boolean(wordnet.parity),
@@ -76,6 +79,7 @@ function main() {
     earley: Boolean(earley.parity),
     leftcorner: Boolean(leftcorner.parity),
     feature_parser: Boolean(featureParser.parity),
+    feature_earley: Boolean(featureEarley.parity),
     corpus_imported: Boolean(corpusImported.parity),
     imported: Boolean(imported.parity),
     tagger: Boolean(tagger.parity),

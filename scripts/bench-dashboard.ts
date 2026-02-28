@@ -107,6 +107,7 @@ function main() {
   const parser = run(["bun", "run", "bench/compare_parser.ts", "800", "3"], root);
   const leftcorner = run(["bun", "run", "bench/compare_leftcorner.ts", "1200", "3"], root);
   const featureParser = run(["bun", "run", "bench/compare_feature_parser.ts", "1200", "3"], root);
+  const featureEarley = run(["bun", "run", "bench/compare_feature_earley.ts", "1200", "3"], root);
   const classifier = run(["bun", "run", "bench/compare_classifier.ts", "1800", "450", "3"], root);
   const linear = run(["bun", "run", "bench/compare_linear_scores.ts", "6000", "12000", "6", "40", "3"], root);
   const decisionTree = run(["bun", "run", "bench/compare_decision_tree.ts", "2400", "600", "3"], root);
@@ -134,6 +135,7 @@ function main() {
       tokenizer: Boolean(parityAll.checks?.tokenizer),
       sentence: Boolean(paritySentence.parity),
       punkt: Boolean(parityAll.checks?.punkt),
+      punkt_extended: Boolean(parityAll.checks?.punkt_extended),
       lm: Boolean(parityAll.checks?.lm),
       chunk: Boolean(parityAll.checks?.chunk),
       wordnet: Boolean(parityAll.checks?.wordnet),
@@ -145,6 +147,7 @@ function main() {
       earley: Boolean(parityAll.checks?.earley),
       leftcorner: Boolean(parityAll.checks?.leftcorner),
       feature_parser: Boolean(parityAll.checks?.feature_parser),
+      feature_earley: Boolean(parityAll.checks?.feature_earley),
       corpus_imported: Boolean(parityAll.checks?.corpus_imported),
       imported: Boolean(parityAll.checks?.imported),
       tagger: Boolean(parityTagger.parity),
@@ -165,6 +168,7 @@ function main() {
       parser_x: toNum(parser.speedup_vs_python),
       leftcorner_x: toNum(leftcorner.speedup_vs_python),
       feature_parser_x: toNum(featureParser.speedup_vs_python),
+      feature_earley_x: toNum(featureEarley.speedup_vs_python),
       classifier_x: toNum(classifier.speedup_vs_python),
       linear_x: toNum(linear.speedup_vs_python),
       decision_tree_x: toNum(decisionTree.speedup_vs_python),
@@ -188,6 +192,7 @@ function main() {
       parser_pct: pctFaster(toNum(parser.speedup_vs_python)),
       leftcorner_pct: pctFaster(toNum(leftcorner.speedup_vs_python)),
       feature_parser_pct: pctFaster(toNum(featureParser.speedup_vs_python)),
+      feature_earley_pct: pctFaster(toNum(featureEarley.speedup_vs_python)),
       classifier_pct: pctFaster(toNum(classifier.speedup_vs_python)),
       linear_pct: pctFaster(toNum(linear.speedup_vs_python)),
       decision_tree_pct: pctFaster(toNum(decisionTree.speedup_vs_python)),
@@ -217,6 +222,7 @@ function main() {
       parser,
       leftcorner,
       feature_parser: featureParser,
+      feature_earley: featureEarley,
       classifier,
       linear,
       decision_tree: decisionTree,
@@ -249,6 +255,7 @@ function main() {
     `| parser | ${dashboard.speedups.parser_x.toFixed(2)} | ${dashboard.percent_faster.parser_pct.toFixed(2)} |`,
     `| leftcorner | ${dashboard.speedups.leftcorner_x.toFixed(2)} | ${dashboard.percent_faster.leftcorner_pct.toFixed(2)} |`,
     `| feature_parser | ${dashboard.speedups.feature_parser_x.toFixed(2)} | ${dashboard.percent_faster.feature_parser_pct.toFixed(2)} |`,
+    `| feature_earley | ${dashboard.speedups.feature_earley_x.toFixed(2)} | ${dashboard.percent_faster.feature_earley_pct.toFixed(2)} |`,
     `| classifier | ${dashboard.speedups.classifier_x.toFixed(2)} | ${dashboard.percent_faster.classifier_pct.toFixed(2)} |`,
     `| linear | ${dashboard.speedups.linear_x.toFixed(2)} | ${dashboard.percent_faster.linear_pct.toFixed(2)} |`,
     `| decision_tree | ${dashboard.speedups.decision_tree_x.toFixed(2)} | ${dashboard.percent_faster.decision_tree_pct.toFixed(2)} |`,
@@ -277,6 +284,7 @@ function main() {
     `Parity tokenizer: ${dashboard.parity.tokenizer}`,
     `Parity sentence: ${dashboard.parity.sentence}`,
     `Parity punkt: ${dashboard.parity.punkt}`,
+    `Parity punkt_extended: ${dashboard.parity.punkt_extended}`,
     `Parity lm: ${dashboard.parity.lm}`,
     `Parity chunk: ${dashboard.parity.chunk}`,
     `Parity wordnet: ${dashboard.parity.wordnet}`,
@@ -286,6 +294,7 @@ function main() {
     `Parity earley: ${dashboard.parity.earley}`,
     `Parity leftcorner: ${dashboard.parity.leftcorner}`,
     `Parity feature_parser: ${dashboard.parity.feature_parser}`,
+    `Parity feature_earley: ${dashboard.parity.feature_earley}`,
     `Parity corpus_imported: ${dashboard.parity.corpus_imported}`,
     `Parity pcfg: ${dashboard.parity.pcfg}`,
     `Parity maxent: ${dashboard.parity.maxent}`,

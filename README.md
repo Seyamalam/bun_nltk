@@ -35,6 +35,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - WordNet graph helpers (`hypernymPaths`, `lowestCommonHypernyms`, `shortestPathDistance`, `pathSimilarity`)
 - Native Zig morphy accelerator (`wordnetMorphyAsciiNative`) with WASM equivalent
 - Packed WordNet corpus pipeline (`wordnet:pack`) with binary loader (`loadWordNetPacked`)
+- Default WordNet runtime loader (`loadWordNet`) that uses packed official corpus when present
 - N-gram language model stack (`MLE`, `Lidstone`, `Kneser-Ney Interpolated`) with Python comparison harness
 - Native/WASM LM ID-evaluation hot loop for batched score + perplexity paths
 - Regexp chunk parser primitives with IOB conversion and Python parity harness
@@ -82,8 +83,8 @@ All benchmarks below use `bench/datasets/synthetic.txt` on this machine.
 
 Notes:
 - Sentence tokenizer is a Punkt-compatible subset, not full Punkt parity on arbitrary corpora.
-- Full WordNet corpus parity is not shipped yet; this milestone includes a bundled mini WordNet dataset.
-- Full WordNet corpus can be packed from upstream dict files with `bun run wordnet:pack`; full upstream dataset is not bundled in npm by default.
+- Full WordNet corpus binaries are prepared at build/release time via `bun run wordnet:prepare:default`; npm still does not bundle raw upstream dict files.
+- Runtime `loadWordNet()` prefers packed official corpus when available, then falls back to extended JSON corpus.
 - Fixture parity harnesses are available via `bench:parity:sentence` and `bench:parity:tagger`.
 - SIMD fast path benchmark (`bench:compare:simd`) shows `countTokensAscii` at `1.22x` and normalization no-stopword path at `2.73x` over scalar baseline.
 
@@ -104,6 +105,7 @@ Notes:
 | Earley parser workload (`bench:compare:earley`) | 0.1149 | 4.6483 | Zig/Bun | 40.47x | 3947.07% |
 | Left-corner parser workload (`bench:compare:leftcorner`) | 0.0197 | 0.5359 | Zig/Bun | 27.27x | 2626.82% |
 | Feature parser workload (`bench:compare:feature-parser`) | 0.0110 | 1.1432 | Zig/Bun | 104.38x | 10338.21% |
+| Feature Earley parser workload (`bench:compare:feature-earley`) | 0.0117 | 0.1592 | Zig/Bun | 13.64x | 1263.62% |
 | Conditional Exponential classifier (`bench:compare:condexp`) | 0.0111 | 0.1685 | Zig/Bun | 15.15x | 1414.67% |
 | Positive Naive Bayes classifier (`bench:compare:positive-nb`) | 0.0199 | 0.0416 | Zig/Bun | 2.09x | 108.63% |
 
@@ -209,6 +211,12 @@ bun run bench:compare:leftcorner
 bun run bench:compare:feature-parser
 ```
 
+## Benchmark feature Earley parser vs Python
+
+```bash
+bun run bench:compare:feature-earley
+```
+
 ## Benchmark classifier vs Python
 
 ```bash
@@ -245,6 +253,7 @@ bun run bench:compare:positive-nb
 bun run fixtures:import:nltk
 bun run bench:parity:sentence
 bun run bench:parity:punkt
+bun run bench:parity:punkt-extended
 bun run bench:parity:tokenizer
 bun run bench:parity:parser
 bun run bench:parity:classifier
@@ -254,6 +263,7 @@ bun run bench:parity:decision-tree
 bun run bench:parity:earley
 bun run bench:parity:leftcorner
 bun run bench:parity:feature-parser
+bun run bench:parity:feature-earley
 bun run bench:parity:corpus-imported
 bun run bench:parity:imported
 bun run bench:parity:wordnet
@@ -282,6 +292,12 @@ bun run bench:browser:wasm
 
 ```bash
 bun run wordnet:pack
+```
+
+## Prepare default packed WordNet runtime dataset
+
+```bash
+bun run wordnet:prepare:default
 ```
 
 ## Pack Official WordNet + Verify

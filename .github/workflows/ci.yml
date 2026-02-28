@@ -50,6 +50,9 @@ jobs:
           bun run build:wasm
           bun run build:prebuilt
 
+      - name: Prepare default packed WordNet for runtime/package
+        run: bun run wordnet:prepare:default
+
       - name: Verify npm package payload
         run: bun run pack:verify:prebuilt
 

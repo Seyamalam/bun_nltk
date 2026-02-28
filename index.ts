@@ -102,7 +102,7 @@ export {
   recursiveDescentParse,
 } from "./src/parse";
 export type { CfgGrammar, CfgProduction, ParseTree, PcfgGrammar, PcfgProduction, ProbabilisticParse } from "./src/parse";
-export { featureChartParse, parseFeatureCfgGrammar, parseTextWithFeatureCfg } from "./src/feature_parse";
+export { featureChartParse, featureEarleyParse, parseFeatureCfgGrammar, parseTextWithFeatureCfg, parseTextWithFeatureEarley } from "./src/feature_parse";
 export type { FeatureCfgGrammar, FeatureMap, FeatureProduction, FeatureSymbol } from "./src/feature_parse";
 export {
   loadNaiveBayesTextClassifier,
@@ -151,7 +151,7 @@ export {
   trainPositiveNaiveBayesTextClassifier,
 } from "./src/positive_naive_bayes";
 export type { PositiveNaiveBayesSerialized } from "./src/positive_naive_bayes";
-export { loadWordNetExtended, loadWordNetMini, loadWordNetPacked, WordNet } from "./src/wordnet";
+export { loadWordNet, loadWordNetExtended, loadWordNetMini, loadWordNetPacked, WordNet } from "./src/wordnet";
 export type { WordNetMiniPayload, WordNetPos, WordNetSynset } from "./src/wordnet";
 export { WasmNltk } from "./src/wasm";
 export {

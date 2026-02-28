@@ -12,6 +12,8 @@ const requiredFiles = [
   "native/prebuilt/linux-x64/bun_nltk.so",
   "native/prebuilt/win32-x64/bun_nltk.dll",
   "native/bun_nltk.wasm",
+  "models/wordnet_full.bin",
+  "models/wordnet_full.sha256.json",
 ];
 
 const forbiddenFiles = [

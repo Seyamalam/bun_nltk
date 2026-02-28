@@ -1,6 +1,6 @@
 {
   "name": "bun_nltk",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "High-performance NLP primitives for Bun/Node with Zig native and WASM backends.",
   "module": "index.ts",
   "type": "module",
@@ -50,6 +50,7 @@
     "fixtures:import:nltk": "python scripts/import_nltk_fixtures.py --out-dir test/fixtures/nltk_imported --max-trees 220 --max-parser-cases 80 --train-per-label 220 --test-per-label 80",
     "wordnet:pack": "bun run scripts/pack-wordnet.ts --dict-dir ./wordnet/dict --out models/wordnet_full.bin --checksum-out models/wordnet_full.sha256.json",
     "wordnet:pack:official": "bun run scripts/pack-wordnet-official.ts --out artifacts/wordnet_official.bin --checksum-out artifacts/wordnet_official.sha256.json",
+    "wordnet:prepare:default": "bun run scripts/prepare-wordnet-default.ts",
     "wordnet:verify:pack": "bun run scripts/verify-wordnet-pack.ts",
     "test": "bun test",
     "bench:generate": "python bench/generate_synthetic.py --size-mb 64 --seed 1337 --out bench/datasets/synthetic.txt",
@@ -72,6 +73,7 @@
     "bench:compare:earley": "bun run bench/compare_earley.ts 2000 3",
     "bench:compare:leftcorner": "bun run bench/compare_leftcorner.ts 1200 3",
     "bench:compare:feature-parser": "bun run bench/compare_feature_parser.ts 1200 3",
+    "bench:compare:feature-earley": "bun run bench/compare_feature_earley.ts 1200 3",
     "bench:compare:pcfg": "bun run bench/compare_pcfg.ts 700 3",
     "bench:compare:maxent": "bun run bench/compare_maxent.ts 900 250 2",
     "bench:compare:condexp": "bun run bench/compare_condexp.ts 1000 300 2",
@@ -81,6 +83,7 @@
     "bench:parity:tokenizer": "bun run bench/parity_tokenizer.ts",
     "bench:parity:sentence": "bun run bench/parity_sentence.ts",
     "bench:parity:punkt": "bun run bench/parity_punkt.ts",
+    "bench:parity:punkt-extended": "bun run bench/parity_punkt_extended.ts",
     "bench:parity:wordnet": "bun run bench/parity_wordnet.ts",
     "bench:parity:parser": "bun run bench/parity_parser.ts",
     "bench:parity:classifier": "bun run bench/parity_classifier.ts",
@@ -90,6 +93,7 @@
     "bench:parity:earley": "bun run bench/parity_earley.ts",
     "bench:parity:leftcorner": "bun run bench/parity_leftcorner.ts",
     "bench:parity:feature-parser": "bun run bench/parity_feature_parser.ts",
+    "bench:parity:feature-earley": "bun run bench/parity_feature_earley.ts",
     "bench:parity:corpus-imported": "bun run bench/parity_corpus_imported.ts",
     "bench:parity:imported": "bun run bench/parity_imported.ts",
     "bench:parity:tagger": "bun run bench/parity_tagger.ts",
@@ -107,7 +111,7 @@
     "npm:smoke": "bun run scripts/npm-smoke-test.ts",
     "pack:verify:prebuilt": "bun run scripts/check-packaged-prebuilt.ts",
     "release:validate": "bun run scripts/release-validate.ts",
-    "release:check": "bun run build:zig && bun run build:wasm && bun run build:prebuilt && bun run pack:verify:prebuilt && bun run fixtures:import:nltk && bun test && bun run bench:gate && bun run bench:dashboard && bun run bench:trend:check && bun run wordnet:pack:official && bun run wordnet:verify:pack"
+    "release:check": "bun run build:zig && bun run build:wasm && bun run build:prebuilt && bun run wordnet:prepare:default && bun run pack:verify:prebuilt && bun run fixtures:import:nltk && bun test && bun run bench:gate && bun run bench:dashboard && bun run bench:trend:check && bun run wordnet:pack:official && bun run wordnet:verify:pack"
   },
   "devDependencies": {
     "@types/bun": "latest",

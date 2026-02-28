@@ -16,7 +16,7 @@ npm install bun_nltk
 import {
   countTokensAscii,
   sentenceTokenizePunkt,
-  loadWordNetMini,
+  loadWordNet,
   trainNgramLanguageModel,
   regexpChunkParse,
   loadBundledMiniCorpus,
@@ -118,6 +118,7 @@ These functions are pure TypeScript reference implementations.
 
 ## WordNet
 
+- `loadWordNet(path?: string): WordNet` (default runtime loader: packed official corpus when available, else extended JSON fallback)
 - `loadWordNetMini(path?: string): WordNet`
 - `loadWordNetExtended(path?: string): WordNet`
 - `loadWordNetPacked(path?: string): WordNet`
@@ -167,7 +168,9 @@ These functions are pure TypeScript reference implementations.
 
 - `parseFeatureCfgGrammar(grammarText: string, options?: { startSymbol?: string }): FeatureCfgGrammar`
 - `featureChartParse(tokens: string[], grammar: FeatureCfgGrammar, options?: { maxTrees?: number; maxDepth?: number; startSymbol?: FeatureSymbol | string }): ParseTree[]`
+- `featureEarleyParse(tokens: string[], grammar: FeatureCfgGrammar, options?: { maxTrees?: number; maxDepth?: number; startSymbol?: FeatureSymbol | string }): ParseTree[]`
 - `parseTextWithFeatureCfg(text: string, grammar: FeatureCfgGrammar | string, options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean; maxDepth?: number }): ParseTree[]`
+- `parseTextWithFeatureEarley(text: string, grammar: FeatureCfgGrammar | string, options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean; maxDepth?: number }): ParseTree[]`
 
 ## Dependency Parsing
 

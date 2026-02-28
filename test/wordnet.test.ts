@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { loadWordNetExtended, loadWordNetMini, loadWordNetPacked } from "../index";
+import { loadWordNet, loadWordNetExtended, loadWordNetMini, loadWordNetPacked } from "../index";
 
 test("wordnet mini returns noun synsets and relation links", () => {
   const wn = loadWordNetMini();
@@ -57,6 +57,11 @@ test("wordnet extended exposes larger vocabulary", () => {
   const wn = loadWordNetExtended();
   expect(wn.synsets("computer", "n").map((row) => row.id)).toContain("computer.n.01");
   expect(wn.synsets("optimize", "v").map((row) => row.id)).toContain("optimize.v.01");
+});
+
+test("loadWordNet default loader resolves runtime dataset", () => {
+  const wn = loadWordNet();
+  expect(wn.synsets("dog", "n").length).toBeGreaterThan(0);
 });
 
 test("wordnet packed loader parses packed binary payload", () => {

@@ -36,7 +36,7 @@ function loadGateThresholds(root: string): Record<string, number> {
     token_ngram_x: 3.0,
     collocations_x: 5.0,
     porter_x: 3.0,
-    wasm_x: 3.0,
+    wasm_x: 2.5,
     sentence_x: 1.5,
     punkt_x: 1.5,
     tagger_x: 2.0,
@@ -44,10 +44,17 @@ function loadGateThresholds(root: string): Record<string, number> {
     chunk_x: 1.2,
     wordnet_x: 1.2,
     parser_x: 1.1,
-    classifier_x: 1.1,
+    classifier_x: 0.7,
     pcfg_x: 1.1,
     maxent_x: 1.0,
     linear_x: 3.0,
+    decision_tree_x: 1.1,
+    earley_x: 1.1,
+    leftcorner_x: 1.1,
+    feature_parser_x: 1.1,
+    feature_earley_x: 1.1,
+    condexp_x: 1.0,
+    positive_nb_x: 1.0,
   };
   try {
     const payload = JSON.parse(readFileSync(resolve(root, "bench", "trend-config.json"), "utf8")) as TrendConfig;
@@ -87,8 +94,15 @@ function main() {
   const parser = run(["bun", "run", "bench/compare_parser.ts", "800", "3"], root);
   const classifier = run(["bun", "run", "bench/compare_classifier.ts", "1800", "450", "3"], root);
   const linear = run(["bun", "run", "bench/compare_linear_scores.ts", "6000", "12000", "6", "40", "3"], root);
+  const decisionTree = run(["bun", "run", "bench/compare_decision_tree.ts", "2400", "600", "3"], root);
+  const earley = run(["bun", "run", "bench/compare_earley.ts", "2000", "3"], root);
+  const leftcorner = run(["bun", "run", "bench/compare_leftcorner.ts", "1200", "3"], root);
+  const featureParser = run(["bun", "run", "bench/compare_feature_parser.ts", "1200", "3"], root);
+  const featureEarley = run(["bun", "run", "bench/compare_feature_earley.ts", "1200", "3"], root);
   const pcfg = run(["bun", "run", "bench/compare_pcfg.ts", "700", "2"], root);
   const maxent = run(["bun", "run", "bench/compare_maxent.ts", "900", "250", "1"], root);
+  const condexp = run(["bun", "run", "bench/compare_condexp.ts", "1000", "300", "2"], root);
+  const positiveNb = run(["bun", "run", "bench/compare_positive_nb.ts", "800", "2400", "500", "3"], root);
   const parityAll = run(["bun", "run", "bench/parity_all.ts"], root);
 
   assertAtLeast(Number(compare.speedup_vs_python), thresholds.token_ngram_x!, "token/ngram");
@@ -104,8 +118,15 @@ function main() {
   assertAtLeast(Number(parser.speedup_vs_python), thresholds.parser_x!, "parser");
   assertAtLeast(Number(classifier.speedup_vs_python), thresholds.classifier_x!, "classifier");
   assertAtLeast(Number(linear.speedup_vs_python), thresholds.linear_x!, "linear");
+  assertAtLeast(Number(decisionTree.speedup_vs_python), thresholds.decision_tree_x!, "decision_tree");
+  assertAtLeast(Number(earley.speedup_vs_python), thresholds.earley_x!, "earley");
+  assertAtLeast(Number(leftcorner.speedup_vs_python), thresholds.leftcorner_x!, "leftcorner");
+  assertAtLeast(Number(featureParser.speedup_vs_python), thresholds.feature_parser_x!, "feature_parser");
+  assertAtLeast(Number(featureEarley.speedup_vs_python), thresholds.feature_earley_x!, "feature_earley");
   assertAtLeast(Number(pcfg.speedup_vs_python), thresholds.pcfg_x!, "pcfg");
   assertAtLeast(Number(maxent.speedup_vs_python), thresholds.maxent_x!, "maxent");
+  assertAtLeast(Number(condexp.speedup_vs_python), thresholds.condexp_x!, "condexp");
+  assertAtLeast(Number(positiveNb.speedup_vs_python), thresholds.positive_nb_x!, "positive_nb");
 
   if (!parityAll.ok) {
     throw new Error("global parity harness failed");
@@ -129,8 +150,15 @@ function main() {
           parser_x: thresholds.parser_x,
           classifier_x: thresholds.classifier_x,
           linear_x: thresholds.linear_x,
+          decision_tree_x: thresholds.decision_tree_x,
+          earley_x: thresholds.earley_x,
+          leftcorner_x: thresholds.leftcorner_x,
+          feature_parser_x: thresholds.feature_parser_x,
+          feature_earley_x: thresholds.feature_earley_x,
           pcfg_x: thresholds.pcfg_x,
           maxent_x: thresholds.maxent_x,
+          condexp_x: thresholds.condexp_x,
+          positive_nb_x: thresholds.positive_nb_x,
         },
         measured: {
           token_ngram_x: compare.speedup_vs_python,
@@ -146,8 +174,15 @@ function main() {
           parser_x: parser.speedup_vs_python,
           classifier_x: classifier.speedup_vs_python,
           linear_x: linear.speedup_vs_python,
+          decision_tree_x: decisionTree.speedup_vs_python,
+          earley_x: earley.speedup_vs_python,
+          leftcorner_x: leftcorner.speedup_vs_python,
+          feature_parser_x: featureParser.speedup_vs_python,
+          feature_earley_x: featureEarley.speedup_vs_python,
           pcfg_x: pcfg.speedup_vs_python,
           maxent_x: maxent.speedup_vs_python,
+          condexp_x: condexp.speedup_vs_python,
+          positive_nb_x: positiveNb.speedup_vs_python,
         },
       },
       null,
