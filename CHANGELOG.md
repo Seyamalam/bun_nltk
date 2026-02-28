@@ -7,6 +7,11 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ## [Unreleased]
 
 ### Added
+- (no entries yet)
+
+## [0.9.0] - 2026-02-28
+
+### Added
 - Earley recognizer/parser APIs for CFG grammars (`earleyRecognize`, `earleyParse`, `parseTextWithEarley`).
 - Dependency parser APIs (`dependencyParse`, `dependencyParseText`) for lightweight arc generation.
 - Sparse text feature vectorizer (`TextFeatureVectorizer`) and sparse-batch flattener (`flattenSparseBatch`).
@@ -14,9 +19,15 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - Native Zig sparse linear scoring hot loop (`bunnltk_linear_scores_sparse_ids`) with Bun binding (`linearScoresSparseIdsNative`).
 - Corpus registry manifest loader/downloader with SHA256 validation (`loadCorpusRegistryManifest`, `downloadCorpusRegistry`).
 - Python-vs-native sparse linear scorer benchmark (`bench:compare:linear`, `python_linear_scores_baseline.py`).
+- Earley parser parity/benchmark harnesses (`bench:parity:earley`, `bench:compare:earley`) with Python NLTK baseline.
+- Decision tree parity/benchmark harnesses (`bench:parity:decision-tree`, `bench:compare:decision-tree`) with Python NLTK baseline.
+- Imported corpus subset fixture pipeline from NLTK Brown/Treebank (`corpus_subsets_fixture.json`) and parity check (`bench:parity:corpus-imported`).
 
 ### Changed
 - CI/release Python dependencies now include `numpy` to keep MaxEnt parity baselines stable.
+- Linear model training now uses native sparse scoring in batch SGD loops (with JS fallback toggle `useNativeScoring`).
+- Benchmark gates/trend checks now read shared config (`bench/trend-config.json`) and include linear scorer thresholds.
+- Dashboard artifacts now include linear, decision-tree, and earley benchmark tracks plus new parity checks.
 
 ## [0.8.0] - 2026-02-27
 
