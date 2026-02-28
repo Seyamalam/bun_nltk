@@ -25,12 +25,14 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Tokenizer parity layer (`wordTokenizeSubset`, `tweetTokenizeSubset`)
 - Sentence tokenizer parity subset (`sentenceTokenizeSubset`) + Python parity harness
 - Trainable Punkt tokenizer/model APIs (`trainPunktModel`, `sentenceTokenizePunkt`)
+- NLTK-style Punkt wrapper APIs (`PunktTrainerSubset`, `PunktSentenceTokenizerSubset`)
 - Native Zig Punkt sentence-splitting fast path (`sentenceTokenizePunktAsciiNative`) with WASM equivalent
 - Native normalization pipeline (ASCII fast path with optional stopword filtering)
 - Unicode normalization fallback pipeline (`normalizeTokensUnicode`)
 - Native POS regex/heuristic tagger baseline (`posTagAsciiNative`)
 - Native streaming `FreqDist`/`ConditionalFreqDist` builder with JSON export (`NativeFreqDistStream`)
 - Mini WordNet reader with synset lookup, relation traversal, and morphy-style inflection recovery
+- WordNet graph helpers (`hypernymPaths`, `lowestCommonHypernyms`, `shortestPathDistance`, `pathSimilarity`)
 - Native Zig morphy accelerator (`wordnetMorphyAsciiNative`) with WASM equivalent
 - Packed WordNet corpus pipeline (`wordnet:pack`) with binary loader (`loadWordNetPacked`)
 - N-gram language model stack (`MLE`, `Lidstone`, `Kneser-Ney Interpolated`) with Python comparison harness
@@ -39,11 +41,13 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Native/WASM chunk IOB hot loop for compiled grammar matching
 - CFG grammar parser + chart parser subset with Python parity harness
 - Earley recognizer/parser API for non-CNF grammar recognition (`earleyRecognize`, `earleyParse`, `parseTextWithEarley`)
+- Recursive-descent CFG parser API (`recursiveDescentParse`, `parseTextWithRecursiveDescent`)
 - Lightweight dependency parser API (`dependencyParse`, `dependencyParseText`)
 - Naive Bayes text classifier with train/predict/evaluate/serialize APIs and Python parity harness
 - Shared sparse text vectorizer (`TextFeatureVectorizer`) + sparse batch flattening utility
 - Decision tree text classifier APIs (`DecisionTreeTextClassifier`)
 - Linear text models (`LogisticTextClassifier`, `LinearSvmTextClassifier`) with native sparse scoring fast path
+- Perceptron text classifier APIs (`PerceptronTextClassifier`)
 - Corpus reader framework (`CorpusReader`) with bundled mini corpora
 - Optional external corpus bundle loader + tagged/chunked corpus readers (`parseConllTagged`, `parseBrownTagged`, `parseConllChunked`)
 - Corpus registry manifest loader/downloader with checksum validation (`loadCorpusRegistryManifest`, `downloadCorpusRegistry`)

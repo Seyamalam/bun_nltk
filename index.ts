@@ -64,6 +64,8 @@ export { sentenceTokenizeSubset } from "./src/sentence_tokenizer";
 export {
   defaultPunktModel,
   parsePunktModel,
+  PunktSentenceTokenizerSubset,
+  PunktTrainerSubset,
   sentenceTokenizePunkt,
   serializePunktModel,
   trainPunktModel,
@@ -93,7 +95,9 @@ export {
   parseTextWithCfg,
   parseTextWithEarley,
   parseTextWithPcfg,
+  parseTextWithRecursiveDescent,
   probabilisticChartParse,
+  recursiveDescentParse,
 } from "./src/parse";
 export type { CfgGrammar, CfgProduction, ParseTree, PcfgGrammar, PcfgProduction, ProbabilisticParse } from "./src/parse";
 export {
@@ -125,6 +129,12 @@ export {
   trainLogisticTextClassifier,
 } from "./src/linear_models";
 export type { LinearModelExample, LinearSvmSerialized, LogisticSerialized } from "./src/linear_models";
+export {
+  loadPerceptronTextClassifier,
+  PerceptronTextClassifier,
+  trainPerceptronTextClassifier,
+} from "./src/perceptron_classifier";
+export type { PerceptronExample, PerceptronSerialized } from "./src/perceptron_classifier";
 export { loadWordNetExtended, loadWordNetMini, loadWordNetPacked, WordNet } from "./src/wordnet";
 export type { WordNetMiniPayload, WordNetPos, WordNetSynset } from "./src/wordnet";
 export { WasmNltk } from "./src/wasm";

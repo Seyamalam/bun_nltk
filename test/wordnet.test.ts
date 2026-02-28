@@ -31,6 +31,28 @@ test("wordnet mini returns antonyms and similar-to edges", () => {
   expect(similarIds).toEqual(["speedy.a.01"]);
 });
 
+test("wordnet hypernym paths and shortest-path similarity are available", () => {
+  const wn = loadWordNetMini();
+  const dog = wn.synsets("dog", "n")[0]!;
+  const cat = wn.synsets("cat", "n")[0]!;
+
+  const paths = wn.hypernymPaths(dog);
+  expect(paths.length).toBeGreaterThan(0);
+  expect(paths[0]?.map((row) => row.id)).toContain("dog.n.01");
+  expect(paths[0]?.map((row) => row.id)).toContain("animal.n.01");
+
+  expect(wn.shortestPathDistance(dog, cat)).toBe(2);
+  expect(wn.pathSimilarity(dog, cat)).toBeCloseTo(1 / 3, 10);
+});
+
+test("wordnet lowest common hypernyms returns nearest shared ancestor", () => {
+  const wn = loadWordNetMini();
+  const dog = wn.synsets("dog", "n")[0]!;
+  const cat = wn.synsets("cat", "n")[0]!;
+  const lch = wn.lowestCommonHypernyms(dog, cat).map((row) => row.id);
+  expect(lch).toEqual(["animal.n.01"]);
+});
+
 test("wordnet extended exposes larger vocabulary", () => {
   const wn = loadWordNetExtended();
   expect(wn.synsets("computer", "n").map((row) => row.id)).toContain("computer.n.01");

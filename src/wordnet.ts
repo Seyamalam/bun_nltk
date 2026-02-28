@@ -21,6 +21,17 @@ export type WordNetMiniPayload = {
   synsets: WordNetSynset[];
 };
 
+function uniqueSynsets(values: WordNetSynset[]): WordNetSynset[] {
+  const seen = new Set<string>();
+  const out: WordNetSynset[] = [];
+  for (const row of values) {
+    if (seen.has(row.id)) continue;
+    seen.add(row.id);
+    out.push(row);
+  }
+  return out;
+}
+
 function normalizeLemma(lemma: string): string {
   return lemma.toLowerCase().replace(/\s+/g, "_");
 }
@@ -102,8 +113,24 @@ export class WordNet {
     }
   }
 
+  private resolveSynset(idOrSynset: string | WordNetSynset): WordNetSynset | null {
+    return typeof idOrSynset === "string" ? this.synset(idOrSynset) : idOrSynset;
+  }
+
+  private adjacent(idOrSynset: string | WordNetSynset): WordNetSynset[] {
+    const row = this.resolveSynset(idOrSynset);
+    if (!row) return [];
+    return uniqueSynsets([...this.hypernyms(row), ...this.hyponyms(row)]);
+  }
+
   synset(id: string): WordNetSynset | null {
     return this.byId.get(id) ?? null;
+  }
+
+  allSynsets(pos?: WordNetPos): WordNetSynset[] {
+    const rows = [...this.byId.values()];
+    if (!pos) return rows;
+    return rows.filter((row) => row.pos === pos);
   }
 
   synsets(word: string, pos?: WordNetPos): WordNetSynset[] {
@@ -157,9 +184,122 @@ export class WordNet {
   }
 
   antonyms(idOrSynset: string | WordNetSynset): WordNetSynset[] {
-    const node = typeof idOrSynset === "string" ? this.synset(idOrSynset) : idOrSynset;
+    const node = this.resolveSynset(idOrSynset);
     if (!node) return [];
     return node.antonyms.map((id) => this.byId.get(id)).filter((row): row is WordNetSynset => !!row);
+  }
+
+  hypernymPaths(idOrSynset: string | WordNetSynset, options: { maxDepth?: number } = {}): WordNetSynset[][] {
+    const start = this.resolveSynset(idOrSynset);
+    if (!start) return [];
+    const maxDepth = Math.max(1, Math.floor(options.maxDepth ?? 32));
+    const out: WordNetSynset[][] = [];
+
+    const visit = (node: WordNetSynset, path: WordNetSynset[], seen: Set<string>, depth: number): void => {
+      const nextPath = [...path, node];
+      const parents = this.hypernyms(node).filter((parent) => !seen.has(parent.id));
+      if (parents.length === 0 || depth >= maxDepth) {
+        out.push(nextPath);
+        return;
+      }
+      for (const parent of parents) {
+        const nextSeen = new Set(seen);
+        nextSeen.add(parent.id);
+        visit(parent, nextPath, nextSeen, depth + 1);
+      }
+    };
+
+    visit(start, [], new Set([start.id]), 0);
+    return out;
+  }
+
+  shortestPathDistance(
+    left: string | WordNetSynset,
+    right: string | WordNetSynset,
+    options: { maxDepth?: number } = {},
+  ): number | null {
+    const start = this.resolveSynset(left);
+    const target = this.resolveSynset(right);
+    if (!start || !target) return null;
+    if (start.id === target.id) return 0;
+
+    const maxDepth = Math.max(1, Math.floor(options.maxDepth ?? 64));
+    const queue: Array<{ id: string; depth: number }> = [{ id: start.id, depth: 0 }];
+    const seen = new Set<string>([start.id]);
+    let head = 0;
+    while (head < queue.length) {
+      const current = queue[head++]!;
+      if (current.depth >= maxDepth) continue;
+      const node = this.synset(current.id);
+      if (!node) continue;
+      for (const next of this.adjacent(node)) {
+        if (next.id === target.id) return current.depth + 1;
+        if (seen.has(next.id)) continue;
+        seen.add(next.id);
+        queue.push({ id: next.id, depth: current.depth + 1 });
+      }
+    }
+    return null;
+  }
+
+  pathSimilarity(
+    left: string | WordNetSynset,
+    right: string | WordNetSynset,
+    options: { maxDepth?: number } = {},
+  ): number | null {
+    const distance = this.shortestPathDistance(left, right, options);
+    if (distance === null) return null;
+    return 1 / (distance + 1);
+  }
+
+  lowestCommonHypernyms(
+    left: string | WordNetSynset,
+    right: string | WordNetSynset,
+    options: { maxDepth?: number } = {},
+  ): WordNetSynset[] {
+    const lhs = this.resolveSynset(left);
+    const rhs = this.resolveSynset(right);
+    if (!lhs || !rhs) return [];
+    const maxDepth = Math.max(1, Math.floor(options.maxDepth ?? 64));
+
+    const buildAncestorDepths = (start: WordNetSynset): Map<string, number> => {
+      const out = new Map<string, number>();
+      const queue: Array<{ node: WordNetSynset; depth: number }> = [{ node: start, depth: 0 }];
+      let head = 0;
+      while (head < queue.length) {
+        const current = queue[head++]!;
+        const prevDepth = out.get(current.node.id);
+        if (prevDepth !== undefined && prevDepth <= current.depth) continue;
+        out.set(current.node.id, current.depth);
+        if (current.depth >= maxDepth) continue;
+        for (const parent of this.hypernyms(current.node)) {
+          queue.push({ node: parent, depth: current.depth + 1 });
+        }
+      }
+      return out;
+    };
+
+    const lAnc = buildAncestorDepths(lhs);
+    const rAnc = buildAncestorDepths(rhs);
+    let best = Infinity;
+    const bestIds: string[] = [];
+    for (const [id, lDepth] of lAnc.entries()) {
+      const rDepth = rAnc.get(id);
+      if (rDepth === undefined) continue;
+      const score = lDepth + rDepth;
+      if (score < best) {
+        best = score;
+        bestIds.length = 0;
+        bestIds.push(id);
+      } else if (score === best) {
+        bestIds.push(id);
+      }
+    }
+
+    return bestIds
+      .map((id) => this.synset(id))
+      .filter((row): row is WordNetSynset => !!row)
+      .sort((a, b) => a.id.localeCompare(b.id));
   }
 }
 

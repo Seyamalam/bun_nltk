@@ -3,6 +3,8 @@ import { resolve } from "node:path";
 import {
   defaultPunktModel,
   parsePunktModel,
+  PunktSentenceTokenizerSubset,
+  PunktTrainerSubset,
   sentenceTokenizePunkt,
   serializePunktModel,
   trainPunktModel,
@@ -58,4 +60,20 @@ test("default punkt model supports abbreviation-heavy text", () => {
   const model = defaultPunktModel();
   const out = sentenceTokenizePunkt("Dr. Smith lives in the U.S. He works at 9 a.m.", model);
   expect(out).toEqual(["Dr. Smith lives in the U.S.", "He works at 9 a.m."]);
+});
+
+test("punkt trainer/tokenizer subset wrappers mirror nltk-style workflow", () => {
+  const trainer = new PunktTrainerSubset();
+  trainer.train("Dr. Adams wrote a paper. Dr. Brown reviewed it.");
+  trainer.train("Mr. Lee met Ms. Kim in Jan. They discussed results.");
+  const tokenizer = new PunktSentenceTokenizerSubset(trainer.getParams());
+  const out = tokenizer.tokenize("Dr. Adams arrived yesterday. He presented the paper.");
+  expect(out).toEqual(["Dr. Adams arrived yesterday.", "He presented the paper."]);
+});
+
+test("punkt tokenizer wrapper can train directly", () => {
+  const tokenizer = new PunktSentenceTokenizerSubset();
+  tokenizer.train("Dr. Adams stayed. Dr. Brown left.");
+  const out = tokenizer.tokenize("Dr. Adams returned. He smiled.");
+  expect(out).toEqual(["Dr. Adams returned.", "He smiled."]);
 });

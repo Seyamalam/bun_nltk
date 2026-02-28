@@ -45,6 +45,58 @@ export type PunktTrainingOptions = {
   minSentenceStarterCount?: number;
 };
 
+export class PunktTrainerSubset {
+  private readonly chunks: string[] = [];
+  private options: PunktTrainingOptions = {};
+  private cached: PunktModelSerialized | null = null;
+
+  train(text: string, options: PunktTrainingOptions = {}): this {
+    if (text.trim()) this.chunks.push(text);
+    this.options = {
+      minAbbrevCount: options.minAbbrevCount ?? this.options.minAbbrevCount,
+      minCollocationCount: options.minCollocationCount ?? this.options.minCollocationCount,
+      minSentenceStarterCount: options.minSentenceStarterCount ?? this.options.minSentenceStarterCount,
+    };
+    this.cached = null;
+    return this;
+  }
+
+  finalize(): PunktModelSerialized {
+    if (!this.cached) {
+      const text = this.chunks.join(" ");
+      this.cached = text.trim() ? trainPunktModel(text, this.options) : defaultPunktModel();
+    }
+    return parsePunktModel(this.cached);
+  }
+
+  getParams(): PunktModelSerialized {
+    return this.finalize();
+  }
+}
+
+export class PunktSentenceTokenizerSubset {
+  private model: PunktModelSerialized;
+
+  constructor(model?: PunktModelSerialized) {
+    this.model = model ? parsePunktModel(model) : defaultPunktModel();
+  }
+
+  tokenize(text: string): string[] {
+    return sentenceTokenizePunkt(text, this.model);
+  }
+
+  train(text: string, options: PunktTrainingOptions = {}): this {
+    const trainer = new PunktTrainerSubset();
+    trainer.train(text, options);
+    this.model = trainer.getParams();
+    return this;
+  }
+
+  getParams(): PunktModelSerialized {
+    return parsePunktModel(this.model);
+  }
+}
+
 type PunktPreparedModel = {
   abbreviations: Set<string>;
   collocations: Set<string>;
@@ -276,10 +328,13 @@ export function serializePunktModel(model: PunktModelSerialized): string {
 
 export function parsePunktModel(payload: string | PunktModelSerialized): PunktModelSerialized {
   const parsed = typeof payload === "string" ? (JSON.parse(payload) as PunktModelSerialized) : payload;
+  const abbreviations = Array.isArray(parsed.abbreviations) ? parsed.abbreviations : [];
+  const collocations = Array.isArray(parsed.collocations) ? parsed.collocations : [];
+  const sentenceStarters = Array.isArray(parsed.sentenceStarters) ? parsed.sentenceStarters : [];
   return {
-    version: parsed.version,
-    abbreviations: [...parsed.abbreviations],
-    collocations: [...parsed.collocations],
-    sentenceStarters: [...parsed.sentenceStarters],
+    version: Number.isFinite(parsed.version) ? parsed.version : 1,
+    abbreviations: [...abbreviations],
+    collocations: [...collocations],
+    sentenceStarters: [...sentenceStarters],
   };
 }

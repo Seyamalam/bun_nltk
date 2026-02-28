@@ -1,6 +1,16 @@
 import { expect, test } from "bun:test";
 import { resolve } from "node:path";
-import { chartParse, earleyParse, earleyRecognize, parseCfgGrammar, parseTextWithCfg, parseTextWithEarley, type ParseTree } from "../index";
+import {
+  chartParse,
+  earleyParse,
+  earleyRecognize,
+  parseCfgGrammar,
+  parseTextWithCfg,
+  parseTextWithEarley,
+  parseTextWithRecursiveDescent,
+  recursiveDescentParse,
+  type ParseTree,
+} from "../index";
 
 const grammarText = `
 S -> NP VP
@@ -74,6 +84,27 @@ test("earley parse returns same top parse as chart parser on simple grammar", ()
 
 test("parseTextWithEarley tokenizes and parses text", () => {
   const trees = parseTextWithEarley("Alice sees a cat.", grammarText);
+  expect(trees.length).toBeGreaterThan(0);
+  expect(toBracket(trees[0]!)).toContain("(V sees)");
+});
+
+test("recursive descent parser returns parse tree for simple CFG", () => {
+  const grammar = parseCfgGrammar(grammarText);
+  const trees = recursiveDescentParse(["alice", "sees", "the", "dog"], grammar);
+  expect(trees.length).toBeGreaterThan(0);
+  expect(toBracket(trees[0]!)).toBe("(S (NP (Name alice)) (VP (V sees) (NP (Det the) (N dog))))");
+});
+
+test("recursive descent parser parity with chart parser top tree", () => {
+  const grammar = parseCfgGrammar(grammarText);
+  const chart = chartParse(["alice", "sees", "the", "dog"], grammar);
+  const recursive = recursiveDescentParse(["alice", "sees", "the", "dog"], grammar);
+  expect(recursive.length).toBeGreaterThan(0);
+  expect(toBracket(recursive[0]!)).toBe(toBracket(chart[0]!));
+});
+
+test("parseTextWithRecursiveDescent tokenizes and parses text", () => {
+  const trees = parseTextWithRecursiveDescent("Alice sees a cat.", grammarText);
   expect(trees.length).toBeGreaterThan(0);
   expect(toBracket(trees[0]!)).toContain("(V sees)");
 });

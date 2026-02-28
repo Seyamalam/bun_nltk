@@ -7,7 +7,10 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ## [Unreleased]
 
 ### Added
-- (no entries yet)
+- Recursive-descent CFG parser APIs (`recursiveDescentParse`, `parseTextWithRecursiveDescent`) with parser tests.
+- NLTK-style Punkt wrapper classes (`PunktTrainerSubset`, `PunktSentenceTokenizerSubset`) for trainer/tokenizer workflows.
+- WordNet graph traversal/similarity APIs (`hypernymPaths`, `lowestCommonHypernyms`, `shortestPathDistance`, `pathSimilarity`).
+- Perceptron text classifier family (`PerceptronTextClassifier`, train/load helpers) with serialization and tests.
 
 ## [0.9.0] - 2026-02-28
 

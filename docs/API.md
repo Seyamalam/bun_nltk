@@ -107,6 +107,14 @@ These functions are pure TypeScript reference implementations.
 - `defaultPunktModel(): PunktModelSerialized`
 - `serializePunktModel(model: PunktModelSerialized): string`
 - `parsePunktModel(payload: string | PunktModelSerialized): PunktModelSerialized`
+- `new PunktTrainerSubset()`
+- `PunktTrainerSubset.train(text: string, options?: PunktTrainingOptions): PunktTrainerSubset`
+- `PunktTrainerSubset.finalize(): PunktModelSerialized`
+- `PunktTrainerSubset.getParams(): PunktModelSerialized`
+- `new PunktSentenceTokenizerSubset(model?: PunktModelSerialized)`
+- `PunktSentenceTokenizerSubset.tokenize(text: string): string[]`
+- `PunktSentenceTokenizerSubset.train(text: string, options?: PunktTrainingOptions): PunktSentenceTokenizerSubset`
+- `PunktSentenceTokenizerSubset.getParams(): PunktModelSerialized`
 
 ## WordNet
 
@@ -115,6 +123,7 @@ These functions are pure TypeScript reference implementations.
 - `loadWordNetPacked(path?: string): WordNet`
 - `new WordNet(payload: WordNetMiniPayload)`
 - `synset(id: string): WordNetSynset | null`
+- `allSynsets(pos?: "n" | "v" | "a" | "r"): WordNetSynset[]`
 - `synsets(word: string, pos?: "n" | "v" | "a" | "r"): WordNetSynset[]`
 - `lemmas(pos?: "n" | "v" | "a" | "r"): string[]`
 - `morphy(word: string, pos?: "n" | "v" | "a" | "r"): string | null`
@@ -122,6 +131,10 @@ These functions are pure TypeScript reference implementations.
 - `hyponyms(idOrSynset: string | WordNetSynset): WordNetSynset[]`
 - `similarTo(idOrSynset: string | WordNetSynset): WordNetSynset[]`
 - `antonyms(idOrSynset: string | WordNetSynset): WordNetSynset[]`
+- `hypernymPaths(idOrSynset: string | WordNetSynset, options?: { maxDepth?: number }): WordNetSynset[][]`
+- `lowestCommonHypernyms(left: string | WordNetSynset, right: string | WordNetSynset, options?: { maxDepth?: number }): WordNetSynset[]`
+- `shortestPathDistance(left: string | WordNetSynset, right: string | WordNetSynset, options?: { maxDepth?: number }): number | null`
+- `pathSimilarity(left: string | WordNetSynset, right: string | WordNetSynset, options?: { maxDepth?: number }): number | null`
 
 ## Language Models
 
@@ -137,14 +150,16 @@ These functions are pure TypeScript reference implementations.
 - `regexpChunkParse(tokens: Array<{ token: string; tag: string }>, grammar: string): Array<{ token: string; tag: string } | { kind: "chunk"; label: string; tokens: Array<{ token: string; tag: string }> }>`
 - `chunkTreeToIob(tree: ChunkElement[]): Array<{ token: string; tag: string; iob: string }>`
 
-## Parsing (CFG / Chart)
+## Parsing (CFG / Chart / Recursive Descent)
 
 - `parseCfgGrammar(grammarText: string, options?: { startSymbol?: string }): { startSymbol: string; productions: Array<{ lhs: string; rhs: string[] }> }`
 - `chartParse(tokens: string[], grammar: CfgGrammar, options?: { maxTrees?: number; startSymbol?: string }): Array<{ label: string; children: Array<ParseTree | string> }>`
 - `earleyRecognize(tokens: string[], grammar: CfgGrammar, options?: { startSymbol?: string }): boolean`
 - `earleyParse(tokens: string[], grammar: CfgGrammar, options?: { maxTrees?: number; startSymbol?: string }): ParseTree[]`
+- `recursiveDescentParse(tokens: string[], grammar: CfgGrammar, options?: { maxTrees?: number; startSymbol?: string; maxDepth?: number }): ParseTree[]`
 - `parseTextWithCfg(text: string, grammar: CfgGrammar | string, options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean }): ParseTree[]`
 - `parseTextWithEarley(text: string, grammar: CfgGrammar | string, options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean }): ParseTree[]`
+- `parseTextWithRecursiveDescent(text: string, grammar: CfgGrammar | string, options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean; maxDepth?: number }): ParseTree[]`
 
 ## Dependency Parsing
 
@@ -164,7 +179,7 @@ These functions are pure TypeScript reference implementations.
 - `trainNaiveBayesTextClassifier(examples: Array<{ label: string; text: string }>, options?: { smoothing?: number }): NaiveBayesTextClassifier`
 - `loadNaiveBayesTextClassifier(payload: NaiveBayesSerialized): NaiveBayesTextClassifier`
 
-## Classification (Decision Tree / Linear)
+## Classification (Decision Tree / Linear / Perceptron)
 
 - `new TextFeatureVectorizer(options?: { ngramMin?: number; ngramMax?: number; binary?: boolean; maxFeatures?: number })`
 - `flattenSparseBatch(rows: SparseVector[]): { docOffsets: Uint32Array; featureIds: Uint32Array; featureValues: Float64Array }`
@@ -177,6 +192,9 @@ These functions are pure TypeScript reference implementations.
 - `trainLinearSvmTextClassifier(examples: Array<{ label: string; text: string }>, options?: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number; useNativeScoring?: boolean }): LinearSvmTextClassifier`
 - `loadLogisticTextClassifier(payload: LogisticSerialized): LogisticTextClassifier`
 - `loadLinearSvmTextClassifier(payload: LinearSvmSerialized): LinearSvmTextClassifier`
+- `new PerceptronTextClassifier(options?: { epochs?: number; learningRate?: number; maxFeatures?: number; averaged?: boolean })`
+- `trainPerceptronTextClassifier(examples: Array<{ label: string; text: string }>, options?: { epochs?: number; learningRate?: number; maxFeatures?: number; averaged?: boolean }): PerceptronTextClassifier`
+- `loadPerceptronTextClassifier(payload: PerceptronSerialized): PerceptronTextClassifier`
 
 ## Corpora
 

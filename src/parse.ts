@@ -562,6 +562,105 @@ export function chartParse(tokens: string[], grammar: CfgGrammar, options?: { ma
   return (chart[0]![n]!.get(start) ?? []).slice(0, maxTrees).sort((a, b) => treeChildCount(a) - treeChildCount(b));
 }
 
+type RecursiveParseResult = {
+  tree: ParseTree;
+  next: number;
+};
+
+export function recursiveDescentParse(
+  tokens: string[],
+  grammar: CfgGrammar,
+  options?: { maxTrees?: number; startSymbol?: string; maxDepth?: number },
+): ParseTree[] {
+  const maxTrees = Math.max(1, options?.maxTrees ?? 8);
+  const maxDepth = Math.max(1, options?.maxDepth ?? Math.max(32, tokens.length * 4));
+  const start = options?.startSymbol ?? grammar.startSymbol;
+
+  const rulesByLhs = new Map<string, string[][]>();
+  const nonterminals = new Set<string>();
+  for (const prod of grammar.productions) {
+    nonterminals.add(prod.lhs);
+    const rows = rulesByLhs.get(prod.lhs) ?? [];
+    rows.push(prod.rhs);
+    rulesByLhs.set(prod.lhs, rows);
+  }
+
+  const memo = new Map<string, RecursiveParseResult[]>();
+  const inProgress = new Set<string>();
+  const keyOf = (lhs: string, index: number): string => `${lhs}@${index}`;
+
+  const parseSymbol = (lhs: string, index: number, depth: number): RecursiveParseResult[] => {
+    if (depth > maxDepth) return [];
+    const key = keyOf(lhs, index);
+    const cached = memo.get(key);
+    if (cached) return cached;
+    if (inProgress.has(key)) return [];
+    inProgress.add(key);
+
+    const out: RecursiveParseResult[] = [];
+    const dedupe = new Set<string>();
+    const alternatives = rulesByLhs.get(lhs) ?? [];
+    for (const rhs of alternatives) {
+      if (rhs.length === 0) {
+        const tree: ParseTree = { label: lhs, children: [] };
+        const dkey = `${index}\u0001${JSON.stringify(tree)}`;
+        if (!dedupe.has(dkey)) {
+          dedupe.add(dkey);
+          out.push({ tree, next: index });
+        }
+        continue;
+      }
+
+      let partials: Array<{ children: Array<ParseTree | string>; next: number }> = [{ children: [], next: index }];
+      for (const symbol of rhs) {
+        const nextPartials: Array<{ children: Array<ParseTree | string>; next: number }> = [];
+        for (const partial of partials) {
+          if (nonterminals.has(symbol)) {
+            const childParses = parseSymbol(symbol, partial.next, depth + 1);
+            for (const child of childParses) {
+              nextPartials.push({
+                children: [...partial.children, child.tree],
+                next: child.next,
+              });
+            }
+          } else if (partial.next < tokens.length && tokens[partial.next] === symbol) {
+            nextPartials.push({
+              children: [...partial.children, symbol],
+              next: partial.next + 1,
+            });
+          }
+        }
+        if (nextPartials.length === 0) {
+          partials = [];
+          break;
+        }
+        partials = nextPartials.slice(0, maxTrees * 8);
+      }
+
+      for (const partial of partials) {
+        const tree: ParseTree = {
+          label: lhs,
+          children: partial.children,
+        };
+        const dkey = `${partial.next}\u0001${JSON.stringify(tree)}`;
+        if (!dedupe.has(dkey)) {
+          dedupe.add(dkey);
+          out.push({ tree, next: partial.next });
+        }
+      }
+    }
+
+    inProgress.delete(key);
+    memo.set(key, out);
+    return out;
+  };
+
+  const parsed = parseSymbol(start, 0, 0)
+    .filter((row) => row.next === tokens.length)
+    .map((row) => row.tree);
+  return parsed.slice(0, maxTrees).sort((a, b) => treeChildCount(a) - treeChildCount(b));
+}
+
 type EarleyState = {
   lhs: string;
   rhs: string[];
@@ -795,4 +894,15 @@ export function parseTextWithPcfg(
   const tokens = wordTokenizeSubset(text).filter((tok) => /[A-Za-z0-9']/.test(tok));
   const normalized = options?.normalizeTokens === false ? tokens : tokens.map((tok) => tok.toLowerCase());
   return probabilisticChartParse(normalized, pcfg, options);
+}
+
+export function parseTextWithRecursiveDescent(
+  text: string,
+  grammar: CfgGrammar | string,
+  options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean; maxDepth?: number },
+): ParseTree[] {
+  const cfg = typeof grammar === "string" ? parseCfgGrammar(grammar, { startSymbol: options?.startSymbol }) : grammar;
+  const tokens = wordTokenizeSubset(text).filter((tok) => /[A-Za-z0-9']/.test(tok));
+  const normalized = options?.normalizeTokens === false ? tokens : tokens.map((tok) => tok.toLowerCase());
+  return recursiveDescentParse(normalized, cfg, options);
 }
