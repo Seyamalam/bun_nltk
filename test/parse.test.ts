@@ -4,9 +4,11 @@ import {
   chartParse,
   earleyParse,
   earleyRecognize,
+  leftCornerParse,
   parseCfgGrammar,
   parseTextWithCfg,
   parseTextWithEarley,
+  parseTextWithLeftCorner,
   parseTextWithRecursiveDescent,
   recursiveDescentParse,
   type ParseTree,
@@ -105,6 +107,27 @@ test("recursive descent parser parity with chart parser top tree", () => {
 
 test("parseTextWithRecursiveDescent tokenizes and parses text", () => {
   const trees = parseTextWithRecursiveDescent("Alice sees a cat.", grammarText);
+  expect(trees.length).toBeGreaterThan(0);
+  expect(toBracket(trees[0]!)).toContain("(V sees)");
+});
+
+test("left-corner parser returns parse tree for simple CFG", () => {
+  const grammar = parseCfgGrammar(grammarText);
+  const trees = leftCornerParse(["alice", "sees", "the", "dog"], grammar);
+  expect(trees.length).toBeGreaterThan(0);
+  expect(toBracket(trees[0]!)).toBe("(S (NP (Name alice)) (VP (V sees) (NP (Det the) (N dog))))");
+});
+
+test("left-corner parser parity with chart parser top tree", () => {
+  const grammar = parseCfgGrammar(grammarText);
+  const chart = chartParse(["alice", "sees", "the", "dog"], grammar);
+  const left = leftCornerParse(["alice", "sees", "the", "dog"], grammar);
+  expect(left.length).toBeGreaterThan(0);
+  expect(toBracket(left[0]!)).toBe(toBracket(chart[0]!));
+});
+
+test("parseTextWithLeftCorner tokenizes and parses text", () => {
+  const trees = parseTextWithLeftCorner("Alice sees a cat.", grammarText);
   expect(trees.length).toBeGreaterThan(0);
   expect(toBracket(trees[0]!)).toContain("(V sees)");
 });

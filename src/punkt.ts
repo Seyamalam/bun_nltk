@@ -37,6 +37,8 @@ export type PunktModelSerialized = {
   abbreviations: string[];
   collocations: Array<[string, string]>;
   sentenceStarters: string[];
+  abbreviationScores?: Record<string, number>;
+  orthographicContext?: Record<string, { lower: number; upper: number }>;
 };
 
 export type PunktTrainingOptions = {
@@ -101,6 +103,8 @@ type PunktPreparedModel = {
   abbreviations: Set<string>;
   collocations: Set<string>;
   sentenceStarters: Set<string>;
+  abbreviationScores: Map<string, number>;
+  orthographicContext: Map<string, { lower: number; upper: number }>;
 };
 
 function isWhitespace(ch: string): boolean {
@@ -152,6 +156,8 @@ function preparePunktModel(model: PunktModelSerialized): PunktPreparedModel {
   const abbreviations = new Set<string>();
   const collocations = new Set<string>();
   const sentenceStarters = new Set<string>();
+  const abbreviationScores = new Map<string, number>();
+  const orthographicContext = new Map<string, { lower: number; upper: number }>();
 
   for (const abbr of model.abbreviations) {
     abbreviations.add(normalizeAbbrev(abbr));
@@ -162,11 +168,22 @@ function preparePunktModel(model: PunktModelSerialized): PunktPreparedModel {
   for (const starter of model.sentenceStarters) {
     sentenceStarters.add(starter.toLowerCase());
   }
+  for (const [abbr, score] of Object.entries(model.abbreviationScores ?? {})) {
+    abbreviationScores.set(normalizeAbbrev(abbr), score);
+  }
+  for (const [token, ctx] of Object.entries(model.orthographicContext ?? {})) {
+    orthographicContext.set(token.toLowerCase(), {
+      lower: Math.max(0, ctx.lower ?? 0),
+      upper: Math.max(0, ctx.upper ?? 0),
+    });
+  }
 
   return {
     abbreviations,
     collocations,
     sentenceStarters,
+    abbreviationScores,
+    orthographicContext,
   };
 }
 
@@ -191,10 +208,14 @@ function shouldSplitAt(
   if (!look) return true;
 
   if (punct === "." && model.abbreviations.has(prevNorm)) {
+    const abbrScore = model.abbreviationScores.get(prevNorm) ?? 0;
+    const lookCtx = model.orthographicContext.get(look.lower);
     if (TITLE_ABBREVIATIONS.has(prevNorm) && look.isUpperStart) return false;
     if (look.isLowerStart) return false;
+    if (lookCtx && lookCtx.lower > lookCtx.upper * 1.5) return false;
     const pairKey = `${prevNorm}\u0001${look.lower}`;
     if (model.collocations.has(pairKey)) return false;
+    if (abbrScore >= 0.75 && !model.sentenceStarters.has(look.lower)) return false;
     if (!look.isUpperStart && !model.sentenceStarters.has(look.lower)) return false;
   }
 
@@ -228,6 +249,7 @@ export function trainPunktModel(text: string, options: PunktTrainingOptions = {}
   const abbreviationStats = new Map<string, { total: number; lowerAfter: number; upperAfter: number }>();
   const collocationStats = new Map<string, number>();
   const starterStats = new Map<string, number>();
+  const orthographicContext = new Map<string, { lower: number; upper: number }>();
 
   for (let i = 0; i < text.length; i += 1) {
     if (text[i] !== ".") continue;
@@ -246,6 +268,10 @@ export function trainPunktModel(text: string, options: PunktTrainingOptions = {}
       const key = `${left}\u0001${look.lower}`;
       collocationStats.set(key, (collocationStats.get(key) ?? 0) + 1);
     }
+    const context = orthographicContext.get(look.lower) ?? { lower: 0, upper: 0 };
+    if (look.isLowerStart) context.lower += 1;
+    if (look.isUpperStart) context.upper += 1;
+    orthographicContext.set(look.lower, context);
   }
 
   for (const sentence of roughSentenceSplits(text)) {
@@ -274,6 +300,15 @@ export function trainPunktModel(text: string, options: PunktTrainingOptions = {}
   }
 
   abbreviations.delete("");
+  const abbreviationScores: Record<string, number> = {};
+  for (const [abbr, stats] of abbreviationStats.entries()) {
+    if (stats.total <= 0) continue;
+    abbreviationScores[abbr] = Number((stats.lowerAfter / stats.total).toFixed(6));
+  }
+  const orthographicContextOut: Record<string, { lower: number; upper: number }> = {};
+  for (const [token, ctx] of orthographicContext.entries()) {
+    orthographicContextOut[token] = { lower: ctx.lower, upper: ctx.upper };
+  }
   return {
     version: 1,
     abbreviations: [...abbreviations].sort(),
@@ -282,6 +317,8 @@ export function trainPunktModel(text: string, options: PunktTrainingOptions = {}
       return b1.localeCompare(b2);
     }),
     sentenceStarters: sentenceStarters.sort(),
+    abbreviationScores,
+    orthographicContext: orthographicContextOut,
   };
 }
 
@@ -318,6 +355,8 @@ export function defaultPunktModel(): PunktModelSerialized {
     abbreviations: [...DEFAULT_PUNKT_ABBREVIATIONS].sort(),
     collocations: [],
     sentenceStarters: [],
+    abbreviationScores: {},
+    orthographicContext: {},
   };
   return cachedDefaultModel;
 }
@@ -331,10 +370,16 @@ export function parsePunktModel(payload: string | PunktModelSerialized): PunktMo
   const abbreviations = Array.isArray(parsed.abbreviations) ? parsed.abbreviations : [];
   const collocations = Array.isArray(parsed.collocations) ? parsed.collocations : [];
   const sentenceStarters = Array.isArray(parsed.sentenceStarters) ? parsed.sentenceStarters : [];
+  const abbreviationScores =
+    parsed.abbreviationScores && typeof parsed.abbreviationScores === "object" ? parsed.abbreviationScores : {};
+  const orthographicContext =
+    parsed.orthographicContext && typeof parsed.orthographicContext === "object" ? parsed.orthographicContext : {};
   return {
     version: Number.isFinite(parsed.version) ? parsed.version : 1,
     abbreviations: [...abbreviations],
     collocations: [...collocations],
     sentenceStarters: [...sentenceStarters],
+    abbreviationScores: { ...abbreviationScores },
+    orthographicContext: { ...orthographicContext },
   };
 }

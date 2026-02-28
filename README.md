@@ -42,12 +42,16 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - CFG grammar parser + chart parser subset with Python parity harness
 - Earley recognizer/parser API for non-CNF grammar recognition (`earleyRecognize`, `earleyParse`, `parseTextWithEarley`)
 - Recursive-descent CFG parser API (`recursiveDescentParse`, `parseTextWithRecursiveDescent`)
+- Left-corner CFG parser API (`leftCornerParse`, `parseTextWithLeftCorner`)
+- Feature-chart parser subset APIs (`parseFeatureCfgGrammar`, `featureChartParse`, `parseTextWithFeatureCfg`)
 - Lightweight dependency parser API (`dependencyParse`, `dependencyParseText`)
 - Naive Bayes text classifier with train/predict/evaluate/serialize APIs and Python parity harness
 - Shared sparse text vectorizer (`TextFeatureVectorizer`) + sparse batch flattening utility
 - Decision tree text classifier APIs (`DecisionTreeTextClassifier`)
 - Linear text models (`LogisticTextClassifier`, `LinearSvmTextClassifier`) with native sparse scoring fast path
 - Perceptron text classifier APIs (`PerceptronTextClassifier`)
+- Conditional Exponential classifier compatibility APIs (`ConditionalExponentialTextClassifier`)
+- Positive Naive Bayes classifier APIs (`PositiveNaiveBayesTextClassifier`)
 - Corpus reader framework (`CorpusReader`) with bundled mini corpora
 - Optional external corpus bundle loader + tagged/chunked corpus readers (`parseConllTagged`, `parseBrownTagged`, `parseConllChunked`)
 - Corpus registry manifest loader/downloader with checksum validation (`loadCorpusRegistryManifest`, `downloadCorpusRegistry`)
@@ -98,6 +102,10 @@ Notes:
 | Sparse linear logits hot loop (`bench:compare:linear`) | 0.0024 | 2.0001 | Zig native | 840.54x | 83954.04% |
 | Decision tree text classifier (`bench:compare:decision-tree`) | 0.0725 | 0.5720 | Zig/Bun | 7.89x | 688.55% |
 | Earley parser workload (`bench:compare:earley`) | 0.1149 | 4.6483 | Zig/Bun | 40.47x | 3947.07% |
+| Left-corner parser workload (`bench:compare:leftcorner`) | 0.0197 | 0.5359 | Zig/Bun | 27.27x | 2626.82% |
+| Feature parser workload (`bench:compare:feature-parser`) | 0.0110 | 1.1432 | Zig/Bun | 104.38x | 10338.21% |
+| Conditional Exponential classifier (`bench:compare:condexp`) | 0.0111 | 0.1685 | Zig/Bun | 15.15x | 1414.67% |
+| Positive Naive Bayes classifier (`bench:compare:positive-nb`) | 0.0199 | 0.0416 | Zig/Bun | 2.09x | 108.63% |
 
 ## Build native Zig library
 
@@ -189,6 +197,18 @@ bun run bench:compare:decision-tree
 bun run bench:compare:earley
 ```
 
+## Benchmark left-corner parser vs Python
+
+```bash
+bun run bench:compare:leftcorner
+```
+
+## Benchmark feature parser vs Python
+
+```bash
+bun run bench:compare:feature-parser
+```
+
 ## Benchmark classifier vs Python
 
 ```bash
@@ -207,6 +227,18 @@ bun run bench:compare:linear
 bun run bench:compare:linear-train
 ```
 
+## Benchmark conditional exponential classifier vs Python
+
+```bash
+bun run bench:compare:condexp
+```
+
+## Benchmark positive naive bayes vs Python
+
+```bash
+bun run bench:compare:positive-nb
+```
+
 ## Run parity harnesses
 
 ```bash
@@ -220,10 +252,14 @@ bun run bench:parity:pcfg
 bun run bench:parity:maxent
 bun run bench:parity:decision-tree
 bun run bench:parity:earley
+bun run bench:parity:leftcorner
+bun run bench:parity:feature-parser
 bun run bench:parity:corpus-imported
 bun run bench:parity:imported
 bun run bench:parity:wordnet
 bun run bench:parity:tagger
+bun run bench:parity:condexp
+bun run bench:parity:positive-nb
 bun run bench:parity:all
 bun run parity:report
 ```

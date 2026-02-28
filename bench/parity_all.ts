@@ -52,8 +52,12 @@ function main() {
   const maxent = run(["bun", "run", "bench/parity_maxent.ts"], root);
   const decisionTree = run(["bun", "run", "bench/parity_decision_tree.ts"], root);
   const earley = run(["bun", "run", "bench/parity_earley.ts"], root);
+  const leftcorner = run(["bun", "run", "bench/parity_leftcorner.ts"], root);
+  const featureParser = run(["bun", "run", "bench/parity_feature_parser.ts"], root);
   const corpusImported = run(["bun", "run", "bench/parity_corpus_imported.ts"], root);
   const tagger = run(["bun", "run", "bench/parity_tagger.ts"], root);
+  const condexp = run(["bun", "run", "bench/parity_condexp.ts"], root);
+  const positiveNb = run(["bun", "run", "bench/parity_positive_nb.ts"], root);
   const importedFixturePath = resolve(root, "test", "fixtures", "nltk_imported", "pcfg_treebank_fixture.json");
   const imported = existsSync(importedFixturePath) ? run(["bun", "run", "bench/parity_imported.ts"], root) : { parity: true };
 
@@ -70,9 +74,13 @@ function main() {
     maxent: Boolean(maxent.parity),
     decision_tree: Boolean(decisionTree.parity),
     earley: Boolean(earley.parity),
+    leftcorner: Boolean(leftcorner.parity),
+    feature_parser: Boolean(featureParser.parity),
     corpus_imported: Boolean(corpusImported.parity),
     imported: Boolean(imported.parity),
     tagger: Boolean(tagger.parity),
+    condexp: Boolean(condexp.parity),
+    positive_nb: Boolean(positiveNb.parity),
   };
 
   const failed = Object.entries(checks)

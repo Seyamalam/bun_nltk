@@ -102,7 +102,7 @@ These functions are pure TypeScript reference implementations.
 
 ## Punkt
 
-- `trainPunktModel(text: string, options?: { minAbbrevCount?: number; minCollocationCount?: number; minSentenceStarterCount?: number }): { version: number; abbreviations: string[]; collocations: Array<[string, string]>; sentenceStarters: string[] }`
+- `trainPunktModel(text: string, options?: { minAbbrevCount?: number; minCollocationCount?: number; minSentenceStarterCount?: number }): { version: number; abbreviations: string[]; collocations: Array<[string, string]>; sentenceStarters: string[]; abbreviationScores?: Record<string, number>; orthographicContext?: Record<string, { lower: number; upper: number }> }`
 - `sentenceTokenizePunkt(text: string, model?: PunktModelSerialized): string[]`
 - `defaultPunktModel(): PunktModelSerialized`
 - `serializePunktModel(model: PunktModelSerialized): string`
@@ -157,9 +157,17 @@ These functions are pure TypeScript reference implementations.
 - `earleyRecognize(tokens: string[], grammar: CfgGrammar, options?: { startSymbol?: string }): boolean`
 - `earleyParse(tokens: string[], grammar: CfgGrammar, options?: { maxTrees?: number; startSymbol?: string }): ParseTree[]`
 - `recursiveDescentParse(tokens: string[], grammar: CfgGrammar, options?: { maxTrees?: number; startSymbol?: string; maxDepth?: number }): ParseTree[]`
+- `leftCornerParse(tokens: string[], grammar: CfgGrammar, options?: { maxTrees?: number; startSymbol?: string; maxDepth?: number }): ParseTree[]`
 - `parseTextWithCfg(text: string, grammar: CfgGrammar | string, options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean }): ParseTree[]`
 - `parseTextWithEarley(text: string, grammar: CfgGrammar | string, options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean }): ParseTree[]`
 - `parseTextWithRecursiveDescent(text: string, grammar: CfgGrammar | string, options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean; maxDepth?: number }): ParseTree[]`
+- `parseTextWithLeftCorner(text: string, grammar: CfgGrammar | string, options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean; maxDepth?: number }): ParseTree[]`
+
+## Feature Parsing (Subset)
+
+- `parseFeatureCfgGrammar(grammarText: string, options?: { startSymbol?: string }): FeatureCfgGrammar`
+- `featureChartParse(tokens: string[], grammar: FeatureCfgGrammar, options?: { maxTrees?: number; maxDepth?: number; startSymbol?: FeatureSymbol | string }): ParseTree[]`
+- `parseTextWithFeatureCfg(text: string, grammar: FeatureCfgGrammar | string, options?: { maxTrees?: number; startSymbol?: string; normalizeTokens?: boolean; maxDepth?: number }): ParseTree[]`
 
 ## Dependency Parsing
 
@@ -195,6 +203,12 @@ These functions are pure TypeScript reference implementations.
 - `new PerceptronTextClassifier(options?: { epochs?: number; learningRate?: number; maxFeatures?: number; averaged?: boolean })`
 - `trainPerceptronTextClassifier(examples: Array<{ label: string; text: string }>, options?: { epochs?: number; learningRate?: number; maxFeatures?: number; averaged?: boolean }): PerceptronTextClassifier`
 - `loadPerceptronTextClassifier(payload: PerceptronSerialized): PerceptronTextClassifier`
+- `new ConditionalExponentialTextClassifier(options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number })`
+- `trainConditionalExponentialTextClassifier(examples: Array<{ label: string; text: string }>, options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number }): ConditionalExponentialTextClassifier`
+- `loadConditionalExponentialTextClassifier(payload: ConditionalExponentialSerialized): ConditionalExponentialTextClassifier`
+- `new PositiveNaiveBayesTextClassifier(options?: { maxFeatures?: number; positivePrior?: number; positiveLabel?: string; negativeLabel?: string })`
+- `trainPositiveNaiveBayesTextClassifier(positiveRows: string[] | Array<{ text: string }>, unlabeledRows: string[] | Array<{ text: string }>, options?: { maxFeatures?: number; positivePrior?: number; positiveLabel?: string; negativeLabel?: string }): PositiveNaiveBayesTextClassifier`
+- `loadPositiveNaiveBayesTextClassifier(payload: PositiveNaiveBayesSerialized): PositiveNaiveBayesTextClassifier`
 
 ## Corpora
 

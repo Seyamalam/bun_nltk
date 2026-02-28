@@ -90,17 +90,40 @@ function main() {
       module: "parse",
       feature: "CFG/PCFG/chart parsing",
       status: "partial",
-      notes: "CFG + PCFG chart parsing + Earley + recursive descent + lightweight dependency parsing; additional parser families still pending.",
-      tests: ["test/parse.test.ts", "test/pcfg.test.ts"],
-      benches: ["bench/compare_parser.ts", "bench/compare_pcfg.ts", "bench/compare_earley.ts"],
+      notes:
+        "CFG + PCFG chart parsing + Earley + recursive descent + left-corner + feature chart subset + lightweight dependency parsing; additional parser families still pending.",
+      tests: ["test/parse.test.ts", "test/pcfg.test.ts", "test/feature_parse.test.ts"],
+      benches: [
+        "bench/compare_parser.ts",
+        "bench/compare_pcfg.ts",
+        "bench/compare_earley.ts",
+        "bench/compare_leftcorner.ts",
+        "bench/compare_feature_parser.ts",
+      ],
     },
     {
       module: "classify",
       feature: "classifiers (NaiveBayes/MaxEnt/etc.)",
       status: "partial",
-      notes: "Naive Bayes + MaxEnt + DecisionTree + Logistic + LinearSVM + Perceptron implemented; additional classifier families pending.",
-      tests: ["test/classify.test.ts", "test/maxent.test.ts", "test/decision_tree.test.ts", "test/linear_models.test.ts", "test/perceptron_classifier.test.ts"],
-      benches: ["bench/compare_classifier.ts", "bench/compare_maxent.ts", "bench/compare_decision_tree.ts", "bench/compare_linear_scores.ts"],
+      notes:
+        "Naive Bayes + Positive Naive Bayes + MaxEnt + Conditional Exponential + DecisionTree + Logistic + LinearSVM + Perceptron implemented; additional classifier families pending.",
+      tests: [
+        "test/classify.test.ts",
+        "test/maxent.test.ts",
+        "test/conditional_exponential.test.ts",
+        "test/decision_tree.test.ts",
+        "test/linear_models.test.ts",
+        "test/perceptron_classifier.test.ts",
+        "test/positive_naive_bayes.test.ts",
+      ],
+      benches: [
+        "bench/compare_classifier.ts",
+        "bench/compare_maxent.ts",
+        "bench/compare_condexp.ts",
+        "bench/compare_decision_tree.ts",
+        "bench/compare_linear_scores.ts",
+        "bench/compare_positive_nb.ts",
+      ],
     },
   ];
 

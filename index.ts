@@ -90,16 +90,20 @@ export {
   chartParse,
   earleyParse,
   earleyRecognize,
+  leftCornerParse,
   parseCfgGrammar,
   parsePcfgGrammar,
   parseTextWithCfg,
   parseTextWithEarley,
+  parseTextWithLeftCorner,
   parseTextWithPcfg,
   parseTextWithRecursiveDescent,
   probabilisticChartParse,
   recursiveDescentParse,
 } from "./src/parse";
 export type { CfgGrammar, CfgProduction, ParseTree, PcfgGrammar, PcfgProduction, ProbabilisticParse } from "./src/parse";
+export { featureChartParse, parseFeatureCfgGrammar, parseTextWithFeatureCfg } from "./src/feature_parse";
+export type { FeatureCfgGrammar, FeatureMap, FeatureProduction, FeatureSymbol } from "./src/feature_parse";
 export {
   loadNaiveBayesTextClassifier,
   NaiveBayesTextClassifier,
@@ -121,6 +125,12 @@ export {
 } from "./src/maxent";
 export type { MaxEntExample, MaxEntPrediction, MaxEntSerialized } from "./src/maxent";
 export {
+  loadConditionalExponentialTextClassifier,
+  ConditionalExponentialTextClassifier,
+  trainConditionalExponentialTextClassifier,
+} from "./src/conditional_exponential";
+export type { ConditionalExponentialExample, ConditionalExponentialSerialized } from "./src/conditional_exponential";
+export {
   loadLinearSvmTextClassifier,
   loadLogisticTextClassifier,
   LinearSvmTextClassifier,
@@ -135,6 +145,12 @@ export {
   trainPerceptronTextClassifier,
 } from "./src/perceptron_classifier";
 export type { PerceptronExample, PerceptronSerialized } from "./src/perceptron_classifier";
+export {
+  loadPositiveNaiveBayesTextClassifier,
+  PositiveNaiveBayesTextClassifier,
+  trainPositiveNaiveBayesTextClassifier,
+} from "./src/positive_naive_bayes";
+export type { PositiveNaiveBayesSerialized } from "./src/positive_naive_bayes";
 export { loadWordNetExtended, loadWordNetMini, loadWordNetPacked, WordNet } from "./src/wordnet";
 export type { WordNetMiniPayload, WordNetPos, WordNetSynset } from "./src/wordnet";
 export { WasmNltk } from "./src/wasm";

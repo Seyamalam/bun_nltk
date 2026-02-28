@@ -8,9 +8,14 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 - Recursive-descent CFG parser APIs (`recursiveDescentParse`, `parseTextWithRecursiveDescent`) with parser tests.
+- Left-corner CFG parser APIs (`leftCornerParse`, `parseTextWithLeftCorner`) with parity/benchmark harnesses.
+- Feature CFG parser subset (`parseFeatureCfgGrammar`, `featureChartParse`, `parseTextWithFeatureCfg`) with Python parity/bench harnesses.
 - NLTK-style Punkt wrapper classes (`PunktTrainerSubset`, `PunktSentenceTokenizerSubset`) for trainer/tokenizer workflows.
+- Expanded Punkt model parameters with learned abbreviation scores and orthographic context stats.
 - WordNet graph traversal/similarity APIs (`hypernymPaths`, `lowestCommonHypernyms`, `shortestPathDistance`, `pathSimilarity`).
 - Perceptron text classifier family (`PerceptronTextClassifier`, train/load helpers) with serialization and tests.
+- Conditional Exponential classifier compatibility APIs (`ConditionalExponentialTextClassifier`) with parity/benchmark harnesses.
+- Positive Naive Bayes classifier APIs (`PositiveNaiveBayesTextClassifier`) with parity/benchmark harnesses.
 
 ## [0.9.0] - 2026-02-28
 

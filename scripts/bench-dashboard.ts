@@ -105,12 +105,16 @@ function main() {
   const chunk = run(["bun", "run", "bench/compare_chunk.ts", "9000", "3"], root);
   const wordnet = run(["bun", "run", "bench/compare_wordnet.ts", "4"], root);
   const parser = run(["bun", "run", "bench/compare_parser.ts", "800", "3"], root);
+  const leftcorner = run(["bun", "run", "bench/compare_leftcorner.ts", "1200", "3"], root);
+  const featureParser = run(["bun", "run", "bench/compare_feature_parser.ts", "1200", "3"], root);
   const classifier = run(["bun", "run", "bench/compare_classifier.ts", "1800", "450", "3"], root);
   const linear = run(["bun", "run", "bench/compare_linear_scores.ts", "6000", "12000", "6", "40", "3"], root);
   const decisionTree = run(["bun", "run", "bench/compare_decision_tree.ts", "2400", "600", "3"], root);
   const earley = run(["bun", "run", "bench/compare_earley.ts", "2000", "3"], root);
   const pcfg = run(["bun", "run", "bench/compare_pcfg.ts", "700", "2"], root);
   const maxent = run(["bun", "run", "bench/compare_maxent.ts", "900", "250", "1"], root);
+  const condexp = run(["bun", "run", "bench/compare_condexp.ts", "1000", "300", "2"], root);
+  const positiveNb = run(["bun", "run", "bench/compare_positive_nb.ts", "800", "2400", "500", "3"], root);
   const paritySentence = run(["bun", "run", "bench/parity_sentence.ts"], root);
   const parityTagger = run(["bun", "run", "bench/parity_tagger.ts"], root);
   const parityAll = run(["bun", "run", "bench/parity_all.ts"], root);
@@ -139,9 +143,13 @@ function main() {
       maxent: Boolean(parityAll.checks?.maxent),
       decision_tree: Boolean(parityAll.checks?.decision_tree),
       earley: Boolean(parityAll.checks?.earley),
+      leftcorner: Boolean(parityAll.checks?.leftcorner),
+      feature_parser: Boolean(parityAll.checks?.feature_parser),
       corpus_imported: Boolean(parityAll.checks?.corpus_imported),
       imported: Boolean(parityAll.checks?.imported),
       tagger: Boolean(parityTagger.parity),
+      condexp: Boolean(parityAll.checks?.condexp),
+      positive_nb: Boolean(parityAll.checks?.positive_nb),
     },
     speedups: {
       token_ngram_x: toNum(compare.speedup_vs_python),
@@ -155,12 +163,16 @@ function main() {
       chunk_x: toNum(chunk.speedup_vs_python),
       wordnet_x: toNum(wordnet.speedup_vs_python),
       parser_x: toNum(parser.speedup_vs_python),
+      leftcorner_x: toNum(leftcorner.speedup_vs_python),
+      feature_parser_x: toNum(featureParser.speedup_vs_python),
       classifier_x: toNum(classifier.speedup_vs_python),
       linear_x: toNum(linear.speedup_vs_python),
       decision_tree_x: toNum(decisionTree.speedup_vs_python),
       earley_x: toNum(earley.speedup_vs_python),
       pcfg_x: toNum(pcfg.speedup_vs_python),
       maxent_x: toNum(maxent.speedup_vs_python),
+      condexp_x: toNum(condexp.speedup_vs_python),
+      positive_nb_x: toNum(positiveNb.speedup_vs_python),
     },
     percent_faster: {
       token_ngram_pct: pctFaster(toNum(compare.speedup_vs_python)),
@@ -174,12 +186,16 @@ function main() {
       chunk_pct: pctFaster(toNum(chunk.speedup_vs_python)),
       wordnet_pct: pctFaster(toNum(wordnet.speedup_vs_python)),
       parser_pct: pctFaster(toNum(parser.speedup_vs_python)),
+      leftcorner_pct: pctFaster(toNum(leftcorner.speedup_vs_python)),
+      feature_parser_pct: pctFaster(toNum(featureParser.speedup_vs_python)),
       classifier_pct: pctFaster(toNum(classifier.speedup_vs_python)),
       linear_pct: pctFaster(toNum(linear.speedup_vs_python)),
       decision_tree_pct: pctFaster(toNum(decisionTree.speedup_vs_python)),
       earley_pct: pctFaster(toNum(earley.speedup_vs_python)),
       pcfg_pct: pctFaster(toNum(pcfg.speedup_vs_python)),
       maxent_pct: pctFaster(toNum(maxent.speedup_vs_python)),
+      condexp_pct: pctFaster(toNum(condexp.speedup_vs_python)),
+      positive_nb_pct: pctFaster(toNum(positiveNb.speedup_vs_python)),
     },
     throughput: {
       token_per_sec: Number(tokenThroughput.toFixed(2)),
@@ -199,12 +215,16 @@ function main() {
       chunk,
       wordnet,
       parser,
+      leftcorner,
+      feature_parser: featureParser,
       classifier,
       linear,
       decision_tree: decisionTree,
       earley,
       pcfg,
       maxent,
+      condexp,
+      positive_nb: positiveNb,
     },
   };
 
@@ -227,12 +247,16 @@ function main() {
     `| chunk | ${dashboard.speedups.chunk_x.toFixed(2)} | ${dashboard.percent_faster.chunk_pct.toFixed(2)} |`,
     `| wordnet | ${dashboard.speedups.wordnet_x.toFixed(2)} | ${dashboard.percent_faster.wordnet_pct.toFixed(2)} |`,
     `| parser | ${dashboard.speedups.parser_x.toFixed(2)} | ${dashboard.percent_faster.parser_pct.toFixed(2)} |`,
+    `| leftcorner | ${dashboard.speedups.leftcorner_x.toFixed(2)} | ${dashboard.percent_faster.leftcorner_pct.toFixed(2)} |`,
+    `| feature_parser | ${dashboard.speedups.feature_parser_x.toFixed(2)} | ${dashboard.percent_faster.feature_parser_pct.toFixed(2)} |`,
     `| classifier | ${dashboard.speedups.classifier_x.toFixed(2)} | ${dashboard.percent_faster.classifier_pct.toFixed(2)} |`,
     `| linear | ${dashboard.speedups.linear_x.toFixed(2)} | ${dashboard.percent_faster.linear_pct.toFixed(2)} |`,
     `| decision_tree | ${dashboard.speedups.decision_tree_x.toFixed(2)} | ${dashboard.percent_faster.decision_tree_pct.toFixed(2)} |`,
     `| earley | ${dashboard.speedups.earley_x.toFixed(2)} | ${dashboard.percent_faster.earley_pct.toFixed(2)} |`,
     `| pcfg | ${dashboard.speedups.pcfg_x.toFixed(2)} | ${dashboard.percent_faster.pcfg_pct.toFixed(2)} |`,
     `| maxent | ${dashboard.speedups.maxent_x.toFixed(2)} | ${dashboard.percent_faster.maxent_pct.toFixed(2)} |`,
+    `| condexp | ${dashboard.speedups.condexp_x.toFixed(2)} | ${dashboard.percent_faster.condexp_pct.toFixed(2)} |`,
+    `| positive_nb | ${dashboard.speedups.positive_nb_x.toFixed(2)} | ${dashboard.percent_faster.positive_nb_pct.toFixed(2)} |`,
     "",
     "| Throughput Metric | Value |",
     "|---|---:|",
@@ -260,9 +284,13 @@ function main() {
     `Parity classifier: ${dashboard.parity.classifier}`,
     `Parity decision_tree: ${dashboard.parity.decision_tree}`,
     `Parity earley: ${dashboard.parity.earley}`,
+    `Parity leftcorner: ${dashboard.parity.leftcorner}`,
+    `Parity feature_parser: ${dashboard.parity.feature_parser}`,
     `Parity corpus_imported: ${dashboard.parity.corpus_imported}`,
     `Parity pcfg: ${dashboard.parity.pcfg}`,
     `Parity maxent: ${dashboard.parity.maxent}`,
+    `Parity condexp: ${dashboard.parity.condexp}`,
+    `Parity positive_nb: ${dashboard.parity.positive_nb}`,
     `Parity imported fixtures: ${dashboard.parity.imported}`,
     `Parity tagger: ${dashboard.parity.tagger}`,
     "",
