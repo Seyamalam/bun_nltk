@@ -41,12 +41,17 @@ function main() {
   const dataset = ensureGateDataset(root);
 
   const tokenizer = run(["bun", "run", "bench/parity_tokenizer.ts"], root);
+  const tokenizerFamily = run(["bun", "run", "bench/parity_tokenizer_family.ts"], root);
   const sentence = run(["bun", "run", "bench/parity_sentence.ts"], root);
   const punkt = run(["bun", "run", "bench/parity_punkt.ts"], root);
   const punktExtended = run(["bun", "run", "bench/parity_punkt_extended.ts"], root);
+  const stemmers = run(["bun", "run", "bench/parity_stemmers.ts"], root);
+  const metrics = run(["bun", "run", "bench/parity_metrics.ts"], root);
+  const sentiment = run(["bun", "run", "bench/parity_sentiment.ts"], root);
   const lm = run(["bun", "run", "bench/compare_lm.ts", dataset, "1"], root);
   const chunk = run(["bun", "run", "bench/compare_chunk.ts", "3000", "1"], root);
   const wordnet = run(["bun", "run", "bench/parity_wordnet.ts"], root);
+  const wordnetCompat = run(["bun", "run", "bench/parity_wordnet_compat.ts"], root);
   const parser = run(["bun", "run", "bench/parity_parser.ts"], root);
   const classifier = run(["bun", "run", "bench/parity_classifier.ts"], root);
   const pcfg = run(["bun", "run", "bench/parity_pcfg.ts"], root);
@@ -65,12 +70,17 @@ function main() {
 
   const checks = {
     tokenizer: Boolean(tokenizer.parity),
+    tokenizer_family: Boolean(tokenizerFamily.parity),
     sentence: Boolean(sentence.parity),
     punkt: Boolean(punkt.parity),
     punkt_extended: Boolean(punktExtended.parity),
+    stemmers: Boolean(stemmers.parity),
+    translation_metrics: Boolean(metrics.parity),
+    sentiment: Boolean(sentiment.parity),
     lm: Boolean(lm.parity_tolerant),
     chunk: Boolean(chunk.parity_sample_400),
     wordnet: Boolean(wordnet.parity),
+    wordnet_compat: Boolean(wordnetCompat.parity),
     parser: Boolean(parser.parity),
     classifier: Boolean(classifier.parity),
     pcfg: Boolean(pcfg.parity),

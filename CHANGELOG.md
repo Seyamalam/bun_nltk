@@ -6,6 +6,19 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+### Added
+- High-ROI parity tracking expansion with new modules/checks:
+  - `tokenizer_family` (Treebank/WordPunct/Toktok/MWE/TweetTokenizer)
+  - `stemmers` (Lancaster/Snowball/Regexp + lemmatizer sanity)
+  - `translation_metrics` (BLEU + edit distance)
+  - `sentiment` (VADER-style sanity checks)
+  - `wordnet_compat` (lemma/sense-key/pos+offset helper compatibility)
+- New parity scripts and Python baselines for tokenizer family, stemmers, and metrics.
+
+### Changed
+- `bench:parity:all` now includes expanded high-ROI checks.
+- `parity:tracker` now merges `bench:parity:all` checks with dashboard parity keys so tracker coverage remains accurate with new modules.
+
 ## [0.11.0] - 2026-03-01
 
 ### Added

@@ -260,6 +260,10 @@ bun run bench:parity:sentence
 bun run bench:parity:punkt
 bun run bench:parity:punkt-extended
 bun run bench:parity:tokenizer
+bun run bench:parity:tokenizer-family
+bun run bench:parity:stemmers
+bun run bench:parity:metrics
+bun run bench:parity:sentiment
 bun run bench:parity:parser
 bun run bench:parity:classifier
 bun run bench:parity:pcfg
@@ -272,6 +276,7 @@ bun run bench:parity:feature-earley
 bun run bench:parity:corpus-imported
 bun run bench:parity:imported
 bun run bench:parity:wordnet
+bun run bench:parity:wordnet-compat
 bun run bench:parity:tagger
 bun run bench:parity:condexp
 bun run bench:parity:positive-nb

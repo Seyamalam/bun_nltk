@@ -45,6 +45,11 @@ function run(command: string[], cwd: string): Record<string, unknown> {
 }
 
 function loadParityAndSpeedups(root: string): { parity: DashboardParity; speedups: DashboardSpeedups } {
+  const parityAll = run(["bun", "run", "bench/parity_all.ts"], root) as {
+    checks?: DashboardParity;
+  };
+  const parityFromSuite = parityAll.checks ?? {};
+
   const dashboardPath = resolve(root, "artifacts", "bench-dashboard.json");
   if (existsSync(dashboardPath)) {
     const dashboard = JSON.parse(readFileSync(dashboardPath, "utf8")) as {
@@ -52,16 +57,13 @@ function loadParityAndSpeedups(root: string): { parity: DashboardParity; speedup
       speedups?: DashboardSpeedups;
     };
     return {
-      parity: dashboard.parity ?? {},
+      parity: { ...(dashboard.parity ?? {}), ...parityFromSuite },
       speedups: dashboard.speedups ?? {},
     };
   }
 
-  const parityAll = run(["bun", "run", "bench/parity_all.ts"], root) as {
-    checks?: DashboardParity;
-  };
   return {
-    parity: parityAll.checks ?? {},
+    parity: parityFromSuite,
     speedups: {},
   };
 }
@@ -113,6 +115,14 @@ function main() {
       caveat: "subset-focused tokenizer scope, not full upstream tokenizer matrix",
     },
     {
+      module: "tokenizer_family",
+      feature: "Treebank/WordPunct/Toktok/MWE/TweetTokenizer compatibility",
+      requiredParity: ["tokenizer_family"],
+      tests: ["test/tokenizer_family.test.ts"],
+      benches: ["bench/parity_tokenizer_family.ts"],
+      caveat: "focused high-ROI tokenizer family subset",
+    },
+    {
       module: "wordnet",
       feature: "lookup + graph relations + similarity",
       requiredParity: ["wordnet"],
@@ -120,6 +130,14 @@ function main() {
       tests: ["test/wordnet.test.ts", "test/wordnet_python_parity.test.ts"],
       benches: ["bench/parity_wordnet.ts", "bench/compare_wordnet.ts"],
       caveat: "official packed corpus preferred at runtime when present",
+    },
+    {
+      module: "wordnet_compat",
+      feature: "lemma names, sense keys, pos+offset helpers",
+      requiredParity: ["wordnet_compat"],
+      tests: ["test/wordnet_compat.test.ts"],
+      benches: ["bench/parity_wordnet_compat.ts"],
+      caveat: "offset lookups depend on offset-form synset IDs in active corpus",
     },
     {
       module: "lm",
@@ -159,6 +177,30 @@ function main() {
       requiredSpeedups: ["token_ngram_x", "collocations_x", "porter_x"],
       tests: ["test/native.test.ts", "test/nltk-coverage.test.ts"],
       benches: ["bench/compare.ts", "bench/compare_collocations.ts", "bench/compare_porter.ts", "bench/compare_freqdist_stream.ts"],
+    },
+    {
+      module: "stemmers",
+      feature: "Lancaster/Snowball/Regexp + lemmatizer sanity",
+      requiredParity: ["stemmers"],
+      tests: ["test/stemmers.test.ts"],
+      benches: ["bench/parity_stemmers.ts"],
+      caveat: "lemmatizer sanity is validated via bundled WordNet data",
+    },
+    {
+      module: "translation_metrics",
+      feature: "BLEU + edit distance parity",
+      requiredParity: ["translation_metrics"],
+      tests: ["test/metrics.test.ts"],
+      benches: ["bench/parity_metrics.ts"],
+      caveat: "BLEU parity uses tolerance due smoothing differences",
+    },
+    {
+      module: "sentiment",
+      feature: "VADER-style sentiment analyzer sanity",
+      requiredParity: ["sentiment"],
+      tests: ["test/sentiment.test.ts"],
+      benches: ["bench/parity_sentiment.ts"],
+      caveat: "sanity checks without external vader_lexicon download",
     },
     {
       module: "parse",
