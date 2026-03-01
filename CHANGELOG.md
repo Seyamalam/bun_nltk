@@ -6,6 +6,8 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-03-01
+
 ### Added
 - Expanded tokenizer family parity APIs:
   - `TreebankWordTokenizer`, `WordPunctTokenizer`, `ToktokTokenizer`, `MWETokenizer`
