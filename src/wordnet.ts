@@ -55,12 +55,20 @@ function verbMorphCandidates(word: string): string[] {
   const out = [lower];
   if (lower.endsWith("ies") && lower.length > 3) out.push(`${lower.slice(0, -3)}y`);
   if (lower.endsWith("ing") && lower.length > 4) {
-    out.push(lower.slice(0, -3));
-    out.push(`${lower.slice(0, -3)}e`);
+    const stem = lower.slice(0, -3);
+    out.push(stem);
+    out.push(`${stem}e`);
+    if (stem.length >= 2 && stem[stem.length - 1] === stem[stem.length - 2]) {
+      out.push(stem.slice(0, -1));
+    }
   }
   if (lower.endsWith("ed") && lower.length > 3) {
-    out.push(lower.slice(0, -2));
+    const stem = lower.slice(0, -2);
+    out.push(stem);
     out.push(`${lower.slice(0, -1)}`);
+    if (stem.length >= 2 && stem[stem.length - 1] === stem[stem.length - 2]) {
+      out.push(stem.slice(0, -1));
+    }
   }
   if (lower.endsWith("s") && lower.length > 1) out.push(lower.slice(0, -1));
   return unique(out);
@@ -90,6 +98,21 @@ function morphCandidates(word: string, pos?: WordNetPos): string[] {
 export class WordNet {
   private readonly byId = new Map<string, WordNetSynset>();
   private readonly lemmaIndex = new Map<string, WordNetSynset[]>();
+  private readonly offsetIndex = new Map<string, WordNetSynset>();
+  private readonly senseKeyIndex = new Map<string, WordNetSynset>();
+
+  private makeOffsetKey(pos: WordNetPos, offset: string | number): string {
+    const raw = typeof offset === "number" ? String(Math.floor(Math.max(0, offset))) : String(offset).trim();
+    const digits = raw.replace(/\D+/g, "");
+    return `${pos}:${digits.padStart(8, "0")}`;
+  }
+
+  private static sensePosDigit(pos: WordNetPos): string {
+    if (pos === "n") return "1";
+    if (pos === "v") return "2";
+    if (pos === "a") return "3";
+    return "4";
+  }
 
   constructor(payload: WordNetMiniPayload) {
     for (const row of payload.synsets) {
@@ -105,10 +128,21 @@ export class WordNet {
         antonyms: [...row.antonyms],
       };
       this.byId.set(normalized.id, normalized);
+
+      const offsetMatch = normalized.id.match(/^(\d{8})\.([nvar])$/);
+      if (offsetMatch) {
+        this.offsetIndex.set(this.makeOffsetKey(offsetMatch[2] as WordNetPos, offsetMatch[1]!), normalized);
+      }
+
       for (const lemma of normalized.lemmas) {
         const bucket = this.lemmaIndex.get(lemma) ?? [];
         bucket.push(normalized);
         this.lemmaIndex.set(lemma, bucket);
+
+        const senseKey = `${lemma}%${WordNet.sensePosDigit(normalized.pos)}:00:00::`;
+        if (!this.senseKeyIndex.has(senseKey)) {
+          this.senseKeyIndex.set(senseKey, normalized);
+        }
       }
     }
   }
@@ -140,6 +174,12 @@ export class WordNet {
     return rows.filter((row) => row.pos === pos);
   }
 
+  lemmaNames(idOrSynset: string | WordNetSynset): string[] {
+    const row = this.resolveSynset(idOrSynset);
+    if (!row) return [];
+    return [...row.lemmas];
+  }
+
   lemmas(pos?: WordNetPos): string[] {
     const out: string[] = [];
     for (const [lemma, rows] of this.lemmaIndex.entries()) {
@@ -163,6 +203,35 @@ export class WordNet {
       if (!pos || rows.some((row) => row.pos === pos)) return candidate;
     }
     return null;
+  }
+
+  synsetFromPosAndOffset(pos: WordNetPos, offset: string | number): WordNetSynset | null {
+    const key = this.makeOffsetKey(pos, offset);
+    return this.offsetIndex.get(key) ?? null;
+  }
+
+  synset_from_pos_and_offset(pos: WordNetPos, offset: string | number): WordNetSynset | null {
+    return this.synsetFromPosAndOffset(pos, offset);
+  }
+
+  synsetFromSenseKey(senseKey: string): WordNetSynset | null {
+    return this.senseKeyIndex.get(senseKey.toLowerCase()) ?? null;
+  }
+
+  synset_from_sense_key(senseKey: string): WordNetSynset | null {
+    return this.synsetFromSenseKey(senseKey);
+  }
+
+  senseKeys(word: string, pos?: WordNetPos): string[] {
+    const rows = this.synsets(word, pos);
+    const out: string[] = [];
+    for (const row of rows) {
+      const p = WordNet.sensePosDigit(row.pos);
+      for (const lemma of row.lemmas) {
+        out.push(`${lemma}%${p}:00:00::`);
+      }
+    }
+    return unique(out).sort((a, b) => a.localeCompare(b));
   }
 
   hypernyms(idOrSynset: string | WordNetSynset): WordNetSynset[] {

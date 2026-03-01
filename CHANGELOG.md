@@ -6,6 +6,26 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+### Added
+- Expanded tokenizer family parity APIs:
+  - `TreebankWordTokenizer`, `WordPunctTokenizer`, `ToktokTokenizer`, `MWETokenizer`
+  - `tweetTokenize` + `TweetTokenizer` options (`preserveCase`, `stripHandles`, `reduceLen`, `matchPhoneNumbers`)
+- Stemming/lemmatization compatibility APIs:
+  - `RegexpStemmer`, `LancasterStemmer`, `SnowballStemmer`, `WordNetLemmatizer`
+- WordNet compatibility helpers:
+  - `lemmaNames`, `synsetFromPosAndOffset`/`synset_from_pos_and_offset`
+  - `senseKeys`, `synsetFromSenseKey`/`synset_from_sense_key`
+- Additional Punkt compatibility surface:
+  - `PunktTrainer`, `PunktSentenceTokenizer`, `sentenceTokenizePunktCompat`
+  - broader default abbreviation table for Punkt heuristics.
+- Sentiment + metrics modules:
+  - `SentimentIntensityAnalyzer` (VADER-style polarity)
+  - `sentenceBleu`, `corpusBleu`, `editDistance`, `confusionMatrix`
+
+### Changed
+- `tweetTokenizeSubset` now delegates to shared `TweetTokenizer` logic while preserving prior subset defaults.
+- Verb morphy candidate generation now handles doubled-consonant cases (for example `running -> run`).
+
 ## [0.10.0] - 2026-02-28
 
 ### Added

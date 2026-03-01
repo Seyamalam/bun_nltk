@@ -59,13 +59,29 @@ export {
   tokenizeAscii,
 } from "./src/reference";
 
-export { tweetTokenizeSubset, wordTokenizeSubset } from "./src/tokenizers";
+export {
+  mweTokenize,
+  MWETokenizer,
+  toktokTokenize,
+  ToktokTokenizer,
+  treebankWordTokenize,
+  TreebankWordTokenizer,
+  tweetTokenize,
+  TweetTokenizer,
+  tweetTokenizeSubset,
+  wordPunctTokenize,
+  WordPunctTokenizer,
+  wordTokenizeSubset,
+} from "./src/tokenizers";
 export { sentenceTokenizeSubset } from "./src/sentence_tokenizer";
 export {
   defaultPunktModel,
   parsePunktModel,
+  PunktSentenceTokenizer,
   PunktSentenceTokenizerSubset,
+  PunktTrainer,
   PunktTrainerSubset,
+  sentenceTokenizePunktCompat,
   sentenceTokenizePunkt,
   serializePunktModel,
   trainPunktModel,
@@ -153,6 +169,11 @@ export {
 export type { PositiveNaiveBayesSerialized } from "./src/positive_naive_bayes";
 export { loadWordNet, loadWordNetExtended, loadWordNetMini, loadWordNetPacked, WordNet } from "./src/wordnet";
 export type { WordNetMiniPayload, WordNetPos, WordNetSynset } from "./src/wordnet";
+export { LancasterStemmer, RegexpStemmer, SnowballStemmer, WordNetLemmatizer } from "./src/stemmers";
+export { confusionMatrix, corpusBleu, editDistance, sentenceBleu } from "./src/metrics";
+export type { BleuWeights, ConfusionMatrixResult, EditDistanceOptions } from "./src/metrics";
+export { SentimentIntensityAnalyzer } from "./src/sentiment";
+export type { VaderOptions, VaderPolarity } from "./src/sentiment";
 export { WasmNltk } from "./src/wasm";
 export {
   loadPerceptronTaggerModel,

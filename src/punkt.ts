@@ -1,18 +1,62 @@
 import { sentenceTokenizePunktAsciiNative } from "./native";
 
 const DEFAULT_PUNKT_ABBREVIATIONS = [
+  "al",
+  "apr",
+  "aug",
+  "capt",
+  "col",
   "mr",
   "mrs",
   "ms",
   "dr",
   "prof",
+  "gen",
+  "gov",
+  "jan",
+  "feb",
+  "mar",
+  "jun",
+  "jul",
+  "sep",
+  "sept",
+  "oct",
+  "nov",
+  "dec",
+  "lt",
+  "maj",
+  "messrs",
+  "mlle",
+  "mme",
+  "msgr",
+  "no",
+  "nos",
+  "ph.d",
+  "rev",
   "sr",
   "jr",
   "st",
-  "vs",
+  "sgt",
+  "sen",
+  "rep",
   "etc",
+  "vs",
+  "fig",
+  "figs",
+  "vol",
+  "pp",
+  "dept",
+  "est",
+  "ed",
+  "co",
+  "inc",
+  "ltd",
+  "corp",
+  "univ",
   "e.g",
   "i.e",
+  "u.n",
+  "u.s.a",
   "u.s",
   "u.k",
   "a.m",
@@ -76,8 +120,14 @@ export class PunktTrainerSubset {
   }
 }
 
+export class PunktTrainer extends PunktTrainerSubset {
+  loadTrainText(text: string): this {
+    return this.train(text);
+  }
+}
+
 export class PunktSentenceTokenizerSubset {
-  private model: PunktModelSerialized;
+  protected model: PunktModelSerialized;
 
   constructor(model?: PunktModelSerialized) {
     this.model = model ? parsePunktModel(model) : defaultPunktModel();
@@ -96,6 +146,13 @@ export class PunktSentenceTokenizerSubset {
 
   getParams(): PunktModelSerialized {
     return parsePunktModel(this.model);
+  }
+}
+
+export class PunktSentenceTokenizer extends PunktSentenceTokenizerSubset {
+  setParams(model: PunktModelSerialized): this {
+    this.model = parsePunktModel(model);
+    return this;
   }
 }
 
@@ -333,6 +390,27 @@ export function sentenceTokenizePunkt(text: string, model?: PunktModelSerialized
   if (!model) {
     return sentenceTokenizePunktAsciiNative(text);
   }
+  const prepared = preparePunktModel(model ?? defaultPunktModel());
+  const out: string[] = [];
+  let start = 0;
+
+  for (let i = 0; i < text.length; i += 1) {
+    if (!isSentencePunct(text[i]!)) continue;
+    if (!shouldSplitAt(text, i, prepared)) continue;
+
+    let end = i + 1;
+    while (end < text.length && isCloser(text[end]!)) end += 1;
+    const sentence = text.slice(start, end).trim();
+    if (sentence) out.push(sentence);
+    start = end;
+  }
+
+  const tail = text.slice(start).trim();
+  if (tail) out.push(tail);
+  return out;
+}
+
+export function sentenceTokenizePunktCompat(text: string, model?: PunktModelSerialized): string[] {
   const prepared = preparePunktModel(model ?? defaultPunktModel());
   const out: string[] = [];
   let start = 0;

@@ -23,15 +23,17 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Native windowed bigram stats API (`left_id`, `right_id`, `count`, `pmi`)
 - Native Porter stemmer (ASCII, lowercasing)
 - Tokenizer parity layer (`wordTokenizeSubset`, `tweetTokenizeSubset`)
+- Expanded tokenizer family (`TreebankWordTokenizer`, `WordPunctTokenizer`, `ToktokTokenizer`, `MWETokenizer`, `TweetTokenizer`)
 - Sentence tokenizer parity subset (`sentenceTokenizeSubset`) + Python parity harness
 - Trainable Punkt tokenizer/model APIs (`trainPunktModel`, `sentenceTokenizePunkt`)
-- NLTK-style Punkt wrapper APIs (`PunktTrainerSubset`, `PunktSentenceTokenizerSubset`)
+- NLTK-style Punkt wrapper APIs (`PunktTrainer`, `PunktSentenceTokenizer`, plus subset wrappers)
 - Native Zig Punkt sentence-splitting fast path (`sentenceTokenizePunktAsciiNative`) with WASM equivalent
 - Native normalization pipeline (ASCII fast path with optional stopword filtering)
 - Unicode normalization fallback pipeline (`normalizeTokensUnicode`)
 - Native POS regex/heuristic tagger baseline (`posTagAsciiNative`)
 - Native streaming `FreqDist`/`ConditionalFreqDist` builder with JSON export (`NativeFreqDistStream`)
 - Mini WordNet reader with synset lookup, relation traversal, and morphy-style inflection recovery
+- WordNet compatibility helpers (`lemmaNames`, `synsetFromPosAndOffset`, `senseKeys`, `synsetFromSenseKey`)
 - WordNet graph helpers (`hypernymPaths`, `lowestCommonHypernyms`, `shortestPathDistance`, `pathSimilarity`)
 - Native Zig morphy accelerator (`wordnetMorphyAsciiNative`) with WASM equivalent
 - Packed WordNet corpus pipeline (`wordnet:pack`) with binary loader (`loadWordNetPacked`)
@@ -53,6 +55,9 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Perceptron text classifier APIs (`PerceptronTextClassifier`)
 - Conditional Exponential classifier compatibility APIs (`ConditionalExponentialTextClassifier`)
 - Positive Naive Bayes classifier APIs (`PositiveNaiveBayesTextClassifier`)
+- Stemming and lemmatization suite (`RegexpStemmer`, `LancasterStemmer`, `SnowballStemmer`, `WordNetLemmatizer`)
+- VADER-style sentiment analyzer (`SentimentIntensityAnalyzer`)
+- Translation/eval metrics helpers (`sentenceBleu`, `corpusBleu`, `editDistance`, `confusionMatrix`)
 - Corpus reader framework (`CorpusReader`) with bundled mini corpora
 - Optional external corpus bundle loader + tagged/chunked corpus readers (`parseConllTagged`, `parseBrownTagged`, `parseConllChunked`)
 - Corpus registry manifest loader/downloader with checksum validation (`loadCorpusRegistryManifest`, `downloadCorpusRegistry`)

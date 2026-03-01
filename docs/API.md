@@ -98,15 +98,39 @@ These functions are pure TypeScript reference implementations.
 
 - `wordTokenizeSubset(text: string): string[]`
 - `tweetTokenizeSubset(text: string, opts?: { stripHandles?: boolean; reduceLen?: boolean; matchPhoneNumbers?: boolean }): string[]`
+- `treebankWordTokenize(text: string): string[]`
+- `wordPunctTokenize(text: string): string[]`
+- `toktokTokenize(text: string): string[]`
+- `mweTokenize(tokens: string[], mwes: string[][], separator?: string): string[]`
+- `tweetTokenize(text: string, opts?: { preserveCase?: boolean; stripHandles?: boolean; reduceLen?: boolean; matchPhoneNumbers?: boolean }): string[]`
+- `new TreebankWordTokenizer()`
+- `TreebankWordTokenizer.tokenize(text: string): string[]`
+- `new WordPunctTokenizer()`
+- `WordPunctTokenizer.tokenize(text: string): string[]`
+- `new ToktokTokenizer()`
+- `ToktokTokenizer.tokenize(text: string): string[]`
+- `new MWETokenizer(mwes?: string[][], separator?: string)`
+- `MWETokenizer.addMwe(tokens: string[]): void`
+- `MWETokenizer.tokenize(tokens: string[]): string[]`
+- `new TweetTokenizer(opts?: { preserveCase?: boolean; stripHandles?: boolean; reduceLen?: boolean; matchPhoneNumbers?: boolean })`
+- `TweetTokenizer.tokenize(text: string): string[]`
 - `sentenceTokenizeSubset(text: string, opts?: { abbreviations?: Iterable<string>; learnAbbreviations?: boolean; orthographicHeuristics?: boolean }): string[]`
 
 ## Punkt
 
 - `trainPunktModel(text: string, options?: { minAbbrevCount?: number; minCollocationCount?: number; minSentenceStarterCount?: number }): { version: number; abbreviations: string[]; collocations: Array<[string, string]>; sentenceStarters: string[]; abbreviationScores?: Record<string, number>; orthographicContext?: Record<string, { lower: number; upper: number }> }`
 - `sentenceTokenizePunkt(text: string, model?: PunktModelSerialized): string[]`
+- `sentenceTokenizePunktCompat(text: string, model?: PunktModelSerialized): string[]`
 - `defaultPunktModel(): PunktModelSerialized`
 - `serializePunktModel(model: PunktModelSerialized): string`
 - `parsePunktModel(payload: string | PunktModelSerialized): PunktModelSerialized`
+- `new PunktTrainer()`
+- `PunktTrainer.loadTrainText(text: string): PunktTrainer`
+- `PunktTrainer.train(text: string, options?: PunktTrainingOptions): PunktTrainer`
+- `PunktTrainer.finalize(): PunktModelSerialized`
+- `new PunktSentenceTokenizer(model?: PunktModelSerialized)`
+- `PunktSentenceTokenizer.setParams(model: PunktModelSerialized): PunktSentenceTokenizer`
+- `PunktSentenceTokenizer.tokenize(text: string): string[]`
 - `new PunktTrainerSubset()`
 - `PunktTrainerSubset.train(text: string, options?: PunktTrainingOptions): PunktTrainerSubset`
 - `PunktTrainerSubset.finalize(): PunktModelSerialized`
@@ -127,7 +151,13 @@ These functions are pure TypeScript reference implementations.
 - `allSynsets(pos?: "n" | "v" | "a" | "r"): WordNetSynset[]`
 - `synsets(word: string, pos?: "n" | "v" | "a" | "r"): WordNetSynset[]`
 - `lemmas(pos?: "n" | "v" | "a" | "r"): string[]`
+- `lemmaNames(idOrSynset: string | WordNetSynset): string[]`
 - `morphy(word: string, pos?: "n" | "v" | "a" | "r"): string | null`
+- `synsetFromPosAndOffset(pos: "n" | "v" | "a" | "r", offset: string | number): WordNetSynset | null`
+- `synset_from_pos_and_offset(pos: "n" | "v" | "a" | "r", offset: string | number): WordNetSynset | null`
+- `senseKeys(word: string, pos?: "n" | "v" | "a" | "r"): string[]`
+- `synsetFromSenseKey(senseKey: string): WordNetSynset | null`
+- `synset_from_sense_key(senseKey: string): WordNetSynset | null`
 - `hypernyms(idOrSynset: string | WordNetSynset): WordNetSynset[]`
 - `hyponyms(idOrSynset: string | WordNetSynset): WordNetSynset[]`
 - `similarTo(idOrSynset: string | WordNetSynset): WordNetSynset[]`
@@ -236,6 +266,29 @@ These functions are pure TypeScript reference implementations.
 ## Normalization
 
 - `normalizeTokens(text: string, options?: { removeStopwords?: boolean; preferNativeAscii?: boolean; stem?: boolean }): string[]`
+
+## Stemming and Lemmatization
+
+- `new RegexpStemmer(pattern: RegExp | string, min?: number)`
+- `RegexpStemmer.stem(word: string): string`
+- `new LancasterStemmer()`
+- `LancasterStemmer.stem(word: string): string`
+- `new SnowballStemmer(language?: string)`
+- `SnowballStemmer.stem(word: string): string`
+- `new WordNetLemmatizer()`
+- `WordNetLemmatizer.lemmatize(word: string, pos?: string): string`
+
+## Sentiment (VADER-style)
+
+- `new SentimentIntensityAnalyzer(options?: { lexicon?: Record<string, number> })`
+- `SentimentIntensityAnalyzer.polarityScores(text: string): { neg: number; neu: number; pos: number; compound: number }`
+
+## Metrics and Translation Helpers
+
+- `editDistance(left: string, right: string, options?: { substitutionCost?: number; transpositions?: boolean }): number`
+- `sentenceBleu(references: string[][], hypothesis: string[], weights?: [number, number, number, number]): number`
+- `corpusBleu(listOfReferences: string[][][], hypotheses: string[][], weights?: [number, number, number, number]): number`
+- `confusionMatrix(gold: string[], predicted: string[]): { labels: string[]; matrix: number[][]; accuracy: number }`
 
 ## Perceptron Tagger
 
