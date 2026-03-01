@@ -63,7 +63,7 @@ test("naive bayes classifier parity with python nltk baseline", () => {
   expect(jsAcc).toBeGreaterThanOrEqual(0.75);
   expect(pyAcc).toBeGreaterThanOrEqual(0.75);
   expect(py.predictions).toEqual(jsPred);
-});
+}, 20000);
 
 test("naive bayes load rejects invalid payload lengths", () => {
   const invalid: NaiveBayesSerialized = {
@@ -78,4 +78,3 @@ test("naive bayes load rejects invalid payload lengths", () => {
   };
   expect(() => loadNaiveBayesTextClassifier(invalid)).toThrow();
 });
-

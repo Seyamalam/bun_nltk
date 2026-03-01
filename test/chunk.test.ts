@@ -52,5 +52,4 @@ test("regexp chunk parser parity with nltk RegexpParser on sample grammar", () =
   }
   const py = JSON.parse(new TextDecoder().decode(proc.stdout).trim()) as { iob: string[][] };
   expect(jsIob).toEqual(py.iob);
-});
-
+}, 20000);
