@@ -94,6 +94,8 @@ export { ConditionalFreqDist, FreqDist } from "./src/freqdist";
 export type { ConditionalFreqDistInput, FreqDistInput } from "./src/freqdist";
 export { BigramAssocMeasures, BigramCollocationFinder } from "./src/collocations";
 export type { BigramScoreFn } from "./src/collocations";
+export { ConcordanceIndex, ContextIndex, Text } from "./src/text";
+export type { ConcordanceLine } from "./src/text";
 export {
   CorpusReader,
   downloadCorpusRegistry,

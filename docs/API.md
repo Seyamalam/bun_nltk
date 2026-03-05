@@ -165,6 +165,27 @@ These functions are pure TypeScript reference implementations.
 - `nbest(scoreFn: BigramScoreFn<T>, count: number): Array<[T, T]>`
 - `aboveScore(scoreFn: BigramScoreFn<T>, minScore: number): IterableIterator<[T, T]>`
 
+## Text Exploration
+
+- `new ConcordanceIndex(tokens: string[], key?: (token: string) => string)`
+- `tokens(): string[]`
+- `offsets(word: string): number[]`
+- `findConcordance(word: string | string[], width?: number): ConcordanceLine[]`
+- `concordance(word: string | string[], width?: number, lines?: number): string[]`
+- `new ContextIndex(tokens: string[], options?: { contextFn?: (tokens: string[], index: number) => [string, string]; filter?: (token: string) => boolean; key?: (token: string) => string })`
+- `similarWords(word: string, count?: number): string[]`
+- `commonContexts(words: string[], failOnUnknown?: boolean): FreqDist<[string, string]>`
+- `new Text(tokens: Iterable<string>, name?: string)`
+- `count(word: string): number`
+- `index(word: string): number`
+- `vocab(): FreqDist<string>`
+- `concordanceList(word: string | string[], width?: number, lines?: number): ConcordanceLine[]`
+- `concordance(word: string | string[], width?: number, lines?: number): string[]`
+- `collocationList(num?: number, windowSize?: number, options?: { minFreq?: number; scoreFn?: BigramScoreFn<string>; stopwords?: Iterable<string> }): Array<[string, string]>`
+- `collocations(num?: number, windowSize?: number): string[]`
+- `similar(word: string, num?: number): string[]`
+- `commonContexts(words: string[], num?: number): Array<[string, string]>`
+
 ## Tokenizers
 
 - `wordTokenizeSubset(text: string): string[]`
