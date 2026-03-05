@@ -94,6 +94,53 @@ These functions are pure TypeScript reference implementations.
 - `normalizeTokensUnicode(text: string, removeStopwords?: boolean): string[]`
 - `posTagAscii(text: string): Array<{ token: string; tag: string; tagId: number; start: number; length: number }>`
 
+## Frequency Distributions
+
+- `new FreqDist(samples?: Iterable<T> | ReadonlyMap<T, number> | Record<string, number> | FreqDist<T>)`
+- `FreqDist.fromTextAscii(text: string, options?: { native?: boolean }): FreqDist<string>`
+- `get(sample: T): number`
+- `count(sample: T): number`
+- `set(sample: T, count: number): this`
+- `inc(sample: T, count?: number): this`
+- `update(samples?: Iterable<T> | ReadonlyMap<T, number> | Record<string, number> | FreqDist<T>): this`
+- `N(): number`
+- `B(): number`
+- `freq(sample: T): number`
+- `max(): T`
+- `hapaxes(): T[]`
+- `Nr(r: number, bins?: number): number`
+- `r_Nr(bins?: number): Record<number, number>`
+- `mostCommon(count?: number): Array<[T, number]>`
+- `samples(): T[]`
+- `copy(): FreqDist<T>`
+- `add(other: FreqDist<T>): FreqDist<T>`
+- `subtract(other: FreqDist<T>): FreqDist<T>`
+- `union(other: FreqDist<T>): FreqDist<T>`
+- `intersection(other: FreqDist<T>): FreqDist<T>`
+- `isSubsetOf(other: FreqDist<T>): boolean`
+- `isSupersetOf(other: FreqDist<T>): boolean`
+- `equals(other: FreqDist<T>): boolean`
+- `pformat(maxlen?: number): string`
+- `pprint(maxlen?: number, writer?: (line: string) => void): void`
+- `toString(): string`
+- `new ConditionalFreqDist(condSamples?: Iterable<readonly [C, T]> | ReadonlyMap<C, FreqDist<T>> | ConditionalFreqDist<C, T>)`
+- `ConditionalFreqDist.fromTaggedTextAscii(text: string, options?: { native?: boolean }): ConditionalFreqDist<string, string>`
+- `get(condition: C): FreqDist<T>` (auto-vivifies)
+- `peek(condition: C): FreqDist<T> | undefined`
+- `set(condition: C, dist: FreqDist<T>): this`
+- `update(condSamples?: Iterable<readonly [C, T]> | ReadonlyMap<C, FreqDist<T>> | ConditionalFreqDist<C, T>): this`
+- `conditions(): C[]`
+- `N(): number`
+- `copy(): ConditionalFreqDist<C, T>`
+- `add(other: ConditionalFreqDist<C, T>): ConditionalFreqDist<C, T>`
+- `subtract(other: ConditionalFreqDist<C, T>): ConditionalFreqDist<C, T>`
+- `union(other: ConditionalFreqDist<C, T>): ConditionalFreqDist<C, T>`
+- `intersection(other: ConditionalFreqDist<C, T>): ConditionalFreqDist<C, T>`
+- `isSubsetOf(other: ConditionalFreqDist<C, T>): boolean`
+- `isSupersetOf(other: ConditionalFreqDist<C, T>): boolean`
+- `equals(other: ConditionalFreqDist<C, T>): boolean`
+- `toString(): string`
+
 ## Tokenizers
 
 - `wordTokenizeSubset(text: string): string[]`

@@ -32,6 +32,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Unicode normalization fallback pipeline (`normalizeTokensUnicode`)
 - Native POS regex/heuristic tagger baseline (`posTagAsciiNative`)
 - Native streaming `FreqDist`/`ConditionalFreqDist` builder with JSON export (`NativeFreqDistStream`)
+- NLTK-style `FreqDist` / `ConditionalFreqDist` compatibility classes with native-backed ASCII builders
 - Mini WordNet reader with synset lookup, relation traversal, and morphy-style inflection recovery
 - WordNet compatibility helpers (`lemmaNames`, `synsetFromPosAndOffset`, `senseKeys`, `synsetFromSenseKey`)
 - WordNet graph helpers (`hypernymPaths`, `lowestCommonHypernyms`, `shortestPathDistance`, `pathSimilarity`)

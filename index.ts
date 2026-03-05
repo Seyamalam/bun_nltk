@@ -90,6 +90,8 @@ export type { PunktModelSerialized, PunktTrainingOptions } from "./src/punkt";
 export { normalizeTokens } from "./src/normalization";
 export { chunkTreeToIob, regexpChunkParse } from "./src/chunk";
 export type { ChunkElement, ChunkNode, IobRow, TaggedToken } from "./src/chunk";
+export { ConditionalFreqDist, FreqDist } from "./src/freqdist";
+export type { ConditionalFreqDistInput, FreqDistInput } from "./src/freqdist";
 export {
   CorpusReader,
   downloadCorpusRegistry,
