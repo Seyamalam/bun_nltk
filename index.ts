@@ -92,6 +92,8 @@ export { chunkTreeToIob, regexpChunkParse } from "./src/chunk";
 export type { ChunkElement, ChunkNode, IobRow, TaggedToken } from "./src/chunk";
 export { ConditionalFreqDist, FreqDist } from "./src/freqdist";
 export type { ConditionalFreqDistInput, FreqDistInput } from "./src/freqdist";
+export { BigramAssocMeasures, BigramCollocationFinder } from "./src/collocations";
+export type { BigramScoreFn } from "./src/collocations";
 export {
   CorpusReader,
   downloadCorpusRegistry,

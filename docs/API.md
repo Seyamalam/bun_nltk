@@ -141,6 +141,30 @@ These functions are pure TypeScript reference implementations.
 - `equals(other: ConditionalFreqDist<C, T>): boolean`
 - `toString(): string`
 
+## Collocations
+
+- `BigramAssocMeasures.raw_freq(n_ii: number, marginals: [number, number], total: number): number`
+- `BigramAssocMeasures.student_t(n_ii: number, marginals: [number, number], total: number): number`
+- `BigramAssocMeasures.mi_like(n_ii: number, marginals: [number, number], total: number, options?: { power?: number }): number`
+- `BigramAssocMeasures.pmi(n_ii: number, marginals: [number, number], total: number): number`
+- `BigramAssocMeasures.likelihood_ratio(n_ii: number, marginals: [number, number], total: number): number`
+- `BigramAssocMeasures.poisson_stirling(n_ii: number, marginals: [number, number], total: number): number`
+- `BigramAssocMeasures.jaccard(n_ii: number, marginals: [number, number], total: number): number`
+- `BigramAssocMeasures.phi_sq(n_ii: number, marginals: [number, number], total: number): number`
+- `BigramAssocMeasures.chi_sq(n_ii: number, marginals: [number, number], total: number): number`
+- `BigramAssocMeasures.dice(n_ii: number, marginals: [number, number], total: number): number`
+- `new BigramCollocationFinder(wordFd: FreqDist<T>, ngramFd: FreqDist<[T, T]>, windowSize?: number)`
+- `BigramCollocationFinder.fromWords(words: Iterable<T>, windowSize?: number): BigramCollocationFinder<T>`
+- `BigramCollocationFinder.fromDocuments(documents: Iterable<Iterable<T>>, windowSize?: number): BigramCollocationFinder<T>`
+- `BigramCollocationFinder.fromTextAscii(text: string, options?: { windowSize?: number; native?: boolean }): BigramCollocationFinder<string>`
+- `applyFreqFilter(minFreq: number): this`
+- `applyNgramFilter(fn: (left: T, right: T) => boolean): this`
+- `applyWordFilter(fn: (word: T) => boolean): this`
+- `scoreNgram(scoreFn: BigramScoreFn<T>, left: T, right: T): number | null`
+- `scoreNgrams(scoreFn: BigramScoreFn<T>): Array<[[T, T], number]>`
+- `nbest(scoreFn: BigramScoreFn<T>, count: number): Array<[T, T]>`
+- `aboveScore(scoreFn: BigramScoreFn<T>, minScore: number): IterableIterator<[T, T]>`
+
 ## Tokenizers
 
 - `wordTokenizeSubset(text: string): string[]`
