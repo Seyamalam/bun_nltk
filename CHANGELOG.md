@@ -6,6 +6,54 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-03-06
+
+### Added
+- NLTK-style frequency distribution compatibility:
+  - `FreqDist`
+  - `ConditionalFreqDist`
+- NLTK-style text exploration compatibility:
+  - `ConcordanceIndex`
+  - `ContextIndex`
+  - `Text`
+- Core `nltk.probability` APIs:
+  - `ProbDistI`
+  - `DictionaryProbDist`
+  - `UniformProbDist`
+  - `MLEProbDist`
+  - `LidstoneProbDist`
+  - `LaplaceProbDist`
+  - `ELEProbDist`
+  - `MutableProbDist`
+  - `ConditionalProbDist`
+  - `addLogs`
+  - `sumLogs`
+  - `entropy`
+  - `logLikelihood`
+- Advanced smoothing distributions:
+  - `WittenBellProbDist`
+  - `SimpleGoodTuringProbDist`
+- Expanded collocation compatibility:
+  - `TrigramAssocMeasures`
+  - `QuadgramAssocMeasures`
+  - `TrigramCollocationFinder`
+  - `QuadgramCollocationFinder`
+- NLTK-style feature-dict classifier wrappers:
+  - `NaiveBayesClassifier`
+  - `DecisionTreeClassifier`
+  - `MaxentClassifier`
+  - `PositiveNaiveBayesClassifier`
+- NLTK-style grammar, parser, and tagger wrappers:
+  - `CFG`, `PCFG`, `FeatureCFG`
+  - `ChartParser`, `EarleyChartParser`, `RecursiveDescentParser`, `LeftCornerChartParser`, `ViterbiParser`
+  - `FeatureChartParser`, `FeatureEarleyChartParser`
+  - `PerceptronTagger`
+  - `posTag` / `pos_tag`
+
+### Changed
+- API docs and README now document the new NLTK compatibility surface across probability, collocations, classifiers, parsers, and taggers.
+- Compatibility coverage now spans higher-level NLTK workflows instead of only low-level primitives.
+
 ## [0.11.1] - 2026-03-01
 
 ### Added
