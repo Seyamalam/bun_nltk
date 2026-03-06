@@ -22,6 +22,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - NLTK-style bigram collocation compatibility layer (`BigramAssocMeasures`, `BigramCollocationFinder`)
 - Text exploration compatibility layer (`ConcordanceIndex`, `ContextIndex`, `Text`)
 - Core `nltk.probability` compatibility layer (`ProbDistI`, `MLEProbDist`, `Lidstone` family, `ConditionalProbDist`)
+- Advanced smoothing distributions (`WittenBellProbDist`, `SimpleGoodTuringProbDist`)
 - Collision-free token ID frequency distribution API (`id <-> token`)
 - Native windowed bigram stats API (`left_id`, `right_id`, `count`, `pmi`)
 - Native Porter stemmer (ASCII, lowercasing)

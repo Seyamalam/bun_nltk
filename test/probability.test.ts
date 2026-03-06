@@ -11,7 +11,9 @@ import {
   LidstoneProbDist,
   logLikelihood,
   MLEProbDist,
+  SimpleGoodTuringProbDist,
   sumLogs,
+  WittenBellProbDist,
 } from "../index";
 
 function expectClose(actual: number, expected: number, digits = 12) {
@@ -72,6 +74,32 @@ test("ConditionalProbDist wraps ConditionalFreqDist with factory distributions",
 
   const missing = new ConditionalProbDist(cfd, LaplaceProbDist, 4).get("adj");
   expectClose(missing.prob("bright"), 1 / 4);
+});
+
+test("WittenBellProbDist allocates leftover mass to unseen bins", () => {
+  const fd = new FreqDist("aab");
+  const dist = new WittenBellProbDist(fd, 4);
+
+  expectClose(dist.prob("a"), 2 / 5);
+  expectClose(dist.prob("b"), 1 / 5);
+  expectClose(dist.prob("c"), 1 / 5);
+  expectClose(dist.prob("d"), 1 / 5);
+});
+
+test("SimpleGoodTuringProbDist keeps a valid discounted distribution", () => {
+  const fd = new FreqDist("aaaabbccdef");
+  const dist = new SimpleGoodTuringProbDist(fd, fd.B() + 2);
+  const unseen = dist.prob("zzz");
+
+  expect(unseen).toBeGreaterThan(0);
+  expect(dist.prob("a")).toBeGreaterThan(dist.prob("d"));
+  expect(dist.discount()).toBeGreaterThan(0);
+
+  let total = unseen * 2;
+  for (const sample of fd.keys()) {
+    total += dist.prob(sample);
+  }
+  expect(Math.abs(total - 1)).toBeLessThanOrEqual(0.15);
 });
 
 test("Probability helpers match expected information-theory semantics", () => {

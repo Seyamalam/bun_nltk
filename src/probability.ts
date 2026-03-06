@@ -276,6 +276,199 @@ export class ELEProbDist<T> extends LidstoneProbDist<T> {
 
 type ProbDistFactory<T> = (new (freqdist: FreqDist<T>, ...args: any[]) => ProbDistLike<T>) | ((freqdist: FreqDist<T>, ...args: any[]) => ProbDistLike<T>);
 
+export class WittenBellProbDist<T> extends ProbDistI<T> {
+  readonly #freqdist: FreqDist<T>;
+  readonly #T: number;
+  readonly #Z: number;
+  readonly #N: number;
+  readonly #P0: number;
+
+  constructor(freqdist: FreqDist<T>, bins?: number) {
+    super();
+    if (bins !== undefined && bins < freqdist.B()) {
+      throw new Error(`bins parameter must not be less than ${freqdist.B()}=freqdist.B()`);
+    }
+    const resolvedBins = bins ?? freqdist.B();
+    this.#freqdist = freqdist;
+    this.#T = freqdist.B();
+    this.#Z = resolvedBins - freqdist.B();
+    this.#N = freqdist.N();
+    if (this.#N === 0) {
+      if (this.#Z <= 0) {
+        throw new Error("WittenBellProbDist needs at least one unseen bin when freqdist is empty.");
+      }
+      this.#P0 = 1 / this.#Z;
+    } else {
+      this.#P0 = this.#Z > 0 ? this.#T / (this.#Z * (this.#N + this.#T)) : 0;
+    }
+  }
+
+  prob(sample: T): number {
+    const count = this.#freqdist.get(sample);
+    return count !== 0 ? count / (this.#N + this.#T) : this.#P0;
+  }
+
+  max(): T {
+    return this.#freqdist.max();
+  }
+
+  samples(): Iterable<T> {
+    return this.#freqdist.keys();
+  }
+
+  freqdist(): FreqDist<T> {
+    return this.#freqdist;
+  }
+
+  discount(): never {
+    throw new Error("WittenBellProbDist.discount is not implemented in bun_nltk");
+  }
+
+  override toString(): string {
+    return `<WittenBellProbDist based on ${this.#freqdist.N()} samples>`;
+  }
+}
+
+export class SimpleGoodTuringProbDist<T> extends ProbDistI<T> {
+  readonly #freqdist: FreqDist<T>;
+  readonly #bins: number;
+  #slope = 0;
+  #intercept = 0;
+  #switchAt = 0;
+  #renormal = 1;
+
+  constructor(freqdist: FreqDist<T>, bins?: number) {
+    super();
+    if (bins !== undefined && bins <= freqdist.B()) {
+      throw new Error(`bins parameter must not be less than ${freqdist.B() + 1}=freqdist.B()+1`);
+    }
+    this.#freqdist = freqdist;
+    this.#bins = bins ?? (freqdist.B() + 1);
+
+    const [r, nr] = this.#rNr();
+    this.#findBestFit(r, nr);
+    this.#switch(r, nr);
+    this.#renormalize(r, nr);
+  }
+
+  #rNrNonZero(): Record<number, number> {
+    const out = this.#freqdist.r_Nr();
+    delete out[0];
+    return out;
+  }
+
+  #rNr(): [number[], number[]] {
+    const nonzero = this.#rNrNonZero();
+    const pairs = Object.entries(nonzero)
+      .map(([r, nr]) => [Number(r), nr] as const)
+      .sort((left, right) => left[0] - right[0]);
+    return [pairs.map(([r]) => r), pairs.map(([, nr]) => nr)];
+  }
+
+  #findBestFit(r: number[], nr: number[]): void {
+    if (r.length === 0 || nr.length === 0) return;
+
+    const zr: number[] = [];
+    for (let j = 0; j < r.length; j += 1) {
+      const i = j > 0 ? r[j - 1]! : 0;
+      const k = j === r.length - 1 ? 2 * r[j]! - i : r[j + 1]!;
+      zr.push((2 * nr[j]!) / (k - i));
+    }
+
+    const logR = r.map((value) => Math.log(value));
+    const logZr = zr.map((value) => Math.log(value));
+    const xMean = logR.reduce((acc, value) => acc + value, 0) / logR.length;
+    const yMean = logZr.reduce((acc, value) => acc + value, 0) / logZr.length;
+
+    let xyCov = 0;
+    let xVar = 0;
+    for (let i = 0; i < logR.length; i += 1) {
+      xyCov += (logR[i]! - xMean) * (logZr[i]! - yMean);
+      xVar += (logR[i]! - xMean) ** 2;
+    }
+
+    this.#slope = xVar === 0 ? 0 : xyCov / xVar;
+    this.#intercept = yMean - this.#slope * xMean;
+  }
+
+  #switch(r: number[], nr: number[]): void {
+    for (let i = 0; i < r.length; i += 1) {
+      const count = r[i]!;
+      if (i === r.length - 1 || r[i + 1]! !== count + 1) {
+        this.#switchAt = count;
+        break;
+      }
+
+      const smooth = (count + 1) * this.smoothedNr(count + 1) / this.smoothedNr(count);
+      const unsmoothed = ((count + 1) * nr[i + 1]!) / nr[i]!;
+      const std = Math.sqrt(this.#variance(count, nr[i]!, nr[i + 1]!));
+      if (Math.abs(unsmoothed - smooth) <= 1.96 * std) {
+        this.#switchAt = count;
+        break;
+      }
+    }
+  }
+
+  #variance(r: number, nr: number, nr1: number): number {
+    return (r + 1) ** 2 * (nr1 / (nr ** 2)) * (1 + nr1 / nr);
+  }
+
+  #renormalize(r: number[], nr: number[]): void {
+    let probCov = 0;
+    for (let i = 0; i < r.length; i += 1) {
+      probCov += nr[i]! * this.#probMeasure(r[i]!);
+    }
+    if (probCov !== 0) {
+      this.#renormal = (1 - this.#probMeasure(0)) / probCov;
+    }
+  }
+
+  smoothedNr(r: number): number {
+    return Math.exp(this.#intercept + this.#slope * Math.log(r));
+  }
+
+  #probMeasure(count: number): number {
+    if (count === 0 && this.#freqdist.N() === 0) return 1;
+    if (count === 0) return this.#freqdist.Nr(1) / this.#freqdist.N();
+
+    const er1 = this.#switchAt > count ? this.#freqdist.Nr(count + 1) : this.smoothedNr(count + 1);
+    const er = this.#switchAt > count ? this.#freqdist.Nr(count) : this.smoothedNr(count);
+    const rStar = ((count + 1) * er1) / er;
+    return rStar / this.#freqdist.N();
+  }
+
+  prob(sample: T): number {
+    const count = this.#freqdist.get(sample);
+    let prob = this.#probMeasure(count);
+    if (count === 0) {
+      prob = this.#bins === this.#freqdist.B() ? 0 : prob / (this.#bins - this.#freqdist.B());
+    } else {
+      prob *= this.#renormal;
+    }
+    return prob;
+  }
+
+  discount(): number {
+    return this.smoothedNr(1) / this.#freqdist.N();
+  }
+
+  max(): T {
+    return this.#freqdist.max();
+  }
+
+  samples(): Iterable<T> {
+    return this.#freqdist.keys();
+  }
+
+  freqdist(): FreqDist<T> {
+    return this.#freqdist;
+  }
+
+  override toString(): string {
+    return `<SimpleGoodTuringProbDist based on ${this.#freqdist.N()} samples>`;
+  }
+}
+
 export class UniformProbDist<T> extends ProbDistI<T> {
   readonly #samples: T[];
 

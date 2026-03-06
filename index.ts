@@ -107,8 +107,10 @@ export {
   MLEProbDist,
   MutableProbDist,
   ProbDistI,
+  SimpleGoodTuringProbDist,
   sumLogs,
   UniformProbDist,
+  WittenBellProbDist,
 } from "./src/probability";
 export type { ProbDistFactory, ProbDistLike } from "./src/probability";
 export { ConcordanceIndex, ContextIndex, Text } from "./src/text";

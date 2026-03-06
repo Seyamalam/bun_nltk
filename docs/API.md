@@ -146,20 +146,32 @@ These functions are pure TypeScript reference implementations.
 - `abstract class ProbDistI<T>`
 - `prob(sample: T): number`
 - `logprob(sample: T): number`
+- `logProb(sample: T): number`
 - `max(): T`
 - `samples(): Iterable<T>`
-- `new DictionaryProbDist(probDict?: ReadonlyMap<T, number> | Record<string, number>, options?: { log?: boolean; normalize?: boolean })`
+- `new DictionaryProbDist(probDict?: ReadonlyMap<T, number> | Record<string, number>, log?: boolean, normalize?: boolean)`
+- `new UniformProbDist(samples: Iterable<T>)`
 - `new MLEProbDist(freqDist: FreqDist<T>)`
 - `freqdist(): FreqDist<T>`
 - `new LidstoneProbDist(freqDist: FreqDist<T>, gamma: number, bins?: number)`
-- `bins(): number`
 - `discount(): number`
+- `bins(): number`
 - `new LaplaceProbDist(freqDist: FreqDist<T>, bins?: number)`
 - `new ELEProbDist(freqDist: FreqDist<T>, bins?: number)`
+- `new MutableProbDist(probDist: ProbDistI<T>, samples: Iterable<T>, storeLogs?: boolean)`
+- `update(sample: T, prob: number, log?: boolean): void`
+- `new WittenBellProbDist(freqDist: FreqDist<T>, bins?: number)`
+- `new SimpleGoodTuringProbDist(freqDist: FreqDist<T>, bins?: number)`
+- `smoothedNr(r: number): number`
 - `abstract class ConditionalProbDistI<C, T>`
 - `conditions(): C[]`
 - `new ConditionalProbDist(cfdist: ConditionalFreqDist<C, T>, probdistFactory: (fd: FreqDist<T>, ...args: unknown[]) => ProbDistI<T>, ...factoryArgs: unknown[])`
 - `get(condition: C): ProbDistI<T>`
+- `prob(condition: C, sample: T): number`
+- `logprob(condition: C, sample: T): number`
+- `logProb(condition: C, sample: T): number`
+- `addLogs(logx: number, logy: number): number`
+- `sumLogs(logs: number[]): number`
 - `entropy(pdist: ProbDistI<T>): number`
 - `logLikelihood(testPdist: ProbDistI<T>, actualPdist: ProbDistI<T>): number`
 
@@ -207,29 +219,6 @@ These functions are pure TypeScript reference implementations.
 - `collocations(num?: number, windowSize?: number): string[]`
 - `similar(word: string, num?: number): string[]`
 - `commonContexts(words: string[], num?: number): Array<[string, string]>`
-
-## Probability Distributions
-
-- `abstract class ProbDistI<T>`
-- `prob(sample: T): number`
-- `logProb(sample: T): number`
-- `max(): T`
-- `samples(): IterableIterator<T>`
-- `new DictionaryProbDist(probDict: ReadonlyMap<T, number> | Record<string, number>, options?: { log?: boolean; normalize?: boolean })`
-- `new UniformProbDist(samples: Iterable<T>)`
-- `new MLEProbDist(freqdist: FreqDist<T>)`
-- `freqdist(): FreqDist<T>`
-- `new LidstoneProbDist(freqdist: FreqDist<T>, gamma: number, bins?: number)`
-- `discount(): number`
-- `new LaplaceProbDist(freqdist: FreqDist<T>, bins?: number)`
-- `new ELEProbDist(freqdist: FreqDist<T>, bins?: number)`
-- `new MutableProbDist(probDist: ProbDistI<T>, samples: Iterable<T>, storeLogs?: boolean)`
-- `update(sample: T, prob: number, log?: boolean): void`
-- `new ConditionalProbDist(cfdist: ConditionalFreqDist<C, T>, factory: (freqdist: FreqDist<T>, bins?: number) => ProbDistI<T>, bins?: number)`
-- `get(condition: C): ProbDistI<T>`
-- `conditions(): C[]`
-- `samples(condition: C): IterableIterator<T>`
-- `prob(condition: C, sample: T): number`
 
 ## Tokenizers
 
