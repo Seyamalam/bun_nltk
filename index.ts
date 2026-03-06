@@ -158,6 +158,13 @@ export {
   trainNaiveBayesTextClassifier,
 } from "./src/classify";
 export type { NaiveBayesExample, NaiveBayesPrediction, NaiveBayesSerialized } from "./src/classify";
+export {
+  DecisionTreeClassifier,
+  MaxentClassifier,
+  NaiveBayesClassifier,
+  PositiveNaiveBayesClassifier,
+} from "./src/classifier_compat";
+export type { FeatureSet, FeatureValue, LabeledFeatureset } from "./src/classifier_compat";
 export { flattenSparseBatch, TextFeatureVectorizer } from "./src/features";
 export type { SparseVector, VectorizerOptions, VectorizerSerialized } from "./src/features";
 export {

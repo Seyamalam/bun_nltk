@@ -366,6 +366,20 @@ These functions are pure TypeScript reference implementations.
 - `trainNaiveBayesTextClassifier(examples: Array<{ label: string; text: string }>, options?: { smoothing?: number }): NaiveBayesTextClassifier`
 - `loadNaiveBayesTextClassifier(payload: NaiveBayesSerialized): NaiveBayesTextClassifier`
 
+## Classification Compatibility Wrappers
+
+- `type FeatureSet = Record<string, string | number | boolean | null | undefined>`
+- `type LabeledFeatureset = readonly [FeatureSet, string]`
+- `NaiveBayesClassifier.train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: { smoothing?: number }): NaiveBayesClassifier`
+- `DecisionTreeClassifier.train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: { maxDepth?: number; minSamples?: number; maxCandidateFeatures?: number; maxFeatures?: number }): DecisionTreeClassifier`
+- `MaxentClassifier.train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number }): MaxentClassifier`
+- `PositiveNaiveBayesClassifier.train(positiveFeaturesets: Iterable<FeatureSet>, unlabeledFeaturesets: Iterable<FeatureSet>, options?: { maxFeatures?: number; positivePrior?: number; positiveLabel?: string; negativeLabel?: string }): PositiveNaiveBayesClassifier`
+- `classify(featureset: FeatureSet): string`
+- `probClassify(featureset: FeatureSet): DictionaryProbDist<string>`
+- `classifyMany(featuresets: Iterable<FeatureSet>): string[]`
+- `probClassifyMany(featuresets: Iterable<FeatureSet>): DictionaryProbDist<string>[]`
+- `labels(): string[]`
+
 ## Classification (Decision Tree / Linear / Perceptron)
 
 - `new TextFeatureVectorizer(options?: { ngramMin?: number; ngramMax?: number; binary?: boolean; maxFeatures?: number })`
