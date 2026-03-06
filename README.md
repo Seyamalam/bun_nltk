@@ -21,6 +21,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Top-K bigram PMI collocation scoring (native, with `window_size >= 2`)
 - NLTK-style bigram collocation compatibility layer (`BigramAssocMeasures`, `BigramCollocationFinder`)
 - Text exploration compatibility layer (`ConcordanceIndex`, `ContextIndex`, `Text`)
+- Core `nltk.probability` compatibility layer (`ProbDistI`, `MLEProbDist`, `Lidstone` family, `ConditionalProbDist`)
 - Collision-free token ID frequency distribution API (`id <-> token`)
 - Native windowed bigram stats API (`left_id`, `right_id`, `count`, `pmi`)
 - Native Porter stemmer (ASCII, lowercasing)
@@ -35,6 +36,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Native POS regex/heuristic tagger baseline (`posTagAsciiNative`)
 - Native streaming `FreqDist`/`ConditionalFreqDist` builder with JSON export (`NativeFreqDistStream`)
 - NLTK-style `FreqDist` / `ConditionalFreqDist` compatibility classes with native-backed ASCII builders
+- NLTK-style probability distribution layer (`MLEProbDist`, `Lidstone`, `Laplace`, `ELE`, `ConditionalProbDist`)
 - Mini WordNet reader with synset lookup, relation traversal, and morphy-style inflection recovery
 - WordNet compatibility helpers (`lemmaNames`, `synsetFromPosAndOffset`, `senseKeys`, `synsetFromSenseKey`)
 - WordNet graph helpers (`hypernymPaths`, `lowestCommonHypernyms`, `shortestPathDistance`, `pathSimilarity`)

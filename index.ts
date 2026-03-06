@@ -94,6 +94,23 @@ export { ConditionalFreqDist, FreqDist } from "./src/freqdist";
 export type { ConditionalFreqDistInput, FreqDistInput } from "./src/freqdist";
 export { BigramAssocMeasures, BigramCollocationFinder } from "./src/collocations";
 export type { BigramScoreFn } from "./src/collocations";
+export {
+  addLogs,
+  ConditionalProbDist,
+  ConditionalProbDistI,
+  DictionaryProbDist,
+  ELEProbDist,
+  entropy,
+  LaplaceProbDist,
+  LidstoneProbDist,
+  logLikelihood,
+  MLEProbDist,
+  MutableProbDist,
+  ProbDistI,
+  sumLogs,
+  UniformProbDist,
+} from "./src/probability";
+export type { ProbDistFactory, ProbDistLike } from "./src/probability";
 export { ConcordanceIndex, ContextIndex, Text } from "./src/text";
 export type { ConcordanceLine } from "./src/text";
 export {
