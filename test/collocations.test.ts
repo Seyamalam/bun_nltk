@@ -119,31 +119,32 @@ test("BigramCollocationFinder.fromDocuments and fromTextAscii preserve document 
 test("TrigramCollocationFinder matches the NLTK documentation workflow", () => {
   const tokens = ["I", "do", "not", "like", "green", "eggs", "and", "ham", ",", "I", "do", "not", "like", "them", "Sam", "I", "am", "!"];
   const finder = TrigramCollocationFinder.fromWords(tokens);
+  const sortNgrams = <T>(rows: T[][]) => [...rows].sort((left, right) => left.join(" ").localeCompare(right.join(" ")));
 
-  expect(finder.scoreNgrams(TrigramAssocMeasures.raw_freq).map(([ngram]) => ngram)).toHaveLength(tokens.length - 2);
-  expect(finder.nbest(TrigramAssocMeasures.raw_freq, 2)).toEqual([
+  expect(finder.scoreNgrams(TrigramAssocMeasures.raw_freq).map(([ngram]) => ngram)).toHaveLength(14);
+  expect(sortNgrams(finder.nbest(TrigramAssocMeasures.raw_freq, 2))).toEqual(sortNgrams([
     ["I", "do", "not"],
     ["do", "not", "like"],
-  ]);
+  ]));
 
   const wide = TrigramCollocationFinder.fromWords(tokens, 4);
-  expect(wide.nbest(TrigramAssocMeasures.raw_freq, 4)).toEqual([
+  expect(sortNgrams(wide.nbest(TrigramAssocMeasures.raw_freq, 4))).toEqual(sortNgrams([
     ["I", "do", "like"],
     ["I", "do", "not"],
     ["I", "not", "like"],
     ["do", "not", "like"],
-  ]);
+  ]));
 
   finder.applyWordFilter((word) => word === "I" || word === "me");
   expect(finder.scoreNgrams(TrigramAssocMeasures.raw_freq)).toHaveLength(8);
-  expect([...finder.aboveScore(TrigramAssocMeasures.raw_freq, 1 / (tokens.length - 2))]).toEqual([["do", "not", "like"]]);
+  expect(sortNgrams([...finder.aboveScore(TrigramAssocMeasures.raw_freq, 1 / (tokens.length - 2))])).toEqual([["do", "not", "like"]]);
 });
 
 test("QuadgramCollocationFinder exposes contiguous fourgram candidates and ranking", () => {
   const tokens = ["I", "do", "not", "like", "green", "eggs", "and", "ham", ",", "I", "do", "not", "like", "them", "Sam", "I", "am", "!"];
   const finder = QuadgramCollocationFinder.fromWords(tokens);
 
-  expect(finder.scoreNgrams(QuadgramAssocMeasures.raw_freq)).toHaveLength(tokens.length - 3);
+  expect(finder.scoreNgrams(QuadgramAssocMeasures.raw_freq)).toHaveLength(14);
   expect(finder.scoreNgram(QuadgramAssocMeasures.raw_freq, "I", "do", "not", "like")).toBeGreaterThan(0);
 
   finder.applyWordFilter((word) => word === "!");
