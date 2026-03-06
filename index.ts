@@ -220,6 +220,21 @@ export {
   preparePerceptronTaggerModel,
 } from "./src/perceptron_tagger";
 export {
+  CFG,
+  ChartParser,
+  EarleyChartParser,
+  FeatureCFG,
+  FeatureChartParser,
+  FeatureEarleyChartParser,
+  LeftCornerChartParser,
+  PCFG,
+  PerceptronTagger,
+  pos_tag,
+  posTag,
+  RecursiveDescentParser,
+  ViterbiParser,
+} from "./src/parser_tagger_compat";
+export {
   bracketToTree,
   collapseUnaryChains,
   mapTreeLabels,

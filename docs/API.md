@@ -456,6 +456,29 @@ These functions are pure TypeScript reference implementations.
 - `loadPerceptronTaggerModel(path?: string): PerceptronTaggerModel`
 - `posTagPerceptronAscii(text: string, options?: { model?: PerceptronTaggerModel; wasm?: WasmNltk; useWasm?: boolean; useNative?: boolean }): Array<{ token: string; tag: string; tagId: number; start: number; length: number }>`
 
+## Parser/Tagger Compatibility Wrappers
+
+- `CFG.fromstring(grammarText: string, options?: { startSymbol?: string }): CFG`
+- `PCFG.fromstring(grammarText: string, options?: { startSymbol?: string }): PCFG`
+- `FeatureCFG.fromstring(grammarText: string, options?: { startSymbol?: string }): FeatureCFG`
+- `new ChartParser(grammar: CFG | CfgGrammar | string)`
+- `new EarleyChartParser(grammar: CFG | CfgGrammar | string)`
+- `new RecursiveDescentParser(grammar: CFG | CfgGrammar | string)`
+- `new LeftCornerChartParser(grammar: CFG | CfgGrammar | string)`
+- `parse(tokens: string[]): ParseTree[]`
+- `parseOne(tokens: string[]): ParseTree | null`
+- `new ViterbiParser(grammar: PCFG | PcfgGrammar | string)`
+- `parse(tokens: string[]): ProbabilisticParse[]`
+- `parseOne(tokens: string[]): ProbabilisticParse | null`
+- `new FeatureChartParser(grammar: FeatureCFG | FeatureCfgGrammar | string)`
+- `new FeatureEarleyChartParser(grammar: FeatureCFG | FeatureCfgGrammar | string)`
+- `new PerceptronTagger(model?: PerceptronTaggerModel | string)`
+- `tag(tokens: string[]): Array<[string, string]>`
+- `tag_sents(sentences: string[][]): Array<Array<[string, string]>>`
+- `tagText(text: string): Array<[string, string]>`
+- `posTag(value: string[] | string, options?: { model?: PerceptronTaggerModel | string }): Array<[string, string]>`
+- `pos_tag(value: string[] | string, options?: { model?: PerceptronTaggerModel | string }): Array<[string, string]>`
+
 ## WASM Runtime
 
 `WasmNltk` loads and executes the WASM build with reusable allocation pools.
