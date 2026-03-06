@@ -20,6 +20,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Native token materialization and n-gram materialization APIs
 - Top-K bigram PMI collocation scoring (native, with `window_size >= 2`)
 - NLTK-style bigram collocation compatibility layer (`BigramAssocMeasures`, `BigramCollocationFinder`)
+- Higher-order collocation compatibility (`TrigramAssocMeasures`, `QuadgramAssocMeasures`, `TrigramCollocationFinder`, `QuadgramCollocationFinder`)
 - Text exploration compatibility layer (`ConcordanceIndex`, `ContextIndex`, `Text`)
 - Core `nltk.probability` compatibility layer (`ProbDistI`, `MLEProbDist`, `Lidstone` family, `ConditionalProbDist`)
 - Advanced smoothing distributions (`WittenBellProbDist`, `SimpleGoodTuringProbDist`)

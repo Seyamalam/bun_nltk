@@ -1,5 +1,12 @@
 import { expect, test } from "bun:test";
-import { BigramAssocMeasures, BigramCollocationFinder } from "../index";
+import {
+  BigramAssocMeasures,
+  BigramCollocationFinder,
+  QuadgramAssocMeasures,
+  QuadgramCollocationFinder,
+  TrigramAssocMeasures,
+  TrigramCollocationFinder,
+} from "../index";
 
 const SENT = ["this", "this", "is", "is", "a", "a", "test", "test"] as const;
 
@@ -107,4 +114,94 @@ test("BigramCollocationFinder.fromDocuments and fromTextAscii preserve document 
   expect(fromText.ngramFd.get(["this", "is"])).toBe(2);
   expectClose(fromText.scoreNgram(BigramAssocMeasures.raw_freq, "this", "is")!, 2 / 9);
   expectClose(fromText.scoreNgram(BigramAssocMeasures.raw_freq, "a", "test")!, 2 / 9);
+});
+
+test("TrigramCollocationFinder matches the NLTK documentation workflow", () => {
+  const tokens = ["I", "do", "not", "like", "green", "eggs", "and", "ham", ",", "I", "do", "not", "like", "them", "Sam", "I", "am", "!"];
+  const finder = TrigramCollocationFinder.fromWords(tokens);
+
+  expect(finder.scoreNgrams(TrigramAssocMeasures.raw_freq).map(([ngram]) => ngram)).toHaveLength(tokens.length - 2);
+  expect(finder.nbest(TrigramAssocMeasures.raw_freq, 2)).toEqual([
+    ["I", "do", "not"],
+    ["do", "not", "like"],
+  ]);
+
+  const wide = TrigramCollocationFinder.fromWords(tokens, 4);
+  expect(wide.nbest(TrigramAssocMeasures.raw_freq, 4)).toEqual([
+    ["I", "do", "like"],
+    ["I", "do", "not"],
+    ["I", "not", "like"],
+    ["do", "not", "like"],
+  ]);
+
+  finder.applyWordFilter((word) => word === "I" || word === "me");
+  expect(finder.scoreNgrams(TrigramAssocMeasures.raw_freq)).toHaveLength(8);
+  expect([...finder.aboveScore(TrigramAssocMeasures.raw_freq, 1 / (tokens.length - 2))]).toEqual([["do", "not", "like"]]);
+});
+
+test("QuadgramCollocationFinder exposes contiguous fourgram candidates and ranking", () => {
+  const tokens = ["I", "do", "not", "like", "green", "eggs", "and", "ham", ",", "I", "do", "not", "like", "them", "Sam", "I", "am", "!"];
+  const finder = QuadgramCollocationFinder.fromWords(tokens);
+
+  expect(finder.scoreNgrams(QuadgramAssocMeasures.raw_freq)).toHaveLength(tokens.length - 3);
+  expect(finder.scoreNgram(QuadgramAssocMeasures.raw_freq, "I", "do", "not", "like")).toBeGreaterThan(0);
+
+  finder.applyWordFilter((word) => word === "!");
+  expect(finder.scoreNgrams(QuadgramAssocMeasures.raw_freq).every(([ngram]) => !ngram.includes("!"))).toBeTrue();
+});
+
+test("TrigramAssocMeasures reproduces NLTK contingency examples", () => {
+  expect(TrigramAssocMeasures._contingency(1, [1, 1, 1], [1, 73, 1], 2000)).toEqual([1, 0, 0, 0, 0, 72, 0, 1927]);
+  expect(TrigramAssocMeasures._marginals(1, 0, 0, 0, 0, 72, 0, 1927)).toEqual([1, [1, 1, 1], [1, 73, 1], 2000]);
+});
+
+test("TrigramCollocationFinder builds counts and scores trigrams", () => {
+  const finder = TrigramCollocationFinder.fromWords(SENT);
+  expect(finder.wordFd.mostCommon()).toEqual([
+    ["this", 2],
+    ["is", 2],
+    ["a", 2],
+    ["test", 2],
+  ]);
+  expect(finder.ngramFd.mostCommon()).toEqual([
+    [["this", "this", "is"], 1],
+    [["this", "is", "is"], 1],
+    [["is", "is", "a"], 1],
+    [["is", "a", "a"], 1],
+    [["a", "a", "test"], 1],
+    [["a", "test", "test"], 1],
+  ]);
+  expectClose(finder.scoreNgram(TrigramAssocMeasures.pmi, "this", "this", "is")!, 3);
+  expectClose(finder.scoreNgram(TrigramAssocMeasures.raw_freq, "a", "a", "test")!, 1 / 8);
+});
+
+test("QuadgramAssocMeasures reproduces NLTK marginal example", () => {
+  expect(
+    QuadgramAssocMeasures._marginals(1, 0, 2, 46, 552, 825, 2577, 34967, 1, 0, 2, 48, 7250, 9031, 28585, 356653),
+  ).toEqual([
+    1,
+    [2, 553, 3, 1],
+    [7804, 6, 3132, 1378, 49, 2],
+    [38970, 17660, 100, 38970],
+    440540,
+  ]);
+});
+
+test("QuadgramCollocationFinder builds counts and scores quadgrams", () => {
+  const finder = QuadgramCollocationFinder.fromWords(SENT);
+  expect(finder.wordFd.mostCommon()).toEqual([
+    ["this", 2],
+    ["is", 2],
+    ["a", 2],
+    ["test", 2],
+  ]);
+  expect(finder.ngramFd.mostCommon()).toEqual([
+    [["this", "this", "is", "is"], 1],
+    [["this", "is", "is", "a"], 1],
+    [["is", "is", "a", "a"], 1],
+    [["is", "a", "a", "test"], 1],
+    [["a", "a", "test", "test"], 1],
+  ]);
+  expectClose(finder.scoreNgram(QuadgramAssocMeasures.pmi, "this", "this", "is", "is")!, 5);
+  expectClose(finder.scoreNgram(QuadgramAssocMeasures.raw_freq, "a", "a", "test", "test")!, 1 / 8);
 });

@@ -198,6 +198,26 @@ These functions are pure TypeScript reference implementations.
 - `scoreNgrams(scoreFn: BigramScoreFn<T>): Array<[[T, T], number]>`
 - `nbest(scoreFn: BigramScoreFn<T>, count: number): Array<[T, T]>`
 - `aboveScore(scoreFn: BigramScoreFn<T>, minScore: number): IterableIterator<[T, T]>`
+- `TrigramAssocMeasures.raw_freq(n_iii: number, bigramMarginals: [number, number, number], unigramMarginals: [number, number, number], total: number): number`
+- `TrigramAssocMeasures.student_t(...)`, `mi_like(...)`, `pmi(...)`, `likelihood_ratio(...)`, `poisson_stirling(...)`, `jaccard(...)`
+- `new TrigramCollocationFinder(wordFd: FreqDist<T>, bigramFd: FreqDist<[T, T]>, wildcardFd: FreqDist<[T, T]>, trigramFd: FreqDist<[T, T, T]>)`
+- `TrigramCollocationFinder.fromWords(words: Iterable<T>, windowSize?: number): TrigramCollocationFinder<T>`
+- `bigramFinder(): BigramCollocationFinder<T>`
+- `applyFreqFilter(minFreq: number): this`
+- `applyNgramFilter(fn: (w1: T, w2: T, w3: T) => boolean): this`
+- `applyWordFilter(fn: (word: T) => boolean): this`
+- `scoreNgram(scoreFn: TrigramScoreFn<T>, w1: T, w2: T, w3: T): number | null`
+- `scoreNgrams(scoreFn: TrigramScoreFn<T>): Array<[[T, T, T], number]>`
+- `nbest(scoreFn: TrigramScoreFn<T>, count: number): Array<[T, T, T]>`
+- `QuadgramAssocMeasures.raw_freq(n_iiii: number, trigramMarginals: [number, number, number, number], bigramMarginals: [number, number, number, number, number, number], unigramMarginals: [number, number, number, number], total: number): number`
+- `QuadgramAssocMeasures.student_t(...)`, `mi_like(...)`, `pmi(...)`, `likelihood_ratio(...)`, `poisson_stirling(...)`, `jaccard(...)`
+- `new QuadgramCollocationFinder(wordFd: FreqDist<T>, quadgramFd: FreqDist<[T, T, T, T]>, ii: FreqDist<[T, T]>, iii: FreqDist<[T, T, T]>, ixi: FreqDist<[T, T]>, ixxi: FreqDist<[T, T]>, iixi: FreqDist<[T, T, T]>, ixii: FreqDist<[T, T, T]>)`
+- `QuadgramCollocationFinder.fromWords(words: Iterable<T>, windowSize?: number): QuadgramCollocationFinder<T>`
+- `applyFreqFilter(minFreq: number): this`
+- `applyWordFilter(fn: (word: T) => boolean): this`
+- `scoreNgram(scoreFn: QuadgramScoreFn<T>, w1: T, w2: T, w3: T, w4: T): number | null`
+- `scoreNgrams(scoreFn: QuadgramScoreFn<T>): Array<[[T, T, T, T], number]>`
+- `nbest(scoreFn: QuadgramScoreFn<T>, count: number): Array<[T, T, T, T]>`
 
 ## Text Exploration
 
