@@ -7,7 +7,7 @@ This package is intended for Bun/Node distribution with native and WASM backends
 - npm account with publish permission for the package name.
 - Bun installed.
 - Python installed (for benchmark/parity scripts).
-- Zig installed (for native and WASM builds).
+- Rust toolchain with cargo installed (for native and WASM builds; wasm32-unknown-unknown target required for WASM).
 
 ## Publish Checklist
 
@@ -20,9 +20,9 @@ This package is intended for Bun/Node distribution with native and WASM backends
    - `bun run wasm:size:check`
    - `bun run parity:report`
 3. Ensure docs are current:
-   - [CHANGELOG.md](/C:/Users/user/Desktop/bun/bun_nltk/CHANGELOG.md)
-   - [docs/API.md](/C:/Users/user/Desktop/bun/bun_nltk/docs/API.md)
-   - [docs/VERSIONING.md](/C:/Users/user/Desktop/bun/bun_nltk/docs/VERSIONING.md)
+   - [CHANGELOG.md](CHANGELOG.md)
+   - [docs/API.md](docs/API.md)
+   - [docs/VERSIONING.md](docs/VERSIONING.md)
 4. Bump version in `package.json`.
 5. Publish:
    - `bun publish`
@@ -30,7 +30,6 @@ This package is intended for Bun/Node distribution with native and WASM backends
 
 ## Automated GitHub Release Workflow
 
-Release automation is defined in [.github/workflows/release.yml](/C:/Users/user/Desktop/bun/bun_nltk/.github/workflows/release.yml).
 
 - Trigger: push tag `v*` (for example `v0.5.0`, `v0.6.0-beta.1`).
 - It validates:
@@ -48,7 +47,6 @@ You can also run it manually via `workflow_dispatch` and override dist-tag.
 
 ## Post-Publish Smoke Workflow
 
-Post-publish verification is defined in [.github/workflows/post-publish-smoke.yml](/C:/Users/user/Desktop/bun/bun_nltk/.github/workflows/post-publish-smoke.yml).
 
 - Triggered automatically when `Release` succeeds.
 - Also supports manual `workflow_dispatch`.

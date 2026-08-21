@@ -19,7 +19,7 @@ function ensureNativeBuilt(): void {
   const path = nativeLibraryPath();
   if (existsSync(path)) return;
 
-  const build = Bun.spawnSync(["bun", "run", "build:zig"], {
+  const build = Bun.spawnSync(["bun", "run", "build:rust"], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "inherit",
     stderr: "inherit",

@@ -11,7 +11,7 @@ This project uses Semantic Versioning (`MAJOR.MINOR.PATCH`).
 ## Source of Truth
 
 - `package.json` `version` is the publish version.
-- [CHANGELOG.md](/C:/Users/user/Desktop/bun/bun_nltk/CHANGELOG.md) must include an entry for every released version.
+- [CHANGELOG.md](CHANGELOG.md) must include an entry for every released version.
 
 ## Release Process
 
@@ -37,7 +37,7 @@ This project uses Semantic Versioning (`MAJOR.MINOR.PATCH`).
 
 ## Breaking Change Checklist
 
-- Update API docs in [docs/API.md](/C:/Users/user/Desktop/bun/bun_nltk/docs/API.md).
+- Update API docs in [docs/API.md](docs/API.md).
 - Add migration notes to `CHANGELOG.md`.
 - Add/adjust tests for old and new behavior boundaries.
 - Validate benchmarks to confirm no unacceptable regressions.

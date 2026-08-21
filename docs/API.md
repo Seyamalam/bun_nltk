@@ -1,6 +1,6 @@
 # API Reference
 
-This document describes the public API exported by [index.ts](/C:/Users/user/Desktop/bun/bun_nltk/index.ts).
+This document describes the public API exported by [index.ts](index.ts).
 
 ## Installation
 
@@ -23,7 +23,7 @@ import {
 } from "bun_nltk";
 ```
 
-## Native Zig API
+## Native Rust API
 
 These functions call the dynamic native library through Bun FFI.
 

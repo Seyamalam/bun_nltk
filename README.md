@@ -1,14 +1,14 @@
 # bun_nltk
 
-Fast NLP primitives in Zig with Bun bindings (Cycle 1).
+Fast NLP primitives in Rust with Bun bindings.
 
 ## Package docs
 
-- API reference: [docs/API.md](/C:/Users/user/Desktop/bun/bun_nltk/docs/API.md)
-- Versioning policy: [docs/VERSIONING.md](/C:/Users/user/Desktop/bun/bun_nltk/docs/VERSIONING.md)
-- Publishing guide: [docs/PUBLISHING.md](/C:/Users/user/Desktop/bun/bun_nltk/docs/PUBLISHING.md)
-- Changelog: [CHANGELOG.md](/C:/Users/user/Desktop/bun/bun_nltk/CHANGELOG.md)
-- Release workflow: [.github/workflows/release.yml](/C:/Users/user/Desktop/bun/bun_nltk/.github/workflows/release.yml)
+- API reference: [docs/API.md](docs/API.md)
+- Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md)
+- Publishing guide: [docs/PUBLISHING.md](docs/PUBLISHING.md)
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
+
 
 ## Implemented in this milestone
 
@@ -34,7 +34,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Sentence tokenizer parity subset (`sentenceTokenizeSubset`) + Python parity harness
 - Trainable Punkt tokenizer/model APIs (`trainPunktModel`, `sentenceTokenizePunkt`)
 - NLTK-style Punkt wrapper APIs (`PunktTrainer`, `PunktSentenceTokenizer`, plus subset wrappers)
-- Native Zig Punkt sentence-splitting fast path (`sentenceTokenizePunktAsciiNative`) with WASM equivalent
+- Native Punkt sentence-splitting fast path (`sentenceTokenizePunktAsciiNative`) with WASM equivalent
 - Native normalization pipeline (ASCII fast path with optional stopword filtering)
 - Unicode normalization fallback pipeline (`normalizeTokensUnicode`)
 - Native POS regex/heuristic tagger baseline (`posTagAsciiNative`)
@@ -44,7 +44,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Mini WordNet reader with synset lookup, relation traversal, and morphy-style inflection recovery
 - WordNet compatibility helpers (`lemmaNames`, `synsetFromPosAndOffset`, `senseKeys`, `synsetFromSenseKey`)
 - WordNet graph helpers (`hypernymPaths`, `lowestCommonHypernyms`, `shortestPathDistance`, `pathSimilarity`)
-- Native Zig morphy accelerator (`wordnetMorphyAsciiNative`) with WASM equivalent
+- Native morphy accelerator (`wordnetMorphyAsciiNative`) with WASM equivalent
 - Packed WordNet corpus pipeline (`wordnet:pack`) with binary loader (`loadWordNetPacked`)
 - Default WordNet runtime loader (`loadWordNet`) that uses packed official corpus when present
 - N-gram language model stack (`MLE`, `Lidstone`, `Kneser-Ney Interpolated`) with Python comparison harness
@@ -71,7 +71,7 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 - Optional external corpus bundle loader + tagged/chunked corpus readers (`parseConllTagged`, `parseBrownTagged`, `parseConllChunked`)
 - Corpus registry manifest loader/downloader with checksum validation (`loadCorpusRegistryManifest`, `downloadCorpusRegistry`)
 - SIMD token counting fast path (`x86_64` vectorized path + scalar fallback)
-- Shared Zig perceptron inference core used by both native and WASM runtimes
+- Shared perceptron inference core used by both native and WASM runtimes
 - Browser-focused WASM API wrapper with memory pool reuse (`WasmNltk`)
 - WASM target for browser/runtime usage with parity benchmarks
 - Browser WASM benchmark harness (Chromium/Firefox in CI strict mode)
@@ -84,16 +84,16 @@ Fast NLP primitives in Zig with Bun bindings (Cycle 1).
 
 All benchmarks below use `bench/datasets/synthetic.txt` on this machine.
 
-| Workload | Zig/Bun median sec | Python sec | Faster side | Speedup | Percent faster |
+| Workload | Rust/Bun median sec | Python sec | Faster side | Speedup | Percent faster |
 |---|---:|---:|---|---:|---:|
-| Token + unique + ngram + unique ngram (`bench:compare`) | 2.767 | 10.071 | Zig native | 3.64x | 263.93% |
-| Top-K PMI collocations (`bench:compare:collocations`) | 2.090 | 23.945 | Zig native | 11.46x | 1045.90% |
-| Porter stemming (`bench:compare:porter`) | 11.942 | 120.101 | Zig native | 10.06x | 905.70% |
-| WASM token/ngram path (`bench:compare:wasm`) | 4.150 | 13.241 | Zig WASM | 3.19x | 219.06% |
-| Native vs Python in wasm suite (`bench:compare:wasm`) | 1.719 | 13.241 | Zig native | 7.70x | 670.48% |
-| Sentence tokenizer subset (`bench:compare:sentence`) | 1.680 | 16.580 | Zig/Bun subset | 9.87x | 886.70% |
-| Perceptron POS tagger (`bench:compare:tagger`) | 19.880 | 82.849 | Zig native | 4.17x | 316.75% |
-| Streaming FreqDist + ConditionalFreqDist (`bench:compare:freqdist`) | 3.206 | 20.971 | Zig native | 6.54x | 554.17% |
+| Token + unique + ngram + unique ngram (`bench:compare`) | 2.767 | 10.071 | Rust native | 3.64x | 263.93% |
+| Top-K PMI collocations (`bench:compare:collocations`) | 2.090 | 23.945 | Rust native | 11.46x | 1045.90% |
+| Porter stemming (`bench:compare:porter`) | 11.942 | 120.101 | Rust native | 10.06x | 905.70% |
+| WASM token/ngram path (`bench:compare:wasm`) | 4.150 | 13.241 | Rust WASM | 3.19x | 219.06% |
+| Native vs Python in wasm suite (`bench:compare:wasm`) | 1.719 | 13.241 | Rust native | 7.70x | 670.48% |
+| Sentence tokenizer subset (`bench:compare:sentence`) | 1.680 | 16.580 | Rust/Bun subset | 9.87x | 886.70% |
+| Perceptron POS tagger (`bench:compare:tagger`) | 19.880 | 82.849 | Rust native | 4.17x | 316.75% |
+| Streaming FreqDist + ConditionalFreqDist (`bench:compare:freqdist`) | 3.206 | 20.971 | Rust native | 6.54x | 554.17% |
 
 Notes:
 - Sentence tokenizer is a Punkt-compatible subset, not full Punkt parity on arbitrary corpora.
@@ -104,29 +104,29 @@ Notes:
 
 ## Extended benchmark results (8MB gate dataset)
 
-| Workload | Zig/Bun median sec | Python sec | Faster side | Speedup | Percent faster |
+| Workload | Rust/Bun median sec | Python sec | Faster side | Speedup | Percent faster |
 |---|---:|---:|---|---:|---:|
-| Punkt tokenizer default path (`bench:compare:punkt`) | 0.0848 | 1.3463 | Zig native | 15.87x | 1487.19% |
-| N-gram LM (Kneser-Ney) score+perplexity (`bench:compare:lm`) | 0.1324 | 2.8661 | Zig/Bun | 21.64x | 2064.19% |
-| Regexp chunk parser (`bench:compare:chunk`) | 0.0024 | 1.5511 | Zig/Bun | 643.08x | 64208.28% |
-| WordNet lookup + morphy workload (`bench:compare:wordnet`) | 0.0009 | 0.0835 | Zig/Bun | 91.55x | 9054.67% |
-| CFG chart parser subset (`bench:compare:parser`) | 0.0088 | 0.3292 | Zig/Bun | 37.51x | 3651.05% |
-| Naive Bayes text classifier (`bench:compare:classifier`) | 0.0081 | 0.0112 | Zig/Bun | 1.38x | 38.40% |
-| PCFG Viterbi chart parser (`bench:compare:pcfg`) | 0.0191 | 0.4153 | Zig/Bun | 21.80x | 2080.00% |
-| MaxEnt text classifier (`bench:compare:maxent`) | 0.0244 | 0.1824 | Zig/Bun | 7.46x | 646.00% |
-| Sparse linear logits hot loop (`bench:compare:linear`) | 0.0024 | 2.0001 | Zig native | 840.54x | 83954.04% |
-| Decision tree text classifier (`bench:compare:decision-tree`) | 0.0725 | 0.5720 | Zig/Bun | 7.89x | 688.55% |
-| Earley parser workload (`bench:compare:earley`) | 0.1149 | 4.6483 | Zig/Bun | 40.47x | 3947.07% |
-| Left-corner parser workload (`bench:compare:leftcorner`) | 0.0197 | 0.5359 | Zig/Bun | 27.27x | 2626.82% |
-| Feature parser workload (`bench:compare:feature-parser`) | 0.0110 | 1.1432 | Zig/Bun | 104.38x | 10338.21% |
-| Feature Earley parser workload (`bench:compare:feature-earley`) | 0.0117 | 0.1592 | Zig/Bun | 13.64x | 1263.62% |
-| Conditional Exponential classifier (`bench:compare:condexp`) | 0.0111 | 0.1685 | Zig/Bun | 15.15x | 1414.67% |
-| Positive Naive Bayes classifier (`bench:compare:positive-nb`) | 0.0199 | 0.0416 | Zig/Bun | 2.09x | 108.63% |
+| Punkt tokenizer default path (`bench:compare:punkt`) | 0.0848 | 1.3463 | Rust native | 15.87x | 1487.19% |
+| N-gram LM (Kneser-Ney) score+perplexity (`bench:compare:lm`) | 0.1324 | 2.8661 | Rust/Bun | 21.64x | 2064.19% |
+| Regexp chunk parser (`bench:compare:chunk`) | 0.0024 | 1.5511 | Rust/Bun | 643.08x | 64208.28% |
+| WordNet lookup + morphy workload (`bench:compare:wordnet`) | 0.0009 | 0.0835 | Rust/Bun | 91.55x | 9054.67% |
+| CFG chart parser subset (`bench:compare:parser`) | 0.0088 | 0.3292 | Rust/Bun | 37.51x | 3651.05% |
+| Naive Bayes text classifier (`bench:compare:classifier`) | 0.0081 | 0.0112 | Rust/Bun | 1.38x | 38.40% |
+| PCFG Viterbi chart parser (`bench:compare:pcfg`) | 0.0191 | 0.4153 | Rust/Bun | 21.80x | 2080.00% |
+| MaxEnt text classifier (`bench:compare:maxent`) | 0.0244 | 0.1824 | Rust/Bun | 7.46x | 646.00% |
+| Sparse linear logits hot loop (`bench:compare:linear`) | 0.0024 | 2.0001 | Rust native | 840.54x | 83954.04% |
+| Decision tree text classifier (`bench:compare:decision-tree`) | 0.0725 | 0.5720 | Rust/Bun | 7.89x | 688.55% |
+| Earley parser workload (`bench:compare:earley`) | 0.1149 | 4.6483 | Rust/Bun | 40.47x | 3947.07% |
+| Left-corner parser workload (`bench:compare:leftcorner`) | 0.0197 | 0.5359 | Rust/Bun | 27.27x | 2626.82% |
+| Feature parser workload (`bench:compare:feature-parser`) | 0.0110 | 1.1432 | Rust/Bun | 104.38x | 10338.21% |
+| Feature Earley parser workload (`bench:compare:feature-earley`) | 0.0117 | 0.1592 | Rust/Bun | 13.64x | 1263.62% |
+| Conditional Exponential classifier (`bench:compare:condexp`) | 0.0111 | 0.1685 | Rust/Bun | 15.15x | 1414.67% |
+| Positive Naive Bayes classifier (`bench:compare:positive-nb`) | 0.0199 | 0.0416 | Rust/Bun | 2.09x | 108.63% |
 
-## Build native Zig library
+## Build native Rust library
 
 ```bash
-bun run build:zig
+bun run build:rust
 ```
 
 ## Build WASM library
