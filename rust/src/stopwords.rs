@@ -1,4 +1,5 @@
 use crate::ascii;
+use std::sync::OnceLock;
 
 const STOPWORD_HASHES: [u64; 80] = [
     ascii::hash_token_const(b"a"),
@@ -83,8 +84,18 @@ const STOPWORD_HASHES: [u64; 80] = [
     ascii::hash_token_const(b"yours"),
 ];
 
+static SORTED: OnceLock<Vec<u64>> = OnceLock::new();
+
+fn sorted_hashes() -> &'static [u64] {
+    SORTED.get_or_init(|| {
+        let mut v = STOPWORD_HASHES.to_vec();
+        v.sort_unstable();
+        v
+    })
+}
+
 pub fn is_stopword_hash(hash: u64) -> bool {
-    STOPWORD_HASHES.binary_search(&hash).is_ok()
+    sorted_hashes().binary_search(&hash).is_ok()
 }
 
 #[cfg(test)]
@@ -97,6 +108,7 @@ mod tests {
         assert!(is_stopword_hash(ascii::hash_token(b"the")));
         assert!(is_stopword_hash(ascii::hash_token(b"and")));
         assert!(!is_stopword_hash(ascii::hash_token(b"rust")));
-        assert!(STOPWORD_HASHES.windows(2).all(|w| w[0] < w[1]));
+        assert!(sorted_hashes().windows(2).all(|w| w[0] < w[1]));
     }
 }
+
