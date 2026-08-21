@@ -240,6 +240,41 @@ function main() {
         "bench/compare_positive_nb.ts",
       ],
     },
+    {
+      module: "metrics_distance",
+      feature: "jaccard/masi/edit-align/scores/windowdiff/pk/spearman",
+      requiredParity: ["distance"],
+      tests: ["test/distance_metrics.test.ts"],
+      benches: ["bench/parity_distance.ts"],
+    },
+    {
+      module: "tag_sequential",
+      feature: "Default/Regexp/Unigram/Bigram/Trigram backoff taggers",
+      requiredParity: ["seq_taggers"],
+      tests: ["test/sequential_taggers.test.ts"],
+      benches: ["bench/parity_seq_taggers.ts"],
+    },
+    {
+      module: "wsd",
+      feature: "Lesk algorithm over bundled WordNet",
+      requiredParity: ["wsd"],
+      tests: ["test/wsd.test.ts"],
+      benches: ["bench/parity_wsd.ts"],
+    },
+    {
+      module: "translation_metrics_extra",
+      feature: "chrF + NIST scores",
+      requiredParity: ["chrf_nist"],
+      tests: ["test/chrf_nist.test.ts"],
+      benches: ["bench/parity_chrf_nist.ts"],
+    },
+    {
+      module: "lm_models",
+      feature: "StupidBackoff/WittenBellInterpolated/AbsoluteDiscountingInterpolated",
+      requiredParity: ["lm_models"],
+      tests: ["test/lm_models.test.ts"],
+      benches: ["bench/parity_lm_models.ts"],
+    },
   ];
 
   const items: Item[] = defs.map((def) => {
