@@ -6,7 +6,14 @@ import json
 import math
 from typing import Any
 
-from nltk.lm import KneserNeyInterpolated, Lidstone, MLE
+from nltk.lm import (
+    AbsoluteDiscountingInterpolated,
+    KneserNeyInterpolated,
+    Lidstone,
+    MLE,
+    StupidBackoff,
+    WittenBellInterpolated,
+)
 from nltk.lm.preprocessing import padded_everygram_pipeline
 
 
@@ -15,6 +22,7 @@ def build_model(payload: dict[str, Any]):
     model_name = str(payload["model"])
     gamma = float(payload.get("gamma", 0.1))
     discount = float(payload.get("discount", 0.75))
+    alpha = float(payload.get("alpha", 0.4))
     sentences = [
         [str(token).lower() for token in sentence]
         for sentence in payload["sentences"]
@@ -27,6 +35,12 @@ def build_model(payload: dict[str, Any]):
         model = Lidstone(gamma, order)
     elif model_name == "kneser_ney_interpolated":
         model = KneserNeyInterpolated(order, discount=discount)
+    elif model_name == "stupid_backoff":
+        model = StupidBackoff(alpha=alpha, order=order)
+    elif model_name == "witten_bell_interpolated":
+        model = WittenBellInterpolated(order)
+    elif model_name == "absolute_discounting_interpolated":
+        model = AbsoluteDiscountingInterpolated(order, discount=discount)
     else:
         raise ValueError(f"unsupported model: {model_name}")
 

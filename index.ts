@@ -244,3 +244,45 @@ export {
 } from "./src/tree_transforms";
 export { dependencyParse, dependencyParseText } from "./src/dependency";
 export type { DependencyArc, DependencyParse } from "./src/dependency";
+export {
+  binaryDistance,
+  customDistance,
+  editDistanceAlign,
+  fMeasure,
+  fractionalPresence,
+  intervalDistance,
+  jaccardDistance,
+  logLikelihood as metricsLogLikelihood,
+  masiDistance,
+  pk,
+  precision,
+  presence,
+  recall,
+  sorensenDiceDistance,
+  sorensenDiceSimilarity,
+  spearmanCorrelation,
+  windowdiff,
+} from "./src/distance_metrics";
+export type { LabelSet, ProbabilityMap, Ranking, Segmentation } from "./src/distance_metrics";
+export {
+  BigramTagger,
+  DefaultTagger,
+  NgramTagger,
+  RegexpTagger,
+  SequentialBackoffTagger,
+  ContextTagger,
+  TrigramTagger,
+  UnigramTagger,
+} from "./src/sequential_taggers";
+export type {
+  GoldSentence,
+  NgramTaggerOptions,
+  TagContext,
+  TaggedToken as SeqTaggedToken,
+  TaggerModel,
+  UntaggedSentence,
+} from "./src/sequential_taggers";
+export { lesk, synsetDefinition } from "./src/wsd";
+export type { Synset as WsdSynset } from "./src/wsd";
+export { corpusChrF, corpusNist, nistLengthPenalty, sentenceChrF, sentenceNist } from "./src/translation_metrics_extra";
+export type { ChrFOptions, NistOptions } from "./src/translation_metrics_extra";

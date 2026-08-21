@@ -1,12 +1,25 @@
 import { evaluateLanguageModelIdsNative } from "./native";
 
-export type LanguageModelType = "mle" | "lidstone" | "kneser_ney_interpolated";
+export type LanguageModelType =
+  | "mle"
+  | "lidstone"
+  | "kneser_ney_interpolated"
+  | "stupid_backoff"
+  | "witten_bell_interpolated"
+  | "absolute_discounting_interpolated";
+
+const NATIVE_LM_MODELS: ReadonlySet<LanguageModelType> = new Set([
+  "mle",
+  "lidstone",
+  "kneser_ney_interpolated",
+]);
 
 export type NgramLanguageModelOptions = {
   order: number;
   model?: LanguageModelType;
   gamma?: number;
   discount?: number;
+  alpha?: number;
   padLeft?: boolean;
   padRight?: boolean;
   startToken?: string;
@@ -56,6 +69,7 @@ export class NgramLanguageModel {
   readonly model: LanguageModelType;
   readonly gamma: number;
   readonly discount: number;
+  readonly alpha: number;
   readonly padLeft: boolean;
   readonly padRight: boolean;
   readonly startToken: string;
@@ -67,6 +81,13 @@ export class NgramLanguageModel {
   private readonly continuationByWord: Map<string, Set<string>>;
   private readonly continuationTypeCount: number;
   private readonly unigramTotal: number;
+  // NLTK's padded_everygram_pipeline pads order-1 tokens on BOTH sides, while
+  // prepareSentences above pads only one end token on the right. The extra
+  // right-pad tokens shift the unigram distribution that StupidBackoff,
+  // WittenBell and AbsoluteDiscounting bottom out at (unigrams.freq(word)),
+  // so the new models correct for it here without changing any existing
+  // counts or behavior.
+  private readonly endTokenExtraCount: number;
   private readonly nativePrepared: NativePrepared | null;
 
   constructor(sentences: string[][], options: NgramLanguageModelOptions) {
@@ -77,6 +98,7 @@ export class NgramLanguageModel {
     this.model = options.model ?? "mle";
     this.gamma = options.gamma ?? 0.1;
     this.discount = options.discount ?? 0.75;
+    this.alpha = options.alpha ?? 0.4;
     this.padLeft = options.padLeft ?? true;
     this.padRight = options.padRight ?? true;
     this.startToken = options.startToken ?? "<s>";
@@ -111,6 +133,8 @@ export class NgramLanguageModel {
 
     this.vocabulary = [...vocab].sort();
     this.unigramTotal = [...this.countsByOrder[1]!.values()].reduce((acc, count) => acc + count, 0);
+    this.endTokenExtraCount =
+      sentences.length * Math.max(0, (this.padRight ? this.order - 2 : this.order - 1));
     this.continuationTypeCount = [...this.continuationByWord.values()].reduce((acc, set) => acc + set.size, 0);
     this.nativePrepared = this.order <= 3 ? this.prepareNative(prepared) : null;
   }
@@ -218,11 +242,85 @@ export class NgramLanguageModel {
     return discounted + lambda * this.kneserNeyScore(word, ctx.slice(1));
   }
 
+  private unigramFreq(word: string): number {
+    if (this.unigramTotal === 0) return 0;
+    return (this.countsByOrder[1]!.get(key([word])) ?? 0) / this.unigramTotal;
+  }
+
+  // Unigram frequency as nltk.lm computes it: over the stream padded with
+  // order-1 tokens on both sides. See endTokenExtraCount.
+  private nltkUnigramFreq(word: string): number {
+    const total = this.unigramTotal + this.endTokenExtraCount;
+    if (total === 0) return 0;
+    const count =
+      (this.countsByOrder[1]!.get(key([word])) ?? 0) +
+      (word === this.endToken ? this.endTokenExtraCount : 0);
+    return count / total;
+  }
+
+  // Mirrors nltk.lm.models.StupidBackoff.unmasked_score. Scores are backoff
+  // weights, not a true probability distribution (n-gram scores of the same
+  // order do not sum to unity), so perplexity over these scores is only a
+  // pseudo-perplexity — it matches the python baseline's clamped computation,
+  // not an information-theoretic quantity.
+  private stupidBackoffScore(word: string, context: string[]): number {
+    const ctx = this.backoffContext(context);
+    if (ctx.length === 0) return this.nltkUnigramFreq(word);
+
+    const n = ctx.length + 1;
+    const gramCount = this.countsByOrder[n]!.get(key([...ctx, word])) ?? 0;
+    if (gramCount > 0) {
+      const ctxCount = this.countsByOrder[n - 1]!.get(key(ctx)) ?? 0;
+      return gramCount / ctxCount;
+    }
+    return this.alpha * this.stupidBackoffScore(word, ctx.slice(1));
+  }
+
+  // Mirrors nltk.lm.smoothing.WittenBell via InterpolatedLanguageModel:
+  // alpha = (1 - gamma) * P_MLE(w|ctx), gamma = n_plus / (n_plus + N(ctx)).
+  private wittenBellScore(word: string, context: string[]): number {
+    const ctx = this.backoffContext(context);
+    if (ctx.length === 0) return this.nltkUnigramFreq(word);
+
+    const n = ctx.length + 1;
+    const contextKey = key(ctx);
+    const ctxCount = this.countsByOrder[n - 1]!.get(contextKey) ?? 0;
+    if (ctxCount === 0) return this.wittenBellScore(word, ctx.slice(1));
+
+    const gramCount = this.countsByOrder[n]!.get(key([...ctx, word])) ?? 0;
+    const nPlus = this.followersByContext[n]!.get(contextKey)?.size ?? 0;
+    const gamma = nPlus / (nPlus + ctxCount);
+    const alpha = (1 - gamma) * (gramCount / ctxCount);
+    return alpha + gamma * this.wittenBellScore(word, ctx.slice(1));
+  }
+
+  // Mirrors nltk.lm.smoothing.AbsoluteDiscounting via InterpolatedLanguageModel:
+  // alpha = max(count - discount, 0) / N(ctx), gamma = discount * n_plus / N(ctx).
+  private absoluteDiscountingScore(word: string, context: string[]): number {
+    const ctx = this.backoffContext(context);
+    if (ctx.length === 0) return this.nltkUnigramFreq(word);
+
+    const n = ctx.length + 1;
+    const contextKey = key(ctx);
+    const ctxCount = this.countsByOrder[n - 1]!.get(contextKey) ?? 0;
+    if (ctxCount === 0) return this.absoluteDiscountingScore(word, ctx.slice(1));
+
+    const gramCount = this.countsByOrder[n]!.get(key([...ctx, word])) ?? 0;
+    const nPlus = this.followersByContext[n]!.get(contextKey)?.size ?? 0;
+    const gamma = (this.discount * nPlus) / ctxCount;
+    const alpha = Math.max(gramCount - this.discount, 0) / ctxCount;
+    return alpha + gamma * this.absoluteDiscountingScore(word, ctx.slice(1));
+  }
+
   score(word: string, context: string[] = []): number {
     const normalizedWord = word.toLowerCase();
     const normalizedContext = context.map((item) => item.toLowerCase());
     if (this.model === "lidstone") return this.lidstoneScore(normalizedWord, normalizedContext);
     if (this.model === "kneser_ney_interpolated") return this.kneserNeyScore(normalizedWord, normalizedContext);
+    if (this.model === "stupid_backoff") return this.stupidBackoffScore(normalizedWord, normalizedContext);
+    if (this.model === "witten_bell_interpolated") return this.wittenBellScore(normalizedWord, normalizedContext);
+    if (this.model === "absolute_discounting_interpolated")
+      return this.absoluteDiscountingScore(normalizedWord, normalizedContext);
     return this.mleScore(normalizedWord, normalizedContext);
   }
 
@@ -231,7 +329,7 @@ export class NgramLanguageModel {
   }
 
   perplexity(tokens: string[]): number {
-    if (this.nativePrepared && this.order <= 3) {
+    if (this.nativePrepared && this.order <= 3 && NATIVE_LM_MODELS.has(this.model)) {
       return this.evaluateBatch([], tokens).perplexity;
     }
     if (tokens.length === 0) return Number.POSITIVE_INFINITY;
@@ -252,7 +350,7 @@ export class NgramLanguageModel {
   }
 
   evaluateBatch(probes: LmProbe[], perplexityTokens: string[]): { scores: number[]; perplexity: number } {
-    if (!this.nativePrepared || this.order > 3) {
+    if (!this.nativePrepared || this.order > 3 || !NATIVE_LM_MODELS.has(this.model)) {
       const scores = probes.map((probe) => this.score(probe.word, probe.context ?? []));
       return {
         scores,

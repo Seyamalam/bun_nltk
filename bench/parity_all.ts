@@ -67,6 +67,11 @@ function main() {
   const positiveNb = run(["bun", "run", "bench/parity_positive_nb.ts"], root);
   const importedFixturePath = resolve(root, "test", "fixtures", "nltk_imported", "pcfg_treebank_fixture.json");
   const imported = existsSync(importedFixturePath) ? run(["bun", "run", "bench/parity_imported.ts"], root) : { parity: true };
+  const distance = run(["bun", "run", "bench/parity_distance.ts"], root);
+  const seqTaggers = run(["bun", "run", "bench/parity_seq_taggers.ts"], root);
+  const wsd = run(["bun", "run", "bench/parity_wsd.ts"], root);
+  const chrfNist = run(["bun", "run", "bench/parity_chrf_nist.ts"], root);
+  const lmModels = run(["bun", "run", "bench/parity_lm_models.ts"], root);
 
   const checks = {
     tokenizer: Boolean(tokenizer.parity),
@@ -95,6 +100,11 @@ function main() {
     tagger: Boolean(tagger.parity),
     condexp: Boolean(condexp.parity),
     positive_nb: Boolean(positiveNb.parity),
+    distance: Boolean(distance.parity),
+    seq_taggers: Boolean(seqTaggers.parity),
+    wsd: Boolean(wsd.parity),
+    chrf_nist: Boolean(chrfNist.parity),
+    lm_models: Boolean(lmModels.parity_tolerant ?? lmModels.parity),
   };
 
   const failed = Object.entries(checks)
