@@ -35,7 +35,7 @@ function runNative(text: string, topK: number, rounds: number) {
 
 function runPython(inputPath: string, topK: number): PythonResult {
   const proc = Bun.spawnSync(
-    ["python", "bench/python_collocations_baseline.py", "--input", inputPath, "--top-k", String(topK)],
+    ["python3", "bench/python_collocations_baseline.py", "--input", inputPath, "--top-k", String(topK)],
     {
       cwd: resolve(import.meta.dir, ".."),
       stdout: "pipe",

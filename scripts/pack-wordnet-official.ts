@@ -14,7 +14,7 @@ function parseArgs(): { out: string; checksumOut: string } {
 }
 
 function findOfficialDictDir(root: string): string {
-  const proc = Bun.spawnSync(["python", "scripts/find_wordnet_dict.py"], {
+  const proc = Bun.spawnSync(["python3", "scripts/find_wordnet_dict.py"], {
     cwd: root,
     stdout: "pipe",
     stderr: "pipe",

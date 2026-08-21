@@ -5,7 +5,7 @@ import { tokenizeAsciiNative } from "../index";
 test("ascii tokenizer parity with python regex baseline", () => {
   const text = "Dr. Smith's lab tested 42 samples, and U.S. teams re-tested them!";
   const js = tokenizeAsciiNative(text);
-  const proc = Bun.spawnSync(["python", "bench/python_tokenizer_baseline.py", "--text", text], {
+  const proc = Bun.spawnSync(["python3", "bench/python_tokenizer_baseline.py", "--text", text], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

@@ -21,7 +21,7 @@ function main() {
   const jsEval = clf.evaluate(testRows);
 
   const payload = JSON.stringify({ train: trainRows, test: testRows, rounds: 1 });
-  const proc = Bun.spawnSync(["python", "bench/python_decision_tree_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_decision_tree_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

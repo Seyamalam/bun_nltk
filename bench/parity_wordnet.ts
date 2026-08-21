@@ -62,7 +62,7 @@ function main() {
   const payloadPath = resolveBaselinePayload(root);
   const proc = Bun.spawnSync(
     [
-      "python",
+      "python3",
       "bench/python_wordnet_queries_baseline.py",
       "--payload",
       payloadPath,

@@ -41,7 +41,7 @@ function main() {
     negative_label: "neg",
     rounds: 1,
   });
-  const proc = Bun.spawnSync(["python", "bench/python_positive_nb_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_positive_nb_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

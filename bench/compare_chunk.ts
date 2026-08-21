@@ -50,7 +50,7 @@ function runPython(tagged: TaggedToken[]) {
   const payloadPath = resolve(import.meta.dir, "datasets", "chunk_payload.json");
   writeFileSync(payloadPath, JSON.stringify(payload), "utf8");
   const started = performance.now();
-  const proc = Bun.spawnSync(["python", "bench/python_chunk_baseline.py", "--payload-file", payloadPath], {
+  const proc = Bun.spawnSync(["python3", "bench/python_chunk_baseline.py", "--payload-file", payloadPath], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

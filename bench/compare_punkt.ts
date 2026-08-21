@@ -30,7 +30,7 @@ function runNative(text: string, rounds: number) {
 }
 
 function runPython(inputPath: string): PythonResult {
-  const proc = Bun.spawnSync(["python", "bench/python_sentence_baseline.py", "--input", inputPath, "--rounds", "1"], {
+  const proc = Bun.spawnSync(["python3", "bench/python_sentence_baseline.py", "--input", inputPath, "--rounds", "1"], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

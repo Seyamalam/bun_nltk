@@ -53,7 +53,7 @@ test("chart parser parity with python nltk CFG chart parser", () => {
     grammar: grammarText,
     tokens,
   });
-  const proc = Bun.spawnSync(["python", "bench/python_parser_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_parser_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

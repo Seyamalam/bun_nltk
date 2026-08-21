@@ -23,7 +23,7 @@ function main() {
   const js = probabilisticChartParse(tokens, parsePcfgGrammar(grammarText));
   if (!js) throw new Error("pcfg parse returned null");
   const proc = Bun.spawnSync(
-    ["python", "bench/python_pcfg_baseline.py", "--payload", JSON.stringify({ grammar: grammarText, tokens })],
+    ["python3", "bench/python_pcfg_baseline.py", "--payload", JSON.stringify({ grammar: grammarText, tokens })],
     {
       cwd: resolve(import.meta.dir, ".."),
       stdout: "pipe",

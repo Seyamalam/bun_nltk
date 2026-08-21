@@ -44,7 +44,7 @@ test("conditional exponential parity with python nltk baseline", () => {
     test: testRows,
     max_iter: 14,
   });
-  const proc = Bun.spawnSync(["python", "bench/python_condexp_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_condexp_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

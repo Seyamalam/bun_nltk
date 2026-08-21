@@ -22,7 +22,7 @@ function main() {
   const jsTrees = leftCornerParse(tokens, grammar);
   const chartTrees = chartParse(tokens, grammar);
   const payload = JSON.stringify({ grammar: grammarText, tokens });
-  const proc = Bun.spawnSync(["python", "bench/python_leftcorner_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_leftcorner_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

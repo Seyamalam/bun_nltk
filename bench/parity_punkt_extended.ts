@@ -17,7 +17,7 @@ function main() {
   for (const row of rows) {
     const model = trainPunktModel(row.train_text);
     const js = sentenceTokenizePunkt(row.text, model);
-    const proc = Bun.spawnSync(["python", "bench/python_punkt_baseline.py", "--train-text", row.train_text, "--text", row.text], {
+    const proc = Bun.spawnSync(["python3", "bench/python_punkt_baseline.py", "--train-text", row.train_text, "--text", row.text], {
       cwd: resolve(import.meta.dir, ".."),
       stdout: "pipe",
       stderr: "pipe",

@@ -21,7 +21,7 @@ function runPythonLm(payload: {
   startToken: string;
   endToken: string;
 }): PythonLmResult {
-  const proc = Bun.spawnSync(["python", "bench/python_lm_baseline.py", "--payload", JSON.stringify(payload)], {
+  const proc = Bun.spawnSync(["python3", "bench/python_lm_baseline.py", "--payload", JSON.stringify(payload)], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

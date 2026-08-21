@@ -79,7 +79,7 @@ function main() {
       "utf8",
     );
     const py = runJson(
-      ["python", "bench/python_pcfg_baseline.py", "--payload-file", parserPayloadPath],
+      ["python3", "bench/python_pcfg_baseline.py", "--payload-file", parserPayloadPath],
       root,
     ) as { tree: string | null; prob: number };
     if (!py.tree) continue;
@@ -103,7 +103,7 @@ function main() {
   const nb = trainNaiveBayesTextClassifier(train, { smoothing: 1.0 });
   writeFileSync(classifierPayloadPath, `${JSON.stringify({ train, test, rounds: 1 }, null, 2)}\n`, "utf8");
   const pyNb = runJson(
-    ["python", "bench/python_classifier_baseline.py", "--payload-file", classifierPayloadPath],
+    ["python3", "bench/python_classifier_baseline.py", "--payload-file", classifierPayloadPath],
     root,
   ) as { predictions: string[]; accuracy: number };
   const nbEval = nb.evaluate(test);
@@ -120,7 +120,7 @@ function main() {
   const maxentPred = maxentTest.map((row) => maxent.classify(row.text));
   writeFileSync(maxentPayloadPath, `${JSON.stringify({ train: maxentTrain, test: maxentTest, max_iter: 10 }, null, 2)}\n`, "utf8");
   const pyMaxent = runJson(
-    ["python", "bench/python_maxent_baseline.py", "--payload-file", maxentPayloadPath],
+    ["python3", "bench/python_maxent_baseline.py", "--payload-file", maxentPayloadPath],
     root,
   ) as { predictions: string[]; accuracy: number };
   const maxentEval = maxent.evaluate(maxentTest);

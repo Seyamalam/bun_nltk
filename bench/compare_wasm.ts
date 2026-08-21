@@ -50,7 +50,7 @@ async function runWasm(text: string, n: number, rounds: number) {
 }
 
 function runPython(inputPath: string, n: number): PythonResult {
-  const proc = Bun.spawnSync(["python", "bench/python_baseline.py", "--input", inputPath, "--n", String(n)], {
+  const proc = Bun.spawnSync(["python3", "bench/python_baseline.py", "--input", inputPath, "--n", String(n)], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

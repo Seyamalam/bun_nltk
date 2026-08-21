@@ -25,7 +25,7 @@ function main() {
     corpus_hyps: corpusHyps,
     edits,
   });
-  const proc = Bun.spawnSync(["python", "bench/python_metrics_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_metrics_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

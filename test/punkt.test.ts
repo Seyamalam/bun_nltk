@@ -16,7 +16,7 @@ type PythonPunktResult = {
 
 function runPythonPunkt(trainText: string, text: string): PythonPunktResult {
   const proc = Bun.spawnSync(
-    ["python", "bench/python_punkt_baseline.py", "--train-text", trainText, "--text", text],
+    ["python3", "bench/python_punkt_baseline.py", "--train-text", trainText, "--text", text],
     {
       cwd: resolve(import.meta.dir, ".."),
       stdout: "pipe",

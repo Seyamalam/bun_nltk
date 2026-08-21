@@ -15,7 +15,7 @@ function main() {
   const jsTrees = featureEarleyParse(tokens, grammar);
   const bad = featureEarleyParse(["dog", "run"], grammar);
   const payload = JSON.stringify({ grammar: grammarText, tokens });
-  const proc = Bun.spawnSync(["python", "bench/python_feature_earley_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_feature_earley_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

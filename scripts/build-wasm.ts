@@ -1,57 +1,15 @@
-import { existsSync, mkdirSync, readdirSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { copyFileSync, mkdirSync } from "node:fs";
+import { join, resolve } from "node:path";
 
 const root = resolve(import.meta.dir, "..");
 const outPath = join(root, "native", "bun_nltk.wasm");
-mkdirSync(dirname(outPath), { recursive: true });
+mkdirSync(join(root, "native"), { recursive: true });
 
-function findZigBinary(): string {
-  if (process.env.BUN_NLTK_ZIG_BIN) {
-    return process.env.BUN_NLTK_ZIG_BIN;
-  }
-
-  if (process.platform !== "win32") {
-    return "zig";
-  }
-
-  const localAppData = process.env.LOCALAPPDATA ?? "";
-  const winGetLink = join(localAppData, "Microsoft", "WinGet", "Links", "zig.exe");
-  if (existsSync(winGetLink)) {
-    return winGetLink;
-  }
-
-  const packageRoot = join(localAppData, "Microsoft", "WinGet", "Packages");
-  const zigPackageDir = join(packageRoot, "zig.zig_Microsoft.Winget.Source_8wekyb3d8bbwe");
-  if (existsSync(zigPackageDir)) {
-    const childDirs = readdirSync(zigPackageDir, { withFileTypes: true });
-    for (const dirent of childDirs) {
-      if (!dirent.isDirectory()) continue;
-      const candidate = join(zigPackageDir, dirent.name, "zig.exe");
-      if (existsSync(candidate)) {
-        return candidate;
-      }
-    }
-  }
-
-  return "zig";
-}
-
-const zigBin = findZigBinary();
+const cargoBin = process.env.BUN_NLTK_CARGO_BIN ?? "cargo";
+const target = "wasm32-unknown-unknown";
 
 const proc = Bun.spawnSync(
-  [
-    zigBin,
-    "build-exe",
-    "zig/src/wasm_exports.zig",
-    "-target",
-    "wasm32-freestanding",
-    "-O",
-    "ReleaseSmall",
-    "-fstrip",
-    "-fno-entry",
-    "-rdynamic",
-    `-femit-bin=${outPath}`,
-  ],
+  [cargoBin, "build", "--release", "--target", target, "--manifest-path", join("rust", "Cargo.toml")],
   {
     cwd: root,
     stdout: "pipe",
@@ -65,4 +23,9 @@ if (proc.exitCode !== 0) {
   process.exit(proc.exitCode ?? 1);
 }
 
-console.log(`Built wasm library: ${outPath} (zig: ${zigBin})`);
+copyFileSync(
+  join(root, "rust", "target", target, "release", "bun_nltk.wasm"),
+  outPath,
+);
+
+console.log(`Built wasm library: ${outPath} (cargo: ${cargoBin})`);

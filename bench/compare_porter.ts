@@ -34,7 +34,7 @@ function runNative(text: string, rounds: number) {
 }
 
 function runPython(inputPath: string): PythonResult {
-  const proc = Bun.spawnSync(["python", "bench/python_porter_baseline.py", "--input", inputPath], {
+  const proc = Bun.spawnSync(["python3", "bench/python_porter_baseline.py", "--input", inputPath], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

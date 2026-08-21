@@ -1,7 +1,7 @@
 {
   "name": "bun_nltk",
   "version": "0.12.0",
-  "description": "High-performance NLP primitives for Bun/Node with Zig native and WASM backends.",
+  "description": "High-performance NLP primitives for Bun/Node with Rust native and WASM backends.",
   "module": "index.ts",
   "type": "module",
   "private": false,
@@ -15,7 +15,7 @@
     "corpora",
     "scripts",
     "models",
-    "zig",
+    "rust",
     "README.md",
     "CHANGELOG.md",
     "docs",
@@ -24,7 +24,7 @@
   "keywords": [
     "nlp",
     "nltk",
-    "zig",
+    "rust",
     "bun",
     "node",
     "wasm",
@@ -43,7 +43,7 @@
     ".": "./index.ts"
   },
   "scripts": {
-    "build:zig": "bun run scripts/build-zig.ts",
+    "build:rust": "bun run scripts/build-rust.ts",
     "build:prebuilt": "bun run scripts/build-prebuilt.ts",
     "build:wasm": "bun run scripts/build-wasm.ts",
     "model:train:tagger": "python scripts/train_perceptron_tagger.py --out models/perceptron_tagger_ascii.json --sentences 7000 --epochs 10 --seed 1337",
@@ -116,7 +116,7 @@
     "npm:smoke": "bun run scripts/npm-smoke-test.ts",
     "pack:verify:prebuilt": "bun run scripts/check-packaged-prebuilt.ts",
     "release:validate": "bun run scripts/release-validate.ts",
-    "release:check": "bun run build:zig && bun run build:wasm && bun run build:prebuilt && bun run wordnet:prepare:default && bun run pack:verify:prebuilt && bun run fixtures:import:nltk && bun test && bun run bench:gate && bun run bench:dashboard && bun run bench:trend:check && bun run wordnet:pack:official && bun run wordnet:verify:pack"
+    "release:check": "bun run build:rust && bun run build:wasm && bun run build:prebuilt && bun run wordnet:prepare:default && bun run pack:verify:prebuilt && bun run fixtures:import:nltk && bun test && bun run bench:gate && bun run bench:dashboard && bun run bench:trend:check && bun run wordnet:pack:official && bun run wordnet:verify:pack"
   },
   "devDependencies": {
     "@types/bun": "latest",

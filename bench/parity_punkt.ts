@@ -11,7 +11,7 @@ function main() {
 
   const model = trainPunktModel(trainText);
   const js = sentenceTokenizePunkt(text, model);
-  const proc = Bun.spawnSync(["python", "bench/python_punkt_baseline.py", "--train-text", trainText, "--text", text], {
+  const proc = Bun.spawnSync(["python3", "bench/python_punkt_baseline.py", "--train-text", trainText, "--text", text], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

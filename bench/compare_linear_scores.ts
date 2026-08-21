@@ -108,7 +108,7 @@ function runPython(input: ReturnType<typeof generateInput>, rounds: number): { t
     rounds,
   };
   writeFileSync(payloadPath, `${JSON.stringify(payload)}\n`, "utf8");
-  const proc = Bun.spawnSync(["python", "bench/python_linear_scores_baseline.py", "--payload-file", payloadPath], {
+  const proc = Bun.spawnSync(["python3", "bench/python_linear_scores_baseline.py", "--payload-file", payloadPath], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

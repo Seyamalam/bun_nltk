@@ -34,7 +34,7 @@ test("pcfg parser parity with python nltk viterbi parser", () => {
   expect(js).not.toBeNull();
 
   const payload = JSON.stringify({ grammar: grammarText, tokens });
-  const proc = Bun.spawnSync(["python", "bench/python_pcfg_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_pcfg_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

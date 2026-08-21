@@ -42,7 +42,7 @@ test("maxent classifier parity agreement with python nltk maxent", () => {
     test: testRows,
     max_iter: 14,
   });
-  const proc = Bun.spawnSync(["python", "bench/python_maxent_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_maxent_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

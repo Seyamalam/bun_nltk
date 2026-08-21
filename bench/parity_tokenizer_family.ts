@@ -30,7 +30,7 @@ function main() {
     separator: "_",
   });
 
-  const proc = Bun.spawnSync(["python", "bench/python_tokenizer_family_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_tokenizer_family_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

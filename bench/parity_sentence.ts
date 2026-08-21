@@ -13,7 +13,7 @@ type PythonResult = {
 };
 
 function runPython(text: string): PythonResult {
-  const proc = Bun.spawnSync(["python", "bench/python_sentence_baseline.py", "--text", text], {
+  const proc = Bun.spawnSync(["python3", "bench/python_sentence_baseline.py", "--text", text], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

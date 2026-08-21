@@ -13,7 +13,7 @@ function main() {
     regex_pattern: "ing$",
     regex_min: 0,
   });
-  const proc = Bun.spawnSync(["python", "bench/python_stemmers_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_stemmers_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

@@ -2,7 +2,7 @@ import { resolve } from "node:path";
 import { loadPayload, writeManifest, writePacked } from "./pack-wordnet";
 
 function findOfficialDictDir(root: string): string {
-  const proc = Bun.spawnSync(["python", "scripts/find_wordnet_dict.py"], {
+  const proc = Bun.spawnSync(["python3", "scripts/find_wordnet_dict.py"], {
     cwd: root,
     stdout: "pipe",
     stderr: "pipe",

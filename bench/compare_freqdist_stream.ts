@@ -41,7 +41,7 @@ function ensureNativeBuilt(): void {
 
 function runPython(inputPath: string, chunkSize: number): PythonResult {
   const proc = Bun.spawnSync(
-    ["python", "bench/python_freqdist_stream_baseline.py", "--input", inputPath, "--chunk-size", String(chunkSize)],
+    ["python3", "bench/python_freqdist_stream_baseline.py", "--input", inputPath, "--chunk-size", String(chunkSize)],
     {
       cwd: resolve(import.meta.dir, ".."),
       stdout: "pipe",

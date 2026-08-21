@@ -41,7 +41,7 @@ function runNative(train: DecisionTreeExample[], test: DecisionTreeExample[], ro
 function runPython(train: DecisionTreeExample[], test: DecisionTreeExample[], rounds: number) {
   const payloadPath = resolve(import.meta.dir, "datasets", "decision_tree_payload.json");
   writeFileSync(payloadPath, `${JSON.stringify({ train, test, rounds }, null, 2)}\n`, "utf8");
-  const proc = Bun.spawnSync(["python", "bench/python_decision_tree_baseline.py", "--payload-file", payloadPath], {
+  const proc = Bun.spawnSync(["python3", "bench/python_decision_tree_baseline.py", "--payload-file", payloadPath], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

@@ -20,7 +20,7 @@ function main() {
   const tokens = ["alice", "sees", "the", "dog"];
   const jsTrees = chartParse(tokens, parseCfgGrammar(grammarText)).map(toBracket);
   const payload = JSON.stringify({ grammar: grammarText, tokens });
-  const proc = Bun.spawnSync(["python", "bench/python_parser_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_parser_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

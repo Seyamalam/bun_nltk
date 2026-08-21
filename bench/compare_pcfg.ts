@@ -58,7 +58,7 @@ function runPython(cases: string[][], rounds: number): {
   total_seconds: number;
 } {
   const payload = JSON.stringify({ grammar: grammarText, cases, rounds });
-  const proc = Bun.spawnSync(["python", "bench/python_pcfg_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_pcfg_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

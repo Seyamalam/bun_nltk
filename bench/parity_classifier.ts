@@ -23,7 +23,7 @@ function main() {
     test: testRows,
     rounds: 1,
   });
-  const proc = Bun.spawnSync(["python", "bench/python_classifier_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_classifier_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

@@ -21,7 +21,7 @@ function main() {
   const clf = trainConditionalExponentialTextClassifier(trainRows, { epochs: 14, learningRate: 0.2, l2: 1e-4, maxFeatures: 4096 });
   const jsPred = testRows.map((row) => clf.classify(row.text));
   const payload = JSON.stringify({ train: trainRows, test: testRows, max_iter: 14 });
-  const proc = Bun.spawnSync(["python", "bench/python_condexp_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_condexp_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

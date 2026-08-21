@@ -42,7 +42,7 @@ test("regexp chunk parser parity with nltk RegexpParser on sample grammar", () =
     grammar,
     tagged: tagged.map((row) => [row.token, row.tag]),
   });
-  const proc = Bun.spawnSync(["python", "bench/python_chunk_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_chunk_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

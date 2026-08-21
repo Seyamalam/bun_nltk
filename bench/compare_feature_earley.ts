@@ -55,7 +55,7 @@ function runPython(cases: string[][], rounds: number) {
   mkdirSync(artifacts, { recursive: true });
   const payloadPath = resolve(artifacts, `feature_earley_payload_${Date.now()}.json`);
   writeFileSync(payloadPath, payload, "utf8");
-  const proc = Bun.spawnSync(["python", "bench/python_feature_earley_baseline.py", "--payload-file", payloadPath], {
+  const proc = Bun.spawnSync(["python3", "bench/python_feature_earley_baseline.py", "--payload-file", payloadPath], {
     cwd: root,
     stdout: "pipe",
     stderr: "pipe",

@@ -44,7 +44,7 @@ function runNative(train: MaxEntExample[], test: MaxEntExample[], rounds: number
 function runPython(train: MaxEntExample[], test: MaxEntExample[]) {
   const payloadPath = resolve(import.meta.dir, "datasets", "maxent_payload.json");
   writeFileSync(payloadPath, JSON.stringify({ train, test, max_iter: 12 }), "utf8");
-  const proc = Bun.spawnSync(["python", "bench/python_maxent_baseline.py", "--payload-file", payloadPath], {
+  const proc = Bun.spawnSync(["python3", "bench/python_maxent_baseline.py", "--payload-file", payloadPath], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

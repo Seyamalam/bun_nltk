@@ -78,7 +78,7 @@ function runPython(payload: {
 }): PythonLmResult {
   const payloadPath = resolve(import.meta.dir, "datasets", "lm_payload.json");
   writeFileSync(payloadPath, JSON.stringify(payload), "utf8");
-  const proc = Bun.spawnSync(["python", "bench/python_lm_baseline.py", "--payload-file", payloadPath], {
+  const proc = Bun.spawnSync(["python3", "bench/python_lm_baseline.py", "--payload-file", payloadPath], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

@@ -41,7 +41,7 @@ function main() {
 
   const payloadPath = resolve(import.meta.dir, "datasets", "earley_payload.json");
   writeFileSync(payloadPath, `${JSON.stringify({ grammar: grammarText, cases }, null, 2)}\n`, "utf8");
-  const proc = Bun.spawnSync(["python", "bench/python_earley_baseline.py", "--payload-file", payloadPath], {
+  const proc = Bun.spawnSync(["python3", "bench/python_earley_baseline.py", "--payload-file", payloadPath], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
     stderr: "pipe",

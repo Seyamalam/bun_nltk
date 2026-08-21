@@ -27,7 +27,7 @@ function ensureGateDataset(root: string): string {
   const full = resolve(root, dataset);
   if (existsSync(full)) return dataset;
   const proc = Bun.spawnSync(
-    ["python", "bench/generate_synthetic.py", "--size-mb", "8", "--seed", "1337", "--out", dataset],
+    ["python3", "bench/generate_synthetic.py", "--size-mb", "8", "--seed", "1337", "--out", dataset],
     { cwd: root, stdout: "pipe", stderr: "pipe" },
   );
   if (proc.exitCode !== 0) {

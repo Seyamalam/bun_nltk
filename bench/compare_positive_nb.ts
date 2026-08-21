@@ -54,7 +54,7 @@ function runPython(positive: string[], unlabeled: string[], testRows: Array<{ la
   mkdirSync(artifacts, { recursive: true });
   const payloadPath = resolve(artifacts, `positive_nb_payload_${Date.now()}.json`);
   writeFileSync(payloadPath, payload, "utf8");
-  const proc = Bun.spawnSync(["python", "bench/python_positive_nb_baseline.py", "--payload-file", payloadPath], {
+  const proc = Bun.spawnSync(["python3", "bench/python_positive_nb_baseline.py", "--payload-file", payloadPath], {
     cwd: root,
     stdout: "pipe",
     stderr: "pipe",

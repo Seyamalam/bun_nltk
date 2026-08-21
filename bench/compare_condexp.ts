@@ -43,7 +43,7 @@ function runPython(trainRows: ConditionalExponentialExample[], testRows: Conditi
   mkdirSync(artifacts, { recursive: true });
   const payloadPath = resolve(artifacts, `condexp_payload_${Date.now()}.json`);
   writeFileSync(payloadPath, payload, "utf8");
-  const proc = Bun.spawnSync(["python", "bench/python_condexp_baseline.py", "--payload-file", payloadPath], {
+  const proc = Bun.spawnSync(["python3", "bench/python_condexp_baseline.py", "--payload-file", payloadPath], {
     cwd: root,
     stdout: "pipe",
     stderr: "pipe",

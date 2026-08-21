@@ -46,7 +46,7 @@ function runPython(rounds: number) {
   const payloadPath = resolve(import.meta.dir, "..", "models", "wordnet_extended.json");
   const procStarted = performance.now();
   const proc = Bun.spawnSync(
-    ["python", "bench/python_wordnet_baseline.py", "--payload", payloadPath, "--rounds", String(rounds)],
+    ["python3", "bench/python_wordnet_baseline.py", "--payload", payloadPath, "--rounds", String(rounds)],
     {
       cwd: resolve(import.meta.dir, ".."),
       stdout: "pipe",

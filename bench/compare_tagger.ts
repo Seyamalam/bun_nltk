@@ -59,7 +59,7 @@ async function runWasm(text: string, rounds: number) {
 
 function runPython(inputPath: string): PythonResult {
   const proc = Bun.spawnSync(
-    ["python", "bench/python_tagger_baseline.py", "--input", inputPath, "--model", "models/perceptron_tagger_ascii.json"],
+    ["python3", "bench/python_tagger_baseline.py", "--input", inputPath, "--model", "models/perceptron_tagger_ascii.json"],
     {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
