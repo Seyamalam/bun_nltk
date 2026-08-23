@@ -50,7 +50,7 @@ COVERED: dict[str, bool] = {
     "tokenize.destructive": True, "tokenize.regexp": True,
     "tokenize.treebank": True, "tokenize.toktok": True, "tokenize.mwe": True,
     "tokenize.punkt": True, "tokenize.util": True, "tokenize.simple": True,
-    "tokenize.legality_principle": False, "tokenize.sonority_sequencing": False,
+    "tokenize.legality_principle": True, "tokenize.sonority_sequencing": False,
     "tokenize.sexpr": True, "tokenize.texttiling": False, "tokenize.repp": False,
     "tokenize.stanford_segmenter": False, "tokenize.stanford": False,
     "tokenize.nist": True,
@@ -58,15 +58,15 @@ COVERED: dict[str, bool] = {
     "stem.api": True, "stem.porter": True, "stem.snowball": True,
     "stem.lancaster": True, "stem.regexp": True, "stem.wordnet": True,
     "stem.util": True, "stem.cistem": True, "stem.isri": False,
-    "stem.rslp": False, "stem.arlstem": False, "stem.arlstem2": False,
+    "stem.rslp": True, "stem.arlstem": False, "stem.arlstem2": False,
     # tag
     "tag.api": True, "tag.perceptron": True, "tag.sequential": True,
     "tag.brill": True, "tag.brill_trainer": True, "tag.hmm": True,
-    "tag.util": True, "tag.mapping": False, "tag.tnt": False, "tag.crf": False,
+    "tag.util": True, "tag.mapping": True, "tag.tnt": False, "tag.crf": False,
     "tag.senna": False, "tag.hunpos": False, "tag.stanford": False,
     # tbl
     "tbl.api": True, "tbl.rule": True, "tbl.template": True,
-    "tbl.feature": True, "tbl.demo": False, "tbl.erroranalysis": True,
+    "tbl.feature": True, "tbl.demo": True, "tbl.erroranalysis": True,
     # probability / lm
     "probability": True,
     "lm.api": True, "lm.models": True, "lm.smoothing": True,
@@ -89,7 +89,7 @@ COVERED: dict[str, bool] = {
     "translate.gleu_score": True,
     # sem
     "sem.logic": True, "sem.evaluate": True,
-    "sem.drt": True, "sem.skolemize": True, "sem.util": False,
+    "sem.drt": True, "sem.skolemize": True, "sem.util": True,
     "sem.boxer": False, "sem.chat80": False,
     "sem.cooper_storage": False, "sem.drt_glue_demo": False,
     "sem.glue": False, "sem.hole": False, "sem.lfg": False,

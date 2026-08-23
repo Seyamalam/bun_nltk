@@ -3,7 +3,7 @@
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
 > Last regenerated: 2026-08-23
 
-**Coverage: 109/241 modules (45.2%)** — 20 of 46 families touched.
+**Coverage: 114/241 modules (47.3%)** — 20 of 46 families touched.
 
 - [~] `parse` (14/20)
   - [x] `parse.api`
@@ -26,11 +26,11 @@
   - [x] `parse.util`
   - [x] `parse.viterbi`
 
-- [~] `tokenize` (13/19)
+- [~] `tokenize` (14/19)
   - [x] `tokenize.api`
   - [x] `tokenize.casual`
   - [x] `tokenize.destructive`
-  - [ ] `tokenize.legality_principle`
+  - [x] `tokenize.legality_principle`
   - [x] `tokenize.mwe`
   - [x] `tokenize.nist`
   - [x] `tokenize.punkt`
@@ -67,6 +67,20 @@
   - [ ] `translate.ribes_score`
   - [ ] `translate.stack_decoder`
 
+- [~] `stem` (9/13)
+  - [x] `stem.api`
+  - [ ] `stem.arlstem`
+  - [ ] `stem.arlstem2`
+  - [x] `stem.cistem`
+  - [ ] `stem.isri`
+  - [x] `stem.lancaster`
+  - [x] `stem.porter`
+  - [x] `stem.regexp`
+  - [x] `stem.rslp`
+  - [x] `stem.snowball`
+  - [x] `stem.util`
+  - [x] `stem.wordnet`
+
 - [~] `metrics` (8/10)
   - [x] `metrics.agreement`
   - [ ] `metrics.aline`
@@ -78,19 +92,20 @@
   - [x] `metrics.segmentation`
   - [x] `metrics.spearman`
 
-- [~] `stem` (8/13)
-  - [x] `stem.api`
-  - [ ] `stem.arlstem`
-  - [ ] `stem.arlstem2`
-  - [x] `stem.cistem`
-  - [ ] `stem.isri`
-  - [x] `stem.lancaster`
-  - [x] `stem.porter`
-  - [x] `stem.regexp`
-  - [ ] `stem.rslp`
-  - [x] `stem.snowball`
-  - [x] `stem.util`
-  - [x] `stem.wordnet`
+- [~] `tag` (8/14)
+  - [x] `tag.api`
+  - [x] `tag.brill`
+  - [x] `tag.brill_trainer`
+  - [ ] `tag.crf`
+  - [x] `tag.hmm`
+  - [ ] `tag.hunpos`
+  - [x] `tag.mapping`
+  - [x] `tag.perceptron`
+  - [ ] `tag.senna`
+  - [x] `tag.sequential`
+  - [ ] `tag.stanford`
+  - [ ] `tag.tnt`
+  - [x] `tag.util`
 
 - [~] `classify` (7/15)
   - [x] `classify.api`
@@ -117,21 +132,6 @@
   - [x] `lm.util`
   - [x] `lm.vocabulary`
 
-- [~] `tag` (7/14)
-  - [x] `tag.api`
-  - [x] `tag.brill`
-  - [x] `tag.brill_trainer`
-  - [ ] `tag.crf`
-  - [x] `tag.hmm`
-  - [ ] `tag.hunpos`
-  - [ ] `tag.mapping`
-  - [x] `tag.perceptron`
-  - [ ] `tag.senna`
-  - [x] `tag.sequential`
-  - [ ] `tag.stanford`
-  - [ ] `tag.tnt`
-  - [x] `tag.util`
-
 - [~] `tree` (7/8)
   - [x] `tree.immutable`
   - [x] `tree.parented`
@@ -141,21 +141,21 @@
   - [x] `tree.transforms`
   - [x] `tree.tree`
 
+- [~] `tbl` (6/7)
+  - [x] `tbl.api`
+  - [x] `tbl.demo`
+  - [x] `tbl.erroranalysis`
+  - [x] `tbl.feature`
+  - [x] `tbl.rule`
+  - [x] `tbl.template`
+
 - [x] `chunk` (5/5)
   - [x] `chunk.api`
   - [x] `chunk.named_entity`
   - [x] `chunk.regexp`
   - [x] `chunk.util`
 
-- [~] `tbl` (5/7)
-  - [x] `tbl.api`
-  - [ ] `tbl.demo`
-  - [x] `tbl.erroranalysis`
-  - [x] `tbl.feature`
-  - [x] `tbl.rule`
-  - [x] `tbl.template`
-
-- [~] `sem` (4/15)
+- [~] `sem` (5/15)
   - [ ] `sem.boxer`
   - [ ] `sem.chat80`
   - [ ] `sem.cooper_storage`
@@ -169,7 +169,7 @@
   - [x] `sem.logic`
   - [ ] `sem.relextract`
   - [x] `sem.skolemize`
-  - [ ] `sem.util`
+  - [x] `sem.util`
 
 - [~] `corpus` (3/4)
   - [ ] `corpus.europarl_raw`
