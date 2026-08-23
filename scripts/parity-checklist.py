@@ -62,7 +62,7 @@ COVERED: dict[str, bool] = {
     # tag
     "tag.api": True, "tag.perceptron": True, "tag.sequential": True,
     "tag.brill": True, "tag.brill_trainer": True, "tag.hmm": True,
-    "tag.util": True, "tag.mapping": True, "tag.tnt": True, "tag.crf": False,
+    "tag.util": True, "tag.mapping": True, "tag.tnt": True, "tag.crf": True,
     "tag.senna": True, "tag.hunpos": True, "tag.stanford": True,
     # tbl
     "tbl.api": True, "tbl.rule": True, "tbl.template": True,
@@ -83,17 +83,17 @@ COVERED: dict[str, bool] = {
     "translate.metrics": True, "translate.gale_church": True,
     "translate.gdfa": True, "translate.ibm_model": True,
     "translate.ibm1": True, "translate.ibm2": True, "translate.ibm3": True,
-    "translate.ibm4": True, "translate.ibm5": True, "translate.lepor": False,
+    "translate.ibm4": True, "translate.ibm5": True, "translate.lepor": True,
     "translate.meteor_score": True, "translate.phrase_based": True,
-    "translate.ribes_score": True, "translate.stack_decoder": False,
+    "translate.ribes_score": True, "translate.stack_decoder": True,
     "translate.gleu_score": True,
     # sem
     "sem.logic": True, "sem.evaluate": True,
     "sem.drt": True, "sem.skolemize": True, "sem.util": True,
-    "sem.boxer": True, "sem.chat80": False,
-    "sem.cooper_storage": True, "sem.drt_glue_demo": False,
-    "sem.glue": False, "sem.hole": False, "sem.lfg": True,
-    "sem.linearlogic": False, "sem.relextract": False,
+    "sem.boxer": True, "sem.chat80": True,
+    "sem.cooper_storage": True, "sem.drt_glue_demo": True,
+    "sem.glue": True, "sem.hole": True, "sem.lfg": True,
+    "sem.linearlogic": True, "sem.relextract": True,
     # classify
     "classify.api": True, "classify.naivebayes": True,
     "classify.positivenaivebayes": True, "classify.decisiontree": True,
@@ -130,7 +130,7 @@ COVERED: dict[str, bool] = {
     "tree.immutable": True, "treeprettyprinter": True,
     # sentiment
     "sentiment.vader": True, "sentiment.util": True,
-    "sentiment.sentiment_analyzer": False,
+    "sentiment.sentiment_analyzer": True,
 }
 
 # Families deliberately out of scope for a JS library (GUI/demo/external-tool).

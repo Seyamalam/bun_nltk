@@ -437,3 +437,14 @@ export {
   AlignmentInfo,
   type Scorer as IBMScore,
 } from "./src/ibm_sampling";
+export { CRFTagger } from "./src/tag_crf";
+export { SentimentAnalyzer } from "./src/sentiment_analyzer";
+export { lengthPenalty, alignment as leporAlignment, ngramPositionalPenalty, sentenceLepor, corpusLepor } from "./src/translate_lepor";
+export { StackDecoder } from "./src/translate_stack_decoder";
+export { extractRels, clause as relextractClause } from "./src/sem_relextract";
+export { LinearLogicParser, GlueFormula as LinearGlueFormula, ImpExpression, ParExpression, Atom as LinearAtom } from "./src/sem_linearlogic";
+export { HoleSemantics } from "./src/sem_hole";
+export { Glue, GlueDict } from "./src/sem_glue";
+export { Chat80CorpusReader } from "./src/sem_chat80";
+export { DrtGlueDemo } from "./src/sem_drt_glue_demo";
+

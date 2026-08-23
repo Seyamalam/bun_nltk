@@ -3,7 +3,7 @@
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
 > Last regenerated: 2026-08-23
 
-**Coverage: 150/241 modules (62.2%)** — 21 of 46 families touched.
+**Coverage: 160/241 modules (66.4%)** — 21 of 46 families touched.
 
 - [x] `parse` (20/20)
   - [x] `parse.api`
@@ -46,7 +46,7 @@
   - [x] `tokenize.treebank`
   - [x] `tokenize.util`
 
-- [~] `translate` (17/20)
+- [~] `translate` (19/20)
   - [x] `translate.api`
   - [x] `translate.bleu_score`
   - [x] `translate.chrf_score`
@@ -59,13 +59,13 @@
   - [x] `translate.ibm4`
   - [x] `translate.ibm5`
   - [x] `translate.ibm_model`
-  - [ ] `translate.lepor`
+  - [x] `translate.lepor`
   - [x] `translate.meteor_score`
   - [x] `translate.metrics`
   - [x] `translate.nist_score`
   - [x] `translate.phrase_based`
   - [x] `translate.ribes_score`
-  - [ ] `translate.stack_decoder`
+  - [x] `translate.stack_decoder`
 
 - [~] `classify` (14/15)
   - [x] `classify.api`
@@ -83,6 +83,37 @@
   - [x] `classify.util`
   - [x] `classify.weka`
 
+- [~] `sem` (14/15)
+  - [x] `sem.boxer`
+  - [x] `sem.chat80`
+  - [x] `sem.cooper_storage`
+  - [x] `sem.drt`
+  - [x] `sem.drt_glue_demo`
+  - [x] `sem.evaluate`
+  - [x] `sem.glue`
+  - [x] `sem.hole`
+  - [x] `sem.lfg`
+  - [x] `sem.linearlogic`
+  - [x] `sem.logic`
+  - [x] `sem.relextract`
+  - [x] `sem.skolemize`
+  - [x] `sem.util`
+
+- [~] `tag` (13/14)
+  - [x] `tag.api`
+  - [x] `tag.brill`
+  - [x] `tag.brill_trainer`
+  - [x] `tag.crf`
+  - [x] `tag.hmm`
+  - [x] `tag.hunpos`
+  - [x] `tag.mapping`
+  - [x] `tag.perceptron`
+  - [x] `tag.senna`
+  - [x] `tag.sequential`
+  - [x] `tag.stanford`
+  - [x] `tag.tnt`
+  - [x] `tag.util`
+
 - [~] `stem` (12/13)
   - [x] `stem.api`
   - [x] `stem.arlstem`
@@ -97,21 +128,6 @@
   - [x] `stem.util`
   - [x] `stem.wordnet`
 
-- [~] `tag` (12/14)
-  - [x] `tag.api`
-  - [x] `tag.brill`
-  - [x] `tag.brill_trainer`
-  - [ ] `tag.crf`
-  - [x] `tag.hmm`
-  - [x] `tag.hunpos`
-  - [x] `tag.mapping`
-  - [x] `tag.perceptron`
-  - [x] `tag.senna`
-  - [x] `tag.sequential`
-  - [x] `tag.stanford`
-  - [x] `tag.tnt`
-  - [x] `tag.util`
-
 - [x] `metrics` (10/10)
   - [x] `metrics.agreement`
   - [x] `metrics.aline`
@@ -122,22 +138,6 @@
   - [x] `metrics.scores`
   - [x] `metrics.segmentation`
   - [x] `metrics.spearman`
-
-- [~] `sem` (8/15)
-  - [x] `sem.boxer`
-  - [ ] `sem.chat80`
-  - [x] `sem.cooper_storage`
-  - [x] `sem.drt`
-  - [ ] `sem.drt_glue_demo`
-  - [x] `sem.evaluate`
-  - [ ] `sem.glue`
-  - [ ] `sem.hole`
-  - [x] `sem.lfg`
-  - [ ] `sem.linearlogic`
-  - [x] `sem.logic`
-  - [ ] `sem.relextract`
-  - [x] `sem.skolemize`
-  - [x] `sem.util`
 
 - [x] `tree` (8/8)
   - [x] `tree.immutable`
@@ -176,8 +176,8 @@
   - [x] `corpus.reader`
   - [x] `corpus.util`
 
-- [~] `sentiment` (2/4)
-  - [ ] `sentiment.sentiment_analyzer`
+- [~] `sentiment` (3/4)
+  - [x] `sentiment.sentiment_analyzer`
   - [x] `sentiment.util`
   - [x] `sentiment.vader`
 
