@@ -412,6 +412,11 @@ export { align as alineAlign, sigmaSkip, sigmaSub, sigmaExp, delta as alineDelta
 export { ARLSTem } from "./src/stem_arlstem";
 export { ARLSTem2 } from "./src/stem_arlstem2";
 export { ISRIStemmer, ISRI_STOP_WORDS } from "./src/stem_isri";
+export { singleMeteorScore, meteorScore, alignWords, exactMatch, stemMatch } from "./src/translate_meteor";
+export type { MeteorOptions, MeteorStemmer } from "./src/translate_meteor";
+export { sentenceRibes, corpusRibes, wordRankAlignment, kendallTau, spearmanRho, findIncreasingSequences } from "./src/translate_ribes";
+export { TextTilingTokenizer, smooth as ttSmooth, BLOCK_COMPARISON, VOCABULARY_INTRODUCTION, HC as TT_HC, LC as TT_LC } from "./src/tokenize_texttiling";
+export { TnT } from "./src/tag_tnt";
 export { SyllableTokenizer, sonorityTokenize } from "./src/tokenize_sonority";
 export { alignBlocks, alignLogProb, trace as galeChurchTrace, LanguageIndependent as GaleChurchLanguageIndependent, MAX_ALIGN_BLOCKS } from "./src/translate_gale_church";
 export { phraseExtraction, extract as phraseExtract, MAX_PHRASE_EXTRACTION_DEFAULT_LEN } from "./src/translate_phrase_based";

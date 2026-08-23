@@ -51,7 +51,7 @@ COVERED: dict[str, bool] = {
     "tokenize.treebank": True, "tokenize.toktok": True, "tokenize.mwe": True,
     "tokenize.punkt": True, "tokenize.util": True, "tokenize.simple": True,
     "tokenize.legality_principle": True, "tokenize.sonority_sequencing": True,
-    "tokenize.sexpr": True, "tokenize.texttiling": False, "tokenize.repp": True,
+    "tokenize.sexpr": True, "tokenize.texttiling": True, "tokenize.repp": True,
     "tokenize.stanford_segmenter": True, "tokenize.stanford": True,
     "tokenize.nist": True,
     # stem
@@ -62,7 +62,7 @@ COVERED: dict[str, bool] = {
     # tag
     "tag.api": True, "tag.perceptron": True, "tag.sequential": True,
     "tag.brill": True, "tag.brill_trainer": True, "tag.hmm": True,
-    "tag.util": True, "tag.mapping": True, "tag.tnt": False, "tag.crf": False,
+    "tag.util": True, "tag.mapping": True, "tag.tnt": True, "tag.crf": False,
     "tag.senna": True, "tag.hunpos": True, "tag.stanford": True,
     # tbl
     "tbl.api": True, "tbl.rule": True, "tbl.template": True,
@@ -84,8 +84,8 @@ COVERED: dict[str, bool] = {
     "translate.gdfa": True, "translate.ibm_model": True,
     "translate.ibm1": True, "translate.ibm2": True, "translate.ibm3": True,
     "translate.ibm4": True, "translate.ibm5": True, "translate.lepor": False,
-    "translate.meteor_score": False, "translate.phrase_based": True,
-    "translate.ribes_score": False, "translate.stack_decoder": False,
+    "translate.meteor_score": True, "translate.phrase_based": True,
+    "translate.ribes_score": True, "translate.stack_decoder": False,
     "translate.gleu_score": True,
     # sem
     "sem.logic": True, "sem.evaluate": True,

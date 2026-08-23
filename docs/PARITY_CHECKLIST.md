@@ -3,7 +3,7 @@
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
 > Last regenerated: 2026-08-23
 
-**Coverage: 146/241 modules (60.6%)** — 21 of 46 families touched.
+**Coverage: 150/241 modules (62.2%)** — 21 of 46 families touched.
 
 - [x] `parse` (20/20)
   - [x] `parse.api`
@@ -26,7 +26,7 @@
   - [x] `parse.util`
   - [x] `parse.viterbi`
 
-- [~] `tokenize` (18/19)
+- [x] `tokenize` (19/19)
   - [x] `tokenize.api`
   - [x] `tokenize.casual`
   - [x] `tokenize.destructive`
@@ -41,12 +41,12 @@
   - [x] `tokenize.sonority_sequencing`
   - [x] `tokenize.stanford`
   - [x] `tokenize.stanford_segmenter`
-  - [ ] `tokenize.texttiling`
+  - [x] `tokenize.texttiling`
   - [x] `tokenize.toktok`
   - [x] `tokenize.treebank`
   - [x] `tokenize.util`
 
-- [~] `translate` (15/20)
+- [~] `translate` (17/20)
   - [x] `translate.api`
   - [x] `translate.bleu_score`
   - [x] `translate.chrf_score`
@@ -60,11 +60,11 @@
   - [x] `translate.ibm5`
   - [x] `translate.ibm_model`
   - [ ] `translate.lepor`
-  - [ ] `translate.meteor_score`
+  - [x] `translate.meteor_score`
   - [x] `translate.metrics`
   - [x] `translate.nist_score`
   - [x] `translate.phrase_based`
-  - [ ] `translate.ribes_score`
+  - [x] `translate.ribes_score`
   - [ ] `translate.stack_decoder`
 
 - [~] `classify` (14/15)
@@ -97,7 +97,7 @@
   - [x] `stem.util`
   - [x] `stem.wordnet`
 
-- [~] `tag` (11/14)
+- [~] `tag` (12/14)
   - [x] `tag.api`
   - [x] `tag.brill`
   - [x] `tag.brill_trainer`
@@ -109,7 +109,7 @@
   - [x] `tag.senna`
   - [x] `tag.sequential`
   - [x] `tag.stanford`
-  - [ ] `tag.tnt`
+  - [x] `tag.tnt`
   - [x] `tag.util`
 
 - [x] `metrics` (10/10)
