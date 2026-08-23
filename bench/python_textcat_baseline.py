@@ -23,8 +23,9 @@ except ImportError as exc:
 def main() -> int:
     try:
         cat = TextCat()
-    except OSError as exc:
-        # NLTK raises OSError when the crubadan corpus / regex module is missing.
+    except (OSError, LookupError) as exc:
+        # NLTK raises OSError/LookupError when the crubadan corpus or regex
+        # module is missing.
         print(f"TextCat corpus unavailable: {exc}", file=sys.stderr)
         return 3
 

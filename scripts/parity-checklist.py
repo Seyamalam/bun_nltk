@@ -99,7 +99,7 @@ COVERED: dict[str, bool] = {
     "classify.maxent": True, "classify.util": True, "classify.megam": False,
     "classify.rte_classify": False, "classify.scikitlearn": False,
     "classify.senna": False, "classify.svm": False, "classify.tadm": False,
-    "classify.textcat": False, "classify.weka": False,
+    "classify.textcat": True, "classify.weka": False,
     # parse
     "parse": True, "parse.api": True, "parse.cfg": True, "parse.pcfg": True,
     "parse.chart": True, "parse.earleychart": True,
@@ -112,7 +112,7 @@ COVERED: dict[str, bool] = {
     "parse.transitionparser": False,
     # chunk
     "chunk": True, "chunk.api": True, "chunk.regexp": True, "chunk.util": True,
-    "chunk.named_entity": False,
+    "chunk.named_entity": True,
     # corpus readers (subset)
     "corpus": True, "corpus.reader": True, "corpus.reader.api": True,
     "corpus.reader.plaintext": True, "corpus.reader.tagged": True,
@@ -125,8 +125,8 @@ COVERED: dict[str, bool] = {
     # tree family (core covered; prettyprinter/parented/immutable out)
     "tree": True, "tree.tree": True, "tree.probabilistic": True,
     "tree.transforms": True, "tree.parsing": True,
-    "tree.prettyprinter": False, "tree.parented": False,
-    "tree.immutable": False, "treeprettyprinter": False,
+    "tree.prettyprinter": False, "tree.parented": True,
+    "tree.immutable": True, "treeprettyprinter": False,
     # sentiment
     "sentiment.vader": True, "sentiment.util": True,
     "sentiment.sentiment_analyzer": False,

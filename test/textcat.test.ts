@@ -56,16 +56,13 @@ test("empty text is unclassifiable (NLTK returns None / [])", () => {
 
 test("ties return null by default and all tied candidates with returnAll", () => {
   const cat = trainedCat();
-  // Single trigram present identically-ranked in both profiles.
+  // Trigram absent from both profiles -> all languages equally distant ->
+  // uninformative input: NLTK guess_language returns None / [].
   const tieText = "zzq";
   const dists = cat.langDists(tieText);
-  if (dists.eng === dists.fra) {
-    expect(cat.guessLanguage(tieText)).toBeNull();
-    expect(cat.guessLanguage(tieText, true)).toEqual(expect.arrayContaining(["eng", "fra"]));
-  } else {
-    // Deterministic fallback: result must be one of the trained languages.
-    expect(["eng", "fra"]).toContain(cat.guessLanguage(tieText));
-  }
+  expect(dists.eng).toBe(dists.fra);
+  expect(cat.guessLanguage(tieText)).toBeNull();
+  expect(cat.guessLanguage(tieText, true)).toEqual([]);
 });
 
 test("lastDistances records the out-of-place measure per language", () => {

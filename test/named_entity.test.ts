@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { neChunk, neChunkIob, type TaggedToken } from "../index";
+import { neChunk, neChunkIob, type ChunkNode, type TaggedToken } from "../index";
 
 const sentence: TaggedToken[] = [
   { token: "Barack", tag: "NNP" },

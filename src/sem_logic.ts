@@ -138,6 +138,11 @@ export function resetUniqueVariableCounter(): void {
   _counter = 0;
 }
 
+/** Next value of the shared unique-variable counter (nltk.internals.Counter.get()). */
+export function nextUniqueCounterValue(): number {
+  return ++_counter;
+}
+
 export function uniqueVariable(pattern?: Variable, ignore?: Set<string>): Variable {
   let prefix = "z";
   if (pattern !== undefined) {

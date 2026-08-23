@@ -3,7 +3,7 @@
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
 > Last regenerated: 2026-08-23
 
-**Coverage: 95/241 modules (39.4%)** — 20 of 46 families touched.
+**Coverage: 99/241 modules (41.1%)** — 20 of 46 families touched.
 
 - [~] `parse` (12/20)
   - [x] `parse.api`
@@ -78,6 +78,22 @@
   - [x] `metrics.segmentation`
   - [x] `metrics.spearman`
 
+- [~] `classify` (7/15)
+  - [x] `classify.api`
+  - [x] `classify.decisiontree`
+  - [x] `classify.maxent`
+  - [ ] `classify.megam`
+  - [x] `classify.naivebayes`
+  - [x] `classify.positivenaivebayes`
+  - [ ] `classify.rte_classify`
+  - [ ] `classify.scikitlearn`
+  - [ ] `classify.senna`
+  - [ ] `classify.svm`
+  - [ ] `classify.tadm`
+  - [x] `classify.textcat`
+  - [x] `classify.util`
+  - [ ] `classify.weka`
+
 - [~] `lm` (7/8)
   - [x] `lm.api`
   - [x] `lm.counter`
@@ -116,34 +132,18 @@
   - [ ] `tag.tnt`
   - [x] `tag.util`
 
-- [~] `classify` (6/15)
-  - [x] `classify.api`
-  - [x] `classify.decisiontree`
-  - [x] `classify.maxent`
-  - [ ] `classify.megam`
-  - [x] `classify.naivebayes`
-  - [x] `classify.positivenaivebayes`
-  - [ ] `classify.rte_classify`
-  - [ ] `classify.scikitlearn`
-  - [ ] `classify.senna`
-  - [ ] `classify.svm`
-  - [ ] `classify.tadm`
-  - [ ] `classify.textcat`
-  - [x] `classify.util`
-  - [ ] `classify.weka`
-
-- [~] `tree` (5/8)
-  - [ ] `tree.immutable`
-  - [ ] `tree.parented`
+- [~] `tree` (7/8)
+  - [x] `tree.immutable`
+  - [x] `tree.parented`
   - [x] `tree.parsing`
   - [ ] `tree.prettyprinter`
   - [x] `tree.probabilistic`
   - [x] `tree.transforms`
   - [x] `tree.tree`
 
-- [~] `chunk` (4/5)
+- [x] `chunk` (5/5)
   - [x] `chunk.api`
-  - [ ] `chunk.named_entity`
+  - [x] `chunk.named_entity`
   - [x] `chunk.regexp`
   - [x] `chunk.util`
 
