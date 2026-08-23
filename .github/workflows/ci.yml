@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Cache bun install
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('**/bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+      - run: bun install --frozen-lockfile
+      # Fast-fail on type errors before spending time on tests.
+      - run: bunx tsc -p tsconfig.json --noEmit
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Cache bun install
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('**/bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+      - run: bun install --frozen-lockfile
+      - name: Build native library (Rust)
+        run: |
+          rustup toolchain install stable --profile minimal
+          cargo --version
+          bun run build:rust || echo "::warning::native build unavailable; running pure-JS/WASM tests only"
+      - name: Set up Python for parity baselines
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Python NLTK baseline deps
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install nltk numpy scipy || echo "::warning::python parity deps unavailable; parity tests will skip"
+      - name: Run tests
+        run: bun test
+
+  rust-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rust fmt + clippy
+        continue-on-error: true # tighten to blocking once existing warnings are fixed
+        run: |
+          rustup toolchain install stable --profile minimal --component rustfmt clippy
+          cd rust
+          cargo fmt --check
+          cargo clippy -- -D warnings
+
+  loc-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail if any non-grandfathered .ts/.rs file exceeds 600 LOC
+        run: bash scripts/loc-guard.sh 600

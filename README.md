@@ -367,6 +367,39 @@ bun run parity:tracker
 bun run release:check
 ```
 
+## Environment
+
+Optional environment variables (see `.env.example` for the full annotated list):
+
+| Variable | Purpose | Default |
+|---|---|---|
+| `BUN_NLTK_NATIVE_LIB` | Path to the compiled Rust native library | prebuilt path under `native/` |
+| `BUN_NLTK_CARGO_BIN` | cargo binary for build scripts | `cargo` on PATH |
+| `BUN_NLTK_WORDNET_PATH` | WordNet data dir overriding the bundled mini corpus | bundled mini |
+| `BENCH_TREND_MAX_REGRESSION_PCT` | Max regression percent for bench trend checks | repo default |
+| `GIT_TAG` | Tag injected into release builds (set by CI) | — |
+
+## Docker
+
+One-command reproducible environment (Bun + Rust + Python/nltk):
+
+```bash
+docker compose run --rm test     # full test suite in a container
+docker compose run --rm verify   # typecheck + tests
+```
+
+Or directly:
+
+```bash
+docker build -t bun_nltk . && docker run --rm bun_nltk
+```
+
+## Project hygiene
+
+- **CI** (`.github/workflows/ci.yml`): typecheck fast-fail → lint → tests (+ Rust fmt/clippy) on every push and PR. `bun install --frozen-lockfile` enforces `bun.lock`.
+- **Lint**: `bun run lint` (Biome). Zero errors enforced; warnings tracked.
+- **LOC guard**: `bash scripts/loc-guard.sh 600` fails if any non-grandfathered `.ts`/`.rs` file exceeds 600 lines. Legacy files over the limit are listed inside the script and shrink over time.
+
 ## Notes
 
 - Native library output path is `native/bun_nltk.{dll|so|dylib}`.

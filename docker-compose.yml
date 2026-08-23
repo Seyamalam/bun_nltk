@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  test:
+    build: .
+    image: bun_nltk
+    command: ["bun", "test"]
+    environment:
+      # Parity baselines spawn python3 from PATH (installed in the image).
+      BENCH_TREND_MAX_REGRESSION_PCT: "10"
+
+  # One-shot: typecheck + full test + parity harnesses
+  verify:
+    build: .
+    image: bun_nltk
+    command: ["bash", "-lc", "bun run typecheck && bun test"]
+
+  bench:
+    build: .
+    image: bun_nltk
+    command: ["bash", "-lc", "bun run bench:gate"]

@@ -54,6 +54,7 @@
     "wordnet:verify:pack": "bun run scripts/verify-wordnet-pack.ts",
     "test": "bun test",
     "typecheck": "bunx tsc -p tsconfig.json --noEmit",
+    "lint": "bunx @biomejs/biome check src test bench scripts index.ts",
     "bench:generate": "python3 bench/generate_synthetic.py --size-mb 64 --seed 1337 --out bench/datasets/synthetic.txt",
     "bench:compare": "bun run bench/compare.ts bench/datasets/synthetic.txt 2 5",
     "bench:compare:collocations": "bun run bench/compare_collocations.ts bench/datasets/synthetic.txt 50 5",
@@ -134,7 +135,8 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "playwright": "^1.52.0"
+    "playwright": "^1.52.0",
+    "@biomejs/biome": "^2.5.10"
   },
   "peerDependencies": {
     "typescript": "^5"
