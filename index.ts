@@ -396,6 +396,13 @@ export { CistemStemmer, cistemStem } from "./src/stem_cistem";
 export { dependencyEvaluate } from "./src/parse_evaluate";
 export type { DependencyEvalNode } from "./src/parse_evaluate";
 
+export { SExprTokenizer, sexprTokenize } from "./src/tokenize_sexpr";
+export { growDiagFinalAnd } from "./src/translate_gdfa";
+export { corpusGleu, sentenceGleu } from "./src/translate_gleu";
+export { NISTTokenizer, nistInternationalTokenize, nistTokenize } from "./src/tokenize_nist";
+export { generate, generateSentences, MAX_GENERATE_OPERATIONS } from "./src/parse_generate";
+export { errorList } from "./src/tbl_erroranalysis";
+
 export {
   MIN_PROB as IBM_MIN_PROB,
   Counts as IBMCounts,

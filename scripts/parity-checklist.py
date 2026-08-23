@@ -51,9 +51,9 @@ COVERED: dict[str, bool] = {
     "tokenize.treebank": True, "tokenize.toktok": True, "tokenize.mwe": True,
     "tokenize.punkt": True, "tokenize.util": True, "tokenize.simple": True,
     "tokenize.legality_principle": False, "tokenize.sonority_sequencing": False,
-    "tokenize.sexpr": False, "tokenize.texttiling": False, "tokenize.repp": False,
+    "tokenize.sexpr": True, "tokenize.texttiling": False, "tokenize.repp": False,
     "tokenize.stanford_segmenter": False, "tokenize.stanford": False,
-    "tokenize.nist": False,
+    "tokenize.nist": True,
     # stem
     "stem.api": True, "stem.porter": True, "stem.snowball": True,
     "stem.lancaster": True, "stem.regexp": True, "stem.wordnet": True,
@@ -66,7 +66,7 @@ COVERED: dict[str, bool] = {
     "tag.senna": False, "tag.hunpos": False, "tag.stanford": False,
     # tbl
     "tbl.api": True, "tbl.rule": True, "tbl.template": True,
-    "tbl.feature": True, "tbl.demo": False, "tbl.erroranalysis": False,
+    "tbl.feature": True, "tbl.demo": False, "tbl.erroranalysis": True,
     # probability / lm
     "probability": True,
     "lm.api": True, "lm.models": True, "lm.smoothing": True,
@@ -81,12 +81,12 @@ COVERED: dict[str, bool] = {
     "translate.api": True, "translate.bleu_score": True,
     "translate.chrf_score": True, "translate.nist_score": True,
     "translate.metrics": True, "translate.gale_church": False,
-    "translate.gdfa": False, "translate.ibm_model": True,
+    "translate.gdfa": True, "translate.ibm_model": True,
     "translate.ibm1": True, "translate.ibm2": True, "translate.ibm3": True,
     "translate.ibm4": True, "translate.ibm5": True, "translate.lepor": False,
     "translate.meteor_score": False, "translate.phrase_based": False,
     "translate.ribes_score": False, "translate.stack_decoder": False,
-    "translate.gleu_score": False,
+    "translate.gleu_score": True,
     # sem
     "sem.logic": True, "sem.evaluate": True,
     "sem.drt": True, "sem.skolemize": True, "sem.util": False,
@@ -108,7 +108,7 @@ COVERED: dict[str, bool] = {
     "parse.featurechart": True, "parse.util": True,
     "parse.dependencygraph": True, "parse.nonprojectivedependencyparser": True,
     "parse.projectivedependencyparser": True, "parse.bllip": False,
-    "parse.corenlp": False, "parse.evaluate": True, "parse.generate": False,
+    "parse.corenlp": False, "parse.evaluate": True, "parse.generate": True,
     "parse.malt": False, "parse.shiftreduce": False, "parse.stanford": False,
     "parse.transitionparser": False,
     # chunk

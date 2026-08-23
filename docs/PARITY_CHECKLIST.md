@@ -3,9 +3,9 @@
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
 > Last regenerated: 2026-08-23
 
-**Coverage: 103/241 modules (42.7%)** — 20 of 46 families touched.
+**Coverage: 109/241 modules (45.2%)** — 20 of 46 families touched.
 
-- [~] `parse` (13/20)
+- [~] `parse` (14/20)
   - [x] `parse.api`
   - [ ] `parse.bllip`
   - [x] `parse.chart`
@@ -14,7 +14,7 @@
   - [x] `parse.earleychart`
   - [x] `parse.evaluate`
   - [x] `parse.featurechart`
-  - [ ] `parse.generate`
+  - [x] `parse.generate`
   - [ ] `parse.malt`
   - [x] `parse.nonprojectivedependencyparser`
   - [x] `parse.pchart`
@@ -26,17 +26,17 @@
   - [x] `parse.util`
   - [x] `parse.viterbi`
 
-- [~] `tokenize` (11/19)
+- [~] `tokenize` (13/19)
   - [x] `tokenize.api`
   - [x] `tokenize.casual`
   - [x] `tokenize.destructive`
   - [ ] `tokenize.legality_principle`
   - [x] `tokenize.mwe`
-  - [ ] `tokenize.nist`
+  - [x] `tokenize.nist`
   - [x] `tokenize.punkt`
   - [x] `tokenize.regexp`
   - [ ] `tokenize.repp`
-  - [ ] `tokenize.sexpr`
+  - [x] `tokenize.sexpr`
   - [x] `tokenize.simple`
   - [ ] `tokenize.sonority_sequencing`
   - [ ] `tokenize.stanford`
@@ -46,13 +46,13 @@
   - [x] `tokenize.treebank`
   - [x] `tokenize.util`
 
-- [~] `translate` (11/20)
+- [~] `translate` (13/20)
   - [x] `translate.api`
   - [x] `translate.bleu_score`
   - [x] `translate.chrf_score`
   - [ ] `translate.gale_church`
-  - [ ] `translate.gdfa`
-  - [ ] `translate.gleu_score`
+  - [x] `translate.gdfa`
+  - [x] `translate.gleu_score`
   - [x] `translate.ibm1`
   - [x] `translate.ibm2`
   - [x] `translate.ibm3`
@@ -147,6 +147,14 @@
   - [x] `chunk.regexp`
   - [x] `chunk.util`
 
+- [~] `tbl` (5/7)
+  - [x] `tbl.api`
+  - [ ] `tbl.demo`
+  - [x] `tbl.erroranalysis`
+  - [x] `tbl.feature`
+  - [x] `tbl.rule`
+  - [x] `tbl.template`
+
 - [~] `sem` (4/15)
   - [ ] `sem.boxer`
   - [ ] `sem.chat80`
@@ -162,14 +170,6 @@
   - [ ] `sem.relextract`
   - [x] `sem.skolemize`
   - [ ] `sem.util`
-
-- [~] `tbl` (4/7)
-  - [x] `tbl.api`
-  - [ ] `tbl.demo`
-  - [ ] `tbl.erroranalysis`
-  - [x] `tbl.feature`
-  - [x] `tbl.rule`
-  - [x] `tbl.template`
 
 - [~] `corpus` (3/4)
   - [ ] `corpus.europarl_raw`
