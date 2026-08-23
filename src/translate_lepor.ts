@@ -1,88 +1,206 @@
 /**
  * LEPOR score (port of nltk.translate.lepor).
- * Han et al. (2012) "LEPOR: A Robust Evaluation Metric for Machine Translation".
+ *
+ * Han et al. (2012) "LEPOR: A Robust Evaluation Metric for Machine Translation
+ * with Augmented Factors"  https://aclanthology.org/C12-2044
+ * All 6 functions are a verbatim port of the NLTK implementation.
  */
-export function lengthPenalty(refLen: number, hypLen: number): number {
-  if (hypLen === 0) return 0;
-  if (hypLen > refLen) return 1;
-  return Math.exp(1 - refLen / hypLen);
-}
 
-export function alignment(refTokens: string[], hypTokens: string[]): [number, number, number] {
-  const refSet = new Set(refTokens);
-  const hypSet = new Set(hypTokens);
-  let aligned = 0;
-  const refCounts = new Map<string, number>();
-  for (const t of refTokens) refCounts.set(t, (refCounts.get(t) ?? 0) + 1);
-  const hypCounts = new Map<string, number>();
-  for (const t of hypTokens) hypCounts.set(t, (hypCounts.get(t) ?? 0) + 1);
-  for (const t of refSet) if (hypSet.has(t)) aligned += Math.min(refCounts.get(t)!, hypCounts.get(t)!);
-  return [aligned, refTokens.length, hypTokens.length];
-}
+import { treebankWordTokenize } from "./tokenizers";
 
-export function ngramPositionalPenalty(refTokens: string[], hypTokens: string[], n = 2): number {
-  if (refTokens.length < n || hypTokens.length < n) return 1;
-  const refNgrams = new Map<string, number[]>();
-  for (let i = 0; i <= refTokens.length - n; i++) {
-    const ng = refTokens.slice(i, i+n).join(" ");
-    if (!refNgrams.has(ng)) refNgrams.set(ng, []);
-    refNgrams.get(ng)!.push(i);
+// ---------------------------------------------------------------------------
+// 1. length_penalty
+// ---------------------------------------------------------------------------
+export function lengthPenalty(reference: string[], hypothesis: string[]): number {
+  const refLen = reference.length;
+  const hypLen = hypothesis.length;
+  if (refLen === hypLen) return 1;
+  if (refLen < hypLen) return Math.exp(1 - refLen / hypLen);
+  return Math.exp(1 - hypLen / refLen);
+}
+export const length_penalty = lengthPenalty;
+
+// ---------------------------------------------------------------------------
+// 2. alignment
+// ---------------------------------------------------------------------------
+export function alignment(refTokens: string[], hypTokens: string[]): number[] {
+  const aligns: number[] = [];
+  const hypLen = hypTokens.length;
+  const refLen = refTokens.length;
+
+  const refPositions = new Map<string, number[]>();
+  for (let idx = 0; idx < refTokens.length; idx++) {
+    const tok = refTokens[idx]!;
+    const list = refPositions.get(tok);
+    if (list) list.push(idx);
+    else refPositions.set(tok, [idx]);
   }
-  let penalty = 0, count = 0;
-  for (let i = 0; i <= hypTokens.length - n; i++) {
-    const ng = hypTokens.slice(i, i+n).join(" ");
-    const refPos = refNgrams.get(ng);
-    if (refPos && refPos.length) {
-      const closest = refPos.reduce((a,b) => Math.abs(a-i) < Math.abs(b-i) ? a : b);
-      penalty += Math.abs(closest - i);
-      count++;
+
+  for (let hypIndex = 0; hypIndex < hypTokens.length; hypIndex++) {
+    const hypToken = hypTokens[hypIndex]!;
+    const refIndexes: number[] = refPositions.get(hypToken) ?? [];
+    if (refIndexes.length === 0) {
+      aligns.push(-1);
+    } else if (refIndexes.length === 1) {
+      aligns.push(refIndexes[0]!);
+    } else {
+      const isMatched: boolean[] = new Array(refIndexes.length).fill(false);
+      for (let ind = 0; ind < refIndexes.length; ind++) {
+        const refIndex = refIndexes[ind]!;
+        if (
+          refIndex - 1 > 0 &&
+          refIndex - 1 < refLen &&
+          hypIndex - 1 > 0 &&
+          hypIndex - 1 < hypLen &&
+          refTokens[refIndex - 1] === hypTokens[hypIndex - 1]
+        ) {
+          isMatched[ind] = true;
+        } else if (
+          refIndex + 1 > 0 &&
+          refIndex + 1 < refLen &&
+          hypIndex + 1 > 0 &&
+          hypIndex + 1 < hypLen &&
+          refTokens[refIndex + 1] === hypTokens[hypIndex + 1]
+        ) {
+          isMatched[ind] = true;
+        } else {
+          isMatched[ind] = false;
+        }
+      }
+      const trueCount = isMatched.filter(Boolean).length;
+      if (trueCount === 1) {
+        const idx = isMatched.indexOf(true);
+        aligns.push(refIndexes[idx]!);
+      } else if (trueCount > 1) {
+        let minDistance = 0;
+        let minIndex = 0;
+        for (let k = 0; k < isMatched.length; k++) {
+          if (isMatched[k]) {
+            const ri = refIndexes[k]!;
+            const distance = Math.abs(hypIndex - ri);
+            if (distance > minDistance) {
+              minDistance = distance;
+              minIndex = ri;
+            }
+          }
+        }
+        aligns.push(minIndex);
+      } else {
+        let minDistance = 0;
+        let minIndex = 0;
+        for (const ri of refIndexes) {
+          const distance = Math.abs(hypIndex - ri);
+          if (distance > minDistance) {
+            minDistance = distance;
+            minIndex = ri;
+          }
+        }
+        aligns.push(minIndex);
+      }
     }
   }
-  if (count === 0) return 1;
-  return Math.exp(-penalty / (count * hypTokens.length));
+  return aligns.filter((a) => a !== -1).map((a) => a + 1);
 }
 
-function harmonicMean(values: number[], weights?: number[]): number {
-  if (values.length === 0) return 0;
-  const w = weights ?? values.map(() => 1/values.length);
-  let denom = 0;
-  for (let i = 0; i < values.length; i++) {
-    if (values[i] === 0) return 0;
-    denom += w[i]! / values[i]!;
+// ---------------------------------------------------------------------------
+// 3. ngram_positional_penalty
+// ---------------------------------------------------------------------------
+export function ngramPositionalPenalty(
+  refTokens: string[],
+  hypTokens: string[],
+): [number, number] {
+  const al = alignment(refTokens, hypTokens);
+  const matchCount = al.length;
+  const pd: number[] = [];
+  for (let i = 0; i < al.length; i++) {
+    const a = al[i]!;
+    pd.push(Math.abs((i + 1) / hypTokens.length - a / refTokens.length));
   }
-  return 1 / denom;
+  const npd = pd.reduce((s, v) => s + v, 0) / hypTokens.length;
+  // Guard same as Python: when matchCount=0, pd is empty so npd = 0, exp(0)=1 — matches Python (sum([])/len == 0)
+  return [Math.exp(-npd), matchCount];
+}
+export const ngram_positional_penalty = ngramPositionalPenalty;
+
+// ---------------------------------------------------------------------------
+// 4. harmonic
+// ---------------------------------------------------------------------------
+export function harmonic(
+  matchCount: number,
+  referenceLength: number,
+  hypothesisLength: number,
+  alpha: number,
+  beta: number,
+): number {
+  const epsilon = Number.EPSILON;
+  const precision = matchCount / hypothesisLength;
+  const recall = matchCount / referenceLength;
+  return (alpha + beta) / (alpha / (recall + epsilon) + beta / (precision + epsilon));
 }
 
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+type TokenizerFn = (s: string) => string[];
+const defaultTokenizer: TokenizerFn = (s) => treebankWordTokenize(s);
+
+function tokenizeIfNeeded(
+  s: string | string[],
+  tokenizer: TokenizerFn | null | undefined,
+): string[] {
+  if (Array.isArray(s)) return [...s];
+  const fn: TokenizerFn = tokenizer ?? defaultTokenizer;
+  return fn(s);
+}
+
+// ---------------------------------------------------------------------------
+// 5. sentence_lepor
+// ---------------------------------------------------------------------------
 export function sentenceLepor(
-  references: string[][],
-  hypothesis: string[],
-  alpha = 0.9, beta = 0.9, n = 2,
-): number {
-  if (references.length === 0 || hypothesis.length === 0) return 0;
-  // pick reference with closest length (NLTK behavior)
-  let bestRef = references[0]!;
-  let bestDiff = Math.abs(bestRef.length - hypothesis.length);
-  for (const ref of references.slice(1)) {
-    const d = Math.abs(ref.length - hypothesis.length);
-    if (d < bestDiff) { bestDiff = d; bestRef = ref; }
-  }
-  const [aligned] = alignment(bestRef, hypothesis);
-  const precision = hypothesis.length ? aligned / hypothesis.length : 0;
-  const recall = bestRef.length ? aligned / bestRef.length : 0;
-  if (precision === 0 || recall === 0) return 0;
-  const lp = lengthPenalty(bestRef.length, hypothesis.length);
-  const npp = ngramPositionalPenalty(bestRef, hypothesis, n);
-  const hMean = harmonicMean([precision, recall], [alpha, 1-alpha]);
-  return lp * npp * hMean;
-}
+  references: Array<string | string[]>,
+  hypothesis: string | string[],
+  alpha = 1.0,
+  beta = 1.0,
+  tokenizer?: TokenizerFn | null,
+): number[] {
+  const fn: TokenizerFn | null | undefined = tokenizer;
+  const hypTokens: string[] = tokenizeIfNeeded(hypothesis, fn);
+  const refTokenLists: string[][] = references.map((r) => tokenizeIfNeeded(r as string | string[], fn));
 
-export function corpusLepor(
-  listOfReferences: string[][][],
-  hypotheses: string[][],
-  alpha = 0.9, beta = 0.9, n = 2,
-): number {
-  if (hypotheses.length === 0) return 0;
-  let total = 0;
-  for (let i = 0; i < hypotheses.length; i++) total += sentenceLepor(listOfReferences[i] ?? [], hypotheses[i] ?? [], alpha, beta, n);
-  return total / hypotheses.length;
+  const scores: number[] = [];
+  for (const reference of refTokenLists) {
+    if (reference.length === 0 || hypTokens.length === 0) {
+      throw new Error("One of the sentence is empty. Exit.");
+    }
+    const lp = lengthPenalty(reference, hypTokens);
+    const [npd, matchCount] = ngramPositionalPenalty(reference, hypTokens);
+    const h = harmonic(matchCount, reference.length, hypTokens.length, alpha, beta);
+    scores.push(lp * npd * h);
+  }
+  return scores;
 }
+export const sentence_lepor = sentenceLepor;
+
+// ---------------------------------------------------------------------------
+// 6. corpus_lepor
+// ---------------------------------------------------------------------------
+export function corpusLepor(
+  references: Array<Array<string | string[]>>,
+  hypotheses: Array<string | string[]>,
+  alpha = 1.0,
+  beta = 1.0,
+  tokenizer?: TokenizerFn | null,
+): number[][] {
+  if (references.length === 0 || hypotheses.length === 0) {
+    throw new Error("There is an Empty list. Exit.");
+  }
+  if (references.length !== hypotheses.length) {
+    throw new Error("The number of hypothesis and their reference(s) should be the same");
+  }
+  const out: number[][] = [];
+  for (let i = 0; i < references.length; i++) {
+    out.push(sentenceLepor(references[i]!, hypotheses[i]!, alpha, beta, tokenizer));
+  }
+  return out;
+}
+export const corpus_lepor = corpusLepor;
