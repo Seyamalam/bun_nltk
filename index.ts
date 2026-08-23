@@ -90,6 +90,12 @@ export type { PunktModelSerialized, PunktTrainingOptions } from "./src/punkt";
 export { normalizeTokens } from "./src/normalization";
 export { chunkTreeToIob, regexpChunkParse } from "./src/chunk";
 export type { ChunkElement, ChunkNode, IobRow, TaggedToken } from "./src/chunk";
+export { DEFAULT_NE_GRAMMAR, neChunk, neChunkIob } from "./src/named_entity";
+export type { NeChunkOptions, NeIobTuple } from "./src/named_entity";
+export { TextCat } from "./src/textcat";
+export type { LanguageDistance, TextCatOptions } from "./src/textcat";
+export { ImmutableTree, ParentedTree } from "./src/parented_tree";
+export type { TreePosition, TreePositionsOrder } from "./src/parented_tree";
 export { ConditionalFreqDist, FreqDist } from "./src/freqdist";
 export type { ConditionalFreqDistInput, FreqDistInput } from "./src/freqdist";
 export {

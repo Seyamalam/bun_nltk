@@ -3,7 +3,7 @@
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
 > Last regenerated: 2026-08-23
 
-**Coverage: 89/241 modules (36.9%)** — 20 of 46 families touched.
+**Coverage: 95/241 modules (39.4%)** — 20 of 46 families touched.
 
 - [~] `parse` (12/20)
   - [x] `parse.api`
@@ -45,6 +45,27 @@
   - [x] `tokenize.toktok`
   - [x] `tokenize.treebank`
   - [x] `tokenize.util`
+
+- [~] `translate` (11/20)
+  - [x] `translate.api`
+  - [x] `translate.bleu_score`
+  - [x] `translate.chrf_score`
+  - [ ] `translate.gale_church`
+  - [ ] `translate.gdfa`
+  - [ ] `translate.gleu_score`
+  - [x] `translate.ibm1`
+  - [x] `translate.ibm2`
+  - [x] `translate.ibm3`
+  - [x] `translate.ibm4`
+  - [x] `translate.ibm5`
+  - [x] `translate.ibm_model`
+  - [ ] `translate.lepor`
+  - [ ] `translate.meteor_score`
+  - [x] `translate.metrics`
+  - [x] `translate.nist_score`
+  - [ ] `translate.phrase_based`
+  - [ ] `translate.ribes_score`
+  - [ ] `translate.stack_decoder`
 
 - [~] `metrics` (8/10)
   - [x] `metrics.agreement`
@@ -110,27 +131,6 @@
   - [ ] `classify.textcat`
   - [x] `classify.util`
   - [ ] `classify.weka`
-
-- [~] `translate` (5/20)
-  - [x] `translate.api`
-  - [x] `translate.bleu_score`
-  - [x] `translate.chrf_score`
-  - [ ] `translate.gale_church`
-  - [ ] `translate.gdfa`
-  - [ ] `translate.gleu_score`
-  - [ ] `translate.ibm1`
-  - [ ] `translate.ibm2`
-  - [ ] `translate.ibm3`
-  - [ ] `translate.ibm4`
-  - [ ] `translate.ibm5`
-  - [ ] `translate.ibm_model`
-  - [ ] `translate.lepor`
-  - [ ] `translate.meteor_score`
-  - [x] `translate.metrics`
-  - [x] `translate.nist_score`
-  - [ ] `translate.phrase_based`
-  - [ ] `translate.ribes_score`
-  - [ ] `translate.stack_decoder`
 
 - [~] `tree` (5/8)
   - [ ] `tree.immutable`
