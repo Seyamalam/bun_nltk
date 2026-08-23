@@ -12,7 +12,7 @@ while IFS= read -r file; do
   esac
   # Grandfathered legacy files pending split; shrink this list over time.
   case "$file" in
-    rust/src/ffi.rs|rust/src/wasm_exports.rs|src/brill_tagger.ts|src/collocations.ts|src/drt.ts|src/native.ts|src/parse.ts|src/probability.ts|src/sem_logic.ts|src/snowball.ts|src/wasm.ts) continue ;;
+    rust/src/ffi.rs|rust/src/wasm_exports.rs|src/brill_tagger.ts|src/collocations.ts|src/drt.ts|src/native.ts|src/parse.ts|src/probability.ts|src/sem_logic.ts|src/wasm.ts) continue ;;
   esac
   loc=$(wc -l < "$file")
   if [ "$loc" -gt "$MAX_LOC" ]; then
