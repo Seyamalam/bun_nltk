@@ -392,6 +392,10 @@ export { IBMModel3 } from "./src/ibm3";
 export { factorial as ibmFactorial } from "./src/ibm_model";
 export { IBMModel4 } from "./src/ibm4";
 export { IBMModel5 } from "./src/ibm5";
+export { CistemStemmer, cistemStem } from "./src/stem_cistem";
+export { dependencyEvaluate } from "./src/parse_evaluate";
+export type { DependencyEvalNode } from "./src/parse_evaluate";
+
 export {
   MIN_PROB as IBM_MIN_PROB,
   Counts as IBMCounts,

@@ -57,7 +57,7 @@ COVERED: dict[str, bool] = {
     # stem
     "stem.api": True, "stem.porter": True, "stem.snowball": True,
     "stem.lancaster": True, "stem.regexp": True, "stem.wordnet": True,
-    "stem.util": True, "stem.cistem": False, "stem.isri": False,
+    "stem.util": True, "stem.cistem": True, "stem.isri": False,
     "stem.rslp": False, "stem.arlstem": False, "stem.arlstem2": False,
     # tag
     "tag.api": True, "tag.perceptron": True, "tag.sequential": True,
@@ -108,7 +108,7 @@ COVERED: dict[str, bool] = {
     "parse.featurechart": True, "parse.util": True,
     "parse.dependencygraph": True, "parse.nonprojectivedependencyparser": True,
     "parse.projectivedependencyparser": True, "parse.bllip": False,
-    "parse.corenlp": False, "parse.evaluate": False, "parse.generate": False,
+    "parse.corenlp": False, "parse.evaluate": True, "parse.generate": False,
     "parse.malt": False, "parse.shiftreduce": False, "parse.stanford": False,
     "parse.transitionparser": False,
     # chunk

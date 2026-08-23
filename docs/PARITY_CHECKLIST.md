@@ -3,16 +3,16 @@
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
 > Last regenerated: 2026-08-23
 
-**Coverage: 101/241 modules (41.9%)** — 20 of 46 families touched.
+**Coverage: 103/241 modules (42.7%)** — 20 of 46 families touched.
 
-- [~] `parse` (12/20)
+- [~] `parse` (13/20)
   - [x] `parse.api`
   - [ ] `parse.bllip`
   - [x] `parse.chart`
   - [ ] `parse.corenlp`
   - [x] `parse.dependencygraph`
   - [x] `parse.earleychart`
-  - [ ] `parse.evaluate`
+  - [x] `parse.evaluate`
   - [x] `parse.featurechart`
   - [ ] `parse.generate`
   - [ ] `parse.malt`
@@ -78,6 +78,20 @@
   - [x] `metrics.segmentation`
   - [x] `metrics.spearman`
 
+- [~] `stem` (8/13)
+  - [x] `stem.api`
+  - [ ] `stem.arlstem`
+  - [ ] `stem.arlstem2`
+  - [x] `stem.cistem`
+  - [ ] `stem.isri`
+  - [x] `stem.lancaster`
+  - [x] `stem.porter`
+  - [x] `stem.regexp`
+  - [ ] `stem.rslp`
+  - [x] `stem.snowball`
+  - [x] `stem.util`
+  - [x] `stem.wordnet`
+
 - [~] `classify` (7/15)
   - [x] `classify.api`
   - [x] `classify.decisiontree`
@@ -102,20 +116,6 @@
   - [x] `lm.smoothing`
   - [x] `lm.util`
   - [x] `lm.vocabulary`
-
-- [~] `stem` (7/13)
-  - [x] `stem.api`
-  - [ ] `stem.arlstem`
-  - [ ] `stem.arlstem2`
-  - [ ] `stem.cistem`
-  - [ ] `stem.isri`
-  - [x] `stem.lancaster`
-  - [x] `stem.porter`
-  - [x] `stem.regexp`
-  - [ ] `stem.rslp`
-  - [x] `stem.snowball`
-  - [x] `stem.util`
-  - [x] `stem.wordnet`
 
 - [~] `tag` (7/14)
   - [x] `tag.api`
