@@ -355,3 +355,22 @@ export {
 } from "./src/sem_logic";
 export type { SNOWBALL_LANGUAGES as SnowballLanguages } from "./src/snowball";
 export { SNOWBALL_LANGUAGES, snowballStem } from "./src/snowball";
+
+export {
+  IBMModel1,
+} from "./src/ibm1";
+export { IBMModel2 } from "./src/ibm2";
+export { IBMModel3 } from "./src/ibm3";
+export { factorial as ibmFactorial } from "./src/ibm_model";
+export { IBMModel4 } from "./src/ibm4";
+export { IBMModel5 } from "./src/ibm5";
+export {
+  MIN_PROB as IBM_MIN_PROB,
+  Counts as IBMCounts,
+  type AlignedSentInput,
+  type AlignmentPair,
+} from "./src/ibm_model";
+export {
+  AlignmentInfo,
+  type Scorer as IBMScore,
+} from "./src/ibm_sampling";

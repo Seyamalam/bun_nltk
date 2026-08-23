@@ -115,6 +115,7 @@
     "bench:parity:hmm-tagger": "bun run bench/parity_hmm_tagger.ts",
     "bench:parity:agreement": "bun run bench/parity_agreement.ts",
     "bench:parity:sem": "bun run bench/parity_sem.ts",
+    "bench:parity:ibm": "bun test test/ibm_models.test.ts test/ibm3.test.ts test/ibm45.test.ts",
     "bench:parity:bleu-nist-wasm": "bun run bench/parity_bleu_nist_wasm.ts",
     "bench:parity:all": "bun run bench/parity_all.ts",
     "parity:report": "bun run scripts/parity-report.ts",
