@@ -57,8 +57,8 @@ COVERED: dict[str, bool] = {
     # stem
     "stem.api": True, "stem.porter": True, "stem.snowball": True,
     "stem.lancaster": True, "stem.regexp": True, "stem.wordnet": True,
-    "stem.util": True, "stem.cistem": True, "stem.isri": False,
-    "stem.rslp": True, "stem.arlstem": False, "stem.arlstem2": False,
+    "stem.util": True, "stem.cistem": True, "stem.isri": True,
+    "stem.rslp": True, "stem.arlstem": True, "stem.arlstem2": True,
     # tag
     "tag.api": True, "tag.perceptron": True, "tag.sequential": True,
     "tag.brill": True, "tag.brill_trainer": True, "tag.hmm": True,
@@ -73,9 +73,9 @@ COVERED: dict[str, bool] = {
     "lm.counter": True, "lm.vocabulary": True, "lm.preprocessing": True,
     "lm.util": True,
     # metrics
-    "metrics": True, "metrics.agreement": True, "metrics.aline": False,
+    "metrics": True, "metrics.agreement": True, "metrics.aline": True,
     "metrics.association": True, "metrics.confusionmatrix": True,
-    "metrics.distance": True, "metrics.paice": False, "metrics.scores": True,
+    "metrics.distance": True, "metrics.paice": True, "metrics.scores": True,
     "metrics.segmentation": True, "metrics.spearman": True,
     # translate
     "translate.api": True, "translate.bleu_score": True,

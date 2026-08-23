@@ -3,7 +3,7 @@
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
 > Last regenerated: 2026-08-23
 
-**Coverage: 141/241 modules (58.5%)** — 21 of 46 families touched.
+**Coverage: 146/241 modules (60.6%)** — 21 of 46 families touched.
 
 - [x] `parse` (20/20)
   - [x] `parse.api`
@@ -83,6 +83,20 @@
   - [x] `classify.util`
   - [x] `classify.weka`
 
+- [~] `stem` (12/13)
+  - [x] `stem.api`
+  - [x] `stem.arlstem`
+  - [x] `stem.arlstem2`
+  - [x] `stem.cistem`
+  - [x] `stem.isri`
+  - [x] `stem.lancaster`
+  - [x] `stem.porter`
+  - [x] `stem.regexp`
+  - [x] `stem.rslp`
+  - [x] `stem.snowball`
+  - [x] `stem.util`
+  - [x] `stem.wordnet`
+
 - [~] `tag` (11/14)
   - [x] `tag.api`
   - [x] `tag.brill`
@@ -98,27 +112,13 @@
   - [ ] `tag.tnt`
   - [x] `tag.util`
 
-- [~] `stem` (9/13)
-  - [x] `stem.api`
-  - [ ] `stem.arlstem`
-  - [ ] `stem.arlstem2`
-  - [x] `stem.cistem`
-  - [ ] `stem.isri`
-  - [x] `stem.lancaster`
-  - [x] `stem.porter`
-  - [x] `stem.regexp`
-  - [x] `stem.rslp`
-  - [x] `stem.snowball`
-  - [x] `stem.util`
-  - [x] `stem.wordnet`
-
-- [~] `metrics` (8/10)
+- [x] `metrics` (10/10)
   - [x] `metrics.agreement`
-  - [ ] `metrics.aline`
+  - [x] `metrics.aline`
   - [x] `metrics.association`
   - [x] `metrics.confusionmatrix`
   - [x] `metrics.distance`
-  - [ ] `metrics.paice`
+  - [x] `metrics.paice`
   - [x] `metrics.scores`
   - [x] `metrics.segmentation`
   - [x] `metrics.spearman`
