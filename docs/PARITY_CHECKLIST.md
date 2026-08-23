@@ -3,30 +3,30 @@
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
 > Last regenerated: 2026-08-23
 
-**Coverage: 114/241 modules (47.3%)** — 20 of 46 families touched.
+**Coverage: 141/241 modules (58.5%)** — 21 of 46 families touched.
 
-- [~] `parse` (14/20)
+- [x] `parse` (20/20)
   - [x] `parse.api`
-  - [ ] `parse.bllip`
+  - [x] `parse.bllip`
   - [x] `parse.chart`
-  - [ ] `parse.corenlp`
+  - [x] `parse.corenlp`
   - [x] `parse.dependencygraph`
   - [x] `parse.earleychart`
   - [x] `parse.evaluate`
   - [x] `parse.featurechart`
   - [x] `parse.generate`
-  - [ ] `parse.malt`
+  - [x] `parse.malt`
   - [x] `parse.nonprojectivedependencyparser`
   - [x] `parse.pchart`
   - [x] `parse.projectivedependencyparser`
   - [x] `parse.recursivedescent`
-  - [ ] `parse.shiftreduce`
-  - [ ] `parse.stanford`
-  - [ ] `parse.transitionparser`
+  - [x] `parse.shiftreduce`
+  - [x] `parse.stanford`
+  - [x] `parse.transitionparser`
   - [x] `parse.util`
   - [x] `parse.viterbi`
 
-- [~] `tokenize` (14/19)
+- [~] `tokenize` (18/19)
   - [x] `tokenize.api`
   - [x] `tokenize.casual`
   - [x] `tokenize.destructive`
@@ -35,22 +35,22 @@
   - [x] `tokenize.nist`
   - [x] `tokenize.punkt`
   - [x] `tokenize.regexp`
-  - [ ] `tokenize.repp`
+  - [x] `tokenize.repp`
   - [x] `tokenize.sexpr`
   - [x] `tokenize.simple`
-  - [ ] `tokenize.sonority_sequencing`
-  - [ ] `tokenize.stanford`
-  - [ ] `tokenize.stanford_segmenter`
+  - [x] `tokenize.sonority_sequencing`
+  - [x] `tokenize.stanford`
+  - [x] `tokenize.stanford_segmenter`
   - [ ] `tokenize.texttiling`
   - [x] `tokenize.toktok`
   - [x] `tokenize.treebank`
   - [x] `tokenize.util`
 
-- [~] `translate` (13/20)
+- [~] `translate` (15/20)
   - [x] `translate.api`
   - [x] `translate.bleu_score`
   - [x] `translate.chrf_score`
-  - [ ] `translate.gale_church`
+  - [x] `translate.gale_church`
   - [x] `translate.gdfa`
   - [x] `translate.gleu_score`
   - [x] `translate.ibm1`
@@ -63,9 +63,40 @@
   - [ ] `translate.meteor_score`
   - [x] `translate.metrics`
   - [x] `translate.nist_score`
-  - [ ] `translate.phrase_based`
+  - [x] `translate.phrase_based`
   - [ ] `translate.ribes_score`
   - [ ] `translate.stack_decoder`
+
+- [~] `classify` (14/15)
+  - [x] `classify.api`
+  - [x] `classify.decisiontree`
+  - [x] `classify.maxent`
+  - [x] `classify.megam`
+  - [x] `classify.naivebayes`
+  - [x] `classify.positivenaivebayes`
+  - [x] `classify.rte_classify`
+  - [x] `classify.scikitlearn`
+  - [x] `classify.senna`
+  - [x] `classify.svm`
+  - [x] `classify.tadm`
+  - [x] `classify.textcat`
+  - [x] `classify.util`
+  - [x] `classify.weka`
+
+- [~] `tag` (11/14)
+  - [x] `tag.api`
+  - [x] `tag.brill`
+  - [x] `tag.brill_trainer`
+  - [ ] `tag.crf`
+  - [x] `tag.hmm`
+  - [x] `tag.hunpos`
+  - [x] `tag.mapping`
+  - [x] `tag.perceptron`
+  - [x] `tag.senna`
+  - [x] `tag.sequential`
+  - [x] `tag.stanford`
+  - [ ] `tag.tnt`
+  - [x] `tag.util`
 
 - [~] `stem` (9/13)
   - [x] `stem.api`
@@ -92,36 +123,30 @@
   - [x] `metrics.segmentation`
   - [x] `metrics.spearman`
 
-- [~] `tag` (8/14)
-  - [x] `tag.api`
-  - [x] `tag.brill`
-  - [x] `tag.brill_trainer`
-  - [ ] `tag.crf`
-  - [x] `tag.hmm`
-  - [ ] `tag.hunpos`
-  - [x] `tag.mapping`
-  - [x] `tag.perceptron`
-  - [ ] `tag.senna`
-  - [x] `tag.sequential`
-  - [ ] `tag.stanford`
-  - [ ] `tag.tnt`
-  - [x] `tag.util`
+- [~] `sem` (8/15)
+  - [x] `sem.boxer`
+  - [ ] `sem.chat80`
+  - [x] `sem.cooper_storage`
+  - [x] `sem.drt`
+  - [ ] `sem.drt_glue_demo`
+  - [x] `sem.evaluate`
+  - [ ] `sem.glue`
+  - [ ] `sem.hole`
+  - [x] `sem.lfg`
+  - [ ] `sem.linearlogic`
+  - [x] `sem.logic`
+  - [ ] `sem.relextract`
+  - [x] `sem.skolemize`
+  - [x] `sem.util`
 
-- [~] `classify` (7/15)
-  - [x] `classify.api`
-  - [x] `classify.decisiontree`
-  - [x] `classify.maxent`
-  - [ ] `classify.megam`
-  - [x] `classify.naivebayes`
-  - [x] `classify.positivenaivebayes`
-  - [ ] `classify.rte_classify`
-  - [ ] `classify.scikitlearn`
-  - [ ] `classify.senna`
-  - [ ] `classify.svm`
-  - [ ] `classify.tadm`
-  - [x] `classify.textcat`
-  - [x] `classify.util`
-  - [ ] `classify.weka`
+- [x] `tree` (8/8)
+  - [x] `tree.immutable`
+  - [x] `tree.parented`
+  - [x] `tree.parsing`
+  - [x] `tree.prettyprinter`
+  - [x] `tree.probabilistic`
+  - [x] `tree.transforms`
+  - [x] `tree.tree`
 
 - [~] `lm` (7/8)
   - [x] `lm.api`
@@ -131,15 +156,6 @@
   - [x] `lm.smoothing`
   - [x] `lm.util`
   - [x] `lm.vocabulary`
-
-- [~] `tree` (7/8)
-  - [x] `tree.immutable`
-  - [x] `tree.parented`
-  - [x] `tree.parsing`
-  - [ ] `tree.prettyprinter`
-  - [x] `tree.probabilistic`
-  - [x] `tree.transforms`
-  - [x] `tree.tree`
 
 - [~] `tbl` (6/7)
   - [x] `tbl.api`
@@ -154,22 +170,6 @@
   - [x] `chunk.named_entity`
   - [x] `chunk.regexp`
   - [x] `chunk.util`
-
-- [~] `sem` (5/15)
-  - [ ] `sem.boxer`
-  - [ ] `sem.chat80`
-  - [ ] `sem.cooper_storage`
-  - [x] `sem.drt`
-  - [ ] `sem.drt_glue_demo`
-  - [x] `sem.evaluate`
-  - [ ] `sem.glue`
-  - [ ] `sem.hole`
-  - [ ] `sem.lfg`
-  - [ ] `sem.linearlogic`
-  - [x] `sem.logic`
-  - [ ] `sem.relextract`
-  - [x] `sem.skolemize`
-  - [x] `sem.util`
 
 - [~] `corpus` (3/4)
   - [ ] `corpus.europarl_raw`
@@ -188,6 +188,8 @@
 - [x] `probability` (1/1)
 
 - [x] `text` (1/1)
+
+- [x] `treeprettyprinter` (1/1)
 
 - [x] `treetransforms` (1/1)
 
@@ -280,8 +282,6 @@
 - [ ] `tgrep` (0/1)
 
 - [ ] `toolbox` (0/1)
-
-- [ ] `treeprettyprinter` (0/1)
 
 - [ ] `twitter` (0/6)
   - [ ] `twitter.api`
