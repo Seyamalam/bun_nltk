@@ -59,7 +59,7 @@ function softmax(logits: Float64Array): Float64Array {
     out.fill(uniform);
     return out;
   }
-  for (let i = 0; i < out.length; i += 1) out[i] /= sum;
+  for (let i = 0; i < out.length; i += 1) out[i]! /= sum;
   return out;
 }
 
@@ -175,11 +175,11 @@ export class MaxEntTextClassifier {
         for (let l = 0; l < this.labels.length; l += 1) {
           const y = l === doc.labelIndex ? 1 : 0;
           const error = y - probs[l]!;
-          this.bias[l] += lr * error;
+          this.bias[l]! += lr * error;
           const w = this.weights[l]!;
           for (let i = 0; i < doc.indices.length; i += 1) {
             const idx = doc.indices[i]!;
-            w[idx] += lr * (error * doc.counts[i]! - l2 * w[idx]!);
+            w[idx]! += lr * (error * doc.counts[i]! - l2 * w[idx]!);
           }
         }
       }

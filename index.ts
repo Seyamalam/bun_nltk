@@ -286,3 +286,72 @@ export { lesk, synsetDefinition } from "./src/wsd";
 export type { Synset as WsdSynset } from "./src/wsd";
 export { corpusChrF, corpusNist, nistLengthPenalty, sentenceChrF, sentenceNist } from "./src/translation_metrics_extra";
 export type { ChrFOptions, NistOptions } from "./src/translation_metrics_extra";
+export {
+  AnnotationTask,
+  averageObservedAgreement,
+} from "./src/agreement_metrics";
+export type {
+  AgreementDistanceFn,
+  AnnotationLabel,
+  AnnotationTriple,
+} from "./src/agreement_metrics";
+export {
+  BrillTagger,
+  BrillTaggerTrainer,
+  Pos,
+  TblFeature,
+  TblRule,
+  Template,
+  Word,
+  buildTemplates,
+  clearTemplateRegistry,
+  standardTemplates,
+} from "./src/brill_tagger";
+export type {
+  BrillSentence,
+  BrillToken,
+  BrillTrainerOptions,
+  BrillTrainingStats,
+  Condition,
+  FeatureSpec,
+  InitialTaggerLike,
+  RuleEffect,
+} from "./src/brill_tagger";
+export {
+  HiddenMarkovModelTagger,
+  HiddenMarkovModelTrainer,
+  untag,
+  untagSents,
+} from "./src/hmm_tagger";
+export type {
+  Estimator as HmmEstimator,
+  HiddenMarkovModelTrainerOptions,
+} from "./src/hmm_tagger";
+export {
+  APP,
+  AllExpression,
+  ApplicationExpression,
+  ConstantExpression,
+  EventVariableExpression,
+  ExistsExpression,
+  ExpectedMoreTokensException,
+  Expression,
+  FunctionVariableExpression,
+  IndividualVariableExpression,
+  IotaExpression,
+  LambdaExpression,
+  LogicalExpressionException,
+  LogicParser as SemLogicParser,
+  NegatedExpression,
+  Tokens,
+  UndefinedError,
+  UnexpectedTokenException,
+  Variable,
+  is_eventvar,
+  is_funcvar,
+  is_indvar,
+  makeVariableExpression,
+  uniqueVariable,
+} from "./src/sem_logic";
+export type { SNOWBALL_LANGUAGES as SnowballLanguages } from "./src/snowball";
+export { SNOWBALL_LANGUAGES, snowballStem } from "./src/snowball";

@@ -6,6 +6,14 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+### Added
+- Real Snowball (Porter2) stemmer family (`snowballStem`, `SNOWBALL_LANGUAGES`) replacing the Porter/Lancaster fallback in `SnowballStemmer`; unsupported languages now throw like NLTK.
+- `nltk.tag.brill` / `nltk.tbl` compatibility: `BrillTagger`, `BrillTaggerTrainer`, `TblRule`, `Template`, `TblFeature` (`Word`, `Pos`), template registry + `standardTemplates()`.
+- Supervised HMM tagger: `HiddenMarkovModelTrainer` / `HiddenTaggerModelTagger`-style `HiddenMarkovModelTagger` with Viterbi decoding, smoothing estimators, and `logProbability`.
+- `nltk.metrics.agreement` compatibility: `AnnotationTask` with `avg_Ao`, weighted kappa, Fleiss/Conger-style multi-kappa, and Krippendorff's alpha over scalar/set/numeric labels.
+- `nltk.sem.logic` + `nltk.sem.evaluate` subset: first-order logic parser (`SemLogicParser`, expression AST, lambda/quantifiers/boolean ops) with model valuation, satisfaction, assignment, and variable utilities.
+- Python parity harnesses for all of the above (`bench:parity:snowball`, `brill`, `hmm-tagger`, `agreement`, `sem`) wired into `bench:parity:all` and the parity tracker (36 tracked modules, 100% coverage).
+
 ## [0.12.0] - 2026-03-06
 
 ### Added

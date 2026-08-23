@@ -84,7 +84,8 @@ function main() {
 
   for (const [metric, baselineValue] of Object.entries(baseline.speedups)) {
     const currentValue = dashboard.speedups[metric];
-    if (!Number.isFinite(currentValue) || !Number.isFinite(baselineValue) || baselineValue <= 0) continue;
+    if (currentValue === undefined || !Number.isFinite(currentValue) || !Number.isFinite(baselineValue) || baselineValue <= 0)
+      continue;
     const metricTol = Number.isFinite(metricTolerance[metric]) ? Number(metricTolerance[metric]) : tolerance;
     const maxDrop = Math.max(0, metricTol) / 100;
     const trendFloor = baselineValue * (1 - maxDrop);

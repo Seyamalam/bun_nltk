@@ -33,6 +33,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .eslintcache
 .cache
 *.tsbuildinfo
+.venv/
 
 # benchmark datasets
 bench/datasets/
@@ -45,3 +46,4 @@ artifacts/
 
 # Finder (MacOS) folder config
 .DS_Store
+rust/target/

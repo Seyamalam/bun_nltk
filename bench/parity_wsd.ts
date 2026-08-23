@@ -12,7 +12,7 @@ type Case = {
 function main() {
   const wn = loadWordNet();
 
-  const cases: Array<Case & { synsets: Array<{ id: string; pos: string; gloss: string }> }> = [
+  const cases: Array<Case> = [
     {
       id: "run_verb_context",
       context: ["the", "computer", "can", "run", "and", "improve", "its", "speed"],

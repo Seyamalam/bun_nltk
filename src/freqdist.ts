@@ -209,7 +209,7 @@ export class FreqDist<S> implements Iterable<S> {
       return this;
     }
 
-    for (const sample of samples) {
+    for (const sample of samples as Iterable<S>) {
       this.inc(sample);
     }
     return this;
@@ -460,7 +460,7 @@ export class ConditionalFreqDist<C, S> implements Iterable<C> {
       return this;
     }
 
-    for (const [condition, sample] of condSamples) {
+    for (const [condition, sample] of condSamples as Iterable<readonly [C, S]>) {
       this.get(condition).inc(sample);
     }
     return this;

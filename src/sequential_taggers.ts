@@ -4,7 +4,7 @@ export type TaggedToken = readonly [word: string, tag: string];
 export type GoldSentence = readonly TaggedToken[];
 export type UntaggedSentence = readonly string[];
 
-export type TagContext = string | readonly string[];
+export type TagContext = string | null | readonly (string | null)[];
 
 export type TaggerModel = ReadonlyMap<TagContext, string> | Record<string, string>;
 
@@ -17,7 +17,9 @@ export interface NgramTaggerOptions {
 }
 
 function contextKey(context: TagContext): string {
-  return typeof context === "string" ? JSON.stringify(context) : JSON.stringify([...context]);
+  if (typeof context === "string") return JSON.stringify(context);
+  if (context === null) return JSON.stringify(context);
+  return JSON.stringify([...context]);
 }
 
 function modelEntries(model: TaggerModel): Array<[TagContext, string]> {
@@ -168,7 +170,7 @@ export class DefaultTagger extends SequentialBackoffTagger {
     return this.#tag;
   }
 
-  toString(): string {
+  override toString(): string {
     return `<DefaultTagger: tag=${this.#tag}>`;
   }
 }
@@ -190,10 +192,10 @@ export class NgramTagger extends ContextTagger {
 
   protected context(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): TagContext {
     const start = Math.max(0, index - this.n + 1);
-    return [...history.slice(start, index), tokens[index]!];
+    return [...history.slice(start, index), tokens[index]!] as TagContext;
   }
 
-  toString(): string {
+  override toString(): string {
     return `<${this.constructor.name}: size=${this.size()}>`;
   }
 }
@@ -214,7 +216,7 @@ export class UnigramTagger extends ContextTagger {
     return tokens[index]!;
   }
 
-  toString(): string {
+  override toString(): string {
     return `<UnigramTagger: size=${this.size()}>`;
   }
 }
@@ -224,7 +226,7 @@ export class BigramTagger extends NgramTagger {
     super(2, options);
   }
 
-  toString(): string {
+  override toString(): string {
     return `<BigramTagger: size=${this.size()}>`;
   }
 }
@@ -234,7 +236,7 @@ export class TrigramTagger extends NgramTagger {
     super(3, options);
   }
 
-  toString(): string {
+  override toString(): string {
     return `<TrigramTagger: size=${this.size()}>`;
   }
 }
@@ -268,7 +270,7 @@ export class RegexpTagger extends SequentialBackoffTagger {
     return null;
   }
 
-  toString(): string {
+  override toString(): string {
     return `<Regexp Tagger: size=${this.size()}>`;
   }
 }

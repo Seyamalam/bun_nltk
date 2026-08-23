@@ -98,7 +98,7 @@ const chains: ChainSpec[] = [
 function buildChain(steps: ChainStep[], train: GoldSentence[]): SequentialBackoffTagger {
   let tagger: SequentialBackoffTagger | null = null;
   for (const step of [...steps].reverse()) {
-    const backoff = tagger ?? undefined;
+    const backoff: SequentialBackoffTagger | undefined = tagger ?? undefined;
     if (step.type === "default") {
       tagger = new DefaultTagger(step.tag);
     } else if (step.type === "regexp") {

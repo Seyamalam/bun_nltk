@@ -164,7 +164,7 @@ export class DictionaryProbDist<T> extends ProbDistI<T> {
     }
   }
 
-  toString(): string {
+  override toString(): string {
     return `<ProbDist with ${this.#probMap.size} samples>`;
   }
 }
@@ -190,7 +190,7 @@ export class MLEProbDist<T> extends ProbDistI<T> {
     return this.freqDistValue.keys();
   }
 
-  toString(): string {
+  override toString(): string {
     return `<MLEProbDist based on ${this.freqDistValue.N()} samples>`;
   }
 }
@@ -249,7 +249,7 @@ export class LidstoneProbDist<T> extends ProbDistI<T> {
     return gb / (this.totalCount + gb);
   }
 
-  toString(): string {
+  override toString(): string {
     return `<LidstoneProbDist based on ${this.freqDistValue.N()} samples>`;
   }
 }

@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync, existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { computeAsciiMetrics, loadPerceptronTaggerModel, normalizeTokens, posTagPerceptronAscii } from "../index";
 
-type JsonMap = Record<string, unknown>;
+type JsonMap = { [key: string]: JsonMap | undefined };
 
 function parseJsonOutput(raw: string): JsonMap {
   const start = raw.indexOf("{");

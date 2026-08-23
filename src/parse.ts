@@ -431,7 +431,10 @@ function buildCykPlan(cnf: CfgGrammar | CnfGrammar | CnfPcfgGrammar, startSymbol
   const binaryRight: number[] = [];
   const binaryParent: number[] = [];
   for (const [pair, rows] of cnfCore.binaryByChildren) {
-    const [left, right] = pair.split(" ");
+    const parts = pair.split(" ");
+    const left = parts[0] as string;
+    const right = parts[1] as string;
+    if (!left || !right) continue;
     const leftId = symbolToId.get(left);
     const rightId = symbolToId.get(right);
     if (leftId === undefined || rightId === undefined) continue;

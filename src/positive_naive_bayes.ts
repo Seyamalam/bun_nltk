@@ -129,13 +129,13 @@ export class PositiveNaiveBayesTextClassifier {
     for (const uniq of positiveTokenSets) {
       for (const token of uniq) {
         const id = this.tokenToId.get(token);
-        if (id !== undefined) posCounts[id] += 1;
+        if (id !== undefined) posCounts[id]! += 1;
       }
     }
     for (const uniq of unlabeledTokenSets) {
       for (const token of uniq) {
         const id = this.tokenToId.get(token);
-        if (id !== undefined) unlCounts[id] += 1;
+        if (id !== undefined) unlCounts[id]! += 1;
       }
     }
 

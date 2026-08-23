@@ -13,7 +13,7 @@ Name -> 'alice' [0.5] | 'bob' [0.5]
 
 function toBracket(tree: { label: string; children: Array<string | { label: string; children: unknown[] }> }): string {
   const children = tree.children
-    .map((child) => (typeof child === "string" ? child : toBracket(child as { label: string; children: unknown[] })))
+    .map((child) => (typeof child === "string" ? child : toBracket(child as { label: string; children: Array<string | { label: string; children: unknown[] }> })) )
     .join(" ");
   return `(${tree.label}${children ? ` ${children}` : ""})`;
 }

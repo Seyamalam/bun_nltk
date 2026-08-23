@@ -58,7 +58,7 @@ export class PerceptronTextClassifier {
     if (payload.version !== 1) throw new Error(`unsupported Perceptron model version: ${payload.version}`);
     const model = new PerceptronTextClassifier(payload.options);
     model.labels = [...payload.labels];
-    (model as { vectorizer: TextFeatureVectorizer }).vectorizer = TextFeatureVectorizer.fromJSON(payload.vectorizer);
+    (model as unknown as { vectorizer: TextFeatureVectorizer }).vectorizer = TextFeatureVectorizer.fromJSON(payload.vectorizer);
     model.weights = Float64Array.from(payload.weights);
     model.bias = Float64Array.from(payload.bias);
     return model;
@@ -101,19 +101,19 @@ export class PerceptronTextClassifier {
 
         const predicted = argmax(scores);
         if (predicted !== gold) {
-          this.bias[gold] += this.options.learningRate;
-          this.bias[predicted] -= this.options.learningRate;
+          this.bias[gold]! += this.options.learningRate;
+          this.bias[predicted]! -= this.options.learningRate;
           const goldBase = gold * featureCount;
           const predictedBase = predicted * featureCount;
           for (const featureId of row.indices) {
-            this.weights[goldBase + featureId] += this.options.learningRate;
-            this.weights[predictedBase + featureId] -= this.options.learningRate;
+            this.weights[goldBase + featureId]! += this.options.learningRate;
+            this.weights[predictedBase + featureId]! -= this.options.learningRate;
           }
         }
 
         if (averagedWeights && averagedBias) {
-          for (let k = 0; k < this.weights.length; k += 1) averagedWeights[k] += this.weights[k]!;
-          for (let k = 0; k < this.bias.length; k += 1) averagedBias[k] += this.bias[k]!;
+          for (let k = 0; k < this.weights.length; k += 1) averagedWeights[k]! += this.weights[k]!;
+          for (let k = 0; k < this.bias.length; k += 1) averagedBias[k]! += this.bias[k]!;
           averagedSteps += 1;
         }
       }

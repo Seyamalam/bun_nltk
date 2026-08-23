@@ -435,6 +435,8 @@ These functions are pure TypeScript reference implementations.
 - `LancasterStemmer.stem(word: string): string`
 - `new SnowballStemmer(language?: string)`
 - `SnowballStemmer.stem(word: string): string`
+- `snowballStem(word: string, language?: string): string` — real Snowball (Porter2) implementations; throws on unsupported languages (like NLTK's `ValueError`)
+- `SNOWBALL_LANGUAGES: readonly SnowballLanguage[]`
 - `new WordNetLemmatizer()`
 - `WordNetLemmatizer.lemmatize(word: string, pos?: string): string`
 
@@ -478,6 +480,36 @@ These functions are pure TypeScript reference implementations.
 - `tagText(text: string): Array<[string, string]>`
 - `posTag(value: string[] | string, options?: { model?: PerceptronTaggerModel | string }): Array<[string, string]>`
 - `pos_tag(value: string[] | string, options?: { model?: PerceptronTaggerModel | string }): Array<[string, string]>`
+
+## Brill TBL Tagger
+
+- `new BrillTaggerTrainer(initialTagger: InitialTaggerLike, templates: Template[], options?: BrillTrainerOptions)`
+- `BrillTaggerTrainer.train(sentences: GoldSentence[], maxRules?: number): BrillTagger`
+- `new BrillTagger(initialTagger: InitialTaggerLike, rules: TblRule[])`
+- `BrillTagger.tag(tokens: string[]): BrillSentence[]` / `.tagSents(sents: string[][])`
+- `TblRule(replacement: string, original: string, conditions: Condition[])`, `rule.applies(stencil, index)`, `rule.format("text" | "verbose")`
+- `Template(features: TblFeature[])`, `buildTemplates(specs)`, `standardTemplates()`
+- Features: `new Word()`, `new Pos()` — deterministic rule ordering matches NLTK's `nltk.tag.brill` trainer.
+
+## HMM POS Tagger
+
+- `new HiddenMarkovModelTrainer(states: string[]?, symbols: string[]?)`
+- `HiddenMarkovModelTrainer.train(labelledSequences: GoldSentence[], estimator?: HmmEstimator): HiddenMarkovModelTagger`
+- `new HiddenMarkovModelTagger(transition, output, priors, states, symbols)`
+- `HiddenMarkovModelTagger.tag(untagged: string[]): TaggedToken[]` / `.tagSents(...)` / `.evaluate(...)` / `.logProbability(...)`
+
+## Inter-Annotator Agreement
+
+- `new AnnotationTask(data?: AnnotationTriple[], distance?: AgreementDistanceFn)`
+- `.avg_Ao()`, `.kappa()`, `.multi_kappa()`, `.weighted_kappa()`, `.pi()`, `.S()`, `.alpha()`
+- `averageObservedAgreement(data: AnnotationTriple[]): number`
+
+## First-Order Logic Semantics
+
+- `new SemLogicParser().parse(text: string): Expression` (lambda, quantifiers, boolean ops, application)
+- `Expression.simplify()`, `.variables()`, `.free()`, `.constants()`, `.substitute()`, `.normalize()`
+- Model evaluation: `Valuation`, `Assignment`, `Model` with `.satisfy(expr, assignment)` and truth checks
+- Errors mirror NLTK: `LogicalExpressionException`, `UnexpectedTokenException`, `ExpectedMoreTokensException`, `UndefinedError`
 
 ## WASM Runtime
 

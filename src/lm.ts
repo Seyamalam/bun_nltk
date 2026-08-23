@@ -1,4 +1,4 @@
-import { evaluateLanguageModelIdsNative } from "./native";
+import { evaluateLanguageModelIdsNative, type NativeLmModelType } from "./native";
 
 export type LanguageModelType =
   | "mle"
@@ -376,7 +376,7 @@ export class NgramLanguageModel {
       tokenIds: this.nativePrepared.tokenIds,
       sentenceOffsets: this.nativePrepared.sentenceOffsets,
       order: this.order,
-      model: this.model,
+      model: this.model as unknown as NativeLmModelType,
       gamma: this.gamma,
       discount: this.discount,
       vocabSize: this.vocabulary.length,

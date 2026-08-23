@@ -56,6 +56,6 @@ test("coverage slices: porter", () => {
 test("coverage slices: pos tagger", () => {
   for (const item of fixture.pos_cases) {
     const tags = posTagAsciiNative(item.input).map((row) => row.tag);
-    expect(tags).toEqual(item.expected_tags);
+    expect(tags as string[]).toEqual(item.expected_tags as string[]);
   }
 });

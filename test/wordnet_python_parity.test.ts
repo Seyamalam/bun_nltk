@@ -96,6 +96,6 @@ test("wordnet query-level parity with python baseline", () => {
       dog_cat_lch: string[];
     };
   };
-  expect(native).toEqual(py.results);
+  expect(native as unknown as typeof py.results).toEqual(py.results as unknown as typeof native);
   expect(relations).toEqual(py.relations);
 });

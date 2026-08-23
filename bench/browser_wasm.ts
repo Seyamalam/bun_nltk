@@ -43,7 +43,7 @@ async function runInBrowser(
   try {
     const page = await browser.newPage();
     return await page.evaluate(
-      async ({ wasmArray, sourceText, evalRounds }) => {
+      async ({ wasmArray, sourceText, evalRounds }: { wasmArray: number[]; sourceText: string; evalRounds: number }) => {
         const wasm = Uint8Array.from(wasmArray as number[]);
         const { instance } = await WebAssembly.instantiate(wasm, {});
         const exp = instance.exports as {
@@ -293,8 +293,8 @@ async function main() {
 
   const playwright = await import("playwright");
   const runners: Record<string, { launch: (options: { headless: boolean; timeout: number }) => Promise<{ newPage: () => Promise<{ evaluate: (fn: unknown, args: unknown) => Promise<BrowserResult> }>; close: () => Promise<void> }> }> = {
-    chromium: playwright.chromium,
-    firefox: playwright.firefox,
+    chromium: playwright.chromium as unknown as { launch: (options: { headless: boolean; timeout: number }) => Promise<{ newPage: () => Promise<{ evaluate: (fn: unknown, args: unknown) => Promise<BrowserResult> }>; close: () => Promise<void> }> },
+    firefox: playwright.firefox as unknown as { launch: (options: { headless: boolean; timeout: number }) => Promise<{ newPage: () => Promise<{ evaluate: (fn: unknown, args: unknown) => Promise<BrowserResult> }>; close: () => Promise<void> }> },
   };
 
   const results: Record<string, BrowserResult> = {};
