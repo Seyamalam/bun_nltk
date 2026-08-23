@@ -119,6 +119,7 @@
     "bench:parity:all": "bun run bench/parity_all.ts",
     "parity:report": "bun run scripts/parity-report.ts",
     "parity:tracker": "bun run scripts/parity-tracker.ts",
+    "parity:checklist": "python3 scripts/parity-checklist.py",
     "wasm:size:check": "bun run scripts/wasm-size-check.ts",
     "sla:gate": "bun run scripts/sla-gate.ts",
     "bench:gate": "bun run scripts/bench-gate.ts && bun run sla:gate && bun run bench:parity:all",

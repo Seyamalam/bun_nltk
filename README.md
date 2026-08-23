@@ -2,6 +2,13 @@
 
 Fast NLP primitives in Rust with Bun bindings.
 
+## NLTK API parity
+
+**89 of 241 public `nltk.*` modules covered (36.9%)** — see the auto-generated
+[docs/PARITY_CHECKLIST.md](docs/PARITY_CHECKLIST.md), which diffs the
+[NLTK API index](https://www.nltk.org/api/nltk.html) against this repo.
+Regenerate after adding modules: `bun run parity:checklist`.
+
 ## Package docs
 
 - API reference: [docs/API.md](docs/API.md)
