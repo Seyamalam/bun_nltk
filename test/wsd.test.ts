@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import { resolve } from "node:path";
-import { lesk, synsetDefinition, type Synset } from "../index";
+import { lesk, synsetDefinition, type WsdSynset as Synset } from "../index";
 import { loadWordNet } from "../src/wordnet";
 
 const wn = loadWordNet();

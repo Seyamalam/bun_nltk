@@ -103,8 +103,8 @@ export function corpusBleu(
     if (refs.length === 0) continue;
     for (let n = 1; n <= 4; n += 1) {
       const row = modifiedPrecision(refs, hyp, n);
-      clipped[n - 1] += row.clipped;
-      totals[n - 1] += row.total;
+      clipped[n - 1]! += row.clipped;
+      totals[n - 1]! += row.total;
     }
     hypLen += hyp.length;
     refLen += closestRefLength(refs, hyp.length);
@@ -114,7 +114,7 @@ export function corpusBleu(
   const bp = hypLen > refLen ? 1 : Math.exp(1 - refLen / hypLen);
   let sum = 0;
   for (let i = 0; i < 4; i += 1) {
-    const p = (clipped[i] + 1) / (totals[i] + 1);
+    const p = (clipped[i]! + 1) / (totals[i]! + 1);
     sum += (weights[i] ?? 0) * safeLog(p);
   }
   return bp * Math.exp(sum);

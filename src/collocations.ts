@@ -289,7 +289,12 @@ export class QuadgramAssocMeasures {
     ];
   }
 
-  static _marginals(...contingency: number[]): [number, [number, number, number, number], [number, number, number, number, number, number], [number, number, number, number], number] {
+  static _marginals(...contingency: [
+    number, number, number, number,
+    number, number, number, number,
+    number, number, number, number,
+    number, number, number, number,
+  ]): [number, [number, number, number, number], [number, number, number, number, number, number], [number, number, number, number], number] {
     const [
       n_iiii, n_oiii, n_ioii, n_ooii, n_iioi, n_oioi, n_iooi, n_oooi,
       n_iiio, n_oiio, n_ioio, n_ooio, n_iioo, n_oioo, n_iooo, n_oooo,

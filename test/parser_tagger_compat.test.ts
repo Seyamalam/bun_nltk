@@ -82,10 +82,10 @@ test("PerceptronTagger and pos_tag expose tuple-based tagging APIs", () => {
   const tagger = new PerceptronTagger();
   const tokens = ["John", "runs", "fast"];
   const expected = posTagPerceptronAscii(tokens.join(" ")).map((row) => [row.token, row.tag]);
-  expect(tagger.tag(tokens)).toEqual(expected);
-  expect(tagger.tag_sents([tokens, ["Mary", "runs"]])).toEqual([
+  expect(tagger.tag(tokens) as unknown as typeof expected).toEqual(expected as unknown as [string, string][]);
+  expect(tagger.tag_sents([tokens, ["Mary", "runs"]]) as unknown as [string, string][][]).toEqual([
     expected,
     posTagPerceptronAscii("Mary runs").map((row) => [row.token, row.tag]),
-  ]);
-  expect(pos_tag(tokens)).toEqual(expected);
+  ] as unknown as [string, string][][]);
+  expect(pos_tag(tokens) as unknown as typeof expected).toEqual(expected as unknown as [string, string][]);
 });

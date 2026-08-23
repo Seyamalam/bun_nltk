@@ -106,7 +106,7 @@ export class DecisionTreeTextClassifier {
     if (payload.version !== 1) throw new Error(`unsupported DecisionTree version: ${payload.version}`);
     const model = new DecisionTreeTextClassifier(payload.options);
     model.labels = [...payload.labels];
-    (model as { vectorizer: TextFeatureVectorizer }).vectorizer = TextFeatureVectorizer.fromJSON(payload.vectorizer);
+    (model as unknown as { vectorizer: TextFeatureVectorizer }).vectorizer = TextFeatureVectorizer.fromJSON(payload.vectorizer);
     model.tree = payload.tree as DecisionTreeNode;
     return model;
   }

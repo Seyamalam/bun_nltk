@@ -175,6 +175,9 @@ export function customDistance(file: string): (x: string, y: string) => number {
     const trimmed = line.trim();
     if (trimmed === "") continue;
     const [labelA, labelB, dist] = trimmed.split("\t");
+    if (labelA === undefined || labelB === undefined || dist === undefined) {
+      throw new RangeError(`malformed custom distance line: ${trimmed}`);
+    }
     const key = labelA < labelB ? `${labelA}\u0000${labelB}` : `${labelB}\u0000${labelA}`;
     data.set(key, Number.parseFloat(dist));
   }
@@ -191,14 +194,14 @@ export function customDistance(file: string): (x: string, y: string) => number {
 function editDistInit(len1: number, len2: number): number[][] {
   const lev: number[][] = [];
   for (let i = 0; i < len1; i += 1) lev.push(new Array<number>(len2).fill(0));
-  for (let i = 0; i < len1; i += 1) lev[i][0] = i;
-  for (let j = 0; j < len2; j += 1) lev[0][j] = j;
+  for (let i = 0; i < len1; i += 1) lev[i]![0] = i;
+  for (let j = 0; j < len2; j += 1) lev[0]![j] = j;
   return lev;
 }
 
 function editDistBacktrace(lev: number[][]): Array<[number, number]> {
   let i = lev.length - 1;
-  let j = lev[0].length - 1;
+  let j = (lev[0]?.length ?? 0) - 1;
   const alignment: Array<[number, number]> = [[i, j]];
 
   while (i !== 0 || j !== 0) {
@@ -210,9 +213,11 @@ function editDistBacktrace(lev: number[][]): Array<[number, number]> {
       [i, j - 1],
     ];
     let bestCost = Number.POSITIVE_INFINITY;
-    let best: [number, number] = directions[0];
+    const first = directions[0];
+    if (first === undefined) throw new RangeError("no directions to backtrace");
+    let best: [number, number] = first;
     for (const [di, dj] of directions) {
-      const cost = di >= 0 && dj >= 0 ? lev[di][dj] : Number.POSITIVE_INFINITY;
+      const cost = di >= 0 && dj >= 0 ? (lev[di]?.[dj] ?? Number.POSITIVE_INFINITY) : Number.POSITIVE_INFINITY;
       if (cost < bestCost) {
         bestCost = cost;
         best = [di, dj];
@@ -246,10 +251,10 @@ export function editDistanceAlign(
     for (let j = 1; j <= len2; j += 1) {
       const c1 = s1[i - 1];
       const c2 = s2[j - 1];
-      const a = lev[i - 1][j] + 1;
-      const b = lev[i][j - 1] + 1;
-      const c = lev[i - 1][j - 1] + (c1 !== c2 ? substitutionCost : 0);
-      lev[i][j] = Math.min(a, b, c);
+      const a = lev[i - 1]![j]! + 1;
+      const b = lev[i]![j - 1]! + 1;
+      const c = lev[i - 1]![j - 1]! + (c1 !== c2 ? substitutionCost : 0);
+      lev[i]![j] = Math.min(a, b, c);
     }
   }
 
@@ -316,9 +321,13 @@ export function logLikelihood(
   }
   let total = 0;
   for (let i = 0; i < reference.length; i += 1) {
-    const prob = test[i][reference[i]];
+    const label = reference[i];
+    if (label === undefined) throw new RangeError("reference label missing");
+    const dist = test[i];
+    if (dist === undefined) throw new RangeError(`distribution ${i} missing`);
+    const prob = dist[label];
     if (prob === undefined) {
-      throw new RangeError(`No probability for label ${reference[i]} in distribution ${i}`);
+      throw new RangeError(`No probability for label ${label} in distribution ${i}`);
     }
     total += Math.log2(prob);
   }
@@ -419,14 +428,20 @@ function pythonRoundHalfEven(x: number): number {
   return floor % 2 === 0 ? floor : floor + 1;
 }
 
-function rankingToMap(ranks: Ranking): Map<string, number> {
+function rankingRecordToMap(ranks: Record<string, number>): Map<string, number> {
   const map = new Map<string, number>();
-  if (Array.isArray(ranks)) {
-    for (const [key, rank] of ranks) map.set(String(key), rank);
-  } else {
-    for (const key of Object.keys(ranks)) map.set(key, ranks[key]);
-  }
+  for (const key of Object.keys(ranks)) map.set(key, ranks[key] ?? 0);
   return map;
+}
+
+function rankingToMap(ranks: Ranking): Map<string, number> {
+  if (Array.isArray(ranks)) {
+    const record: Record<string, number> = {};
+    for (const [key, rank] of ranks) record[String(key)] = rank;
+    return rankingRecordToMap(record);
+  }
+  if (typeof ranks === "object" && ranks !== null && !Array.isArray(ranks)) return rankingRecordToMap({ ...(ranks as Readonly<Record<string, number>>) });
+  throw new RangeError("unexpected ranking shape");
 }
 
 /**

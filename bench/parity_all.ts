@@ -72,6 +72,11 @@ function main() {
   const wsd = run(["bun", "run", "bench/parity_wsd.ts"], root);
   const chrfNist = run(["bun", "run", "bench/parity_chrf_nist.ts"], root);
   const lmModels = run(["bun", "run", "bench/parity_lm_models.ts"], root);
+  const snowball = run(["bun", "run", "bench/parity_snowball.ts"], root);
+  const brill = run(["bun", "run", "bench/parity_brill.ts"], root);
+  const hmmTagger = run(["bun", "run", "bench/parity_hmm_tagger.ts"], root);
+  const agreement = run(["bun", "run", "bench/parity_agreement.ts"], root);
+  const sem = run(["bun", "run", "bench/parity_sem.ts"], root);
 
   const checks = {
     tokenizer: Boolean(tokenizer.parity),
@@ -105,6 +110,11 @@ function main() {
     wsd: Boolean(wsd.parity),
     chrf_nist: Boolean(chrfNist.parity),
     lm_models: Boolean(lmModels.parity_tolerant ?? lmModels.parity),
+    snowball: Boolean(snowball.parity),
+    brill: Boolean(brill.parity),
+    hmm_tagger: Boolean(hmmTagger.parity_tolerant ?? hmmTagger.parity),
+    agreement: Boolean(agreement.parity),
+    sem_logic: Boolean(sem.parity),
   };
 
   const failed = Object.entries(checks)

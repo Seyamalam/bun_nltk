@@ -134,7 +134,7 @@ export class LogisticTextClassifier {
     if (payload.version !== 1) throw new Error(`unsupported Logistic model version: ${payload.version}`);
     const model = new LogisticTextClassifier(payload.options);
     model.labels = [...payload.labels];
-    (model as { vectorizer: TextFeatureVectorizer }).vectorizer = TextFeatureVectorizer.fromJSON(payload.vectorizer);
+    (model as unknown as { vectorizer: TextFeatureVectorizer }).vectorizer = TextFeatureVectorizer.fromJSON(payload.vectorizer);
     model.weights = Float64Array.from(payload.weights);
     model.bias = Float64Array.from(payload.bias);
     return model;
@@ -176,20 +176,20 @@ export class LogisticTextClassifier {
           const y = c === gold ? 1 : 0;
           const p = sigmoid(scores[rowBase + c]!);
           const err = y - p;
-          gradB[c] += err;
+          gradB[c]! += err;
           const base = c * featureCount;
           for (let j = 0; j < row.indices.length; j += 1) {
             const f = row.indices[j]!;
-            gradW[base + f] += err * row.values[j]!;
+            gradW[base + f]! += err * row.values[j]!;
           }
         }
       }
       for (let c = 0; c < classCount; c += 1) {
-        this.bias[c] += this.options.learningRate * gradB[c]! * invN;
+        this.bias[c]! += this.options.learningRate * gradB[c]! * invN;
       }
       for (let idx = 0; idx < this.weights.length; idx += 1) {
         const w = this.weights[idx]!;
-        this.weights[idx] += this.options.learningRate * (gradW[idx]! * invN - this.options.l2 * w);
+        this.weights[idx]! += this.options.learningRate * (gradW[idx]! * invN - this.options.l2 * w);
       }
     }
     return this;
@@ -268,7 +268,7 @@ export class LinearSvmTextClassifier {
     if (payload.version !== 1) throw new Error(`unsupported LinearSVM model version: ${payload.version}`);
     const model = new LinearSvmTextClassifier(payload.options);
     model.labels = [...payload.labels];
-    (model as { vectorizer: TextFeatureVectorizer }).vectorizer = TextFeatureVectorizer.fromJSON(payload.vectorizer);
+    (model as unknown as { vectorizer: TextFeatureVectorizer }).vectorizer = TextFeatureVectorizer.fromJSON(payload.vectorizer);
     model.weights = Float64Array.from(payload.weights);
     model.bias = Float64Array.from(payload.bias);
     return model;
@@ -310,20 +310,20 @@ export class LinearSvmTextClassifier {
           const y = c === gold ? 1 : -1;
           const score = scores[rowBase + c]!;
           const lossGrad = y * score < this.options.margin ? -y : 0;
-          gradB[c] += lossGrad;
+          gradB[c]! += lossGrad;
           const base = c * featureCount;
           for (let j = 0; j < row.indices.length; j += 1) {
             const f = row.indices[j]!;
-            gradW[base + f] += lossGrad * row.values[j]!;
+            gradW[base + f]! += lossGrad * row.values[j]!;
           }
         }
       }
       for (let c = 0; c < classCount; c += 1) {
-        this.bias[c] -= this.options.learningRate * gradB[c]! * invN;
+        this.bias[c]! -= this.options.learningRate * gradB[c]! * invN;
       }
       for (let idx = 0; idx < this.weights.length; idx += 1) {
         const w = this.weights[idx]!;
-        this.weights[idx] -= this.options.learningRate * (gradW[idx]! * invN + this.options.l2 * w);
+        this.weights[idx]! -= this.options.learningRate * (gradW[idx]! * invN + this.options.l2 * w);
       }
     }
 

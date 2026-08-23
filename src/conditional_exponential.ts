@@ -20,7 +20,7 @@ export class ConditionalExponentialTextClassifier {
       throw new Error("invalid ConditionalExponential serialized payload");
     }
     const out = new ConditionalExponentialTextClassifier(payload.maxent.options);
-    (out as { model: MaxEntTextClassifier }).model = MaxEntTextClassifier.fromSerialized(payload.maxent);
+    (out as unknown as { model: MaxEntTextClassifier }).model = MaxEntTextClassifier.fromSerialized(payload.maxent);
     return out;
   }
 

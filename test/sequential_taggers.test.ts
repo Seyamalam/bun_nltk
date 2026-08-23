@@ -226,11 +226,11 @@ test("python3 baseline parity: sequential backoff tagger chains", () => {
   function build(steps: readonly Step[]): UnigramTagger | BigramTagger | TrigramTagger | RegexpTagger | DefaultTagger {
     let tagger: UnigramTagger | BigramTagger | TrigramTagger | RegexpTagger | DefaultTagger | null = null;
     for (const step of [...steps].reverse()) {
-      if (step.type === "default") tagger = new DefaultTagger(step.tag);
+      if (step.type === "default") tagger = new DefaultTagger(step.tag!);
       else if (step.type === "regexp") tagger = new RegexpTagger(rules, tagger ?? undefined);
-      else if (step.type === "unigram") tagger = new UnigramTagger({ train, backoff: tagger ?? undefined, cutoff: step.cutoff });
-      else if (step.type === "bigram") tagger = new BigramTagger({ train, backoff: tagger ?? undefined, cutoff: step.cutoff });
-      else tagger = new TrigramTagger({ train, backoff: tagger ?? undefined, cutoff: step.cutoff });
+      else if (step.type === "unigram") tagger = new UnigramTagger({ train, backoff: tagger ?? undefined, cutoff: (step as { cutoff?: number }).cutoff });
+      else if (step.type === "bigram") tagger = new BigramTagger({ train, backoff: tagger ?? undefined, cutoff: (step as { cutoff?: number }).cutoff });
+      else tagger = new TrigramTagger({ train, backoff: tagger ?? undefined, cutoff: (step as { cutoff?: number }).cutoff });
     }
     return tagger!;
   }

@@ -65,6 +65,11 @@ Fast NLP primitives in Rust with Bun bindings.
 - Conditional Exponential classifier compatibility APIs (`ConditionalExponentialTextClassifier`)
 - Positive Naive Bayes classifier APIs (`PositiveNaiveBayesTextClassifier`)
 - Stemming and lemmatization suite (`RegexpStemmer`, `LancasterStemmer`, `SnowballStemmer`, `WordNetLemmatizer`)
+- Real Snowball (Porter2) stemmers for 12+ languages with Python NLTK parity (`snowballStem`, `SNOWBALL_LANGUAGES`)
+- Brill transformation-based tagging (`BrillTagger`, `BrillTaggerTrainer`, templates/rules) with Python NLTK parity
+- Supervised Hidden Markov Model POS tagger (training + Viterbi decoding) with Python NLTK parity
+- Inter-annotator agreement metrics (`AnnotationTask`: avg Ao, kappa family, Krippendorff's alpha) with Python NLTK parity
+- First-order logic semantics subset (`SemLogicParser` + model evaluation/satisfaction) with Python NLTK parity
 - VADER-style sentiment analyzer (`SentimentIntensityAnalyzer`)
 - Translation/eval metrics helpers (`sentenceBleu`, `corpusBleu`, `editDistance`, `confusionMatrix`)
 - Corpus reader framework (`CorpusReader`) with bundled mini corpora
@@ -289,6 +294,11 @@ bun run bench:parity:wordnet-compat
 bun run bench:parity:tagger
 bun run bench:parity:condexp
 bun run bench:parity:positive-nb
+bun run bench:parity:snowball
+bun run bench:parity:brill
+bun run bench:parity:hmm-tagger
+bun run bench:parity:agreement
+bun run bench:parity:sem
 bun run bench:parity:all
 bun run parity:report
 ```

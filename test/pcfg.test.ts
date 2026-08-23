@@ -42,7 +42,7 @@ test("pcfg parser parity with python nltk viterbi parser", () => {
   if (proc.exitCode !== 0) throw new Error(new TextDecoder().decode(proc.stderr));
   const py = JSON.parse(new TextDecoder().decode(proc.stdout).trim()) as { tree: string | null; prob: number };
 
-  expect(toBracket(js!.tree)).toBe(py.tree);
+  expect(toBracket(js!.tree)).toBe(py.tree as unknown as string);
   expect(Math.abs(js!.prob - py.prob)).toBeLessThanOrEqual(1e-6);
 });
 

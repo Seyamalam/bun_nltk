@@ -14,6 +14,6 @@ for (const item of fixture.cases) {
     const native = posTagAsciiNative(item.input);
     const ref = posTagAscii(item.input);
     expect(native).toEqual(ref);
-    expect(native.map((row) => row.tag)).toEqual(item.expected_tags);
+    expect(native.map((row) => row.tag) as unknown as string[]).toEqual(item.expected_tags as unknown as string[]);
   });
 }

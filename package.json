@@ -53,6 +53,7 @@
     "wordnet:prepare:default": "bun run scripts/prepare-wordnet-default.ts",
     "wordnet:verify:pack": "bun run scripts/verify-wordnet-pack.ts",
     "test": "bun test",
+    "typecheck": "bunx tsc -p tsconfig.json --noEmit",
     "bench:generate": "python3 bench/generate_synthetic.py --size-mb 64 --seed 1337 --out bench/datasets/synthetic.txt",
     "bench:compare": "bun run bench/compare.ts bench/datasets/synthetic.txt 2 5",
     "bench:compare:collocations": "bun run bench/compare_collocations.ts bench/datasets/synthetic.txt 50 5",
@@ -109,6 +110,11 @@
     "bench:parity:wsd": "bun run bench/parity_wsd.ts",
     "bench:parity:chrf-nist": "bun run bench/parity_chrf_nist.ts",
     "bench:parity:lm-models": "bun run bench/parity_lm_models.ts",
+    "bench:parity:snowball": "bun run bench/parity_snowball.ts",
+    "bench:parity:brill": "bun run bench/parity_brill.ts",
+    "bench:parity:hmm-tagger": "bun run bench/parity_hmm_tagger.ts",
+    "bench:parity:agreement": "bun run bench/parity_agreement.ts",
+    "bench:parity:sem": "bun run bench/parity_sem.ts",
     "bench:parity:all": "bun run bench/parity_all.ts",
     "parity:report": "bun run scripts/parity-report.ts",
     "parity:tracker": "bun run scripts/parity-tracker.ts",
@@ -120,8 +126,8 @@
     "bench:trend:record": "bun run scripts/bench-trend-record.ts",
     "npm:smoke": "bun run scripts/npm-smoke-test.ts",
     "pack:verify:prebuilt": "bun run scripts/check-packaged-prebuilt.ts",
-    "release:validate": "bun run scripts/release-validate.ts",
-    "release:check": "bun run build:rust && bun run build:wasm && bun run build:prebuilt && bun run wordnet:prepare:default && bun run pack:verify:prebuilt && bun run fixtures:import:nltk && bun test && bun run bench:gate && bun run bench:dashboard && bun run bench:trend:check && bun run wordnet:pack:official && bun run wordnet:verify:pack"
+    "release:validate": "bun run typecheck && bun run scripts/release-validate.ts",
+    "release:check": "bun run typecheck && bun run build:rust && bun run build:wasm && bun run build:prebuilt && bun run wordnet:prepare:default && bun run pack:verify:prebuilt && bun run fixtures:import:nltk && bun test && bun run bench:gate && bun run bench:dashboard && bun run bench:trend:check && bun run wordnet:pack:official && bun run wordnet:verify:pack"
   },
   "devDependencies": {
     "@types/bun": "latest",

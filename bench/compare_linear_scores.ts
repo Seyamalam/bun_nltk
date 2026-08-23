@@ -35,7 +35,7 @@ function jsScores(input: {
       if (fid >= input.featureCount) continue;
       const value = input.featureValues[i]!;
       for (let c = 0; c < input.classCount; c += 1) {
-        out[base + c] += input.weights[c * input.featureCount + fid]! * value;
+        out[base + c] = out[base + c]! + input.weights[c * input.featureCount + fid]! * value;
       }
     }
   }
@@ -82,10 +82,10 @@ function runNative(
   rounds: number,
 ): { medianSeconds: number; out: Float64Array; checksum: number } {
   const timings: number[] = [];
-  let out = new Float64Array(0);
+  let out: Float64Array<ArrayBuffer> = new Float64Array(0);
   for (let i = 0; i < rounds; i += 1) {
     const started = performance.now();
-    out = linearScoresSparseIdsNative(input);
+    out = linearScoresSparseIdsNative(input) as Float64Array<ArrayBuffer>;
     timings.push((performance.now() - started) / 1000);
   }
   return {

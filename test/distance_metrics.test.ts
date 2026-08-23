@@ -21,6 +21,7 @@ import {
   spearmanCorrelation,
   windowdiff,
 } from "../index";
+import type { ProbabilityMap, Ranking } from "../index";
 
 test("jaccardDistance matches NLTK semantics", () => {
   expect(jaccardDistance(new Set(["a", "b", "c"]), new Set(["a", "b", "d"]))).toBe(0.5);
@@ -198,7 +199,7 @@ type PythonDistanceResult = {
   masi: number[];
   binary: number[];
   interval: number[];
-  align: number[][][];
+  align: number[][][] | Array<Array<[number, number]>>;
   precision: Array<number | null>;
   recall: Array<number | null>;
   f_measure: Array<number | null>;
@@ -261,19 +262,64 @@ test("python3 baseline parity for distance metrics", () => {
 
   const py = runPythonBaseline(payload);
 
-  expect(jaccardDistance(new Set(payload.jaccard_pairs[0][0]), new Set(payload.jaccard_pairs[0][1]))).toBe(py.jaccard[0]);
-  expect(masiDistance(new Set(payload.masi_pairs[0][0]), new Set(payload.masi_pairs[0][1]))).toBe(py.masi[0]);
-  expect(binaryDistance(...payload.binary_pairs[0])).toBe(py.binary[0]);
-  expect(intervalDistance(...payload.interval_pairs[0])).toBe(py.interval[0]);
-  expect(editDistanceAlign(...payload.align_pairs[0])).toEqual(py.align[0]);
-  expect(precision(new Set(payload.prf_pairs[0][0]), new Set(payload.prf_pairs[0][1]))).toBe(py.precision[0]);
-  expect(recall(new Set(payload.prf_pairs[0][0]), new Set(payload.prf_pairs[0][1]))).toBe(py.recall[0]);
-  expect(fMeasure(new Set(payload.prf_alpha_cases[0][0]), new Set(payload.prf_alpha_cases[0][1]), payload.prf_alpha_cases[0][2])).toBe(py.f_measure[0]);
-  expect(logLikelihood(...payload.loglik_cases[0])).toBe(py.loglik[0]);
-  expect(windowdiff(...payload.windowdiff_cases[0])).toBe(py.windowdiff[0]);
-  expect(pk(...payload.pk_cases[0])).toBe(py.pk[0]);
-  expect(spearmanCorrelation(...payload.spearman_cases[0])).toBe(py.spearman[0]);
+  const jaccardPair = payload.jaccard_pairs[0]! as unknown as [
+    ReadonlyArray<string>,
+    ReadonlyArray<string>,
+  ];
+  const masiPair = payload.masi_pairs[0]! as unknown as [
+    ReadonlyArray<number>,
+    ReadonlyArray<number>,
+  ];
+  const prfPair = payload.prf_pairs[0]! as unknown as [
+    ReadonlyArray<string>,
+    ReadonlyArray<string>,
+  ];
+  const binaryPair = payload.binary_pairs[0]! as [string, string];
+  const intervalPair = payload.interval_pairs[0]! as [number, number];
+  const alignPair = payload.align_pairs[0]! as [string, string, number?];
+  const prfAlpha = payload.prf_alpha_cases[0]! as unknown as [
+    ReadonlyArray<string>,
+    ReadonlyArray<string>,
+    number,
+  ];
+  const loglik = payload.loglik_cases[0]! as unknown as [
+    ReadonlyArray<string>,
+    ReadonlyArray<ProbabilityMap>,
+  ];
+  const wdCase = payload.windowdiff_cases[0]!;
+  const pkCase = payload.pk_cases[0]!;
+  const spearmanCase = payload.spearman_cases[0]!;
+
+  const pyJaccard = py.jaccard[0]!;
+  const pyMasi = py.masi[0]!;
+  const pyBinary = py.binary[0]!;
+  const pyInterval = py.interval[0]!;
+  const pyAlign = py.align[0]!;
+  const pyPrecision = py.precision[0]!;
+  const pyRecall = py.recall[0]!;
+  const pyFMeasure = py.f_measure[0]!;
+  const pyLoglik = py.loglik[0]!;
+  const pyWindowdiff = py.windowdiff[0]!;
+  const pyPk = py.pk[0]!;
+  const pySpearman = py.spearman[0]!;
+
+  expect(jaccardDistance(new Set(jaccardPair[0]), new Set(jaccardPair[1]))).toBe(pyJaccard);
+  expect(masiDistance(new Set(masiPair[0]), new Set(masiPair[1]))).toBe(pyMasi);
+  expect(binaryDistance(binaryPair[0], binaryPair[1])).toBe(pyBinary);
+  expect(intervalDistance(intervalPair[0], intervalPair[1])).toBe(pyInterval);
+  expect(editDistanceAlign(alignPair[0] as string, alignPair[1] as string, alignPair[2] as number)).toEqual(pyAlign as unknown as ReturnType<typeof editDistanceAlign>);
+  expect(precision(new Set(prfPair[0]), new Set(prfPair[1]))).toBe(pyPrecision);
+  expect(recall(new Set(prfPair[0]), new Set(prfPair[1]))).toBe(pyRecall);
+  expect(fMeasure(new Set(prfAlpha[0]), new Set(prfAlpha[1]), prfAlpha[2])).toBe(pyFMeasure);
+  expect(logLikelihood(loglik[0], loglik[1])).toBe(pyLoglik);
+  expect(windowdiff(...(wdCase as unknown as Parameters<typeof windowdiff>))).toBe(pyWindowdiff);
+  expect(pk(...(pkCase as unknown as Parameters<typeof pk>))).toBe(pyPk);
+  expect(spearmanCorrelation(...(spearmanCase as unknown as [Ranking, Ranking]))).toBe(pySpearman);
 
   // Empty-test precision maps to Python None -> JSON null.
-  expect(precision(new Set(payload.prf_pairs[1][0]), new Set(payload.prf_pairs[1][1]))).toBe(py.precision[1]);
+  const emptyPrf = payload.prf_pairs[1]! as unknown as [
+    ReadonlyArray<string>,
+    ReadonlyArray<string>,
+  ];
+  expect(precision(new Set(emptyPrf[0]), new Set(emptyPrf[1]))).toBe(py.precision[1] as unknown as ReturnType<typeof precision>);
 });

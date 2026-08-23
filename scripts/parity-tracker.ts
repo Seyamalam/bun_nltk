@@ -275,6 +275,41 @@ function main() {
       tests: ["test/lm_models.test.ts"],
       benches: ["bench/parity_lm_models.ts"],
     },
+    {
+      module: "snowball",
+      feature: "Real Snowball (Porter2) stemmers across ported languages",
+      requiredParity: ["snowball"],
+      tests: ["test/snowball.test.ts"],
+      benches: ["bench/parity_snowball.ts"],
+    },
+    {
+      module: "brill",
+      feature: "Brill TBL tagger + trainer with template registry",
+      requiredParity: ["brill"],
+      tests: ["test/brill_tagger.test.ts"],
+      benches: ["bench/parity_brill.ts"],
+    },
+    {
+      module: "hmm_tagger",
+      feature: "HiddenMarkovModelTrainer/Tagger (supervised, Viterbi)",
+      requiredParity: ["hmm_tagger"],
+      tests: ["test/hmm_tagger.test.ts"],
+      benches: ["bench/parity_hmm_tagger.ts"],
+    },
+    {
+      module: "agreement",
+      feature: "AnnotationTask inter-annotator agreement metrics",
+      requiredParity: ["agreement"],
+      tests: ["test/agreement_metrics.test.ts"],
+      benches: ["bench/parity_agreement.ts"],
+    },
+    {
+      module: "sem_logic",
+      feature: "First-order logic parser + model evaluation",
+      requiredParity: ["sem_logic"],
+      tests: ["test/sem_logic.test.ts"],
+      benches: ["bench/parity_sem.ts"],
+    },
   ];
 
   const items: Item[] = defs.map((def) => {

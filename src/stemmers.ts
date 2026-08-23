@@ -1,4 +1,4 @@
-import { porterStemAscii } from "./native";
+import { SNOWBALL_LANGUAGES, snowballStem } from "./snowball";
 import { loadWordNet, type WordNetPos } from "./wordnet";
 
 function normalize(word: string): string {
@@ -69,25 +69,24 @@ export class LancasterStemmer {
   }
 }
 
+/**
+ * NLTK-compatible Snowball stemmer backed by real Snowball (Porter2-family)
+ * implementations in ./snowball. Unsupported languages throw an Error
+ * (mirroring NLTK's ValueError), both at construction time and via
+ * {@link snowballStem}.
+ */
 export class SnowballStemmer {
   readonly language: string;
-  private readonly lancaster = new LancasterStemmer();
 
   constructor(language = "english") {
     this.language = language.toLowerCase();
+    if (!SNOWBALL_LANGUAGES.includes(this.language as never)) {
+      throw new Error(`The language '${language}' is not supported.`);
+    }
   }
 
   stem(word: string): string {
-    const norm = normalize(word);
-    if (!norm) return norm;
-
-    // English path uses Porter as default NLTK-like stemmer family baseline.
-    if (this.language === "english" && /^[\x00-\x7F]+$/.test(norm)) {
-      return porterStemAscii(norm);
-    }
-
-    // Fallback aggressive suffix-stripping for unsupported languages.
-    return this.lancaster.stem(norm);
+    return snowballStem(word, this.language);
   }
 }
 

@@ -142,15 +142,15 @@ function main() {
   const py = JSON.parse(new TextDecoder().decode(proc.stdout).trim()) as PythonResult;
 
   const js: PythonResult = {
-    jaccard: jaccardPairs.map(([a, b]) => jaccardDistance(new Set(a), new Set(b))),
-    masi: masiPairs.map(([a, b]) => masiDistance(new Set(a), new Set(b))),
-    binary: binaryPairs.map(([a, b]) => binaryDistance(a, b)),
-    interval: intervalPairs.map(([a, b]) => intervalDistance(a, b)),
-    align: alignPairs.map(([s1, s2]) => editDistanceAlign(s1, s2)),
-    precision: prfPairs.map(([r, t]) => precision(new Set(r), new Set(t))),
-    recall: prfPairs.map(([r, t]) => recall(new Set(r), new Set(t))),
+    jaccard: jaccardPairs.map(([a, b]) => jaccardDistance(new Set(a as unknown as string[]), new Set(b as unknown as string[]))),
+    masi: masiPairs.map(([a, b]) => masiDistance(new Set(a as unknown as string[]), new Set(b as unknown as string[]))),
+    binary: binaryPairs.map(([a, b]) => binaryDistance(a!, b!)),
+    interval: intervalPairs.map(([a, b]) => intervalDistance(a as number, b as number)),
+    align: alignPairs.map(([s1, s2]) => editDistanceAlign(s1 as string, s2 as string)),
+    precision: prfPairs.map(([r, t]) => precision(new Set(r as string[]), new Set(t as string[]))),
+    recall: prfPairs.map(([r, t]) => recall(new Set(r as string[]), new Set(t as string[]))),
     f_measure: prfAlphaCases.map(([r, t, alpha]) =>
-      fMeasure(new Set(r), new Set(t), alpha as number),
+      fMeasure(new Set(r as unknown as string[]), new Set(t as unknown as string[]), alpha as number),
     ),
     loglik: loglikCases.map(([reference, dists]) =>
       logLikelihood(reference as string[], dists as Array<Record<string, number>>),
