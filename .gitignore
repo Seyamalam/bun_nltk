@@ -46,3 +46,4 @@ artifacts/
 
 # Finder (MacOS) folder config
 .DS_Store
+rust/target/

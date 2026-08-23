@@ -17,6 +17,7 @@ use crate::naive_bayes;
 use crate::normalize;
 use crate::perceptron;
 use crate::punkt;
+use crate::translation;
 
 const INPUT_BUFFER_SIZE: usize = 128 * 1024 * 1024;
 const ALLOC_ALIGN: usize = 16;
@@ -583,4 +584,180 @@ pub extern "C" fn bunnltk_wasm_naive_bayes_log_scores_ids(
         smoothing,
         unsafe { offset_slice_mut::<f64>(out_scores_ptr, out_scores_len as usize) },
     );
+}
+
+/// Batched BLEU sufficient statistics.
+///
+/// Layout (all little-endian u32 streams):
+/// - refs_flat / refs_offsets: concatenated reference token ids; refs_offsets
+///   has one entry per reference sentence (start offset), plus a final end offset.
+/// - ref_group_ids: for each hypothesis, the index of its first reference in
+///   refs_offsets (group boundaries derived from hyp_ref_counts).
+/// - hyps_flat / hyps_offsets: concatenated hypothesis token ids + offsets.
+///
+/// Output: 12 u64 values =
+///   [clipped_1..clipped_5, total_1..total_5, ref_len, hyp_len, closest_sum, max_order]
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_bleu_stats_ids(
+    refs_flat_ptr: u32,
+    refs_flat_len: u32,
+    refs_offsets_ptr: u32,
+    refs_offsets_len: u32,
+    hyp_ref_group_starts_ptr: u32,
+    hyp_ref_counts_ptr: u32,
+    hyp_count: u32,
+    hyps_flat_ptr: u32,
+    hyps_flat_len: u32,
+    hyps_offsets_ptr: u32,
+    hyps_offsets_len: u32,
+    max_order: u32,
+    out_ptr: u32,
+    out_len: u32,
+) {
+    error_state::reset_error();
+    if hyp_count == 0 {
+        return;
+    }
+    if refs_flat_ptr == 0
+        || refs_offsets_ptr == 0
+        || hyp_ref_group_starts_ptr == 0
+        || hyp_ref_counts_ptr == 0
+        || hyps_flat_ptr == 0
+        || hyps_offsets_ptr == 0
+        || out_ptr == 0
+    {
+        error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
+        return;
+    }
+    if max_order == 0 || max_order > 5 {
+        error_state::set_error(error_state::INVALID_N);
+        return;
+    }
+    if (out_len as usize) < 12 {
+        error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
+        return;
+    }
+
+    let refs_flat = unsafe { offset_slice::<u32>(refs_flat_ptr, refs_flat_len as usize) };
+    let refs_offsets = unsafe { offset_slice::<u32>(refs_offsets_ptr, refs_offsets_len as usize) };
+    let group_starts = unsafe { offset_slice::<u32>(hyp_ref_group_starts_ptr, hyp_count as usize) };
+    let group_counts = unsafe { offset_slice::<u32>(hyp_ref_counts_ptr, hyp_count as usize) };
+    let hyps_flat = unsafe { offset_slice::<u32>(hyps_flat_ptr, hyps_flat_len as usize) };
+    let hyps_offsets = unsafe { offset_slice::<u32>(hyps_offsets_ptr, hyps_offsets_len as usize) };
+    let out = unsafe { offset_slice_mut::<u64>(out_ptr, 12) };
+
+    let mut acc = translation::BleuAccumulator::new(max_order as usize);
+
+    for h in 0..hyp_count as usize {
+        let hyp_start = hyps_offsets[h] as usize;
+        let hyp_end = hyps_offsets.get(h + 1).copied().unwrap_or(hyps_flat.len() as u32) as usize;
+        let hypothesis = &hyps_flat[hyp_start..hyp_end.min(hyps_flat.len())];
+
+        let group_start = group_starts[h] as usize;
+        let group_count = group_counts[h] as usize;
+        let mut references: Vec<&[u32]> = Vec::with_capacity(group_count);
+        for r in group_start..group_start + group_count {
+            let start = refs_offsets[r] as usize;
+            let end = refs_offsets.get(r + 1).copied().unwrap_or(refs_flat.len() as u32) as usize;
+            references.push(&refs_flat[start..end.min(refs_flat.len())]);
+        }
+
+        acc.add_sentence(&references, hypothesis);
+    }
+
+    let (clipped, totals, ref_len, hyp_len) = acc.finish();
+    for i in 0..5 {
+        out[i] = clipped[i];
+        out[5 + i] = totals[i];
+    }
+    out[10] = ref_len;
+    out[11] = hyp_len;
+}
+
+/// Batched NIST statistics. Same stream layout as BLEU stats.
+/// Output: 14 f64 values =
+///   [num_1..num_5, denom_1..denom_5, l_ref, l_sys]
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_nist_stats_ids(
+    refs_flat_ptr: u32,
+    refs_flat_len: u32,
+    refs_offsets_ptr: u32,
+    refs_offsets_len: u32,
+    hyp_ref_group_starts_ptr: u32,
+    hyp_ref_counts_ptr: u32,
+    hyp_count: u32,
+    hyps_flat_ptr: u32,
+    hyps_flat_len: u32,
+    hyps_offsets_ptr: u32,
+    hyps_offsets_len: u32,
+    n: u32,
+    out_ptr: u32,
+    out_len: u32,
+) {
+    error_state::reset_error();
+    if hyp_count == 0 {
+        return;
+    }
+    if refs_flat_ptr == 0
+        || refs_offsets_ptr == 0
+        || hyp_ref_group_starts_ptr == 0
+        || hyp_ref_counts_ptr == 0
+        || hyps_flat_ptr == 0
+        || hyps_offsets_ptr == 0
+        || out_ptr == 0
+    {
+        error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
+        return;
+    }
+    if n == 0 || n > 5 {
+        error_state::set_error(error_state::INVALID_N);
+        return;
+    }
+    if (out_len as usize) < 14 {
+        error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
+        return;
+    }
+
+    let refs_flat = unsafe { offset_slice::<u32>(refs_flat_ptr, refs_flat_len as usize) };
+    let refs_offsets = unsafe { offset_slice::<u32>(refs_offsets_ptr, refs_offsets_len as usize) };
+    let group_starts = unsafe { offset_slice::<u32>(hyp_ref_group_starts_ptr, hyp_count as usize) };
+    let group_counts = unsafe { offset_slice::<u32>(hyp_ref_counts_ptr, hyp_count as usize) };
+    let hyps_flat = unsafe { offset_slice::<u32>(hyps_flat_ptr, hyps_flat_len as usize) };
+    let hyps_offsets = unsafe { offset_slice::<u32>(hyps_offsets_ptr, hyps_offsets_len as usize) };
+    let out = unsafe { offset_slice_mut::<f64>(out_ptr, 14) };
+
+    // Two-pass: phase 1 accumulates all reference n-gram frequencies, then
+    let mut acc = translation::NistAccumulator::new(n as usize);
+    for h in 0..hyp_count as usize {
+        let group_start = group_starts[h] as usize;
+        let group_count = group_counts[h] as usize;
+        for r in group_start..group_start + group_count {
+            let start = refs_offsets[r] as usize;
+            let end = refs_offsets.get(r + 1).copied().unwrap_or(refs_flat.len() as u32) as usize;
+            acc.add_reference(&refs_flat[start..end.min(refs_flat.len())]);
+        }
+    }
+    for h in 0..hyp_count as usize {
+        let hyp_start = hyps_offsets[h] as usize;
+        let hyp_end = hyps_offsets.get(h + 1).copied().unwrap_or(hyps_flat.len() as u32) as usize;
+        let hypothesis = &hyps_flat[hyp_start..hyp_end.min(hyps_flat.len())];
+
+        let group_start = group_starts[h] as usize;
+        let group_count = group_counts[h] as usize;
+        let mut references: Vec<&[u32]> = Vec::with_capacity(group_count);
+        for r in group_start..group_start + group_count {
+            let start = refs_offsets[r] as usize;
+            let end = refs_offsets.get(r + 1).copied().unwrap_or(refs_flat.len() as u32) as usize;
+            references.push(&refs_flat[start..end.min(refs_flat.len())]);
+        }
+        acc.add_hypothesis(&references, hypothesis);
+    }
+
+    let (nums, denoms, l_ref, l_sys) = acc.finish();
+    for i in 0..5 {
+        out[i] = nums[i];
+        out[5 + i] = denoms[i] as f64;
+    }
+    out[10] = l_ref as f64;
+    out[11] = l_sys as f64;
 }

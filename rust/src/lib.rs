@@ -16,12 +16,12 @@ pub mod porter;
 pub mod stopwords;
 pub mod stream_freqdist;
 pub mod tagger;
+pub mod translation;
 pub mod token_ids;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub mod ffi;
 
-#[cfg(target_arch = "wasm32")]
 pub mod wasm_exports;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

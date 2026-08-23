@@ -119,6 +119,38 @@ type WasmExports = {
     outScoresPtr: number,
     outScoresLen: number,
   ) => void;
+  bunnltk_wasm_bleu_stats_ids: (
+    refsFlatPtr: number,
+    refsFlatLen: number,
+    refsOffsetsPtr: number,
+    refsOffsetsLen: number,
+    hypRefGroupStartsPtr: number,
+    hypRefCountsPtr: number,
+    hypCount: number,
+    hypsFlatPtr: number,
+    hypsFlatLen: number,
+    hypsOffsetsPtr: number,
+    hypsOffsetsLen: number,
+    maxOrder: number,
+    outPtr: number,
+    outLen: number,
+  ) => void;
+  bunnltk_wasm_nist_stats_ids: (
+    refsFlatPtr: number,
+    refsFlatLen: number,
+    refsOffsetsPtr: number,
+    refsOffsetsLen: number,
+    hypRefGroupStartsPtr: number,
+    hypRefCountsPtr: number,
+    hypCount: number,
+    hypsFlatPtr: number,
+    hypsFlatLen: number,
+    hypsOffsetsPtr: number,
+    hypsOffsetsLen: number,
+    n: number,
+    outPtr: number,
+    outLen: number,
+  ) => void;
 };
 
 export type AsciiMetrics = {
@@ -627,5 +659,128 @@ export class WasmNltk {
     );
     this.assertNoError("naiveBayesLogScoresIds");
     return Float64Array.from(new Float64Array(this.exports.memory.buffer, outBlock.ptr, input.labelDocCounts.length));
+  }
+
+  /**
+   * Batched BLEU sufficient statistics over token-ID streams.
+   *
+   * Input mirrors the corpus shape of `nltk.translate.bleu_score.corpus_bleu`:
+   * one hypothesis per group of 1+ references. Returns per-order
+   * [clipped_1..5, total_1..5, refLen, hypLen] so the JS caller can apply any
+   * NLTK smoothing/brevity-penalty variant exactly.
+   */
+  bleuStatsIds(input: {
+    refsFlat: Uint32Array;
+    refsOffsets: Uint32Array;
+    hypRefGroupStarts: Uint32Array;
+    hypRefCounts: Uint32Array;
+    hypsFlat: Uint32Array;
+    hypsOffsets: Uint32Array;
+    maxOrder: number;
+  }): { clipped: BigUint64Array; totals: BigUint64Array; refLen: bigint; hypLen: bigint } {
+    const refsFlatBlock = this.ensureBlock("bleu_refs_flat", Math.max(1, input.refsFlat.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const refsOffBlock = this.ensureBlock("bleu_refs_offsets", Math.max(1, input.refsOffsets.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const groupStartsBlock = this.ensureBlock("bleu_group_starts", Math.max(1, input.hypRefGroupStarts.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const groupCountsBlock = this.ensureBlock("bleu_group_counts", Math.max(1, input.hypRefCounts.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const hypsFlatBlock = this.ensureBlock("bleu_hyps_flat", Math.max(1, input.hypsFlat.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const hypsOffBlock = this.ensureBlock("bleu_hyps_offsets", Math.max(1, input.hypsOffsets.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const outBlock = this.ensureBlock("bleu_out", 12 * BigUint64Array.BYTES_PER_ELEMENT);
+
+    if (input.refsFlat.length > 0) {
+      new Uint32Array(this.exports.memory.buffer, refsFlatBlock.ptr, input.refsFlat.length).set(input.refsFlat);
+    }
+    new Uint32Array(this.exports.memory.buffer, refsOffBlock.ptr, input.refsOffsets.length).set(input.refsOffsets);
+    new Uint32Array(this.exports.memory.buffer, groupStartsBlock.ptr, input.hypRefGroupStarts.length).set(input.hypRefGroupStarts);
+    new Uint32Array(this.exports.memory.buffer, groupCountsBlock.ptr, input.hypRefCounts.length).set(input.hypRefCounts);
+    if (input.hypsFlat.length > 0) {
+      new Uint32Array(this.exports.memory.buffer, hypsFlatBlock.ptr, input.hypsFlat.length).set(input.hypsFlat);
+    }
+    new Uint32Array(this.exports.memory.buffer, hypsOffBlock.ptr, input.hypsOffsets.length).set(input.hypsOffsets);
+
+    this.exports.bunnltk_wasm_bleu_stats_ids(
+      refsFlatBlock.ptr,
+      input.refsFlat.length,
+      refsOffBlock.ptr,
+      input.refsOffsets.length,
+      groupStartsBlock.ptr,
+      groupCountsBlock.ptr,
+      input.hypRefGroupStarts.length,
+      hypsFlatBlock.ptr,
+      input.hypsFlat.length,
+      hypsOffBlock.ptr,
+      input.hypsOffsets.length,
+      input.maxOrder,
+      outBlock.ptr,
+      12,
+    );
+    this.assertNoError("bleuStatsIds");
+
+    const out = new BigUint64Array(this.exports.memory.buffer, outBlock.ptr, 12);
+    return {
+      clipped: out.slice(0, 5),
+      totals: out.slice(5, 10),
+      refLen: out[10]!,
+      hypLen: out[11]!,
+    };
+  }
+
+  /**
+   * Batched NIST sufficient statistics over token-ID streams.
+   * Returns flat [numerator_1..5, denominator_1..5, lRef, lSys]; JS combines
+   * them with `nistLengthPenalty` to reproduce `nltk.translate.nist_score`.
+   */
+  nistStatsIds(input: {
+    refsFlat: Uint32Array;
+    refsOffsets: Uint32Array;
+    hypRefGroupStarts: Uint32Array;
+    hypRefCounts: Uint32Array;
+    hypsFlat: Uint32Array;
+    hypsOffsets: Uint32Array;
+    n: number;
+  }): { numerators: Float64Array; denominators: Float64Array; lRef: number; lSys: number } {
+    const refsFlatBlock = this.ensureBlock("nist_refs_flat", Math.max(1, input.refsFlat.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const refsOffBlock = this.ensureBlock("nist_refs_offsets", Math.max(1, input.refsOffsets.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const groupStartsBlock = this.ensureBlock("nist_group_starts", Math.max(1, input.hypRefGroupStarts.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const groupCountsBlock = this.ensureBlock("nist_group_counts", Math.max(1, input.hypRefCounts.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const hypsFlatBlock = this.ensureBlock("nist_hyps_flat", Math.max(1, input.hypsFlat.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const hypsOffBlock = this.ensureBlock("nist_hyps_offsets", Math.max(1, input.hypsOffsets.length) * Uint32Array.BYTES_PER_ELEMENT);
+    const outBlock = this.ensureBlock("nist_out", 14 * Float64Array.BYTES_PER_ELEMENT);
+
+    if (input.refsFlat.length > 0) {
+      new Uint32Array(this.exports.memory.buffer, refsFlatBlock.ptr, input.refsFlat.length).set(input.refsFlat);
+    }
+    new Uint32Array(this.exports.memory.buffer, refsOffBlock.ptr, input.refsOffsets.length).set(input.refsOffsets);
+    new Uint32Array(this.exports.memory.buffer, groupStartsBlock.ptr, input.hypRefGroupStarts.length).set(input.hypRefGroupStarts);
+    new Uint32Array(this.exports.memory.buffer, groupCountsBlock.ptr, input.hypRefCounts.length).set(input.hypRefCounts);
+    if (input.hypsFlat.length > 0) {
+      new Uint32Array(this.exports.memory.buffer, hypsFlatBlock.ptr, input.hypsFlat.length).set(input.hypsFlat);
+    }
+    new Uint32Array(this.exports.memory.buffer, hypsOffBlock.ptr, input.hypsOffsets.length).set(input.hypsOffsets);
+
+    this.exports.bunnltk_wasm_nist_stats_ids(
+      refsFlatBlock.ptr,
+      input.refsFlat.length,
+      refsOffBlock.ptr,
+      input.refsOffsets.length,
+      groupStartsBlock.ptr,
+      groupCountsBlock.ptr,
+      input.hypRefGroupStarts.length,
+      hypsFlatBlock.ptr,
+      input.hypsFlat.length,
+      hypsOffBlock.ptr,
+      input.hypsOffsets.length,
+      input.n,
+      outBlock.ptr,
+      14,
+    );
+    this.assertNoError("nistStatsIds");
+
+    const out = new Float64Array(this.exports.memory.buffer, outBlock.ptr, 14);
+    return {
+      numerators: out.slice(0, 5),
+      denominators: out.slice(5, 10),
+      lRef: out[10]!,
+      lSys: out[11]!,
+    };
   }
 }

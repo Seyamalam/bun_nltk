@@ -77,6 +77,7 @@ function main() {
   const hmmTagger = run(["bun", "run", "bench/parity_hmm_tagger.ts"], root);
   const agreement = run(["bun", "run", "bench/parity_agreement.ts"], root);
   const sem = run(["bun", "run", "bench/parity_sem.ts"], root);
+  const bleuNistWasm = run(["bun", "run", "bench/parity_bleu_nist_wasm.ts"], root);
 
   const checks = {
     tokenizer: Boolean(tokenizer.parity),
@@ -115,6 +116,7 @@ function main() {
     hmm_tagger: Boolean(hmmTagger.parity_tolerant ?? hmmTagger.parity),
     agreement: Boolean(agreement.parity),
     sem_logic: Boolean(sem.parity),
+    bleu_nist_wasm: Boolean(bleuNistWasm.parity),
   };
 
   const failed = Object.entries(checks)

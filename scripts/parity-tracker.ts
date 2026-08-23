@@ -310,6 +310,13 @@ function main() {
       tests: ["test/sem_logic.test.ts"],
       benches: ["bench/parity_sem.ts"],
     },
+    {
+      module: "translation_wasm",
+      feature: "BLEU/NIST sufficient statistics over Rust/WASM token-ID streams",
+      requiredParity: ["bleu_nist_wasm"],
+      tests: ["test/chrf_nist.test.ts"],
+      benches: ["bench/parity_bleu_nist_wasm.ts"],
+    },
   ];
 
   const items: Item[] = defs.map((def) => {
