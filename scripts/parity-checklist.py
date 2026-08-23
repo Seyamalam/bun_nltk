@@ -88,11 +88,12 @@ COVERED: dict[str, bool] = {
     "translate.ribes_score": False, "translate.stack_decoder": False,
     "translate.gleu_score": False,
     # sem
-    "sem.logic": True, "sem.evaluate": True, "sem.util": False,
-    "sem.drt": False, "sem.boxer": False, "sem.chat80": False,
+    "sem.logic": True, "sem.evaluate": True,
+    "sem.drt": True, "sem.skolemize": True, "sem.util": False,
+    "sem.boxer": False, "sem.chat80": False,
     "sem.cooper_storage": False, "sem.drt_glue_demo": False,
     "sem.glue": False, "sem.hole": False, "sem.lfg": False,
-    "sem.linearlogic": False, "sem.relextract": False, "sem.skolemize": False,
+    "sem.linearlogic": False, "sem.relextract": False,
     # classify
     "classify.api": True, "classify.naivebayes": True,
     "classify.positivenaivebayes": True, "classify.decisiontree": True,

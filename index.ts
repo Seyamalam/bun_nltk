@@ -358,7 +358,29 @@ export {
   is_indvar,
   makeVariableExpression,
   uniqueVariable,
+  resetUniqueVariableCounter,
+  nextUniqueCounterValue,
 } from "./src/sem_logic";
+export {
+  DRS,
+  DrtParser,
+  DrtApplicationExpression,
+  DrtLambdaExpression,
+  DrtNegatedExpression,
+  DrtEqualityExpression,
+  DrtOrExpression,
+  DrtConcatenation,
+  DrtProposition,
+  DrtAbstractVariableExpression,
+  DrtIndividualVariableExpression,
+  DrtFunctionVariableExpression,
+  DrtEventVariableExpression,
+  DrtConstantExpression,
+  DrtVariableExpression,
+  DrtTokens,
+} from "./src/drt";
+export type { Drs } from "./src/drt";
+export { skolemize } from "./src/skolemize";
 export type { SNOWBALL_LANGUAGES as SnowballLanguages } from "./src/snowball";
 export { SNOWBALL_LANGUAGES, snowballStem } from "./src/snowball";
 

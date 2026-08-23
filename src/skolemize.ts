@@ -18,7 +18,7 @@ import {
 /** Port of nltk.sem.logic.skolem_function: Fn(v1)(v2)... */
 function skolemFunction(univScope: Set<Variable>): Expression {
   const n = nextUniqueCounterValue();
-  let sk = makeVariableExpression(`F${n}`);
+  let sk: Expression = makeVariableExpression(`F${n}`);
   if (univScope.size > 0) {
     // Sort for deterministic order (Python's set iteration is insertion order;
     // single-element scope — order irrelevant — otherwise sorted is stable).
@@ -26,7 +26,7 @@ function skolemFunction(univScope: Set<Variable>): Expression {
       a.name < b.name ? -1 : a.name > b.name ? 1 : 0,
     );
     for (const v of vars) {
-      sk = sk.applyto(makeVariableExpression(v.name));
+      sk = new ApplicationExpression(sk, makeVariableExpression(v.name));
     }
   }
   return sk;

@@ -3,7 +3,7 @@
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
 > Last regenerated: 2026-08-23
 
-**Coverage: 99/241 modules (41.1%)** — 20 of 46 families touched.
+**Coverage: 101/241 modules (41.9%)** — 20 of 46 families touched.
 
 - [~] `parse` (12/20)
   - [x] `parse.api`
@@ -147,6 +147,22 @@
   - [x] `chunk.regexp`
   - [x] `chunk.util`
 
+- [~] `sem` (4/15)
+  - [ ] `sem.boxer`
+  - [ ] `sem.chat80`
+  - [ ] `sem.cooper_storage`
+  - [x] `sem.drt`
+  - [ ] `sem.drt_glue_demo`
+  - [x] `sem.evaluate`
+  - [ ] `sem.glue`
+  - [ ] `sem.hole`
+  - [ ] `sem.lfg`
+  - [ ] `sem.linearlogic`
+  - [x] `sem.logic`
+  - [ ] `sem.relextract`
+  - [x] `sem.skolemize`
+  - [ ] `sem.util`
+
 - [~] `tbl` (4/7)
   - [x] `tbl.api`
   - [ ] `tbl.demo`
@@ -159,22 +175,6 @@
   - [ ] `corpus.europarl_raw`
   - [x] `corpus.reader`
   - [x] `corpus.util`
-
-- [~] `sem` (2/15)
-  - [ ] `sem.boxer`
-  - [ ] `sem.chat80`
-  - [ ] `sem.cooper_storage`
-  - [ ] `sem.drt`
-  - [ ] `sem.drt_glue_demo`
-  - [x] `sem.evaluate`
-  - [ ] `sem.glue`
-  - [ ] `sem.hole`
-  - [ ] `sem.lfg`
-  - [ ] `sem.linearlogic`
-  - [x] `sem.logic`
-  - [ ] `sem.relextract`
-  - [ ] `sem.skolemize`
-  - [ ] `sem.util`
 
 - [~] `sentiment` (2/4)
   - [ ] `sentiment.sentiment_analyzer`
