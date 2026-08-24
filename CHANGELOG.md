@@ -6,6 +6,19 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-08-24
+
+### Added
+- METEOR, RIBES, TextTiling, TnT — four new NLTK-parity modules (`translate.meteor_score`, `translate.ribes_score`, `tokenize.texttiling`, `tag.tnt`) validated against live Python baselines (425 tests).
+- `metrics.paice` + `metrics.aline` + Arabic stemmers (`stem.arlstem`, `stem.arlstem2`, `stem.isri`) with bundled data and 21 new tests.
+- Finish-out of remaining in-scope surface: `translate.lepor`/`stack_decoder`, `tag.crf`, `sentiment.sentiment_analyzer`, `sem.relextract`/`linearlogic`/`hole`/`glue`/`chat80`/`drt_glue_demo` — parity now 160/241 (66.4%), all in-scope families complete.
+- Snowball split: `src/snowball.ts` (2547 LOC) → 13 per-language modules under `src/snowball/` (all <400 LOC), barrel re-export.
+- Buyer-fit hardening: `biome.json` + `bun run lint`, `bun.lock` tracked, `.env.example`, `Dockerfile`/`docker-compose.yml`, CI typecheck fast-fail, LOC guard (`scripts/loc-guard.sh` 600 LOC).
+
+### Changed
+- `sem_glue.ts` grandfathered at 665 LOC until split into `src/sem/glue*.ts` (tracked TODO).
+
+
 ### Added
 - Real Snowball (Porter2) stemmer family (`snowballStem`, `SNOWBALL_LANGUAGES`) replacing the Porter/Lancaster fallback in `SnowballStemmer`; unsupported languages now throw like NLTK.
 - `nltk.tag.brill` / `nltk.tbl` compatibility: `BrillTagger`, `BrillTaggerTrainer`, `TblRule`, `Template`, `TblFeature` (`Word`, `Pos`), template registry + `standardTemplates()`.
