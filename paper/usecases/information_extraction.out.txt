@@ -1,0 +1,57 @@
+== Information extraction: POS tagging + NE chunking ==
+
+Input paragraph:
+  Tim Cook visited Microsoft headquarters in Redmond last week and met Satya Nadella to discuss a new partnership between Apple and OpenAI.
+
+POS tags (perceptron):
+┌────┬──────────────┬─────┐
+│    │ token        │ pos │
+├────┼──────────────┼─────┤
+│  0 │ Tim          │ NNP │
+│  1 │ Cook         │ NNP │
+│  2 │ visited      │ VBD │
+│  3 │ Microsoft    │ NNP │
+│  4 │ headquarters │ NNS │
+│  5 │ in           │ IN  │
+│  6 │ Redmond      │ NNP │
+│  7 │ last         │ JJ  │
+│  8 │ week         │ PRP │
+│  9 │ and          │ CC  │
+│ 10 │ met          │ PRP │
+│ 11 │ Satya        │ NNP │
+│ 12 │ Nadella      │ NNP │
+│ 13 │ to           │ IN  │
+│ 14 │ discuss      │ NNS │
+│ 15 │ a            │ DT  │
+│ 16 │ new          │ JJ  │
+│ 17 │ partnership  │ VB  │
+│ 18 │ between      │ IN  │
+│ 19 │ Apple        │ NNP │
+│ 20 │ and          │ CC  │
+│ 21 │ OpenAI       │ NNP │
+└────┴──────────────┴─────┘
+
+Named entities found:
+┌───┬───┬────────┬───────────────┐
+│   │ # │ type   │ text          │
+├───┼───┼────────┼───────────────┤
+│ 0 │ 1 │ PERSON │ Tim Cook      │
+│ 1 │ 2 │ GPE    │ Microsoft     │
+│ 2 │ 3 │ GPE    │ Redmond       │
+│ 3 │ 4 │ PERSON │ Satya Nadella │
+│ 4 │ 5 │ GPE    │ Apple         │
+│ 5 │ 6 │ GPE    │ OpenAI        │
+└───┴───┴────────┴───────────────┘
+
+IOB tags:
+  Tim/NNP/B-PERSON  Cook/NNP/I-PERSON  visited/VBD/O  Microsoft/NNP/B-GPE
+  headquarters/NNS/O  in/IN/O  Redmond/NNP/B-GPE  last/JJ/O
+  week/PRP/O  and/CC/O  met/PRP/O  Satya/NNP/B-PERSON
+  Nadella/NNP/I-PERSON  to/IN/O  discuss/NNS/O  a/DT/O
+  new/JJ/O  partnership/VB/O  between/IN/O  Apple/NNP/B-GPE
+  and/CC/O  OpenAI/NNP/B-GPE
+
+Timing:
+  perceptron POS tagging (22 tokens): 1.50 ms
+  NE chunking: 0.56 ms
+  total wall time: 2.06 ms

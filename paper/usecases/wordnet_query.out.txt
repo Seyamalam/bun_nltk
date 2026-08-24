@@ -1,0 +1,33 @@
+== WordNet queries ==
+BUN_NLTK_WORDNET_PATH: (not set — using bundled default)
+WordNet loaded in 180.3 ms
+
+Synsets of 'car': 5 found
+┌───┬───┬────────────┬─────┬──────────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────┐
+│   │ # │ id         │ pos │ lemmas                                   │ gloss                                                                   │
+├───┼───┼────────────┼─────┼──────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│ 0 │ 1 │ 02934451.n │ n   │ cable_car, car                           │ a conveyance for passengers or freight on a cable railway; "they took … │
+│ 1 │ 2 │ 02958343.n │ n   │ auto, automobile, car, machine, motorcar │ a motor vehicle with four wheels; usually propelled by an internal com… │
+│ 2 │ 3 │ 02959942.n │ n   │ car, railcar, railroad_car, railway_car  │ a wheeled vehicle adapted to the rails of railroad; "three cars had ju… │
+│ 3 │ 4 │ 02960352.n │ n   │ car, elevator_car                        │ where passengers ride up and down; "the car was on the top floor"       │
+│ 4 │ 5 │ 02960501.n │ n   │ car, gondola                             │ the compartment that is suspended from an airship and that carries per… │
+└───┴───┴────────────┴─────┴──────────────────────────────────────────┴─────────────────────────────────────────────────────────────────────────┘
+
+Focus sense: auto, automobile, car, machine, motorcar (02958343.n)
+Gloss: "a motor vehicle with four wheels; usually propelled by an internal combustion engine; "he needs a car to get to work""
+Hypernyms of focus sense (1):
+  ↑ 03791235.n  automotive_vehicle, motor_vehicle — "a self-propelled wheeled vehicle that does not run on rails"
+
+Hypernym chain (first parent each level): auto → automotive_vehicle → self-propelled_vehicle → wheeled_vehicle → container → instrumentality → artefact → unit → object
+
+Semantic similarity (path similarity = 1 / (shortest_path_distance + 1)):
+┌───┬──────────────────┬─────────────────┬────────────────────────┐
+│   │ pair             │ path_similarity │ lowest_common_hypernym │
+├───┼──────────────────┼─────────────────┼────────────────────────┤
+│ 0 │ car ~ automobile │ 1.0000          │ auto                   │
+│ 1 │ car ~ bicycle    │ 0.3333          │ wheeled_vehicle        │
+│ 2 │ car ~ banana     │ 0.0833          │ unit                   │
+└───┴──────────────────┴─────────────────┴────────────────────────┘
+
+Timing:
+  all WordNet queries (synsets + hypernyms + similarities): 108.77 ms

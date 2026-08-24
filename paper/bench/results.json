@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "dataset": "paper/bench/data/prose_1mb.txt (1MB movie_reviews prose)",
+    "methodology": "warmup 2, median of 5, performance.now() wall ms",
+    "machine": "darwin-arm64",
+    "date": "2026-08-24T19:04:28.126Z"
+  },
+  "results": {
+    "tokenize": {
+      "python_ms": 223.73979199983296,
+      "native_ms": 9.264333000000988,
+      "wasm_ms": 9.37774999999965,
+      "node_ms": 15.64545799999999,
+      "natural_ms": 10.550207999999998
+    },
+    "punkt": {
+      "python_ms": 29.027458000200568,
+      "native_ms": 1.216958999999406,
+      "wasm_ms": 2.012749999999869,
+      "node_ms": 1.828958
+    },
+    "porter": {
+      "python_ms": 331.6930000000866,
+      "native_ms": 20.2476659999993,
+      "node_ms": 4.9630420000000015,
+      "natural_ms": 92.22229200000004
+    },
+    "collocations": {
+      "python_ms": 145.20987499963667,
+      "native_ms": 219.76508300000023,
+      "wasm_ms": 0.6830829999998969,
+      "node_ms": 0.7012080000000083
+    },
+    "freqdist": {
+      "python_ms": 19.68516700071632,
+      "native_ms": 33.36012499999924,
+      "wasm_ms": 0.677958000000217,
+      "node_ms": 0.6832090000000051
+    },
+    "naive_bayes": {
+      "python_ms": 464.9851249996573,
+      "native_ms": 241.37512500000048
+    },
+    "ngrams": {
+      "python_ms": 0.5738339996241848,
+      "native_ms": 0.013666999999259133
+    },
+    "lm_perplexity": {
+      "python_ms": 244.58987500020157,
+      "native_ms": 24.838999999999942
+    }
+  }
+}

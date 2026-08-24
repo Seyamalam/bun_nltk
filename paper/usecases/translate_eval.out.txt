@@ -1,0 +1,26 @@
+== MT evaluation metrics: BLEU / GLEU / METEOR / chrF / RIBES ==
+
+BLEU doctest pair:
+  REF: It is a guide to action that ensures that the military will forever heed Party instructions | It is the guiding principle which guarantees the military forces always being under the command of the Party | It is the practical guide for the army always to heed the directions of the party
+  HYP: It is a guide to action which ensures that the military always obeys the commands of the party
+
+METEOR doctest pair:
+  REF: It is a guide to action that ensures that the military will forever heed Party instructions
+  HYP: It is a guide to action which ensures that the military always obeys the commands of the party
+
+RIBES doctest-style pair:
+  REF: he was elected vice president of the business association at that time
+  HYP: he was elected as vice president of the business association at that time
+
+Scores (1.0 = perfect match with a reference):
+┌───┬─────────────┬────────┬────────┬────────┬────────┬────────┐
+│   │ metric_pair │ BLEU   │ GLEU   │ METEOR │ chrF   │ RIBES  │
+├───┼─────────────┼────────┼────────┼────────┼────────┼────────┤
+│ 0 │ BLEU        │ 0.5325 │ 0.4394 │ 0.6471 │ 0.2780 │ 0.3376 │
+│ 1 │ METEOR      │ 0.4490 │ 0.4394 │ 0.6471 │ 0.5452 │ 0.3376 │
+│ 2 │ RIBES       │ 0.7825 │ 0.7826 │ 0.9894 │ 0.9514 │ 0.9802 │
+└───┴─────────────┴────────┴────────┴────────┴────────┴────────┘
+
+Timing:
+  all metrics for 3 pairs: 2.70 ms
+  total wall time (incl. printing prep): 2.79 ms
