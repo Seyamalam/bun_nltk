@@ -8,7 +8,6 @@ import {
   AllExpression,
   AndExpression,
   ApplicationExpression,
-  ConstantExpression,
   EqualityExpression,
   ExistsExpression,
   Expression,
@@ -214,7 +213,7 @@ export class Agenda {
     // Simpler correct approach: rebuild sets via categorize
     for (let i = 0; i < this.sets.length; i++) {
       const s = this.sets[i]!;
-      const entries = Array.from(s);
+      const _entries = Array.from(s);
       // entries already handled? redo properly: entries from before loop were stale due to delete misuse.
       // Re-collect fresh after?
     }
@@ -358,7 +357,7 @@ export class TableauProver extends Prover {
       return this.attemptProof(agenda, av, atoms, debug.add(1));
     }
     agenda.markAllsFresh();
-    const nextAv = new Set([...av, ...[...(current as ApplicationExpression).uncurry()[1]]]);
+    const _nextAv = new Set([...av, ...[...(current as ApplicationExpression).uncurry()[1]]]);
     // Actually for atom like P(a,b) args are accessible; use uncurry args
     const args = current instanceof ApplicationExpression ? current.uncurry()[1] : [];
     const newAv = new Set([...av, ...args]);

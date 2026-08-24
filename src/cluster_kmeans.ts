@@ -10,7 +10,6 @@ import {
   euclideanDistance,
   vectorAdd,
   vectorDiv,
-  zeroVector,
   type Vector,
 } from "./cluster_api.ts";
 import { VectorSpaceClusterer } from "./cluster_util.ts";

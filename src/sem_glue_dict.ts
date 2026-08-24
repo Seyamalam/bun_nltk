@@ -1,7 +1,3 @@
-import {
-  BindingDict,
-  LinearLogicParser,
-} from "./sem_linearlogic";
 import { Counter, GlueFormula, SPEC_SEMTYPES, OPTIONAL_RELATIONSHIPS, type GlueFormulaFactory } from "./sem_glue_formula";
 import type { Expression as LLExpression } from "./sem_linearlogic";
 import {

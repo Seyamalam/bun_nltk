@@ -219,7 +219,7 @@ export class IBMModel5 extends SamplingModel {
       const m = alignedSentence.words.length;
 
       // Sample using Model 4 scoring, then prune.
-      const { sampled: unpruned, best } = this.sample(alignedSentence);
+      const { sampled: unpruned, best: _best } = this.sample(alignedSentence);
 
       // Prune alignments substantially worse than the best (Model 4 score).
       let bestScore = 0;

@@ -319,7 +319,7 @@ export class AnnotationTask {
       throw new RangeError("Cannot calculate alpha, only one coder and item present!");
     }
 
-    let totalDisagreement = 0;
+    const _totalDisagreement = 0;
     const allValidLabelsFreq: LabelFreqs = new Map();
     let totalDo = 0;
     for (const group of groupBy(this.rows, (x) => x.item).values()) {

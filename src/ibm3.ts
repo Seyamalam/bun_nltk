@@ -159,7 +159,7 @@ export class IBMModel3 extends SamplingModel {
       const l = alignedSentence.mots.length;
       const m = alignedSentence.words.length;
 
-      const { sampled, best } = this.sample(alignedSentence);
+      const { sampled, best: _best } = this.sample(alignedSentence);
 
       // E step (a)
       let totalCount = 0;

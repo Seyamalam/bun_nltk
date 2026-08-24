@@ -53,6 +53,8 @@
     "wordnet:prepare:default": "bun run scripts/prepare-wordnet-default.ts",
     "wordnet:verify:pack": "bun run scripts/verify-wordnet-pack.ts",
     "test": "bun test",
+    "example:ccg": "bun run examples/ccg_quickstart.ts",
+    "example:inference": "bun run examples/inference_resolution.ts",
     "typecheck": "bunx tsc -p tsconfig.json --noEmit",
     "lint": "bunx @biomejs/biome check src test bench scripts index.ts",
     "bench:generate": "python3 bench/generate_synthetic.py --size-mb 64 --seed 1337 --out bench/datasets/synthetic.txt",

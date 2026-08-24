@@ -513,7 +513,7 @@ export class TnT {
 
     if (!bestFinalKey) return [BOS, BOS];
 
-    const sep = bestFinalKey.indexOf("\x1e");
+    const _sep = bestFinalKey.indexOf("\x1e");
     const parts = bestFinalKey.split("\x1e");
     const kSm2 = parts[0]!;
     const kSm1 = parts[1]!;

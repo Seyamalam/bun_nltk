@@ -528,6 +528,65 @@ These functions are pure TypeScript reference implementations.
 - `evaluateLanguageModelIds(input: { tokenIds: Uint32Array; sentenceOffsets: Uint32Array; order: number; model: 0 | 1 | 2; gamma: number; discount: number; vocabSize: number; probeContextFlat: Uint32Array; probeContextLens: Uint32Array; probeWords: Uint32Array; perplexityTokens: Uint32Array; prefixTokens?: Uint32Array }): { scores: Float64Array; perplexity: number }`
 - `chunkIobIds(input: { tokenTagIds: Uint16Array; atomAllowedOffsets: Uint32Array; atomAllowedLengths: Uint32Array; atomAllowedFlat: Uint16Array; atomMins: Uint8Array; atomMaxs: Uint8Array; ruleAtomOffsets: Uint32Array; ruleAtomCounts: Uint32Array; ruleLabelIds: Uint16Array }): { labelIds: Uint16Array; begins: Uint8Array }`
 
+## CCG (Combinatory Categorial Grammar)
+
+Real port of `nltk.ccg`.
+
+- `fromString(lexStr: string, includeSemantics?: boolean): CCGLexicon` — parse lexicon `:- S,NP,N` + `word => Cat` lines
+- `new CCGLexicon(start, primitives, families, entries)` — `.categories(word)`, `.toString()`
+- `class CCGChart(tokens)` — `.insert(edge, children)`, `.select(span?)`, `.parses(start)`
+- `class CCGChartParser(lexicon, rules)` — `.parse(tokens: string[]): AnyEdge[]` — chart over `DefaultRuleSet`
+- Rule sets: `ApplicationRuleSet`, `CompositionRuleSet`, `SubstitutionRuleSet`, `TypeRaiseRuleSet`, `DefaultRuleSet`
+- Categories: `PrimitiveCategory`, `FunctionalCategory`, `CCGVar`, `Direction`, `augParseCategory`
+- Combinators: `ForwardApplication`, `BackwardApplication`, `ForwardComposition`, `BackwardComposition`, `ForwardSubstitution`, etc.
+- Logic/semantics: `computeFunctionSemantics`, `computeCompositionSemantics`, `computeTypeRaisedSemantics`
+
+Example: `examples/ccg_quickstart.ts` parses `I sleep → S`.
+
+## Inference & Theorem Proving
+
+Real port of `nltk.inference`.
+
+- `class ResolutionProver extends Prover` — `.prove(goal, assumptions)`, `._prove(...)` — clausify + saturation
+- `class ResolutionProverCommand extends BaseProverCommand` — `.prove()`, `.proof()`, `.addAssumptions()`
+- `class TableauProver extends Prover` / `TableauProverCommand` — tableau refutation
+- `class Prover9` / `Prover9Command` — external prover stub (throws if binary missing) — shim
+- `class Mace` / `MaceCommand` — model builder (Mace4) — shim
+- `clausify(expr: Expression): Clause[]`, `class Clause`, `class BindingDict`, `mostGeneralUnification`
+- `class DiscourseTester` — NLTK `inference.discourse` — tester harness
+
+Example: `examples/inference_resolution.ts` proves `mortal(socrates)` from `all x.(man(x)->mortal(x))`.
+
+## App / Chat / Draw / Twitter (GUI & I/O shims)
+
+These families mirror NLTK’s Tkinter/network/chatbot modules. They are **shims**: importable for parity (`241/241`) but any call that would open a GUI, network connection, or interactive REPL throws a descriptive error with the programmatic alternative.
+
+- `app` (10 modules: `chartparser_app`, `chunkparser_app`, `collocations_app`, `concordance_app`, `nemo_app`, `rdparser_app`, `srparser_app`, `wordfreq_app`, `wordnet_app` + `app`) — all functions throw `requires Tkinter GUI — use programmatic ChartParser/… API`
+- `app` re-exports live under `app_ns`, `app_chartparser_app_ns`, … to avoid name collisions
+- `chat` (7 modules: `eliza`, `iesha`, `rude`, `suntsu`, `zen`, `util`, `chat`) — `*_chat()` throws `requires interactive terminal I/O`; real logic is `Chat` from `chat_util` (pattern/response pairs, reflections) — import `Chat` directly
+- `draw` (6 modules: `cfg`, `dispersion`, `table`, `tree`, `util`, `draw`) — throws `requires Tk/matplotlib`
+- `twitter` (6 modules: `api`, `common`, `twitterclient`, `util`, `twitter_demo`, `twitter`) — throws `requires network/API keys — use Twitter API directly`
+- `collections` (`collections` → `AbstractLazySequence`, `LazyConcatenation`, `LazyMap`, `LazyZip`, `OrderedDict`-like helpers)
+- Other root shims: `compat`, `data` (find/load), `decorators` (`@memoize`/`@deprecated`), `internals` (`config_*`, `find_*`), `jsontags` (`register_tag`), `lazyimport`, `tabdata`, `langnames`, `cli`, `corpus.europarl_raw` — thin helpers matching NLTK signatures
+
+All shims are intentionally tiny (<30 LOC each) and documented where they diverge.
+
+## Cluster / Misc / Toolbox / Tgrep
+
+- `cluster` — `KMeansClusterer`, `EMClusterer`, `GAACClusterer`, `ClusterI`, distance fns
+- `misc` — `chomsky_random_sentence`, `babelfish` (stub), `minimalset`, `sort` (`bubble/merge/quick`), `wordfinder`
+- `toolbox` — `ToolboxData`, `StandardFormat`, `parseSFMString`/`toSFMString` (+ snake_case aliases)
+- `tgrep` — `tgrep_tokenize`, `tgrep_compile`/`tgrep_positions`
+
+## Coverage summary
+
+| Tier | Meaning | Families |
+|---|---|---|
+| ✅ Real port | Full TS logic + parity tests | parse, translate, tokenize, classify, sem, tag, stem, metrics, inference, lm, tree, tbl, ccg, cluster, chunk, … |
+| ⚠️ Shim | API present, runtime explains gap | app, chat (bots), draw, twitter, + `collections`/`compat`/`data`/`decorators`/`internals`/`jsontags`/`lazyimport`/`tabdata`/`langnames`/`cli`/`corpus.europarl_raw` |
+
+All 241 public `nltk.*` modules are importable; `docs/PARITY_CHECKLIST.md` shows 241/241.
+
 ## Notes
 
 - Native APIs load packaged prebuilt binaries at `native/prebuilt/<platform>-<arch>/bun_nltk.{so|dll}`.

@@ -6,7 +6,7 @@
  * expansion+emission steps; throws once the limit is hit.
  */
 
-import type { CfgGrammar, CfgProduction } from "./parse";
+import type { CfgGrammar } from "./parse";
 
 export const MAX_GENERATE_OPERATIONS = 1_000_000;
 

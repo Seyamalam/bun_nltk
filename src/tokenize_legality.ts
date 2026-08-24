@@ -18,9 +18,9 @@ export class LegalitySyllableTokenizer {
     for (const word of tokenizedSourceText) {
       const lower = word.toLowerCase();
       // Split on vowels to find consonant clusters
-      const parts: string[] = [];
-      let cur = "";
-      let inVowel = false;
+      const _parts: string[] = [];
+      const _cur = "";
+      const _inVowel = false;
       // Build onset/coda candidates by scanning for vowel boundaries (matches NLTK's ipc approach)
       // Simplified: use regex split on vowels to extract clusters
       const clusters = lower.split(new RegExp(`[${vowels.replace(/[\]\\^-]/g, "\\$&")}]+`));
@@ -63,8 +63,8 @@ export class LegalitySyllableTokenizer {
     const lower = word;
     const isVowel = (ch: string) => this.vowels.has(ch.toLowerCase());
     const syllables: string[] = [];
-    let i = 0;
-    let syllStart = 0;
+    const _i = 0;
+    const _syllStart = 0;
 
     // Find vowel positions
     const vowelIdx: number[] = [];
@@ -73,7 +73,7 @@ export class LegalitySyllableTokenizer {
     if (vowelIdx.length === 1) return [word];
 
     // Split between vowels by choosing the longest legal onset for the next syllable
-    let splitPoints: number[] = [];
+    const splitPoints: number[] = [];
     for (let vi = 0; vi < vowelIdx.length - 1; vi++) {
       const leftV = vowelIdx[vi]!;
       const rightV = vowelIdx[vi+1]!;

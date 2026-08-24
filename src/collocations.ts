@@ -4,14 +4,14 @@ import { tokenizeAscii } from "./reference";
 
 const SMALL = 1e-20;
 
-export type BigramScoreFn<T> = (n_ii: number, marginals: [number, number], total: number) => number;
-export type TrigramScoreFn<T> = (
+export type BigramScoreFn<_T> = (n_ii: number, marginals: [number, number], total: number) => number;
+export type TrigramScoreFn<_T> = (
   n_iii: number,
   bigramMarginals: [number, number, number],
   unigramMarginals: [number, number, number],
   total: number,
 ) => number;
-export type QuadgramScoreFn<T> = (
+export type QuadgramScoreFn<_T> = (
   n_iiii: number,
   trigramMarginals: [number, number, number, number],
   bigramMarginals: [number, number, number, number, number, number],
@@ -279,13 +279,13 @@ export class QuadgramAssocMeasures {
     const n_iioo = n_iixx - n_iiii - n_iioi - n_iiio;
     const n_oioo = n_xixx - n_iiii - n_oiii - n_iioi - n_iiio - n_oioi - n_oiio - n_iioo;
     const n_iooo = n_ixxx - n_iiii - n_ioii - n_iioi - n_iiio - n_iooi - n_iioo - n_ioio;
-    const n_oooo =
+    const _n_oooo =
       n_xxxx - n_iiii - n_oiii - n_ioii - n_iioi - n_ooii - n_oioi - n_iooi - n_oooi -
       n_iiio - n_oiio - n_ioio - n_ooio - n_iioo - n_oioo - n_iooo;
 
     return [
       n_iiii, n_oiii, n_ioii, n_ooii, n_iioi, n_oioi, n_iooi, n_oooi,
-      n_iiio, n_oiio, n_ioio, n_ooio, n_iioo, n_oioo, n_iooo, n_oooo,
+      n_iiio, n_oiio, n_ioio, n_ooio, n_iioo, n_oioo, n_iooo, _n_oooo,
     ];
   }
 
@@ -297,7 +297,7 @@ export class QuadgramAssocMeasures {
   ]): [number, [number, number, number, number], [number, number, number, number, number, number], [number, number, number, number], number] {
     const [
       n_iiii, n_oiii, n_ioii, n_ooii, n_iioi, n_oioi, n_iooi, n_oooi,
-      n_iiio, n_oiio, n_ioio, n_ooio, n_iioo, n_oioo, n_iooo, n_oooo,
+      n_iiio, n_oiio, n_ioio, n_ooio, n_iioo, n_oioo, n_iooo, _n_oooo,
     ] = contingency;
 
     const n_iiix = n_iiii + n_iiio;

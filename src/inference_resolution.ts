@@ -5,14 +5,10 @@
 
 import { BaseProverCommand, Prover } from "./inference_api";
 import {
-  AllExpression,
   AndExpression,
   ApplicationExpression,
-  ConstantExpression,
   EqualityExpression,
   Expression,
-  IffExpression,
-  ImpExpression,
   IndividualVariableExpression,
   NegatedExpression,
   OrExpression,
@@ -105,7 +101,7 @@ export class BindingDict {
       const varObj = new Variable(k);
       try {
         combined.set(varObj, v);
-      } catch (e) {
+      } catch (_e) {
         throw new BindingException(`Attempting to add two contradicting BindingDicts: '${this}' and '${other}'`);
       }
     }
@@ -507,9 +503,9 @@ export class ResolutionProver extends Prover {
             let newclauses: Clause[];
             try {
               newclauses = clauses[i]!.unify(clauses[j]!, undefined, undefined, undefined, false, deadline);
-            } catch (e) {
-              if (e instanceof UnifyTimeout) return [false, []];
-              throw e;
+            } catch (_e) {
+              if (_e instanceof UnifyTimeout) return [false, []];
+              throw _e;
             }
             if (newclauses.length > 0) {
               for (const nc of newclauses) {

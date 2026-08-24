@@ -15,7 +15,6 @@ import {
   OrExpression,
   type Expression,
   Variable,
-  makeVariableExpression,
 } from "./sem_logic";
 import { skolemize } from "./skolemize";
 
@@ -291,7 +290,7 @@ export class HoleSemantics {
         // For PRED, factory is ApplicationExpression via MAP
         // But children are already expressions; need to fold
         if (children.length === 0) return pred;
-        let acc: Expression = children[0]!;
+        const _acc: Expression = children[0]!;
         // Actually for PRED, first arg is like variable? In Python PRED handling uses reduce
         // We'll mimic: reduce(MAP[predName], children)
         // For PRED, MAP does ApplicationExpression (2-arg)
@@ -300,7 +299,7 @@ export class HoleSemantics {
         // That would call ApplicationExpression(child0, child1) then ApplicationExpression(result, child2) etc.
         // But ApplicationExpression constructor takes 2 args only.
         // So we simulate.
-        let result: Expression = children[0]!;
+        const _result: Expression = children[0]!;
         for (let i = 1; i < children.length; i++) {
           // PRED with multiple args: curried application starting from pred's variable?
           // In hole semantics, PRED fragment is like PRED(l, x, y) where l is label stripped

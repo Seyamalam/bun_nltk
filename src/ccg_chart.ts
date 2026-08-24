@@ -232,7 +232,7 @@ export function computeSemantics(children: Token[], edge: CCGEdge): unknown {
     let func = children[0]!.semantics, arg = children[1]!.semantics;
     // Detect backward by string prefix "<"
     if (`${rule}`.startsWith("<")) [func, arg] = [arg!, func!];
-    const inner = (rule as unknown as { comb?: unknown }).comb ?? rule;
+    const _inner = (rule as unknown as { comb?: unknown }).comb ?? rule;
     // Actually Directed wrapper stores combinator privately; use toString heuristic
     const s = `${rule}`;
     if (s.includes("B")) return computeCompositionSemantics(func!, arg!);

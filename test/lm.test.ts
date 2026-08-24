@@ -81,7 +81,7 @@ function runParityCase(model: LanguageModelType, tolerance: number) {
   );
 
   for (let i = 0; i < probes.length; i += 1) {
-    const probe = probes[i]!;
+    const _probe = probes[i]!;
     const jsScore = batch.scores[i]!;
     const pyScore = python.probeScores[i]!.score;
     expect(Math.abs(jsScore - pyScore)).toBeLessThanOrEqual(tolerance);

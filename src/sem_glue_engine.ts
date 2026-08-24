@@ -1,6 +1,5 @@
 import {
   BindingDict,
-  LinearLogicParser,
   ApplicationExpression as LLApplicationExpression,
   AtomicExpression as LLAtomicExpression,
   ImpExpression as LLImpExpression,

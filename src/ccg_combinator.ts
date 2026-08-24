@@ -2,7 +2,7 @@
  * CCG Combinators — port of nltk/ccg/combinator.py
  * Forward/backward application, composition, type-raising, substitution.
  */
-import { Direction, FunctionalCategory } from "./ccg_api.ts";
+import { FunctionalCategory } from "./ccg_api.ts";
 import type { AbstractCCGCategory } from "./ccg_api.ts";
 
 // ---------------------------------------------------------------------------

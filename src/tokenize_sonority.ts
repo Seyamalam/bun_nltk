@@ -69,10 +69,10 @@ export class SyllableTokenizer {
   }
 
   tokenize(token: string): string[] {
-    let vowelCount = 0;
+    let _vowelCount = 0;
     for (const v of this.vowelSet) {
       let idx = 0;
-      while ((idx = token.indexOf(v, idx)) !== -1) { vowelCount++; idx++; }
+      while ((idx = token.indexOf(v, idx)) !== -1) { _vowelCount++; idx++; }
       // also count upper? already in set, but token may have upper — we counted via set that includes upper
     }
     // Simpler: count occurrences of any vowel char in token

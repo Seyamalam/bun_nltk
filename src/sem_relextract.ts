@@ -136,7 +136,7 @@ export const semiRel2reldict = semi_rel2reldict;
 // extract_rels
 // ---------------------------------------------------------------------------
 
-function isIeDocument(x: unknown): x is IeDocument {
+function _isIeDocument(x: unknown): x is IeDocument {
   return typeof x === "object" && x !== null && "text" in (x as Record<string,unknown>) && "headline" in (x as Record<string,unknown>);
 }
 

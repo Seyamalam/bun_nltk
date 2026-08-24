@@ -145,7 +145,7 @@ export class EMClusterer extends VectorSpaceClusterer {
   override clusterVectorspace(vectors: Vector[], trace = false): void {
     if (vectors.length === 0) throw new RangeError("no vectors");
     const dim = vectors[0]!.length;
-    let means = this._means;
+    const means = this._means;
     let priors = this._priors;
     if (!priors) {
       priors = this._priors = new Array(this._numClusters).fill(1 / this._numClusters);
@@ -188,7 +188,7 @@ export class EMClusterer extends VectorSpaceClusterer {
       for (let j = 0; j < this._numClusters; j++) {
         let sumHj = 0;
         const newMean = new Array(dim).fill(0);
-        let newCov: number[][] = Array.from({ length: dim }, () => new Array(dim).fill(0));
+        const newCov: number[][] = Array.from({ length: dim }, () => new Array(dim).fill(0));
         for (let i = 0; i < vectors.length; i++) {
           const hij = h[i]![j]!;
           sumHj += hij;

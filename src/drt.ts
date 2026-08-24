@@ -19,19 +19,14 @@ import {
   AndExpression,
   ApplicationExpression,
   BinaryExpression,
-  ConstantExpression,
   EqualityExpression,
-  EventVariableExpression,
   ExistsExpression,
   Expression,
-  FunctionVariableExpression,
   ImpExpression,
-  IndividualVariableExpression,
   LambdaExpression,
   NegatedExpression,
   OrExpression,
   Variable,
-  VariableBinderExpression,
   is_eventvar,
   is_funcvar,
   is_indvar,
@@ -57,7 +52,7 @@ export const DrtTokens = {
   COLON: ":",
 } as const;
 
-const DrtPunct = ["+", "[", "]", ":"] as const;
+const _DrtPunct = ["+", "[", "]", ":"] as const;
 const DrtSymbols: string[] = [...Tokens.AND_LIST, ...Tokens.OR_LIST, ...Tokens.IMP_LIST, ...Tokens.IFF_LIST, ...Tokens.EQ_LIST, ...Tokens.NEQ_LIST, ...Tokens.LAMBDA_LIST, ...Tokens.NOT_LIST, "(", ")", ",", ".", "+", "[", "]", ":"].filter((v, i, a) => a.indexOf(v) === i);
 const DrtTokensList: string[] = [...Tokens.AND_LIST, ...Tokens.OR_LIST, ...Tokens.IMP_LIST, ...Tokens.IFF_LIST, ...Tokens.EQ_LIST, ...Tokens.NEQ_LIST, ...Tokens.LAMBDA_LIST, ...Tokens.NOT_LIST, "DRS", "+", "[", "]", ":", "PRO", "(", ")", ",", "."];
 
@@ -294,7 +289,7 @@ export class DRS extends DrtExpression {
 
   fol(): Expression {
     if (this.consequent) {
-      let antecedent: Expression | null = reduceAnd(this.conds.map((c) => (c as unknown as DrtExpression).fol()));
+      const antecedent: Expression | null = reduceAnd(this.conds.map((c) => (c as unknown as DrtExpression).fol()));
       let imp: Expression;
       if (antecedent) imp = new ImpExpression(antecedent, (this.consequent as unknown as DrtExpression).fol());
       else imp = (this.consequent as unknown as DrtExpression).fol();
