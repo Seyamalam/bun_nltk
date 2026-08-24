@@ -1,0 +1,47 @@
+/* bun_nltk parity decision flowchart - GUI/external? -> shim vs real port */
+digraph parity_decision {
+  graph [fontname="Helvetica", bgcolor="transparent", pad="0.35", ranksep="0.42", nodesep="0.38", rankdir="TB", splines="ortho", labelloc="t", label="Parity Classification  (COVERED dict -> shim vs. real port)", fontsize="10", fontcolor="#333333"];
+  node [fontname="Helvetica", fontsize="8.5", shape="box", style="rounded,filled", fillcolor="#f8f9fa", color="#333333", penwidth=0.8, margin="0.18,0.09"];
+  edge [fontname="Helvetica", fontsize="7.5", color="#555555", arrowsize=0.7, penwidth=0.9];
+
+  start [label="NLTK module\n(from 241 list)", shape="box", style="rounded,filled", fillcolor="#e8f0fe", color="#1a73e8", penwidth=1.0];
+
+  d1 [label="GUI / display-only?", shape="diamond", style="filled", fillcolor="#fef7e0", color="#e37400", penwidth=1.0, fontsize="8", width="1.55", height="0.9", margin="0.12,0.05"];
+  n1 [label="e.g.  nltk.app\nnltk.draw", shape="plaintext", fontsize="6.5", fontcolor="#5f6368", height=0.16];
+
+  d2 [label="Requires external\nresource at import?", shape="diamond", style="filled", fillcolor="#fef7e0", color="#e37400", penwidth=1.0, fontsize="8", width="1.7", height="0.95", margin="0.12,0.05"];
+  n2 [label="e.g.  corpora / network\nmodel download", shape="plaintext", fontsize="6.5", fontcolor="#5f6368", height=0.16];
+
+  d3 [label="Pure algorithm\nportable to JS?", shape="diamond", style="filled", fillcolor="#e8f0fe", color="#1a73e8", penwidth=1.0, fontsize="8", width="1.6", height="0.95", margin="0.12,0.05"];
+
+  shim [label="SHIM\nthrow Error(\n  requires Python/Tk\n  + JS hint)", shape="box", style="rounded,filled", fillcolor="#fce8e6", color="#c5221f", penwidth=1.0, fontsize="8"];
+  real [label="REAL PORT\nTypeScript  (+ Rust/WASM\n  for hot paths)", shape="box", style="rounded,filled", fillcolor="#e6f4ea", color="#1e8e3e", penwidth=1.0];
+
+  covered [label="COVERED[\"nltk.xxx\"] = true\nsrc/_parity.ts", shape="box", style="rounded,filled", fillcolor="#e6f4ea", color="#1e8e3e", penwidth=1.0, fontsize="7.5"];
+  covered2 [label="COVERED[\"nltk.xxx\"] = true\n(still counts toward 241)", shape="box", style="rounded,filled", fillcolor="#fef7e0", color="#e8a317", penwidth=1.0, fontsize="7.5"];
+
+  harness [label="Harness vs Python .venv\nAPI + output equality", shape="box", style="rounded,filled", fillcolor="#e8f0fe", color="#1a73e8", penwidth=1.0];
+  doc [label="docs/PARITY_CHECKLIST.md\n241/241", shape="box", style="rounded,filled", fillcolor="#f3e8fd", color="#7c4dff", penwidth=1.0];
+
+  start -> d1;
+  d1 -> shim [label=" yes ", fontsize="7", fontcolor="#c5221f"];
+  d1 -> d2 [label=" no "];
+  d2 -> shim [label=" yes "];
+  d2 -> d3 [label=" no "];
+  d3 -> real [label=" yes "];
+  d3 -> shim [label=" no  (Tk-only) "];
+
+  shim -> covered2;
+  real -> covered;
+  covered -> harness;
+  covered2 -> harness [style="dashed", label="  intentional throw ", fontsize="6.5"];
+  harness -> doc;
+
+  { rank="same"; d1; n1; }
+  { rank="same"; d2; n2; }
+  { rank="same"; shim; real; }
+  { rank="same"; covered; covered2; }
+
+  foot [label="Shim still satisfies parity (documented throw with JS hint) -- harness asserts throw matches Python missing-env behavior", shape="plaintext", fontsize="6.5", fontcolor="#5f6368", height=0.18];
+  { rank="sink"; foot; }
+}

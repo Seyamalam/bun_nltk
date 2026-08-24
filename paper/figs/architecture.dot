@@ -1,0 +1,62 @@
+/* bun_nltk architecture — TS+Rust to native/WASM to Bun/Node/Browser/Edge */
+digraph architecture {
+  graph [fontname="Helvetica", bgcolor="transparent", pad="0.35", ranksep="0.38", nodesep="0.28", rankdir="TB", splines="ortho", labelloc="t", label="bun_nltk Architecture  (TS + Rust -> Bun / Node / Browser / Edge)", fontsize="10", fontcolor="#333333", compound="true"];
+  node [fontname="Helvetica", fontsize="8.5", shape="box", style="rounded,filled", fillcolor="#f8f9fa", color="#333333", penwidth="0.8", margin="0.18,0.09"];
+  edge [fontname="Helvetica", fontsize="7", color="#555555", arrowsize="0.7", penwidth="0.9"];
+
+  subgraph cluster_source {
+    graph [label="Source", fontsize="8", fontcolor="#333333", style="rounded,filled", fillcolor="#f8f9ff", color="#dadce0", penwidth="0.7", margin="12", labeljust="l"];
+    ts [label="TypeScript  src/\n241 modules  |  _parity.ts", shape="box", style="rounded,filled", fillcolor="#e8f0fe", color="#1a73e8", penwidth="1.0"];
+    rs [label="Rust  rust/src/\nffi.rs  |  lib.rs  |  Cargo.toml", shape="box", style="rounded,filled", fillcolor="#fef7e0", color="#e37400", penwidth="1.0"];
+    ts -> rs [style="invis"];
+  }
+
+  subgraph cluster_build {
+    graph [label="Build", fontsize="8", fontcolor="#333333", style="rounded,filled", fillcolor="#f6fef9", color="#dadce0", penwidth="0.7", margin="12", labeljust="l"];
+    tsc [label="tsc  /  bun build", shape="box", style="rounded,filled", fillcolor="#e8f0fe", color="#1a73e8", penwidth="1.0"];
+    cargo [label="cargo build\n(cdylib -> dylib/so/dll)", shape="box", style="rounded,filled", fillcolor="#fef7e0", color="#e37400", penwidth="1.0"];
+    wasm [label="wasm-pack / wasm-bindgen\nbun_panda.wasm  ~92 KB", shape="box", style="rounded,filled", fillcolor="#fce8e6", color="#c5221f", penwidth="1.0", fontsize="8"];
+    tsc -> cargo [style="invis"];
+    cargo -> wasm [style="invis"];
+  }
+
+  subgraph cluster_runtime {
+    graph [label="Runtime / Distribution", fontsize="8", fontcolor="#333333", style="rounded,filled", fillcolor="#fff8f0", color="#dadce0", penwidth="0.7", margin="12", labeljust="l"];
+    bunffi [label="Bun bindings\nbun:ffi  dlopen  (native)", shape="box", style="rounded,filled", fillcolor="#e6f4ea", color="#1e8e3e", penwidth="1.0"];
+    wasmbind [label="WASM bindings\nWebAssembly.instantiate", shape="box", style="rounded,filled", fillcolor="#e6f4ea", color="#1e8e3e", penwidth="1.0"];
+    opt [label="BUN_PANDA_WASM=1\nforce WASM (opt-out of native)", shape="plaintext", fontsize="6.5", fontcolor="#5f6368", height="0.18"];
+    npm [label="npm package\nbun_nltk  (JS + wasm + dylib)", shape="box", style="rounded,filled", fillcolor="#f3e8fd", color="#7c4dff", penwidth="1.0"];
+  }
+
+  subgraph cluster_targets {
+    graph [label="Targets (single codebase)", fontsize="8", fontcolor="#333333", style="rounded,filled", fillcolor="#f8f9fa", color="#dadce0", penwidth="0.7", margin="12", labeljust="l"];
+    bun_rt [label="Bun\nnative (fast path)", shape="box", style="rounded,filled", fillcolor="#e6f4ea", color="#1e8e3e", penwidth="1.0"];
+    nodejs [label="Node.js", shape="box", style="rounded,filled", fillcolor="#e8f0fe", color="#1a73e8", penwidth="1.0"];
+    browser [label="Browser\n(WASM only)", shape="box", style="rounded,filled", fillcolor="#e8f0fe", color="#1a73e8", penwidth="1.0"];
+    edge_rt [label="Edge / Workers\n(WASM only)", shape="box", style="rounded,filled", fillcolor="#e8f0fe", color="#1a73e8", penwidth="1.0"];
+    bun_rt -> nodejs -> browser -> edge_rt [style="invis"];
+  }
+
+  ts -> tsc [ltail="cluster_source"];
+  rs -> cargo;
+  rs -> wasm [style="dashed", label="  wasm32  ", fontsize="6.5"];
+  cargo -> bunffi [ltail="cluster_build", lhead="cluster_runtime"];
+  wasm -> wasmbind [ltail="cluster_build", lhead="cluster_runtime"];
+  tsc -> npm [ltail="cluster_build", lhead="cluster_runtime"];
+  bunffi -> npm [style="solid"];
+  wasmbind -> npm [style="solid"];
+
+  npm -> bun_rt [lhead="cluster_targets"];
+  npm -> nodejs [lhead="cluster_targets"];
+  npm -> browser [lhead="cluster_targets"];
+  npm -> edge_rt [lhead="cluster_targets"];
+
+  bunffi -> bun_rt [color="#1e8e3e", penwidth="1.4"];
+  wasmbind -> browser [color="#1e8e3e"];
+  wasmbind -> edge_rt [color="#1e8e3e"];
+
+  opt -> wasmbind [style="dotted", color="#5f6368", arrowhead="none", penwidth="0.7"];
+
+  fb [label="Native dylib preferred; WASM fallback is automatic\n(Browser/Edge always WASM -- no dlopen)", shape="plaintext", fontsize="6.5", fontcolor="#5f6368", height="0.2"];
+  { rank="sink"; fb; }
+}
