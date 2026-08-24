@@ -3,7 +3,7 @@
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
 > Last regenerated: 2026-08-24
 
-**Coverage: 174/241 modules (72.2%)** — 25 of 46 families touched.
+**Coverage: 187/241 modules (77.6%)** — 27 of 46 families touched.
 
 - [x] `parse` (20/20)
   - [x] `parse.api`
@@ -148,6 +148,15 @@
   - [x] `tree.transforms`
   - [x] `tree.tree`
 
+- [~] `inference` (7/8)
+  - [x] `inference.api`
+  - [x] `inference.discourse`
+  - [x] `inference.mace`
+  - [ ] `inference.nonmonotonic`
+  - [x] `inference.prover9`
+  - [x] `inference.resolution`
+  - [x] `inference.tableau`
+
 - [~] `lm` (7/8)
   - [x] `lm.api`
   - [x] `lm.counter`
@@ -156,6 +165,13 @@
   - [x] `lm.smoothing`
   - [x] `lm.util`
   - [x] `lm.vocabulary`
+
+- [x] `ccg` (6/6)
+  - [x] `ccg.api`
+  - [x] `ccg.chart`
+  - [x] `ccg.combinator`
+  - [x] `ccg.lexicon`
+  - [x] `ccg.logic`
 
 - [x] `cluster` (6/6)
   - [x] `cluster.api`
@@ -226,13 +242,6 @@
 
 - [ ] `book` (0/1)
 
-- [ ] `ccg` (0/6)
-  - [ ] `ccg.api`
-  - [ ] `ccg.chart`
-  - [ ] `ccg.combinator`
-  - [ ] `ccg.lexicon`
-  - [ ] `ccg.logic`
-
 - [ ] `chat` (0/7)
   - [ ] `chat.eliza` — *out of scope*
   - [ ] `chat.iesha` — *out of scope*
@@ -263,15 +272,6 @@
 - [ ] `featstruct` (0/1)
 
 - [ ] `help` (0/1)
-
-- [ ] `inference` (0/8)
-  - [ ] `inference.api`
-  - [ ] `inference.discourse`
-  - [ ] `inference.mace`
-  - [ ] `inference.nonmonotonic`
-  - [ ] `inference.prover9`
-  - [ ] `inference.resolution`
-  - [ ] `inference.tableau`
 
 - [ ] `internals` (0/1)
 

@@ -138,6 +138,13 @@ COVERED: dict[str, bool] = {
     "misc": True, "misc.babelfish": True, "misc.chomsky": True,
     "misc.minimalset": True, "misc.sort": True, "misc.wordfinder": True,
     "tgrep": True, "toolbox": True,
+    # ccg
+    "ccg": True, "ccg.api": True, "ccg.chart": True, "ccg.combinator": True,
+    "ccg.lexicon": True, "ccg.ccgcat": True, "ccg.logic": True,
+    # inference
+    "inference": True, "inference.api": True, "inference.resolution": True,
+    "inference.tableau": True, "inference.prover9": True, "inference.mace": True,
+    "inference.discourse": True,
 }
 
 # Families deliberately out of scope for a JS library (GUI/demo/external-tool).

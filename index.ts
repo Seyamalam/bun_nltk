@@ -462,4 +462,18 @@ export * from "./src/misc_babelfish";
 export * from "./src/tgrep";
 export { StandardFormat, ToolboxData, ToolboxSettings, parseSFMString, toSFMString, to_sfm_string, toSettingsString, to_settings_string, removeBlanks, remove_blanks, addDefaultFields, add_default_fields, sortFields, sort_fields, addBlankLines, add_blank_lines } from "./src/toolbox";
 export type { SFMField } from "./src/toolbox";
+// ccg family
+export * from "./src/ccg_api";
+export * from "./src/ccg_ccgcat";
+export * from "./src/ccg_combinator";
+export * from "./src/ccg_lexicon";
+export * from "./src/ccg_chart";
+export * from "./src/ccg_logic";
+// inference family (explicit to avoid ProverParseError star collision)
+export * from "./src/inference_api";
+export { BindingException, BindingDict, mostGeneralUnification, Clause, clausify, ResolutionProver, ResolutionProverCommand, ProverParseError as ResolutionProverParseError } from "./src/inference_resolution";
+export { Categories, Agenda, TableauProver, TableauProverCommand, ProverParseError as TableauProverParseError } from "./src/inference_tableau";
+export * from "./src/inference_prover9";
+export * from "./src/inference_mace";
+export * from "./src/inference_discourse";
 

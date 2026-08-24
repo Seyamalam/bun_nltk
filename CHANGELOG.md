@@ -6,6 +6,12 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-08-24
+### Added
+- CCG family (6): ccgcat/combinator/lexicon/chart/logic/api — faithful ports with harnesses vs Python (cat parsing, combinators, chart `I sleep → S`)
+- Inference family (7): resolution/tableau (full provers, timeout/deadline), prover9/mace/discourse shims + api — harnessed vs Python
+- Parity: 187/241 (77.6%) — in-scope surface now >3/4, `ccg`+`inference` complete, `cluster`+`misc`/`tgrep`/`toolbox` at 72.2% carried forward
+
 ## [0.13.0] - 2026-08-24
 
 ### Added
