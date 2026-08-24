@@ -6,6 +6,12 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-08-24
+### Added
+- Final GUI tranche — app (10), chat (7), draw (6), twitter (6) — honest Tkinter/ELIZA/twython shims that throw helpful JS-guidance errors (namespaced exports to avoid demo collisions)
+- Small-family shims — collections/compat/data/decorators/internals/jsontags/lazyimport/tabdata/langnames + cli + corpus.europarl_raw
+- Parity: 241/241 (100%) — every public nltk.* module from the API index now has a TS surface (real ports where algorithmic, typed shims where GUI/external-binary)
+
 ## [0.15.0] - 2026-08-24
 ### Added
 - Package-root barrels (translate/classify/sem/tag/stem/lm/tbl/sentiment/corpus) + inference.nonmonotonic shim — closes 10 singleton gaps

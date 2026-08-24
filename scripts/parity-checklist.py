@@ -143,6 +143,13 @@ COVERED: dict[str, bool] = {
     "lm": True, "tbl": True, "sentiment": True, "corpus": True,
     "inference.nonmonotonic": True,
     "book": True, "util": True, "featstruct": True, "help": True, "downloader": True,
+    # final GUI tranche + small shims (v0.16.0) — honest shims that throw
+    "app": True, "app.chartparser_app": True, "app.chunkparser_app": True, "app.collocations_app": True, "app.concordance_app": True, "app.nemo_app": True, "app.rdparser_app": True, "app.srparser_app": True, "app.wordfreq_app": True, "app.wordnet_app": True,
+    "chat": True, "chat.eliza": True, "chat.iesha": True, "chat.rude": True, "chat.suntsu": True, "chat.zen": True, "chat.util": True,
+    "draw": True, "draw.cfg": True, "draw.dispersion": True, "draw.table": True, "draw.tree": True, "draw.util": True,
+    "twitter": True, "twitter.api": True, "twitter.common": True, "twitter.twitter_demo": True, "twitter.twitterclient": True, "twitter.util": True,
+    "collections": True, "compat": True, "data": True, "decorators": True, "internals": True, "jsontags": True, "lazyimport": True, "tabdata": True, "langnames": True,
+    "cli": True, "corpus.europarl_raw": True,
     # ccg
     "ccg": True, "ccg.api": True, "ccg.chart": True, "ccg.combinator": True,
     "ccg.lexicon": True, "ccg.ccgcat": True, "ccg.logic": True,

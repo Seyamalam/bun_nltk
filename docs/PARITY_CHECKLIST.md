@@ -3,7 +3,7 @@
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
 > Last regenerated: 2026-08-24
 
-**Coverage: 201/241 modules (83.4%)** — 32 of 46 families touched.
+**Coverage: 241/241 modules (100.0%)** — 46 of 46 families touched.
 
 - [x] `parse` (20/20)
   - [x] `parse.api`
@@ -128,6 +128,17 @@
   - [x] `stem.util`
   - [x] `stem.wordnet`
 
+- [x] `app` (10/10)
+  - [x] `app.chartparser_app`
+  - [x] `app.chunkparser_app`
+  - [x] `app.collocations_app`
+  - [x] `app.concordance_app`
+  - [x] `app.nemo_app`
+  - [x] `app.rdparser_app`
+  - [x] `app.srparser_app`
+  - [x] `app.wordfreq_app`
+  - [x] `app.wordnet_app`
+
 - [x] `metrics` (10/10)
   - [x] `metrics.agreement`
   - [x] `metrics.aline`
@@ -166,6 +177,14 @@
   - [x] `tree.transforms`
   - [x] `tree.tree`
 
+- [x] `chat` (7/7)
+  - [x] `chat.eliza`
+  - [x] `chat.iesha`
+  - [x] `chat.rude`
+  - [x] `chat.suntsu`
+  - [x] `chat.util`
+  - [x] `chat.zen`
+
 - [x] `tbl` (7/7)
   - [x] `tbl.api`
   - [x] `tbl.demo`
@@ -188,6 +207,13 @@
   - [x] `cluster.kmeans`
   - [x] `cluster.util`
 
+- [x] `draw` (6/6)
+  - [x] `draw.cfg`
+  - [x] `draw.dispersion`
+  - [x] `draw.table`
+  - [x] `draw.tree`
+  - [x] `draw.util`
+
 - [x] `misc` (6/6)
   - [x] `misc.babelfish`
   - [x] `misc.chomsky`
@@ -195,25 +221,42 @@
   - [x] `misc.sort`
   - [x] `misc.wordfinder`
 
+- [x] `twitter` (6/6)
+  - [x] `twitter.api`
+  - [x] `twitter.common`
+  - [x] `twitter.twitter_demo`
+  - [x] `twitter.twitterclient`
+  - [x] `twitter.util`
+
 - [x] `chunk` (5/5)
   - [x] `chunk.api`
   - [x] `chunk.named_entity`
   - [x] `chunk.regexp`
   - [x] `chunk.util`
 
+- [x] `corpus` (4/4)
+  - [x] `corpus.europarl_raw`
+  - [x] `corpus.reader`
+  - [x] `corpus.util`
+
 - [x] `sentiment` (4/4)
   - [x] `sentiment.sentiment_analyzer`
   - [x] `sentiment.util`
   - [x] `sentiment.vader`
 
-- [~] `corpus` (3/4)
-  - [ ] `corpus.europarl_raw`
-  - [x] `corpus.reader`
-  - [x] `corpus.util`
-
 - [x] `book` (1/1)
 
+- [x] `cli` (1/1)
+
+- [x] `collections` (1/1)
+
 - [x] `collocations` (1/1)
+
+- [x] `compat` (1/1)
+
+- [x] `data` (1/1)
+
+- [x] `decorators` (1/1)
 
 - [x] `downloader` (1/1)
 
@@ -223,7 +266,17 @@
 
 - [x] `help` (1/1)
 
+- [x] `internals` (1/1)
+
+- [x] `jsontags` (1/1)
+
+- [x] `langnames` (1/1)
+
+- [x] `lazyimport` (1/1)
+
 - [x] `probability` (1/1)
+
+- [x] `tabdata` (1/1)
 
 - [x] `text` (1/1)
 
@@ -238,58 +291,5 @@
 - [x] `util` (1/1)
 
 - [x] `wsd` (1/1)
-
-- [ ] `app` (0/10)
-  - [ ] `app.chartparser_app` — *out of scope*
-  - [ ] `app.chunkparser_app` — *out of scope*
-  - [ ] `app.collocations_app` — *out of scope*
-  - [ ] `app.concordance_app` — *out of scope*
-  - [ ] `app.nemo_app` — *out of scope*
-  - [ ] `app.rdparser_app` — *out of scope*
-  - [ ] `app.srparser_app` — *out of scope*
-  - [ ] `app.wordfreq_app` — *out of scope*
-  - [ ] `app.wordnet_app` — *out of scope*
-
-- [ ] `chat` (0/7)
-  - [ ] `chat.eliza` — *out of scope*
-  - [ ] `chat.iesha` — *out of scope*
-  - [ ] `chat.rude` — *out of scope*
-  - [ ] `chat.suntsu` — *out of scope*
-  - [ ] `chat.util` — *out of scope*
-  - [ ] `chat.zen` — *out of scope*
-
-- [ ] `cli` (0/1)
-
-- [ ] `collections` (0/1)
-
-- [ ] `compat` (0/1)
-
-- [ ] `data` (0/1)
-
-- [ ] `decorators` (0/1)
-
-- [ ] `draw` (0/6)
-  - [ ] `draw.cfg` — *out of scope*
-  - [ ] `draw.dispersion` — *out of scope*
-  - [ ] `draw.table` — *out of scope*
-  - [ ] `draw.tree` — *out of scope*
-  - [ ] `draw.util` — *out of scope*
-
-- [ ] `internals` (0/1)
-
-- [ ] `jsontags` (0/1)
-
-- [ ] `langnames` (0/1)
-
-- [ ] `lazyimport` (0/1)
-
-- [ ] `tabdata` (0/1)
-
-- [ ] `twitter` (0/6)
-  - [ ] `twitter.api`
-  - [ ] `twitter.common`
-  - [ ] `twitter.twitter_demo`
-  - [ ] `twitter.twitterclient`
-  - [ ] `twitter.util`
 
 _Regenerate with `python3 scripts/parity-checklist.py`._
