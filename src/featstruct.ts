@@ -1,0 +1,1 @@
+export class FeatStruct extends Map<string,unknown> { constructor(init?: Record<string,unknown>){ super(Object.entries(init??{})); } override toString(){ return JSON.stringify(Object.fromEntries(this)); } } export function parseFeatStruct(s: string): FeatStruct { return new FeatStruct({raw:s}); }

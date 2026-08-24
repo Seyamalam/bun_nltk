@@ -3,7 +3,7 @@
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
 > Last regenerated: 2026-08-24
 
-**Coverage: 187/241 modules (77.6%)** — 27 of 46 families touched.
+**Coverage: 201/241 modules (83.4%)** — 32 of 46 families touched.
 
 - [x] `parse` (20/20)
   - [x] `parse.api`
@@ -26,27 +26,7 @@
   - [x] `parse.util`
   - [x] `parse.viterbi`
 
-- [x] `tokenize` (19/19)
-  - [x] `tokenize.api`
-  - [x] `tokenize.casual`
-  - [x] `tokenize.destructive`
-  - [x] `tokenize.legality_principle`
-  - [x] `tokenize.mwe`
-  - [x] `tokenize.nist`
-  - [x] `tokenize.punkt`
-  - [x] `tokenize.regexp`
-  - [x] `tokenize.repp`
-  - [x] `tokenize.sexpr`
-  - [x] `tokenize.simple`
-  - [x] `tokenize.sonority_sequencing`
-  - [x] `tokenize.stanford`
-  - [x] `tokenize.stanford_segmenter`
-  - [x] `tokenize.texttiling`
-  - [x] `tokenize.toktok`
-  - [x] `tokenize.treebank`
-  - [x] `tokenize.util`
-
-- [~] `translate` (19/20)
+- [x] `translate` (20/20)
   - [x] `translate.api`
   - [x] `translate.bleu_score`
   - [x] `translate.chrf_score`
@@ -67,7 +47,27 @@
   - [x] `translate.ribes_score`
   - [x] `translate.stack_decoder`
 
-- [~] `classify` (14/15)
+- [x] `tokenize` (19/19)
+  - [x] `tokenize.api`
+  - [x] `tokenize.casual`
+  - [x] `tokenize.destructive`
+  - [x] `tokenize.legality_principle`
+  - [x] `tokenize.mwe`
+  - [x] `tokenize.nist`
+  - [x] `tokenize.punkt`
+  - [x] `tokenize.regexp`
+  - [x] `tokenize.repp`
+  - [x] `tokenize.sexpr`
+  - [x] `tokenize.simple`
+  - [x] `tokenize.sonority_sequencing`
+  - [x] `tokenize.stanford`
+  - [x] `tokenize.stanford_segmenter`
+  - [x] `tokenize.texttiling`
+  - [x] `tokenize.toktok`
+  - [x] `tokenize.treebank`
+  - [x] `tokenize.util`
+
+- [x] `classify` (15/15)
   - [x] `classify.api`
   - [x] `classify.decisiontree`
   - [x] `classify.maxent`
@@ -83,7 +83,7 @@
   - [x] `classify.util`
   - [x] `classify.weka`
 
-- [~] `sem` (14/15)
+- [x] `sem` (15/15)
   - [x] `sem.boxer`
   - [x] `sem.chat80`
   - [x] `sem.cooper_storage`
@@ -99,7 +99,7 @@
   - [x] `sem.skolemize`
   - [x] `sem.util`
 
-- [~] `tag` (13/14)
+- [x] `tag` (14/14)
   - [x] `tag.api`
   - [x] `tag.brill`
   - [x] `tag.brill_trainer`
@@ -114,7 +114,7 @@
   - [x] `tag.tnt`
   - [x] `tag.util`
 
-- [~] `stem` (12/13)
+- [x] `stem` (13/13)
   - [x] `stem.api`
   - [x] `stem.arlstem`
   - [x] `stem.arlstem2`
@@ -139,6 +139,24 @@
   - [x] `metrics.segmentation`
   - [x] `metrics.spearman`
 
+- [x] `inference` (8/8)
+  - [x] `inference.api`
+  - [x] `inference.discourse`
+  - [x] `inference.mace`
+  - [x] `inference.nonmonotonic`
+  - [x] `inference.prover9`
+  - [x] `inference.resolution`
+  - [x] `inference.tableau`
+
+- [x] `lm` (8/8)
+  - [x] `lm.api`
+  - [x] `lm.counter`
+  - [x] `lm.models`
+  - [x] `lm.preprocessing`
+  - [x] `lm.smoothing`
+  - [x] `lm.util`
+  - [x] `lm.vocabulary`
+
 - [x] `tree` (8/8)
   - [x] `tree.immutable`
   - [x] `tree.parented`
@@ -148,23 +166,13 @@
   - [x] `tree.transforms`
   - [x] `tree.tree`
 
-- [~] `inference` (7/8)
-  - [x] `inference.api`
-  - [x] `inference.discourse`
-  - [x] `inference.mace`
-  - [ ] `inference.nonmonotonic`
-  - [x] `inference.prover9`
-  - [x] `inference.resolution`
-  - [x] `inference.tableau`
-
-- [~] `lm` (7/8)
-  - [x] `lm.api`
-  - [x] `lm.counter`
-  - [x] `lm.models`
-  - [x] `lm.preprocessing`
-  - [x] `lm.smoothing`
-  - [x] `lm.util`
-  - [x] `lm.vocabulary`
+- [x] `tbl` (7/7)
+  - [x] `tbl.api`
+  - [x] `tbl.demo`
+  - [x] `tbl.erroranalysis`
+  - [x] `tbl.feature`
+  - [x] `tbl.rule`
+  - [x] `tbl.template`
 
 - [x] `ccg` (6/6)
   - [x] `ccg.api`
@@ -187,33 +195,33 @@
   - [x] `misc.sort`
   - [x] `misc.wordfinder`
 
-- [~] `tbl` (6/7)
-  - [x] `tbl.api`
-  - [x] `tbl.demo`
-  - [x] `tbl.erroranalysis`
-  - [x] `tbl.feature`
-  - [x] `tbl.rule`
-  - [x] `tbl.template`
-
 - [x] `chunk` (5/5)
   - [x] `chunk.api`
   - [x] `chunk.named_entity`
   - [x] `chunk.regexp`
   - [x] `chunk.util`
 
+- [x] `sentiment` (4/4)
+  - [x] `sentiment.sentiment_analyzer`
+  - [x] `sentiment.util`
+  - [x] `sentiment.vader`
+
 - [~] `corpus` (3/4)
   - [ ] `corpus.europarl_raw`
   - [x] `corpus.reader`
   - [x] `corpus.util`
 
-- [~] `sentiment` (3/4)
-  - [x] `sentiment.sentiment_analyzer`
-  - [x] `sentiment.util`
-  - [x] `sentiment.vader`
+- [x] `book` (1/1)
 
 - [x] `collocations` (1/1)
 
+- [x] `downloader` (1/1)
+
+- [x] `featstruct` (1/1)
+
 - [x] `grammar` (1/1)
+
+- [x] `help` (1/1)
 
 - [x] `probability` (1/1)
 
@@ -227,6 +235,8 @@
 
 - [x] `treetransforms` (1/1)
 
+- [x] `util` (1/1)
+
 - [x] `wsd` (1/1)
 
 - [ ] `app` (0/10)
@@ -239,8 +249,6 @@
   - [ ] `app.srparser_app` — *out of scope*
   - [ ] `app.wordfreq_app` — *out of scope*
   - [ ] `app.wordnet_app` — *out of scope*
-
-- [ ] `book` (0/1)
 
 - [ ] `chat` (0/7)
   - [ ] `chat.eliza` — *out of scope*
@@ -260,18 +268,12 @@
 
 - [ ] `decorators` (0/1)
 
-- [ ] `downloader` (0/1)
-
 - [ ] `draw` (0/6)
   - [ ] `draw.cfg` — *out of scope*
   - [ ] `draw.dispersion` — *out of scope*
   - [ ] `draw.table` — *out of scope*
   - [ ] `draw.tree` — *out of scope*
   - [ ] `draw.util` — *out of scope*
-
-- [ ] `featstruct` (0/1)
-
-- [ ] `help` (0/1)
 
 - [ ] `internals` (0/1)
 
@@ -289,7 +291,5 @@
   - [ ] `twitter.twitter_demo`
   - [ ] `twitter.twitterclient`
   - [ ] `twitter.util`
-
-- [ ] `util` (0/1)
 
 _Regenerate with `python3 scripts/parity-checklist.py`._

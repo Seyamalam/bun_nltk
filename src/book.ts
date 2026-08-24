@@ -1,0 +1,1 @@
+export const book = "demo corpus shim — requires NLTK book data (not available in JS)"; export function demo(): never { throw new Error("book demo requires NLTK corpus \u2014 not available in bun_nltk"); }

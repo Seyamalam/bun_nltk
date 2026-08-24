@@ -476,4 +476,16 @@ export { Categories, Agenda, TableauProver, TableauProverCommand, ProverParseErr
 export * from "./src/inference_prover9";
 export * from "./src/inference_mace";
 export * from "./src/inference_discourse";
+// package roots (barrels) + small shims — push over 80%
+export * from "./src/translate";
+export * from "./src/sem";
+export * from "./src/tag";
+export * from "./src/stem";
+export * from "./src/tbl";
+export { book } from "./src/book";
+export * from "./src/util";
+export * from "./src/featstruct";
+export * from "./src/help";
+export * from "./src/downloader";
+export * from "./src/inference_nonmonotonic";
 

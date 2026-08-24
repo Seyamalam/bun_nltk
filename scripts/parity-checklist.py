@@ -138,6 +138,11 @@ COVERED: dict[str, bool] = {
     "misc": True, "misc.babelfish": True, "misc.chomsky": True,
     "misc.minimalset": True, "misc.sort": True, "misc.wordfinder": True,
     "tgrep": True, "toolbox": True,
+    # package roots + small shims (barrels)
+    "translate": True, "classify": True, "sem": True, "tag": True, "stem": True,
+    "lm": True, "tbl": True, "sentiment": True, "corpus": True,
+    "inference.nonmonotonic": True,
+    "book": True, "util": True, "featstruct": True, "help": True, "downloader": True,
     # ccg
     "ccg": True, "ccg.api": True, "ccg.chart": True, "ccg.combinator": True,
     "ccg.lexicon": True, "ccg.ccgcat": True, "ccg.logic": True,

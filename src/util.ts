@@ -1,0 +1,1 @@
+export function invertDict<K extends string|number|symbol, V>(d: Record<K,V>): Record<string,K> { const out: Record<string,K>={}; for (const [k,v] of Object.entries(d) as [K,V][]) out[String(v)]=k; return out; } export function pairwise<T>(arr: T[]): [T,T][] { return arr.slice(0,-1).map((v,i)=>[v,arr[i+1]!]); }

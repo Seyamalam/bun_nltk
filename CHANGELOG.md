@@ -6,6 +6,12 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-08-24
+### Added
+- Package-root barrels (translate/classify/sem/tag/stem/lm/tbl/sentiment/corpus) + inference.nonmonotonic shim — closes 10 singleton gaps
+- Small shims: book/util/featstruct/help/downloader — honest corpus-missing stubs
+- Parity: 201/241 (83.4%) — over 80% milestone, all in-scope families + small shims complete
+
 ## [0.14.0] - 2026-08-24
 ### Added
 - CCG family (6): ccgcat/combinator/lexicon/chart/logic/api — faithful ports with harnesses vs Python (cat parsing, combinators, chart `I sleep → S`)
