@@ -131,6 +131,13 @@ COVERED: dict[str, bool] = {
     # sentiment
     "sentiment.vader": True, "sentiment.util": True,
     "sentiment.sentiment_analyzer": True,
+    # cluster
+    "cluster": True, "cluster.api": True, "cluster.em": True,
+    "cluster.gaac": True, "cluster.kmeans": True, "cluster.util": True,
+    # misc + tgrep/toolbox
+    "misc": True, "misc.babelfish": True, "misc.chomsky": True,
+    "misc.minimalset": True, "misc.sort": True, "misc.wordfinder": True,
+    "tgrep": True, "toolbox": True,
 }
 
 # Families deliberately out of scope for a JS library (GUI/demo/external-tool).

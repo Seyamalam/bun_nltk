@@ -447,4 +447,19 @@ export { HoleSemantics } from "./src/sem_hole";
 export { Glue, GlueDict } from "./src/sem_glue";
 export { Chat80CorpusReader } from "./src/sem_chat80";
 export { DrtGlueDemo } from "./src/sem_drt_glue_demo";
+// cluster family (kmeans, em, gaac)
+export * from "./src/cluster_api";
+export * from "./src/cluster_util";
+export * from "./src/cluster_kmeans";
+export * from "./src/cluster_em";
+export * from "./src/cluster_gaac";
+// misc + tgrep/toolbox (explicit to avoid `demo` star collision)
+export * from "./src/misc_chomsky";
+export * from "./src/misc_minimalset";
+export { selection, bubble, merge, quick } from "./src/misc_sort";
+export * from "./src/misc_wordfinder";
+export * from "./src/misc_babelfish";
+export * from "./src/tgrep";
+export { StandardFormat, ToolboxData, ToolboxSettings, parseSFMString, toSFMString, to_sfm_string, toSettingsString, to_settings_string, removeBlanks, remove_blanks, addDefaultFields, add_default_fields, sortFields, sort_fields, addBlankLines, add_blank_lines } from "./src/toolbox";
+export type { SFMField } from "./src/toolbox";
 

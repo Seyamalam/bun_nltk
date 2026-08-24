@@ -1,9 +1,9 @@
 # NLTK API Parity Checklist
 
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
-> Last regenerated: 2026-08-23
+> Last regenerated: 2026-08-24
 
-**Coverage: 160/241 modules (66.4%)** — 21 of 46 families touched.
+**Coverage: 174/241 modules (72.2%)** — 25 of 46 families touched.
 
 - [x] `parse` (20/20)
   - [x] `parse.api`
@@ -157,6 +157,20 @@
   - [x] `lm.util`
   - [x] `lm.vocabulary`
 
+- [x] `cluster` (6/6)
+  - [x] `cluster.api`
+  - [x] `cluster.em`
+  - [x] `cluster.gaac`
+  - [x] `cluster.kmeans`
+  - [x] `cluster.util`
+
+- [x] `misc` (6/6)
+  - [x] `misc.babelfish`
+  - [x] `misc.chomsky`
+  - [x] `misc.minimalset`
+  - [x] `misc.sort`
+  - [x] `misc.wordfinder`
+
 - [~] `tbl` (6/7)
   - [x] `tbl.api`
   - [x] `tbl.demo`
@@ -188,6 +202,10 @@
 - [x] `probability` (1/1)
 
 - [x] `text` (1/1)
+
+- [x] `tgrep` (1/1)
+
+- [x] `toolbox` (1/1)
 
 - [x] `treeprettyprinter` (1/1)
 
@@ -224,13 +242,6 @@
   - [ ] `chat.zen` — *out of scope*
 
 - [ ] `cli` (0/1)
-
-- [ ] `cluster` (0/6)
-  - [ ] `cluster.api`
-  - [ ] `cluster.em`
-  - [ ] `cluster.gaac`
-  - [ ] `cluster.kmeans`
-  - [ ] `cluster.util`
 
 - [ ] `collections` (0/1)
 
@@ -270,18 +281,7 @@
 
 - [ ] `lazyimport` (0/1)
 
-- [ ] `misc` (0/6)
-  - [ ] `misc.babelfish`
-  - [ ] `misc.chomsky`
-  - [ ] `misc.minimalset`
-  - [ ] `misc.sort`
-  - [ ] `misc.wordfinder`
-
 - [ ] `tabdata` (0/1)
-
-- [ ] `tgrep` (0/1)
-
-- [ ] `toolbox` (0/1)
 
 - [ ] `twitter` (0/6)
   - [ ] `twitter.api`
