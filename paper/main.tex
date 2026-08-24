@@ -64,7 +64,7 @@ On \texttt{bench/datasets/gate\_synthetic.txt} (median of 2--4 rounds) Bun with 
 
 NLTK \cite{bird2009nltk,loper2002nltk} is the textbook and the baseline for natural language processing. Its coverage is the reason people keep coming back to it: tokenizers, stemmers, taggers, parsers, chunkers, language models, WordNet, metrics, logic and inference, translation metrics, chat, corpora helpers, and evaluation utilities, all listed at \url{nltk.org/api/nltk.html}. That breadth makes it hard to replace when you need to replicate something. But it is Python only. That single fact keeps it out of the places where language resources actually get deployed today: npm and the broader JavaScript ecosystem with roughly two million packages, browsers, Cloudflare Workers and Vercel Edge, Electron and Tauri apps, and offline clients that cannot send text to a server. In practice, researchers either rewrite baselines in JavaScript and live with gaps, or they wrap Python in a microservice and pay the cold-start every time.
 
-The JavaScript NLP packages we have---\texttt{natural} \cite{natural2024}, \texttt{winkNLP} \cite{winknlp2024}, \texttt{compromise} \cite{compromise2024}, \texttt{nlp.js}---are useful for what they do, but they cover less than $20\%$ of the NLTK surface, they rarely track versions, and they can diverge quietly on tokenization or stemming. Nobody claims full NLTK parity, let alone proves it. The surface is just too big (241 public modules in 46 families) and too mixed: some of it is pure algorithms, some is data-driven models, and some is tied to a display or a network call (Tkinter GUIs, corpus downloaders, external theorem provers).
+The JavaScript NLP packages we have---\texttt{natural} \cite{natural2024}, \texttt{winkNLP} \cite{winknlp2024}, \texttt{compromise} \cite{compromise2024}, \texttt{nlp.js} \cite{nlpjs2024}---are useful for what they do, but they cover less than $20\%$ of the NLTK surface, they rarely track versions, and they can diverge quietly on tokenization or stemming. Nobody claims full NLTK parity, let alone proves it. The surface is just too big (241 public modules in 46 families) and too mixed: some of it is pure algorithms, some is data-driven models, and some is tied to a display or a network call (Tkinter GUIs, corpus downloaders, external theorem provers).
 
 We treated this as a language-resource artifact problem. Instead of proposing another model, we ported the NLTK interface itself to a new platform, sped up the expensive parts with Rust and WASM, and made the reproduction claim checkable. \textbf{bun\_nltk} v0.16.0 (Apache-2.0, \url{https://github.com/Seyamalam/bun_nltk}, on npm as \texttt{bun\_nltk}) comes down to four things:
 
@@ -81,20 +81,22 @@ This is written for \emph{Language Resources and Evaluation} \cite{nltk2024}, th
 We scraped and enumerated the full 241-module surface and gated it in CI. We built a TypeScript plus Rust architecture that compiles to both native and WASM and fits the hot-path module in 92\,KB. We benchmarked it for speed, throughput, and memory with parity samples attached. And we tried to be upfront about what each delivery layer, WASM versus npm, actually unlocks and where it does not help.
 
 %--------------------------------------------------------------------
-\section{Related work}
+\section{Background and Literature Review}
 \label{sec:related}
 
-\paragraph{NLTK and Python NLP.}
-NLTK \cite{bird2009nltk,loper2002nltk} defined the teaching API and a lot of us still teach from it. spaCy \cite{spacy2023}, Stanza, and Hugging Face Transformers push accuracy forward, but they do not try to match the NLTK interface. They are not import-compatible and they stay inside Python.
+This section surveys the language-resource and runtime literature that motivates \texttt{bun\_nltk}. We ground every claim in a verifiable source; the full bibliography and \texttt{refs.bib} list every entry.
 
-\paragraph{JavaScript NLP.}
-\texttt{natural} gives you tokenizers, stemmers (Porter and Snowball), classifiers (Bayes and logistic), and TF-IDF. \texttt{winkNLP} is strong on tokenization and NER. \texttt{compromise} keeps things light for POS and payload tagging. All three are solid within their scope, but the scope is narrow and none of them claims parity. To give a concrete example, \texttt{natural} ports Porter and Bayes but not Punkt, CCG, Glue semantics, tableau provers, or BLEU/GLEU/chrF. What we did is different in kind: we ported the interface, not a model.
+\paragraph{NLTK and the Python NLP ecosystem.}
+NLTK \cite{bird2009nltk,loper2002nltk} defined the teaching API and still anchors most NLP curricula; its indexed surface \cite{nltk2024} is the oracle we scrape for parity. Since 2002 the Python ecosystem has grown around it: spaCy \cite{spacy2023} delivers industrial-strength pipelines in Cython for production NER, tagging and parsing; Stanza \cite{stanza2020} provides a multilingual neural pipeline covering 70+ languages on Universal Dependencies; and Hugging Face Transformers \cite{wolf2020transformers} unifies several hundred pretrained Transformer architectures under one API with a shared model hub. These systems push accuracy (\cite{spacy2023,stanza2020,wolf2020transformers}) but are not NLTK-compatible by design---they expose different module structures, data schemas and model-loading conventions, remain Python-bound, and cannot be \texttt{imported} as drop-in replacements for \texttt{nltk.*}.
+
+\paragraph{JavaScript NLP: \texttt{natural}, \texttt{winkNLP}, \texttt{compromise} and \texttt{nlp.js}.}
+On npm, \texttt{natural} \cite{natural2024} is the broadest general-purpose facility (tokenizers, stemmers including Porter/Snowball, classifiers including Bayes/logistic, TF-IDF, phonetics and WordNet); \texttt{winkNLP} \cite{winknlp2024} optimizes tokenization, sentence boundary detection and NER for speed (reported $>$650k tokens/s on an M1) with a lean, dependency-free core; \texttt{compromise} \cite{compromise2024} trades coverage for size and developer ergonomics, offering lightweight POS/payload tagging with a $\sim$14k-word conjugated lexicon; and \texttt{nlp.js} \cite{nlpjs2024} adds multilingual NLU/NLG, entity management and connector plugins for chatbots, supporting 40+ languages natively. All four are valuable within their scope, but none claims NLTK parity: for example \texttt{natural} ports Porter and Bayes but not Punkt \cite{bird2009nltk}, CCG, Glue semantics, tableau provers, or BLEU/GLEU/chrF evaluation \cite{nltk2024}; \texttt{winkNLP} and \texttt{compromise} do not implement chart parsers, WordNet or translation metrics. Our contribution is orthogonal---we port the \emph{interface}, not a model.
 
 \paragraph{Runtimes: Bun, Node, and WebAssembly.}
-Bun \cite{bun2024} exposes \texttt{bun:ffi} and \texttt{dlopen} for native libraries and starts up an order of magnitude faster than CPython. WebAssembly \cite{wasm2023} with \texttt{wasm-pack} and \texttt{wasm-bindgen} \cite{wasmPack2024} and Rust \cite{rust2024} lets the same Rust kernels run where \texttt{dlopen} is not available, which is exactly the browser and edge case. Earlier NLP and WASM work tends to accelerate one kernel, a tokenizer for instance. We show you can ship a whole toolkit this way at 92\,KB.
+Bun \cite{bun2024} is an all-in-one JavaScript runtime, package manager, test runner and bundler built on JavaScriptCore; it exposes \texttt{bun:ffi} \texttt{dlopen} for native libraries and starts an order of magnitude faster than CPython, which matters for script-like NLP tasks. WebAssembly \cite{wasm2023} defines a portable, low-level bytecode and virtual ISA; the foundational PLDI paper \cite{haas2017wasm} showed it brings near-native speed to the web, and the W3C Core Specification v2.0 \cite{wasm2023} standardized it. The Rust toolchain \cite{rust2024} together with \texttt{wasm-pack}/\texttt{wasm-bindgen} \cite{wasmPack2024} compiles the same Rust kernels to both a native cdylib for Bun and a browser-compatible \texttt{.wasm} module. Prior NLP--WASM work accelerates isolated kernels (e.g.\ tokenizers); we show an entire toolkit can be delivered this way at 92\,KB. Because edge runtimes such as Cloudflare Workers and Vercel Edge \cite{cloudflare2024} forbid native code and allow only WASM, the dual build is not optional---it is the only path that runs everywhere without a Python sidecar.
 
 \paragraph{Language resource evaluation.}
-LRE cares about how resources get created, annotated, benchmarked, and used, including the software that wraps those resources. A toolkit parity artifact fits there naturally. Reviewers can judge it on coverage, reproducibility, and measured evaluation rather than on whether it proposes a new model.
+LRE's scope---resource creation, annotation, benchmarking and the software tools that use resources---matches a toolkit-parity artifact paper \cite{nltk2024}, where reviewers evaluate coverage, reproducibility and measured evaluation rather than a novel model. This motivates our CI-gated parity methodology (\S\ref{sec:methodology}) and the benchmark suite (\S\ref{sec:evaluation}) that reports speedups, throughput and memory alongside parity samples.
 
 %--------------------------------------------------------------------
 \section{Methodology}
@@ -334,18 +336,19 @@ Code: \url{https://github.com/Seyamalam/bun_nltk} (v0.16.0, Apache-2.0). Package
 
 %--------------------------------------------------------------------
 % Bibliography -- use thebibliography for 1-pass tectonic without biber
-\begin{thebibliography}{12}
+\begin{thebibliography}{16}
 
 \bibitem{bird2009nltk}
 Bird, S., Klein, E., Loper, E.
 \textit{Natural Language Processing with Python}.
-O'Reilly Media, 2009.
+O'Reilly Media, Sebastopol, CA, 2009.
 \url{https://www.nltk.org/book/}
 
 \bibitem{loper2002nltk}
 Loper, E., Bird, S.
 {N}LTK: The Natural Language Toolkit.
-In \textit{Proc.\ ACL Workshop on Effective Tools and Methodologies for Teaching NLP and CL}, 2002.
+In \textit{Proc.\ ACL-02 Workshop on Effective Tools and Methodologies for Teaching NLP and CL}, pp.\ 63--70, Philadelphia, Pennsylvania, USA, 2002. Association for Computational Linguistics.
+\url{https://aclanthology.org/W02-0109/}
 
 \bibitem{nltk2024}
 NLTK Project.
@@ -355,27 +358,27 @@ NLTK 3.9 Documentation and API Index.
 \bibitem{bun2024}
 Oven Inc.
 Bun: All-in-one JavaScript Runtime.
-\url{https://bun.sh}, 2024. \texttt{bun:ffi} \texttt{dlopen}.
+\url{https://bun.sh}, 2024. \texttt{bun:ffi} \texttt{dlopen}, backed by JavaScriptCore.
 
 \bibitem{wasm2023}
 WebAssembly Working Group.
 WebAssembly Core Specification, Version 2.0.
-W3C, 2023. \url{https://www.w3.org/TR/wasm-core-2/}
+W3C, 2023. \url{https://www.w3.org/TR/wasm-core-2/} (W3C Recommendation, June 2023).
 
 \bibitem{wasmpack2024}
 Rust and WebAssembly Working Group.
 wasm-pack and wasm-bindgen.
-\url{https://rustwasm.github.io/docs/wasm-pack/}, 2024.
+\url{https://rustwasm.github.io/docs/wasm-pack/}, 2024. Now at \url{https://drager.github.io/wasm-pack/} after org sunset July 2025.
 
 \bibitem{rust2024}
 Klabnik, S., Nichols, C.
-\textit{The Rust Programming Language}.
-No Starch Press, 2024. \url{https://doc.rust-lang.org/book/}
+\textit{The Rust Programming Language}, 2nd ed.
+No Starch Press, 2023. \url{https://doc.rust-lang.org/book/} (online ed.\ continuously updated).
 
 \bibitem{natural2024}
 Natural Project.
 natural: General natural language facility for Node.js.
-\url{https://github.com/NaturalNode/natural}, 2024.
+\url{https://github.com/NaturalNode/natural}, 2024. npm \texttt{natural}, MIT.
 
 \bibitem{winknlp2024}
 Wink JS.
@@ -396,6 +399,29 @@ Explosion AI, 2023. \url{https://spacy.io}
 Cloudflare, Vercel.
 Cloudflare Workers and Vercel Edge Runtime: WASM-only code on the edge.
 \url{https://workers.cloudflare.com/} and \url{https://vercel.com/docs/functions/edge-functions}, 2024.
+
+\bibitem{stanza2020}
+Qi, P., Zhang, Y., Zhang, Y., Bolton, J., Manning, C.D.
+Stanza: A Python Natural Language Processing Toolkit for Many Human Languages.
+In \textit{Proc.\ ACL System Demonstrations}, pp.\ 101--108, Online, 2020. Association for Computational Linguistics.
+\url{https://aclanthology.org/2020.acl-demos.14/}
+
+\bibitem{wolf2020transformers}
+Wolf, T., Debut, L., Sanh, V., Chaumond, J., Delangue, C., Moi, A., Cistac, P., Rault, T., Louf, R., Funtowicz, M., Davison, J., Shleifer, S., von Platen, P., Ma, C., Jernite, Y., Plu, J., Xu, C., Le Scao, T., Gugger, S., Drame, M., Lhoest, Q., Rush, A.M.
+Transformers: State-of-the-Art Natural Language Processing.
+In \textit{Proc.\ EMNLP System Demonstrations}, pp.\ 38--45, Online, 2020. Association for Computational Linguistics.
+\url{https://aclanthology.org/2020.emnlp-demos.6/}
+
+\bibitem{nlpjs2024}
+AXA Group, Seijas, J., et al.
+nlp.js: An NLP library for building bots, with entity extraction, sentiment analysis and language detection.
+\url{https://github.com/axa-group/nlp.js}, 2024. npm \texttt{nlp.js}, Apache-2.0.
+
+\bibitem{haas2017wasm}
+Haas, A., Rossberg, A., Schuff, D.L., Titzer, B.L., Holman, M., Gohman, D., Wagner, L., Zakai, A., Bast, J.F.
+Bringing the Web up to Speed with WebAssembly.
+In \textit{Proc.\ PLDI}, pp.\ 185--200, 2017. ACM.
+\url{https://doi.org/10.1145/3062341.3062363}
 
 \end{thebibliography}
 

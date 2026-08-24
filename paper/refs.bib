@@ -3,7 +3,18 @@
   author={Bird, Steven and Klein, Ewan and Loper, Edward},
   year={2009},
   publisher={O'Reilly Media},
+  address={Sebastopol, CA},
   url={https://www.nltk.org/book/}
+}
+@inproceedings{loper2002nltk,
+  title={{NLTK}: The Natural Language Toolkit},
+  author={Loper, Edward and Bird, Steven},
+  booktitle={Proceedings of the ACL-02 Workshop on Effective Tools and Methodologies for Teaching Natural Language Processing and Computational Linguistics},
+  year={2002},
+  pages={63--70},
+  address={Philadelphia, Pennsylvania, USA},
+  publisher={Association for Computational Linguistics},
+  url={https://aclanthology.org/W02-0109/}
 }
 @misc{nltk2024,
   title={{NLTK} 3.9 Documentation and {API} Index},
@@ -17,43 +28,47 @@
   author={{Oven Inc.}},
   year={2024},
   howpublished={\url{https://bun.sh}},
-  note={Bun FFI dlopen and native bindings}
+  note={Bun FFI \texttt{dlopen} and native bindings; backed by JavaScriptCore}
 }
 @misc{wasm2023,
   title={{WebAssembly} Core Specification, Version 2.0},
   author={{WebAssembly Working Group}},
   year={2023},
   howpublished={\url{https://www.w3.org/TR/wasm-core-2/}},
-  publisher={W3C}
+  publisher={W3C},
+  note={W3C Recommendation, June 2023; earlier draft 2022}
 }
 @misc{wasmPack2024,
   title={wasm-pack and wasm-bindgen},
   author={{Rust and WebAssembly Working Group}},
   year={2024},
-  howpublished={\url{https://rustwasm.github.io/docs/wasm-pack/}}
+  howpublished={\url{https://rustwasm.github.io/docs/wasm-pack/}},
+  note={Now maintained at \url{https://drager.github.io/wasm-pack/} after sunsetting of rustwasm GitHub org, July 2025}
 }
-@misc{rust2024,
+@book{rust2024,
   title={The Rust Programming Language},
   author={Klabnik, Steve and Nichols, Carol},
-  year={2024},
+  year={2023},
   publisher={No Starch Press},
-  howpublished={\url{https://doc.rust-lang.org/book/}}
+  edition={2nd},
+  howpublished={\url{https://doc.rust-lang.org/book/}},
+  note={Second edition covers Rust 2021 edition; online version continuously updated}
 }
 @misc{natural2024,
   title={natural: General natural language facility for Node.js},
   author={{Natural Project}},
   year={2024},
   howpublished={\url{https://github.com/NaturalNode/natural}},
-  note={npm natural package}
+  note={npm package \texttt{natural}, MIT license}
 }
 @misc{winknlp2024,
-  title={winkNLP: High-performance JavaScript NLP},
+  title={winkNLP: High-performance {JavaScript} NLP},
   author={{Wink JS}},
   year={2024},
   howpublished={\url{https://winkjs.org/wink-nlp/}}
 }
 @misc{compromise2024,
-  title={compromise: Natural language processing in JavaScript},
+  title={compromise: Natural language processing in {JavaScript}},
   author={Kelly, Spencer},
   year={2024},
   howpublished={\url{https://github.com/spencermountain/compromise}}
@@ -65,17 +80,44 @@
   howpublished={\url{https://spacy.io}},
   publisher={Explosion AI}
 }
-@inproceedings{loper2002nltk,
-  title={{NLTK}: The Natural Language Toolkit},
-  author={Loper, Edward and Bird, Steven},
-  booktitle={Proceedings of the ACL Workshop on Effective Tools and Methodologies for Teaching Natural Language Processing and Computational Linguistics},
-  year={2002},
-  publisher={ACL}
-}
 @misc{cloudflare2024,
-  title={Cloudflare Workers and Vercel Edge Runtime},
+  title={Cloudflare Workers and Vercel Edge Runtime: {WASM}-only code on the edge},
   author={{Cloudflare} and {Vercel}},
   year={2024},
   howpublished={\url{https://workers.cloudflare.com/} and \url{https://vercel.com/docs/functions/edge-functions}},
   note={Edge compute requiring WASM-only execution}
+}
+@inproceedings{stanza2020,
+  title={Stanza: A {Python} Natural Language Processing Toolkit for Many Human Languages},
+  author={Qi, Peng and Zhang, Yuhao and Zhang, Yuhui and Bolton, Jason and Manning, Christopher D.},
+  booktitle={Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics: System Demonstrations},
+  year={2020},
+  pages={101--108},
+  publisher={Association for Computational Linguistics},
+  url={https://aclanthology.org/2020.acl-demos.14/}
+}
+@inproceedings{wolf2020transformers,
+  title={Transformers: State-of-the-Art Natural Language Processing},
+  author={Wolf, Thomas and Debut, Lysandre and Sanh, Victor and Chaumond, Julien and Delangue, Clement and Moi, Anthony and Cistac, Pierric and Rault, Tim and Louf, Remi and Funtowicz, Morgan and Davison, Joe and Shleifer, Sam and von Platen, Patrick and Ma, Clara and Jernite, Yacine and Plu, Julien and Xu, Canwen and Le Scao, Teven and Gugger, Sylvain and Drame, Mariama and Lhoest, Quentin and Rush, Alexander M.},
+  booktitle={Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System Demonstrations},
+  year={2020},
+  pages={38--45},
+  publisher={Association for Computational Linguistics},
+  url={https://aclanthology.org/2020.emnlp-demos.6/}
+}
+@misc{nlpjs2024,
+  title={nlp.js: An {NLP} library for building bots, with entity extraction, sentiment analysis and language detection},
+  author={{AXA Group} and Seijas, Jesus and others},
+  year={2024},
+  howpublished={\url{https://github.com/axa-group/nlp.js}},
+  note={npm package \texttt{nlp.js}, Apache-2.0}
+}
+@inproceedings{haas2017wasm,
+  title={Bringing the Web up to Speed with {WebAssembly}},
+  author={Haas, Andreas and Rossberg, Andreas and Schuff, Derek L. and Titzer, Ben L. and Holman, Michael and Gohman, Dan and Wagner, Luke and Zakai, Alon and Bast, J. F.},
+  booktitle={Proceedings of the 38th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI)},
+  year={2017},
+  pages={185--200},
+  publisher={ACM},
+  url={https://doi.org/10.1145/3062341.3062363}
 }
