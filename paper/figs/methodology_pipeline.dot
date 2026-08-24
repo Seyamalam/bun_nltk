@@ -1,6 +1,6 @@
 /* bun_nltk methodology pipeline — scrape → checklist → port → harness → docs */
 digraph methodology_pipeline {
-  graph [fontname="Helvetica", bgcolor="transparent", pad="0.35", ranksep="0.45", nodesep="0.3", rankdir="LR", splines="ortho", labelloc="t", label="Methodology Pipeline (241/241 Parity)", fontsize="10", fontcolor="#333333"];
+  graph [fontname="Helvetica", bgcolor="transparent", pad="0.35", ranksep="0.45", nodesep="0.3", rankdir="TB", splines="ortho", labelloc="t", label="Methodology Pipeline (241/241 Parity)", fontsize="10", fontcolor="#333333"];
   node [fontname="Helvetica", fontsize="8.5", shape="box", style="rounded,filled", fillcolor="#f8f9fa", color="#333333", penwidth="0.8", margin="0.18,0.09"];
   edge [fontname="Helvetica", fontsize="7", color="#555555", arrowsize="0.7", penwidth="0.9"];
 
