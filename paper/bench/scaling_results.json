@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "description": "bun_nltk scaling study: prose size scaling + real popular corpora",
+    "methodology": "warmup 2, median of 5, wall-clock ms",
+    "machine": "darwin-arm64",
+    "date": "2026-08-24T19:39:29.668Z",
+    "size_files": [
+      "data/prose_10kb.txt",
+      "data/prose_100kb.txt",
+      "data/prose_1024kb.txt",
+      "data/prose_10240kb.txt"
+    ],
+    "punkt_model": "trained once on fixed 200KB prefix of prose_1024kb.txt (all runners)",
+    "bigram_task": "lowercase [a-z']+ words len>2 -> BigramCollocationFinder PMI top-30"
+  },
+  "size_scaling_kb": {
+    "tokenize": {
+      "10": {
+        "native_ms": 0.1369579999999999,
+        "wasm_ms": 0.09987500000000082,
+        "python_ms": 2.2426670002460014
+      },
+      "100": {
+        "native_ms": 0.8689999999999998,
+        "wasm_ms": 0.7967919999999964,
+        "python_ms": 21.97808399978385
+      },
+      "1024": {
+        "native_ms": 8.609334000000004,
+        "wasm_ms": 8.591208999999992,
+        "python_ms": 219.7334590000537
+      },
+      "10240": {
+        "native_ms": 96.01083299999999,
+        "wasm_ms": 82.82708300000013,
+        "python_ms": 2199.074666999877
+      }
+    },
+    "punkt": {
+      "10": {
+        "native_ms": 0.014625000000023647,
+        "wasm_ms": 0.03483300000016243,
+        "python_ms": 0.31725000008009374
+      },
+      "100": {
+        "native_ms": 0.1363339999998061,
+        "wasm_ms": 0.19733300000007148,
+        "python_ms": 3.0246670003180043
+      },
+      "1024": {
+        "native_ms": 1.1175829999999678,
+        "wasm_ms": 1.884457999999995,
+        "python_ms": 29.830999999830965
+      },
+      "10240": {
+        "native_ms": 11.917666999999938,
+        "wasm_ms": 19.32095800000002,
+        "python_ms": 292.92841700043937
+      }
+    },
+    "bigrams": {
+      "10": {
+        "native_ms": 1.2395000000001346,
+        "wasm_ms": 0.011541999999963082,
+        "python_ms": 1.4687080001749564
+      },
+      "100": {
+        "native_ms": 12.072250000000167,
+        "wasm_ms": 0.05787499999996726,
+        "python_ms": 14.912415999788209
+      },
+      "1024": {
+        "native_ms": 178.15120799999977,
+        "wasm_ms": 0.6940830000003189,
+        "python_ms": 153.19441700012248
+      },
+      "10240": {
+        "native_ms": 2066.2104170000002,
+        "wasm_ms": 6.706500000000233,
+        "python_ms": 1440.0376249996043
+      }
+    }
+  },
+  "real_datasets": {
+    "brown": {
+      "name": "brown",
+      "chars": 9971782,
+      "token_count": 1440413,
+      "skipped": false,
+      "timings": {
+        "tokenize_python_ms": 1988.523749999331,
+        "tokenize_native_ms": 136.61737500000163,
+        "tokenize_wasm_ms": 108.49470900000597,
+        "punkt_python_ms": 237.804249999499,
+        "punkt_native_ms": 16.77624999999898,
+        "punkt_wasm_ms": 43.619542000000365,
+        "freqdist_python_ms": 254.2379999995319,
+        "freqdist_native_ms": 381.940499999997,
+        "freqdist_wasm_ms": 86.12941699999647,
+        "bigrams_python_ms": null,
+        "bigrams_native_ms": 1738.4620409999989
+      }
+    },
+    "gutenberg": {
+      "name": "gutenberg",
+      "chars": 2598283,
+      "token_count": 543081,
+      "skipped": false,
+      "timings": {
+        "tokenize_python_ms": 565.4838749996998,
+        "tokenize_native_ms": 25.82291599999735,
+        "tokenize_wasm_ms": 27.047167000004265,
+        "punkt_python_ms": 82.98262500011333,
+        "punkt_native_ms": 4.3622920000052545,
+        "punkt_wasm_ms": 6.939582999999402,
+        "freqdist_python_ms": 71.52933300039876,
+        "freqdist_native_ms": 105.12891600000148,
+        "freqdist_wasm_ms": 22.857833000001847,
+        "bigrams_python_ms": null,
+        "bigrams_native_ms": 618.4222500000033
+      }
+    },
+    "reuters": {
+      "name": "reuters",
+      "skipped": true,
+      "reason": "not present in /Users/seyam/nltk_data/corpora; not downloaded per instructions"
+    }
+  }
+}
