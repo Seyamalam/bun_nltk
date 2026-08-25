@@ -176,8 +176,8 @@ x = range(len(prog_counts))
 ax2.plot(x, prog_pct, marker="o", markersize=8, markerfacecolor="#2e86de", markeredgecolor="white", markeredgewidth=1.5,
          color="#2e86de", linewidth=2.5, zorder=3, label="Coverage")
 ax2.fill_between(x, prog_pct, alpha=0.08, color="#2e86de", zorder=2)
-# 100% line
-ax2.axhline(100, color="#27ae60", linestyle="--", linewidth=1.2, alpha=0.7, label="100% parity")
+# Full import-name coverage line
+ax2.axhline(100, color="#27ae60", linestyle="--", linewidth=1.2, alpha=0.7, label="Full name coverage")
 # annotate points
 for i, (c, p) in enumerate(zip(prog_counts, prog_pct)):
     # offset label above point
@@ -192,7 +192,7 @@ ax2.set_xlabel("Release")
 ax2.set_ylim(30, 107)
 ax2.set_yticks([40, 60, 80, 100])
 ax2.set_yticklabels(["40%","60%","80%","100%"])
-ax2.set_title("NLTK API Parity Progression — 241 Modules (36.9% → 100%)", pad=10, fontsize=11, weight="bold")
+ax2.set_title("NLTK Import-Name Coverage Progression - 241 Indexed Names", pad=10, fontsize=11, weight="bold")
 ax2.grid(True, axis="y", linestyle="--", alpha=0.4)
 ax2.legend(loc="lower right", frameon=True, fontsize=8)
 # add delta arrows between successive points
@@ -201,7 +201,7 @@ for i in range(len(prog_counts)-1):
     mid_x = (x[i]+x[i+1])/2
     mid_y = (prog_pct[i]+prog_pct[i+1])/2
     ax2.annotate(f"+{delta}", xy=(mid_x, mid_y), ha="center", va="bottom", fontsize=7, color="#555555", style="italic")
-fig2.text(0.01, -0.02, "241 public NLTK modules indexed at nltk.org/api/nltk.html  •  v0.16 achieves 241/241 (100.0%) across 46 families", ha="left", va="top", fontsize=7, color="#555555", style="italic")
+fig2.text(0.01, -0.02, "Documentation-index names, not behavioral equivalence; snapshot: 2026-08-24; v0.16 imports 241/241 names across 46 families", ha="left", va="top", fontsize=7, color="#555555", style="italic")
 plt.tight_layout()
 fig2.savefig(OUTDIR / "coverage_progression.pdf", format="pdf", bbox_inches="tight")
 plt.close(fig2)
@@ -259,17 +259,17 @@ for i, (name, done, tot) in enumerate(families):
     # also annotate total modules small
 ax3.set_yticks(list(y))
 ax3.set_yticklabels([f[0] for f in families], fontsize=8)
-ax3.set_xlabel("Coverage (%)")
+ax3.set_xlabel("Indexed-name coverage (%)")
 ax3.set_xlim(0, 118)
 ax3.set_xticks([0, 25, 50, 75, 100])
 ax3.set_xticklabels(["0%","25%","50%","75%","100%"])
 ax3.invert_yaxis()  # largest at top
-ax3.set_title(f"Family-Level Parity — {len(families)} Families, 241/241 Modules (100%)", pad=10, fontsize=11, weight="bold")
+ax3.set_title(f"Import-Name Coverage - Top {len(families)} Families by Indexed Count", pad=10, fontsize=11, weight="bold")
 ax3.grid(True, axis="x", linestyle="--", alpha=0.35)
 # Add subtle vertical line at 100
 ax3.axvline(100, color="#2c3e50", linestyle="--", linewidth=1.1, alpha=0.6, zorder=4)
 # Caption
-fig3.text(0.01, -0.02, "All families at 100% parity  •  families sorted by module count (largest top)  •  source: docs/PARITY_CHECKLIST.md (241 modules)", ha="left", va="top", fontsize=7, color="#555555", style="italic")
+fig3.text(0.01, -0.02, "Top 24 of 46 families shown; import-name coverage only; source: docs/PARITY_CHECKLIST.md (241 indexed names)", ha="left", va="top", fontsize=7, color="#555555", style="italic")
 plt.tight_layout()
 out_fam = OUTDIR / "family_coverage.pdf"
 out_heat = OUTDIR / "family_heatmap.pdf"

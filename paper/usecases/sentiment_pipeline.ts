@@ -15,6 +15,19 @@ import { NaiveBayesClassifier } from "../../src/classifier_compat";
 
 type LabeledDoc = { words: string[]; label: string };
 
+const SPLIT_SEED = 1337;
+
+function mulberry32(seed: number): () => number {
+  let state = seed >>> 0;
+  return () => {
+    state += 0x6d2b79f5;
+    let value = state;
+    value = Math.imul(value ^ (value >>> 15), value | 1);
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 const EMBEDDED_SAMPLE: Array<{ text: string; label: string }> = [
   { text: "a gorgeous witty delightful comedy with brilliant performances and a smart heartfelt script", label: "pos" },
   { text: "one of the best films of the year excellent direction superb acting and a wonderful story", label: "pos" },
@@ -99,9 +112,10 @@ const wordFeatures = [...freq.entries()]
   .slice(0, Math.min(2000, freq.size))
   .map(([w]) => w);
 
-// Shuffle randomly before splitting (Fisher–Yates).
+// Shuffle deterministically before splitting (Fisher–Yates).
+const splitRng = mulberry32(SPLIT_SEED);
 for (let i = docs.length - 1; i > 0; i -= 1) {
-  const j = Math.floor(Math.random() * (i + 1));
+  const j = Math.floor(splitRng() * (i + 1));
   [docs[i], docs[j]] = [docs[j]!, docs[i]!];
 }
 const splitIdx = Math.floor(docs.length * 0.8);
@@ -119,6 +133,7 @@ const accuracy = testDocs.length > 0 ? correct / testDocs.length : 0;
 const tEval = performance.now();
 
 console.log(`Vocabulary    : ${wordFeatures.length} word features`);
+console.log(`Split seed    : ${SPLIT_SEED}`);
 console.log(`Train/test    : ${trainDocs.length}/${testDocs.length} documents`);
 console.log(`Holdout accuracy: ${(accuracy * 100).toFixed(2)}% (${correct}/${testDocs.length})`);
 

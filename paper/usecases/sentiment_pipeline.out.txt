@@ -2,19 +2,20 @@
 Corpus source : /Users/seyam/nltk_data/corpora/movie_reviews
 Documents     : 1000 (500 pos / 500 neg)
 Vocabulary    : 2000 word features
+Split seed    : 1337
 Train/test    : 800/200 documents
-Holdout accuracy: 79.00% (158/200)
+Holdout accuracy: 78.50% (157/200)
 
 Predictions for unseen reviews:
 ┌───┬───┬─────────────────────────────────────────────────┬────────────┬────────┬────────┐
 │   │ # │ review                                          │ prediction │ p_pos  │ p_neg  │
 ├───┼───┼─────────────────────────────────────────────────┼────────────┼────────┼────────┤
-│ 0 │ 1 │ an absolute delight from start to finish brill… │ pos        │ 0.6302 │ 0.3698 │
-│ 1 │ 2 │ two hours of my life wasted dull badly paced a… │ neg        │ 0.0036 │ 0.9964 │
-│ 2 │ 3 │ gorgeous cinematography lifts an otherwise med… │ neg        │ 0.2281 │ 0.7719 │
+│ 0 │ 1 │ an absolute delight from start to finish brill… │ pos        │ 0.6102 │ 0.3898 │
+│ 1 │ 2 │ two hours of my life wasted dull badly paced a… │ neg        │ 0.0034 │ 0.9966 │
+│ 2 │ 3 │ gorgeous cinematography lifts an otherwise med… │ neg        │ 0.1147 │ 0.8853 │
 └───┴───┴─────────────────────────────────────────────────┴────────────┴────────┴────────┘
 
 Timing:
-  feature extraction + training: 170.9 ms
-  evaluation (200 docs): 38.5 ms
-  total wall time: 209.9 ms
+  feature extraction + training: 193.5 ms
+  evaluation (200 docs): 43.8 ms
+  total wall time: 240.0 ms

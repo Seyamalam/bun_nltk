@@ -13,16 +13,16 @@ test("synsetDefinition strips quoted examples like nltk Synset.definition()", ()
 test("lesk disambiguates run toward the verb sense in a computing context", () => {
   const sense = lesk(["the", "computer", "can", "run", "and", "improve", "its", "speed"], "run");
   expect(sense).not.toBeNull();
-  expect(sense!.id).toBe("run.v.01");
+  expect(sense!.id).toBe("01927447.v");
 });
 
 test("lesk filters by pos", () => {
   const adj = lesk(["the", "slow", "computer", "could", "not", "parse", "the", "document"], "slow", "a");
   const verb = lesk(["to", "slow", "the", "speed", "of", "the", "machine"], "slow", "v");
-  expect(adj?.id).toBe("slow.a.01");
-  expect(verb?.id).toBe("slow.v.01");
+  expect(adj?.id).toBe("00036998.a");
+  expect(verb?.id).toBe("00440580.v");
 
-  const noMatch = lesk(["the", "dog", "barked"], "dog", "v");
+  const noMatch = lesk(["the", "banana", "ripened"], "banana", "v");
   expect(noMatch).toBeNull();
 });
 
