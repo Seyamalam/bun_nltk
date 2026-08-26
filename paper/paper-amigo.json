@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "project_id": "52034a9e-3913-4313-b7f7-b0e696fe21bf",
+  "title": "bun_nltk: broad NLTK API coverage in TypeScript with Rust/WASM acceleration and local multi-platform builds",
+  "source_pdf": "paper/sn-main.pdf",
+  "sha256": "e61a68f319e3acf11832e34cc21d1ece3872e10b0c77ce6efe38bbcc91a3c9c2",
+  "remote_file": {
+    "key": "QMVxAv8DZmlKZASMbgRlZcWUrXoM5n2EP0mKSIQ93xdFgOyz",
+    "name": "sn-main.pdf",
+    "size": 619577,
+    "url": "https://yzy16yxaqa.ufs.sh/f/QMVxAv8DZmlKZASMbgRlZcWUrXoM5n2EP0mKSIQ93xdFgOyz",
+    "uploaded_at": "2026-08-26T18:42:57.000Z"
+  }
+}

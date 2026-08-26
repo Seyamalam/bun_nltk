@@ -95,6 +95,16 @@ python3 /Users/seyam/.codex/plugins/cache/openai-bundled/latex/0.2.4/scripts/com
 
 The current PDF is 22 pages. All pages were visually inspected after the rewrite. The package-size update was compiled and its affected page was inspected again after the final local release.
 
+## Paper Amigo
+
+The manuscript is registered in Paper Amigo as project `52034a9e-3913-4313-b7f7-b0e696fe21bf`. `paper/paper-amigo.json` records the project, remote file key, and SHA-256 hash. Run this after any paper build:
+
+```bash
+bun run scripts/check-paper-amigo-sync.ts
+```
+
+The check compares `paper/sn-main.pdf` with both the manifest and Paper Amigo. As of 2026-08-27, `paper-amigo --help` exposes project creation and listing but no update, replacement, or deletion command. Do not create a duplicate project silently. If the PDF changes, check the CLI again and replace the file in the recorded project when that operation becomes available. Update the manifest only after the remote file matches the rebuilt PDF.
+
 ## Remaining work
 
 Only external evidence and release administration remain:
@@ -118,5 +128,7 @@ Do not replace missing Linux or Windows results with Wine, Docker cross-compilat
 - `paper/sn-main.tex`
 - `paper/sn-main.pdf`
 - `paper/bench/native_migration_results.json`
+- `paper/paper-amigo.json`
+- `scripts/check-paper-amigo-sync.ts`
 - `artifacts/fidelity-report.json`
 - `artifacts/native-host-darwin-arm64.json`
