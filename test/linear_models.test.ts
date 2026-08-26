@@ -50,3 +50,45 @@ test("linear svm classifier serializes and reloads", () => {
   expect(loaded.classify("stable fast happy")).toBe(clf.classify("stable fast happy"));
   expect(loaded.classify("negative crash slow")).toBe(clf.classify("negative crash slow"));
 });
+
+test("native and TypeScript linear trainers produce equivalent models", () => {
+  const cases = [
+    {
+      native: trainLogisticTextClassifier(trainRows, {
+        epochs: 12,
+        learningRate: 0.1,
+        useNativeTraining: true,
+      }).toJSON(),
+      js: trainLogisticTextClassifier(trainRows, {
+        epochs: 12,
+        learningRate: 0.1,
+        useNativeScoring: false,
+        useNativeTraining: false,
+      }).toJSON(),
+    },
+    {
+      native: trainLinearSvmTextClassifier(trainRows, {
+        epochs: 12,
+        learningRate: 0.07,
+        useNativeTraining: true,
+      }).toJSON(),
+      js: trainLinearSvmTextClassifier(trainRows, {
+        epochs: 12,
+        learningRate: 0.07,
+        useNativeScoring: false,
+        useNativeTraining: false,
+      }).toJSON(),
+    },
+  ];
+
+  for (const pair of cases) {
+    expect(pair.native.labels).toEqual(pair.js.labels);
+    expect(pair.native.weights.length).toBe(pair.js.weights.length);
+    for (let index = 0; index < pair.native.weights.length; index += 1) {
+      expect(pair.native.weights[index]!).toBeCloseTo(pair.js.weights[index]!, 10);
+    }
+    for (let index = 0; index < pair.native.bias.length; index += 1) {
+      expect(pair.native.bias[index]!).toBeCloseTo(pair.js.bias[index]!, 10);
+    }
+  }
+});

@@ -25,6 +25,10 @@ import {
   cykRecognizeIdsNative,
   naiveBayesLogScoresIdsNative,
   linearScoresSparseIdsNative,
+  linearTrainSparseIdsNative,
+  linearTextTrainNative,
+  hmmViterbiIdsNative,
+  kmeansFitEuclideanNative,
   normalizeTokensAscii,
   normalizeTokensAsciiNative,
   ngramsAscii,
@@ -381,6 +385,66 @@ test("native sparse linear scorer returns expected logits", () => {
   expect(out[1]!).toBeCloseTo(1.5, 12);
   expect(out[2]!).toBeCloseTo(0.5, 12);
   expect(out[3]!).toBeCloseTo(5.5, 12);
+});
+
+test("native sparse linear trainer updates model weights", () => {
+  const trained = linearTrainSparseIdsNative({
+    docOffsets: Uint32Array.from([0, 1, 2]),
+    featureIds: Uint32Array.from([0, 1]),
+    featureValues: Float64Array.from([1, 1]),
+    labelIds: Uint32Array.from([0, 1]),
+    classCount: 2,
+    featureCount: 2,
+    algorithm: "logistic",
+    epochs: 5,
+    learningRate: 0.1,
+    l2: 0.001,
+  });
+  expect([...trained.weights].some((weight) => Math.abs(weight) > 0)).toBeTrue();
+});
+
+test("native text pipeline builds vocabulary and trains in one call", () => {
+  const trained = linearTextTrainNative({
+    texts: ["good fast", "bad slow"],
+    labelIds: Uint32Array.from([1, 0]),
+    classCount: 2,
+    ngramMin: 1,
+    ngramMax: 2,
+    binary: false,
+    maxFeatures: 64,
+    algorithm: "svm",
+    epochs: 5,
+    learningRate: 0.1,
+    l2: 0.001,
+  });
+  expect(trained.vocabulary).toContain("good\u0001fast");
+  expect(trained.weights.length).toBe(trained.vocabulary.length * 2);
+});
+
+test("native HMM Viterbi kernel returns the expected state path", () => {
+  const path = hmmViterbiIdsNative({
+    symbolIds: Uint32Array.from([0, 1, 1]),
+    stateCount: 2,
+    symbolCount: 2,
+    priors: Float32Array.from([0, -2]),
+    transitions: Float32Array.from([0, -2, -2, 0]),
+    outputs: Float32Array.from([0, -3, -3, 0]),
+  });
+  expect([...path]).toEqual([0, 1, 1]);
+});
+
+test("native Euclidean K-means kernel converges on two groups", () => {
+  const fitted = kmeansFitEuclideanNative({
+    vectors: Float64Array.from([0, 0, 0, 1, 10, 10, 10, 11]),
+    pointCount: 4,
+    dimensions: 2,
+    clusterCount: 2,
+    convergence: 1e-9,
+    avoidEmptyClusters: false,
+    initialMeans: Float64Array.from([0, 0, 10, 10]),
+  });
+  expect(fitted.iterations).toBeGreaterThan(0);
+  expect([...fitted.means]).toEqual([0, 0.5, 10, 10.5]);
 });
 
 test("native streaming freqdist builder matches reference counts and json export", () => {

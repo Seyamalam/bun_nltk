@@ -53,19 +53,19 @@
 
 \begin{document}
 
-\title{bun\_nltk: Broad NLTK API Coverage in TypeScript with Rust/WASM Acceleration for Bun, Node, and Browsers}
+\title{bun\_nltk: broad NLTK API coverage in TypeScript with Rust/WASM acceleration and local multi-platform builds}
 
-\subtitle{A Language Resource Toolkit Artifact: 241/241 Importable Names, 425 Tests, 92\,KB WASM, and 12--253$\times$ Measured Speedups}
+\subtitle{A language-resource toolkit artifact with 241/241 importable names, 432 tests, 91.5\,KiB WASM, and three native targets}
 
 \author*{\fnm{Touhidul Alam} \sur{Seyam}}\email{touhidulalam@bgctub.ac.bd}
 
 \affil[*]{\orgdiv{Department of Computer Science and Engineering}, \orgname{BGC Trust University Bangladesh}, \orgaddress{\city{Chattogram}, \country{Bangladesh}}, \email{touhidulalam@bgctub.ac.bd}. ORCID 0009-0007-7512-1893}
 
-\abstract{The Natural Language Toolkit (NLTK) is still the textbook and the baseline for most NLP courses. But it runs only on Python, so it cannot reach npm's two million packages, browsers, edge workers, or offline clients where privacy matters.
+\abstract{The Natural Language Toolkit (NLTK) remains a standard teaching and research library, but it is tied to Python. That excludes npm packages, browser code, edge workers, and offline JavaScript clients that cannot run a Python process.
 
-Existing JavaScript options (natural, winkNLP, compromise) cover fragments of NLTK. We built \textbf{bun\_nltk} v0.16.0 to broaden NLTK API coverage in JavaScript, with selected hot paths rewritten in Rust and shipped as native libraries and a 92\,KB WebAssembly module. All \textbf{241/241 module names} in the NLTK API index are importable across 46 families. Of those entries, 210 have functional implementations; 31 are import-only entries, comprising 26 genuine shims and five package barrels. A checklist generated from the API index, a \texttt{COVERED} map in \texttt{scripts/parity-checklist.py}, and 425 tests make those claims auditable.
+Existing JavaScript libraries such as natural, winkNLP, and compromise implement parts of NLTK. We built \textbf{bun\_nltk} v0.16.0 to cover more of its API, with selected hot paths in Rust. The package contains native libraries for macOS arm64, Linux x64, and Windows x64, plus a 93{,}712-byte WebAssembly module. All \textbf{241/241 module names} in the NLTK API index import across 46 families. Of these entries, 210 are functional implementations. The remaining 31 comprise 26 shims and five package barrels. The repository records this inventory in an index-derived checklist and a \texttt{COVERED} map in \texttt{scripts/parity-checklist.py}; 432 tests across 66 files check selected behavior.
 
-On \texttt{bench/datasets/gate\_synthetic.txt} (median of 2--4 rounds) Bun with the native library is $12\text{--}20\times$ faster than Python on four measured primitives and $34\text{--}253\times$ faster on the measured parser and classifier tasks. These medians have no confidence intervals, and the committed dashboard records their absolute timings. WASM overhead is task-dependent: about 5.6\% for n-gram counting in the dashboard, but about 65\% for Punkt in the separate cross-runtime study. The package runs on Bun, Node.js, and browser-style WASM runtimes without a Python process; the browser harness has been exercised with Chromium and Firefox, not a complete browser or edge-runtime matrix.}
+On \texttt{bench/datasets/gate\_synthetic.txt}, using medians from 2 to 4 rounds, Bun with the native library is $12$ to $20\times$ faster than Python on four measured primitives and $34$ to $253\times$ faster on the measured parser and classifier tasks. A separate 15-round comparison with the TypeScript fallbacks finds median speedups of $1.80\times$ for logistic text training, $1.95\times$ for SVM training, $1.89\times$ for HMM Viterbi decoding, $2.54\times$ for Euclidean K-means, and $2.18\times$ for WordNet loading. Deterministic 95\% percentile-bootstrap intervals remain above $1\times$ for all five operations. The interval for a hot WordNet batch crosses $1\times$, so that result is inconclusive. WASM overhead varies by task: about 5.6\% for n-gram counting in the dashboard and about 65\% for Punkt in the cross-runtime study. Native calls require Bun and a matching prebuilt library. Other hosts use the explicit WASM wrapper. Chromium and Firefox pass the browser harness; Safari, mobile browsers, and edge providers remain untested.}
 
 \keywords{Natural Language Toolkit, WebAssembly, Bun, TypeScript, Rust, NLP toolkit, Language Resources, API coverage, Edge computing}
 
@@ -74,54 +74,52 @@ On \texttt{bench/datasets/gate\_synthetic.txt} (median of 2--4 rounds) Bun with 
 %--------------------------------------------------------------------
 \section{Introduction}\label{sec:intro}
 
-NLTK \cite{bird2009nltk,loper2002nltk} is the textbook and the baseline for natural language processing. Its coverage is the reason people keep coming back to it: tokenizers, stemmers, taggers, parsers, chunkers, language models, WordNet, metrics, logic and inference, translation metrics, chat, corpora helpers, and evaluation utilities, all listed at \url{nltk.org/api/nltk.html}. That breadth makes it hard to replace when you need to replicate something. But it is Python only. That single fact keeps it out of the places where language resources actually get deployed today: npm and the broader JavaScript ecosystem with roughly two million packages, browsers, Cloudflare Workers and Vercel Edge, Electron and Tauri apps, and offline clients that cannot send text to a server. In practice, researchers either rewrite baselines in JavaScript and live with gaps, or they wrap Python in a microservice and pay the cold-start every time.
+NLTK \cite{bird2009nltk,loper2002nltk} is a standard reference for natural language processing. Its API spans tokenizers, stemmers, taggers, parsers, language models, WordNet, evaluation metrics, logic, corpora, and other utilities listed at \url{nltk.org/api/nltk.html}. Reproducing that range is difficult. NLTK also requires Python, which rules out direct use in npm packages, browsers, Cloudflare Workers and Vercel Edge, Electron and Tauri applications, and offline JavaScript clients. Researchers must either rewrite a baseline in JavaScript or place Python behind a service.
 
-The JavaScript NLP packages on offer (\texttt{natural} \cite{natural2024}, \texttt{winkNLP} \cite{winknlp2024}, \texttt{compromise} \cite{compromise2024}, \texttt{nlp.js} \cite{nlpjs2024}) are useful for what they do, but they cover less than $20\%$ of the NLTK surface, they rarely track versions, and they can diverge quietly on tokenization or stemming. Nobody claims full NLTK parity, let alone proves it. The surface is just too big (241 public modules in 46 families) and too mixed: some of it is pure algorithms, some is data-driven models, and some is tied to a display or a network call (Tkinter GUIs, corpus downloaders, external theorem provers).
+The main JavaScript NLP packages, \texttt{natural} \cite{natural2024}, \texttt{winkNLP} \cite{winknlp2024}, \texttt{compromise} \cite{compromise2024}, and \texttt{nlp.js} \cite{nlpjs2024}, cover less than $20\%$ of the indexed NLTK modules. They also differ from NLTK on details such as tokenization and stemming. None claims full parity. The API is large, with 241 public modules in 46 families, and it mixes pure algorithms with trained models, GUIs, network clients, corpus downloaders, and external theorem provers.
 
-We treated this as a language-resource artifact problem. Instead of proposing another model, we ported the NLTK interface itself to a new platform, sped up the expensive parts with Rust and WASM, and made the reproduction claim checkable. \textbf{bun\_nltk} v0.16.0 (Apache-2.0, \url{https://github.com/Seyamalam/bun_nltk}, on npm as \texttt{bun\_nltk}) comes down to four things:
+We chose to port the NLTK interface rather than propose another model. \textbf{bun\_nltk} v0.16.0 is Apache-2.0 software available at \url{https://github.com/Seyamalam/bun_nltk} and on npm as \texttt{bun\_nltk}. Four properties define the release:
 
 \begin{itemize}[leftmargin=1.2em,itemsep=1pt]
   \item Import coverage for 241 of 241 names across 46 families in the NLTK API index snapshot, with 210 functional entries and 31 import-only entries. The latter comprise 26 genuine shims and five package barrels.
-  \item 425 tests across 65 files. Selected tests compare Bun output with Python NLTK 3.10.3; shim tests assert the package's documented error contract rather than equivalence to Python failures.
-  \item Speed. On standard hardware the representative NLP tasks run 12 to $20\times$ faster than Python, and parsers and classifiers run up to $253\times$ faster (see \S\ref{sec:evaluation}).
-  \item Portability. One npm package runs on Bun through a native fast path, and on Node.js, browsers, and edge workers through a 92\,KB WASM fallback. No Python install, no cold-start.
+  \item 432 tests across 66 files, plus a separate 37-group differential fidelity gate. Selected checks compare Bun output with Python NLTK 3.10.3; shim tests assert the package's documented error contract rather than equivalence to Python failures.
+  \item On the recorded benchmarks, representative NLP tasks run 12 to $20\times$ faster than Python, while measured parsers and classifiers reach $253\times$ (see \S\ref{sec:evaluation}).
+  \item The npm tarball contains three native targets and a 93{,}712-byte WASM module. Bun loads the matching native library, while hosts without \texttt{dlopen} use an explicit WASM API. Neither path starts Python.
 \end{itemize}
 
-This is written for \emph{Language Resources and Evaluation} \cite{nltk2024}, the Springer venue for acquisition, annotation, management and evaluation of language resources and the tools around them. That said, the work is just as relevant if you care about applied NLP or web systems.
+We evaluate the package as language-resource software rather than as a new model. The measurements therefore cover API inventory, behavior, runtime, memory, package size, and reproducibility.
 
 \paragraph{Contributions.}
-We scraped and enumerated 241 module headings from the NLTK API index and gated import coverage in CI. We separated functional implementations from shims, built selected Rust kernels for native and WASM targets, and measured speed, throughput, and memory. The evaluation reports known output differences instead of treating import coverage as behavioral equivalence.
+We scraped and enumerated 241 module headings from the NLTK API index and gated import coverage in a local release command. We separated functional implementations from shims, built selected Rust kernels for native and WASM targets, and measured speed, throughput, memory, package size, and cross-platform artifacts. The evaluation reports known output differences instead of treating import coverage as behavioral equivalence.
 
 %--------------------------------------------------------------------
-\section{Background and Literature Review}\label{sec:related}
-
-This section surveys the language-resource and runtime literature that motivates \texttt{bun\_nltk}. We ground every claim in a verifiable source; the full bibliography and \texttt{refs.bib} list every entry.
+\section{Background and literature review}\label{sec:related}
 
 \paragraph{NLTK and the Python NLP ecosystem.}
 NLTK \cite{bird2009nltk,loper2002nltk} defined the teaching API and still anchors most NLP curricula; we use its indexed module headings \cite{nltk2024} as the oracle for import coverage. Since 2002 the Python ecosystem has grown around it: spaCy \cite{spacy2023} delivers industrial-strength pipelines in Cython for production NER, tagging and parsing; Stanza \cite{stanza2020} provides a multilingual neural pipeline covering 70+ languages on Universal Dependencies; and Hugging Face Transformers \cite{wolf2020transformers} unifies several hundred pretrained Transformer architectures under one API with a shared model hub. These systems push accuracy (\cite{spacy2023,stanza2020,wolf2020transformers}) but are not NLTK-compatible by design; they expose different module structures, data schemas and model-loading conventions, remain Python-bound, and cannot be \texttt{imported} as drop-in replacements for \texttt{nltk.*}.
 
 \paragraph{JavaScript NLP: \texttt{natural}, \texttt{winkNLP}, \texttt{compromise} and \texttt{nlp.js}.}
-On npm, \texttt{natural} \cite{natural2024} is the broadest general-purpose facility (tokenizers, stemmers including Porter/Snowball, classifiers including Bayes/logistic, TF-IDF, phonetics and WordNet); \texttt{winkNLP} \cite{winknlp2024} optimizes tokenization, sentence boundary detection and NER for speed (reported $>$650k tokens/s on an M1) with a lean, dependency-free core; \texttt{compromise} \cite{compromise2024} trades coverage for size and developer ergonomics, offering lightweight POS/payload tagging with a $\sim$14k-word conjugated lexicon; and \texttt{nlp.js} \cite{nlpjs2024} adds multilingual NLU/NLG, entity management and connector plugins for chatbots, supporting 40+ languages natively. All four are valuable within their scope, but none claims NLTK parity: for example \texttt{natural} ports Porter and Bayes but not Punkt \cite{bird2009nltk}, CCG, Glue semantics, tableau provers, or BLEU/GLEU/chrF evaluation \cite{nltk2024}; \texttt{winkNLP} and \texttt{compromise} do not implement chart parsers, WordNet or translation metrics. Our contribution is orthogonal: we port the \emph{interface}, not a model.
+On npm, \texttt{natural} \cite{natural2024} covers tokenizers, Porter and Snowball stemmers, Bayes and logistic classifiers, TF-IDF, phonetics, and WordNet. \texttt{winkNLP} \cite{winknlp2024} emphasizes fast tokenization, sentence boundaries, and NER, with reported throughput above 650k tokens/s on an M1. \texttt{compromise} \cite{compromise2024} uses a lightweight POS and payload tagger with a roughly 14k-word conjugated lexicon. \texttt{nlp.js} \cite{nlpjs2024} supplies multilingual NLU/NLG, entity management, and chatbot connectors for more than 40 languages. None claims NLTK parity. For example, \texttt{natural} ports Porter and Bayes but omits Punkt \cite{bird2009nltk}, CCG, Glue semantics, tableau provers, and BLEU/GLEU/chrF evaluation \cite{nltk2024}. \texttt{winkNLP} and \texttt{compromise} omit chart parsers, WordNet, and translation metrics. \texttt{bun\_nltk} instead ports the interface, not a model.
 
 \paragraph{Runtimes: Bun, Node, and WebAssembly.}
-Bun \cite{bun2024} is an all-in-one JavaScript runtime, package manager, test runner and bundler built on JavaScriptCore; it exposes \texttt{bun:ffi} \texttt{dlopen} for native libraries and starts an order of magnitude faster than CPython, which matters for script-like NLP tasks. WebAssembly \cite{wasm2023} defines a portable, low-level bytecode and virtual ISA; the foundational PLDI paper \cite{haas2017wasm} showed it brings near-native speed to the web, and the W3C Core Specification v2.0 \cite{wasm2023} standardized it. The Rust toolchain \cite{rust2024} together with \texttt{wasm-pack}/\texttt{wasm-bindgen} \cite{wasmPack2024} compiles the same Rust kernels to both a native cdylib for Bun and a browser-compatible \texttt{.wasm} module. Prior NLP--WASM work accelerates isolated kernels (e.g.\ tokenizers); we show an entire toolkit can be delivered this way at 92\,KB. Because edge runtimes such as Cloudflare Workers and Vercel Edge \cite{cloudflare2024} forbid native code and allow only WASM, the dual build is not optional; it is the only path that runs everywhere without a Python sidecar.
+Bun \cite{bun2024} combines a JavaScript runtime, package manager, test runner, and bundler on JavaScriptCore. Its \texttt{bun:ffi} module loads native libraries with \texttt{dlopen}. WebAssembly \cite{wasm2023} provides portable bytecode and a virtual ISA; Haas et al.\ \cite{haas2017wasm} measured near-native web performance, and the W3C standardized Core Specification v2.0 \cite{wasm2023}. Rust \cite{rust2024} compiles the same kernels to native cdylibs and a \texttt{wasm32-unknown-unknown} module. \texttt{cargo-zigbuild} cross-links the Linux and Windows artifacts locally. Earlier NLP/WASM work usually accelerates an isolated kernel such as a tokenizer. This package also includes classifiers, sequence decoding, clustering, and a packed WordNet loader. Cloudflare Workers and Vercel Edge \cite{cloudflare2024} forbid native code, so they use the WASM API rather than Bun's native bindings.
 
 \paragraph{Language resource evaluation.}
-LRE's scope (resource creation, annotation, benchmarking, and the software tools that use resources) matches a toolkit artifact paper \cite{nltk2024}, where reviewers evaluate coverage, reproducibility and measured evaluation rather than a novel model. This motivates our CI-gated coverage methodology (\S\ref{sec:methodology}) and the benchmark suite (\S\ref{sec:evaluation}) that reports speedups, throughput, memory, and sampled output checks.
+Language-resource software calls for evidence about coverage, reproducibility, measured behavior, and known gaps. Sections~\ref{sec:methodology} and \ref{sec:evaluation} report those properties separately rather than reducing them to one parity claim.
 
 %--------------------------------------------------------------------
 \section{Methodology}\label{sec:methodology}
 
 Maintaining import coverage for all 241 indexed names takes a closed loop (Fig.~\ref{fig:pipeline}).
 
-\begin{figure}[H]
+\begin{figure}[p]
   \centering
   \includegraphics[width=0.98\textwidth]{figs/methodology_pipeline.pdf}
-  \caption{Methodology pipeline: scrape the NLTK API index, enumerate 241 module headings, emit a checklist and \texttt{COVERED} map, classify each entry as functional or import-only, compare selected outputs against Python, then publish \texttt{PARITY\_CHECKLIST.md} with a CI gate. The dotted edge regenerates artifacts on every change.}
+  \caption{Methodology pipeline: scrape the NLTK API index, enumerate 241 module headings, emit a checklist and \texttt{COVERED} map, classify each entry as functional or import-only, compare selected outputs against Python, then run the local coverage, correctness, performance, size, and package gates.}
   \label{fig:pipeline}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.78\textwidth]{figs/parity_decision.pdf}
   \caption{Coverage classification: the inventory distinguishes functional entries from import-only shims. GUI or display-only modules and entries requiring a network or external program become shims with a documented error. Portable algorithms use TypeScript, with Rust/WASM on selected hot paths. Both categories count toward the 241-name import inventory; only functional entries count as implementations.}
@@ -133,7 +131,7 @@ A script fetches \url{https://www.nltk.org/api/nltk.html}, parses its module hea
 
 \paragraph{2. Checklist and \texttt{COVERED} map.}
 \texttt{scripts/parity-checklist.py} diffs the oracle against its \texttt{COVERED} inventory and writes \texttt{docs/PARITY\_CHECKLIST.md} (46 families, 241 entries):
-\begin{lstlisting}[caption={\texttt{scripts/parity-checklist.py} inventory excerpt.}]
+\begin{lstlisting}[float=!htbp,caption={\texttt{scripts/parity-checklist.py} inventory excerpt.}]
 COVERED: dict[str, bool] = {
   "tokenize": True,
   "stem.porter": True,
@@ -146,51 +144,73 @@ COVERED: dict[str, bool] = {
 The decision is shown in \texttt{parity\_decision.pdf}. A GUI or display-only entry becomes a shim. The same applies when an operation requires a network service or external program that the package does not supply. Portable algorithms use TypeScript, with Rust for the measured hot paths (token and n-gram counting, PMI collocations, Porter). The inventory contains 210 functional entries and 31 import-only entries. Five import-only entries are package barrels, leaving 26 genuine shim modules. Shims export named symbols and throw \texttt{Error("requires ...; use JS alternative ...")} when unsupported operations are called. Tests assert this specified contract. They do not claim that Python throws the same exception. Fully shimmed groups include \texttt{app}, \texttt{draw}, and \texttt{twitter}; \texttt{chat} mixes re-exports with throwing operations, and \texttt{inference.prover9/mace} requires external binaries.
 
 \paragraph{4. Harness: Bun test versus Python .venv.}
-\texttt{bench/} runs selected tasks under Bun and CPython 3.12 with NLTK 3.10.3 on the same data (\texttt{bench/datasets/gate\_synthetic.txt}). Checks cover API existence and sampled outputs, with stated tolerances for floating-point scores and perplexity. Shim tests check the documented \texttt{bun\_nltk} error contract. The suite contains 425 tests across 65 files. Benchmark rounds report median latency.
+\texttt{bench/} runs selected tasks under Bun and CPython 3.12 with NLTK 3.10.3 on the same data (\texttt{bench/datasets/gate\_synthetic.txt}). Checks cover API existence and sampled outputs, with stated tolerances for floating-point scores and perplexity. Shim tests check the documented \texttt{bun\_nltk} error contract. The suite contains 432 tests across 66 files. A separate differential gate runs 37 behavioral groups against live Python NLTK outputs or versioned NLTK-derived fixtures and writes \texttt{artifacts/fidelity-report.json}. This gate is separate from the import checklist, but the project author still maintains it. Benchmark rounds report median latency.
 
-\paragraph{5. CI gate.}
-Every pull request regenerates \texttt{PARITY\_CHECKLIST.md}. The gate fails if import coverage drops below 241 of 241 or if a test fails. The generated file proves name coverage against the frozen documentation index; it does not prove complete functional equivalence.
+\paragraph{5. Local release gate.}
+\texttt{bun run release:local} performs type checking, linting, 34 Rust tests, 432 TypeScript tests, the 37-group differential fidelity gate, native performance thresholds, binary and package-size limits, tarball-content checks, and a packaged macOS runtime smoke. It builds macOS arm64 directly and cross-builds Linux x64 and Windows x64 with Zig, then builds WASM. Companion wrappers run from a fresh clone on x64 Linux and Windows, compare native Rust with the TypeScript fallback on the same host, install the packed tarball, and write versioned JSON reports. The generated checklist proves name coverage against the frozen documentation index; it does not prove complete functional equivalence. None of these procedures requires GitHub Actions.
 
 %--------------------------------------------------------------------
 \section{Architecture}\label{sec:architecture}
 
-Figure~\ref{fig:architecture} spans the page. Read it top to bottom.
+Figure~\ref{fig:architecture} traces the package from TypeScript and Rust sources through native and WASM builds to the supported runtimes.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.98\textwidth]{figs/architecture.pdf}
-  \caption{Architecture: TypeScript \texttt{src/} and Rust \texttt{rust/src/} build to JavaScript, native libraries, and a \texttt{bun\_panda.wasm} of about 92\,KB. The npm release contains Linux x64 \texttt{.so} and Windows x64 \texttt{.dll} binaries plus WASM. Bun uses \texttt{dlopen} when a compatible native library is present; other configurations use \texttt{WebAssembly.instantiate}. Setting \texttt{BUN\_PANDA\_WASM=1} forces WASM for testing.}
+  \caption{Architecture: TypeScript APIs call coarse Rust operations for token work, text-model training, HMM decoding, K-means, and WordNet. The local build produces macOS arm64, Linux x64, and Windows x64 libraries plus a 93{,}712-byte WASM module. Bun loads a compatible native library with \texttt{dlopen}; \texttt{WasmNltk.init} explicitly instantiates WASM from bytes or a path.}
   \label{fig:architecture}
 \end{figure}
 
 \paragraph{Source: TypeScript plus Rust.}
-\texttt{src/} holds the TypeScript implementation (ESM, strict mode), while \texttt{scripts/parity-checklist.py} holds the module-name inventory. \texttt{rust/src/} holds \texttt{lib.rs}, \texttt{ffi.rs}, and \texttt{Cargo.toml}. We use Rust where counting dominates: ASCII token and n-gram counting with collision-free id-to-token maps, PMI collocation windowing, Porter stemming, and the Punkt ASCII fast path. Other functional entries use TypeScript. These include tokenizers, stemmers, taggers, chunkers, language models, CCG, logic and semantics, translation metrics, trees, classifiers, inference, and metrics. The coverage inventory separately marks import-only entries.
+\texttt{src/} holds the TypeScript implementation (ESM, strict mode), while \texttt{scripts/parity-checklist.py} holds the module-name inventory. \texttt{rust/src/} contains the FFI layer and native kernels. Rust handles ASCII token and n-gram work, PMI windows, Porter, Punkt, full text vectorization plus logistic/SVM optimization, HMM Viterbi decoding, Euclidean K-means, and packed WordNet loading and traversal. The text-training call accepts raw documents and returns one binary model buffer, avoiding a token-by-token FFI boundary. WordNet keeps small JSON requests for compatibility but returns tagged binary buffers rather than JSON objects. Other functional entries use TypeScript, and each migrated operation retains a TypeScript fallback for comparison.
 
-\paragraph{Build: one command, two artifacts.}
-\texttt{tsc} and \texttt{bun build} emit JavaScript. \texttt{cargo build} emits platform-specific native libraries, while \texttt{wasm-pack} with \texttt{wasm-bindgen} compiles the Rust kernels to \texttt{native/bun\_nltk.wasm} at 92\,KB. The npm release includes Linux x64 and Windows x64 native binaries and WASM. The repository has a local macOS arm64 dylib used for evaluation, but it is not shipped in the npm package; macOS arm64 users must build it from source or use WASM.
+\paragraph{Build: one local command, four binaries.}
+\texttt{bun run release:local} drives the release build. \texttt{cargo build} emits the macOS arm64 dylib and WASM; \texttt{cargo zigbuild} emits a Linux x64 shared object with a glibc 2.17 baseline and a Windows x64 DLL. Their sizes are 590{,}080, 728{,}152, 1{,}536{,}512, and 93{,}712 bytes respectively. The package includes all four. Format checks verify Mach-O arm64, ELF x64, PE x64, and WASM signatures before packing.
 
 \paragraph{Runtime selection.}
-\begin{lstlisting}[caption={Runtime binding selection (simplified).},label={lst:binding}]
-const useWasm = process.env.BUN_PANDA_WASM === "1"
-             || typeof Bun === "undefined"
-             || typeof Bun.dlopen === "undefined";
-export const countTokens = useWasm
-  ? wasm.countTokens        // WebAssembly.instantiate
-  : native.countTokens;     // Bun dlopen
+\begin{lstlisting}[caption={Explicit native and WASM entry points (simplified).},label={lst:binding}]
+import { countTokensAscii, WasmNltk } from "bun_nltk";
+
+const nativeCount = countTokensAscii(text); // Bun dlopen
+const wasm = await WasmNltk.init({ wasmBytes });
+const portableCount = wasm.countTokensAscii(text);
+wasm.dispose();
 \end{lstlisting}
-On Bun we prefer a compatible native library. For the dashboard's n-gram task, the native median is 0.0741\,s and the WASM median is 0.0798\,s, so WASM is about 5.6\% slower. That result does not generalize to every task: in the M5 Pro study, Punkt takes 1.2\,ms native and 2.0\,ms in WASM. Node.js and browsers use the WASM path.
+The root API imports Bun's native bindings, so native calls require Bun and a matching library. \texttt{WasmNltk} is a separate explicit API and accepts caller-supplied bytes for non-filesystem hosts. For the dashboard's n-gram task, the native median is 0.0741\,s and the WASM median is 0.0798\,s, so WASM is about 5.6\% slower. That result does not generalize to every task: in the M5 Pro study, Punkt takes 1.2\,ms native and 2.0\,ms in WASM.
 
 \paragraph{Distribution: npm.}
-\texttt{package.json} ships \texttt{index.ts}, \texttt{src/}, \texttt{rust/}, \texttt{corpora/}, Linux x64 and Windows x64 native binaries, and WASM. Users write \texttt{import \{ wordTokenize \} from "bun\_nltk"}; runtime support then depends on the available native binary or WASM host. No Python sidecar is required.
+\texttt{package.json} ships \texttt{index.ts}, \texttt{src/}, \texttt{corpora/}, selected compact models, three native binaries, and WASM. It excludes Rust sources, build scripts, and the 30\,MB full WordNet pack. The validated tarball contains 213 files, is 1.72\,MB compressed and 4.53\,MB unpacked, and has no install-time lifecycle scripts. The local smoke test installs that tarball in a clean project and executes the packaged macOS binary. The release commit also contains the three prebuilts and WASM so a Linux or Windows tester can clone the repository and run one wrapper without a compiler toolchain. Each wrapper packs and installs the tarball on the native operating system before running same-machine native-versus-TypeScript comparisons. Cross-built or emulated runs are not used for cross-platform performance claims.
 
 %--------------------------------------------------------------------
 \section{Evaluation}\label{sec:evaluation}
 
 \paragraph{Setup.}
-Table~\ref{tab:speedup} uses a single-core CI Linux x64 runner with CPython 3.12, NLTK 3.10.3, and Bun with the native library. The seeded \texttt{bench/datasets/gate\_synthetic.txt} file is 7{,}941{,}847 bytes, contains 1{,}148{,}706 tokens and a 156{,}675-item vocabulary, and includes about 2.92\% non-ASCII text from URLs, handles, and emoji. We ran 2 to 4 rounds per task and report medians without dispersion estimates or confidence intervals. Absolute medians are committed in \texttt{artifacts/bench-dashboard.json}; for example, collocations take 1.2999\,s in Python and 0.1033\,s natively, while Porter takes 3.3024\,s and 0.2617\,s. Tables~\ref{tab:crosstime} and \ref{tab:realcorpora} are separate experiments on a MacBook Pro M5 Pro arm64 with NLTK 3.10.3, two warmups, and five measured rounds. We do not pool results across these environments.
+Table~\ref{tab:speedup} uses a recorded single-core Linux x64 runner with CPython 3.12, NLTK 3.10.3, and Bun with the native library. The seeded \texttt{bench/datasets/gate\_synthetic.txt} file is 7{,}941{,}847 bytes, contains 1{,}148{,}706 tokens and a 156{,}675-item vocabulary, and includes about 2.92\% non-ASCII text from URLs, handles, and emoji. We ran 2 to 4 rounds per task and report medians without dispersion estimates or confidence intervals. Absolute medians are committed in \texttt{artifacts/bench-dashboard.json}; for example, collocations take 1.2999\,s in Python and 0.1033\,s natively, while Porter takes 3.3024\,s and 0.2617\,s. Tables~\ref{tab:crosstime} and \ref{tab:realcorpora} are separate experiments on a MacBook Pro M5 Pro arm64 with NLTK 3.10.3, two warmups, and five measured rounds. Table~\ref{tab:nativemigration} uses that same Mac for 15-round native-versus-TypeScript comparisons. Its 95\% intervals use 10{,}000 deterministic percentile-bootstrap resamples of the median speedup ratio. We do not pool results across these environments.
+
+\paragraph{Native migration benchmark.}
+Table~\ref{tab:nativemigration} measures the operations moved after the original dashboard. Text-classifier timing includes tokenization, vocabulary construction, sparse feature construction, optimization, and holdout evaluation. HMM and K-means compare identical models and outputs. WordNet loading compares the packed Rust backend with parsing and indexing the same payload in TypeScript. The 400-query WordNet batch has a $1.11\times$ median, but its 95\% interval is $[0.98,1.38]$, which crosses $1\times$. We therefore treat hot-batch latency as inconclusive rather than faster.
+
+\begin{table}[!htbp]
+\centering
+\caption{Native versus TypeScript fallback, 15 rounds per implementation on an M5 Pro (macOS arm64). Speedup above $1\times$ favors native. Brackets give deterministic 95\% percentile-bootstrap intervals from 10{,}000 resamples. Raw samples are in \texttt{paper/bench/native\_migration\_results.json}.}
+\label{tab:nativemigration}
+\small
+\begin{tabular}{@{}l r r l@{}}
+\toprule
+Operation & Median & 95\% interval & Check \\
+\midrule
+Logistic text training & $1.80\times$ & $[1.75,1.92]$ & Same accuracy \\
+Linear SVM text training & $1.95\times$ & $[1.88,2.12]$ & Same accuracy \\
+HMM Viterbi decoding & $1.89\times$ & $[1.80,1.97]$ & Same state paths \\
+Euclidean K-means & $2.54\times$ & $[2.46,2.91]$ & Centroids within $10^{-9}$ \\
+Packed WordNet load & $2.18\times$ & $[2.07,2.29]$ & Same query checksum \\
+Packed WordNet batch lookup & $1.11\times$ & $[0.98,1.38]$ & Interval crosses $1\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 % Speedup figure
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.99\textwidth]{figs/speedup.pdf}
   \caption{Speedup over Python NLTK (Bun native, log scale, $\times$ faster; 1$\times$ is Python). Representative tasks on the same dataset: collocations/PMI $12.58\times$, Porter $12.61\times$, Punkt $19.75\times$, chunk $104.66\times$, WordNet $101.25\times$, chart parser $37.26\times$, feature chart $147.08\times$, linear classifier $253.75\times$. Data from \texttt{artifacts/bench-dashboard.json} (generated 2026-08-21).}
@@ -198,14 +218,14 @@ Table~\ref{tab:speedup} uses a single-core CI Linux x64 runner with CPython 3.12
 \end{figure}
 
 % Coverage figures
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.86\textwidth]{figs/coverage_progression.pdf}
   \caption{Import-coverage progression toward the frozen 241-name documentation index. The latest artifact imports 241/241 names across 46 families; this figure does not measure behavioral equivalence.}
   \label{fig:coverage}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.98\textwidth]{figs/family_coverage.pdf}
   \caption{Import-name coverage for the 24 largest of 46 indexed families. Equal bar lengths show that every documented name in each displayed family imports; they do not distinguish the 210 functional entries from the 31 import-only entries.}
@@ -217,7 +237,7 @@ Table~\ref{tab:speedup} lists every benchmark key in \texttt{bench-dashboard.jso
 
 \begin{table}[t]
 \centering
-\caption{Speedups versus Python NLTK (Bun native). Median of 2--4 rounds on \texttt{gate\_synthetic.txt}. See \texttt{artifacts/bench-dashboard.json}.}
+\caption{Speedups versus Python NLTK (Bun native). Median of 2 to 4 rounds on \texttt{gate\_synthetic.txt}. See \texttt{artifacts/bench-dashboard.json}.}
 \label{tab:speedup}
 \begin{tabular}{@{}l r l@{}}
 \toprule
@@ -275,14 +295,15 @@ KN-3 LM perplexity           & 244.6 & \textbf{24.8}  & N/A   & N/A   & N/A \\
 \end{tablenotes}
 \end{table}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.99\textwidth]{figs/cross_runtime.pdf}
   \caption{Eight benchmark rows across five runtimes (log scale; black outline marks the smallest reported median). Missing cells denote unavailable operations. Reduced-workload Node and counting-only WASM cells are shown for engineering context but are excluded from like-for-like comparisons. Punkt is about 65\% slower in WASM than native in this experiment.}
   \label{fig:crosstime}
 \end{figure}
+\clearpage
 
-Three observations follow. Native word tokenization, Punkt, and Porter take less time than their Python rows, but WASM overhead varies: word tokenization is close to native while Punkt rises from 1.2 to 2.0\,ms. The 0.7\,ms WASM counting cells do less work than the Python and native PMI path, so they cannot support a $212\times$ end-to-end claim. Native is slower than Python on collocations scoring and FreqDist because the current wrapper materializes candidate pairs and JavaScript objects. These are measured implementation costs, not evidence that the underlying algorithms are equivalent.
+Native word tokenization, Punkt, and Porter take less time than their Python rows. WASM overhead varies: word tokenization is close to native, while Punkt rises from 1.2 to 2.0\,ms. The 0.7\,ms WASM counting cells do less work than the Python and native PMI path, so they cannot support a $212\times$ end-to-end claim. Native is slower than Python on collocation scoring and FreqDist because the wrapper materializes candidate pairs and JavaScript objects. These timings measure the implementations, not algorithmic equivalence.
 
 \paragraph{Scaling with input size and real corpora.}
 The fixed-size comparison above could hide constant-overhead effects, so we re-ran three tasks (word tokenize, Punkt sentence split, bigram PMI) over the same prose grown from 10\,KB to 10\,MB, and separately over two classic corpora: the Brown corpus (1{,}440{,}413 tokens) and Gutenberg literary texts (Milton's \emph{Paradise Lost}, Austen's \emph{Emma}, Melville's \emph{Moby Dick}; 543{,}081 tokens). Figure~\ref{fig:scaling} plots all three runners on log-log axes; Table~\ref{tab:realcorpora} lists the corpus numbers.
@@ -315,14 +336,14 @@ Gutenberg          & FreqDist      & 71.5   & 105.1 & 22.9 \\
 The scaling study shows how runtime changes with input size; it does not establish output equivalence. Tokenize speedups remain between $16.4\times$ and $25.5\times$ over 10\,KB to 10\,MB, while Punkt remains between $22\times$ and $27\times$. On Brown, tokenization drops from 2.0\,s in Python to 137\,ms native; on Gutenberg it is $21.9\times$ faster. The bigram rows require a different reading: the WASM export counts only, whereas Python and native run the full PMI top-30 pipeline. The real-corpus FreqDist rows also compare a native JavaScript-object wrapper with a counting-only WASM export. We report those timings as implementation measurements, not algorithmic equivalence.
 
 \paragraph{Throughput and resources.}
-On the token path we see about 15.5\,M tokens per second and 0.67\,M sentences per second. The tagger does roughly 1.20\,M tagged tokens per second. Peak RSS delta is about 908\,MB (corpus loaded) with roughly 187\,MB heap. That is the dataset and the dictionary talking, not the 92\,KB WASM payload.
+On the token path we see about 15.5\,M tokens per second and 0.67\,M sentences per second. The tagger does roughly 1.20\,M tagged tokens per second. Peak RSS delta is about 908\,MB (corpus loaded) with roughly 187\,MB heap. That is the dataset and the dictionary talking, not the 91.5\,KiB WASM payload.
 
 \paragraph{Correctness checks and known gaps.}
-The dashboard records sampled comparison flags, but these are not proofs of full equivalence. Its Punkt and sentence-count checks are false because Python and TypeScript segment the synthetic text differently. We treat this as a fidelity gap, not measurement noise. The 425-test suite checks selected contracts and examples, while \texttt{PARITY\_CHECKLIST.md} checks import names only. Neither establishes complete behavioral equivalence across all inputs.
+The dashboard records sampled comparison flags, but these are not proofs of full equivalence. Its Punkt and sentence-count checks are false because Python and TypeScript segment the synthetic text differently. We treat this as a fidelity gap, not measurement noise. The 432-test suite checks selected contracts and examples. The separate 37-group differential gate checks live NLTK outputs or versioned NLTK-derived fixtures, while \texttt{PARITY\_CHECKLIST.md} checks import names only. None establishes complete behavioral equivalence across all inputs.
 
 \paragraph{Worked examples (listings as figures).}
 
-The next two figures are minimal runnable examples from \texttt{examples/}. Both run the same way on Bun, Node, and the browser through WASM.
+Listings~\ref{lst:ccg} and \ref{lst:inference} are minimal runnable examples from \texttt{examples/}. Both run on Bun, Node, and browsers through WASM.
 
 \begin{figure}[H]
 \begin{lstlisting}[caption={Example: CCG chart parse ``I sleep'' $\Rightarrow$ S (\texttt{examples/ccg\_quickstart.ts}).},label={lst:ccg}]
@@ -344,7 +365,7 @@ console.log(parses.length, parses[0].lhs().toString());
 \end{figure}
 
 \begin{figure}[H]
-\begin{lstlisting}[caption={Example: FOL resolution proves \texttt{mortal(socrates)} (\texttt{examples/inference\_resolution.ts}).},label={lst:inference}]
+\begin{lstlisting}[caption={FOL resolution example (\texttt{examples/inference\_resolution.ts}).},label={lst:inference}]
 import { LogicParser } from "bun_nltk/src/sem_logic.ts";
 import { ResolutionProverCommand } from "bun_nltk/src/inference_resolution.ts";
 
@@ -362,11 +383,11 @@ There are more examples for the pipeline (\texttt{ccg\_quickstart}), tableau, di
 %--------------------------------------------------------------------
 \section{Case studies: end-to-end pipelines}\label{sec:usecases}
 
-Benchmarks isolate kernels; real work chains them. This section walks four runnable case studies from \texttt{paper/usecases/}. Every number and every output below comes from an actual run of the release build; the scripts print these tables themselves, and re-running them reproduces the output deterministically.
+Benchmarks isolate kernels, while applications chain them. Four scripts under \texttt{paper/usecases/} exercise complete pipelines. They print the outputs reproduced below from deterministic runs of the release build.
 
 \subsection{Sentiment classification over movie reviews}\label{sec:uc-sentiment}
 
-The first study is the classic NLTK tutorial pipeline: load 1{,}000 labeled movie reviews (500 positive, 500 negative), extract the top-2{,}000 word-presence features, train a Naive Bayes classifier, and evaluate on a held-out 200 documents. A Fisher--Yates shuffle uses a Mulberry32 generator with seed 1337 before the 80/20 split. The seeded \emph{bun\_nltk} run reaches 78.5\,\% holdout accuracy and takes about 240\,ms. For context, the corresponding Python NLTK baseline scores 72.1\,\% with its seeded random split and 80.5\,\% with a label-sorted split. The package result lies inside that split-sensitive Python range; it is not an accuracy improvement claim.
+The sentiment pipeline follows the classic NLTK tutorial: load 1{,}000 labeled movie reviews, extract the top 2{,}000 word-presence features, train a Naive Bayes classifier, and evaluate on 200 held-out documents. The corpus has 500 positive and 500 negative reviews. A Fisher-Yates shuffle uses a Mulberry32 generator with seed 1337 before the 80/20 split. The seeded \emph{bun\_nltk} run reaches 78.5\,\% holdout accuracy in about 240\,ms. The corresponding Python NLTK baseline scores 72.1\,\% with its seeded random split and 80.5\,\% with a label-sorted split. The package result lies inside that split-sensitive range and does not establish an accuracy improvement.
 
 \begin{figure}[H]
 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize,caption={Captured output of \texttt{paper/usecases/sentiment\_pipeline.ts} (abridged).},label={lst:sentiment}]
@@ -395,7 +416,7 @@ The classifier exposes posterior probabilities without calibration. Review~3 rec
 
 \subsection{Information extraction}\label{sec:uc-ie}
 
-The second study chains three components (perceptron POS tagging, regular-expression chunking, named-entity resolution) over a paragraph about a corporate meeting. Tagging 22 tokens takes 1.5\,ms and chunking adds 0.6\,ms. The rule-based named-entity approximation finds Tim Cook and Satya Nadella as PERSON, but assigns GPE to Microsoft, Apple, and OpenAI as well as Redmond:
+The information-extraction script applies perceptron POS tagging, regular-expression chunking, and named-entity resolution to a paragraph about a corporate meeting. Tagging 22 tokens takes 1.5\,ms and chunking adds 0.6\,ms. The rule-based named-entity approximation finds Tim Cook and Satya Nadella as PERSON, but assigns GPE to Microsoft, Apple, OpenAI, and Redmond:
 
 \begin{figure}[H]
 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize,caption={Captured output of \texttt{paper/usecases/information\_extraction.ts} (abridged).},label={lst:ie}]
@@ -421,7 +442,7 @@ This output preserves the tree and IOB data shape, not NLTK's labels. Python NLT
 
 \subsection{WordNet semantics}\label{sec:uc-wordnet}
 
-The third study queries WordNet for the noun \emph{car}: all five synsets with lemmas and glosses, the hypernym chain from the motor-vehicle sense up to \emph{entity}, and path similarities between word pairs. The package ships a packed 117{,}659-synset WordNet image of 30{,}602{,}237 bytes (about 30\,MB) generated from the official database, so queries need no external data directory:
+The WordNet script queries the noun \emph{car}. It prints all five synsets with their lemmas and glosses, follows the motor-vehicle hypernym chain to \emph{entity}, and computes path similarities for selected word pairs. The optional packed image contains 117{,}659 synsets and occupies 30{,}602{,}237 bytes, about 30\,MB. We generate it from the official database and load it through \texttt{BUN\_NLTK\_WORDNET\_PATH}. The npm tarball omits this image:
 
 \begin{figure}[H]
 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize,caption={Captured output of \texttt{paper/usecases/wordnet\_query.ts} (abridged).},label={lst:wordnet}]
@@ -446,7 +467,7 @@ Timing: all WordNet queries: 108.77 ms (load) + queries
 
 \subsection{Translation-metric agreement}\label{sec:uc-mt}
 
-The fourth study scores machine-translation hypotheses under five metrics (BLEU, GLEU, METEOR, chrF, RIBES) on the NLTK doctest sentence pairs. Each metric agrees with its Python counterpart to published precision (Section~\ref{sec:evaluation}); here they disagree with \emph{each other} in instructive ways:
+The translation script scores NLTK doctest sentence pairs with BLEU, GLEU, METEOR, chrF, and RIBES. Each result agrees with its Python counterpart to the published precision reported in Section~\ref{sec:evaluation}. The metrics do not always rank the pairs alike:
 
 \begin{figure}[H]
 \begin{lstlisting}[basicstyle=\ttfamily\scriptsize,caption={Captured output of \texttt{paper/usecases/translate\_eval.ts} (abridged).},label={lst:mt}]
@@ -465,49 +486,47 @@ On the near-paraphrase pair, RIBES rewards the preserved word order ($0.98$) whi
 %--------------------------------------------------------------------
 \section{Discussion}\label{sec:discussion}
 
-\paragraph{What npm plus WASM actually buys you.}
+\paragraph{Distribution through npm and WASM.}
 
-\emph{Distribution.} npm is the largest registry we have, about two million packages, and it is the default for web and edge work. \texttt{npm install bun\_nltk} adds NLP to any JavaScript project without a Python toolchain, a container, or vendor lock-in. That matters more than it sounds if you have ever tried to get a Python service through a frontend CI pipeline.
+The npm registry contains about two million packages and is the default distribution channel for JavaScript. \texttt{npm install bun\_nltk} installs the TypeScript sources, compact models, native prebuilts, and WASM without invoking a compiler or Python.
 
-\emph{WASM portability.} The package's WASM path is designed for browser tabs, WebWorkers, ServiceWorkers, and edge runtimes that forbid \texttt{dlopen} \cite{cloudflare2024}. The committed harness runs pass/fail checks in Chromium and Firefox. We have not recorded a compatibility artifact for Safari, mobile browsers, or edge providers, so these are architecture targets rather than a verified compatibility matrix.
+The explicit \texttt{WasmNltk} API supports hosts that forbid \texttt{dlopen} \cite{cloudflare2024}. The committed browser tests pass in Chromium and Firefox. We have not recorded results for Safari, mobile browsers, or edge providers, so compatibility with those hosts remains unverified.
 
-\paragraph{Where the artifact is honest about limits.}
+\paragraph{Known limits.}
 
-\emph{Shims that throw.} The inventory contains 31 import-only entries: five package barrels and 26 genuine shim modules. Fully shimmed groups include \texttt{app}, \texttt{draw}, and \texttt{twitter}; \texttt{chat} mixes working re-exports with throwing operations, and \texttt{inference.prover9/mace} requires external binaries. Unsupported calls throw \texttt{Error("... requires ...; use JS alternative ...")} with an alternative where one exists. Tests assert that package-specific contract. Importability does not imply Python-equivalent behavior.
+The inventory contains 31 import-only entries: five package barrels and 26 shim modules. The \texttt{app}, \texttt{draw}, and \texttt{twitter} groups consist entirely of shims. \texttt{chat} mixes working re-exports with unsupported operations, and \texttt{inference.prover9/mace} requires external binaries. Unsupported calls throw \texttt{Error("... requires ...; use JS alternative ...")} and name an alternative when one exists. Tests check that package-specific contract. Importability does not imply Python-equivalent behavior.
 
-\emph{Toolchain tax.} Reproducing the native build needs Rust and \texttt{cargo} \cite{rust2024}. The WASM path needs \texttt{wasm-pack} \cite{wasmPack2024}. We ship prebuilt \texttt{.so/.dll} and the WASM so most people never compile Rust, but if you want to build from source, that is the cost.
+Rebuilding all four binaries on Apple Silicon requires Rust, the \texttt{wasm32-unknown-unknown} target, Zig, and \texttt{cargo-zigbuild} \cite{rust2024}. Package users receive prebuilts and do not compile Rust during installation.
 
-\emph{Data weight.} The full WordNet dictionary is 30{,}602{,}237 bytes, about 30\,MB, while the WASM binary is 92\,KB. We ship a minimal corpora subset and lazy-load the full database. The memory peak in Table~\ref{tab:speedup} includes data, not only executable code.
+The optional full WordNet dictionary is 30{,}602{,}237 bytes, about 30\,MB, while the WASM binary is 93{,}712 bytes. The npm package ships mini and extended WordNet JSON files but excludes the full pack. The memory peak in Table~\ref{tab:speedup} includes the loaded data as well as executable code.
 
 \paragraph{When to use bun\_nltk.}
 The package is suitable when its documented functional subset and measured fidelity fit the task. Code that depends on exact Punkt segmentation, NLTK's statistical named-entity labels, Tk GUIs, Twitter access, or bundled \texttt{prover9}/\texttt{mace} behavior needs separate validation or another implementation.
 
 %--------------------------------------------------------------------
-\section{What WASM unlocks and what a JavaScript package unlocks}\label{sec:unlocks}
+\section{Separate roles of WASM and npm}\label{sec:unlocks}
 
-We split these because reviewers understandably conflate them.
+\subsection{WASM as an execution target}
 
-\subsection{What WASM unlocks (platform)}
+WASM runs in browser tabs, WebWorkers, ServiceWorkers, and edge runtimes that forbid native code \cite{wasm2023,cloudflare2024}. The 91.5\,KiB module supports client-side and offline tools without a Python process. Download and startup time depend on the network, host, cache, and surrounding JavaScript, and this study does not measure deployment latency. Chromium and Firefox pass the browser tests. Safari, mobile browsers, and edge providers remain untested.
 
-WASM provides an execution target for browser tabs, WebWorkers, ServiceWorkers, and edge runtimes that forbid native code \cite{wasm2023,cloudflare2024}. The 92\,KB module can support client-side and offline tools without a Python process. Download and startup time depend on the network, host, cache, and surrounding JavaScript; we did not measure an end-to-end deployment latency. Chromium and Firefox pass the current browser harness, while Safari, mobile browsers, and edge providers remain untested.
+\subsection{npm as a distribution channel}
 
-\subsection{What a JavaScript package unlocks (ecosystem)}
+The npm tarball contains ESM imports, focused subpath exports, selected models, and native/WASM artifacts under one version. \texttt{docs/API.md} documents the API. The release command runs 432 tests and the 37-group differential gate locally, without a hosted CI account.
 
-The npm package decides \emph{who} can use the code and \emph{how} it composes: \texttt{import} in ESM or CJS, tree-shaking, semver, \texttt{dependabot}, and CI inside the JavaScript toolchain you already have. One \texttt{package.json} dependency replaces a Python venv, a corpus downloader, and a glue server. Availability drives adoption, and adoption drives maintenance: the resource is tested, documented in \texttt{docs/API.md}, and exercised by 425 tests on every commit.
-
-Together, WASM supplies a portable binary target and npm supplies JavaScript package distribution. Actual compatibility still requires testing on each host.
+WASM supplies the execution target; npm supplies the package. Neither removes the need to test each host.
 
 %--------------------------------------------------------------------
 \section{Threats to validity}\label{sec:threats}
 
 \paragraph{Construct validity.}
-The 241-entry denominator comes from module headings scraped from the NLTK API documentation on 2026-08-24. It measures import-name coverage, not every symbol or behavior, and the denominator may change with the documentation. We therefore report 210 functional entries separately from 31 import-only entries. Five of the latter are barrels and 26 are genuine shims. The authors wrote both the implementation and most evaluation checks, which creates a circularity risk: sampled cases may reflect the same assumptions as the port. Independent test suites and downstream replications are still needed.
+The 241-entry denominator comes from module headings scraped from the NLTK API documentation on 2026-08-24. It measures import-name coverage, not every symbol or behavior, and the denominator may change with the documentation. We therefore report 210 functional entries separately from 31 import-only entries. Five of the latter are barrels and 26 are genuine shims. The author wrote both the implementation and the differential gate, which creates a circularity risk even though Python generates many expected outputs at run time. External test suites and downstream replications are still needed.
 
 \paragraph{Internal validity.}
-Table~\ref{tab:speedup} comes from a single-core CI Linux x64 environment and reports medians of 2--4 rounds without variance or confidence intervals. Tables~\ref{tab:crosstime} and \ref{tab:realcorpora}, plus Fig.~\ref{fig:scaling}, come from one MacBook Pro M5 Pro arm64 with two warmups and five measured rounds. We keep these environments separate. Some cross-runtime cells perform reduced work: Node uses morphy on 20k words rather than Porter on 100k, and two WASM cells count without completing the Python/native scoring pipeline. Timer granularity also limits the 0.01\,ms everygrams row. CI uses unpinned current Bun and current NLTK packages, so later reruns may change results; the reported local versions are Bun 1.4.0, Node 24.19.0, and NLTK 3.10.3.
+Table~\ref{tab:speedup} comes from a recorded single-core Linux x64 environment and reports medians of 2 to 4 rounds without variance or confidence intervals. Tables~\ref{tab:crosstime} and \ref{tab:realcorpora}, plus Fig.~\ref{fig:scaling}, come from one MacBook Pro M5 Pro arm64 with five measured rounds and two warmups. Table~\ref{tab:nativemigration} uses 15 rounds per implementation on the same Mac and reports deterministic 95\% percentile-bootstrap intervals. Fifteen samples still give limited tail information, and sequential native/TypeScript runs may retain order effects. We keep the Linux and Mac environments separate. Some cross-runtime cells perform reduced work: Node uses morphy on 20k words rather than Porter on 100k, and two WASM cells count without completing the Python/native scoring pipeline. Timer granularity also limits the 0.01\,ms everygrams row. The reported local versions are Bun 1.4.0, Node 24.19.0, CPython 3.12.13, and NLTK 3.10.3.
 
 \paragraph{External validity.}
-The browser harness exercises Chromium and Firefox, but no browser result JSON is committed. Safari, mobile browsers, and edge providers remain untested. Native cross-runtime timing covers macOS arm64 on one machine, while the npm release ships native binaries only for Linux x64 and Windows x64; macOS arm64 users build from source or use WASM. The English synthetic data and selected corpora do not represent every language, domain, input encoding, or deployment host.
+The browser harness exercises Chromium and Firefox, but no browser result JSON is committed. Safari, mobile browsers, and edge providers remain untested. The npm release includes native binaries for macOS arm64, Linux x64, and Windows x64. The packaged macOS binary has run on the author's machine. Clone-and-run validators are provided for native x64 Linux and Windows hosts, but their external reports remain outstanding at the time of writing. We do not substitute Wine, cross-compilation, or an emulated architecture for those results. The English synthetic data and selected corpora do not represent every language, domain, input encoding, or deployment host.
 
 \paragraph{Conclusion validity.}
 Runtime speed and behavioral fidelity are separate claims. Similar scaling slopes do not establish algorithmic equivalence, and import coverage does not establish functional coverage. Punkt segmentation differs on the dashboard sample, and the rule-based named-entity example disagrees with Python NLTK on Microsoft, Apple, and OpenAI. The benchmark comparisons support only the workloads, implementations, and environments described here.
@@ -515,14 +534,14 @@ Runtime speed and behavioral fidelity are separate claims. Similar scaling slope
 %--------------------------------------------------------------------
 \section{Conclusion}\label{sec:conclusion}
 
-We built a TypeScript NLP toolkit with import coverage for all 241 names in a frozen NLTK documentation index. The inventory contains 210 functional entries, 26 genuine shims, and five import-only package barrels. A 425-test suite checks selected contracts, including Python comparisons, while the paper records known Punkt and named-entity fidelity gaps. On the CI Linux benchmark, selected native tasks range from $12\times$ to $253\times$ faster than Python. A separate M5 Pro study shows that WASM overhead varies by task rather than staying at one fixed percentage.
+We built a TypeScript NLP toolkit with import coverage for all 241 names in a frozen NLTK documentation index. The inventory contains 210 functional entries, 26 genuine shims, and five import-only package barrels. A 432-test suite and a separate 37-group differential gate check selected contracts, while the paper records known Punkt and named-entity fidelity gaps. On the recorded Linux benchmark, selected native tasks range from $12\times$ to $253\times$ faster than Python. The newer 15-round M5 Pro comparison measures $1.80\times$ to $2.54\times$ median speedups for native text training, HMM decoding, K-means, and WordNet loading. Their 95\% intervals remain above $1\times$. The WordNet hot-batch interval crosses $1\times$, so that result is inconclusive.
 
-GUI, network, and external-binary operations remain shims. The full WordNet payload is about 30\,MB, and rebuilding native libraries needs Rust. The npm package lacks a prebuilt macOS arm64 library, and browser validation does not yet cover Safari, mobile, or edge hosts.
+GUI, network, and external-binary operations remain shims. The optional full WordNet payload is about 30\,MB, and rebuilding all targets needs Rust and Zig. Browser validation does not yet cover Safari, mobile, or edge hosts. Native Linux and Windows package reports still need to be collected from those operating systems.
 
-Next steps include independent fidelity tests, a versioned model registry, broader browser and edge-host validation, and a public API-index diff tool.
+The immediate release task is to collect and archive the native Linux and Windows reports. External fidelity tests, Safari and edge-host runs, a versioned model registry, and a public API-index diff remain open work.
 
 \paragraph{Artifact availability.}
-Code: \url{https://github.com/Seyamalam/bun_nltk} (v0.16.0, Apache-2.0). Package: \url{https://www.npmjs.com/package/bun_nltk}. WASM: \texttt{native/bun\_nltk.wasm} (92\,KB). Raw benchmark JSON and deterministic data-generation seeds are committed under \texttt{artifacts/}, \texttt{paper/bench/}, and \texttt{bench/generate\_synthetic.py}. We will archive the accepted artifact and add a Zenodo DOI when the paper is accepted.
+Code: \url{https://github.com/Seyamalam/bun_nltk} (v0.16.0, Apache-2.0). Package: \url{https://www.npmjs.com/package/bun_nltk}. WASM: \texttt{native/bun\_nltk.wasm} (93{,}712 bytes). Raw benchmark JSON and deterministic data-generation seeds are committed under \texttt{artifacts/}, \texttt{paper/bench/}, and \texttt{bench/generate\_synthetic.py}. \texttt{paper/bench/native\_migration\_results.json} records the 15-round timings, raw samples, and bootstrap intervals. \texttt{artifacts/fidelity-report.json} records the 37 behavioral groups and versions. \texttt{bun run release:local} reproduces the author's local package validation. Native x64 Linux and Windows testers run \texttt{scripts/verify-linux.sh 15} and \texttt{scripts/verify-windows.cmd -Rounds 15}; each command writes a JSON report for archival. We will archive the accepted artifact and add a Zenodo DOI when the paper is accepted.
 
 %--------------------------------------------------------------------
 %% References via BibTeX (sn-mathphys-num style is selected by the class option)

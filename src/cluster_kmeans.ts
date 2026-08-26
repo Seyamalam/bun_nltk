@@ -13,6 +13,7 @@ import {
   type Vector,
 } from "./cluster_api.ts";
 import { VectorSpaceClusterer } from "./cluster_util.ts";
+import { kmeansFitEuclideanNative } from "./native.ts";
 
 export type DistanceFn = (a: Vector, b: Vector) => number;
 
@@ -26,6 +27,7 @@ export interface KMeansOptions {
   avoidEmptyClusters?: boolean;
   seed?: number;
   useKMeansPlusPlus?: boolean;
+  useNative?: boolean;
 }
 
 // Simple seeded RNG (xorshift32) for determinism when seed provided
@@ -108,6 +110,7 @@ export class KMeansClusterer extends VectorSpaceClusterer {
   private _rng: () => number;
   private _avoidEmptyClusters: boolean;
   private _useKMeansPP: boolean;
+  private _useNative: boolean;
 
   constructor(
     numMeans: number,
@@ -137,6 +140,7 @@ export class KMeansClusterer extends VectorSpaceClusterer {
     }
     this._avoidEmptyClusters = opts.avoidEmptyClusters ?? false;
     this._useKMeansPP = opts.useKMeansPlusPlus ?? false;
+    this._useNative = opts.useNative ?? true;
 
     if (opts.seed !== undefined) this._rng = mulberry32(opts.seed);
     else this._rng = Math.random;
@@ -192,6 +196,39 @@ export class KMeansClusterer extends VectorSpaceClusterer {
       // degenerate: each vector is its own mean (or fewer)
       // keep current means as-is — NLTK skips loop when num_means >= len(vectors)
       return;
+    }
+    if (this._useNative && this._distance === euclideanDistance && vectors.length > 0) {
+      try {
+        const dimensions = vectors[0]!.length;
+        if (vectors.every((vector) => vector.length === dimensions)) {
+          const flatVectors = new Float64Array(vectors.length * dimensions);
+          for (let index = 0; index < vectors.length; index += 1) {
+            flatVectors.set(vectors[index]!, index * dimensions);
+          }
+          const flatMeans = new Float64Array(this._numMeans * dimensions);
+          for (let index = 0; index < this._numMeans; index += 1) {
+            flatMeans.set(this._means![index]!, index * dimensions);
+          }
+          const fitted = kmeansFitEuclideanNative({
+            vectors: flatVectors,
+            pointCount: vectors.length,
+            dimensions,
+            clusterCount: this._numMeans,
+            convergence: this._convTest,
+            avoidEmptyClusters: this._avoidEmptyClusters,
+            initialMeans: flatMeans,
+          });
+          this._means = Array.from({ length: this._numMeans }, (_, index) =>
+            Array.from(fitted.means.subarray(index * dimensions, (index + 1) * dimensions)),
+          );
+          if (trace) {
+            for (let iteration = 0; iteration < fitted.iterations; iteration += 1) console.log("iteration");
+          }
+          return;
+        }
+      } catch {
+        // Fall back if the native kernel rejects this vector batch.
+      }
     }
     let converged = false;
     while (!converged) {

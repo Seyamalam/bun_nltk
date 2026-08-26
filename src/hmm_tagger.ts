@@ -1,4 +1,5 @@
 import { ConditionalFreqDist, FreqDist } from "./freqdist";
+import { hmmViterbiIdsNative } from "./native";
 import { ConditionalProbDist, LidstoneProbDist, type ProbDistLike } from "./probability";
 import type { GoldSentence, TaggedToken, UntaggedSentence } from "./sequential_taggers";
 
@@ -32,6 +33,7 @@ export function untagSents(taggedSentences: ReadonlyArray<GoldSentence>): string
 
 export interface HiddenMarkovModelTrainerOptions {
   estimator?: Estimator;
+  useNativeDecoding?: boolean;
 }
 
 function defaultEstimator(freqdist: FreqDist<string>, bins: number): ProbDistLike<string> {
@@ -88,7 +90,9 @@ export class HiddenMarkovModelTrainer {
     const transitionDist = new ConditionalProbDist(transitions, estimator, numStates);
     const outputDist = new ConditionalProbDist(outputs, estimator, numSymbols);
 
-    return new HiddenMarkovModelTagger(this.symbols, this.states, transitionDist, outputDist, priors);
+    return new HiddenMarkovModelTagger(this.symbols, this.states, transitionDist, outputDist, priors, {
+      useNativeDecoding: options?.useNativeDecoding,
+    });
   }
 }
 
@@ -102,7 +106,10 @@ export class HiddenMarkovModelTagger {
   #priorLogCache: Float32Array | null = null;
   #transitionLogCache: Float32Array[] | null = null;
   #outputLogCache: Float32Array[] | null = null;
+  #transitionLogFlat: Float32Array | null = null;
+  #outputLogFlat: Float32Array | null = null;
   #symbolIndex = new Map<string, number>();
+  readonly #useNativeDecoding: boolean;
 
   constructor(
     symbols: Iterable<string>,
@@ -110,12 +117,14 @@ export class HiddenMarkovModelTagger {
     transitions: ConditionalProbDist<string, string>,
     outputs: ConditionalProbDist<string, string>,
     priors: ProbDistLike<string>,
+    options: { useNativeDecoding?: boolean } = {},
   ) {
     this.symbols = uniqueInOrder(symbols);
     this.states = uniqueInOrder(states);
     this.transitions = transitions;
     this.outputs = outputs;
     this.priors = priors;
+    this.#useNativeDecoding = options.useNativeDecoding ?? true;
   }
 
   static train(
@@ -196,6 +205,22 @@ export class HiddenMarkovModelTagger {
     const O = this.#getOutputLogCache();
 
     const symbolIds = unlabeledSequence.map((token) => this.#symbolIndex.get(token)!);
+
+    if (this.#useNativeDecoding) {
+      try {
+        const path = hmmViterbiIdsNative({
+          symbolIds: Uint32Array.from(symbolIds),
+          stateCount: N,
+          symbolCount: this.symbols.length,
+          priors: P,
+          transitions: this.#getTransitionLogFlat(),
+          outputs: this.#getOutputLogFlat(),
+        });
+        return Array.from(path, (index) => this.states[index]!);
+      } catch {
+        // Fall back if the native kernel rejects this sequence.
+      }
+    }
 
     const V: Float64Array[] = [];
     const B: Int32Array[] = [];
@@ -300,6 +325,7 @@ export class HiddenMarkovModelTagger {
         this.#symbolIndex.set(this.symbols[k]!, k);
       }
       this.#outputLogCache = null;
+      this.#outputLogFlat = null;
     }
   }
 
@@ -340,6 +366,30 @@ export class HiddenMarkovModelTagger {
       });
     }
     return this.#outputLogCache;
+  }
+
+  #getTransitionLogFlat(): Float32Array {
+    if (this.#transitionLogFlat === null) {
+      const rows = this.#getTransitionLogCache();
+      const flat = new Float32Array(this.states.length * this.states.length);
+      for (let index = 0; index < rows.length; index += 1) {
+        flat.set(rows[index]!, index * this.states.length);
+      }
+      this.#transitionLogFlat = flat;
+    }
+    return this.#transitionLogFlat;
+  }
+
+  #getOutputLogFlat(): Float32Array {
+    if (this.#outputLogFlat === null) {
+      const rows = this.#getOutputLogCache();
+      const flat = new Float32Array(this.states.length * this.symbols.length);
+      for (let index = 0; index < rows.length; index += 1) {
+        flat.set(rows[index]!, index * this.symbols.length);
+      }
+      this.#outputLogFlat = flat;
+    }
+    return this.#outputLogFlat;
   }
 }
 

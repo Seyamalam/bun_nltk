@@ -296,6 +296,7 @@ These functions are pure TypeScript reference implementations.
 - `synset(id: string): WordNetSynset | null`
 - `allSynsets(pos?: "n" | "v" | "a" | "r"): WordNetSynset[]`
 - `synsets(word: string, pos?: "n" | "v" | "a" | "r"): WordNetSynset[]`
+- `lookupBatch(queries: readonly WordNetLookupQuery[]): WordNetLookupResult[]`
 - `lemmas(pos?: "n" | "v" | "a" | "r"): string[]`
 - `lemmaNames(idOrSynset: string | WordNetSynset): string[]`
 - `morphy(word: string, pos?: "n" | "v" | "a" | "r"): string | null`
@@ -387,10 +388,9 @@ These functions are pure TypeScript reference implementations.
 - `new DecisionTreeTextClassifier(options?: { maxDepth?: number; minSamples?: number; maxCandidateFeatures?: number; maxFeatures?: number })`
 - `trainDecisionTreeTextClassifier(examples: Array<{ label: string; text: string }>, options?): DecisionTreeTextClassifier`
 - `loadDecisionTreeTextClassifier(payload: DecisionTreeSerialized): DecisionTreeTextClassifier`
-- `new LogisticTextClassifier(options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number; useNativeScoring?: boolean })`
-- `new LinearSvmTextClassifier(options?: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number; useNativeScoring?: boolean })`
-- `trainLogisticTextClassifier(examples: Array<{ label: string; text: string }>, options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number; useNativeScoring?: boolean }): LogisticTextClassifier`
-- `trainLinearSvmTextClassifier(examples: Array<{ label: string; text: string }>, options?: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number; useNativeScoring?: boolean }): LinearSvmTextClassifier`
+- `new LogisticTextClassifier(options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number; useNativeScoring?: boolean; useNativeTraining?: boolean })`
+- `new LinearSvmTextClassifier(options?: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number; useNativeScoring?: boolean; useNativeTraining?: boolean })`
+- `trainLogisticTextClassifier(examples, options?)` and `trainLinearSvmTextClassifier(examples, options?)` tokenize, build sparse features, and optimize in one native call by default. Set `useNativeTraining: false` for the TypeScript adapter.
 - `loadLogisticTextClassifier(payload: LogisticSerialized): LogisticTextClassifier`
 - `loadLinearSvmTextClassifier(payload: LinearSvmSerialized): LinearSvmTextClassifier`
 - `new PerceptronTextClassifier(options?: { epochs?: number; learningRate?: number; maxFeatures?: number; averaged?: boolean })`
@@ -497,6 +497,7 @@ These functions are pure TypeScript reference implementations.
 - `HiddenMarkovModelTrainer.train(labelledSequences: GoldSentence[], estimator?: HmmEstimator): HiddenMarkovModelTagger`
 - `new HiddenMarkovModelTagger(transition, output, priors, states, symbols)`
 - `HiddenMarkovModelTagger.tag(untagged: string[]): TaggedToken[]` / `.tagSents(...)` / `.evaluate(...)` / `.logProbability(...)`
+- `HiddenMarkovModelTagger.train(..., { useNativeDecoding?: boolean })` uses native Viterbi decoding by default.
 
 ## Inter-Annotator Agreement
 
@@ -574,6 +575,7 @@ All shims are intentionally tiny (<30 LOC each) and documented where they diverg
 ## Cluster / Misc / Toolbox / Tgrep
 
 - `cluster` — `KMeansClusterer`, `EMClusterer`, `GAACClusterer`, `ClusterI`, distance fns
+- `KMeansClusterer(..., { useNative?: boolean })` uses the native convergence loop for Euclidean distance. Custom distance functions stay in TypeScript.
 - `misc` — `chomsky_random_sentence`, `babelfish` (stub), `minimalset`, `sort` (`bubble/merge/quick`), `wordfinder`
 - `toolbox` — `ToolboxData`, `StandardFormat`, `parseSFMString`/`toSFMString` (+ snake_case aliases)
 - `tgrep` — `tgrep_tokenize`, `tgrep_compile`/`tgrep_positions`
@@ -589,8 +591,9 @@ All 241 public `nltk.*` modules are importable; `docs/PARITY_CHECKLIST.md` shows
 
 ## Notes
 
-- Native APIs load packaged prebuilt binaries at `native/prebuilt/<platform>-<arch>/bun_nltk.{so|dll}`.
+- Native APIs load packaged prebuilt binaries at `native/prebuilt/<platform>-<arch>/bun_nltk.{dylib|so|dll}`.
 - Supported packaged native targets are `linux-x64` and `win32-x64`.
 - There is no implicit runtime fallback to a locally built native artifact.
 - WASM APIs require `native/bun_nltk.wasm`.
 - `Node.js` users should ensure an execution path that supports TS ESM package entrypoints or build/transpile this package as part of their pipeline.
+- Full WordNet data is opt-in and is not part of the core npm package. Use `BUN_NLTK_WORDNET_PATH` or `loadWordNetPacked(path)`.

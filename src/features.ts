@@ -84,7 +84,7 @@ export class TextFeatureVectorizer {
     }
 
     const ranked = [...counts.entries()]
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
       .slice(0, this.maxFeatures);
 
     this.featureToId.clear();

@@ -67,14 +67,20 @@ async function main() {
       throw new Error(`unexpected lifecycle scripts in published package: ${lifecycleScripts.join(", ")}`);
     }
 
+    const darwinPrebuilt = join(pkgDir, "native", "prebuilt", "darwin-arm64", "bun_nltk.dylib");
     const linuxPrebuilt = join(pkgDir, "native", "prebuilt", "linux-x64", "bun_nltk.so");
     const windowsPrebuilt = join(pkgDir, "native", "prebuilt", "win32-x64", "bun_nltk.dll");
     const wasmBinary = join(pkgDir, "native", "bun_nltk.wasm");
-    if (!existsSync(linuxPrebuilt) || !existsSync(windowsPrebuilt) || !existsSync(wasmBinary)) {
+    if (
+      !existsSync(darwinPrebuilt) ||
+      !existsSync(linuxPrebuilt) ||
+      !existsSync(windowsPrebuilt) ||
+      !existsSync(wasmBinary)
+    ) {
       throw new Error(
-        `missing packaged binaries:\nlinux=${existsSync(linuxPrebuilt)}\nwindows=${existsSync(windowsPrebuilt)}\nwasm=${existsSync(
-          wasmBinary,
-        )}`,
+        `missing packaged binaries:\ndarwin=${existsSync(darwinPrebuilt)}\nlinux=${existsSync(
+          linuxPrebuilt,
+        )}\nwindows=${existsSync(windowsPrebuilt)}\nwasm=${existsSync(wasmBinary)}`,
       );
     }
 

@@ -18,6 +18,10 @@ export {
   cykRecognizeIdsNative,
   naiveBayesLogScoresIdsNative,
   linearScoresSparseIdsNative,
+  linearTrainSparseIdsNative,
+  linearTextTrainNative,
+  hmmViterbiIdsNative,
+  kmeansFitEuclideanNative,
   perceptronPredictBatchNative,
   posTagAsciiNative,
   skipgramsAsciiNative,
@@ -35,6 +39,7 @@ export {
 
 export type { StreamBigramFreq, StreamConditionalFreq } from "./src/native";
 export type { NativeLmModelType } from "./src/native";
+export type { NativeLinearTextModel, NativeLinearTrainingAlgorithm } from "./src/native";
 
 export {
   countNgramsAscii as countNgramsAsciiJs,
@@ -213,7 +218,13 @@ export {
 } from "./src/positive_naive_bayes";
 export type { PositiveNaiveBayesSerialized } from "./src/positive_naive_bayes";
 export { loadWordNet, loadWordNetExtended, loadWordNetMini, loadWordNetPacked, WordNet } from "./src/wordnet";
-export type { WordNetMiniPayload, WordNetPos, WordNetSynset } from "./src/wordnet";
+export type {
+  WordNetLookupQuery,
+  WordNetLookupResult,
+  WordNetMiniPayload,
+  WordNetPos,
+  WordNetSynset,
+} from "./src/wordnet";
 export { LancasterStemmer, RegexpStemmer, SnowballStemmer, WordNetLemmatizer } from "./src/stemmers";
 export { confusionMatrix, corpusBleu, editDistance, sentenceBleu } from "./src/metrics";
 export type { BleuWeights, ConfusionMatrixResult, EditDistanceOptions } from "./src/metrics";
@@ -529,4 +540,3 @@ export * as tabdata_ns from "./src/tabdata";
 export * as langnames_ns from "./src/langnames";
 export * as cli_ns from "./src/cli";
 export * as corpus_europarl_raw_ns from "./src/corpus_europarl_raw";
-

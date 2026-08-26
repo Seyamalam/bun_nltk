@@ -6,6 +6,21 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+### Added
+
+- One-call native text vectorization and training for logistic regression and linear SVM.
+- Native HMM Viterbi and Euclidean K-means kernels with TypeScript fallbacks.
+- Compact binary WordNet query responses and a packed native WordNet backend.
+- Fully local `release:local` validation with macOS arm64, Linux x64, Windows x64, and WASM builds, benchmark/size gates, a 37-group Python-oracle fidelity gate, real tarball installation, and a native macOS runtime smoke.
+- Added one-command x64 Linux and Windows host validators. They use the checked-in release binaries, run focused correctness tests, compare native Rust with TypeScript on the same machine, install the packed tarball, and write shareable JSON reports without Rust, Python, Docker, Wine, or GitHub Actions.
+- Kept emulated Linux and Wine loaders as optional diagnostics, but removed them from `release:local` and from performance claims. Cross-platform performance now requires a native operating-system run.
+- A 15-round native-migration report with raw samples and deterministic 95% bootstrap confidence intervals.
+
+### Changed
+
+- Logistic regression and linear SVM now use native vectorization/training by default when the native backend is available.
+- Package contents now include a macOS arm64 prebuilt while excluding Rust sources, build scripts, and the full WordNet pack.
+
 ## [0.16.0] - 2026-08-24
 ### Added
 - Final GUI tranche — app (10), chat (7), draw (6), twitter (6) — honest Tkinter/ELIZA/twython shims that throw helpful JS-guidance errors (namespaced exports to avoid demo collisions)

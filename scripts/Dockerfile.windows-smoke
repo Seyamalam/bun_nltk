@@ -1,0 +1,11 @@
+FROM --platform=linux/amd64 debian:trixie-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends wine64 \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV WINEDEBUG=-all
+ENV WINEPREFIX=/tmp/bun-nltk-wine
+ENV WINEARCH=win64
+
+ENTRYPOINT ["/usr/lib/wine/wine64"]

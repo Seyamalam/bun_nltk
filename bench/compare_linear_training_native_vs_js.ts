@@ -3,12 +3,7 @@ import {
   trainLogisticTextClassifier,
   type LinearModelExample,
 } from "../index";
-
-function median(values: number[]): number {
-  const sorted = [...values].sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 0 ? (sorted[mid - 1]! + sorted[mid]!) / 2 : sorted[mid]!;
-}
+import { bootstrapMedianRatio, median } from "./statistics";
 
 function generateDataset(trainSize = 6000, testSize = 1200): { train: LinearModelExample[]; test: LinearModelExample[] } {
   const labels = ["alpha", "beta", "gamma", "delta"] as const;
@@ -34,6 +29,14 @@ function generateDataset(trainSize = 6000, testSize = 1200): { train: LinearMode
 function benchLogistic(train: LinearModelExample[], test: LinearModelExample[], rounds: number, native: boolean) {
   const times: number[] = [];
   let accuracy = 0;
+  trainLogisticTextClassifier(train, {
+    epochs: 16,
+    learningRate: 0.1,
+    l2: 1e-4,
+    maxFeatures: 12000,
+    useNativeScoring: native,
+    useNativeTraining: native,
+  });
   for (let i = 0; i < rounds; i += 1) {
     const started = performance.now();
     const model = trainLogisticTextClassifier(train, {
@@ -42,16 +45,26 @@ function benchLogistic(train: LinearModelExample[], test: LinearModelExample[], 
       l2: 1e-4,
       maxFeatures: 12000,
       useNativeScoring: native,
+      useNativeTraining: native,
     });
     accuracy = model.evaluate(test).accuracy;
     times.push((performance.now() - started) / 1000);
   }
-  return { median_seconds: median(times), accuracy };
+  return { median_seconds: median(times), seconds_samples: times, accuracy };
 }
 
 function benchSvm(train: LinearModelExample[], test: LinearModelExample[], rounds: number, native: boolean) {
   const times: number[] = [];
   let accuracy = 0;
+  trainLinearSvmTextClassifier(train, {
+    epochs: 16,
+    learningRate: 0.06,
+    l2: 3e-4,
+    margin: 1,
+    maxFeatures: 12000,
+    useNativeScoring: native,
+    useNativeTraining: native,
+  });
   for (let i = 0; i < rounds; i += 1) {
     const started = performance.now();
     const model = trainLinearSvmTextClassifier(train, {
@@ -61,11 +74,12 @@ function benchSvm(train: LinearModelExample[], test: LinearModelExample[], round
       margin: 1,
       maxFeatures: 12000,
       useNativeScoring: native,
+      useNativeTraining: native,
     });
     accuracy = model.evaluate(test).accuracy;
     times.push((performance.now() - started) / 1000);
   }
-  return { median_seconds: median(times), accuracy };
+  return { median_seconds: median(times), seconds_samples: times, accuracy };
 }
 
 function main() {
@@ -78,6 +92,10 @@ function main() {
   const logJs = benchLogistic(train, test, rounds, false);
   const svmNative = benchSvm(train, test, rounds, true);
   const svmJs = benchSvm(train, test, rounds, false);
+  const logisticSpeedup = bootstrapMedianRatio(logJs.seconds_samples, logNative.seconds_samples);
+  const svmSpeedup = bootstrapMedianRatio(svmJs.seconds_samples, svmNative.seconds_samples, {
+    seed: 0x5eed2027,
+  });
 
   console.log(
     JSON.stringify(
@@ -88,14 +106,20 @@ function main() {
         logistic: {
           native_seconds_median: logNative.median_seconds,
           js_seconds_median: logJs.median_seconds,
-          speedup_native_vs_js: logJs.median_seconds / logNative.median_seconds,
+          native_seconds_samples: logNative.seconds_samples,
+          js_seconds_samples: logJs.seconds_samples,
+          speedup_native_vs_js: logisticSpeedup.estimate,
+          speedup_ci95: logisticSpeedup,
           native_accuracy: logNative.accuracy,
           js_accuracy: logJs.accuracy,
         },
         svm: {
           native_seconds_median: svmNative.median_seconds,
           js_seconds_median: svmJs.median_seconds,
-          speedup_native_vs_js: svmJs.median_seconds / svmNative.median_seconds,
+          native_seconds_samples: svmNative.seconds_samples,
+          js_seconds_samples: svmJs.seconds_samples,
+          speedup_native_vs_js: svmSpeedup.estimate,
+          speedup_ci95: svmSpeedup,
           native_accuracy: svmNative.accuracy,
           js_accuracy: svmJs.accuracy,
         },

@@ -9,11 +9,13 @@ type NpmPackRecord = {
 };
 
 const requiredFiles = [
+  "native/prebuilt/darwin-arm64/bun_nltk.dylib",
   "native/prebuilt/linux-x64/bun_nltk.so",
   "native/prebuilt/win32-x64/bun_nltk.dll",
   "native/bun_nltk.wasm",
-  "models/wordnet_full.bin",
-  "models/wordnet_full.sha256.json",
+  "models/wordnet_extended.json",
+  "models/wordnet_mini.json",
+  "models/perceptron_tagger_ascii.json",
 ];
 
 const forbiddenFiles = [
@@ -22,6 +24,10 @@ const forbiddenFiles = [
   "native/lib.lib",
   "native/prebuilt/win32-x64/bun_nltk.pdb",
   "native/prebuilt/win32-x64/lib.lib",
+  "models/wordnet_full.bin",
+  "models/wordnet_full.sha256.json",
+  "rust/Cargo.toml",
+  "rust/Cargo.lock",
 ];
 
 const lifecycleScripts = ["preinstall", "install", "postinstall", "prepare"];

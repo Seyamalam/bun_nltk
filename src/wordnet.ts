@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { wordnetMorphyAsciiNative } from "./native";
+import { NativeWordNetHandle, wordnetMorphyAsciiNative } from "./native";
 
 export type WordNetPos = "n" | "v" | "a" | "r";
 
@@ -18,6 +18,12 @@ export type WordNetSynset = {
 
 export type WordNetMiniPayload = {
   version: number;
+  synsets: WordNetSynset[];
+};
+
+export type WordNetLookupQuery = { word: string; pos?: WordNetPos };
+export type WordNetLookupResult = WordNetLookupQuery & {
+  root: string;
   synsets: WordNetSynset[];
 };
 
@@ -172,6 +178,13 @@ export class WordNet {
     const rows = this.lemmaIndex.get(lemma) ?? [];
     if (!pos) return rows;
     return rows.filter((row) => row.pos === pos);
+  }
+
+  lookupBatch(queries: readonly WordNetLookupQuery[]): WordNetLookupResult[] {
+    return queries.map((query) => {
+      const root = this.morphy(query.word, query.pos) ?? normalizeLemma(query.word);
+      return { ...query, root, synsets: this.synsets(root, query.pos) };
+    });
   }
 
   lemmaNames(idOrSynset: string | WordNetSynset): string[] {
@@ -372,6 +385,122 @@ export class WordNet {
   }
 }
 
+class NativeBackedWordNet extends WordNet {
+  readonly #native: NativeWordNetHandle;
+
+  constructor(path: string) {
+    super({ version: 1, synsets: [] });
+    this.#native = new NativeWordNetHandle(path);
+  }
+
+  override synset(id: string): WordNetSynset | null {
+    return this.#native.query<WordNetSynset | null>({ op: "synset", id });
+  }
+
+  override allSynsets(pos?: WordNetPos): WordNetSynset[] {
+    return this.#native.query<WordNetSynset[]>({ op: "all", pos });
+  }
+
+  override synsets(word: string, pos?: WordNetPos): WordNetSynset[] {
+    return this.#native.query<WordNetSynset[]>({ op: "synsets", word, pos });
+  }
+
+  override lookupBatch(queries: readonly WordNetLookupQuery[]): WordNetLookupResult[] {
+    if (queries.length === 0) return [];
+    return this.#native.query<WordNetLookupResult[]>({ op: "lookup_batch", queries: [...queries] });
+  }
+
+  override lemmaNames(idOrSynset: string | WordNetSynset): string[] {
+    return this.synset(typeof idOrSynset === "string" ? idOrSynset : idOrSynset.id)?.lemmas ?? [];
+  }
+
+  override lemmas(pos?: WordNetPos): string[] {
+    return this.#native.query<string[]>({ op: "lemmas", pos });
+  }
+
+  override morphy(word: string, pos?: WordNetPos): string | null {
+    return this.#native.query<string | null>({ op: "morphy", word, pos });
+  }
+
+  override synsetFromPosAndOffset(pos: WordNetPos, offset: string | number): WordNetSynset | null {
+    return this.#native.query<WordNetSynset | null>({ op: "from_offset", pos, offset: String(offset) });
+  }
+
+  override synsetFromSenseKey(senseKey: string): WordNetSynset | null {
+    return this.#native.query<WordNetSynset | null>({ op: "from_sense_key", id: senseKey });
+  }
+
+  override senseKeys(word: string, pos?: WordNetPos): string[] {
+    return this.#native.query<string[]>({ op: "sense_keys", word, pos });
+  }
+
+  #relations(
+    idOrSynset: string | WordNetSynset,
+    relation: "hypernyms" | "hyponyms" | "similarTo" | "antonyms",
+  ): WordNetSynset[] {
+    const id = typeof idOrSynset === "string" ? idOrSynset : idOrSynset.id;
+    return this.#native.query<WordNetSynset[]>({ op: "relation", id, relation });
+  }
+
+  override hypernyms(idOrSynset: string | WordNetSynset): WordNetSynset[] {
+    return this.#relations(idOrSynset, "hypernyms");
+  }
+
+  override hyponyms(idOrSynset: string | WordNetSynset): WordNetSynset[] {
+    return this.#relations(idOrSynset, "hyponyms");
+  }
+
+  override similarTo(idOrSynset: string | WordNetSynset): WordNetSynset[] {
+    return this.#relations(idOrSynset, "similarTo");
+  }
+
+  override antonyms(idOrSynset: string | WordNetSynset): WordNetSynset[] {
+    return this.#relations(idOrSynset, "antonyms");
+  }
+
+  override hypernymPaths(
+    idOrSynset: string | WordNetSynset,
+    options: { maxDepth?: number } = {},
+  ): WordNetSynset[][] {
+    const id = typeof idOrSynset === "string" ? idOrSynset : idOrSynset.id;
+    return this.#native.query<WordNetSynset[][]>({
+      op: "hypernym_paths",
+      id,
+      max_depth: Math.max(1, Math.floor(options.maxDepth ?? 32)),
+    });
+  }
+
+  override shortestPathDistance(
+    left: string | WordNetSynset,
+    right: string | WordNetSynset,
+    options: { maxDepth?: number } = {},
+  ): number | null {
+    return this.#native.query<number | null>({
+      op: "shortest_path",
+      id: typeof left === "string" ? left : left.id,
+      other: typeof right === "string" ? right : right.id,
+      max_depth: Math.max(1, Math.floor(options.maxDepth ?? 64)),
+    });
+  }
+
+  override lowestCommonHypernyms(
+    left: string | WordNetSynset,
+    right: string | WordNetSynset,
+    options: { maxDepth?: number } = {},
+  ): WordNetSynset[] {
+    return this.#native.query<WordNetSynset[]>({
+      op: "lowest_common_hypernyms",
+      id: typeof left === "string" ? left : left.id,
+      other: typeof right === "string" ? right : right.id,
+      max_depth: Math.max(1, Math.floor(options.maxDepth ?? 64)),
+    });
+  }
+
+  dispose(): void {
+    this.#native.dispose();
+  }
+}
+
 let cachedMiniWordNet: WordNet | null = null;
 let cachedExtendedWordNet: WordNet | null = null;
 let cachedPackedWordNet: WordNet | null = null;
@@ -400,6 +529,13 @@ const WORDNET_PACK_MAGIC = "BNWN1";
 export function loadWordNetPacked(path?: string): WordNet {
   if (!path && cachedPackedWordNet) return cachedPackedWordNet;
   const sourcePath = path ?? resolve(import.meta.dir, "..", "models", "wordnet_full.bin");
+  try {
+    const db = new NativeBackedWordNet(sourcePath);
+    if (!path) cachedPackedWordNet = db;
+    return db;
+  } catch {
+    // Portable and development fallback for runtimes without the native backend.
+  }
   const bytes = readFileSync(sourcePath);
   const magic = new TextDecoder().decode(bytes.subarray(0, WORDNET_PACK_MAGIC.length));
   if (magic !== WORDNET_PACK_MAGIC) {

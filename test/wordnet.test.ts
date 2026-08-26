@@ -2,7 +2,13 @@ import { expect, test } from "bun:test";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { loadWordNet, loadWordNetExtended, loadWordNetMini, loadWordNetPacked } from "../index";
+import {
+  loadWordNet,
+  loadWordNetExtended,
+  loadWordNetMini,
+  loadWordNetPacked,
+  type WordNetMiniPayload,
+} from "../index";
 
 test("wordnet mini returns noun synsets and relation links", () => {
   const wn = loadWordNetMini();
@@ -65,7 +71,7 @@ test("loadWordNet default loader resolves runtime dataset", () => {
 });
 
 test("wordnet packed loader parses packed binary payload", () => {
-  const payload = {
+  const payload: WordNetMiniPayload = {
     version: 1,
     synsets: [
       {
@@ -96,6 +102,14 @@ test("wordnet packed loader parses packed binary payload", () => {
     writeFileSync(packedPath, bytes);
     const wn = loadWordNetPacked(packedPath);
     expect(wn.synsets("dog", "n").map((row) => row.id)).toEqual(["dog.n.01"]);
+    expect(wn.lookupBatch([{ word: "dogs", pos: "n" }])).toEqual([
+      {
+        word: "dogs",
+        pos: "n",
+        root: "dog",
+        synsets: [payload.synsets[0]!],
+      },
+    ]);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

@@ -6,10 +6,12 @@
 
 use crate::ascii;
 use crate::chunk;
+use crate::cluster;
 use crate::collocations;
 use crate::cyk;
 use crate::error_state;
 use crate::freqdist;
+use crate::hmm;
 use crate::linear;
 use crate::lm;
 use crate::morphy;
@@ -21,7 +23,9 @@ use crate::punkt;
 use crate::porter;
 use crate::stream_freqdist::StreamFreqDistBuilder;
 use crate::tagger;
+use crate::text_linear::NativeLinearTextResult;
 use crate::token_ids;
+use crate::wordnet::NativeWordNet;
 
 /// Build a slice from a raw pointer, tolerating null / zero-length inputs
 /// (constructing a slice from a null pointer is UB even for len 0).
@@ -55,6 +59,26 @@ fn stream_ptr_from_handle(handle: u64) -> *mut StreamFreqDistBuilder {
         std::ptr::null_mut()
     } else {
         handle as *mut StreamFreqDistBuilder
+    }
+}
+
+fn wordnet_handle_from_ptr(ptr: *mut NativeWordNet) -> u64 {
+    ptr as u64
+}
+
+fn wordnet_ptr_from_handle(handle: u64) -> *mut NativeWordNet {
+    if handle == 0 {
+        std::ptr::null_mut()
+    } else {
+        handle as *mut NativeWordNet
+    }
+}
+
+fn linear_text_ptr_from_handle(handle: u64) -> *mut NativeLinearTextResult {
+    if handle == 0 {
+        std::ptr::null_mut()
+    } else {
+        handle as *mut NativeLinearTextResult
     }
 }
 
@@ -896,6 +920,74 @@ pub extern "C" fn bunnltk_freqdist_stream_new() -> u64 {
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn bunnltk_wordnet_open(path_ptr: *const u8, path_len: usize) -> u64 {
+    error_state::reset_error();
+    let Ok(path) = std::str::from_utf8(const_slice(path_ptr, path_len)) else {
+        error_state::set_error(error_state::INVALID_N);
+        return 0;
+    };
+    match NativeWordNet::open(path) {
+        Ok(model) => wordnet_handle_from_ptr(Box::into_raw(Box::new(model))),
+        Err(_) => {
+            error_state::set_error(error_state::INVALID_N);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wordnet_free(handle: u64) {
+    error_state::reset_error();
+    let model = wordnet_ptr_from_handle(handle);
+    if model.is_null() {
+        return;
+    }
+    unsafe { drop(Box::from_raw(model)) };
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn bunnltk_wordnet_query_count(
+    handle: u64,
+    request_ptr: *const u8,
+    request_len: usize,
+) -> u64 {
+    error_state::reset_error();
+    let model = wordnet_ptr_from_handle(handle);
+    if model.is_null() {
+        error_state::set_error(error_state::INVALID_N);
+        return 0;
+    }
+    match (&mut *model).prepare_query(const_slice(request_ptr, request_len)) {
+        Ok(bytes) => bytes as u64,
+        Err(_) => {
+            error_state::set_error(error_state::INVALID_N);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn bunnltk_wordnet_query_fill(
+    handle: u64,
+    out_ptr: *mut u8,
+    out_capacity: usize,
+) -> u64 {
+    error_state::reset_error();
+    let model = wordnet_ptr_from_handle(handle);
+    if model.is_null() {
+        error_state::set_error(error_state::INVALID_N);
+        return 0;
+    }
+    match (&*model).fill_query(mut_slice(out_ptr, out_capacity)) {
+        Ok(bytes) => bytes as u64,
+        Err(_) => {
+            error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
+            0
+        }
+    }
+}
+
+#[no_mangle]
 pub extern "C" fn bunnltk_freqdist_stream_free(handle: u64) {
     error_state::reset_error();
     let stream = stream_ptr_from_handle(handle);
@@ -1372,6 +1464,209 @@ pub unsafe extern "C" fn bunnltk_linear_scores_sparse_ids(
         mut_slice(out_scores_ptr, out_scores_len),
     ) {
         error_state::set_error(err.code());
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn bunnltk_linear_train_sparse_ids(
+    doc_offsets_ptr: *const u32,
+    doc_offsets_len: usize,
+    feature_ids_ptr: *const u32,
+    feature_ids_len: usize,
+    feature_values_ptr: *const f64,
+    feature_values_len: usize,
+    label_ids_ptr: *const u32,
+    label_ids_len: usize,
+    class_count: u32,
+    feature_count: u32,
+    algorithm: u32,
+    epochs: u32,
+    learning_rate: f64,
+    l2: f64,
+    margin: f64,
+    out_weights_ptr: *mut f64,
+    out_weights_len: usize,
+    out_bias_ptr: *mut f64,
+    out_bias_len: usize,
+) {
+    error_state::reset_error();
+    let algorithm = match algorithm {
+        0 => linear::TrainingAlgorithm::Logistic,
+        1 => linear::TrainingAlgorithm::LinearSvm,
+        _ => {
+            error_state::set_error(error_state::INVALID_N);
+            return;
+        }
+    };
+    if let Err(err) = linear::train_sparse_ids(
+        const_slice(doc_offsets_ptr, doc_offsets_len),
+        const_slice(feature_ids_ptr, feature_ids_len),
+        const_slice(feature_values_ptr, feature_values_len),
+        const_slice(label_ids_ptr, label_ids_len),
+        class_count,
+        feature_count,
+        algorithm,
+        epochs,
+        learning_rate,
+        l2,
+        margin,
+        mut_slice(out_weights_ptr, out_weights_len),
+        mut_slice(out_bias_ptr, out_bias_len),
+    ) {
+        error_state::set_error(err.code());
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn bunnltk_linear_text_train(
+    text_blob_ptr: *const u8,
+    text_blob_len: usize,
+    text_offsets_ptr: *const u32,
+    text_offsets_len: usize,
+    label_ids_ptr: *const u32,
+    label_ids_len: usize,
+    class_count: u32,
+    ngram_min: u32,
+    ngram_max: u32,
+    binary: u32,
+    max_features: u32,
+    algorithm: u32,
+    epochs: u32,
+    learning_rate: f64,
+    l2: f64,
+    margin: f64,
+) -> u64 {
+    error_state::reset_error();
+    let algorithm = match algorithm {
+        0 => linear::TrainingAlgorithm::Logistic,
+        1 => linear::TrainingAlgorithm::LinearSvm,
+        _ => {
+            error_state::set_error(error_state::INVALID_N);
+            return 0;
+        }
+    };
+    match crate::text_linear::train(
+        const_slice(text_blob_ptr, text_blob_len),
+        const_slice(text_offsets_ptr, text_offsets_len),
+        const_slice(label_ids_ptr, label_ids_len),
+        class_count,
+        ngram_min,
+        ngram_max,
+        binary != 0,
+        max_features,
+        algorithm,
+        epochs,
+        learning_rate,
+        l2,
+        margin,
+    ) {
+        Ok(result) => Box::into_raw(Box::new(result)) as u64,
+        Err(err) => {
+            error_state::set_error(err.code());
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_linear_text_result_len(handle: u64) -> u64 {
+    error_state::reset_error();
+    let result = linear_text_ptr_from_handle(handle);
+    if result.is_null() {
+        error_state::set_error(error_state::INVALID_N);
+        return 0;
+    }
+    unsafe { (&*result).len() as u64 }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn bunnltk_linear_text_result_fill(
+    handle: u64,
+    out_ptr: *mut u8,
+    out_len: usize,
+) -> u64 {
+    error_state::reset_error();
+    let result = linear_text_ptr_from_handle(handle);
+    if result.is_null() {
+        error_state::set_error(error_state::INVALID_N);
+        return 0;
+    }
+    match (&*result).copy_to(mut_slice(out_ptr, out_len)) {
+        Ok(written) => written as u64,
+        Err(err) => {
+            error_state::set_error(err.code());
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_linear_text_result_free(handle: u64) {
+    error_state::reset_error();
+    let result = linear_text_ptr_from_handle(handle);
+    if !result.is_null() {
+        unsafe { drop(Box::from_raw(result)) };
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn bunnltk_hmm_viterbi_ids(
+    symbol_ids_ptr: *const u32,
+    symbol_ids_len: usize,
+    state_count: u32,
+    symbol_count: u32,
+    priors_ptr: *const f32,
+    priors_len: usize,
+    transitions_ptr: *const f32,
+    transitions_len: usize,
+    outputs_ptr: *const f32,
+    outputs_len: usize,
+    out_states_ptr: *mut u32,
+    out_states_len: usize,
+) {
+    error_state::reset_error();
+    if let Err(err) = hmm::viterbi_ids(
+        const_slice(symbol_ids_ptr, symbol_ids_len),
+        state_count,
+        symbol_count,
+        const_slice(priors_ptr, priors_len),
+        const_slice(transitions_ptr, transitions_len),
+        const_slice(outputs_ptr, outputs_len),
+        mut_slice(out_states_ptr, out_states_len),
+    ) {
+        error_state::set_error(err.code());
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn bunnltk_kmeans_fit_euclidean(
+    vectors_ptr: *const f64,
+    vectors_len: usize,
+    point_count: u32,
+    dimensions: u32,
+    cluster_count: u32,
+    convergence: f64,
+    avoid_empty: u32,
+    max_iterations: u32,
+    means_ptr: *mut f64,
+    means_len: usize,
+) -> u32 {
+    error_state::reset_error();
+    match cluster::kmeans_fit_euclidean(
+        const_slice(vectors_ptr, vectors_len),
+        point_count,
+        dimensions,
+        cluster_count,
+        convergence,
+        avoid_empty != 0,
+        max_iterations,
+        mut_slice(means_ptr, means_len),
+    ) {
+        Ok(iterations) => iterations,
+        Err(err) => {
+            error_state::set_error(err.code());
+            0
+        }
     }
 }
 

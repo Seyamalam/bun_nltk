@@ -109,6 +109,18 @@ test("viterbi tags seen sentences exactly and handles unknown words", () => {
   expect(tagger.bestPath(["the", "dog"])).toHaveLength(2);
 });
 
+test("native and TypeScript Viterbi decoders return identical paths", () => {
+  const native = HiddenMarkovModelTagger.train(trainCorpus, { useNativeDecoding: true });
+  const js = HiddenMarkovModelTagger.train(trainCorpus, { useNativeDecoding: false });
+  const sentences = [
+    ...testSents,
+    Array.from({ length: 80 }, (_, index) => ["the", "dog", "runs", "fast", "."][index % 5]!),
+  ];
+  expect(sentences.map((sentence) => native.bestPath(sentence))).toEqual(
+    sentences.map((sentence) => js.bestPath(sentence)),
+  );
+});
+
 test("unknown words resolve through smoothed emissions and transitions", () => {
   const tagger = HiddenMarkovModelTagger.train(trainCorpus);
   // after "the", the strong DT->NN transition dominates for an unseen token

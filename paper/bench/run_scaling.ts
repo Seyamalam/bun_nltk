@@ -132,7 +132,7 @@ async function main() {
   for (const task of ["tokenize", "punkt", "bigrams"] as const) {
     scaling[task] = {};
     for (const kb of SIZES_KB) {
-      const text = texts[kb];
+      const text = texts[kb]!;
       const row: RunnerRow = {};
 
       try {
@@ -217,11 +217,11 @@ async function main() {
 
   // merge python timings into Part A
   const pyScaling = (py.size_scaling ?? {}) as Record<string, Record<string, number>>;
-  for (const task of ["tokenize", "punkt", "bigrams"]) {
+  for (const task of ["tokenize", "punkt", "bigrams"] as const) {
     for (const kb of SIZES_KB) {
       const v = pyScaling[String(kb)]?.[`${task}_python_ms`];
-      if (scaling[task][String(kb)]) {
-        scaling[task][String(kb)].python_ms = typeof v === "number" ? v : null;
+      if (scaling[task]![String(kb)]) {
+        scaling[task]![String(kb)]!.python_ms = typeof v === "number" ? v : null;
         if (typeof v !== "number" && pyOk) errors.push(`python ${task} ${kb}KB missing`);
       }
     }
@@ -276,12 +276,12 @@ async function main() {
   const lines: string[] = [];
 
   lines.push("## Size scaling (median ms, warmup 2 / rounds 5)\n");
-  for (const task of ["tokenize", "punkt", "bigrams"]) {
+  for (const task of ["tokenize", "punkt", "bigrams"] as const) {
     lines.push(`### ${task}\n`);
     lines.push("| size | python_ms | native_ms | wasm_ms |");
     lines.push("|------|-----------|-----------|---------|");
     for (const kb of SIZES_KB) {
-      const r = scaling[task][String(kb)];
+      const r = scaling[task]![String(kb)]!;
       lines.push(`| ${kb >= 1024 ? `${(kb / 1024).toFixed(kb >= 10240 ? 0 : 1)}MB` : `${kb}KB`} | ${fmt(r.python_ms)} | ${fmt(r.native_ms)} | ${fmt(r.wasm_ms)} |`);
     }
     lines.push("");

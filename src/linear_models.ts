@@ -1,5 +1,5 @@
 import { flattenSparseBatch, TextFeatureVectorizer, type SparseVector, type VectorizerSerialized } from "./features";
-import { linearScoresSparseIdsNative } from "./native";
+import { linearScoresSparseIdsNative, linearTextTrainNative } from "./native";
 
 export type LinearModelExample = { label: string; text: string };
 
@@ -9,7 +9,7 @@ export type LogisticSerialized = {
   vectorizer: VectorizerSerialized;
   weights: number[];
   bias: number[];
-  options: { epochs: number; learningRate: number; l2: number; maxFeatures: number; useNativeScoring?: boolean };
+  options: { epochs: number; learningRate: number; l2: number; maxFeatures: number; useNativeScoring?: boolean; useNativeTraining?: boolean };
 };
 
 export type LinearSvmSerialized = {
@@ -18,7 +18,7 @@ export type LinearSvmSerialized = {
   vectorizer: VectorizerSerialized;
   weights: number[];
   bias: number[];
-  options: { epochs: number; learningRate: number; l2: number; margin: number; maxFeatures: number; useNativeScoring?: boolean };
+  options: { epochs: number; learningRate: number; l2: number; margin: number; maxFeatures: number; useNativeScoring?: boolean; useNativeTraining?: boolean };
 };
 
 function sigmoid(x: number): number {
@@ -113,19 +113,20 @@ function scoreBatchFlatNativeOrJs(
 }
 
 export class LogisticTextClassifier {
-  private readonly options: { epochs: number; learningRate: number; l2: number; maxFeatures: number; useNativeScoring: boolean };
-  private readonly vectorizer: TextFeatureVectorizer;
+  private readonly options: { epochs: number; learningRate: number; l2: number; maxFeatures: number; useNativeScoring: boolean; useNativeTraining: boolean };
+  private vectorizer: TextFeatureVectorizer;
   private labels: string[] = [];
   private weights = new Float64Array(0);
   private bias = new Float64Array(0);
 
-  constructor(options: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number; useNativeScoring?: boolean } = {}) {
+  constructor(options: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number; useNativeScoring?: boolean; useNativeTraining?: boolean } = {}) {
     this.options = {
       epochs: Math.max(1, Math.floor(options.epochs ?? 20)),
       learningRate: Math.max(1e-6, options.learningRate ?? 0.1),
       l2: Math.max(0, options.l2 ?? 1e-4),
       maxFeatures: Math.max(256, Math.floor(options.maxFeatures ?? 16000)),
       useNativeScoring: options.useNativeScoring ?? true,
+      useNativeTraining: options.useNativeTraining ?? true,
     };
     this.vectorizer = new TextFeatureVectorizer({ ngramMin: 1, ngramMax: 2, binary: false, maxFeatures: this.options.maxFeatures });
   }
@@ -134,7 +135,7 @@ export class LogisticTextClassifier {
     if (payload.version !== 1) throw new Error(`unsupported Logistic model version: ${payload.version}`);
     const model = new LogisticTextClassifier(payload.options);
     model.labels = [...payload.labels];
-    (model as unknown as { vectorizer: TextFeatureVectorizer }).vectorizer = TextFeatureVectorizer.fromJSON(payload.vectorizer);
+    model.vectorizer = TextFeatureVectorizer.fromJSON(payload.vectorizer);
     model.weights = Float64Array.from(payload.weights);
     model.bias = Float64Array.from(payload.bias);
     return model;
@@ -143,11 +144,41 @@ export class LogisticTextClassifier {
   train(examples: LinearModelExample[]): this {
     if (examples.length === 0) throw new Error("Logistic training requires examples");
     this.labels = [...new Set(examples.map((x) => x.label))].sort((a, b) => a.localeCompare(b));
-    this.vectorizer.fit(examples.map((x) => x.text));
-    const rows = this.vectorizer.transformMany(examples.map((x) => x.text));
+    const texts = examples.map((example) => example.text);
     const labelToId = new Map(this.labels.map((label, idx) => [label, idx]));
-
     const classCount = this.labels.length;
+    if (this.options.useNativeTraining) {
+      try {
+        const trained = linearTextTrainNative({
+          texts,
+          labelIds: Uint32Array.from(examples, (example) => labelToId.get(example.label)!),
+          classCount,
+          ngramMin: 1,
+          ngramMax: 2,
+          binary: false,
+          maxFeatures: this.options.maxFeatures,
+          algorithm: "logistic",
+          epochs: this.options.epochs,
+          learningRate: this.options.learningRate,
+          l2: this.options.l2,
+        });
+        this.vectorizer = TextFeatureVectorizer.fromJSON({
+          version: 1,
+          ngramMin: 1,
+          ngramMax: 2,
+          binary: false,
+          maxFeatures: this.options.maxFeatures,
+          vocabulary: trained.vocabulary,
+        });
+        this.weights = Float64Array.from(trained.weights);
+        this.bias = Float64Array.from(trained.bias);
+        return this;
+      } catch {
+        // Fall back if the native module rejects this training batch.
+      }
+    }
+    this.vectorizer.fit(texts);
+    const rows = this.vectorizer.transformMany(texts);
     const featureCount = this.vectorizer.featureCount;
     this.weights = new Float64Array(classCount * featureCount);
     this.bias = new Float64Array(classCount);
@@ -246,13 +277,13 @@ export class LogisticTextClassifier {
 }
 
 export class LinearSvmTextClassifier {
-  private readonly options: { epochs: number; learningRate: number; l2: number; margin: number; maxFeatures: number; useNativeScoring: boolean };
-  private readonly vectorizer: TextFeatureVectorizer;
+  private readonly options: { epochs: number; learningRate: number; l2: number; margin: number; maxFeatures: number; useNativeScoring: boolean; useNativeTraining: boolean };
+  private vectorizer: TextFeatureVectorizer;
   private labels: string[] = [];
   private weights = new Float64Array(0);
   private bias = new Float64Array(0);
 
-  constructor(options: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number; useNativeScoring?: boolean } = {}) {
+  constructor(options: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number; useNativeScoring?: boolean; useNativeTraining?: boolean } = {}) {
     this.options = {
       epochs: Math.max(1, Math.floor(options.epochs ?? 20)),
       learningRate: Math.max(1e-6, options.learningRate ?? 0.05),
@@ -260,6 +291,7 @@ export class LinearSvmTextClassifier {
       margin: Math.max(0.1, options.margin ?? 1),
       maxFeatures: Math.max(256, Math.floor(options.maxFeatures ?? 16000)),
       useNativeScoring: options.useNativeScoring ?? true,
+      useNativeTraining: options.useNativeTraining ?? true,
     };
     this.vectorizer = new TextFeatureVectorizer({ ngramMin: 1, ngramMax: 2, binary: false, maxFeatures: this.options.maxFeatures });
   }
@@ -268,7 +300,7 @@ export class LinearSvmTextClassifier {
     if (payload.version !== 1) throw new Error(`unsupported LinearSVM model version: ${payload.version}`);
     const model = new LinearSvmTextClassifier(payload.options);
     model.labels = [...payload.labels];
-    (model as unknown as { vectorizer: TextFeatureVectorizer }).vectorizer = TextFeatureVectorizer.fromJSON(payload.vectorizer);
+    model.vectorizer = TextFeatureVectorizer.fromJSON(payload.vectorizer);
     model.weights = Float64Array.from(payload.weights);
     model.bias = Float64Array.from(payload.bias);
     return model;
@@ -277,11 +309,42 @@ export class LinearSvmTextClassifier {
   train(examples: LinearModelExample[]): this {
     if (examples.length === 0) throw new Error("LinearSVM training requires examples");
     this.labels = [...new Set(examples.map((x) => x.label))].sort((a, b) => a.localeCompare(b));
-    this.vectorizer.fit(examples.map((x) => x.text));
-    const rows = this.vectorizer.transformMany(examples.map((x) => x.text));
+    const texts = examples.map((example) => example.text);
     const labelToId = new Map(this.labels.map((label, idx) => [label, idx]));
-
     const classCount = this.labels.length;
+    if (this.options.useNativeTraining) {
+      try {
+        const trained = linearTextTrainNative({
+          texts,
+          labelIds: Uint32Array.from(examples, (example) => labelToId.get(example.label)!),
+          classCount,
+          ngramMin: 1,
+          ngramMax: 2,
+          binary: false,
+          maxFeatures: this.options.maxFeatures,
+          algorithm: "svm",
+          epochs: this.options.epochs,
+          learningRate: this.options.learningRate,
+          l2: this.options.l2,
+          margin: this.options.margin,
+        });
+        this.vectorizer = TextFeatureVectorizer.fromJSON({
+          version: 1,
+          ngramMin: 1,
+          ngramMax: 2,
+          binary: false,
+          maxFeatures: this.options.maxFeatures,
+          vocabulary: trained.vocabulary,
+        });
+        this.weights = Float64Array.from(trained.weights);
+        this.bias = Float64Array.from(trained.bias);
+        return this;
+      } catch {
+        // Fall back if the native module rejects this training batch.
+      }
+    }
+    this.vectorizer.fit(texts);
+    const rows = this.vectorizer.transformMany(texts);
     const featureCount = this.vectorizer.featureCount;
     this.weights = new Float64Array(classCount * featureCount);
     this.bias = new Float64Array(classCount);
@@ -382,14 +445,14 @@ export class LinearSvmTextClassifier {
 
 export function trainLogisticTextClassifier(
   examples: LinearModelExample[],
-  options: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number; useNativeScoring?: boolean } = {},
+  options: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number; useNativeScoring?: boolean; useNativeTraining?: boolean } = {},
 ): LogisticTextClassifier {
   return new LogisticTextClassifier(options).train(examples);
 }
 
 export function trainLinearSvmTextClassifier(
   examples: LinearModelExample[],
-  options: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number; useNativeScoring?: boolean } = {},
+  options: { epochs?: number; learningRate?: number; l2?: number; margin?: number; maxFeatures?: number; useNativeScoring?: boolean; useNativeTraining?: boolean } = {},
 ): LinearSvmTextClassifier {
   return new LinearSvmTextClassifier(options).train(examples);
 }

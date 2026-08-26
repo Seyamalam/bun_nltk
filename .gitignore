@@ -13,6 +13,20 @@ native/*.lib
 native/*.wasm
 native/prebuilt/
 
+# Versioned release artifacts let a fresh clone run native-host validation.
+!native/bun_nltk.wasm
+!native/prebuilt/
+native/prebuilt/*
+!native/prebuilt/darwin-arm64/
+!native/prebuilt/linux-x64/
+!native/prebuilt/win32-x64/
+native/prebuilt/darwin-arm64/*
+native/prebuilt/linux-x64/*
+native/prebuilt/win32-x64/*
+!native/prebuilt/darwin-arm64/bun_nltk.dylib
+!native/prebuilt/linux-x64/bun_nltk.so
+!native/prebuilt/win32-x64/bun_nltk.dll
+
 # code coverage
 coverage
 *.lcov
@@ -34,12 +48,24 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .cache
 *.tsbuildinfo
 .venv/
+.depot/
+tmp/
 
 # benchmark datasets
 bench/datasets/
 bench/__pycache__/
 test/fixtures/nltk_imported/
 artifacts/
+models/wordnet_full.bin
+paper/bench/data/prose_10000kb.txt
+
+# generated paper files and downloaded templates
+paper/sn-main.aux
+paper/sn-main.bbl
+paper/sn-main.blg
+paper/sn-main.log
+paper/sn-main.out
+paper/springer-template/
 
 # IntelliJ based IDEs
 .idea

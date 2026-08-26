@@ -1,9 +1,11 @@
 pub mod ascii;
 pub mod chunk;
+pub mod cluster;
 pub mod collocations;
 pub mod cyk;
 pub mod error_state;
 pub mod freqdist;
+pub mod hmm;
 pub mod linear;
 pub mod lm;
 pub mod morphy;
@@ -16,8 +18,13 @@ pub mod porter;
 pub mod stopwords;
 pub mod stream_freqdist;
 pub mod tagger;
+#[cfg(not(target_arch = "wasm32"))]
+pub mod text_linear;
 pub mod translation;
 pub mod token_ids;
+
+#[cfg(not(target_arch = "wasm32"))]
+pub mod wordnet;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub mod ffi;

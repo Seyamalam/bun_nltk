@@ -20,7 +20,7 @@ const nativeLibPath = process.env.BUN_NLTK_NATIVE_LIB ?? prebuiltLibPath;
 if (!existsSync(nativeLibPath)) {
   throw new Error(
     `native library not found for platform=${process.platform} arch=${process.arch}: ${nativeLibPath}.` +
-      `\nSupported prebuilt targets: linux-x64, win32-x64.` +
+      `\nSupported prebuilt targets: darwin-arm64, linux-x64, win32-x64.` +
       `\nNo install-time native fallback is available.` +
       `\nFor local development overrides, set BUN_NLTK_NATIVE_LIB to a compiled binary path.`,
   );
@@ -159,6 +159,22 @@ const lib = dlopen(nativeLibPath, {
     args: ["ptr", "usize", "u32", "ptr", "usize"],
     returns: "u32",
   },
+  bunnltk_wordnet_open: {
+    args: ["ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_wordnet_free: {
+    args: ["u64"],
+    returns: "void",
+  },
+  bunnltk_wordnet_query_count: {
+    args: ["u64", "ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_wordnet_query_fill: {
+    args: ["u64", "ptr", "usize"],
+    returns: "u64",
+  },
   bunnltk_lm_eval_ids: {
     args: [
       "ptr",
@@ -216,6 +232,71 @@ const lib = dlopen(nativeLibPath, {
   bunnltk_linear_scores_sparse_ids: {
     args: ["ptr", "usize", "ptr", "usize", "ptr", "usize", "u32", "u32", "ptr", "usize", "ptr", "usize", "ptr", "usize"],
     returns: "void",
+  },
+  bunnltk_linear_train_sparse_ids: {
+    args: [
+      "ptr",
+      "usize",
+      "ptr",
+      "usize",
+      "ptr",
+      "usize",
+      "ptr",
+      "usize",
+      "u32",
+      "u32",
+      "u32",
+      "u32",
+      "f64",
+      "f64",
+      "f64",
+      "ptr",
+      "usize",
+      "ptr",
+      "usize",
+    ],
+    returns: "void",
+  },
+  bunnltk_linear_text_train: {
+    args: [
+      "ptr",
+      "usize",
+      "ptr",
+      "usize",
+      "ptr",
+      "usize",
+      "u32",
+      "u32",
+      "u32",
+      "u32",
+      "u32",
+      "u32",
+      "u32",
+      "f64",
+      "f64",
+      "f64",
+    ],
+    returns: "u64",
+  },
+  bunnltk_linear_text_result_len: {
+    args: ["u64"],
+    returns: "u64",
+  },
+  bunnltk_linear_text_result_fill: {
+    args: ["u64", "ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_linear_text_result_free: {
+    args: ["u64"],
+    returns: "void",
+  },
+  bunnltk_hmm_viterbi_ids: {
+    args: ["ptr", "usize", "u32", "u32", "ptr", "usize", "ptr", "usize", "ptr", "usize", "ptr", "usize"],
+    returns: "void",
+  },
+  bunnltk_kmeans_fit_euclidean: {
+    args: ["ptr", "usize", "u32", "u32", "u32", "f64", "u32", "u32", "ptr", "usize"],
+    returns: "u32",
   },
   bunnltk_freqdist_stream_new: {
     args: [],
@@ -921,6 +1002,214 @@ export function wordnetMorphyAsciiNative(word: string, pos?: "n" | "v" | "a" | "
   return new TextDecoder().decode(out.subarray(0, written));
 }
 
+const nativeWordNetFinalizer = new FinalizationRegistry<bigint>((handle) => {
+  try {
+    lib.symbols.bunnltk_wordnet_free(handle);
+  } catch {
+    // Process shutdown can unload the native library before finalizers run.
+  }
+});
+
+export type NativeWordNetRequest = {
+  op: string;
+  id?: string;
+  other?: string;
+  word?: string;
+  pos?: "n" | "v" | "a" | "r";
+  offset?: string;
+  max_depth?: number;
+  relation?: "hypernyms" | "hyponyms" | "similarTo" | "antonyms";
+  queries?: Array<{ word: string; pos?: "n" | "v" | "a" | "r" }>;
+};
+
+type NativeWordNetSynset = {
+  id: string;
+  pos: "n" | "v" | "a" | "r";
+  lemmas: string[];
+  gloss: string;
+  examples: string[];
+  hypernyms: string[];
+  hyponyms: string[];
+  similarTo: string[];
+  antonyms: string[];
+};
+
+class NativeWordNetResponseReader {
+  readonly #bytes: Uint8Array;
+  readonly #view: DataView;
+  readonly #decoder = new TextDecoder();
+  #offset = 0;
+
+  constructor(bytes: Uint8Array) {
+    this.#bytes = bytes;
+    this.#view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  }
+
+  get done(): boolean {
+    return this.#offset === this.#bytes.length;
+  }
+
+  u8(): number {
+    this.#require(1);
+    return this.#bytes[this.#offset++]!;
+  }
+
+  u32(): number {
+    this.#require(4);
+    const value = this.#view.getUint32(this.#offset, true);
+    this.#offset += 4;
+    return value;
+  }
+
+  string(): string {
+    const length = this.u32();
+    this.#require(length);
+    const value = this.#decoder.decode(this.#bytes.subarray(this.#offset, this.#offset + length));
+    this.#offset += length;
+    return value;
+  }
+
+  strings(): string[] {
+    const count = this.u32();
+    const values = new Array<string>(count);
+    for (let i = 0; i < count; i += 1) values[i] = this.string();
+    return values;
+  }
+
+  synset(): NativeWordNetSynset {
+    const id = this.string();
+    const pos = nativeWordNetPosFromCode(this.u8());
+    return {
+      id,
+      pos,
+      lemmas: this.strings(),
+      gloss: this.string(),
+      examples: this.strings(),
+      hypernyms: this.strings(),
+      hyponyms: this.strings(),
+      similarTo: this.strings(),
+      antonyms: this.strings(),
+    };
+  }
+
+  synsets(): NativeWordNetSynset[] {
+    const count = this.u32();
+    const values = new Array<NativeWordNetSynset>(count);
+    for (let i = 0; i < count; i += 1) values[i] = this.synset();
+    return values;
+  }
+
+  #require(length: number): void {
+    if (length < 0 || this.#offset + length > this.#bytes.length) {
+      throw new Error("invalid native WordNet response length");
+    }
+  }
+}
+
+function nativeWordNetPosFromCode(code: number): "n" | "v" | "a" | "r" {
+  if (code === 1) return "n";
+  if (code === 2) return "v";
+  if (code === 3) return "a";
+  if (code === 4) return "r";
+  throw new Error(`invalid native WordNet part-of-speech code: ${code}`);
+}
+
+function decodeNativeWordNetResponse(bytes: Uint8Array): unknown {
+  if (
+    bytes.length < 6 ||
+    bytes[0] !== 66 ||
+    bytes[1] !== 78 ||
+    bytes[2] !== 87 ||
+    bytes[3] !== 81 ||
+    bytes[4] !== 49
+  ) {
+    throw new Error("invalid native WordNet response magic");
+  }
+  const reader = new NativeWordNetResponseReader(bytes.subarray(5));
+  const tag = reader.u8();
+  let result: unknown;
+  if (tag === 0) {
+    result = null;
+  } else if (tag === 1) {
+    result = reader.synset();
+  } else if (tag === 2) {
+    result = reader.synsets();
+  } else if (tag === 3) {
+    result = reader.strings();
+  } else if (tag === 4) {
+    result = reader.string();
+  } else if (tag === 5) {
+    const count = reader.u32();
+    const values: Array<{
+      word: string;
+      pos?: "n" | "v" | "a" | "r";
+      root: string;
+      synsets: NativeWordNetSynset[];
+    }> = [];
+    for (let i = 0; i < count; i += 1) {
+      const word = reader.string();
+      const posCode = reader.u8();
+      const root = reader.string();
+      const synsets = reader.synsets();
+      values.push(posCode === 0 ? { word, root, synsets } : { word, pos: nativeWordNetPosFromCode(posCode), root, synsets });
+    }
+    result = values;
+  } else if (tag === 6) {
+    const count = reader.u32();
+    const paths = new Array<NativeWordNetSynset[]>(count);
+    for (let i = 0; i < count; i += 1) paths[i] = reader.synsets();
+    result = paths;
+  } else if (tag === 7) {
+    result = reader.u32();
+  } else if (tag === 8) {
+    result = { synsets: reader.u32(), lemmas: reader.u32() };
+  } else {
+    throw new Error(`unknown native WordNet response tag: ${tag}`);
+  }
+  if (!reader.done) throw new Error("native WordNet response has trailing bytes");
+  return result;
+}
+
+export class NativeWordNetHandle {
+  private handle: bigint;
+  private disposed = false;
+
+  constructor(path: string) {
+    const bytes = toBuffer(path);
+    const rawHandle = lib.symbols.bunnltk_wordnet_open(ptr(bytes), bytes.length);
+    this.handle = BigInt(rawHandle);
+    assertNoNativeError("NativeWordNetHandle.constructor");
+    if (this.handle === 0n) throw new Error(`failed to open native WordNet data: ${path}`);
+    nativeWordNetFinalizer.register(this, this.handle, this);
+  }
+
+  private ensureOpen(): void {
+    if (this.disposed || this.handle === 0n) throw new Error("NativeWordNetHandle is already disposed");
+  }
+
+  query<T>(request: NativeWordNetRequest): T {
+    this.ensureOpen();
+    const requestBytes = toBuffer(JSON.stringify(request));
+    const byteCount = toNumber(
+      lib.symbols.bunnltk_wordnet_query_count(this.handle, ptr(requestBytes), requestBytes.length),
+    );
+    assertNoNativeError(`NativeWordNetHandle.query.${request.op}.count`);
+    const out = new Uint8Array(Math.max(1, byteCount));
+    const written = toNumber(lib.symbols.bunnltk_wordnet_query_fill(this.handle, ptr(out), out.length));
+    assertNoNativeError(`NativeWordNetHandle.query.${request.op}.fill`);
+    return decodeNativeWordNetResponse(out.subarray(0, written)) as T;
+  }
+
+  dispose(): void {
+    if (this.disposed || this.handle === 0n) return;
+    nativeWordNetFinalizer.unregister(this);
+    lib.symbols.bunnltk_wordnet_free(this.handle);
+    assertNoNativeError("NativeWordNetHandle.dispose");
+    this.handle = 0n;
+    this.disposed = true;
+  }
+}
+
 export type NativeLmModelType = "mle" | "lidstone" | "kneser_ney_interpolated";
 
 function nativeLmTypeCode(model: NativeLmModelType): number {
@@ -1105,6 +1394,225 @@ export function linearScoresSparseIdsNative(input: {
   );
   assertNoNativeError("linearScoresSparseIdsNative");
   return out;
+}
+
+export type NativeLinearTrainingAlgorithm = "logistic" | "svm";
+
+export function linearTrainSparseIdsNative(input: {
+  docOffsets: Uint32Array;
+  featureIds: Uint32Array;
+  featureValues: Float64Array;
+  labelIds: Uint32Array;
+  classCount: number;
+  featureCount: number;
+  algorithm: NativeLinearTrainingAlgorithm;
+  epochs: number;
+  learningRate: number;
+  l2: number;
+  margin?: number;
+}): { weights: Float64Array; bias: Float64Array } {
+  if (input.classCount <= 0 || !Number.isInteger(input.classCount)) {
+    throw new Error("classCount must be a positive integer");
+  }
+  if (input.featureCount < 0 || !Number.isInteger(input.featureCount)) {
+    throw new Error("featureCount must be a non-negative integer");
+  }
+  const docCount = input.docOffsets.length - 1;
+  if (docCount < 0 || input.labelIds.length !== docCount) {
+    throw new Error("labelIds length must match docOffsets");
+  }
+  if (input.featureIds.length !== input.featureValues.length) {
+    throw new Error("featureIds and featureValues must have the same length");
+  }
+  const weights = new Float64Array(input.classCount * input.featureCount);
+  const bias = new Float64Array(input.classCount);
+  lib.symbols.bunnltk_linear_train_sparse_ids(
+    ptr(input.docOffsets),
+    input.docOffsets.length,
+    ptr(input.featureIds),
+    input.featureIds.length,
+    ptr(input.featureValues),
+    input.featureValues.length,
+    ptr(input.labelIds),
+    input.labelIds.length,
+    input.classCount,
+    input.featureCount,
+    input.algorithm === "logistic" ? 0 : 1,
+    input.epochs,
+    input.learningRate,
+    input.l2,
+    input.margin ?? 1,
+    ptr(weights),
+    weights.length,
+    ptr(bias),
+    bias.length,
+  );
+  assertNoNativeError("linearTrainSparseIdsNative");
+  return { weights, bias };
+}
+
+export type NativeLinearTextModel = {
+  vocabulary: string[];
+  weights: Float64Array;
+  bias: Float64Array;
+};
+
+function encodeStringBatch(values: readonly string[]): { blob: Uint8Array; offsets: Uint32Array } {
+  const encoder = new TextEncoder();
+  const encoded = values.map((value) => encoder.encode(value));
+  const offsets = new Uint32Array(values.length + 1);
+  let total = 0;
+  for (let index = 0; index < encoded.length; index += 1) {
+    total += encoded[index]!.length;
+    if (total > 0xffffffff) throw new Error("encoded text batch exceeds 4 GiB");
+    offsets[index + 1] = total;
+  }
+  const blob = new Uint8Array(total);
+  let cursor = 0;
+  for (const value of encoded) {
+    blob.set(value, cursor);
+    cursor += value.length;
+  }
+  return { blob, offsets };
+}
+
+function decodeNativeLinearTextModel(bytes: Uint8Array): NativeLinearTextModel {
+  if (new TextDecoder().decode(bytes.subarray(0, 5)) !== "BNSV1") {
+    throw new Error("invalid native linear text model header");
+  }
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  let cursor = 5;
+  const featureCount = view.getUint32(cursor, true);
+  cursor += 4;
+  const classCount = view.getUint32(cursor, true);
+  cursor += 4;
+  const decoder = new TextDecoder();
+  const vocabulary = new Array<string>(featureCount);
+  for (let index = 0; index < featureCount; index += 1) {
+    const length = view.getUint32(cursor, true);
+    cursor += 4;
+    vocabulary[index] = decoder.decode(bytes.subarray(cursor, cursor + length));
+    cursor += length;
+  }
+  const weights = new Float64Array(featureCount * classCount);
+  const bias = new Float64Array(classCount);
+  for (let index = 0; index < weights.length; index += 1) {
+    weights[index] = view.getFloat64(cursor, true);
+    cursor += 8;
+  }
+  for (let index = 0; index < bias.length; index += 1) {
+    bias[index] = view.getFloat64(cursor, true);
+    cursor += 8;
+  }
+  if (cursor !== bytes.length) throw new Error("native linear text model has trailing or missing bytes");
+  return { vocabulary, weights, bias };
+}
+
+export function linearTextTrainNative(input: {
+  texts: readonly string[];
+  labelIds: Uint32Array;
+  classCount: number;
+  ngramMin: number;
+  ngramMax: number;
+  binary: boolean;
+  maxFeatures: number;
+  algorithm: NativeLinearTrainingAlgorithm;
+  epochs: number;
+  learningRate: number;
+  l2: number;
+  margin?: number;
+}): NativeLinearTextModel {
+  if (input.texts.length === 0 || input.texts.length !== input.labelIds.length) {
+    throw new Error("texts and labelIds must have the same non-zero length");
+  }
+  const { blob, offsets } = encodeStringBatch(input.texts);
+  const rawHandle = lib.symbols.bunnltk_linear_text_train(
+    ptr(blob),
+    blob.length,
+    ptr(offsets),
+    offsets.length,
+    ptr(input.labelIds),
+    input.labelIds.length,
+    input.classCount,
+    input.ngramMin,
+    input.ngramMax,
+    input.binary ? 1 : 0,
+    input.maxFeatures,
+    input.algorithm === "logistic" ? 0 : 1,
+    input.epochs,
+    input.learningRate,
+    input.l2,
+    input.margin ?? 1,
+  );
+  const handle = BigInt(rawHandle);
+  assertNoNativeError("linearTextTrainNative.train");
+  if (handle === 0n) throw new Error("native text training returned an empty handle");
+  try {
+    const byteCount = toNumber(lib.symbols.bunnltk_linear_text_result_len(handle));
+    assertNoNativeError("linearTextTrainNative.len");
+    const bytes = new Uint8Array(byteCount);
+    const written = toNumber(lib.symbols.bunnltk_linear_text_result_fill(handle, ptr(bytes), bytes.length));
+    assertNoNativeError("linearTextTrainNative.fill");
+    return decodeNativeLinearTextModel(bytes.subarray(0, written));
+  } finally {
+    lib.symbols.bunnltk_linear_text_result_free(handle);
+    assertNoNativeError("linearTextTrainNative.free");
+  }
+}
+
+export function hmmViterbiIdsNative(input: {
+  symbolIds: Uint32Array;
+  stateCount: number;
+  symbolCount: number;
+  priors: Float32Array;
+  transitions: Float32Array;
+  outputs: Float32Array;
+}): Uint32Array {
+  if (input.symbolIds.length === 0) return new Uint32Array(0);
+  const out = new Uint32Array(input.symbolIds.length);
+  lib.symbols.bunnltk_hmm_viterbi_ids(
+    ptr(input.symbolIds),
+    input.symbolIds.length,
+    input.stateCount,
+    input.symbolCount,
+    ptr(input.priors),
+    input.priors.length,
+    ptr(input.transitions),
+    input.transitions.length,
+    ptr(input.outputs),
+    input.outputs.length,
+    ptr(out),
+    out.length,
+  );
+  assertNoNativeError("hmmViterbiIdsNative");
+  return out;
+}
+
+export function kmeansFitEuclideanNative(input: {
+  vectors: Float64Array;
+  pointCount: number;
+  dimensions: number;
+  clusterCount: number;
+  convergence: number;
+  avoidEmptyClusters: boolean;
+  initialMeans: Float64Array;
+  maxIterations?: number;
+}): { means: Float64Array; iterations: number } {
+  const means = input.initialMeans.slice();
+  const iterations = lib.symbols.bunnltk_kmeans_fit_euclidean(
+    ptr(input.vectors),
+    input.vectors.length,
+    input.pointCount,
+    input.dimensions,
+    input.clusterCount,
+    input.convergence,
+    input.avoidEmptyClusters ? 1 : 0,
+    input.maxIterations ?? 10_000,
+    ptr(means),
+    means.length,
+  );
+  assertNoNativeError("kmeansFitEuclideanNative");
+  return { means, iterations };
 }
 
 export function porterStemAsciiTokens(tokens: string[]): string[] {

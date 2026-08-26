@@ -50,7 +50,24 @@ bun run examples/inference_resolution.ts # FOL resolution: Socrates is mortal
 - API reference: [docs/API.md](docs/API.md)
 - Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md)
 - Publishing guide: [docs/PUBLISHING.md](docs/PUBLISHING.md)
+- Linux and Windows native-host validation: [docs/NATIVE_HOST_VALIDATION.md](docs/NATIVE_HOST_VALIDATION.md)
 - Changelog: [CHANGELOG.md](CHANGELOG.md)
+
+## Validate on a real Linux or Windows host
+
+The release binaries are committed, so testers do not need a compiler toolchain.
+
+```bash
+# Linux x64
+bash scripts/verify-linux.sh
+```
+
+```powershell
+# Windows x64
+.\scripts\verify-windows.cmd
+```
+
+Each command installs the locked JavaScript dependencies, tests the native library on that operating system, compares native Rust with the TypeScript fallback on the same machine, and writes a JSON report under `artifacts/`. See [the native-host guide](docs/NATIVE_HOST_VALIDATION.md) for Bun installation commands and the 15-round paper run.
 
 
 ## Implemented in this milestone
@@ -89,7 +106,8 @@ bun run examples/inference_resolution.ts # FOL resolution: Socrates is mortal
 - WordNet graph helpers (`hypernymPaths`, `lowestCommonHypernyms`, `shortestPathDistance`, `pathSimilarity`)
 - Native morphy accelerator (`wordnetMorphyAsciiNative`) with WASM equivalent
 - Packed WordNet corpus pipeline (`wordnet:pack`) with binary loader (`loadWordNetPacked`)
-- Default WordNet runtime loader (`loadWordNet`) that uses packed official corpus when present
+- Stateful native WordNet loader with batched lookup and lazy JavaScript row materialization
+- Default WordNet runtime loader (`loadWordNet`) that uses an explicit packed corpus when present
 - N-gram language model stack (`MLE`, `Lidstone`, `Kneser-Ney Interpolated`) with Python comparison harness
 - Native/WASM LM ID-evaluation hot loop for batched score + perplexity paths
 - Regexp chunk parser primitives with IOB conversion and Python parity harness
@@ -104,6 +122,9 @@ bun run examples/inference_resolution.ts # FOL resolution: Socrates is mortal
 - Shared sparse text vectorizer (`TextFeatureVectorizer`) + sparse batch flattening utility
 - Decision tree text classifier APIs (`DecisionTreeTextClassifier`)
 - Linear text models (`LogisticTextClassifier`, `LinearSvmTextClassifier`) with native sparse scoring fast path
+- Native text vectorization and optimization for logistic regression and linear SVM training
+- Native Viterbi decoding for hidden Markov model taggers
+- Native Euclidean K-means convergence loop with TypeScript fallback for custom distance functions
 - Perceptron text classifier APIs (`PerceptronTextClassifier`)
 - Conditional Exponential classifier compatibility APIs (`ConditionalExponentialTextClassifier`)
 - Positive Naive Bayes classifier APIs (`PositiveNaiveBayesTextClassifier`)
@@ -145,8 +166,8 @@ All benchmarks below use `bench/datasets/synthetic.txt` on this machine.
 
 Notes:
 - Sentence tokenizer is a Punkt-compatible subset, not full Punkt parity on arbitrary corpora.
-- Full WordNet corpus binaries are prepared at build/release time via `bun run wordnet:prepare:default`; npm still does not bundle raw upstream dict files.
-- Runtime `loadWordNet()` prefers packed official corpus when available, then falls back to extended JSON corpus.
+- The core npm package omits the 30 MB full WordNet payload. Set `BUN_NLTK_WORDNET_PATH` or pass a packed path to `loadWordNetPacked()` to opt in.
+- Runtime `loadWordNet()` uses an explicit packed corpus when available, then falls back to the bundled extended JSON corpus.
 - Fixture parity harnesses are available via `bench:parity:sentence` and `bench:parity:tagger`.
 - SIMD fast path benchmark (`bench:compare:simd`) shows `countTokensAscii` at `1.22x` and normalization no-stopword path at `2.73x` over scalar baseline.
 
@@ -176,6 +197,19 @@ Notes:
 ```bash
 bun run build:rust
 ```
+
+## Focused package entrypoints
+
+Use focused imports when the root compatibility barrel is unnecessary:
+
+```ts
+import { tokenizeAscii } from "bun_nltk/tokenize";
+import { KMeansClusterer } from "bun_nltk/cluster";
+import { loadWordNetPacked } from "bun_nltk/wordnet";
+```
+
+Other entrypoints include `bun_nltk/native`, `bun_nltk/wasm`, `bun_nltk/reference`,
+`bun_nltk/classify`, `bun_nltk/linear-models`, and `bun_nltk/metrics`.
 
 ## Build WASM library
 
@@ -439,7 +473,7 @@ docker build -t bun_nltk . && docker run --rm bun_nltk
 ## Notes
 
 - Native library output path is `native/bun_nltk.{dll|so|dylib}`.
-- npm package ships prebuilt native binaries for `linux-x64` and `win32-x64`, plus `native/bun_nltk.wasm`.
+- npm package ships prebuilt native binaries for `darwin-arm64`, `linux-x64`, and `win32-x64`, plus `native/bun_nltk.wasm`.
 - Runtime native loading is prebuilt-first with no implicit local native fallback.
 - No install-time lifecycle scripts are used, so `bun pm trust` is not required for install.
 - Current tokenizer rule is `[A-Za-z0-9']+` (lowercased ASCII).

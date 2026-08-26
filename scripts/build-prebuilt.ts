@@ -4,28 +4,44 @@ import { join, resolve } from "node:path";
 const root = resolve(import.meta.dir, "..");
 
 type PrebuiltTarget = {
-  platform: "linux" | "win32";
-  arch: "x64";
+  platform: "darwin" | "linux" | "win32";
+  arch: "arm64" | "x64";
   rustTarget: string;
-  ext: "so" | "dll";
+  buildTarget?: string;
+  ext: "dylib" | "so" | "dll";
+  cross: boolean;
 };
 
 const targets: PrebuiltTarget[] = [
   {
+    platform: "darwin",
+    arch: "arm64",
+    rustTarget: "aarch64-apple-darwin",
+    ext: "dylib",
+    cross: false,
+  },
+  {
     platform: "linux",
     arch: "x64",
     rustTarget: "x86_64-unknown-linux-gnu",
+    buildTarget: "x86_64-unknown-linux-gnu.2.17",
     ext: "so",
+    cross: true,
   },
   {
     platform: "win32",
     arch: "x64",
     rustTarget: "x86_64-pc-windows-gnu",
     ext: "dll",
+    cross: true,
   },
 ];
 
 const cargoBin = process.env.BUN_NLTK_CARGO_BIN ?? "cargo";
+
+if (process.platform !== "darwin" || process.arch !== "arm64") {
+  throw new Error("the local three-platform build currently requires a darwin-arm64 host");
+}
 
 for (const target of targets) {
   const outDir = join(root, "native", "prebuilt", `${target.platform}-${target.arch}`);
@@ -38,10 +54,10 @@ for (const target of targets) {
   const proc = Bun.spawnSync(
     [
       cargoBin,
-      "build",
+      target.cross ? "zigbuild" : "build",
       "--release",
       "--target",
-      target.rustTarget,
+      target.buildTarget ?? target.rustTarget,
       "--manifest-path",
       join("rust", "Cargo.toml"),
     ],
@@ -60,5 +76,9 @@ for (const target of targets) {
 
   copyFileSync(cargoOutPath, outPath);
 
-  console.log(`Built prebuilt native: ${outPath} (target: ${target.rustTarget}, cargo: ${cargoBin})`);
+  console.log(
+    `Built prebuilt native: ${outPath} (target: ${target.buildTarget ?? target.rustTarget}, command: ${cargoBin} ${
+      target.cross ? "zigbuild" : "build"
+    })`,
+  );
 }
