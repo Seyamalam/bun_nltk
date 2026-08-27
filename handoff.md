@@ -100,10 +100,10 @@ The current PDF is 22 pages. All pages were visually inspected after the rewrite
 The manuscript is registered in Paper Amigo as project `52034a9e-3913-4313-b7f7-b0e696fe21bf`. `paper/paper-amigo.json` records the project, remote file key, and SHA-256 hash. Run this after any paper build:
 
 ```bash
-bun run scripts/check-paper-amigo-sync.ts
+bun run scripts/sync-paper-amigo.ts
 ```
 
-The check compares `paper/sn-main.pdf` with both the manifest and Paper Amigo. As of 2026-08-27, `paper-amigo --help` exposes project creation and listing but no update, replacement, or deletion command. Do not create a duplicate project silently. If the PDF changes, check the CLI again and replace the file in the recorded project when that operation becomes available. Update the manifest only after the remote file matches the rebuilt PDF.
+The command compares `paper/sn-main.pdf` with the current project file. It does nothing when the hashes match. When the PDF changes, it calls `paper-amigo project replace`, verifies the new server record, and updates the manifest with the new key and hash. It never creates a duplicate project.
 
 ## Remaining work
 
@@ -129,6 +129,6 @@ Do not replace missing Linux or Windows results with Wine, Docker cross-compilat
 - `paper/sn-main.pdf`
 - `paper/bench/native_migration_results.json`
 - `paper/paper-amigo.json`
-- `scripts/check-paper-amigo-sync.ts`
+- `scripts/sync-paper-amigo.ts`
 - `artifacts/fidelity-report.json`
 - `artifacts/native-host-darwin-arm64.json`

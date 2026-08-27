@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use bun_nltk, cite this software and the accompanying manuscript."
+title: "bun_nltk: broad NLTK API coverage in TypeScript with Rust/WASM acceleration and local multi-platform builds"
+type: software
+version: 0.16.0
+date-released: 2026-08-27
+license: Apache-2.0
+authors:
+  - given-names: "Touhidul Alam"
+    family-names: "Seyam"
+    affiliation: "BGC Trust University Bangladesh"
+    orcid: "https://orcid.org/0009-0007-7512-1893"
+abstract: >-
+  bun_nltk is a TypeScript NLP toolkit with import coverage for 241 names in a
+  frozen NLTK API index. It includes selected Rust native and WebAssembly paths,
+  432 tests, and a separate 37-group differential fidelity gate.
+repository-code: "https://github.com/Seyamalam/bun_nltk"
+url: "https://www.npmjs.com/package/bun_nltk"
+keywords:
+  - natural language processing
+  - NLTK
+  - TypeScript
+  - Rust
+  - WebAssembly
+  - Bun
