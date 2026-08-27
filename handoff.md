@@ -1,10 +1,10 @@
 # Handoff: native migration, local release, and paper
 
-Date: 2026-08-26. Repository: `/Users/seyam/Work/bun_nltk`. Branch: `master`. The previous committed baseline was `8b20db2`; this handoff describes the release work added after it.
+Date: 2026-08-27. Repository: `/Users/seyam/Work/bun_nltk`. Branch: `master`. The previous committed baseline was `8b20db2`; this handoff describes the release work added after it.
 
 ## Current state
 
-The Rust migration, local release workflow, native-host validators, and Springer manuscript update are complete.
+The Rust migration, local release workflow, native-host validators, Springer manuscript update, and npm release are complete.
 
 The project does not rely on GitHub Actions. The maintainer has a payment issue with hosted Actions, so builds, release checks, benchmarks, and paper reproduction must stay runnable locally.
 
@@ -12,7 +12,7 @@ The canonical manuscript is `paper/sn-main.tex`. Its compiled output is `paper/s
 
 ## Verified local release
 
-`bun run release:local` passed on the author's Apple Silicon Mac on 2026-08-26. The command completed:
+`bun run release:local` passed on the author's Apple Silicon Mac on 2026-08-27. The command completed:
 
 - TypeScript type checking and Biome linting;
 - 34 Rust tests;
@@ -25,7 +25,15 @@ The canonical manuscript is `paper/sn-main.tex`. Its compiled output is `paper/s
 - package size and allowlist checks;
 - packing and installing the real npm tarball in a clean temporary project.
 
-The validated tarball is `artifacts/local-release/bun_nltk-0.16.0.tgz`. It contains 213 files, is 1,724,393 bytes packed, and is 4,529,874 bytes unpacked. The package smoke test passed.
+The validated Bun tarball is `artifacts/local-release/bun_nltk-0.16.0.tgz`. It contains 213 files, is 1,724,397 bytes packed, and is 4,529,884 bytes unpacked. The package smoke test passed.
+
+## npm release
+
+`bun_nltk@0.16.0` was published manually to npm from commit `1850862` on 2026-08-27. The public `latest` tag resolves to 0.16.0. npm reports tarball SHA-1 `ae94b48154883d23a3244d12a5317b5208290286` and SHA-512 integrity `sha512-kedTF3tKf/MI0uyPIuGXPZx7MX44shqnmoPhOfHZe3fMDDVKvVSHQZKPsaH3TIKxMXJFfIlsL+5Ae9fdgLJALg==`.
+
+A clean smoke test against `bun_nltk@0.16.0` from the public registry passed. Publishing used a seven-day granular token limited to read/write access for `bun_nltk`, with no organization access. The token value was not printed or committed, and the temporary npm configuration used for publishing was removed.
+
+The public `v0.16.0` Git tag predates this release work and points to commit `a5598e8`. It was not moved because rewriting a public tag requires an explicit maintainer decision. The npm package was published from `1850862`.
 
 Cross-compilation checks file format and packaging. It is not runtime proof for Linux or Windows.
 
@@ -107,12 +115,13 @@ The command compares `paper/sn-main.pdf` with the current project file. It does 
 
 ## Remaining work
 
-Only external evidence and release administration remain:
+Only external host evidence and archive submission remain:
 
 1. Ask one x64 Linux tester and one x64 Windows tester to clone the release commit and run the commands above.
 2. Archive both returned JSON reports. Update the paper only with results produced on those native operating systems.
 3. Run `bun run release:local` again after any code, binary, package allowlist, or release-documentation change.
-4. Publish version 0.16.0 manually from the validated tarball when authorized. No GitHub Actions step is required.
+4. Upload `artifacts/zenodo/bun_nltk-0.16.0-source.zip` to Zenodo and `artifacts/submission/bun_nltk-paper-0.16.0.zip` to the selected paper submission system when those destinations are ready.
+5. Decide whether to leave the historical `v0.16.0` tag untouched or replace it with a force-updated tag that matches the npm release. Do not move it silently.
 
 Do not replace missing Linux or Windows results with Wine, Docker cross-compilation, emulation, or raw comparisons between different computers.
 
@@ -132,3 +141,5 @@ Do not replace missing Linux or Windows results with Wine, Docker cross-compilat
 - `scripts/sync-paper-amigo.ts`
 - `artifacts/fidelity-report.json`
 - `artifacts/native-host-darwin-arm64.json`
+- `artifacts/zenodo/bun_nltk-0.16.0-source.zip`
+- `artifacts/submission/bun_nltk-paper-0.16.0.zip`
