@@ -34,7 +34,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Seyamalam/bun_nltk"
+    "url": "git+https://github.com/Seyamalam/bun_nltk.git"
   },
   "homepage": "https://github.com/Seyamalam/bun_nltk#readme",
   "bugs": {
