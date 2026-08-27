@@ -33,7 +33,7 @@ The validated Bun tarball is `artifacts/local-release/bun_nltk-0.16.0.tgz`. It c
 
 A clean smoke test against `bun_nltk@0.16.0` from the public registry passed. Publishing used a seven-day granular token limited to read/write access for `bun_nltk`, with no organization access. The token value was not printed or committed, and the temporary npm configuration used for publishing was removed.
 
-The public `v0.16.0` Git tag predates this release work and points to commit `a5598e8`. It was not moved because rewriting a public tag requires an explicit maintainer decision. The npm package was published from `1850862`.
+The public `v0.16.0` Git tag points to commit `1850862`, the exact source state used for the npm publication. On 2026-08-27, the maintainer explicitly authorized correcting the earlier tag, which had pointed to the pre-release parity commit `a5598e8`.
 
 Cross-compilation checks file format and packaging. It is not runtime proof for Linux or Windows.
 
@@ -121,7 +121,6 @@ Only external host evidence and archive submission remain:
 2. Archive both returned JSON reports. Update the paper only with results produced on those native operating systems.
 3. Run `bun run release:local` again after any code, binary, package allowlist, or release-documentation change.
 4. Upload `artifacts/zenodo/bun_nltk-0.16.0-source.zip` to Zenodo and `artifacts/submission/bun_nltk-paper-0.16.0.zip` to the selected paper submission system when those destinations are ready.
-5. Decide whether to leave the historical `v0.16.0` tag untouched or replace it with a force-updated tag that matches the npm release. Do not move it silently.
 
 Do not replace missing Linux or Windows results with Wine, Docker cross-compilation, emulation, or raw comparisons between different computers.
 
