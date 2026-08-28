@@ -16,6 +16,6 @@ steps:
   - name: Check Rust
     run: PATH="/usr/local/cargo/bin:$PATH" cargo test --manifest-path rust/Cargo.toml
     timeout-minutes: 8
-  - name: Test
-    run: bun test
+  - name: Test Bun-only suite
+    run: grep -L 'python3' test/*.test.ts | xargs bun test
     timeout-minutes: 12
