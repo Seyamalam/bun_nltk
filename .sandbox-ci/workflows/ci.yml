@@ -11,7 +11,7 @@ steps:
     run: bun install --frozen-lockfile
     timeout-minutes: 5
   - name: Typecheck and lint
-    run: bun run typecheck && bun run lint
+    run: bun x tsc -p tsconfig.json --noEmit && bun x @biomejs/biome check src test bench scripts index.ts
     timeout-minutes: 8
   - name: Check Rust
     run: cargo test --manifest-path rust/Cargo.toml
