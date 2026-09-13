@@ -27,7 +27,7 @@ export type NgramLanguageModelOptions = {
 };
 
 function key(tokens: string[]): string {
-  return tokens.join("\u0001");
+  return JSON.stringify(tokens);
 }
 
 function tail(tokens: string[], size: number): string[] {
@@ -78,16 +78,10 @@ export class NgramLanguageModel {
 
   private readonly countsByOrder: Array<Map<string, number>>;
   private readonly followersByContext: Array<Map<string, Set<string>>>;
-  private readonly continuationByWord: Map<string, Set<string>>;
-  private readonly continuationTypeCount: number;
+  private readonly contextTotals: Array<Map<string, number>>;
+  private readonly continuationCounts: Array<Map<string, number>>;
+  private readonly continuationTotals: Array<Map<string, number>>;
   private readonly unigramTotal: number;
-  // NLTK's padded_everygram_pipeline pads order-1 tokens on BOTH sides, while
-  // prepareSentences above pads only one end token on the right. The extra
-  // right-pad tokens shift the unigram distribution that StupidBackoff,
-  // WittenBell and AbsoluteDiscounting bottom out at (unigrams.freq(word)),
-  // so the new models correct for it here without changing any existing
-  // counts or behavior.
-  private readonly endTokenExtraCount: number;
   private readonly nativePrepared: NativePrepared | null;
 
   constructor(sentences: string[][], options: NgramLanguageModelOptions) {
@@ -106,7 +100,9 @@ export class NgramLanguageModel {
 
     this.countsByOrder = Array.from({ length: this.order + 1 }, () => new Map<string, number>());
     this.followersByContext = Array.from({ length: this.order + 1 }, () => new Map<string, Set<string>>());
-    this.continuationByWord = new Map<string, Set<string>>();
+    this.contextTotals = Array.from({ length: this.order + 1 }, () => new Map<string, number>());
+    this.continuationCounts = Array.from({ length: this.order + 1 }, () => new Map<string, number>());
+    this.continuationTotals = Array.from({ length: this.order + 1 }, () => new Map<string, number>());
 
     const vocab = new Set<string>();
     const prepared = this.prepareSentences(sentences);
@@ -116,35 +112,38 @@ export class NgramLanguageModel {
         if (row.length < n) continue;
         for (let i = 0; i <= row.length - n; i += 1) {
           const gram = row.slice(i, i + n);
+          const firstOccurrence = !this.countsByOrder[n]!.has(key(gram));
           increment(this.countsByOrder[n]!, key(gram));
 
           if (n >= 2) {
             const context = gram.slice(0, n - 1);
             const predicted = gram[n - 1]!;
             addToSetMap(this.followersByContext[n]!, key(context), predicted);
-            if (n === 2) {
-              const predecessor = context[0]!;
-              addToSetMap(this.continuationByWord, predicted, predecessor);
+            increment(this.contextTotals[n]!, key(context));
+            if (firstOccurrence) {
+              increment(this.continuationCounts[n - 1]!, key(gram.slice(1)));
+              increment(this.continuationTotals[n - 1]!, key(gram.slice(1, -1)));
             }
           }
         }
       }
     }
 
+    vocab.add("<UNK>");
     this.vocabulary = [...vocab].sort();
     this.unigramTotal = [...this.countsByOrder[1]!.values()].reduce((acc, count) => acc + count, 0);
-    this.endTokenExtraCount =
-      sentences.length * Math.max(0, (this.padRight ? this.order - 2 : this.order - 1));
-    this.continuationTypeCount = [...this.continuationByWord.values()].reduce((acc, set) => acc + set.size, 0);
     this.nativePrepared = this.order <= 3 ? this.prepareNative(prepared) : null;
   }
 
   private prepareSentences(sentences: string[][]): string[][] {
     const out: string[][] = [];
-    const leftPad = this.padLeft ? Array.from({ length: Math.max(0, this.order - 1) }, () => this.startToken) : [];
+    const leftPad = this.padLeft
+      ? Array.from({ length: Math.max(0, this.order - 1) }, () => this.startToken)
+      : [];
     for (const sentence of sentences) {
-      const row = [...leftPad, ...sentence];
-      if (this.padRight) row.push(this.endToken);
+      const row = [...leftPad, ...sentence.map((token) => token.toLowerCase())];
+      if (this.padRight)
+        row.push(...Array.from({ length: Math.max(0, this.order - 1) }, () => this.endToken));
       out.push(row);
     }
     return out;
@@ -161,7 +160,7 @@ export class NgramLanguageModel {
     }
     if (!tokenToId.has(this.startToken)) tokenToId.set(this.startToken, tokenToId.size);
     if (!tokenToId.has(this.endToken)) tokenToId.set(this.endToken, tokenToId.size);
-    const unknownId = tokenToId.get(this.endToken) ?? 0;
+    const unknownId = tokenToId.get("<UNK>")!;
 
     const flat: number[] = [];
     const offsets: number[] = [0];
@@ -186,9 +185,13 @@ export class NgramLanguageModel {
     };
   }
 
+  private normalizeToken(token: string): string {
+    return token === this.startToken || token === this.endToken ? token : token.toLowerCase();
+  }
+
   private encodeToken(token: string): number {
     if (!this.nativePrepared) return 0;
-    return this.nativePrepared.tokenToId.get(token.toLowerCase()) ?? this.nativePrepared.unknownId;
+    return this.nativePrepared.tokenToId.get(this.normalizeToken(token)) ?? this.nativePrepared.unknownId;
   }
 
   private mleScore(word: string, context: string[]): number {
@@ -201,8 +204,8 @@ export class NgramLanguageModel {
 
     const n = ctx.length + 1;
     const gramCount = this.countsByOrder[n]!.get(key([...ctx, word])) ?? 0;
-    const ctxCount = this.countsByOrder[n - 1]!.get(key(ctx)) ?? 0;
-    if (ctxCount === 0) return this.mleScore(word, ctx.slice(1));
+    const ctxCount = this.contextTotals[n]?.get(key(ctx)) ?? 0;
+    if (ctxCount === 0) return 0;
     return gramCount / ctxCount;
   }
 
@@ -216,46 +219,34 @@ export class NgramLanguageModel {
 
     const n = ctx.length + 1;
     const gramCount = this.countsByOrder[n]!.get(key([...ctx, word])) ?? 0;
-    const ctxCount = this.countsByOrder[n - 1]!.get(key(ctx)) ?? 0;
-    if (ctxCount === 0) return this.lidstoneScore(word, ctx.slice(1));
+    const ctxCount = this.contextTotals[n]?.get(key(ctx)) ?? 0;
     return (gramCount + this.gamma) / (ctxCount + this.gamma * vocabSize);
   }
 
   private kneserNeyScore(word: string, context: string[]): number {
     const ctx = this.backoffContext(context);
     if (ctx.length === 0) {
-      const continuation = this.continuationByWord.get(word)?.size ?? 0;
-      if (this.continuationTypeCount === 0) return 1 / Math.max(1, this.vocabulary.length);
-      if (continuation === 0) return 1 / (Math.max(1, this.continuationTypeCount) * 10);
-      return continuation / this.continuationTypeCount;
+      const total = this.continuationTotals[1]?.get(key([])) ?? 0;
+      return total ? (this.continuationCounts[1]!.get(key([word])) ?? 0) / total : 0;
     }
-
     const n = ctx.length + 1;
     const contextKey = key(ctx);
-    const ctxCount = this.countsByOrder[n - 1]!.get(contextKey) ?? 0;
-    if (ctxCount === 0) return this.kneserNeyScore(word, ctx.slice(1));
-
-    const gramCount = this.countsByOrder[n]!.get(key([...ctx, word])) ?? 0;
+    const rawTotal = this.contextTotals[n]!.get(contextKey) ?? 0;
+    if (rawTotal === 0) return this.kneserNeyScore(word, ctx.slice(1));
+    const total = n === this.order ? rawTotal : (this.continuationTotals[n]!.get(contextKey) ?? 0);
+    if (total === 0) return this.kneserNeyScore(word, ctx.slice(1));
+    const count =
+      (n === this.order ? this.countsByOrder[n]! : this.continuationCounts[n]!).get(key([...ctx, word])) ?? 0;
     const followers = this.followersByContext[n]!.get(contextKey)?.size ?? 0;
-    const lambda = (this.discount * followers) / ctxCount;
-    const discounted = Math.max(gramCount - this.discount, 0) / ctxCount;
-    return discounted + lambda * this.kneserNeyScore(word, ctx.slice(1));
+    return (
+      Math.max(count - this.discount, 0) / total +
+      ((this.discount * followers) / total) * this.kneserNeyScore(word, ctx.slice(1))
+    );
   }
 
   private unigramFreq(word: string): number {
     if (this.unigramTotal === 0) return 0;
     return (this.countsByOrder[1]!.get(key([word])) ?? 0) / this.unigramTotal;
-  }
-
-  // Unigram frequency as nltk.lm computes it: over the stream padded with
-  // order-1 tokens on both sides. See endTokenExtraCount.
-  private nltkUnigramFreq(word: string): number {
-    const total = this.unigramTotal + this.endTokenExtraCount;
-    if (total === 0) return 0;
-    const count =
-      (this.countsByOrder[1]!.get(key([word])) ?? 0) +
-      (word === this.endToken ? this.endTokenExtraCount : 0);
-    return count / total;
   }
 
   // Mirrors nltk.lm.models.StupidBackoff.unmasked_score. Scores are backoff
@@ -265,12 +256,12 @@ export class NgramLanguageModel {
   // not an information-theoretic quantity.
   private stupidBackoffScore(word: string, context: string[]): number {
     const ctx = this.backoffContext(context);
-    if (ctx.length === 0) return this.nltkUnigramFreq(word);
+    if (ctx.length === 0) return this.unigramFreq(word);
 
     const n = ctx.length + 1;
     const gramCount = this.countsByOrder[n]!.get(key([...ctx, word])) ?? 0;
     if (gramCount > 0) {
-      const ctxCount = this.countsByOrder[n - 1]!.get(key(ctx)) ?? 0;
+      const ctxCount = this.contextTotals[n]?.get(key(ctx)) ?? 0;
       return gramCount / ctxCount;
     }
     return this.alpha * this.stupidBackoffScore(word, ctx.slice(1));
@@ -280,11 +271,11 @@ export class NgramLanguageModel {
   // alpha = (1 - gamma) * P_MLE(w|ctx), gamma = n_plus / (n_plus + N(ctx)).
   private wittenBellScore(word: string, context: string[]): number {
     const ctx = this.backoffContext(context);
-    if (ctx.length === 0) return this.nltkUnigramFreq(word);
+    if (ctx.length === 0) return this.unigramFreq(word);
 
     const n = ctx.length + 1;
     const contextKey = key(ctx);
-    const ctxCount = this.countsByOrder[n - 1]!.get(contextKey) ?? 0;
+    const ctxCount = this.contextTotals[n]?.get(contextKey) ?? 0;
     if (ctxCount === 0) return this.wittenBellScore(word, ctx.slice(1));
 
     const gramCount = this.countsByOrder[n]!.get(key([...ctx, word])) ?? 0;
@@ -298,11 +289,11 @@ export class NgramLanguageModel {
   // alpha = max(count - discount, 0) / N(ctx), gamma = discount * n_plus / N(ctx).
   private absoluteDiscountingScore(word: string, context: string[]): number {
     const ctx = this.backoffContext(context);
-    if (ctx.length === 0) return this.nltkUnigramFreq(word);
+    if (ctx.length === 0) return this.unigramFreq(word);
 
     const n = ctx.length + 1;
     const contextKey = key(ctx);
-    const ctxCount = this.countsByOrder[n - 1]!.get(contextKey) ?? 0;
+    const ctxCount = this.contextTotals[n]?.get(contextKey) ?? 0;
     if (ctxCount === 0) return this.absoluteDiscountingScore(word, ctx.slice(1));
 
     const gramCount = this.countsByOrder[n]!.get(key([...ctx, word])) ?? 0;
@@ -313,12 +304,14 @@ export class NgramLanguageModel {
   }
 
   score(word: string, context: string[] = []): number {
-    const normalizedWord = word.toLowerCase();
-    const normalizedContext = context.map((item) => item.toLowerCase());
+    const normalizedWord = this.normalizeToken(word);
+    const normalizedContext = context.map((item) => this.normalizeToken(item));
     if (this.model === "lidstone") return this.lidstoneScore(normalizedWord, normalizedContext);
-    if (this.model === "kneser_ney_interpolated") return this.kneserNeyScore(normalizedWord, normalizedContext);
+    if (this.model === "kneser_ney_interpolated")
+      return this.kneserNeyScore(normalizedWord, normalizedContext);
     if (this.model === "stupid_backoff") return this.stupidBackoffScore(normalizedWord, normalizedContext);
-    if (this.model === "witten_bell_interpolated") return this.wittenBellScore(normalizedWord, normalizedContext);
+    if (this.model === "witten_bell_interpolated")
+      return this.wittenBellScore(normalizedWord, normalizedContext);
     if (this.model === "absolute_discounting_interpolated")
       return this.absoluteDiscountingScore(normalizedWord, normalizedContext);
     return this.mleScore(normalizedWord, normalizedContext);
@@ -332,10 +325,12 @@ export class NgramLanguageModel {
     if (this.nativePrepared && this.order <= 3 && NATIVE_LM_MODELS.has(this.model)) {
       return this.evaluateBatch([], tokens).perplexity;
     }
-    if (tokens.length === 0) return Number.POSITIVE_INFINITY;
-    const sequence = [...tokens.map((item) => item.toLowerCase())];
+    const sequence = [...tokens.map((item) => this.normalizeToken(item))];
     if (this.padRight) sequence.push(this.endToken);
-    const leftContext = this.padLeft ? Array.from({ length: Math.max(0, this.order - 1) }, () => this.startToken) : [];
+    if (sequence.length === 0) return Number.POSITIVE_INFINITY;
+    const leftContext = this.padLeft
+      ? Array.from({ length: Math.max(0, this.order - 1) }, () => this.startToken)
+      : [];
     const history = [...leftContext];
 
     let negLog2 = 0;

@@ -31,7 +31,7 @@ function runNative(train: DecisionTreeExample[], test: DecisionTreeExample[], ro
   let accuracy = 0;
   for (let i = 0; i < rounds; i += 1) {
     const started = performance.now();
-    const clf = trainDecisionTreeTextClassifier(train, { maxDepth: 8, minSamples: 2, maxCandidateFeatures: 256 });
+    const clf = trainDecisionTreeTextClassifier(train, { maxDepth: 8, minSamples: 2 });
     accuracy = clf.evaluate(test).accuracy;
     timings.push((performance.now() - started) / 1000);
   }
@@ -40,7 +40,7 @@ function runNative(train: DecisionTreeExample[], test: DecisionTreeExample[], ro
 
 function runPython(train: DecisionTreeExample[], test: DecisionTreeExample[], rounds: number) {
   const payloadPath = resolve(import.meta.dir, "datasets", "decision_tree_payload.json");
-  writeFileSync(payloadPath, `${JSON.stringify({ train, test, rounds }, null, 2)}\n`, "utf8");
+  writeFileSync(payloadPath, `${JSON.stringify({ train, test, rounds, maxDepth: 8, minSamples: 2 }, null, 2)}\n`, "utf8");
   const proc = Bun.spawnSync(["python3", "bench/python_decision_tree_baseline.py", "--payload-file", payloadPath], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",

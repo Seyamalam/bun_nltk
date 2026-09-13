@@ -4,12 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to publish (e.g. 0.16.0)'
-        required: false
-        default: '0.16.0'
+        description: 'Exact package version to validate and publish'
+        required: true
   push:
     tags:
       - 'v*'
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -17,6 +20,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    env:
+      RELEASE_VERSION: ${{ github.event.inputs.version || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -24,13 +29,37 @@ jobs:
           bun-version: latest
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           registry-url: https://registry.npmjs.org
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - run: bun install --frozen-lockfile
-      - run: bun run typecheck
-      - name: Build Rust (if available)
-        run: bun run build:rust || echo "no rust build, continuing"
-      - run: npm publish --access public --provenance
+      - run: bun run release:validate "$RELEASE_VERSION"
+      - run: bun run lint
+      - run: pip install nltk==3.10.3 numpy scipy
+      - run: bun run fixtures:import:nltk
+      - run: bun test ./test
+      - run: bun run fidelity:gate
+      - run: bun run native:artifacts:check
+      - run: bun run package:size:check
+      - run: bun run pack:verify:prebuilt
+      - name: Pack and test the actual release tarball
+        run: |
+          mkdir -p artifacts/publish
+          bun pm pack --ignore-scripts --destination artifacts/publish
+          version=$(node -p "require('./package.json').version")
+          bun run scripts/npm-smoke-test.ts "$PWD/artifacts/publish/bun_nltk-$version.tgz"
+      - name: Publish the validated tarball
+        run: |
+          version=$(node -p "require('./package.json').version")
+          npm publish "artifacts/publish/bun_nltk-$version.tgz" --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-validation
+          path: |
+            artifacts/fidelity-report.json
+            artifacts/publish/*.tgz

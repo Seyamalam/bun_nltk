@@ -16,7 +16,8 @@ This package is intended for Bun/Node distribution with native and WASM backends
    - `bun run build:prebuilt` (darwin-arm64 + linux-x64 + win32-x64, built locally)
    - `bun run build:wasm`
 2. Run validation:
-   - `bun run release:check`
+   - `bun run release:local`
+   - `bun run bench:release`
    - (or explicitly) `bun run pack:verify:prebuilt`
    - `bun run wasm:size:check`
    - `bun run parity:report`
@@ -31,7 +32,7 @@ This package is intended for Bun/Node distribution with native and WASM backends
 
 ## Local release workflow
 
-Run `bun run release:local`. It builds all three native targets and WASM, runs the 37-group Python-oracle fidelity
+Run `bun run release:local`. It builds all three native targets and WASM, runs the 39-group Python-oracle fidelity
 gate plus the correctness and benchmark gates, and packs the actual tarball. It executes the packaged binary on the
 author's macOS host. Cross-compilation proves that the Linux and Windows files have the expected formats, but it does
 not count as runtime validation. No GitHub Actions or GitHub secrets are required.

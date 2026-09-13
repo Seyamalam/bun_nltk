@@ -53,7 +53,7 @@ function main() {
     jsPred.length === py.predictions.length
       ? jsPred.filter((label, idx) => label === py.predictions[idx]!).length / jsPred.length
       : 0;
-  const parity = jsAcc >= 0.75 && py.accuracy >= 0.75 && agreement >= 0.5;
+  const parity = jsAcc >= 0.75 && py.accuracy >= 0.75 && agreement === 1;
   if (!parity) {
     throw new Error(
       `positive nb parity failed: jsAcc=${jsAcc.toFixed(4)} pyAcc=${py.accuracy.toFixed(4)} agreement=${agreement.toFixed(4)}`,

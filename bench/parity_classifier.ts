@@ -22,6 +22,7 @@ function main() {
     train: trainRows,
     test: testRows,
     rounds: 1,
+    smoothing: 1.0,
   });
   const proc = Bun.spawnSync(["python3", "bench/python_classifier_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),

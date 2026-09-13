@@ -80,9 +80,32 @@ jobs:
       - name: Install Python NLTK baseline deps
         run: |
           python3 -m pip install --upgrade pip
-          pip install nltk numpy scipy || echo "::warning::python parity deps unavailable; parity tests will skip"
+          pip install nltk==3.10.3 numpy scipy
       - name: Run tests
         run: bun test ./test
+
+  fidelity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: bun install --frozen-lockfile
+      - run: pip install nltk==3.10.3 numpy scipy
+      - run: bun run fixtures:import:nltk
+      - name: Run strict fidelity gate
+        if: always()
+        run: bun run fidelity:gate
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: behavioral-fidelity
+          path: artifacts/fidelity-report.json
+          if-no-files-found: error
 
   rust-lint:
     runs-on: ubuntu-latest

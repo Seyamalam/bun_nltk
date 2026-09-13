@@ -44,7 +44,8 @@ test("naive bayes classifier parity with python nltk baseline", () => {
     train: trainRows,
     test: testRows,
     rounds: 1,
-  } satisfies { train: NaiveBayesExample[]; test: NaiveBayesExample[]; rounds: number });
+    smoothing: 1.0,
+  } satisfies { train: NaiveBayesExample[]; test: NaiveBayesExample[]; rounds: number; smoothing: number });
 
   const proc = Bun.spawnSync(["python3", "bench/python_classifier_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),

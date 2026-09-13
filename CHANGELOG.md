@@ -6,17 +6,46 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-09-13
+
+### Migration from 0.16.x
+
+- Naive Bayes now defaults to categorical token-count features and smoothing 0.5. For prior training behavior, pass `{ model: "multinomial", smoothing: 1 }`. Version-1 models load automatically; new models use version 2. Default `predict()` scores are normalized base-2 logarithms; use `classifier.logBase` when converting scores.
+- MaxEnt and conditional-exponential classifiers now train with IIS. Pass `{ algorithm: "sgd" }` for the former optimizer; `learningRate`, `l2` and `maxFeatures` only configure SGD. Existing version-1 SGD models remain loadable.
+- Decision-tree training uses unigram presence, minimum-error stumps and NLTK support/depth rules. Existing serialized trees remain loadable, but retraining can produce different predictions.
+- Default English Punkt, VADER and named-entity results now follow the bundled NLTK models. Explicit ASCII subset APIs and custom NE grammars remain available.
+- Explicit PCFG probabilities are preserved rather than silently rescaled; invalid fully specified probability distributions now throw.
+- Feature-dictionary adapters still flatten dictionaries into text. Importable NLTK-like names do not imply complete behavioral compatibility; see `docs/BEHAVIORAL_PARITY.md`.
+
+
 ### Added
+
+- Matched release benchmarks with five measured runs per runtime, workload hashes, host metadata, and explicit correctness checks.
+- Long-document IIS overflow protection and explicit SGD selection through MaxEnt wrappers.
+
+- Full NLTK 3.10.3 VADER lexicon and rules, English Punkt model and statistical trainer, and binary/multiclass maximum-entropy named-entity inference.
+- Reproducible model exports with SHA-256 manifests and exact differential fixtures for sentiment, Unicode tokenizers, real documents, training parameters, and entity labels.
+- Strict fidelity reports preserve failures and distinguish skipped/unsupported groups; missing fixtures cannot pass. Prediction agreement thresholds now require 100%; speed is independent of correctness.
 
 - One-call native text vectorization and training for logistic regression and linear SVM.
 - Native HMM Viterbi and Euclidean K-means kernels with TypeScript fallbacks.
 - Compact binary WordNet query responses and a packed native WordNet backend.
-- Fully local `release:local` validation with macOS arm64, Linux x64, Windows x64, and WASM builds, benchmark/size gates, a 37-group Python-oracle fidelity gate, real tarball installation, and a native macOS runtime smoke.
+- Fully local `release:local` validation with macOS arm64, Linux x64, Windows x64, and WASM builds, benchmark/size gates, a 39-group Python-oracle fidelity gate, real tarball installation, and a native macOS runtime smoke.
 - Added one-command x64 Linux and Windows host validators. They use the checked-in release binaries, run focused correctness tests, compare native Rust with TypeScript on the same machine, install the packed tarball, and write shareable JSON reports without Rust, Python, Docker, Wine, or GitHub Actions.
 - Kept emulated Linux and Wine loaders as optional diagnostics, but removed them from `release:local` and from performance claims. Cross-platform performance now requires a native operating-system run.
 - A 15-round native-migration report with raw samples and deterministic 95% bootstrap confidence intervals.
 
 ### Changed
+
+- Correct Kneser–Ney continuation counts, training padding, unknown-token IDs and context totals in TypeScript, native Rust and WASM; fix empty-context native FFI calls.
+- Default text classifiers now match NLTK categorical Naive Bayes, IIS MaxEnt and minimum-error decision trees. Preserve legacy NB/SGD training options and version-1 model loading.
+- Preserve explicit PCFG probabilities without renormalizing rounded values or flooring zeros.
+- Add seeded probability regressions for 332 LM configurations and 12 classifier datasets, plus native/WASM and serialization checks; all 39 required fidelity groups pass.
+
+- High-level Punkt defaults to trained English inference. Explicit ASCII native/WASM APIs and version-1 models keep their subset behavior.
+- Treebank tokenization uses NLTK's ordered contraction, quote, and punctuation rules; WordPunct recognizes Unicode word characters.
+- NE chunking defaults to statistical models; explicit `grammar` preserves custom rule parsing.
+- Package size budget increases from 8 MB to 12 MB to accommodate both compressed NE models (about 5.5 MB).
 
 - Logistic regression and linear SVM now use native vectorization/training by default when the native backend is available.
 - Package contents now include a macOS arm64 prebuilt while excluding Rust sources, build scripts, and the full WordNet pack.

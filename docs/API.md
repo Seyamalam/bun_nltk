@@ -264,7 +264,15 @@ These functions are pure TypeScript reference implementations.
 
 ## Punkt
 
-- `trainPunktModel(text: string, options?: { minAbbrevCount?: number; minCollocationCount?: number; minSentenceStarterCount?: number }): { version: number; abbreviations: string[]; collocations: Array<[string, string]>; sentenceStarters: string[]; abbreviationScores?: Record<string, number>; orthographicContext?: Record<string, { lower: number; upper: number }> }`
+The default high-level tokenizer uses NLTK 3.10.3's trained English parameters
+and two-pass inference. Training produces version-2 models with `orthoContext`
+bitmasks. Version-1 serialized models retain the legacy heuristic inference.
+`sentenceTokenizePunktAsciiNative` and the WASM ASCII method remain explicit
+subsets. Training minima are optional project extensions; omit them for NLTK's
+default statistical thresholds. Successive trainer calls accumulate statistics.
+
+
+- `trainPunktModel(text: string, options?: { minAbbrevCount?: number; minCollocationCount?: number; minSentenceStarterCount?: number }): { version: number; abbreviations: string[]; collocations: Array<[string, string]>; sentenceStarters: string[]; abbreviationScores?: Record<string, number>; orthoContext?: Record<string, number>; orthographicContext?: Record<string, { lower: number; upper: number }> }`
 - `sentenceTokenizePunkt(text: string, model?: PunktModelSerialized): string[]`
 - `sentenceTokenizePunktCompat(text: string, model?: PunktModelSerialized): string[]`
 - `defaultPunktModel(): PunktModelSerialized`
@@ -356,7 +364,13 @@ These functions are pure TypeScript reference implementations.
 
 ## Classification (Naive Bayes)
 
-- `new NaiveBayesTextClassifier(options?: { smoothing?: number })`
+The default is NLTK-style categorical token-count Naive Bayes with smoothing 0.5.
+`predict()` returns normalized base-2 log probabilities. Set `model: "multinomial"`
+for the legacy algorithm, whose scores use natural logarithms. `logBase` reports
+which base is in use. Version-1 models load as multinomial; new categorical models
+serialize as version 2.
+
+- `new NaiveBayesTextClassifier(options?: { smoothing?: number; model?: "categorical" | "multinomial" })`
 - `train(examples: Array<{ label: string; text: string }>): this`
 - `labels(): string[]`
 - `classify(text: string): string`
@@ -373,7 +387,7 @@ These functions are pure TypeScript reference implementations.
 - `type LabeledFeatureset = readonly [FeatureSet, string]`
 - `NaiveBayesClassifier.train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: { smoothing?: number }): NaiveBayesClassifier`
 - `DecisionTreeClassifier.train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: { maxDepth?: number; minSamples?: number; maxCandidateFeatures?: number; maxFeatures?: number }): DecisionTreeClassifier`
-- `MaxentClassifier.train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number }): MaxentClassifier`
+- `MaxentClassifier.train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: { algorithm?: "iis" | "sgd"; epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number }): MaxentClassifier`
 - `PositiveNaiveBayesClassifier.train(positiveFeaturesets: Iterable<FeatureSet>, unlabeledFeaturesets: Iterable<FeatureSet>, options?: { maxFeatures?: number; positivePrior?: number; positiveLabel?: string; negativeLabel?: string }): PositiveNaiveBayesClassifier`
 - `classify(featureset: FeatureSet): string`
 - `probClassify(featureset: FeatureSet): DictionaryProbDist<string>`
@@ -382,6 +396,16 @@ These functions are pure TypeScript reference implementations.
 - `labels(): string[]`
 
 ## Classification (Decision Tree / Linear / Perceptron)
+
+Text decision trees use unigram presence, minimum-error stumps, and sorted feature
+names for reproducible ties. Defaults are `maxDepth: 100`, `minSamples: 10` (NLTK's
+support cutoff); feature/candidate caps are opt-in. Version-1 trees remain loadable.
+
+`MaxEntTextClassifier` and `ConditionalExponentialTextClassifier` default to IIS
+training with categorical token-count features and base-2 logits. `epochs` maps
+to NLTK's iteration cutoff. `algorithm: "sgd"` retains legacy training in both text and feature-dictionary wrappers;
+`learningRate`, `l2` and `maxFeatures` apply to SGD only. Version-1 SGD models remain
+loadable, while IIS models serialize as version 2.
 
 - `new TextFeatureVectorizer(options?: { ngramMin?: number; ngramMax?: number; binary?: boolean; maxFeatures?: number })`
 - `flattenSparseBatch(rows: SparseVector[]): { docOffsets: Uint32Array; featureIds: Uint32Array; featureValues: Float64Array }`
@@ -396,8 +420,8 @@ These functions are pure TypeScript reference implementations.
 - `new PerceptronTextClassifier(options?: { epochs?: number; learningRate?: number; maxFeatures?: number; averaged?: boolean })`
 - `trainPerceptronTextClassifier(examples: Array<{ label: string; text: string }>, options?: { epochs?: number; learningRate?: number; maxFeatures?: number; averaged?: boolean }): PerceptronTextClassifier`
 - `loadPerceptronTextClassifier(payload: PerceptronSerialized): PerceptronTextClassifier`
-- `new ConditionalExponentialTextClassifier(options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number })`
-- `trainConditionalExponentialTextClassifier(examples: Array<{ label: string; text: string }>, options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number }): ConditionalExponentialTextClassifier`
+- `new ConditionalExponentialTextClassifier(options?: { algorithm?: "iis" | "sgd"; epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number })`
+- `trainConditionalExponentialTextClassifier(examples: Array<{ label: string; text: string }>, options?: { algorithm?: "iis" | "sgd"; epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number }): ConditionalExponentialTextClassifier`
 - `loadConditionalExponentialTextClassifier(payload: ConditionalExponentialSerialized): ConditionalExponentialTextClassifier`
 - `new PositiveNaiveBayesTextClassifier(options?: { maxFeatures?: number; positivePrior?: number; positiveLabel?: string; negativeLabel?: string })`
 - `trainPositiveNaiveBayesTextClassifier(positiveRows: string[] | Array<{ text: string }>, unlabeledRows: string[] | Array<{ text: string }>, options?: { maxFeatures?: number; positivePrior?: number; positiveLabel?: string; negativeLabel?: string }): PositiveNaiveBayesTextClassifier`
@@ -597,3 +621,20 @@ All 241 public `nltk.*` modules are importable; `docs/PARITY_CHECKLIST.md` shows
 - WASM APIs require `native/bun_nltk.wasm`.
 - `Node.js` users should ensure an execution path that supports TS ESM package entrypoints or build/transpile this package as part of their pipeline.
 - Full WordNet data is opt-in and is not part of the core npm package. Use `BUN_NLTK_WORDNET_PATH` or `loadWordNetPacked(path)`.
+
+## Sentiment and named entities
+
+- `new SentimentIntensityAnalyzer({ lexicon?: Record<string, number> })`
+- `polarityScores(text): { neg, neu, pos, compound }`
+
+VADER ships the full NLTK 3.10.3 lexicon and rules, including Python-compatible
+rounding. Custom entries augment or override the bundled lexicon.
+
+- `neChunk(tokens: TaggedToken[], options?: { binary?: boolean; grammar?: string }): ChunkElement[]`
+- `neChunkIob(tokens, options?): [word, pos, ne][]`
+
+Default NE inference uses the bundled English maximum-entropy model and requires
+POS-tagged input. `binary: true` selects the separately trained binary model, so
+its boundaries can differ from multiclass output. `grammar` explicitly selects
+rule-based parsing. Models load lazily on Bun/Node from packaged gzip assets;
+no Python or network access is needed. See `THIRD_PARTY_NOTICES.md` for data terms.

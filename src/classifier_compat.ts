@@ -1,7 +1,7 @@
 import { NaiveBayesTextClassifier } from "./classify";
 import { DecisionTreeTextClassifier } from "./decision_tree";
 import { DictionaryProbDist } from "./probability";
-import { MaxEntTextClassifier } from "./maxent";
+import { MaxEntTextClassifier, type MaxEntOptions } from "./maxent";
 import { PositiveNaiveBayesTextClassifier } from "./positive_naive_bayes";
 
 export type FeatureValue = string | number | boolean | null | undefined;
@@ -31,10 +31,10 @@ function featureText(featureset: FeatureSet): string {
   return tokens.join(" ");
 }
 
-function fromLogScores(rows: Array<{ label: string; logProb: number }>): DictionaryProbDist<string> {
+function fromLogScores(rows: Array<{ label: string; logProb: number }>, base: number): DictionaryProbDist<string> {
   if (rows.length === 0) return new DictionaryProbDist<string>();
   const max = Math.max(...rows.map((row) => row.logProb));
-  const weights = rows.map((row) => Math.exp(row.logProb - max));
+  const weights = rows.map((row) => base ** (row.logProb - max));
   const total = weights.reduce((sum, value) => sum + value, 0);
   const payload = new Map<string, number>();
   for (let i = 0; i < rows.length; i += 1) {
@@ -84,7 +84,7 @@ export class NaiveBayesClassifier extends FeatureClassifierBase {
   }
 
   protected probClassifyText(text: string): DictionaryProbDist<string> {
-    return fromLogScores(this.model.predict(text));
+    return fromLogScores(this.model.predict(text), this.model.logBase);
   }
 
   labels(): string[] {
@@ -125,7 +125,7 @@ export class MaxentClassifier extends FeatureClassifierBase {
 
   static train(
     labeledFeaturesets: Iterable<LabeledFeatureset>,
-    options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number },
+    options?: MaxEntOptions,
   ): MaxentClassifier {
     const rows = [...labeledFeaturesets].map(([features, label]) => ({ label, text: featureText(features) }));
     return new MaxentClassifier(new MaxEntTextClassifier(options).train(rows));

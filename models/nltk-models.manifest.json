@@ -1,0 +1,21 @@
+{
+  "nltk": "3.10.3",
+  "files": {
+    "src/data/vader.json": {
+      "bytes": 121856,
+      "sha256": "86df96fd108f2958ca6c08f4c34b481c7b94e379c83729cf1a3a8b3d3a830380"
+    },
+    "src/data/punkt-english.json": {
+      "bytes": 279192,
+      "sha256": "8fb6648850a18006548d5bdfe45651ad09159293cd6852a222edef3cf3cacb6e"
+    },
+    "models/ne-chunker-multiclass.json.gz": {
+      "bytes": 2841125,
+      "sha256": "ab517f9de1415d17f35e04e27b084b10491e24b9b8379fcde59902b0357048ee"
+    },
+    "models/ne-chunker-binary.json.gz": {
+      "bytes": 2682529,
+      "sha256": "f9f0fe3dcd15520eddb5ecbd9ad018bb131f5360d550a0d96dcf921a602ed47c"
+    }
+  }
+}

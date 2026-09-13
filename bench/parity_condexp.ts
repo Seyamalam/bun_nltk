@@ -33,7 +33,7 @@ function main() {
       ? jsPred.filter((label, idx) => label === py.predictions[idx]!).length / jsPred.length
       : 0;
   const jsAcc = clf.evaluate(testRows).accuracy;
-  const parity = jsAcc >= 0.75 && py.accuracy >= 0.75 && agreement >= 0.75;
+  const parity = jsAcc >= 0.75 && py.accuracy >= 0.75 && agreement === 1;
   if (!parity) {
     throw new Error(`condexp parity failed: jsAcc=${jsAcc.toFixed(4)} pyAcc=${py.accuracy.toFixed(4)} agreement=${agreement.toFixed(4)}`);
   }

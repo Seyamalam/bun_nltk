@@ -2,15 +2,32 @@
 
 Fast NLP primitives in Rust with Bun bindings.
 
-![coverage 241/241 — 100%](https://img.shields.io/badge/coverage-241%2F241-100%25-brightgreen)
-![version 0.16.0](https://img.shields.io/badge/version-0.16.0-blue)
+![module surfaces 241/241](https://img.shields.io/badge/module_surfaces-241%2F241-blue)
+![version 1.0.0](https://img.shields.io/badge/version-1.0.0-blue)
 
-## NLTK API parity
+## NLTK module coverage
 
-**241 of 241 public `nltk.*` modules covered (100.0%) — 46/46 families** — see the auto-generated
+**241 of 241 public `nltk.*` module names have TypeScript surfaces — 46/46 families** — see the auto-generated
 [docs/PARITY_CHECKLIST.md](docs/PARITY_CHECKLIST.md), which diffs the
 [NLTK API index](https://www.nltk.org/api/nltk.html) against this repo.
-Regenerate after adding modules: `bun run parity:checklist`.
+Regenerate after adding modules: `bun run parity:checklist`. This counts importable
+surfaces, including partial implementations and shims; it is not a behavioral
+parity percentage.
+
+`bun run fidelity:gate` writes `artifacts/fidelity-report.json`, including failed
+runs. It reports **passed, failed, skipped, and unsupported** separately. Missing
+required fixtures fail the gate. Prediction checks require exact label agreement;
+numerical checks state their tolerances. Benchmark speed does not affect correctness
+or implementation status. GUI and external-service shims are explicitly unsupported.
+
+The full NLTK 3.10.3 VADER lexicon, trained English Punkt parameters, and binary /
+multiclass named-entity models are bundled. `bun run bench:parity:nltk-models` checks
+all four VADER fields, Treebank/WordPunct tokens, Punkt boundaries and training
+parameters, and NE IOB labels against versioned Python outputs. Passing these cases
+does not establish equivalence on every possible input. Other algorithms may still
+fail the strict global gate even when their older quality-floor checks passed.
+See [behavioral validation](docs/BEHAVIORAL_PARITY.md) and
+[model provenance](THIRD_PARTY_NOTICES.md).
 
 | Family | Modules | Status | Notes |
 |---|---:|---|---|
@@ -36,7 +53,7 @@ Regenerate after adding modules: `bun run parity:checklist`.
 | `chunk` | 5/5 | ✅ real port | regexp/named_entity + api/util |
 | *roots & shims* | — | ⚠️ shim | `collections`/`compat`/`data`/`decorators`/`internals`/`jsontags`/`lazyimport`/`tabdata`/`langnames`/`cli`/`corpus.europarl_raw` — thin re-exports/compat helpers |
 
-> **Shim vs real port:** “real port” = full TS logic with parity tests; “shim” = API surface present (importable, parity checklist passes) but runtime throws a descriptive error directing to the programmatic alternative or explains the missing native dependency (Tkinter, network, Java subprocess, etc.). No module is missing.
+> **Shim vs real port:** “real port” = TypeScript implementation, with the tested behavioral scope varying by module; “shim” = API surface present (importable, parity checklist passes) but runtime throws a descriptive error directing to the programmatic alternative or explains the missing native dependency (Tkinter, network, Java subprocess, etc.). A present module is not necessarily behaviorally complete.
 
 Quick start examples:
 
@@ -141,7 +158,8 @@ Each command installs the locked JavaScript dependencies, tests the native libra
 - Supervised Hidden Markov Model POS tagger (training + Viterbi decoding) with Python NLTK parity
 - Inter-annotator agreement metrics (`AnnotationTask`: avg Ao, kappa family, Krippendorff's alpha) with Python NLTK parity
 - First-order logic semantics subset (`SemLogicParser` + model evaluation/satisfaction) with Python NLTK parity
-- VADER-style sentiment analyzer (`SentimentIntensityAnalyzer`)
+- Full NLTK VADER sentiment analyzer (`SentimentIntensityAnalyzer`) with exact differential score tests
+- Statistical NLTK named-entity chunking (`neChunk`, `neChunkIob`) with lazily loaded binary/multiclass models
 - Translation/eval metrics helpers (`sentenceBleu`, `corpusBleu`, `editDistance`, `confusionMatrix`)
 - Corpus reader framework (`CorpusReader`) with bundled mini corpora
 - Optional external corpus bundle loader + tagged/chunked corpus readers (`parseConllTagged`, `parseBrownTagged`, `parseConllChunked`)
@@ -160,6 +178,10 @@ Each command installs the locked JavaScript dependencies, tests the native libra
 
 All benchmarks below use `bench/datasets/synthetic.txt` on this machine.
 
+These timings predate the statistical-model corrections. NB, MaxEnt, decision-tree,
+conditional-exponential and language-model timings below do not describe the current defaults;
+rerun their comparison scripts to measure current performance.
+
 | Workload | Rust/Bun median sec | Python sec | Faster side | Speedup | Percent faster |
 |---|---:|---:|---|---:|---:|
 | Token + unique + ngram + unique ngram (`bench:compare`) | 2.767 | 10.071 | Rust native | 3.64x | 263.93% |
@@ -172,32 +194,32 @@ All benchmarks below use `bench/datasets/synthetic.txt` on this machine.
 | Streaming FreqDist + ConditionalFreqDist (`bench:compare:freqdist`) | 3.206 | 20.971 | Rust native | 6.54x | 554.17% |
 
 Notes:
-- Sentence tokenizer is a Punkt-compatible subset, not full Punkt parity on arbitrary corpora.
+- These native/WASM sentence benchmarks measure explicit ASCII subsets. The default `sentenceTokenizePunkt` now uses trained English Punkt inference in TypeScript; historical native speedups do not describe that path.
 - The core npm package omits the 30 MB full WordNet payload. Set `BUN_NLTK_WORDNET_PATH` or pass a packed path to `loadWordNetPacked()` to opt in.
 - Runtime `loadWordNet()` uses an explicit packed corpus when available, then falls back to the bundled extended JSON corpus.
 - Fixture parity harnesses are available via `bench:parity:sentence` and `bench:parity:tagger`.
 - SIMD fast path benchmark (`bench:compare:simd`) shows `countTokensAscii` at `1.22x` and normalization no-stopword path at `2.73x` over scalar baseline.
 
-## Extended benchmark results (8MB gate dataset)
+## Current release benchmarks (1.0.0)
 
-| Workload | Rust/Bun median sec | Python sec | Faster side | Speedup | Percent faster |
-|---|---:|---:|---|---:|---:|
-| Punkt tokenizer default path (`bench:compare:punkt`) | 0.0848 | 1.3463 | Rust native | 15.87x | 1487.19% |
-| N-gram LM (Kneser-Ney) score+perplexity (`bench:compare:lm`) | 0.1324 | 2.8661 | Rust/Bun | 21.64x | 2064.19% |
-| Regexp chunk parser (`bench:compare:chunk`) | 0.0024 | 1.5511 | Rust/Bun | 643.08x | 64208.28% |
-| WordNet lookup + morphy workload (`bench:compare:wordnet`) | 0.0009 | 0.0835 | Rust/Bun | 91.55x | 9054.67% |
-| CFG chart parser subset (`bench:compare:parser`) | 0.0088 | 0.3292 | Rust/Bun | 37.51x | 3651.05% |
-| Naive Bayes text classifier (`bench:compare:classifier`) | 0.0081 | 0.0112 | Rust/Bun | 1.38x | 38.40% |
-| PCFG Viterbi chart parser (`bench:compare:pcfg`) | 0.0191 | 0.4153 | Rust/Bun | 21.80x | 2080.00% |
-| MaxEnt text classifier (`bench:compare:maxent`) | 0.0244 | 0.1824 | Rust/Bun | 7.46x | 646.00% |
-| Sparse linear logits hot loop (`bench:compare:linear`) | 0.0024 | 2.0001 | Rust native | 840.54x | 83954.04% |
-| Decision tree text classifier (`bench:compare:decision-tree`) | 0.0725 | 0.5720 | Rust/Bun | 7.89x | 688.55% |
-| Earley parser workload (`bench:compare:earley`) | 0.1149 | 4.6483 | Rust/Bun | 40.47x | 3947.07% |
-| Left-corner parser workload (`bench:compare:leftcorner`) | 0.0197 | 0.5359 | Rust/Bun | 27.27x | 2626.82% |
-| Feature parser workload (`bench:compare:feature-parser`) | 0.0110 | 1.1432 | Rust/Bun | 104.38x | 10338.21% |
-| Feature Earley parser workload (`bench:compare:feature-earley`) | 0.0117 | 0.1592 | Rust/Bun | 13.64x | 1263.62% |
-| Conditional Exponential classifier (`bench:compare:condexp`) | 0.0111 | 0.1685 | Rust/Bun | 15.15x | 1414.67% |
-| Positive Naive Bayes classifier (`bench:compare:positive-nb`) | 0.0199 | 0.0416 | Rust/Bun | 2.09x | 108.63% |
+Apple M5 Pro / macOS arm64, Bun 1.4.0 versus NLTK 3.10.3. Medians of five
+in-process runs after warmup, with matched workloads and passing output comparisons.
+
+| Workload | Bun median (ms) | Python median (ms) | Python / Bun |
+|---|---:|---:|---:|
+| Categorical Naive Bayes | 2.56 | 8.30 | 3.24× |
+| Decision tree | 6.08 | 18.17 | 2.99× |
+| IIS MaxEnt | 4.83 | 74.37 | 15.39× |
+| Conditional exponential (IIS) | 4.39 | 85.28 | 19.42× |
+| Kneser–Ney LM | 111.71 | 410.90 | 3.68× |
+| Trained English Punkt | 1.97 | 5.33 | 2.70× |
+| Full VADER | 37.18 | 59.52 | 1.60× |
+| Multiclass named entities | 97.96 | 156.72 | 1.60× |
+| PCFG best parse | 30.95 | 1337.38 | 43.21× |
+
+Classifier inputs are synthetic short documents with a small vocabulary. These
+ratios describe the measured workloads on this host. See the [benchmark methodology
+and raw samples](docs/BENCHMARKS.md) for input sizes, timing boundaries and reproduction.
 
 ## Build native Rust library
 

@@ -14,7 +14,7 @@ from nltk.lm import (
     StupidBackoff,
     WittenBellInterpolated,
 )
-from nltk.lm.preprocessing import padded_everygram_pipeline
+from nltk.util import everygrams
 
 
 def build_model(payload: dict[str, Any]):
@@ -28,7 +28,11 @@ def build_model(payload: dict[str, Any]):
         for sentence in payload["sentences"]
     ]
 
-    train_data, vocab = padded_everygram_pipeline(order, sentences)
+    left = [str(payload.get("startToken", "<s>"))] * (order - 1) if payload.get("padLeft", True) else []
+    right = [str(payload.get("endToken", "</s>"))] * (order - 1) if payload.get("padRight", True) else []
+    padded = [left + sentence + right for sentence in sentences]
+    train_data = [list(everygrams(sentence, max_len=order)) for sentence in padded]
+    vocab = [token for sentence in padded for token in sentence]
     if model_name == "mle":
         model = MLE(order)
     elif model_name == "lidstone":

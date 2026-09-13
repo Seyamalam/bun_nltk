@@ -16,7 +16,7 @@ This project uses Semantic Versioning (`MAJOR.MINOR.PATCH`).
 ## Release Process
 
 1. Ensure working tree is clean.
-2. Run `bun run release:check`.
+2. Run `bun run release:local`.
 3. Update `CHANGELOG.md`:
    - Move changes from `Unreleased` into a new version section.
    - Add release date in `YYYY-MM-DD`.
@@ -28,7 +28,7 @@ This project uses Semantic Versioning (`MAJOR.MINOR.PATCH`).
 7. Push commit and tag.
 8. Publish package:
    - `bun publish` or `npm publish`.
-   - Or rely on the tag-triggered GitHub workflow in `.github/workflows/release.yml`.
+   - Or rely on the tag-triggered GitHub workflow in `.github/workflows/publish.yml`.
 
 ## Pre-release Versions
 

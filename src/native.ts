@@ -1232,27 +1232,30 @@ export function evaluateLanguageModelIdsNative(input: {
   perplexityTokenIds: Uint32Array;
   prefixTokenIds: Uint32Array;
 }): { scores: Float64Array; perplexity: number } {
+  // Bun FFI rejects pointers to zero-byte typed arrays, even for a zero length.
+  const emptyBuffer = new Uint32Array(1);
+  const pointer = (values: Uint32Array | Float64Array) => ptr(values.length ? values : emptyBuffer);
   const scores = new Float64Array(input.probeWordIds.length);
   const perplexity = lib.symbols.bunnltk_lm_eval_ids(
-    ptr(input.tokenIds),
+    pointer(input.tokenIds),
     input.tokenIds.length,
-    ptr(input.sentenceOffsets),
+    pointer(input.sentenceOffsets),
     input.sentenceOffsets.length,
     input.order,
     nativeLmTypeCode(input.model),
     input.gamma,
     input.discount,
     input.vocabSize,
-    ptr(input.probeContextFlat),
+    pointer(input.probeContextFlat),
     input.probeContextFlat.length,
-    ptr(input.probeContextLens),
-    ptr(input.probeWordIds),
+    pointer(input.probeContextLens),
+    pointer(input.probeWordIds),
     input.probeWordIds.length,
-    ptr(scores),
+    pointer(scores),
     scores.length,
-    ptr(input.perplexityTokenIds),
+    pointer(input.perplexityTokenIds),
     input.perplexityTokenIds.length,
-    ptr(input.prefixTokenIds),
+    pointer(input.prefixTokenIds),
     input.prefixTokenIds.length,
   );
   assertNoNativeError("evaluateLanguageModelIdsNative");

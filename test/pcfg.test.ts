@@ -46,3 +46,14 @@ test("pcfg parser parity with python nltk viterbi parser", () => {
   expect(Math.abs(js!.prob - py.prob)).toBeLessThanOrEqual(1e-6);
 });
 
+
+test('explicit rounded PCFG probabilities are preserved exactly', () => {
+  const grammar=parsePcfgGrammar("S -> 'a' [0.333333333] | 'b' [0.666666666]");
+  expect(grammar.productions[0]!.prob).toBe(.333333333);
+  expect(probabilisticChartParse(['a'],grammar)!.prob).toBeCloseTo(.333333333,14);
+});
+test('PCFG zero probabilities remain zero and sub-picoprobabilities are not floored', () => {
+  const grammar=parsePcfgGrammar("S -> 'a' [0] | 'b' [0.00000000000001] | 'c' [0.99999999999999]");
+  expect(probabilisticChartParse(['a'],grammar)!.prob).toBe(0);
+  expect(probabilisticChartParse(['b'],grammar)!.prob).toBeCloseTo(1e-14,25);
+});

@@ -10,7 +10,7 @@ type CaseRow = {
 };
 
 test(
-  "extended punkt parity corpus keeps high agreement with python baseline",
+  "extended punkt parity corpus matches every case with python baseline",
   () => {
     const fixturePath = resolve(import.meta.dir, "fixtures", "punkt_extended_parity_cases.json");
     const rows = JSON.parse(readFileSync(fixturePath, "utf8")) as CaseRow[];
@@ -30,7 +30,7 @@ test(
     }
 
     const agreement = rows.length === 0 ? 0 : passed / rows.length;
-    expect(agreement).toBeGreaterThanOrEqual(0.875);
+    expect(agreement).toBe(1);
   },
   30_000,
 );

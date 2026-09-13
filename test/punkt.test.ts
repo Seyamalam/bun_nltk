@@ -36,7 +36,7 @@ test("punkt model trains, serializes, and tokenizes", () => {
   const roundTrip = parsePunktModel(json);
   expect(roundTrip.abbreviations.length).toBeGreaterThan(0);
   expect(Object.keys(roundTrip.abbreviationScores ?? {}).length).toBeGreaterThan(0);
-  expect(Object.keys(roundTrip.orthographicContext ?? {}).length).toBeGreaterThan(0);
+  expect(Object.keys(roundTrip.orthoContext ?? {}).length).toBeGreaterThan(0);
 
   const out = sentenceTokenizePunkt("Dr. Smith stayed home. He slept.", roundTrip);
   expect(out).toEqual(["Dr. Smith stayed home.", "He slept."]);
@@ -77,5 +77,5 @@ test("punkt tokenizer wrapper can train directly", () => {
   const tokenizer = new PunktSentenceTokenizerSubset();
   tokenizer.train("Dr. Adams stayed. Dr. Brown left.");
   const out = tokenizer.tokenize("Dr. Adams returned. He smiled.");
-  expect(out).toEqual(["Dr. Adams returned.", "He smiled."]);
+  expect(out).toEqual(runPythonPunkt("Dr. Adams stayed. Dr. Brown left.", "Dr. Adams returned. He smiled.").sentences);
 });

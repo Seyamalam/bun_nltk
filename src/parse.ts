@@ -124,6 +124,10 @@ function normalizeProbabilities(rows: ParsedAlternative[]): PcfgProduction[] {
     return rows.map((row) => ({ lhs: "", rhs: row.rhs, prob: p }));
   }
 
+  if (missing.length === 0) {
+    if (Math.abs(providedSum - 1) > 0.01) throw new Error("PCFG probabilities for a symbol must sum to 1");
+    return rows.map(row => ({lhs:"",rhs:row.rhs,prob:row.prob!}));
+  }
   const filled: number[] = [];
   if (missing.length > 0 && providedSum < 1) {
     const p = (1 - providedSum) / missing.length;
@@ -137,7 +141,7 @@ function normalizeProbabilities(rows: ParsedAlternative[]): PcfgProduction[] {
     const p = 1 / rows.length;
     return rows.map((row) => ({ lhs: "", rhs: row.rhs, prob: p }));
   }
-  return rows.map((row, idx) => ({ lhs: "", rhs: row.rhs, prob: Math.max(1e-12, filled[idx]! / total) }));
+  return rows.map((row, idx) => ({ lhs: "", rhs: row.rhs, prob: filled[idx]! / total }));
 }
 
 function dedupePush(map: Map<string, string[]>, key: string, value: string): void {
@@ -317,7 +321,7 @@ function buildCnfPcfg(grammar: PcfgGrammar): CnfPcfgGrammar {
 
   for (const prod of grammar.productions) {
     if (prod.rhs.length === 0) continue;
-    const logProb = Math.log(Math.max(1e-12, prod.prob));
+    const logProb = Math.log(prod.prob);
 
     if (prod.rhs.length === 1) {
       const only = prod.rhs[0]!;

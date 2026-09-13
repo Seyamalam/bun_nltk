@@ -96,9 +96,9 @@ test("ngram lm parity: MLE", () => {
 });
 
 test("ngram lm parity: Lidstone", () => {
-  runParityCase("lidstone", 0.03);
+  runParityCase("lidstone", 1e-9);
 });
 
 test("ngram lm parity: Kneser-Ney interpolated", () => {
-  runParityCase("kneser_ney_interpolated", 0.2);
+  runParityCase("kneser_ney_interpolated", 1e-9);
 });

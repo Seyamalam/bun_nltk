@@ -1,75 +1,70 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { delimiter, resolve } from "node:path";
-
-type ParityResult = {
-  ok: boolean;
-  checks: Record<string, boolean>;
-};
-
-const root = resolve(import.meta.dir, "..");
-const artifactDir = resolve(root, "artifacts");
-const outputPath = resolve(artifactDir, "fidelity-report.json");
-const localPythonBin = resolve(root, ".venv", "bin");
-const commandEnv = existsSync(resolve(localPythonBin, "python3"))
-  ? { ...process.env, PATH: `${localPythonBin}${delimiter}${process.env.PATH ?? ""}` }
+import { summarizeParity, type CheckResult } from "./parity-status";
+const root = resolve(import.meta.dir, ".."),
+  outputPath = resolve(root, "artifacts/fidelity-report.json");
+const localBin = resolve(root, ".venv/bin");
+const env = existsSync(resolve(localBin, "python3"))
+  ? { ...process.env, PATH: `${localBin}${delimiter}${process.env.PATH ?? ""}` }
   : process.env;
-
-function run(command: string[]): string {
-  const proc = Bun.spawnSync(command, {
-    cwd: root,
-    env: commandEnv,
-    stdout: "pipe",
-    stderr: "pipe",
-  });
-  const stdout = new TextDecoder().decode(proc.stdout).trim();
-  const stderr = new TextDecoder().decode(proc.stderr).trim();
-  if (proc.exitCode !== 0) {
-    throw new Error(`${command.join(" ")} failed (${proc.exitCode})\nstdout:\n${stdout}\nstderr:\n${stderr}`);
-  }
-  return stdout;
-}
-
-function extractJson(payload: string): Record<string, unknown> {
-  const start = payload.indexOf("{");
-  const end = payload.lastIndexOf("}");
-  if (start < 0 || end <= start) throw new Error(`could not find JSON in output:\n${payload}`);
-  return JSON.parse(payload.slice(start, end + 1)) as Record<string, unknown>;
-}
-
-const python = JSON.parse(
-  run([
+const python = Bun.spawnSync(
+  [
     "python3",
     "-c",
-    "import json,platform,nltk; print(json.dumps({'python': platform.python_version(), 'nltk': nltk.__version__}))",
-  ]),
-) as { python: string; nltk: string };
-const parity = extractJson(run(["bun", "run", "bench/parity_all.ts"])) as ParityResult;
-const entries = Object.entries(parity.checks);
-const failed = entries.filter(([, passed]) => !passed).map(([name]) => name);
-if (!parity.ok || failed.length > 0) {
-  throw new Error(`behavioral fidelity groups failed: ${failed.join(", ")}`);
+    "import json,platform,nltk; print(json.dumps({'python':platform.python_version(),'nltk':nltk.__version__}))",
+  ],
+  { cwd: root, env, stdout: "pipe", stderr: "pipe" },
+);
+const proc = Bun.spawnSync(["bun", "run", "bench/parity_all.ts"], {
+  cwd: root,
+  env,
+  stdout: "pipe",
+  stderr: "pipe",
+});
+let results: Record<string, CheckResult>;
+try {
+  results = JSON.parse(new TextDecoder().decode(proc.stdout)).results;
+  if (!results) throw new Error("Missing results");
+} catch {
+  results = {
+    suite: {
+      status: "failed",
+      required: true,
+      reason: new TextDecoder().decode(proc.stderr) || "Suite produced no valid result",
+    },
+  };
 }
-
+if (python.exitCode !== 0)
+  results.oracle = {
+    status: "failed",
+    required: true,
+    reason: new TextDecoder().decode(python.stderr),
+  };
+if (
+  proc.exitCode !== 0 &&
+  Object.values(results).every((r) => !r.required || r.status === "passed")
+)
+  results.suite = { status: "failed", required: true, reason: `Suite exited ${proc.exitCode}` };
+const summary = summarizeParity(results);
 const report = {
-  schema_version: 1,
+  schema_version: 2,
   generated_at: new Date().toISOString(),
-  ok: true,
+  ...summary,
   scope: {
-    check_groups: entries.length,
-    passed_groups: entries.length - failed.length,
-    failed_groups: failed.length,
+    check_groups: Object.keys(results).length,
+    ...summary.counts,
     separate_from_import_coverage: true,
-    oracle: "live Python NLTK outputs plus versioned NLTK-derived fixtures",
-    limitation: "The project author maintains this differential gate; it is not an external replication.",
+    separate_from_speed: true,
+    oracle: "Live Python NLTK plus versioned NLTK-derived fixtures",
+    limitation:
+      "Passing means exact agreement within the stated fixtures and tolerances, not complete NLTK equivalence.",
   },
   environment: {
     bun: Bun.version,
-    python: python.python,
-    nltk: python.nltk,
+    ...(python.exitCode === 0 ? JSON.parse(new TextDecoder().decode(python.stdout)) : {}),
   },
-  checks: parity.checks,
 };
-
-mkdirSync(artifactDir, { recursive: true });
-writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
-console.log(JSON.stringify({ ok: true, output: outputPath, check_groups: entries.length }, null, 2));
+mkdirSync(resolve(root, "artifacts"), { recursive: true });
+writeFileSync(outputPath, JSON.stringify(report, null, 2) + "\n");
+console.log(JSON.stringify({ ok: report.ok, output: outputPath, ...summary.counts }, null, 2));
+if (!report.ok) process.exitCode = 1;

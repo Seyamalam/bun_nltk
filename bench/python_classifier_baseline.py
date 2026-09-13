@@ -43,7 +43,7 @@ def run(payload: dict[str, Any]) -> dict[str, Any]:
     started = time.perf_counter()
     classifier = None
     for _ in range(max(1, rounds)):
-        classifier = nltk.NaiveBayesClassifier.train(train)
+        classifier = nltk.NaiveBayesClassifier.train(train, estimator=lambda fd, bins=None: nltk.LidstoneProbDist(fd, float(payload.get("smoothing", 0.5)), bins))
     assert classifier is not None
     elapsed = time.perf_counter() - started
 

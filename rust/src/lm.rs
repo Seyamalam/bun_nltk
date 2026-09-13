@@ -8,6 +8,11 @@ pub enum ModelType {
 }
 
 struct Counts {
+    order: u32,
+    context1_total: HashMap<u32, u32>,
+    context2_total: HashMap<u64, u32>,
+    continuation2: HashMap<u64, u32>,
+    continuation2_total: HashMap<u32, u32>,
     unigram: HashMap<u32, u32>,
     bigram: HashMap<u64, u32>,
     trigram: HashMap<u128, u32>,
@@ -31,6 +36,11 @@ fn key_trigram(a: u32, b: u32, c: u32) -> u128 {
 
 fn build_counts(token_ids: &[u32], sentence_offsets: &[u32], order: u32) -> Counts {
     let mut counts = Counts {
+        order,
+        context1_total: HashMap::new(),
+        context2_total: HashMap::new(),
+        continuation2: HashMap::new(),
+        continuation2_total: HashMap::new(),
         unigram: HashMap::new(),
         bigram: HashMap::new(),
         trigram: HashMap::new(),
@@ -65,6 +75,7 @@ fn build_counts(token_ids: &[u32], sentence_offsets: &[u32], order: u32) -> Coun
             if order >= 2 && i >= 1 {
                 let prev = sentence[i - 1];
                 *counts.bigram.entry(key_bigram(prev, tok)).or_insert(0) += 1;
+                *counts.context1_total.entry(prev).or_insert(0) += 1;
 
                 let k = key_bigram(prev, tok);
                 if seen_bigram.insert(k) {
@@ -76,11 +87,14 @@ fn build_counts(token_ids: &[u32], sentence_offsets: &[u32], order: u32) -> Coun
                 let a = sentence[i - 2];
                 let b = sentence[i - 1];
                 *counts.trigram.entry(key_trigram(a, b, tok)).or_insert(0) += 1;
+                *counts.context2_total.entry(key_bigram(a, b)).or_insert(0) += 1;
 
                 let trigram_k = key_trigram(a, b, tok);
                 if seen_trigram.insert(trigram_k) {
                     let context_k = key_bigram(a, b);
                     *counts.followers2.entry(context_k).or_insert(0) += 1;
+                    *counts.continuation2.entry(key_bigram(b, tok)).or_insert(0) += 1;
+                    *counts.continuation2_total.entry(b).or_insert(0) += 1;
                 }
             }
         }
@@ -100,8 +114,12 @@ fn count_context(counts: &Counts, ctx: &[u32]) -> u32 {
                 counts.unigram_total as u32
             }
         }
-        1 => counts.unigram.get(&ctx[0]).copied().unwrap_or(0),
-        2 => counts.bigram.get(&key_bigram(ctx[0], ctx[1])).copied().unwrap_or(0),
+        1 => counts.context1_total.get(&ctx[0]).copied().unwrap_or(0),
+        2 => counts
+            .context2_total
+            .get(&key_bigram(ctx[0], ctx[1]))
+            .copied()
+            .unwrap_or(0),
         _ => 0,
     }
 }
@@ -109,7 +127,11 @@ fn count_context(counts: &Counts, ctx: &[u32]) -> u32 {
 fn ngram_count(counts: &Counts, ctx: &[u32], word: u32) -> u32 {
     match ctx.len() {
         0 => counts.unigram.get(&word).copied().unwrap_or(0),
-        1 => counts.bigram.get(&key_bigram(ctx[0], word)).copied().unwrap_or(0),
+        1 => counts
+            .bigram
+            .get(&key_bigram(ctx[0], word))
+            .copied()
+            .unwrap_or(0),
         2 => counts
             .trigram
             .get(&key_trigram(ctx[0], ctx[1], word))
@@ -122,7 +144,11 @@ fn ngram_count(counts: &Counts, ctx: &[u32], word: u32) -> u32 {
 fn follower_count(counts: &Counts, ctx: &[u32]) -> u32 {
     match ctx.len() {
         1 => counts.followers1.get(&ctx[0]).copied().unwrap_or(0),
-        2 => counts.followers2.get(&key_bigram(ctx[0], ctx[1])).copied().unwrap_or(0),
+        2 => counts
+            .followers2
+            .get(&key_bigram(ctx[0], ctx[1]))
+            .copied()
+            .unwrap_or(0),
         _ => 0,
     }
 }
@@ -143,7 +169,7 @@ fn score_mle(counts: &Counts, word: u32, ctx: &[u32]) -> f64 {
     }
     let ctx_count = count_context(counts, ctx);
     if ctx_count == 0 {
-        return score_mle(counts, word, backoff_tail(ctx));
+        return 0.0;
     }
     let gram_count = ngram_count(counts, ctx, word);
     (gram_count as f64) / (ctx_count as f64)
@@ -160,9 +186,6 @@ fn score_lidstone(counts: &Counts, word: u32, ctx: &[u32], gamma: f64, vocab_siz
         return (gram + gamma) / denom;
     }
     let ctx_count = count_context(counts, ctx);
-    if ctx_count == 0 {
-        return score_lidstone(counts, word, backoff_tail(ctx), gamma, vocab_size);
-    }
     let gram_count = ngram_count(counts, ctx, word) as f64;
     let denom = (ctx_count as f64) + gamma * vocab_f;
     if denom <= 0.0 {
@@ -176,9 +199,6 @@ fn continuation_prob(counts: &Counts, word: u32) -> f64 {
         return 0.0;
     }
     let cont = counts.continuation.get(&word).copied().unwrap_or(0);
-    if cont == 0 {
-        return 1.0 / ((counts.continuation_type_count as f64) * 10.0);
-    }
     (cont as f64) / (counts.continuation_type_count as f64)
 }
 
@@ -192,7 +212,25 @@ fn score_kneser_ney(counts: &Counts, word: u32, ctx: &[u32], discount: f64) -> f
         return score_kneser_ney(counts, word, backoff_tail(ctx), discount);
     }
 
-    let gram_count = ngram_count(counts, ctx, word);
+    let (gram_count, ctx_count) = if ctx.len() == 1 && counts.order == 3 {
+        (
+            counts
+                .continuation2
+                .get(&key_bigram(ctx[0], word))
+                .copied()
+                .unwrap_or(0),
+            counts
+                .continuation2_total
+                .get(&ctx[0])
+                .copied()
+                .unwrap_or(0),
+        )
+    } else {
+        (ngram_count(counts, ctx, word), ctx_count)
+    };
+    if ctx_count == 0 {
+        return score_kneser_ney(counts, word, backoff_tail(ctx), discount);
+    }
     let followers = follower_count(counts, ctx);
 
     let ctx_f = ctx_count as f64;

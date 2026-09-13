@@ -40,6 +40,7 @@ function runNative(sentences: string[][], probes: Probe[], perplexityTokens: str
   const timings: number[] = [];
   let checksum = 0;
   let perplexity = 0;
+  let scores: number[] = [];
   for (let i = 0; i < rounds; i += 1) {
     const started = performance.now();
     const model = trainNgramLanguageModel(sentences, {
@@ -51,6 +52,7 @@ function runNative(sentences: string[][], probes: Probe[], perplexityTokens: str
       probes.map((probe) => ({ word: probe.word, context: probe.context })),
       perplexityTokens,
     );
+    scores = evalOut.scores;
     const local = evalOut.scores.reduce((acc, score) => acc + score, 0);
     perplexity = evalOut.perplexity;
     checksum = local;
@@ -58,6 +60,7 @@ function runNative(sentences: string[][], probes: Probe[], perplexityTokens: str
   }
   return {
     checksum,
+    scores,
     perplexity,
     median_seconds: median(timings),
   };
@@ -129,6 +132,9 @@ function main() {
         rounds,
         model: "kneser_ney_interpolated",
         parity_tolerant: parity,
+        parity_exact: native.scores.length === python.probeScores.length && native.scores.every((score, i) => Math.abs(score - python.probeScores[i]!.score) <= 1e-9) && Math.abs(native.perplexity - python.perplexity) <= 1e-9,
+        probe_diffs: native.scores.map((score, i) => ({...probes[i], native: score, python: python.probeScores[i]?.score, abs_diff: Math.abs(score - (python.probeScores[i]?.score ?? NaN))})),
+        exact_tolerance: 1e-9,
         native_seconds_median: native.median_seconds,
         python_seconds: pythonSeconds,
         speedup_vs_python: pythonSeconds / native.median_seconds,

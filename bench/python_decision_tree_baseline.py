@@ -9,6 +9,13 @@ from typing import Any
 
 from nltk.classify.decisiontree import DecisionTreeClassifier
 
+# NLTK takes a set of feature names. Sort only this tie-breaking input so
+# identical data produces the same model across Python hash seeds/platforms.
+_nltk_best_stump = DecisionTreeClassifier.best_stump
+DecisionTreeClassifier.best_stump = staticmethod(
+    lambda names, rows, verbose=False: _nltk_best_stump(sorted(names), rows, verbose)
+)
+
 TOKEN_RE = re.compile(r"[A-Za-z0-9']+")
 
 
@@ -49,7 +56,7 @@ def main() -> None:
     classifier = None
     started = time.perf_counter()
     for _ in range(max(1, rounds)):
-        classifier = DecisionTreeClassifier.train(train)
+        classifier = DecisionTreeClassifier.train(train, depth_cutoff=int(payload.get("maxDepth", 100)), support_cutoff=int(payload.get("minSamples", 10)))
     assert classifier is not None
     elapsed = time.perf_counter() - started
 

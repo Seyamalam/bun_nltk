@@ -1,37 +1,23 @@
-import { SentimentIntensityAnalyzer } from "../index";
-
-function main() {
-  const analyzer = new SentimentIntensityAnalyzer();
-  const positive = analyzer.polarityScores("This product is absolutely amazing and wonderful!");
-  const negative = analyzer.polarityScores("This product is terrible, awful, and broken.");
-  const negated = analyzer.polarityScores("This product is not good.");
-
-  const parity =
-    positive.compound > 0.2 &&
-    negative.compound < -0.2 &&
-    negated.compound < positive.compound &&
-    positive.pos > positive.neg &&
-    negative.neg > negative.pos;
-
-  if (!parity) {
-    throw new Error(
-      `sentiment compatibility check failed: ${JSON.stringify({ positive, negative, negated })}`,
-    );
-  }
-
-  console.log(
-    JSON.stringify(
-      {
-        parity,
-        positive_compound: positive.compound,
-        negative_compound: negative.compound,
-        negated_compound: negated.compound,
-      },
-      null,
-      2,
-    ),
-  );
-}
-
-main();
-
+import fixture from "../test/fixtures/nltk-model-parity.json";
+import { SentimentIntensityAnalyzer } from "../src/sentiment";
+const analyzer = new SentimentIntensityAnalyzer();
+// Versioned cases cover every lexicon entry, rules, punctuation, and duplicate words.
+const cases = fixture.sentiment;
+const failures = cases.filter(
+  (row) => JSON.stringify(row.scores) !== JSON.stringify(analyzer.polarityScores(row.text)),
+);
+console.log(
+  JSON.stringify(
+    {
+      parity: failures.length === 0,
+      oracle: `NLTK ${fixture.nltk}`,
+      case_count: cases.length,
+      fields: ["neg", "neu", "pos", "compound"],
+      failed: failures.length,
+      failures: failures.slice(0, 10),
+    },
+    null,
+    2,
+  ),
+);
+if (failures.length) process.exitCode = 1;

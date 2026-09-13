@@ -32,7 +32,7 @@ function main() {
   }
 
   const agreement = rows.length === 0 ? 0 : passed / rows.length;
-  const parity = agreement >= 0.875;
+  const parity = rows.length > 0 && passed === rows.length;
   if (!parity) {
     const failed = details.filter((row) => !row.parity).map((row) => row.name);
     throw new Error(`extended punkt parity failed: agreement=${agreement.toFixed(3)} failed=${failed.join(",")}`);

@@ -64,7 +64,7 @@ function main() {
     if (jsTree && pyTree && jsTree === pyTree) firstTreeAgreement += 1;
   }
   const agreement = js.length === 0 ? 1 : firstTreeAgreement / js.length;
-  const parity = countParity && agreement >= 0.66;
+  const parity = countParity && agreement === 1;
 
   if (!parity) {
     throw new Error(`earley parity mismatch: count_parity=${countParity} tree_agreement=${agreement.toFixed(3)}`);

@@ -1,5 +1,6 @@
 const MAX_FILES = 400;
-const MAX_UNPACKED_BYTES = 8_000_000;
+// Includes both full NLTK NE models (~5.5 MB compressed) and English Punkt/VADER data.
+const MAX_UNPACKED_BYTES = 12_000_000;
 
 const forbidden = [
   /^rust\//,

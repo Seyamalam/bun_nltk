@@ -1,3 +1,4 @@
+import { PYTHON_SPACE, splitPythonWhitespace } from "./python_text";
 export function wordTokenizeSubset(text: string): string[] {
   const raw = text.match(/[A-Za-z0-9]+(?:'[A-Za-z0-9]+)?|[^\s]/g) ?? [];
   const out: string[] = [];
@@ -25,35 +26,55 @@ export function wordTokenizeSubset(text: string): string[] {
 
 export class TreebankWordTokenizer {
   tokenize(text: string): string[] {
-    const raw =
-      text.match(/\.{3}|--+|[A-Za-z]+(?:[-'][A-Za-z]+)*|\d+(?:[.,]\d+)*|``|''|[^\s]/g) ?? [];
-    const out: string[] = [];
-
-    for (const token of raw) {
-      const nt = token.match(/^(.*)n't$/i);
-      if (nt && nt[1]) {
-        out.push(nt[1]);
-        out.push("n't");
-        continue;
-      }
-
-      const clitic = token.match(/^(.*)('s|'m|'d|'re|'ve|'ll)$/i);
-      if (clitic && clitic[1]) {
-        out.push(clitic[1]);
-        out.push(clitic[2]!.toLowerCase());
-        continue;
-      }
-
-      out.push(token);
+    // Ordered substitutions from NLTK's TreebankWordTokenizer.
+    text = text
+      .replace(/^"/u, "``")
+      .replace(/(``)/gu, " $1 ")
+      .replace(/([ (\[{<])("|'{2})/gu, "$1 `` ");
+    text = text
+      .replace(/([:,])([^\p{Nd}])/gu, " $1 $2")
+      .replace(/([:,])$/gu, " $1 ")
+      .replace(/\.\.\./gu, " ... ")
+      .replace(/[;@#$%&]/gu, " $& ")
+      .replace(new RegExp(String.raw`([^\.])(\.)([\]\)}>"']*)${PYTHON_SPACE}*$`, "u"), "$1 $2$3 ")
+      .replace(/[?!]/gu, " $& ")
+      .replace(/([^'])' /gu, "$1 ' ")
+      .replace(/[\]\[(){}<>]/gu, " $& ")
+      .replace(/--/gu, " -- ");
+    text = ` ${text} `;
+    text = text
+      .replace(/''/gu, " '' ")
+      .replace(/"/gu, " '' ")
+      .replace(/([^' ])('[sS]|'[mM]|'[dD]|') /gu, "$1 $2 ")
+      .replace(/([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) /gu, "$1 $2 ");
+    for (const [left, right] of [
+      ["can", "not"],
+      ["d", "'ye"],
+      ["gim", "me"],
+      ["gon", "na"],
+      ["got", "ta"],
+      ["lem", "me"],
+      ["more", "'n"],
+      ["wan", "na"],
+    ]) {
+      const end = left === "wan" ? `(?=${PYTHON_SPACE})` : "(?![\\p{L}\\p{N}_])";
+      text = text.replace(
+        new RegExp(`(?<![\\p{L}\\p{N}_])(${left})(${right})${end}`, "giu"),
+        " $1 $2 ",
+      );
     }
-
-    return out;
+    text = text.replace(/ ('t)(is|was)(?![\p{L}\p{N}_])/giu, " $1 $2 ");
+    return splitPythonWhitespace(text);
   }
 }
 
 export class WordPunctTokenizer {
   tokenize(text: string): string[] {
-    return text.match(/[A-Za-z0-9_]+|[^\w\s]+/g) ?? [];
+    return (
+      text.match(
+        /[\p{Alphabetic}\p{Nd}\p{M}\p{Pc}\u200c\u200d]+|[^\p{Alphabetic}\p{Nd}\p{M}\p{Pc}\u200c\u200d\p{White_Space}]+/gu,
+      ) ?? []
+    );
   }
 }
 

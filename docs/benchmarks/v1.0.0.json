@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-13T12:02:28.509Z",
+  "package_version": "1.0.0",
+  "host": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "os_release": "25.6.0",
+    "cpu": "Apple M5 Pro",
+    "logical_cpus": 18,
+    "memory_bytes": 51539607552
+  },
+  "runtimes": {
+    "bun": "1.4.0",
+    "python": "3.12.13",
+    "nltk": "3.10.3"
+  },
+  "methodology": {
+    "rounds": 5,
+    "warmup_rounds": 1,
+    "timing": "In-process wall time; imports, process startup, file I/O and warmup excluded. Text classifiers include feature extraction, training and one test prediction pass; LM includes training and scoring; PCFG includes grammar parsing; pretrained inference excludes one-time model load.",
+    "execution": "Sequential workloads and runtimes, no concurrent benchmark processes",
+    "numeric_relative_tolerance": 1e-10
+  },
+  "results": [
+    {
+      "workload": "nb",
+      "input_sha256": "41bff962803a3a9a35f533f872bc173e02eab5fe1864a5f3893a1fa61fffe422",
+      "input_size": {
+        "train": 2400,
+        "test": 600
+      },
+      "parity": true,
+      "bun_samples_seconds": [
+        0.004115917000000011,
+        0.002241584000000003,
+        0.0022225420000000044,
+        0.0025632920000000043,
+        0.003010249999999999
+      ],
+      "python_samples_seconds": [
+        0.008281916998384986,
+        0.008543166000890778,
+        0.008389375001570443,
+        0.008299959001305979,
+        0.008269916997960536
+      ],
+      "bun_median_seconds": 0.0025632920000000043,
+      "python_median_seconds": 0.008299959001305979,
+      "python_over_bun": 3.2380076094748333
+    },
+    {
+      "workload": "decision_tree",
+      "input_sha256": "738fc3d79fbdf613b8527fc83bbaf1e2965da8049c48ab69b1afe9f1548c29a7",
+      "input_size": {
+        "train": 2400,
+        "test": 600
+      },
+      "parity": true,
+      "bun_samples_seconds": [
+        0.007274791999999934,
+        0.006080249999999978,
+        0.0071118749999998275,
+        0.005589249999999993,
+        0.00594316700000013
+      ],
+      "python_samples_seconds": [
+        0.01860399999713991,
+        0.018159457998990547,
+        0.018168332997447578,
+        0.0180716670001857,
+        0.020137542000156827
+      ],
+      "bun_median_seconds": 0.006080249999999978,
+      "python_median_seconds": 0.018168332997447578,
+      "python_over_bun": 2.98808979851941
+    },
+    {
+      "workload": "maxent",
+      "input_sha256": "3b5754427cd1f2027de0c4095fb74f70041b89d34ac835c5c0cf6dc10b8db09e",
+      "input_size": {
+        "train": 900,
+        "test": 250
+      },
+      "parity": true,
+      "bun_samples_seconds": [
+        0.006697500000000218,
+        0.006534125000000131,
+        0.004561583000000155,
+        0.004833583999999973,
+        0.003780999999999949
+      ],
+      "python_samples_seconds": [
+        0.07443499999862979,
+        0.08490850000089267,
+        0.07342987499941955,
+        0.07436824999967939,
+        0.07353474999763421
+      ],
+      "bun_median_seconds": 0.004833583999999973,
+      "python_median_seconds": 0.07436824999967939,
+      "python_over_bun": 15.38573654656251
+    },
+    {
+      "workload": "condexp",
+      "input_sha256": "bce86cd0419e8ed6aaea405952e66faa59b84a8103dafa0a1370617a7205ae51",
+      "input_size": {
+        "train": 1000,
+        "test": 300
+      },
+      "parity": true,
+      "bun_samples_seconds": [
+        0.004316291999999976,
+        0.005290833000000021,
+        0.004391833000000133,
+        0.004279332999999951,
+        0.004425291999999899
+      ],
+      "python_samples_seconds": [
+        0.08129466700120247,
+        0.09302220899917302,
+        0.08627141699980712,
+        0.08527974999742582,
+        0.08521775000190246
+      ],
+      "bun_median_seconds": 0.004391833000000133,
+      "python_median_seconds": 0.08527974999742582,
+      "python_over_bun": 19.417803454143918
+    },
+    {
+      "workload": "lm",
+      "input_sha256": "6df3eab44ec2c4cf82d99b8ee882fc0338ec8f4f608aa8d899ae9a8773150edd",
+      "input_size": {
+        "sentences": 3000
+      },
+      "parity": true,
+      "bun_samples_seconds": [
+        0.11009700000000021,
+        0.11196979199999987,
+        0.11839841700000034,
+        0.11170524999999998,
+        0.11112387499999932
+      ],
+      "python_samples_seconds": [
+        0.40470758299852605,
+        0.4108972920002998,
+        0.38596333299938124,
+        0.41665662500236067,
+        0.423487041000044
+      ],
+      "bun_median_seconds": 0.11170524999999998,
+      "python_median_seconds": 0.4108972920002998,
+      "python_over_bun": 3.67840627007504
+    },
+    {
+      "workload": "punkt",
+      "input_sha256": "edb271f4aceaee86adc73956fe19e274d0032f930d5e4829f00bee88931004cc",
+      "input_size": {
+        "characters": 118216
+      },
+      "parity": true,
+      "bun_samples_seconds": [
+        0.0021474159999997936,
+        0.001970542000000023,
+        0.004428457999999409,
+        0.0019060830000007627,
+        0.0017337080000006608
+      ],
+      "python_samples_seconds": [
+        0.005209292001381982,
+        0.005328291998011991,
+        0.0055002080007398035,
+        0.005321417000232032,
+        0.0054711249977117404
+      ],
+      "bun_median_seconds": 0.001970542000000023,
+      "python_median_seconds": 0.005328291998011991,
+      "python_over_bun": 2.7039728145920914
+    },
+    {
+      "workload": "sentiment",
+      "input_sha256": "aaf75b5546abe68d68807f05e483a40525263ee7fa6deb35df15e5b4860b60dc",
+      "input_size": {
+        "texts": 8740
+      },
+      "parity": true,
+      "bun_samples_seconds": [
+        0.036374542000000475,
+        0.03801362499999959,
+        0.0371836659999999,
+        0.03680237500000021,
+        0.037676209000000196
+      ],
+      "python_samples_seconds": [
+        0.05884741699992446,
+        0.05994041600206401,
+        0.05951891699805856,
+        0.07103158400059328,
+        0.05916641700241598
+      ],
+      "bun_median_seconds": 0.0371836659999999,
+      "python_median_seconds": 0.05951891699805856,
+      "python_over_bun": 1.600673720500252
+    },
+    {
+      "workload": "ner",
+      "input_sha256": "c192d51c8a5faafa7f682218808f622ac2dbd35a1d21a4782e7ec94d7d145806",
+      "input_size": {
+        "sentences": 155
+      },
+      "parity": true,
+      "bun_samples_seconds": [
+        0.10393495799999983,
+        0.09796220900000116,
+        0.09598837500000082,
+        0.09789720800000032,
+        0.10521374999999898
+      ],
+      "python_samples_seconds": [
+        0.15656870800012257,
+        0.15672374999849126,
+        0.15473520799787366,
+        0.1653772919999028,
+        0.16046254100001534
+      ],
+      "bun_median_seconds": 0.09796220900000116,
+      "python_median_seconds": 0.15672374999849126,
+      "python_over_bun": 1.599838872544099
+    },
+    {
+      "workload": "pcfg",
+      "input_sha256": "75d076a965666c5b768608d3085e4f97c1750f51c5f1538f02379141d330d3f8",
+      "input_size": {
+        "sentences": 7
+      },
+      "parity": true,
+      "bun_samples_seconds": [
+        0.03254495799999859,
+        0.029935790999999882,
+        0.03117695800000001,
+        0.030103375000000595,
+        0.030954084000000874
+      ],
+      "python_samples_seconds": [
+        1.3373811669989664,
+        1.2723786249989644,
+        1.3646487919977517,
+        1.2691158749985334,
+        1.3874467919995368
+      ],
+      "bun_median_seconds": 0.030954084000000874,
+      "python_median_seconds": 1.3373811669989664,
+      "python_over_bun": 43.20532201821668
+    }
+  ]
+}

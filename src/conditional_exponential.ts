@@ -1,4 +1,4 @@
-import { MaxEntTextClassifier, type MaxEntExample, type MaxEntPrediction, type MaxEntSerialized } from "./maxent";
+import { MaxEntTextClassifier, type MaxEntExample, type MaxEntPrediction, type MaxEntSerialized, type MaxEntOptions } from "./maxent";
 
 export type ConditionalExponentialExample = MaxEntExample;
 
@@ -11,7 +11,7 @@ export type ConditionalExponentialSerialized = {
 export class ConditionalExponentialTextClassifier {
   private model: MaxEntTextClassifier;
 
-  constructor(options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number }) {
+  constructor(options?: MaxEntOptions) {
     this.model = new MaxEntTextClassifier(options);
   }
 
@@ -19,7 +19,7 @@ export class ConditionalExponentialTextClassifier {
     if (payload.version !== 1 || payload.kind !== "conditional_exponential") {
       throw new Error("invalid ConditionalExponential serialized payload");
     }
-    const out = new ConditionalExponentialTextClassifier(payload.maxent.options);
+    const out = new ConditionalExponentialTextClassifier();
     (out as unknown as { model: MaxEntTextClassifier }).model = MaxEntTextClassifier.fromSerialized(payload.maxent);
     return out;
   }
@@ -56,7 +56,7 @@ export class ConditionalExponentialTextClassifier {
 
 export function trainConditionalExponentialTextClassifier(
   examples: ConditionalExponentialExample[],
-  options?: { epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number },
+  options?: MaxEntOptions,
 ): ConditionalExponentialTextClassifier {
   return new ConditionalExponentialTextClassifier(options).train(examples);
 }

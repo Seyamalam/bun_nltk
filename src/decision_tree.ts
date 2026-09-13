@@ -60,7 +60,7 @@ function majorityLabel(counts: Map<string, number>): string {
   let bestLabel = "";
   let bestCount = -1;
   for (const [label, count] of counts) {
-    if (count > bestCount || (count === bestCount && label.localeCompare(bestLabel) < 0)) {
+    if (count > bestCount) {
       bestCount = count;
       bestLabel = label;
     }
@@ -88,17 +88,24 @@ export class DecisionTreeTextClassifier {
   private labels: string[] = [];
   private tree: DecisionTreeNode | null = null;
 
-  constructor(options: { maxDepth?: number; minSamples?: number; maxCandidateFeatures?: number; maxFeatures?: number } = {}) {
+  constructor(
+    options: {
+      maxDepth?: number;
+      minSamples?: number;
+      maxCandidateFeatures?: number;
+      maxFeatures?: number;
+    } = {},
+  ) {
     this.options = {
-      maxDepth: Math.max(1, Math.floor(options.maxDepth ?? 8)),
-      minSamples: Math.max(1, Math.floor(options.minSamples ?? 2)),
-      maxCandidateFeatures: Math.max(4, Math.floor(options.maxCandidateFeatures ?? 256)),
+      maxDepth: Math.max(1, Math.floor(options.maxDepth ?? 100)),
+      minSamples: Math.max(1, Math.floor(options.minSamples ?? 10)),
+      maxCandidateFeatures: Math.max(4, Math.floor(options.maxCandidateFeatures ?? Number.MAX_SAFE_INTEGER)),
     };
     this.vectorizer = new TextFeatureVectorizer({
       ngramMin: 1,
-      ngramMax: 2,
+      ngramMax: 1,
       binary: true,
-      maxFeatures: Math.max(128, Math.floor(options.maxFeatures ?? 10000)),
+      maxFeatures: Math.max(128, Math.floor(options.maxFeatures ?? Number.MAX_SAFE_INTEGER)),
     });
   }
 
@@ -106,7 +113,9 @@ export class DecisionTreeTextClassifier {
     if (payload.version !== 1) throw new Error(`unsupported DecisionTree version: ${payload.version}`);
     const model = new DecisionTreeTextClassifier(payload.options);
     model.labels = [...payload.labels];
-    (model as unknown as { vectorizer: TextFeatureVectorizer }).vectorizer = TextFeatureVectorizer.fromJSON(payload.vectorizer);
+    (model as unknown as { vectorizer: TextFeatureVectorizer }).vectorizer = TextFeatureVectorizer.fromJSON(
+      payload.vectorizer,
+    );
     model.tree = payload.tree as DecisionTreeNode;
     return model;
   }
@@ -114,70 +123,48 @@ export class DecisionTreeTextClassifier {
   private buildNode(rows: Array<{ label: string; features: SparseVector }>, depth: number): DecisionTreeNode {
     const counts = labelCounts(rows);
     const majority = majorityLabel(counts);
-    if (counts.size <= 1 || depth >= this.options.maxDepth || rows.length < this.options.minSamples) {
-      return {
-        kind: "leaf",
-        label: majority,
-        counts: Object.fromEntries(counts.entries()),
-      };
-    }
-
-    const featureFreq = new Map<number, number>();
-    for (const row of rows) {
-      for (const id of row.features.indices) {
-        featureFreq.set(id, (featureFreq.get(id) ?? 0) + 1);
-      }
-    }
-
-    const candidates = [...featureFreq.entries()]
-      .sort((a, b) => b[1] - a[1] || a[0] - b[0])
-      .slice(0, this.options.maxCandidateFeatures)
-      .map(([id]) => id);
-
-    const baseEntropy = entropyFromCounts(counts);
-    let bestFeature = -1;
-    let bestGain = -Infinity;
-    let bestAbsent: Array<{ label: string; features: SparseVector }> = [];
-    let bestPresent: Array<{ label: string; features: SparseVector }> = [];
-
+    const leaf = (subset: Array<{ label: string; features: SparseVector }>): DecisionTreeNode => {
+      const counts = labelCounts(subset);
+      return { kind: "leaf", label: majorityLabel(counts), counts: Object.fromEntries(counts) };
+    };
+    let best: DecisionTreeNode = leaf(rows);
+    let bestError = rows.filter((row) => row.label !== majority).length;
+    const vocabulary = this.vectorizer.vocabulary();
+    const candidates = [...new Set(rows.flatMap((row) => [...row.features.indices]))]
+      .sort((a, b) => (vocabulary[a]! < vocabulary[b]! ? -1 : vocabulary[a]! > vocabulary[b]! ? 1 : 0))
+      .slice(0, this.options.maxCandidateFeatures);
+    let bestAbsent: typeof rows = [],
+      bestPresent: typeof rows = [];
     for (const featureId of candidates) {
-      const absent: Array<{ label: string; features: SparseVector }> = [];
-      const present: Array<{ label: string; features: SparseVector }> = [];
-
-      for (const row of rows) {
-        if (containsFeature(row.features, featureId)) present.push(row);
-        else absent.push(row);
-      }
-      if (absent.length === 0 || present.length === 0) continue;
-
-      const absentEntropy = entropyFromCounts(labelCounts(absent));
-      const presentEntropy = entropyFromCounts(labelCounts(present));
-      const weighted = (absent.length / rows.length) * absentEntropy + (present.length / rows.length) * presentEntropy;
-      const gain = baseEntropy - weighted;
-      if (gain > bestGain) {
-        bestGain = gain;
-        bestFeature = featureId;
+      const absent = rows.filter((row) => !containsFeature(row.features, featureId));
+      const present = rows.filter((row) => containsFeature(row.features, featureId));
+      if (!absent.length || !present.length) continue;
+      const absentLabel = majorityLabel(labelCounts(absent)),
+        presentLabel = majorityLabel(labelCounts(present));
+      const error =
+        absent.filter((row) => row.label !== absentLabel).length +
+        present.filter((row) => row.label !== presentLabel).length;
+      if (error < bestError) {
+        bestError = error;
         bestAbsent = absent;
         bestPresent = present;
+        best = {
+          kind: "split",
+          featureId,
+          feature: vocabulary[featureId]!,
+          absent: leaf(absent),
+          present: leaf(present),
+        };
       }
     }
-
-    if (bestFeature < 0 || !Number.isFinite(bestGain) || bestGain <= 1e-9) {
-      return {
-        kind: "leaf",
-        label: majority,
-        counts: Object.fromEntries(counts.entries()),
-      };
+    // NLTK always chooses a stump before applying support/depth cutoffs to refinement.
+    if (best.kind === "split" && rows.length > this.options.minSamples && depth + 1 < this.options.maxDepth) {
+      if (entropyFromCounts(labelCounts(bestAbsent)) > 0.05)
+        best.absent = this.buildNode(bestAbsent, depth + 1);
+      if (entropyFromCounts(labelCounts(bestPresent)) > 0.05)
+        best.present = this.buildNode(bestPresent, depth + 1);
     }
-
-    const feature = this.vectorizer.vocabulary()[bestFeature] ?? `f${bestFeature}`;
-    return {
-      kind: "split",
-      featureId: bestFeature,
-      feature,
-      absent: this.buildNode(bestAbsent, depth + 1),
-      present: this.buildNode(bestPresent, depth + 1),
-    };
+    return best;
   }
 
   train(examples: DecisionTreeExample[]): this {
@@ -232,7 +219,12 @@ export class DecisionTreeTextClassifier {
 
 export function trainDecisionTreeTextClassifier(
   examples: DecisionTreeExample[],
-  options: { maxDepth?: number; minSamples?: number; maxCandidateFeatures?: number; maxFeatures?: number } = {},
+  options: {
+    maxDepth?: number;
+    minSamples?: number;
+    maxCandidateFeatures?: number;
+    maxFeatures?: number;
+  } = {},
 ): DecisionTreeTextClassifier {
   return new DecisionTreeTextClassifier(options).train(examples);
 }

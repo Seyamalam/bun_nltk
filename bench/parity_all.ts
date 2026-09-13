@@ -1,33 +1,21 @@
 import { existsSync } from "node:fs";
-import { resolve } from "node:path";
-
-type JsonObj = Record<string, unknown>;
-
-function extractJson(payload: string): JsonObj {
-  const start = payload.indexOf("{");
-  const end = payload.lastIndexOf("}");
-  if (start < 0 || end < 0 || end <= start) {
-    throw new Error(`unable to parse json payload: ${payload}`);
-  }
-  return JSON.parse(payload.slice(start, end + 1)) as JsonObj;
-}
-
-function run(command: string[], cwd: string): JsonObj {
-  const proc = Bun.spawnSync(command, { cwd, stdout: "pipe", stderr: "pipe" });
-  if (proc.exitCode !== 0) {
-    throw new Error(
-      `command failed (${command.join(" ")}):\n${new TextDecoder().decode(proc.stderr)}\n${new TextDecoder().decode(proc.stdout)}`,
-    );
-  }
-  return extractJson(new TextDecoder().decode(proc.stdout).trim());
-}
-
+import { delimiter, resolve } from "node:path";
+import { classifyParity, missingFixtureResult, summarizeParity, type CheckResult } from "../scripts/parity-status";
 function ensureGateDataset(root: string): string {
   const dataset = "bench/datasets/gate_synthetic.txt";
   const full = resolve(root, dataset);
   if (existsSync(full)) return dataset;
   const proc = Bun.spawnSync(
-    ["python3", "bench/generate_synthetic.py", "--size-mb", "8", "--seed", "1337", "--out", dataset],
+    [
+      "python3",
+      "bench/generate_synthetic.py",
+      "--size-mb",
+      "8",
+      "--seed",
+      "1337",
+      "--out",
+      dataset,
+    ],
     { cwd: root, stdout: "pipe", stderr: "pipe" },
   );
   if (proc.exitCode !== 0) {
@@ -36,106 +24,107 @@ function ensureGateDataset(root: string): string {
   return dataset;
 }
 
-function main() {
-  const root = resolve(import.meta.dir, "..");
-  const dataset = ensureGateDataset(root);
-
-  const tokenizer = run(["bun", "run", "bench/parity_tokenizer.ts"], root);
-  const tokenizerFamily = run(["bun", "run", "bench/parity_tokenizer_family.ts"], root);
-  const sentence = run(["bun", "run", "bench/parity_sentence.ts"], root);
-  const punkt = run(["bun", "run", "bench/parity_punkt.ts"], root);
-  const punktExtended = run(["bun", "run", "bench/parity_punkt_extended.ts"], root);
-  const stemmers = run(["bun", "run", "bench/parity_stemmers.ts"], root);
-  const metrics = run(["bun", "run", "bench/parity_metrics.ts"], root);
-  const sentiment = run(["bun", "run", "bench/parity_sentiment.ts"], root);
-  const lm = run(["bun", "run", "bench/compare_lm.ts", dataset, "1"], root);
-  const chunk = run(["bun", "run", "bench/compare_chunk.ts", "3000", "1"], root);
-  const wordnet = run(["bun", "run", "bench/parity_wordnet.ts"], root);
-  const wordnetCompat = run(["bun", "run", "bench/parity_wordnet_compat.ts"], root);
-  const parser = run(["bun", "run", "bench/parity_parser.ts"], root);
-  const classifier = run(["bun", "run", "bench/parity_classifier.ts"], root);
-  const pcfg = run(["bun", "run", "bench/parity_pcfg.ts"], root);
-  const maxent = run(["bun", "run", "bench/parity_maxent.ts"], root);
-  const decisionTree = run(["bun", "run", "bench/parity_decision_tree.ts"], root);
-  const earley = run(["bun", "run", "bench/parity_earley.ts"], root);
-  const leftcorner = run(["bun", "run", "bench/parity_leftcorner.ts"], root);
-  const featureParser = run(["bun", "run", "bench/parity_feature_parser.ts"], root);
-  const featureEarley = run(["bun", "run", "bench/parity_feature_earley.ts"], root);
-  const corpusImported = run(["bun", "run", "bench/parity_corpus_imported.ts"], root);
-  const tagger = run(["bun", "run", "bench/parity_tagger.ts"], root);
-  const condexp = run(["bun", "run", "bench/parity_condexp.ts"], root);
-  const positiveNb = run(["bun", "run", "bench/parity_positive_nb.ts"], root);
-  const importedFixturePath = resolve(root, "test", "fixtures", "nltk_imported", "pcfg_treebank_fixture.json");
-  const imported = existsSync(importedFixturePath) ? run(["bun", "run", "bench/parity_imported.ts"], root) : { parity: true };
-  const distance = run(["bun", "run", "bench/parity_distance.ts"], root);
-  const seqTaggers = run(["bun", "run", "bench/parity_seq_taggers.ts"], root);
-  const wsd = run(["bun", "run", "bench/parity_wsd.ts"], root);
-  const chrfNist = run(["bun", "run", "bench/parity_chrf_nist.ts"], root);
-  const lmModels = run(["bun", "run", "bench/parity_lm_models.ts"], root);
-  const snowball = run(["bun", "run", "bench/parity_snowball.ts"], root);
-  const brill = run(["bun", "run", "bench/parity_brill.ts"], root);
-  const hmmTagger = run(["bun", "run", "bench/parity_hmm_tagger.ts"], root);
-  const agreement = run(["bun", "run", "bench/parity_agreement.ts"], root);
-  const sem = run(["bun", "run", "bench/parity_sem.ts"], root);
-  const bleuNistWasm = run(["bun", "run", "bench/parity_bleu_nist_wasm.ts"], root);
-
-  const checks = {
-    tokenizer: Boolean(tokenizer.parity),
-    tokenizer_family: Boolean(tokenizerFamily.parity),
-    sentence: Boolean(sentence.parity),
-    punkt: Boolean(punkt.parity),
-    punkt_extended: Boolean(punktExtended.parity),
-    stemmers: Boolean(stemmers.parity),
-    translation_metrics: Boolean(metrics.parity),
-    sentiment: Boolean(sentiment.parity),
-    lm: Boolean(lm.parity_tolerant),
-    chunk: Boolean(chunk.parity_sample_400),
-    wordnet: Boolean(wordnet.parity),
-    wordnet_compat: Boolean(wordnetCompat.parity),
-    parser: Boolean(parser.parity),
-    classifier: Boolean(classifier.parity),
-    pcfg: Boolean(pcfg.parity),
-    maxent: Boolean(maxent.parity),
-    decision_tree: Boolean(decisionTree.parity),
-    earley: Boolean(earley.parity),
-    leftcorner: Boolean(leftcorner.parity),
-    feature_parser: Boolean(featureParser.parity),
-    feature_earley: Boolean(featureEarley.parity),
-    corpus_imported: Boolean(corpusImported.parity),
-    imported: Boolean(imported.parity),
-    tagger: Boolean(tagger.parity),
-    condexp: Boolean(condexp.parity),
-    positive_nb: Boolean(positiveNb.parity),
-    distance: Boolean(distance.parity),
-    seq_taggers: Boolean(seqTaggers.parity),
-    wsd: Boolean(wsd.parity),
-    chrf_nist: Boolean(chrfNist.parity),
-    lm_models: Boolean(lmModels.parity_tolerant ?? lmModels.parity),
-    snowball: Boolean(snowball.parity),
-    brill: Boolean(brill.parity),
-    hmm_tagger: Boolean(hmmTagger.parity_tolerant ?? hmmTagger.parity),
-    agreement: Boolean(agreement.parity),
-    sem_logic: Boolean(sem.parity),
-    bleu_nist_wasm: Boolean(bleuNistWasm.parity),
-  };
-
-  const failed = Object.entries(checks)
-    .filter(([, ok]) => !ok)
-    .map(([name]) => name);
-  if (failed.length > 0) {
-    throw new Error(`parity suite failed: ${failed.join(", ")}`);
+const root = resolve(import.meta.dir, "..");
+const localBin = resolve(root, ".venv/bin");
+const env = existsSync(resolve(localBin, "python3"))
+  ? { ...process.env, PATH: `${localBin}${delimiter}${process.env.PATH ?? ""}` }
+  : process.env;
+let dataset: string;
+try {
+  dataset = ensureGateDataset(root);
+} catch {
+  dataset = "bench/datasets/gate_synthetic.txt";
+}
+const definitions: [string, string[], string[]][] = [
+  ["statistical_models", ["bun", "run", "bench/parity_statistical.ts"], ["parity"]],
+  ["tokenizer", ["bun", "run", "bench/parity_tokenizer.ts"], ["parity"]],
+  ["tokenizer_family", ["bun", "run", "bench/parity_tokenizer_family.ts"], ["parity"]],
+  ["sentence", ["bun", "run", "bench/parity_sentence.ts"], ["parity"]],
+  ["punkt", ["bun", "run", "bench/parity_punkt.ts"], ["parity"]],
+  ["punkt_extended", ["bun", "run", "bench/parity_punkt_extended.ts"], ["parity"]],
+  ["stemmers", ["bun", "run", "bench/parity_stemmers.ts"], ["parity"]],
+  ["translation_metrics", ["bun", "run", "bench/parity_metrics.ts"], ["parity"]],
+  ["sentiment", ["bun", "run", "bench/parity_sentiment.ts"], ["parity"]],
+  ["lm", ["bun", "run", "bench/compare_lm.ts", dataset, "1"], ["parity_exact"]],
+  ["chunk", ["bun", "run", "bench/compare_chunk.ts", "3000", "1"], ["parity_sample_400"]],
+  ["wordnet", ["bun", "run", "bench/parity_wordnet.ts"], ["parity"]],
+  ["wordnet_compat", ["bun", "run", "bench/parity_wordnet_compat.ts"], ["parity"]],
+  ["parser", ["bun", "run", "bench/parity_parser.ts"], ["parity"]],
+  ["classifier", ["bun", "run", "bench/parity_classifier.ts"], ["parity"]],
+  ["pcfg", ["bun", "run", "bench/parity_pcfg.ts"], ["parity"]],
+  ["maxent", ["bun", "run", "bench/parity_maxent.ts"], ["parity"]],
+  ["decision_tree", ["bun", "run", "bench/parity_decision_tree.ts"], ["parity"]],
+  ["earley", ["bun", "run", "bench/parity_earley.ts"], ["parity"]],
+  ["leftcorner", ["bun", "run", "bench/parity_leftcorner.ts"], ["parity"]],
+  ["feature_parser", ["bun", "run", "bench/parity_feature_parser.ts"], ["parity"]],
+  ["feature_earley", ["bun", "run", "bench/parity_feature_earley.ts"], ["parity"]],
+  ["corpus_imported", ["bun", "run", "bench/parity_corpus_imported.ts"], ["parity"]],
+  ["imported", ["bun", "run", "bench/parity_imported.ts"], ["parity"]],
+  ["tagger", ["bun", "run", "bench/parity_tagger.ts"], ["parity"]],
+  ["condexp", ["bun", "run", "bench/parity_condexp.ts"], ["parity"]],
+  ["positive_nb", ["bun", "run", "bench/parity_positive_nb.ts"], ["parity"]],
+  ["distance", ["bun", "run", "bench/parity_distance.ts"], ["parity"]],
+  ["seq_taggers", ["bun", "run", "bench/parity_seq_taggers.ts"], ["parity"]],
+  ["wsd", ["bun", "run", "bench/parity_wsd.ts"], ["parity"]],
+  ["chrf_nist", ["bun", "run", "bench/parity_chrf_nist.ts"], ["parity"]],
+  ["lm_models", ["bun", "run", "bench/parity_lm_models.ts"], ["parity_tolerant", "parity"]],
+  ["snowball", ["bun", "run", "bench/parity_snowball.ts"], ["parity"]],
+  ["brill", ["bun", "run", "bench/parity_brill.ts"], ["parity"]],
+  ["hmm_tagger", ["bun", "run", "bench/parity_hmm_tagger.ts"], ["parity_tolerant", "parity"]],
+  ["agreement", ["bun", "run", "bench/parity_agreement.ts"], ["parity"]],
+  ["sem_logic", ["bun", "run", "bench/parity_sem.ts"], ["parity"]],
+  ["bleu_nist_wasm", ["bun", "run", "bench/parity_bleu_nist_wasm.ts"], ["parity"]],
+  ["nltk_models", ["bun", "run", "bench/parity_nltk_models.ts"], ["parity"]],
+];
+const results: Record<string, CheckResult> = {};
+for (const [name, command, keys] of definitions) {
+  const requiredFixtures =
+    name === "imported"
+      ? ["pcfg_treebank_fixture.json", "classifier_movie_reviews_fixture.json"]
+      : name === "corpus_imported"
+        ? ["corpus_subsets_fixture.json"]
+        : [];
+  const missing = missingFixtureResult(
+    requiredFixtures.map((file) => resolve(root, "test/fixtures/nltk_imported", file)),
+  );
+  if (missing) {
+    results[name] = missing;
+    continue;
   }
 
-  console.log(
-    JSON.stringify(
-      {
-        ok: true,
-        checks,
-      },
-      null,
-      2,
-    ),
-  );
+  const proc = Bun.spawnSync(command, { cwd: root, env, stdout: "pipe", stderr: "pipe" });
+  const stdout = new TextDecoder().decode(proc.stdout),
+    stderr = new TextDecoder().decode(proc.stderr);
+  try {
+    const evidence = JSON.parse(stdout.slice(stdout.indexOf("{"), stdout.lastIndexOf("}") + 1));
+    results[name] = classifyParity(proc.exitCode, evidence, keys);
+    if (proc.exitCode !== 0)
+      results[name]!.reason = stderr.trim() || `process exited ${proc.exitCode}`;
+  } catch {
+    results[name] = {
+      status: "failed",
+      required: true,
+      reason: stderr.trim() || stdout.trim() || "No JSON evidence",
+    };
+  }
 }
-
-main();
+results.gui_integrations = {
+  status: "unsupported",
+  required: false,
+  reason: "Tkinter/matplotlib app and drawing shims do not provide upstream GUI behavior.",
+};
+results.network_integrations = {
+  status: "unsupported",
+  required: false,
+  reason:
+    "Twitter/network-service integrations requiring credentials are outside the behavioral gate.",
+};
+results.external_java_integrations = {
+  status: "unsupported",
+  required: false,
+  reason:
+    "Stanford/CoreNLP/Malt external Java integrations are outside this gate; no behavioral parity claim.",
+};
+const report = summarizeParity(results);
+console.log(JSON.stringify(report, null, 2));
+if (!report.ok) process.exitCode = 1;

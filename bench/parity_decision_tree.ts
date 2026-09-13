@@ -20,7 +20,7 @@ function main() {
   const jsPred = testRows.map((row) => clf.classify(row.text));
   const jsEval = clf.evaluate(testRows);
 
-  const payload = JSON.stringify({ train: trainRows, test: testRows, rounds: 1 });
+  const payload = JSON.stringify({ train: trainRows, test: testRows, rounds: 1, maxDepth: 8, minSamples: 1 });
   const proc = Bun.spawnSync(["python3", "bench/python_decision_tree_baseline.py", "--payload", payload], {
     cwd: resolve(import.meta.dir, ".."),
     stdout: "pipe",
@@ -36,12 +36,8 @@ function main() {
     py.predictions.length === jsPred.length
       ? jsPred.filter((pred, i) => pred === py.predictions[i]!).length / jsPred.length
       : 0;
-  const parity = jsEval.accuracy >= 0.5 && py.accuracy >= 0.5 && agree >= 0.5;
-  if (!parity) {
-    throw new Error(
-      `decision tree parity mismatch: js_acc=${jsEval.accuracy.toFixed(4)} py_acc=${py.accuracy.toFixed(4)} agreement=${agree.toFixed(4)}`,
-    );
-  }
+  const parity = jsEval.accuracy >= 0.5 && py.accuracy >= 0.5 && agree === 1;
+
 
   console.log(
     JSON.stringify(
@@ -55,6 +51,7 @@ function main() {
       2,
     ),
   );
+  if (!parity) process.exitCode = 1;
 }
 
 main();

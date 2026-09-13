@@ -1,72 +1,8 @@
-import { sentenceTokenizePunktAsciiNative } from "./native";
+import { trainPunkt } from "./punkt_trainer";
+import englishModel from "./data/punkt-english.json";
+import { punktSentences } from "./punkt_engine";
 
-const DEFAULT_PUNKT_ABBREVIATIONS = [
-  "al",
-  "apr",
-  "aug",
-  "capt",
-  "col",
-  "mr",
-  "mrs",
-  "ms",
-  "dr",
-  "prof",
-  "gen",
-  "gov",
-  "jan",
-  "feb",
-  "mar",
-  "jun",
-  "jul",
-  "sep",
-  "sept",
-  "oct",
-  "nov",
-  "dec",
-  "lt",
-  "maj",
-  "messrs",
-  "mlle",
-  "mme",
-  "msgr",
-  "no",
-  "nos",
-  "ph.d",
-  "rev",
-  "sr",
-  "jr",
-  "st",
-  "sgt",
-  "sen",
-  "rep",
-  "etc",
-  "vs",
-  "fig",
-  "figs",
-  "vol",
-  "pp",
-  "dept",
-  "est",
-  "ed",
-  "co",
-  "inc",
-  "ltd",
-  "corp",
-  "univ",
-  "e.g",
-  "i.e",
-  "u.n",
-  "u.s.a",
-  "u.s",
-  "u.k",
-  "a.m",
-  "p.m",
-];
-
-const TITLE_ABBREVIATIONS = new Set([
-  "dr",
-  "prof",
-]);
+const TITLE_ABBREVIATIONS = new Set(["dr", "prof"]);
 
 type TokenLook = {
   token: string;
@@ -81,6 +17,7 @@ export type PunktModelSerialized = {
   abbreviations: string[];
   collocations: Array<[string, string]>;
   sentenceStarters: string[];
+  orthoContext?: Record<string, number>;
   abbreviationScores?: Record<string, number>;
   orthographicContext?: Record<string, { lower: number; upper: number }>;
 };
@@ -101,7 +38,8 @@ export class PunktTrainerSubset {
     this.options = {
       minAbbrevCount: options.minAbbrevCount ?? this.options.minAbbrevCount,
       minCollocationCount: options.minCollocationCount ?? this.options.minCollocationCount,
-      minSentenceStarterCount: options.minSentenceStarterCount ?? this.options.minSentenceStarterCount,
+      minSentenceStarterCount:
+        options.minSentenceStarterCount ?? this.options.minSentenceStarterCount,
     };
     this.cached = null;
     return this;
@@ -109,8 +47,7 @@ export class PunktTrainerSubset {
 
   finalize(): PunktModelSerialized {
     if (!this.cached) {
-      const text = this.chunks.join(" ");
-      this.cached = text.trim() ? trainPunktModel(text, this.options) : defaultPunktModel();
+      this.cached = trainPunkt(this.chunks, this.options);
     }
     return parsePunktModel(this.cached);
   }
@@ -244,18 +181,19 @@ function preparePunktModel(model: PunktModelSerialized): PunktPreparedModel {
   };
 }
 
-function shouldSplitAt(
-  text: string,
-  punctIdx: number,
-  model: PunktPreparedModel,
-): boolean {
+function shouldSplitAt(text: string, punctIdx: number, model: PunktPreparedModel): boolean {
   const punct = text[punctIdx]!;
   const prev = punctIdx > 0 ? text[punctIdx - 1]! : "";
   const next = punctIdx + 1 < text.length ? text[punctIdx + 1]! : "";
 
   if (punct === "." && /\d/.test(prev) && /\d/.test(next)) return false;
   if (punct === "." && next === ".") return false;
-  if (punct === "." && /[A-Za-z]/.test(next) && punctIdx + 2 < text.length && text[punctIdx + 2] === ".") {
+  if (
+    punct === "." &&
+    /[A-Za-z]/.test(next) &&
+    punctIdx + 2 < text.length &&
+    text[punctIdx + 2] === "."
+  ) {
     return false;
   }
 
@@ -291,106 +229,16 @@ function shouldSplitAt(
   return true;
 }
 
-function roughSentenceSplits(text: string): string[] {
-  const out: string[] = [];
-  let start = 0;
-  for (let i = 0; i < text.length; i += 1) {
-    if (!isSentencePunct(text[i]!)) continue;
-    const segment = text.slice(start, i + 1).trim();
-    if (segment) out.push(segment);
-    start = i + 1;
-  }
-  const tail = text.slice(start).trim();
-  if (tail) out.push(tail);
-  return out;
-}
-
-export function trainPunktModel(text: string, options: PunktTrainingOptions = {}): PunktModelSerialized {
-  const minAbbrevCount = options.minAbbrevCount ?? 2;
-  const minCollocationCount = options.minCollocationCount ?? 2;
-  const minSentenceStarterCount = options.minSentenceStarterCount ?? 2;
-
-  const abbreviationStats = new Map<string, { total: number; lowerAfter: number; upperAfter: number }>();
-  const collocationStats = new Map<string, number>();
-  const starterStats = new Map<string, number>();
-  const orthographicContext = new Map<string, { lower: number; upper: number }>();
-
-  for (let i = 0; i < text.length; i += 1) {
-    if (text[i] !== ".") continue;
-    const left = normalizeAbbrev(findPrevToken(text, i - 1));
-    if (!left || !/^[a-z][a-z.]{0,15}$/.test(left)) continue;
-    const look = findNextToken(text, i + 1);
-    if (!look) continue;
-
-    const row = abbreviationStats.get(left) ?? { total: 0, lowerAfter: 0, upperAfter: 0 };
-    row.total += 1;
-    if (look.isLowerStart) row.lowerAfter += 1;
-    if (look.isUpperStart) row.upperAfter += 1;
-    abbreviationStats.set(left, row);
-
-    if (look.isLowerStart) {
-      const key = `${left}\u0001${look.lower}`;
-      collocationStats.set(key, (collocationStats.get(key) ?? 0) + 1);
-    }
-    const context = orthographicContext.get(look.lower) ?? { lower: 0, upper: 0 };
-    if (look.isLowerStart) context.lower += 1;
-    if (look.isUpperStart) context.upper += 1;
-    orthographicContext.set(look.lower, context);
-  }
-
-  for (const sentence of roughSentenceSplits(text)) {
-    const starter = sentence.trim().match(/^[A-Za-z][A-Za-z0-9'-]*/)?.[0]?.toLowerCase();
-    if (!starter) continue;
-    starterStats.set(starter, (starterStats.get(starter) ?? 0) + 1);
-  }
-
-  const abbreviations = new Set<string>();
-  for (const [abbr, stats] of abbreviationStats.entries()) {
-    if (stats.total >= minAbbrevCount && (stats.lowerAfter >= stats.upperAfter || (stats.upperAfter > 0 && abbr.length <= 3))) {
-      abbreviations.add(abbr);
-    }
-  }
-
-  const collocations: Array<[string, string]> = [];
-  for (const [pair, count] of collocationStats.entries()) {
-    if (count < minCollocationCount) continue;
-    const [left, right] = pair.split("\u0001");
-    if (left && right) collocations.push([left, right]);
-  }
-
-  const sentenceStarters: string[] = [];
-  for (const [starter, count] of starterStats.entries()) {
-    if (count >= minSentenceStarterCount) sentenceStarters.push(starter);
-  }
-
-  abbreviations.delete("");
-  const abbreviationScores: Record<string, number> = {};
-  for (const [abbr, stats] of abbreviationStats.entries()) {
-    if (stats.total <= 0) continue;
-    abbreviationScores[abbr] = Number((stats.lowerAfter / stats.total).toFixed(6));
-  }
-  const orthographicContextOut: Record<string, { lower: number; upper: number }> = {};
-  for (const [token, ctx] of orthographicContext.entries()) {
-    orthographicContextOut[token] = { lower: ctx.lower, upper: ctx.upper };
-  }
-  return {
-    version: 1,
-    abbreviations: [...abbreviations].sort(),
-    collocations: collocations.sort(([a1, b1], [a2, b2]) => {
-      if (a1 !== a2) return a1.localeCompare(a2);
-      return b1.localeCompare(b2);
-    }),
-    sentenceStarters: sentenceStarters.sort(),
-    abbreviationScores,
-    orthographicContext: orthographicContextOut,
-  };
+export function trainPunktModel(
+  text: string,
+  options: PunktTrainingOptions = {},
+): PunktModelSerialized {
+  return trainPunkt([text], options);
 }
 
 export function sentenceTokenizePunkt(text: string, model?: PunktModelSerialized): string[] {
-  if (!model) {
-    return sentenceTokenizePunktAsciiNative(text);
-  }
-  const prepared = preparePunktModel(model ?? defaultPunktModel());
+  if (!model || model.version >= 2) return punktSentences(text, model ?? defaultPunktModel());
+  const prepared = preparePunktModel(model);
   const out: string[] = [];
   let start = 0;
 
@@ -411,24 +259,7 @@ export function sentenceTokenizePunkt(text: string, model?: PunktModelSerialized
 }
 
 export function sentenceTokenizePunktCompat(text: string, model?: PunktModelSerialized): string[] {
-  const prepared = preparePunktModel(model ?? defaultPunktModel());
-  const out: string[] = [];
-  let start = 0;
-
-  for (let i = 0; i < text.length; i += 1) {
-    if (!isSentencePunct(text[i]!)) continue;
-    if (!shouldSplitAt(text, i, prepared)) continue;
-
-    let end = i + 1;
-    while (end < text.length && isCloser(text[end]!)) end += 1;
-    const sentence = text.slice(start, end).trim();
-    if (sentence) out.push(sentence);
-    start = end;
-  }
-
-  const tail = text.slice(start).trim();
-  if (tail) out.push(tail);
-  return out;
+  return sentenceTokenizePunkt(text, model);
 }
 
 let cachedDefaultModel: PunktModelSerialized | null = null;
@@ -436,12 +267,8 @@ let cachedDefaultModel: PunktModelSerialized | null = null;
 export function defaultPunktModel(): PunktModelSerialized {
   if (cachedDefaultModel) return cachedDefaultModel;
   cachedDefaultModel = {
-    version: 1,
-    abbreviations: [...DEFAULT_PUNKT_ABBREVIATIONS].sort(),
-    collocations: [],
-    sentenceStarters: [],
-    abbreviationScores: {},
-    orthographicContext: {},
+    ...englishModel,
+    collocations: englishModel.collocations.map((pair) => [pair[0]!, pair[1]!]),
   };
   return cachedDefaultModel;
 }
@@ -451,16 +278,22 @@ export function serializePunktModel(model: PunktModelSerialized): string {
 }
 
 export function parsePunktModel(payload: string | PunktModelSerialized): PunktModelSerialized {
-  const parsed = typeof payload === "string" ? (JSON.parse(payload) as PunktModelSerialized) : payload;
+  const parsed =
+    typeof payload === "string" ? (JSON.parse(payload) as PunktModelSerialized) : payload;
   const abbreviations = Array.isArray(parsed.abbreviations) ? parsed.abbreviations : [];
   const collocations = Array.isArray(parsed.collocations) ? parsed.collocations : [];
   const sentenceStarters = Array.isArray(parsed.sentenceStarters) ? parsed.sentenceStarters : [];
   const abbreviationScores =
-    parsed.abbreviationScores && typeof parsed.abbreviationScores === "object" ? parsed.abbreviationScores : {};
+    parsed.abbreviationScores && typeof parsed.abbreviationScores === "object"
+      ? parsed.abbreviationScores
+      : {};
   const orthographicContext =
-    parsed.orthographicContext && typeof parsed.orthographicContext === "object" ? parsed.orthographicContext : {};
+    parsed.orthographicContext && typeof parsed.orthographicContext === "object"
+      ? parsed.orthographicContext
+      : {};
   return {
     version: Number.isFinite(parsed.version) ? parsed.version : 1,
+    orthoContext: { ...parsed.orthoContext },
     abbreviations: [...abbreviations],
     collocations: [...collocations],
     sentenceStarters: [...sentenceStarters],

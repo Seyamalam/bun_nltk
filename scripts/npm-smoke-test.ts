@@ -91,8 +91,22 @@ import {
   sentenceTokenizeSubset,
   loadPerceptronTaggerModel,
   posTagPerceptronAscii,
-  WasmNltk
+  WasmNltk,
+  SentimentIntensityAnalyzer,
+  sentenceTokenizePunkt,
+  treebankWordTokenize,
+  neChunkIob,
+  trainNaiveBayesTextClassifier,
+  trainMaxEntTextClassifier,
+  trainNgramLanguageModel
 } from "bun_nltk";
+
+const training = [{label:"A",text:"good good good"},{label:"B",text:"bad"}];
+if (trainNaiveBayesTextClassifier(training).classify("good") !== "B") throw new Error("packaged categorical NB mismatch");
+const maxent = trainMaxEntTextClassifier(training,{epochs:4});
+if (Math.abs(maxent.predict("good good good")[0].probability - .8) > 1e-10) throw new Error("packaged IIS mismatch");
+const lm = trainNgramLanguageModel([["a"]],{order:3,model:"kneser_ney_interpolated"});
+if (Math.abs(lm.evaluateBatch([{word:"a",context:[]}],["a"]).scores[0] - .25) > 1e-12) throw new Error("packaged native LM mismatch");
 
 const text = "Dr. Smith built 3 models. They were running quickly.";
 const nativeCount = countTokensAscii(text);
@@ -104,6 +118,17 @@ if (nativeCount !== jsCount) {
 const sentences = sentenceTokenizeSubset(text);
 if (sentences.length !== 2) {
   throw new Error(\`sentence split mismatch: \${JSON.stringify(sentences)}\`);
+}
+
+const polarity = new SentimentIntensityAnalyzer().polarityScores("This is not good.");
+if (JSON.stringify(polarity) !== JSON.stringify({neg:0.445,neu:0.555,pos:0,compound:-0.3412})) {
+  throw new Error("packaged VADER model mismatch");
+}
+if (JSON.stringify(sentenceTokenizePunkt("Dr. Smith left. He slept.")) !== JSON.stringify(["Dr. Smith left.","He slept."])) throw new Error("packaged Punkt model mismatch");
+if (JSON.stringify(treebankWordTokenize("They cannot go.")) !== JSON.stringify(["They","can","not","go","."])) throw new Error("packaged Treebank mismatch");
+for (const binary of [false,true]) {
+  const entities = neChunkIob([{token:"France",tag:"NNP"}],{binary});
+  if (entities[0][2] !== (binary ? "B-NE" : "B-GPE")) throw new Error("packaged NE model mismatch");
 }
 
 const model = loadPerceptronTaggerModel();

@@ -37,7 +37,7 @@ function main() {
       ? jsPred.filter((label, idx) => label === py.predictions[idx]!).length / jsPred.length
       : 0;
   const jsAcc = clf.evaluate(testRows).accuracy;
-  if (jsAcc < 0.75 || py.accuracy < 0.75 || agreement < 0.75) {
+  if (jsAcc < 0.75 || py.accuracy < 0.75 || agreement !== 1) {
     throw new Error(`maxent parity failed: jsAcc=${jsAcc}, pyAcc=${py.accuracy}, agreement=${agreement}`);
   }
   console.log(JSON.stringify({ parity: true, jsAcc, pyAcc: py.accuracy, agreement }, null, 2));

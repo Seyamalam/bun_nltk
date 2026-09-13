@@ -1,6 +1,6 @@
 {
   "name": "bun_nltk",
-  "version": "0.16.0",
+  "version": "1.0.0",
   "description": "High-performance NLP primitives for Bun/Node with Rust native and WASM backends.",
   "module": "index.ts",
   "type": "module",
@@ -20,7 +20,11 @@
     "README.md",
     "CHANGELOG.md",
     "docs",
-    "package.json"
+    "package.json",
+    "models/ne-chunker-multiclass.json.gz",
+    "models/ne-chunker-binary.json.gz",
+    "models/nltk-models.manifest.json",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "keywords": [
     "nlp",
@@ -161,7 +165,13 @@
     "pack:verify:prebuilt": "bun run scripts/check-packaged-prebuilt.ts",
     "release:validate": "bun run typecheck && bun run scripts/release-validate.ts",
     "release:local": "bun run scripts/release-local.ts",
-    "release:check": "bun run typecheck && bun run build:rust && bun run build:wasm && bun run build:prebuilt && bun run package:size:check && bun run pack:verify:prebuilt && bun run fixtures:import:nltk && bun test && bun run bench:gate && bun run bench:dashboard && bun run bench:trend:check && bun run wordnet:pack:official && bun run wordnet:verify:pack"
+    "release:check": "bun run typecheck && bun run build:rust && bun run build:wasm && bun run build:prebuilt && bun run package:size:check && bun run pack:verify:prebuilt && bun run fixtures:import:nltk && bun test && bun run bench:gate && bun run bench:dashboard && bun run bench:trend:check && bun run wordnet:pack:official && bun run wordnet:verify:pack",
+    "bench:parity:nltk-models": "bun run bench/parity_nltk_models.ts",
+    "models:export:nltk": "python3 scripts/export-nltk-models.py",
+    "fixtures:export:nltk-models": "python3 scripts/export-nltk-parity-fixtures.py",
+    "fixtures:export:statistical": "python3 scripts/export-statistical-fixtures.py",
+    "bench:parity:statistical": "bun run bench/parity_statistical.ts",
+    "bench:release": "bun run bench/release_benchmarks.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",

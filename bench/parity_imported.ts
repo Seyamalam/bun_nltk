@@ -7,6 +7,7 @@ import {
   trainNaiveBayesTextClassifier,
   type MaxEntExample,
   type NaiveBayesExample,
+  type ParseTree,
 } from "../index";
 
 type PcfgFixture = {
@@ -65,7 +66,7 @@ function main() {
   let parserCompared = 0;
   for (const tokens of parserCases) {
     const js = probabilisticChartParse(tokens, grammar);
-    if (!js) continue;
+
     writeFileSync(
       parserPayloadPath,
       `${JSON.stringify(
@@ -82,17 +83,20 @@ function main() {
       ["python3", "bench/python_pcfg_baseline.py", "--payload-file", parserPayloadPath],
       root,
     ) as { tree: string | null; prob: number };
-    if (!py.tree) continue;
     parserCompared += 1;
+    if (!js || !py.tree) {
+      if (!js && !py.tree) parserChecks++;
+      continue;
+    }
     const relProbDelta = Math.abs(js.prob - py.prob) / Math.max(1e-12, Math.abs(py.prob));
-    const sameRoot = js.tree.label === (py.tree.match(/^\(([^ )]+)/)?.[1] ?? "");
-    if (sameRoot && relProbDelta <= 5e-2) {
+    const bracket = (tree: ParseTree): string =>
+      `(${tree.label} ${tree.children.map((child) => (typeof child === "string" ? child : bracket(child))).join(" ")})`;
+    const sameTree = bracket(js.tree).replace(/\s+/g, " ").trim() === py.tree.replace(/\s+/g, " ").trim();
+    if (!sameTree || relProbDelta > 1e-9)
+      console.error(JSON.stringify({ tokens, js: bracket(js.tree), jsProb: js.prob, py, relProbDelta }));
+    if (sameTree && relProbDelta <= 1e-9) {
       parserChecks += 1;
     }
-  }
-  const parserThreshold = Math.max(1, Math.floor(Math.max(1, parserCompared) * 0.6));
-  if (parserChecks < parserThreshold) {
-    throw new Error(`imported parser parity failed: ${parserChecks}/${parserCompared} compared`);
   }
 
   const train = selectBalanced(clfFixture.train, 120) as NaiveBayesExample[];
@@ -101,24 +105,37 @@ function main() {
   const maxentPayloadPath = resolve(artifactsDir, "parity_imported_maxent_payload.json");
 
   const nb = trainNaiveBayesTextClassifier(train, { smoothing: 1.0 });
-  writeFileSync(classifierPayloadPath, `${JSON.stringify({ train, test, rounds: 1 }, null, 2)}\n`, "utf8");
+  writeFileSync(
+    classifierPayloadPath,
+    `${JSON.stringify({ train, test, rounds: 1, smoothing: 1.0 }, null, 2)}\n`,
+    "utf8",
+  );
   const pyNb = runJson(
     ["python3", "bench/python_classifier_baseline.py", "--payload-file", classifierPayloadPath],
     root,
   ) as { predictions: string[]; accuracy: number };
   const nbEval = nb.evaluate(test);
   const nbAccuracyDelta = Math.abs(nbEval.accuracy - pyNb.accuracy);
-  if (nbEval.accuracy < 0.5 || pyNb.accuracy < 0.5 || nbAccuracyDelta > 0.2) {
-    throw new Error(
-      `imported NaiveBayes parity mismatch: js_acc=${nbEval.accuracy.toFixed(4)} py_acc=${pyNb.accuracy.toFixed(4)} delta=${nbAccuracyDelta.toFixed(4)}`,
-    );
-  }
+  const nbPred = test.map((row) => nb.classify(row.text));
+  const nbAgreement =
+    nbPred.length === pyNb.predictions.length
+      ? nbPred.filter((label, i) => label === pyNb.predictions[i]).length / nbPred.length
+      : 0;
 
   const maxentTrain = train as MaxEntExample[];
   const maxentTest = test as MaxEntExample[];
-  const maxent = trainMaxEntTextClassifier(maxentTrain, { epochs: 10, learningRate: 0.15, l2: 1e-4, maxFeatures: 10000 });
+  const maxent = trainMaxEntTextClassifier(maxentTrain, {
+    epochs: 10,
+    learningRate: 0.15,
+    l2: 1e-4,
+    maxFeatures: 10000,
+  });
   const maxentPred = maxentTest.map((row) => maxent.classify(row.text));
-  writeFileSync(maxentPayloadPath, `${JSON.stringify({ train: maxentTrain, test: maxentTest, max_iter: 10 }, null, 2)}\n`, "utf8");
+  writeFileSync(
+    maxentPayloadPath,
+    `${JSON.stringify({ train: maxentTrain, test: maxentTest, max_iter: 10 }, null, 2)}\n`,
+    "utf8",
+  );
   const pyMaxent = runJson(
     ["python3", "bench/python_maxent_baseline.py", "--payload-file", maxentPayloadPath],
     root,
@@ -129,16 +146,18 @@ function main() {
     maxentPred.length === pyMaxent.predictions.length
       ? maxentPred.filter((label, idx) => label === pyMaxent.predictions[idx]!).length / maxentPred.length
       : 0;
-  if (maxentEval.accuracy < 0.5 || pyMaxent.accuracy < 0.5 || maxentAccuracyDelta > 0.25) {
-    throw new Error(
-      `imported MaxEnt parity mismatch: js_acc=${maxentEval.accuracy.toFixed(4)} py_acc=${pyMaxent.accuracy.toFixed(4)} delta=${maxentAccuracyDelta.toFixed(4)}`,
-    );
-  }
+  const parity =
+    parserCompared === parserCases.length &&
+    parserChecks === parserCompared &&
+    nbAgreement === 1 &&
+    agreement === 1;
 
   console.log(
     JSON.stringify(
       {
-        parity: true,
+        parity,
+        probability_relative_tolerance: 1e-9,
+        nb_agreement: nbAgreement,
         parser_checks: parserChecks,
         parser_total: parserCases.length,
         parser_compared: parserCompared,
@@ -154,6 +173,7 @@ function main() {
       2,
     ),
   );
+  if (!parity) process.exitCode = 1;
 }
 
 main();
