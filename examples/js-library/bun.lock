@@ -1,0 +1,17 @@
+{
+  "lockfileVersion": 2,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "bun-nltk-js-library-example",
+      "dependencies": {
+        "bun_nltk": "0.16.0",
+      },
+    },
+  },
+  "packages": {
+    "bun_nltk": ["bun_nltk@0.16.0", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-kedTF3tKf/MI0uyPIuGXPZx7MX44shqnmoPhOfHZe3fMDDVKvVSHQZKPsaH3TIKxMXJFfIlsL+5Ae9fdgLJALg=="],
+
+    "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
+  }
+}

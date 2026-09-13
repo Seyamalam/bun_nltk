@@ -10,6 +10,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+        working-directory: examples/js-library
+      - run: bun test
+        working-directory: examples/js-library
+      - run: bun install --frozen-lockfile
+        working-directory: examples/wasm-browser
+      - run: bun run build
+        working-directory: examples/wasm-browser
+
   typecheck:
     runs-on: ubuntu-latest
     steps:
@@ -66,7 +82,7 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install nltk numpy scipy || echo "::warning::python parity deps unavailable; parity tests will skip"
       - name: Run tests
-        run: bun test
+        run: bun test ./test
 
   rust-lint:
     runs-on: ubuntu-latest

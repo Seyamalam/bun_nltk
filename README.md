@@ -45,6 +45,13 @@ bun run examples/ccg_quickstart.ts      # CCG chart: I sleep → S
 bun run examples/inference_resolution.ts # FOL resolution: Socrates is mortal
 ```
 
+Standalone example projects:
+
+- [`examples/js-library`](examples/js-library) is a tested Bun document-analysis API and CLI with validation, batch processing, sentence-level sentiment, keyword frequency, and configurable n-grams.
+- [`examples/wasm-browser`](examples/wasm-browser) is a local-first browser workbench with file import, JavaScript/WASM parity and benchmarking, token search, ranked terms, sentence inspection, and JSON export.
+
+Try the [live browser playground](https://bun-nltk-playground.seyamalam41.workers.dev), or see [`examples/README.md`](examples/README.md) for clone-and-run commands.
+
 ## Package docs
 
 - API reference: [docs/API.md](docs/API.md)

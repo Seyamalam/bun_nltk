@@ -5,6 +5,8 @@ node_modules
 out
 dist
 *.tgz
+examples/wasm-browser/public/bun_nltk.wasm
+examples/wasm-browser/.wrangler/
 native/*.dll
 native/*.so
 native/*.dylib

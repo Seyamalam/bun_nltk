@@ -73,6 +73,20 @@ artifacts/native-host-win32-x64.json
 
 The script does not upload anything. The report includes the Git commit, operating-system release, CPU model, Bun version, raw samples, medians, and confidence intervals.
 
+## Run on GitHub-hosted Linux and Windows
+
+The manual `Native host validation` workflow runs these same wrappers with 15 rounds on x64 Ubuntu and Windows runners. It uploads each successful JSON report as a separate Actions artifact.
+
+```bash
+gh workflow run native-host.yml --ref master
+gh run list --workflow native-host.yml
+gh run download <run-id> --dir artifacts/native-host-ci
+```
+
+These are virtual machines running each operating system directly. Keep their results separate from measurements on physical hardware, and retain the environment metadata when reporting performance.
+
+As of September 13, 2026, the account's GitHub Actions jobs cannot start because of a billing lock. Resolve that account issue before using this workflow. The standalone Linux and Windows commands above remain available.
+
 ## Reading the results
 
 A speedup above `1.0` favors Rust native. The confidence interval matters more than a single median. If the interval crosses `1.0`, report that result as inconclusive.

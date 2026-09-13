@@ -19,3 +19,9 @@ steps:
   - name: Test Bun-only suite
     run: grep -L 'python3' test/*.test.ts | xargs bun test
     timeout-minutes: 12
+  - name: Test document API example
+    run: bun install --cwd examples/js-library --frozen-lockfile && bun run example:document-api:test
+    timeout-minutes: 3
+  - name: Build browser WASM example
+    run: bun install --cwd examples/wasm-browser --frozen-lockfile && bun run example:wasm-browser:build
+    timeout-minutes: 3
