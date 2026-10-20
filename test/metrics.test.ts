@@ -29,3 +29,10 @@ test("confusionMatrix computes labels, matrix, and accuracy", () => {
   expect(row.accuracy).toBeCloseTo(2 / 3, 6);
 });
 
+test("corpus metrics reject unequal lengths rather than silently truncating", () => {
+  for (const [gold, predicted] of [[[], ["A"]], [["A"], []], [["A", "B"], ["A"]]]) {
+    expect(() => confusionMatrix(gold!, predicted!)).toThrow(RangeError);
+  }
+  expect(() => corpusBleu([], [["a"]])).toThrow(RangeError);
+  expect(() => corpusBleu([[["a"]]], [])).toThrow(RangeError);
+});

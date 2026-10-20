@@ -91,6 +91,9 @@ export function corpusBleu(
   hypotheses: string[][],
   weights: BleuWeights = [0.25, 0.25, 0.25, 0.25],
 ): number {
+  if (listOfReferences.length !== hypotheses.length) {
+    throw new RangeError("The number of hypotheses and their reference(s) should be the same");
+  }
   if (listOfReferences.length === 0 || hypotheses.length === 0) return 0;
 
   const clipped = [0, 0, 0, 0];
@@ -98,7 +101,7 @@ export function corpusBleu(
   let hypLen = 0;
   let refLen = 0;
 
-  const size = Math.min(listOfReferences.length, hypotheses.length);
+  const size = hypotheses.length;
   for (let i = 0; i < size; i += 1) {
     const refs = listOfReferences[i] ?? [];
     const hyp = hypotheses[i] ?? [];
@@ -133,7 +136,8 @@ export type ConfusionMatrixResult = {
 };
 
 export function confusionMatrix(gold: string[], predicted: string[]): ConfusionMatrixResult {
-  const n = Math.min(gold.length, predicted.length);
+  if (gold.length !== predicted.length) throw new RangeError("Lists must have the same length.");
+  const n = gold.length;
   const labels = [...new Set([...gold.slice(0, n), ...predicted.slice(0, n)])].sort((a, b) => a.localeCompare(b));
   const index = new Map<string, number>(labels.map((label, i) => [label, i]));
   const matrix = Array.from({ length: labels.length }, () => Array<number>(labels.length).fill(0));
