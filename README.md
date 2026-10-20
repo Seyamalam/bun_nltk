@@ -295,6 +295,10 @@ Damerau algorithm; alignment includes weighted transition costs. Like NLTK 3.10.
 inputs longer than 2,000 Unicode code points are rejected. Ordinary distance uses
 linear auxiliary memory; transpositions and alignment still use a quadratic matrix.
 
+Aggregate ASCII metrics now use collision-free token and n-gram keys. APIs whose
+names explicitly return hashes retain their legacy 64-bit hash representation;
+distinct inputs can collide there, so they are not substitutes for exact keys.
+
 ## Run tests
 
 ```bash

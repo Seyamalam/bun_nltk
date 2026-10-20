@@ -299,21 +299,8 @@ pub extern "C" fn bunnltk_wasm_compute_ascii_metrics(
         }
     };
 
-    out[0] = ascii::token_count_ascii(input);
-    if out[0] >= n as u64 {
-        out[2] = out[0] - n as u64 + 1;
-    }
-
-    match freqdist::build_token_freq_map_ascii(input) {
-        Ok(map) => out[1] = map.len() as u64,
-        Err(err) => {
-            error_state::set_error(err.code());
-            return;
-        }
-    }
-
-    match freqdist::build_ngram_freq_map_ascii(input, n as usize) {
-        Ok(map) => out[3] = map.len() as u64,
+    match freqdist::exact_ascii_metrics(input, n as usize) {
+        Ok(metrics) => out[..4].copy_from_slice(&metrics),
         Err(err) => {
             error_state::set_error(err.code());
             return;

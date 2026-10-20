@@ -126,33 +126,14 @@ pub unsafe extern "C" fn bunnltk_compute_ascii_metrics(
     out[2] = 0;
     out[3] = 0;
 
-    if input_len == 0 {
-        return;
-    }
     if n == 0 {
         error_state::set_error(error_state::INVALID_N);
         return;
     }
 
     let input = const_slice(input_ptr, input_len);
-    out[0] = ascii::token_count_ascii(input);
-
-    match freqdist::build_token_freq_map_ascii(input) {
-        Ok(map) => out[1] = map.len() as u64,
-        Err(err) => {
-            error_state::set_error(err.code());
-            return;
-        }
-    }
-
-    if out[0] >= n as u64 {
-        out[2] = out[0] - n as u64 + 1;
-    } else {
-        out[2] = 0;
-    }
-
-    match freqdist::build_ngram_freq_map_ascii(input, n as usize) {
-        Ok(map) => out[3] = map.len() as u64,
+    match freqdist::exact_ascii_metrics(input, n as usize) {
+        Ok(metrics) => out[..4].copy_from_slice(&metrics),
         Err(err) => {
             error_state::set_error(err.code());
             return;
@@ -170,8 +151,8 @@ pub unsafe extern "C" fn bunnltk_count_unique_tokens_ascii(
         return 0;
     }
 
-    match freqdist::build_token_freq_map_ascii(const_slice(input_ptr, input_len)) {
-        Ok(map) => map.len() as u64,
+    match freqdist::exact_ascii_metrics(const_slice(input_ptr, input_len), 1) {
+        Ok(metrics) => metrics[1],
         Err(err) => {
             error_state::set_error(err.code());
             0
@@ -217,8 +198,8 @@ pub unsafe extern "C" fn bunnltk_count_unique_ngrams_ascii(
         return 0;
     }
 
-    match freqdist::build_ngram_freq_map_ascii(const_slice(input_ptr, input_len), n as usize) {
-        Ok(map) => map.len() as u64,
+    match freqdist::exact_ascii_metrics(const_slice(input_ptr, input_len), n as usize) {
+        Ok(metrics) => metrics[3],
         Err(err) => {
             error_state::set_error(err.code());
             0
