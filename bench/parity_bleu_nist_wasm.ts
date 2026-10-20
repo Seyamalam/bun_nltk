@@ -58,6 +58,15 @@ function buildCases(): CorpusCase[] {
     references: [[["aaa", "bbb", "ccc"]]],
     hypotheses: [["xxx", "yyy", "zzz"]],
   });
+  const tieHypothesis = Array.from({ length: 80 }, (_, i) => `tie_${i}`);
+  cases.push({
+    id: "counter_order_reference_length_tie",
+    references: [
+      [tieHypothesis, [...tieHypothesis, "extra"]],
+      [tieHypothesis.flatMap((token, i) => Array<string>(i + 1).fill(token))],
+    ],
+    hypotheses: [tieHypothesis, tieHypothesis],
+  });
   cases.push({
     id: "multi_ref_bleu_paper",
     references: [

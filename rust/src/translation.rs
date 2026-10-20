@@ -194,17 +194,25 @@ impl NistAccumulator {
             // NLTK picks the max by tuple (precision, numerator, denominator, ref_len).
             let mut best: (f64, f64, u64, u32) = (f64::NEG_INFINITY, 0.0, 0, 0);
 
+            // Counter preserves the first occurrence of each hypothesis n-gram.
+            // Reuse that order for every reference: arbitrary hash iteration can
+            // perturb ties and select a different length penalty.
+            let mut hyp_counts: HashMap<NgramKey, u32> = HashMap::new();
+            let mut hyp_order = Vec::new();
+            if hypothesis.len() >= order {
+                for window in hypothesis.windows(order) {
+                    let key = pack_ngram(window);
+                    let count = hyp_counts.entry(key).or_insert_with(|| {
+                        hyp_order.push(key);
+                        0
+                    });
+                    *count += 1;
+                }
+            }
+            let denominator = hypothesis.len().saturating_sub(order - 1) as u64;
+
             for reference in references {
                 let ref_len = reference.len() as u32;
-                let hyp_counts = if hypothesis.len() >= order {
-                    let mut m: HashMap<NgramKey, u32> = HashMap::new();
-                    for window in hypothesis.windows(order) {
-                        *m.entry(pack_ngram(window)).or_insert(0) += 1;
-                    }
-                    m
-                } else {
-                    HashMap::new()
-                };
                 let ref_counts = if reference.len() >= order {
                     let mut m: HashMap<NgramKey, u32> = HashMap::new();
                     for window in reference.windows(order) {
@@ -216,13 +224,13 @@ impl NistAccumulator {
                 };
 
                 let mut numerator = 0.0f64;
-                for (&key, &count) in &hyp_counts {
+                for &key in &hyp_order {
+                    let count = hyp_counts[&key];
                     if let Some(&ref_count) = ref_counts.get(&key) {
                         let weight = self.information_weights.get(&key).copied().unwrap_or(0.0);
                         numerator += weight * count.min(ref_count) as f64;
                     }
                 }
-                let denominator: u64 = hyp_counts.values().map(|&c| c as u64).sum();
                 let precision = if denominator == 0 {
                     0.0
                 } else {
@@ -256,5 +264,33 @@ impl NistAccumulator {
             self.l_ref,
             self.l_sys,
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn nist_preserves_counter_order_and_reference_length_ties() {
+        let hypothesis: Vec<u32> = (0..80).collect();
+        let mut longer = hypothesis.clone();
+        longer.push(100);
+        let frequencies: Vec<u32> = (0..80).flat_map(|id| std::iter::repeat_n(id, id as usize + 1)).collect();
+        for _ in 0..64 {
+            let mut nist = NistAccumulator::new(1);
+            nist.add_reference(&hypothesis);
+            nist.add_reference(&longer);
+            nist.add_reference(&frequencies);
+            nist.add_hypothesis(&[&hypothesis, &longer], &hypothesis);
+            let (numerators, denominators, ref_len, hyp_len) = nist.finish();
+            let expected = hypothesis.iter().fold(0.0, |sum, &id| {
+                sum + log2(nist.total_reference_words as f64 / (id + 3) as f64)
+            });
+            assert_eq!(numerators[0], expected);
+            assert_eq!(denominators[0], 80);
+            assert_eq!(ref_len, 81);
+            assert_eq!(hyp_len, 80);
+        }
     }
 }
