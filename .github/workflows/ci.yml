@@ -68,6 +68,10 @@ jobs:
           key: bun-${{ runner.os }}-${{ hashFiles('**/bun.lock') }}
           restore-keys: bun-${{ runner.os }}-
       - run: bun install --frozen-lockfile
+      - name: Rebuild WASM from Rust sources
+        run: |
+          rustup target add wasm32-unknown-unknown
+          bun run build:wasm
       - name: Build native library (Rust)
         run: |
           rustup toolchain install stable --profile minimal
@@ -96,6 +100,10 @@ jobs:
           python-version: "3.12"
       - run: bun install --frozen-lockfile
       - run: pip install nltk==3.10.3 numpy scipy
+      - name: Rebuild WASM from Rust sources
+        run: |
+          rustup target add wasm32-unknown-unknown
+          bun run build:wasm
       - run: bun run fixtures:import:nltk
       - name: Run strict fidelity gate
         if: always()
@@ -106,6 +114,23 @@ jobs:
           name: behavioral-fidelity
           path: artifacts/fidelity-report.json
           if-no-files-found: error
+
+  portable:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: bun install --frozen-lockfile
+      - run: |
+          rustup target add wasm32-unknown-unknown
+          bun run build:wasm
+      - run: bunx --no-install playwright install --with-deps chromium firefox webkit
+      - run: bun run verify:portable
 
   rust-lint:
     runs-on: ubuntu-latest

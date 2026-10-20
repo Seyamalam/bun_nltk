@@ -1,4 +1,5 @@
 pub mod ascii;
+pub mod categorical_nb;
 pub mod chunk;
 pub mod cluster;
 pub mod collocations;

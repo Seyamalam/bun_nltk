@@ -52,6 +52,7 @@
     "./tokenize": "./src/entrypoints/tokenize.ts",
     "./wordnet": "./src/wordnet.ts",
     "./classify": "./src/classify.ts",
+    "./classify-features": "./src/feature_nb.ts",
     "./linear-models": "./src/linear_models.ts",
     "./cluster": "./src/entrypoints/cluster.ts",
     "./metrics": "./src/entrypoints/metrics.ts",

@@ -7,6 +7,10 @@ type WasmExports = {
   bunnltk_wasm_release_input: () => void;
   bunnltk_wasm_alloc: (size: number) => number;
   bunnltk_wasm_free: (ptr: number, size: number) => void;
+  bunnltk_wasm_categorical_nb_train: (pairsPtr: number, pairsLen: number, offsetsPtr: number, offsetsLen: number, labelsPtr: number, labelsLen: number, labelCount: number, smoothing: number) => number;
+  bunnltk_wasm_categorical_nb_predict: (handle: number, pairsPtr: number, pairsLen: number, outPtr: number, outLen: number) => void;
+  bunnltk_wasm_categorical_nb_free: (handle: number) => void;
+  bunnltk_wasm_categorical_nb_clear: () => void;
   bunnltk_wasm_count_tokens_ascii: (inputLen: number) => bigint;
   bunnltk_wasm_count_ngrams_ascii: (inputLen: number, n: number) => bigint;
   bunnltk_wasm_compute_ascii_metrics: (
@@ -191,6 +195,25 @@ export class WasmNltk {
     this.maxInputBytes = maxInputBytes;
   }
 
+  static initSync(wasmBytes: Uint8Array, maxInputBytes = 128 * 1024 * 1024): WasmNltk {
+    if (!Number.isSafeInteger(maxInputBytes) || maxInputBytes < 1 || maxInputBytes > 128 * 1024 * 1024) {
+      throw new RangeError("maxInputBytes must be an integer between 1 and 134217728");
+    }
+    const instance = new WebAssembly.Instance(new WebAssembly.Module(wasmBytes), {});
+    return WasmNltk.fromInstance(instance, maxInputBytes);
+  }
+
+  private static fromInstance(instance: WebAssembly.Instance, maxInputBytes: number): WasmNltk {
+    const exports = instance.exports;
+    if (!(exports.memory instanceof WebAssembly.Memory) ||
+        typeof exports.bunnltk_wasm_reserve_input !== "function" ||
+        typeof exports.bunnltk_wasm_release_input !== "function" ||
+        typeof exports.bunnltk_wasm_categorical_nb_train !== "function") {
+      throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
+    }
+    return new WasmNltk(exports as unknown as WasmExports, maxInputBytes);
+  }
+
   static async init(init: WasmNltkInit = {}): Promise<WasmNltk> {
     const maxInputBytes = init.maxInputBytes ?? 128 * 1024 * 1024;
     if (!Number.isSafeInteger(maxInputBytes) || maxInputBytes < 1 || maxInputBytes > 128 * 1024 * 1024) {
@@ -209,13 +232,7 @@ export class WasmNltk {
       }
     }
     const { instance } = await WebAssembly.instantiate(bytes, {});
-    const exports = instance.exports;
-    if (!(exports.memory instanceof WebAssembly.Memory) ||
-        typeof exports.bunnltk_wasm_reserve_input !== "function" ||
-        typeof exports.bunnltk_wasm_release_input !== "function") {
-      throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
-    }
-    return new WasmNltk(exports as unknown as WasmExports, maxInputBytes);
+    return WasmNltk.fromInstance(instance, maxInputBytes);
   }
 
   get memoryBytes(): number {
@@ -228,6 +245,7 @@ export class WasmNltk {
       this.exports.bunnltk_wasm_free(block.ptr, block.bytes);
     }
     this.blocks.clear();
+    this.exports.bunnltk_wasm_categorical_nb_clear();
     this.exports.bunnltk_wasm_release_input();
     this.inputPtr = 0;
     this.disposed = true;
@@ -241,6 +259,44 @@ export class WasmNltk {
     if (!Number.isSafeInteger(n) || n < 1 || n > 0xffffffff) {
       throw new RangeError("n must be a positive uint32 integer");
     }
+  }
+
+  categoricalNaiveBayesTrain(input: {
+    pairs: Uint32Array; offsets: Uint32Array; labels: Uint32Array; labelCount: number; smoothing: number;
+  }): number {
+    this.assertOrder(input.labelCount);
+    if (!Number.isFinite(input.smoothing) || input.smoothing <= 0) throw new RangeError("smoothing must be positive and finite");
+    const pairs = this.copyU32("categorical_pairs", input.pairs);
+    const offsets = this.copyU32("categorical_offsets", input.offsets);
+    const labels = this.copyU32("categorical_labels", input.labels);
+    const handle = this.exports.bunnltk_wasm_categorical_nb_train(
+      pairs.ptr, input.pairs.length, offsets.ptr, input.offsets.length,
+      labels.ptr, input.labels.length, input.labelCount, input.smoothing,
+    );
+    this.assertNoError("categoricalNaiveBayesTrain");
+    return handle;
+  }
+
+  categoricalNaiveBayesPredict(handle: number, pairs: Uint32Array, labelCount: number): Float64Array {
+    this.assertOrder(handle);
+    this.assertOrder(labelCount);
+    const input = this.copyU32("categorical_pairs", pairs);
+    const output = this.ensureBlock("categorical_output", labelCount * Float64Array.BYTES_PER_ELEMENT);
+    this.exports.bunnltk_wasm_categorical_nb_predict(handle, input.ptr, pairs.length, output.ptr, labelCount);
+    this.assertNoError("categoricalNaiveBayesPredict");
+    return Float64Array.from(new Float64Array(this.exports.memory.buffer, output.ptr, labelCount));
+  }
+
+  categoricalNaiveBayesFree(handle: number): void {
+    this.assertActive();
+    this.assertOrder(handle);
+    this.exports.bunnltk_wasm_categorical_nb_free(handle);
+  }
+
+  private copyU32(key: string, values: Uint32Array): PoolBlock {
+    const block = this.ensureBlock(key, values.byteLength);
+    new Uint32Array(this.exports.memory.buffer, block.ptr, values.length).set(values);
+    return block;
   }
 
   private assertNoError(context: string): void {

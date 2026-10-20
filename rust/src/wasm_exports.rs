@@ -4,6 +4,63 @@
 //! pointers. Input staging grows on demand and is released by the wrapper.
 
 use std::alloc::{alloc, dealloc, realloc, Layout};
+use std::cell::RefCell;
+use std::collections::HashMap;
+use crate::categorical_nb::CategoricalNaiveBayes;
+
+thread_local! {
+    static CATEGORICAL_MODELS: RefCell<(u32, HashMap<u32, CategoricalNaiveBayes>)> = RefCell::new((0, HashMap::new()));
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_nb_train(
+    pairs_ptr: u32, pairs_len: u32, offsets_ptr: u32, offsets_len: u32,
+    labels_ptr: u32, labels_len: u32, label_count: u32, smoothing: f64,
+) -> u32 {
+    error_state::reset_error();
+    let model = unsafe { CategoricalNaiveBayes::train(
+        offset_slice(pairs_ptr, pairs_len as usize), offset_slice(offsets_ptr, offsets_len as usize),
+        offset_slice(labels_ptr, labels_len as usize), label_count, smoothing,
+    ) };
+    match model {
+        Ok(model) => CATEGORICAL_MODELS.with(|models| {
+            let mut state = models.borrow_mut();
+            let Some(handle) = state.0.checked_add(1) else {
+                error_state::set_error(error_state::OUT_OF_MEMORY);
+                return 0;
+            };
+            state.0 = handle;
+            state.1.insert(handle, model);
+            handle
+        }),
+        Err(error) => { error_state::set_error(error.code()); 0 }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_nb_predict(
+    handle: u32, pairs_ptr: u32, pairs_len: u32, out_ptr: u32, out_len: u32,
+) {
+    error_state::reset_error();
+    CATEGORICAL_MODELS.with(|models| {
+        let models = models.borrow();
+        let result = match models.1.get(&handle) {
+            Some(model) => unsafe { model.predict(offset_slice(pairs_ptr, pairs_len as usize), offset_slice_mut(out_ptr, out_len as usize)) },
+            None => Err(crate::CoreError::InvalidN),
+        };
+        if let Err(error) = result { error_state::set_error(error.code()); }
+    });
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_nb_free(handle: u32) {
+    CATEGORICAL_MODELS.with(|models| { models.borrow_mut().1.remove(&handle); });
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_nb_clear() {
+    CATEGORICAL_MODELS.with(|models| { models.borrow_mut().1.clear(); });
+}
 
 use crate::ascii;
 use crate::chunk;

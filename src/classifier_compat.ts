@@ -3,10 +3,16 @@ import { DecisionTreeTextClassifier } from "./decision_tree";
 import { DictionaryProbDist } from "./probability";
 import { MaxEntTextClassifier, type MaxEntOptions } from "./maxent";
 import { PositiveNaiveBayesTextClassifier } from "./positive_naive_bayes";
+import { readFileSync } from "node:fs";
+import { WasmNltk } from "./wasm";
+import { RustNaiveBayesClassifier } from "./feature_nb";
+import type { FeatureSet, LabeledFeatureset } from "./feature_types";
 
-export type FeatureValue = string | number | boolean | null | undefined;
-export type FeatureSet = Record<string, FeatureValue>;
-export type LabeledFeatureset = readonly [FeatureSet, string];
+export type { FeatureValue, FeatureSet, LabeledFeatureset } from "./feature_types";
+let featureRuntime: WasmNltk | undefined;
+function getFeatureRuntime(): WasmNltk {
+  return featureRuntime ??= WasmNltk.initSync(readFileSync(new URL("../native/bun_nltk.wasm", import.meta.url)));
+}
 
 function normalizeToken(value: string): string {
   const cleaned = value.toLowerCase().replace(/[^a-z0-9']+/g, " ");
@@ -70,20 +76,35 @@ abstract class FeatureClassifierBase {
 }
 
 export class NaiveBayesClassifier extends FeatureClassifierBase {
-  constructor(private readonly model: NaiveBayesTextClassifier) {
+  constructor(private readonly model: NaiveBayesTextClassifier | RustNaiveBayesClassifier) {
     super();
   }
 
   static train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: { smoothing?: number }): NaiveBayesClassifier {
-    const rows = [...labeledFeaturesets].map(([features, label]) => ({ label, text: featureText(features) }));
-    return new NaiveBayesClassifier(new NaiveBayesTextClassifier(options).train(rows));
+    return new NaiveBayesClassifier(RustNaiveBayesClassifier.train(getFeatureRuntime(), labeledFeaturesets, options));
+  }
+
+  override classify(featureset: FeatureSet): string {
+    return this.model instanceof RustNaiveBayesClassifier ? this.model.classify(featureset) : super.classify(featureset);
+  }
+
+  override probClassify(featureset: FeatureSet): DictionaryProbDist<string> {
+    return this.model instanceof RustNaiveBayesClassifier
+      ? fromProbabilities(this.model.predict(featureset).sort((a, b) => b.logProb - a.logProb || (a.label < b.label ? 1 : a.label > b.label ? -1 : 0)))
+      : super.probClassify(featureset);
+  }
+
+  dispose(): void {
+    if (this.model instanceof RustNaiveBayesClassifier) this.model.dispose();
   }
 
   protected classifyText(text: string): string {
+    if (this.model instanceof RustNaiveBayesClassifier) throw new TypeError("feature dictionary required");
     return this.model.classify(text);
   }
 
   protected probClassifyText(text: string): DictionaryProbDist<string> {
+    if (this.model instanceof RustNaiveBayesClassifier) throw new TypeError("feature dictionary required");
     return fromLogScores(this.model.predict(text), this.model.logBase);
   }
 

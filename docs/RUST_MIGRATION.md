@@ -37,3 +37,22 @@ their replacement passes differential tests.
 Commit completed, tested units frequently; push after every two commits. Record
 remaining unsupported features and failing checks rather than marking the plan
 complete before all acceptance criteria are verified.
+
+## Verified progress
+
+- Rust NIST accumulates in NLTK Counter order, including tie-sensitive reference
+  lengths; the rebuilt WASM artifact passes the BLEU/NIST differential gate.
+- Categorical feature-dictionary Naive Bayes training and prediction run in Rust.
+  Its typed adapter preserves feature associations, Unicode/case, Python numeric
+  equality, and implicit None training values. Differential coverage includes
+  614 probes at four smoothing values. NaN is explicitly unsupported.
+- Node 24, Bun, Chromium, Firefox, and Playwright WebKit run the same WASM model.
+  WebKit on Ubuntu 26.04 was verified with locally extracted distribution libraries
+  and `BUN_NLTK_WEBKIT_EXECUTABLE`; CI installs Playwright's host dependencies.
+- The current fidelity gate has 40 passing groups and three unsupported integration
+  groups. This is fixture coverage, not proof of full NLTK equivalence.
+
+Remaining: other feature-dictionary classifiers still use the lossy text adapter;
+text classifiers, metrics, parsers, and many modules still need Rust migration.
+The root entrypoint still eagerly loads Bun FFI. Full parity, arbitrary-size input
+handling, and universal speed/memory improvements have not been established.

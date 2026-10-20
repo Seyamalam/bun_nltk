@@ -265,6 +265,30 @@ Run `node examples/portable-wasm.ts` or `bun examples/portable-wasm.ts`.
 and Node after `bunx playwright install chromium firefox webkit`.
 These checks cover the exposed WASM algorithms, not every NLTK module.
 
+Categorical feature-dictionary Naive Bayes also runs entirely in Rust:
+
+```ts
+import { WasmNltk } from "bun_nltk/wasm";
+import { RustNaiveBayesClassifier } from "bun_nltk/classify-features";
+const runtime = await WasmNltk.init();
+const classifier = RustNaiveBayesClassifier.train(runtime, [
+  [{ color: "red", shape: "round" }, "apple"],
+  [{ color: "yellow", shape: "long" }, "banana"],
+]);
+try {
+  console.log(classifier.classify({ color: "red", shape: "round" }));
+} finally {
+  classifier.dispose();
+  runtime.dispose();
+}
+```
+
+Feature names and string values remain case-sensitive. `null`/`undefined` map
+to NLTK's `None`; booleans match equal numeric values as in Python. NaN feature
+values are rejected. The synchronous Bun `NaiveBayesClassifier.train` API uses
+the same Rust model; call `dispose()` when finished. See
+[`examples/feature-classifier.ts`](examples/feature-classifier.ts).
+
 ## Run tests
 
 ```bash
