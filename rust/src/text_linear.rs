@@ -1,4 +1,5 @@
 use crate::linear::{self, TrainingAlgorithm};
+use crate::numeric_validation::{filled, offsets, product};
 use crate::{CoreError, CoreResult};
 use std::collections::{BTreeMap, HashMap};
 
@@ -31,7 +32,9 @@ fn tokens_ascii(text: &[u8]) -> Vec<String> {
 
 fn features(tokens: &[String], min_n: usize, max_n: usize) -> Vec<String> {
     let mut out = Vec::new();
-    for n in min_n..=max_n.max(min_n) {
+    // Orders longer than the document have no features; never loop billions of
+    // times on short/empty text just because a caller supplied a large order.
+    for n in min_n..=max_n.max(min_n).min(tokens.len()) {
         if n == 0 || tokens.len() < n {
             continue;
         }
@@ -54,12 +57,23 @@ fn encode_result(
     weights: &[f64],
     bias: &[f64],
 ) -> CoreResult<Vec<u8>> {
-    let vocabulary_bytes: usize = vocabulary.iter().map(|feature| 4 + feature.len()).sum();
-    let capacity = RESULT_MAGIC.len()
-        + 8
-        + vocabulary_bytes
-        + (weights.len() + bias.len()) * std::mem::size_of::<f64>();
-    let mut out = Vec::with_capacity(capacity);
+    let mut capacity = RESULT_MAGIC.len() + 8;
+    for feature in vocabulary {
+        capacity = capacity
+            .checked_add(4)
+            .and_then(|size| size.checked_add(feature.len()))
+            .ok_or(CoreError::OutOfMemory)?;
+    }
+    let values = weights
+        .len()
+        .checked_add(bias.len())
+        .ok_or(CoreError::OutOfMemory)?;
+    capacity = capacity
+        .checked_add(product(values, std::mem::size_of::<f64>())?)
+        .ok_or(CoreError::OutOfMemory)?;
+    let mut out = Vec::new();
+    out.try_reserve_exact(capacity)
+        .map_err(|_| CoreError::OutOfMemory)?;
     out.extend_from_slice(RESULT_MAGIC);
     push_u32(&mut out, vocabulary.len())?;
     push_u32(&mut out, class_count)?;
@@ -97,8 +111,10 @@ pub fn train(
     {
         return Err(CoreError::InvalidN);
     }
+    linear::validate_training_parameters(epochs, learning_rate, l2, margin)?;
+    offsets(text_offsets, text_blob.len())?;
     let documents = text_offsets.len() - 1;
-    if label_ids.len() != documents {
+    if label_ids.len() != documents || label_ids.iter().any(|label| *label >= class_count) {
         return Err(CoreError::InsufficientCapacity);
     }
 
@@ -107,9 +123,6 @@ pub fn train(
     for document in 0..documents {
         let start = text_offsets[document] as usize;
         let end = text_offsets[document + 1] as usize;
-        if start > end || end > text_blob.len() {
-            return Err(CoreError::InsufficientCapacity);
-        }
         let row = features(
             &tokens_ascii(&text_blob[start..end]),
             ngram_min as usize,
@@ -156,11 +169,12 @@ pub fn train(
             feature_ids.push(id);
             feature_values.push(value);
         }
-        doc_offsets.push(feature_ids.len() as u32);
+        doc_offsets
+            .push(u32::try_from(feature_ids.len()).map_err(|_| CoreError::InsufficientCapacity)?);
     }
 
-    let mut weights = vec![0.0; class_count as usize * vocabulary.len()];
-    let mut bias = vec![0.0; class_count as usize];
+    let mut weights = filled(product(class_count as usize, vocabulary.len())?, 0.0)?;
+    let mut bias = filled(class_count as usize, 0.0)?;
     linear::train_sparse_ids(
         &doc_offsets,
         &feature_ids,
@@ -202,6 +216,109 @@ impl NativeLinearTextResult {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn clamps_feature_orders_to_document_length() {
+        let tokens = tokens_ascii(b"a b");
+        assert_eq!(
+            features(&tokens, 1, u32::MAX as usize),
+            ["a", "b", "a\u{1}b"]
+        );
+        assert!(features(&[], 1, u32::MAX as usize).is_empty());
+        assert!(features(&tokens, u32::MAX as usize, u32::MAX as usize).is_empty());
+    }
+
+    #[test]
+    fn validates_offsets_labels_and_parameters_before_building_features() {
+        for offsets in [&[0, 1, 0][..], &[1, 1], &[0, 2], &[0, 0]] {
+            assert!(matches!(
+                train(
+                    b"a",
+                    offsets,
+                    &[0],
+                    1,
+                    1,
+                    u32::MAX,
+                    false,
+                    1,
+                    TrainingAlgorithm::Logistic,
+                    1,
+                    0.1,
+                    0.0,
+                    1.0
+                ),
+                Err(CoreError::InsufficientCapacity)
+            ));
+        }
+        assert!(matches!(
+            train(
+                b"a",
+                &[0, 1],
+                &[1],
+                1,
+                1,
+                u32::MAX,
+                false,
+                1,
+                TrainingAlgorithm::Logistic,
+                1,
+                0.1,
+                0.0,
+                1.0
+            ),
+            Err(CoreError::InsufficientCapacity)
+        ));
+        assert!(matches!(
+            train(
+                b"a",
+                &[0, 1],
+                &[0],
+                1,
+                1,
+                u32::MAX,
+                false,
+                1,
+                TrainingAlgorithm::Logistic,
+                1,
+                f64::NAN,
+                0.0,
+                1.0
+            ),
+            Err(CoreError::InvalidN)
+        ));
+        assert!(train(
+            b"a",
+            &[0, 1],
+            &[0],
+            1,
+            1,
+            u32::MAX,
+            false,
+            1,
+            TrainingAlgorithm::Logistic,
+            1,
+            0.1,
+            0.0,
+            1.0
+        )
+        .is_ok());
+        assert!(train(
+            b"",
+            &[0, 0],
+            &[0],
+            1,
+            1,
+            u32::MAX,
+            false,
+            1,
+            TrainingAlgorithm::Logistic,
+            1,
+            0.1,
+            0.0,
+            1.0
+        )
+        .is_ok());
+    }
 
     #[test]
     fn tokenizer_and_feature_order_match_reference_rules() {

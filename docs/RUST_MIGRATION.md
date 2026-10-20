@@ -41,12 +41,20 @@ complete before all acceptance criteria are verified.
 ## Verified progress
 
 - Sparse linear, perceptron and Euclidean k-means boundaries validate dimensions,
-  offsets, capacities and finite numeric inputs before processing. Rust workspace
+  offsets, capacities and finite numeric inputs before processing. Dense Rust workspace
   allocations are fallible; generated numeric overflow is rejected. Oversized
   k-means storage leaves its unused tail unchanged instead of panicking. The WASM
   perceptron ABI now receives an explicit weight length; older artifacts must be
   rebuilt. Raw native pointers and fabricated WASM offsets are not made safe by
   these logical buffer checks.
+- HMM validates matrix/backtracking dimensions, symbol IDs and log scores while
+  preserving valid negative infinity for impossible events. Text training validates
+  labels/options before feature building, bounds ngram loops to document length,
+  and checks dense-model/output-size arithmetic. Version-pinned differential tests
+  cover 120 HMM paths and 60 seeded k-means models with/without empty-cluster
+  avoidance. This does not establish invalid-input error-class parity with NLTK.
+  Sparse/string/hash allocations
+  elsewhere remain targets for further memory hardening.
 - Strict Clippy passes for native (including tests) and WASM, and Rust formatting
   is checked. CI now blocks on these checks and Rust unit tests. Native raw-pointer
   functions document buffer alignment, lifetime and nonaliasing requirements;

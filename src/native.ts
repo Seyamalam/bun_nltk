@@ -1520,12 +1520,18 @@ export function linearTextTrainNative(input: {
   l2: number;
   margin?: number;
 }): NativeLinearTextModel {
+  assertU32(input.classCount, "classCount");
+  assertU32(input.ngramMin, "ngramMin");
+  assertU32(input.ngramMax, "ngramMax", input.ngramMin);
+  assertU32(input.maxFeatures, "maxFeatures");
+  assertLinearTraining(input);
   if (input.texts.length === 0 || input.texts.length !== input.labelIds.length) {
     throw new Error("texts and labelIds must have the same non-zero length");
   }
+  for (const label of input.labelIds) if (label >= input.classCount) throw new RangeError("labelIds must be less than classCount");
   const { blob, offsets } = encodeStringBatch(input.texts);
   const rawHandle = lib.symbols.bunnltk_linear_text_train(
-    ptr(blob),
+    blob.length === 0 ? null : ptr(blob),
     blob.length,
     ptr(offsets),
     offsets.length,
@@ -1566,6 +1572,20 @@ export function hmmViterbiIdsNative(input: {
   transitions: Float32Array;
   outputs: Float32Array;
 }): Uint32Array {
+  assertU32(input.stateCount, "stateCount");
+  assertU32(input.symbolCount, "symbolCount");
+  const transitionCount = assertProduct(input.stateCount, input.stateCount, "transitions");
+  const outputCount = assertProduct(input.stateCount, input.symbolCount, "outputs");
+  assertProduct(input.symbolIds.length, input.stateCount, "backtracking states");
+  if (input.priors.length < input.stateCount || input.transitions.length < transitionCount || input.outputs.length < outputCount) {
+    throw new RangeError("priors, transitions and outputs must cover every state/symbol");
+  }
+  for (const [values, length] of [[input.priors, input.stateCount], [input.transitions, transitionCount], [input.outputs, outputCount]] as const) {
+    for (let i = 0; i < length; i++) {
+      if (Number.isNaN(values[i]) || values[i] === Infinity) throw new RangeError("HMM log scores must not contain NaN or positive infinity");
+    }
+  }
+  for (const symbol of input.symbolIds) if (symbol >= input.symbolCount) throw new RangeError("symbolIds must be less than symbolCount");
   if (input.symbolIds.length === 0) return new Uint32Array(0);
   const out = new Uint32Array(input.symbolIds.length);
   lib.symbols.bunnltk_hmm_viterbi_ids(

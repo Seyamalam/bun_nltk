@@ -12,6 +12,25 @@ fn validate_sparse(doc_offsets: &[u32], ids: &[u32], values: &[f64]) -> CoreResu
     Ok(())
 }
 
+pub(crate) fn validate_training_parameters(
+    epochs: u32,
+    learning_rate: f64,
+    l2: f64,
+    margin: f64,
+) -> CoreResult<()> {
+    if epochs == 0
+        || !learning_rate.is_finite()
+        || learning_rate <= 0.0
+        || !l2.is_finite()
+        || l2 < 0.0
+        || !margin.is_finite()
+        || margin <= 0.0
+    {
+        return Err(CoreError::InvalidN);
+    }
+    Ok(())
+}
+
 // Flat row-major buffers mirror the shared native/WASM scoring ABI.
 #[allow(clippy::too_many_arguments)]
 pub fn scores_sparse_ids(
@@ -97,18 +116,10 @@ pub fn train_sparse_ids(
     weights: &mut [f64],
     bias: &mut [f64],
 ) -> CoreResult<()> {
-    if doc_offsets.is_empty()
-        || class_count == 0
-        || epochs == 0
-        || !learning_rate.is_finite()
-        || learning_rate <= 0.0
-        || !l2.is_finite()
-        || l2 < 0.0
-        || !margin.is_finite()
-        || margin <= 0.0
-    {
+    if doc_offsets.is_empty() || class_count == 0 {
         return Err(CoreError::InvalidN);
     }
+    validate_training_parameters(epochs, learning_rate, l2, margin)?;
     validate_sparse(doc_offsets, feature_ids, feature_values)?;
     let docs = doc_offsets.len() - 1;
     let classes = class_count as usize;
