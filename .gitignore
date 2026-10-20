@@ -57,7 +57,8 @@ tmp/
 bench/datasets/
 bench/__pycache__/
 test/fixtures/nltk_imported/
-artifacts/
+artifacts/*
+!artifacts/scale-matrix.json
 models/wordnet_full.bin
 paper/bench/data/prose_10000kb.txt
 

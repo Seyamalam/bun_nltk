@@ -24,7 +24,8 @@
     "models/ne-chunker-multiclass.json.gz",
     "models/ne-chunker-binary.json.gz",
     "models/nltk-models.manifest.json",
-    "THIRD_PARTY_NOTICES.md"
+    "THIRD_PARTY_NOTICES.md",
+    "LICENSE"
   ],
   "keywords": [
     "nlp",
@@ -173,7 +174,8 @@
     "fixtures:export:nltk-models": "python3 scripts/export-nltk-parity-fixtures.py",
     "fixtures:export:statistical": "python3 scripts/export-statistical-fixtures.py",
     "bench:parity:statistical": "bun run bench/parity_statistical.ts",
-    "bench:release": "bun run bench/release_benchmarks.ts"
+    "bench:release": "bun run bench/release_benchmarks.ts",
+    "bench:scale": "bun run bench/scale_matrix.ts"
   },
   "devDependencies": {
     "@types/bun": "1.4.3",

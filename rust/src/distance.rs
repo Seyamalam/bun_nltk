@@ -17,8 +17,8 @@ fn matrix(left: &[u32], right: &[u32], cost: f64, transpositions: bool) -> Vec<f
     for i in 0..=left.len() {
         data[i * width] = i as f64;
     }
-    for j in 0..width {
-        data[j] = j as f64;
+    for (j, value) in data[..width].iter_mut().enumerate() {
+        *value = j as f64;
     }
     let mut last_seen = HashMap::new();
     for i in 1..=left.len() {

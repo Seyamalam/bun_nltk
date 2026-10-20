@@ -60,3 +60,8 @@ Remaining: other feature-dictionary classifiers still use the lossy text adapter
 text classifiers, metrics, parsers, and many modules still need Rust migration.
 The root entrypoint still eagerly loads Bun FFI. Full parity, arbitrary-size input
 handling, and universal speed/memory improvements have not been established.
+
+Aggregate ASCII metrics use exact keys after a scale workload exposed two bigram
+hash collisions. Explicit hash-returning APIs retain their legacy representation.
+Corpus BLEU and confusion-matrix APIs now reject mismatched sequence lengths.
+See [benchmark methodology](BENCHMARKING.md) for the cold-process scale matrix.

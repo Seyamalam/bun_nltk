@@ -32,7 +32,7 @@ impl CategoricalNaiveBayes {
             || labels.is_empty()
             || !smoothing.is_finite()
             || smoothing <= 0.0
-            || pairs.len() % 2 != 0
+            || !pairs.len().is_multiple_of(2)
             || offsets.len() != labels.len() + 1
             || offsets.first() != Some(&0)
             || offsets.last().copied() != Some((pairs.len() / 2) as u32)
@@ -105,7 +105,7 @@ impl CategoricalNaiveBayes {
     }
 
     pub fn predict(&self, pairs: &[u32], out: &mut [f64]) -> CoreResult<()> {
-        if pairs.len() % 2 != 0 || out.len() != self.priors.len() {
+        if !pairs.len().is_multiple_of(2) || out.len() != self.priors.len() {
             return Err(CoreError::InvalidN);
         }
         let mut seen = HashSet::new();

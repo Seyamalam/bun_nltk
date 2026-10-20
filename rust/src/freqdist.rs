@@ -144,11 +144,9 @@ pub fn fill_from_map(
         return Err(crate::CoreError::InsufficientCapacity);
     }
 
-    let mut idx: usize = 0;
-    for (key, value) in map.iter() {
+    for (idx, (key, value)) in map.iter().enumerate() {
         out_hashes[idx] = *key;
         out_counts[idx] = *value;
-        idx += 1;
     }
 
     Ok(())
