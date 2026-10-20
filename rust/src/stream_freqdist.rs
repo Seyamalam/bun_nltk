@@ -111,11 +111,9 @@ impl StreamFreqDistBuilder {
             return Err(CoreError::InsufficientCapacity);
         }
 
-        let mut idx: usize = 0;
-        for (&hash, &count) in self.token_counts.iter() {
+        for (idx, (&hash, &count)) in self.token_counts.iter().enumerate() {
             out_hashes[idx] = hash;
             out_counts[idx] = count;
-            idx += 1;
         }
         Ok(unique)
     }
@@ -126,7 +124,9 @@ impl StreamFreqDistBuilder {
         out_right_hashes: &mut [u64],
         out_counts: &mut [u64],
     ) -> Result<usize, CoreError> {
-        if out_left_hashes.len() != out_right_hashes.len() || out_left_hashes.len() != out_counts.len() {
+        if out_left_hashes.len() != out_right_hashes.len()
+            || out_left_hashes.len() != out_counts.len()
+        {
             return Err(CoreError::InsufficientCapacity);
         }
         let unique = self.bigram_counts.len();
@@ -134,13 +134,11 @@ impl StreamFreqDistBuilder {
             return Err(CoreError::InsufficientCapacity);
         }
 
-        let mut idx: usize = 0;
-        for (&key, &count) in self.bigram_counts.iter() {
+        for (idx, (&key, &count)) in self.bigram_counts.iter().enumerate() {
             let (left, right) = decode_bigram_key(key);
             out_left_hashes[idx] = left;
             out_right_hashes[idx] = right;
             out_counts[idx] = count;
-            idx += 1;
         }
         Ok(unique)
     }
@@ -159,13 +157,11 @@ impl StreamFreqDistBuilder {
             return Err(CoreError::InsufficientCapacity);
         }
 
-        let mut idx: usize = 0;
-        for (&key, &count) in self.conditional_counts.iter() {
+        for (idx, (&key, &count)) in self.conditional_counts.iter().enumerate() {
             let (tag_id, hash) = decode_conditional_key(key);
             out_tag_ids[idx] = tag_id;
             out_hashes[idx] = hash;
             out_counts[idx] = count;
-            idx += 1;
         }
         Ok(unique)
     }
@@ -239,7 +235,10 @@ impl StreamFreqDistBuilder {
                 out.push(',');
             }
             first = false;
-            out.push_str(&format!("{{\"hash\":\"{}\",\"count\":{}}}", entry.hash, entry.count));
+            out.push_str(&format!(
+                "{{\"hash\":\"{}\",\"count\":{}}}",
+                entry.hash, entry.count
+            ));
         }
     }
 
@@ -274,7 +273,11 @@ impl StreamFreqDistBuilder {
             .iter()
             .map(|(&key, &count)| {
                 let (tag_id, hash) = decode_conditional_key(key);
-                ConditionalEntry { tag_id, hash, count }
+                ConditionalEntry {
+                    tag_id,
+                    hash,
+                    count,
+                }
             })
             .collect();
 

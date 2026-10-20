@@ -1,7 +1,7 @@
 const UNCHUNKED_LABEL: u16 = u16::MAX;
 
 fn tag_allowed(tag_id: u16, allowed: &[u16]) -> bool {
-    allowed.iter().any(|&item| item == tag_id)
+    allowed.contains(&tag_id)
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -94,6 +94,8 @@ fn match_pattern_recursive(
     None
 }
 
+// Keep the flat slice interface used by both native and WASM ABI adapters.
+#[allow(clippy::too_many_arguments)]
 pub fn fill_chunk_iob_ids(
     token_tag_ids: &[u16],
     atom_allowed_offsets: &[u32],

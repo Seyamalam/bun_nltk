@@ -1,13 +1,15 @@
 use crate::{CoreError, CoreResult};
 
+// Flat row-major buffers mirror the shared native/WASM scoring ABI.
+#[allow(clippy::too_many_arguments)]
 pub fn scores_sparse_ids(
     doc_offsets: &[u32],
     feature_ids: &[u32],
     feature_values: &[f64],
     class_count: u32,
     feature_count: u32,
-    weights: &[f64],  // row-major [class_count * feature_count]
-    bias: &[f64],     // [class_count]
+    weights: &[f64],        // row-major [class_count * feature_count]
+    bias: &[f64],           // [class_count]
     out_scores: &mut [f64], // row-major [doc_count * class_count]
 ) -> CoreResult<()> {
     if class_count == 0 {
@@ -183,7 +185,17 @@ mod tests {
         let weights: [f64; 6] = [1.0, 0.0, 1.0, 0.0, 2.0, 1.0];
         let bias: [f64; 2] = [0.5, -0.5];
         let mut out = [0f64; 4];
-        scores_sparse_ids(&doc_offsets, &feature_ids, &feature_values, 2, 3, &weights, &bias, &mut out).unwrap();
+        scores_sparse_ids(
+            &doc_offsets,
+            &feature_ids,
+            &feature_values,
+            2,
+            3,
+            &weights,
+            &bias,
+            &mut out,
+        )
+        .unwrap();
         assert!((out[0] - 3.5).abs() < 1e-12);
         assert!((out[1] - 1.5).abs() < 1e-12);
         assert!((out[2] - 0.5).abs() < 1e-12);

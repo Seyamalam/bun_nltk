@@ -93,19 +93,16 @@ fn replace_suffix(word: &mut [u8], len: &mut usize, suffix_len: usize, repl: &[u
 }
 
 fn step1a(word: &mut [u8], len: &mut usize) {
-    if ends_with(word, *len, b"sses") {
+    if ends_with(word, *len, b"sses") || ends_with(word, *len, b"ies") {
         *len -= 2;
-    } else if ends_with(word, *len, b"ies") {
-        *len -= 2;
-    } else if ends_with(word, *len, b"ss") {
-        return;
-    } else if ends_with(word, *len, b"s") {
+    } else if !ends_with(word, *len, b"ss") && ends_with(word, *len, b"s") {
         *len -= 1;
     }
 }
 
 fn step1b_post(word: &mut [u8], len: &mut usize) {
-    if ends_with(word, *len, b"at") || ends_with(word, *len, b"bl") || ends_with(word, *len, b"iz") {
+    if ends_with(word, *len, b"at") || ends_with(word, *len, b"bl") || ends_with(word, *len, b"iz")
+    {
         append_e(word, len);
     } else if is_double_consonant(word, *len) {
         let last = word[*len - 1];
@@ -158,7 +155,12 @@ struct Rule {
     replacement: &'static [u8],
 }
 
-fn apply_rules_with_min_measure(word: &mut [u8], len: &mut usize, rules: &[Rule], min_measure: usize) {
+fn apply_rules_with_min_measure(
+    word: &mut [u8],
+    len: &mut usize,
+    rules: &[Rule],
+    min_measure: usize,
+) {
     for rule in rules {
         if !ends_with(word, *len, rule.suffix) {
             continue;
@@ -173,40 +175,124 @@ fn apply_rules_with_min_measure(word: &mut [u8], len: &mut usize, rules: &[Rule]
 
 fn step2(word: &mut [u8], len: &mut usize) {
     const RULES: [Rule; 21] = [
-        Rule { suffix: b"ational", replacement: b"ate" },
-        Rule { suffix: b"tional", replacement: b"tion" },
-        Rule { suffix: b"enci", replacement: b"ence" },
-        Rule { suffix: b"anci", replacement: b"ance" },
-        Rule { suffix: b"izer", replacement: b"ize" },
-        Rule { suffix: b"abli", replacement: b"able" },
-        Rule { suffix: b"alli", replacement: b"al" },
-        Rule { suffix: b"entli", replacement: b"ent" },
-        Rule { suffix: b"eli", replacement: b"e" },
-        Rule { suffix: b"ousli", replacement: b"ous" },
-        Rule { suffix: b"ization", replacement: b"ize" },
-        Rule { suffix: b"ation", replacement: b"ate" },
-        Rule { suffix: b"ator", replacement: b"ate" },
-        Rule { suffix: b"alism", replacement: b"al" },
-        Rule { suffix: b"iveness", replacement: b"ive" },
-        Rule { suffix: b"fulness", replacement: b"ful" },
-        Rule { suffix: b"ousness", replacement: b"ous" },
-        Rule { suffix: b"aliti", replacement: b"al" },
-        Rule { suffix: b"iviti", replacement: b"ive" },
-        Rule { suffix: b"biliti", replacement: b"ble" },
-        Rule { suffix: b"logi", replacement: b"log" },
+        Rule {
+            suffix: b"ational",
+            replacement: b"ate",
+        },
+        Rule {
+            suffix: b"tional",
+            replacement: b"tion",
+        },
+        Rule {
+            suffix: b"enci",
+            replacement: b"ence",
+        },
+        Rule {
+            suffix: b"anci",
+            replacement: b"ance",
+        },
+        Rule {
+            suffix: b"izer",
+            replacement: b"ize",
+        },
+        Rule {
+            suffix: b"abli",
+            replacement: b"able",
+        },
+        Rule {
+            suffix: b"alli",
+            replacement: b"al",
+        },
+        Rule {
+            suffix: b"entli",
+            replacement: b"ent",
+        },
+        Rule {
+            suffix: b"eli",
+            replacement: b"e",
+        },
+        Rule {
+            suffix: b"ousli",
+            replacement: b"ous",
+        },
+        Rule {
+            suffix: b"ization",
+            replacement: b"ize",
+        },
+        Rule {
+            suffix: b"ation",
+            replacement: b"ate",
+        },
+        Rule {
+            suffix: b"ator",
+            replacement: b"ate",
+        },
+        Rule {
+            suffix: b"alism",
+            replacement: b"al",
+        },
+        Rule {
+            suffix: b"iveness",
+            replacement: b"ive",
+        },
+        Rule {
+            suffix: b"fulness",
+            replacement: b"ful",
+        },
+        Rule {
+            suffix: b"ousness",
+            replacement: b"ous",
+        },
+        Rule {
+            suffix: b"aliti",
+            replacement: b"al",
+        },
+        Rule {
+            suffix: b"iviti",
+            replacement: b"ive",
+        },
+        Rule {
+            suffix: b"biliti",
+            replacement: b"ble",
+        },
+        Rule {
+            suffix: b"logi",
+            replacement: b"log",
+        },
     ];
     apply_rules_with_min_measure(word, len, &RULES, 0);
 }
 
 fn step3(word: &mut [u8], len: &mut usize) {
     const RULES: [Rule; 7] = [
-        Rule { suffix: b"icate", replacement: b"ic" },
-        Rule { suffix: b"ative", replacement: b"" },
-        Rule { suffix: b"alize", replacement: b"al" },
-        Rule { suffix: b"iciti", replacement: b"ic" },
-        Rule { suffix: b"ical", replacement: b"ic" },
-        Rule { suffix: b"ful", replacement: b"" },
-        Rule { suffix: b"ness", replacement: b"" },
+        Rule {
+            suffix: b"icate",
+            replacement: b"ic",
+        },
+        Rule {
+            suffix: b"ative",
+            replacement: b"",
+        },
+        Rule {
+            suffix: b"alize",
+            replacement: b"al",
+        },
+        Rule {
+            suffix: b"iciti",
+            replacement: b"ic",
+        },
+        Rule {
+            suffix: b"ical",
+            replacement: b"ic",
+        },
+        Rule {
+            suffix: b"ful",
+            replacement: b"",
+        },
+        Rule {
+            suffix: b"ness",
+            replacement: b"",
+        },
     ];
     apply_rules_with_min_measure(word, len, &RULES, 0);
 }

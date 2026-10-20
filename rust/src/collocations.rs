@@ -64,7 +64,10 @@ fn build_bigram_stats_ascii(input: &[u8]) -> CoreResult<BigramBuildResult> {
     })
 }
 
-fn build_windowed_bigram_stats_ascii(input: &[u8], window_size: usize) -> CoreResult<BigramBuildResult> {
+fn build_windowed_bigram_stats_ascii(
+    input: &[u8],
+    window_size: usize,
+) -> CoreResult<BigramBuildResult> {
     if window_size < 2 {
         return Err(CoreError::InvalidN);
     }
@@ -80,8 +83,8 @@ fn build_windowed_bigram_stats_ascii(input: &[u8], window_size: usize) -> CoreRe
 
     for (i, &left_hash) in token_hashes.iter().enumerate() {
         let end = token_hashes.len().min(i + window_size);
-        for j in i + 1..end {
-            freqdist::update_count_u128(&mut bigram_map, pack_bigram_key(left_hash, token_hashes[j]));
+        for &right_hash in &token_hashes[i + 1..end] {
+            freqdist::update_count_u128(&mut bigram_map, pack_bigram_key(left_hash, right_hash));
         }
     }
 
@@ -156,7 +159,8 @@ pub fn fill_top_pmi_bigrams_ascii(
     if window_size < 2 {
         return Err(CoreError::InvalidN);
     }
-    if out_left_hashes.len() != out_right_hashes.len() || out_left_hashes.len() != out_scores.len() {
+    if out_left_hashes.len() != out_right_hashes.len() || out_left_hashes.len() != out_scores.len()
+    {
         return Err(CoreError::InsufficientCapacity);
     }
     if out_left_hashes.is_empty() {
@@ -266,8 +270,7 @@ fn build_bigram_id_count_map(
 
     for (i, &left_id) in token_id_sequence.iter().enumerate() {
         let end = token_id_sequence.len().min(i + window_size);
-        for j in i + 1..end {
-            let right_id = token_id_sequence[j];
+        for &right_id in &token_id_sequence[i + 1..end] {
             let key = pack_bigram_id_key(left_id, right_id);
             freqdist::update_count(&mut map, key);
         }
@@ -330,8 +333,7 @@ pub fn fill_bigram_window_stats_ids_ascii(
         let left_count = ids.token_counts[left_id as usize];
         let right_count = ids.token_counts[right_id as usize];
         let numerator = (count as f64) * (ids.token_ids.len() as f64);
-        let denominator =
-            (left_count as f64) * (right_count as f64) * ((window_size - 1) as f64);
+        let denominator = (left_count as f64) * (right_count as f64) * ((window_size - 1) as f64);
 
         entries.push(IdBigramEntry {
             key,
@@ -379,7 +381,8 @@ mod tests {
         let mut right = [0u64; 3];
         let mut scores = [0f64; 3];
 
-        let written = fill_top_pmi_bigrams_ascii(input, 2, 3, &mut left, &mut right, &mut scores).unwrap();
+        let written =
+            fill_top_pmi_bigrams_ascii(input, 2, 3, &mut left, &mut right, &mut scores).unwrap();
         assert_eq!(written, 3);
         for score in scores.iter().take(written as usize) {
             assert!((score - 1.0).abs() < 1e-12);
@@ -398,13 +401,18 @@ mod tests {
         let mut left3 = [0u64; 16];
         let mut right3 = [0u64; 16];
         let mut scores3 = [0f64; 16];
-        let written3 = fill_top_pmi_bigrams_ascii(input, 3, 16, &mut left3, &mut right3, &mut scores3).unwrap();
+        let written3 =
+            fill_top_pmi_bigrams_ascii(input, 3, 16, &mut left3, &mut right3, &mut scores3)
+                .unwrap();
         assert_eq!(written3, 7);
 
         let n = written3 as usize;
-        let score_this_is_w3 = find_score(&left3[..n], &right3[..n], &scores3[..n], hash_this, hash_is).unwrap();
-        let score_is_a_w3 = find_score(&left3[..n], &right3[..n], &scores3[..n], hash_is, hash_a).unwrap();
-        let score_a_test_w3 = find_score(&left3[..n], &right3[..n], &scores3[..n], hash_a, hash_test).unwrap();
+        let score_this_is_w3 =
+            find_score(&left3[..n], &right3[..n], &scores3[..n], hash_this, hash_is).unwrap();
+        let score_is_a_w3 =
+            find_score(&left3[..n], &right3[..n], &scores3[..n], hash_is, hash_a).unwrap();
+        let score_a_test_w3 =
+            find_score(&left3[..n], &right3[..n], &scores3[..n], hash_a, hash_test).unwrap();
         assert!((score_this_is_w3 - 1.584962500721156).abs() < 1e-12);
         assert!((score_is_a_w3 - 1.584962500721156).abs() < 1e-12);
         assert!((score_a_test_w3 - 1.584962500721156).abs() < 1e-12);
@@ -412,12 +420,28 @@ mod tests {
         let mut left5 = [0u64; 16];
         let mut right5 = [0u64; 16];
         let mut scores5 = [0f64; 16];
-        let written5 = fill_top_pmi_bigrams_ascii(input, 5, 16, &mut left5, &mut right5, &mut scores5).unwrap();
+        let written5 =
+            fill_top_pmi_bigrams_ascii(input, 5, 16, &mut left5, &mut right5, &mut scores5)
+                .unwrap();
         assert_eq!(written5, 9);
 
         let n5 = written5 as usize;
-        let score_this_a_w5 = find_score(&left5[..n5], &right5[..n5], &scores5[..n5], hash_this, hash_a).unwrap();
-        let score_is_test_w5 = find_score(&left5[..n5], &right5[..n5], &scores5[..n5], hash_is, hash_test).unwrap();
+        let score_this_a_w5 = find_score(
+            &left5[..n5],
+            &right5[..n5],
+            &scores5[..n5],
+            hash_this,
+            hash_a,
+        )
+        .unwrap();
+        let score_is_test_w5 = find_score(
+            &left5[..n5],
+            &right5[..n5],
+            &scores5[..n5],
+            hash_is,
+            hash_test,
+        )
+        .unwrap();
         assert!((score_this_a_w5 - 0.5849625007211562).abs() < 1e-12);
         assert!((score_is_test_w5 - 0.5849625007211562).abs() < 1e-12);
     }
@@ -433,7 +457,15 @@ mod tests {
         let mut right = [0u32; 8];
         let mut counts = [0u64; 8];
         let mut pmis = [0f64; 8];
-        let written = fill_bigram_window_stats_ids_ascii(input, 3, &mut left, &mut right, &mut counts, &mut pmis).unwrap();
+        let written = fill_bigram_window_stats_ids_ascii(
+            input,
+            3,
+            &mut left,
+            &mut right,
+            &mut counts,
+            &mut pmis,
+        )
+        .unwrap();
         assert_eq!(written, 7);
 
         // First-occurrence ids for this sentence:

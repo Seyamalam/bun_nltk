@@ -28,10 +28,8 @@ pub fn count_normalized_tokens_ascii_scalar(input: &[u8], remove_stopwords: bool
         }
     }
 
-    if in_token {
-        if !remove_stopwords || !stopwords::is_stopword_hash(token_hash) {
-            total += 1;
-        }
+    if in_token && (!remove_stopwords || !stopwords::is_stopword_hash(token_hash)) {
+        total += 1;
     }
 
     total
@@ -120,9 +118,21 @@ mod tests {
         let total = fill_normalized_token_offsets_ascii(input, true, &mut offsets, &mut lengths);
         assert_eq!(total, 4);
 
-        assert_eq!(&input[offsets[0] as usize..(offsets[0] + lengths[0]) as usize], b"quick");
-        assert_eq!(&input[offsets[1] as usize..(offsets[1] + lengths[1]) as usize], b"brown");
-        assert_eq!(&input[offsets[2] as usize..(offsets[2] + lengths[2]) as usize], b"fox");
-        assert_eq!(&input[offsets[3] as usize..(offsets[3] + lengths[3]) as usize], b"dog");
+        assert_eq!(
+            &input[offsets[0] as usize..(offsets[0] + lengths[0]) as usize],
+            b"quick"
+        );
+        assert_eq!(
+            &input[offsets[1] as usize..(offsets[1] + lengths[1]) as usize],
+            b"brown"
+        );
+        assert_eq!(
+            &input[offsets[2] as usize..(offsets[2] + lengths[2]) as usize],
+            b"fox"
+        );
+        assert_eq!(
+            &input[offsets[3] as usize..(offsets[3] + lengths[3]) as usize],
+            b"dog"
+        );
     }
 }

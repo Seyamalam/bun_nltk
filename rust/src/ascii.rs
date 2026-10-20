@@ -34,7 +34,11 @@ pub const fn hash_token_const(token: &[u8]) -> u64 {
     let mut i = 0;
     while i < token.len() {
         let ch = token[i];
-        let lower = if ch >= b'A' && ch <= b'Z' { ch + 32 } else { ch };
+        let lower = if ch >= b'A' && ch <= b'Z' {
+            ch + 32
+        } else {
+            ch
+        };
         hash ^= lower as u64;
         hash = hash.wrapping_mul(FNV_PRIME);
         i += 1;
@@ -78,7 +82,11 @@ pub fn hash_ngram(window: &[u64], start: usize, n: usize) -> u64 {
     hash
 }
 
-pub fn fill_token_offsets_ascii(input: &[u8], out_offsets: &mut [u32], out_lengths: &mut [u32]) -> u64 {
+pub fn fill_token_offsets_ascii(
+    input: &[u8],
+    out_offsets: &mut [u32],
+    out_lengths: &mut [u32],
+) -> u64 {
     let mut total: u64 = 0;
     let mut written: usize = 0;
     let mut in_token = false;
@@ -160,11 +168,26 @@ mod tests {
         let total = fill_token_offsets_ascii(input, &mut offsets, &mut lengths);
         assert_eq!(total, 5);
 
-        assert_eq!(&input[offsets[0] as usize..offsets[0] as usize + lengths[0] as usize], b"This");
-        assert_eq!(&input[offsets[1] as usize..offsets[1] as usize + lengths[1] as usize], b"this");
-        assert_eq!(&input[offsets[2] as usize..offsets[2] as usize + lengths[2] as usize], b"is");
-        assert_eq!(&input[offsets[3] as usize..offsets[3] as usize + lengths[3] as usize], b"a");
-        assert_eq!(&input[offsets[4] as usize..offsets[4] as usize + lengths[4] as usize], b"test");
+        assert_eq!(
+            &input[offsets[0] as usize..offsets[0] as usize + lengths[0] as usize],
+            b"This"
+        );
+        assert_eq!(
+            &input[offsets[1] as usize..offsets[1] as usize + lengths[1] as usize],
+            b"this"
+        );
+        assert_eq!(
+            &input[offsets[2] as usize..offsets[2] as usize + lengths[2] as usize],
+            b"is"
+        );
+        assert_eq!(
+            &input[offsets[3] as usize..offsets[3] as usize + lengths[3] as usize],
+            b"a"
+        );
+        assert_eq!(
+            &input[offsets[4] as usize..offsets[4] as usize + lengths[4] as usize],
+            b"test"
+        );
     }
 
     #[test]

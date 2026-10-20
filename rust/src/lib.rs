@@ -16,16 +16,16 @@ pub mod naive_bayes;
 pub mod ngrams;
 pub mod normalize;
 pub mod perceptron;
-pub mod punkt;
 pub mod porter;
 pub mod positive_categorical_nb;
+pub mod punkt;
 pub mod stopwords;
 pub mod stream_freqdist;
 pub mod tagger;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod text_linear;
-pub mod translation;
 pub mod token_ids;
+pub mod translation;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub mod wordnet;

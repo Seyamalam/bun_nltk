@@ -1,3 +1,5 @@
+// Flat count buffers mirror the shared native/WASM scoring ABI.
+#[allow(clippy::too_many_arguments)]
 pub fn log_scores(
     doc_token_ids: &[u32],
     vocab_size: u32,
@@ -61,7 +63,16 @@ mod tests {
         let label_docs: [u32; 2] = [5, 5];
         let label_totals: [u32; 2] = [19, 12];
         let mut scores = [0f64; 2];
-        log_scores(&doc, 3, &matrix, &label_docs, &label_totals, 10, 1.0, &mut scores);
+        log_scores(
+            &doc,
+            3,
+            &matrix,
+            &label_docs,
+            &label_totals,
+            10,
+            1.0,
+            &mut scores,
+        );
         assert!(scores[0] > scores[1]);
     }
 }

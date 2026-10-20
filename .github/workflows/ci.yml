@@ -137,12 +137,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Rust fmt + clippy
-        continue-on-error: true # tighten to blocking once existing warnings are fixed
         run: |
           rustup toolchain install stable --profile minimal --component rustfmt clippy
-          cd rust
-          cargo fmt --check
-          cargo clippy -- -D warnings
+          rustup target add wasm32-unknown-unknown
+          cargo fmt --manifest-path rust/Cargo.toml --check
+          cargo clippy --locked --manifest-path rust/Cargo.toml --all-targets -- -D warnings
+          cargo clippy --locked --manifest-path rust/Cargo.toml --target wasm32-unknown-unknown -- -D warnings
+          cargo test --locked --manifest-path rust/Cargo.toml
 
   loc-guard:
     runs-on: ubuntu-latest

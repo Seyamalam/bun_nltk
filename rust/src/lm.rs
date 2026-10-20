@@ -239,29 +239,32 @@ fn score_kneser_ney(counts: &Counts, word: u32, ctx: &[u32], discount: f64) -> f
     discounted + lambda * score_kneser_ney(counts, word, backoff_tail(ctx), discount)
 }
 
-fn score_word(
-    counts: &Counts,
-    word: u32,
-    context: &[u32],
+struct ScoringOptions {
     order: u32,
     model: ModelType,
     gamma: f64,
     discount: f64,
     vocab_size: u32,
-) -> f64 {
-    let keep_len = (order.saturating_sub(1)) as usize;
+}
+
+fn score_word(counts: &Counts, word: u32, context: &[u32], options: &ScoringOptions) -> f64 {
+    let keep_len = (options.order.saturating_sub(1)) as usize;
     let keep: &[u32] = if context.len() > keep_len {
         &context[context.len() - keep_len..]
     } else {
         context
     };
-    match model {
+    match options.model {
         ModelType::Mle => score_mle(counts, word, keep),
-        ModelType::Lidstone => score_lidstone(counts, word, keep, gamma, vocab_size),
-        ModelType::KneserNeyInterpolated => score_kneser_ney(counts, word, keep, discount),
+        ModelType::Lidstone => {
+            score_lidstone(counts, word, keep, options.gamma, options.vocab_size)
+        }
+        ModelType::KneserNeyInterpolated => score_kneser_ney(counts, word, keep, options.discount),
     }
 }
 
+// Preserve the flat buffer interface shared by the native and WASM adapters.
+#[allow(clippy::too_many_arguments)]
 pub fn eval_ids(
     token_ids: &[u32],
     sentence_offsets: &[u32],
@@ -278,6 +281,13 @@ pub fn eval_ids(
     prefix_tokens: &[u32],
 ) -> f64 {
     let counts = build_counts(token_ids, sentence_offsets, order);
+    let options = ScoringOptions {
+        order,
+        model,
+        gamma,
+        discount,
+        vocab_size,
+    };
 
     let mut ctx_cursor: usize = 0;
     let probe_count = probe_context_lens
@@ -292,16 +302,7 @@ pub fn eval_ids(
         }
         let ctx = &probe_context_flat[ctx_cursor..ctx_cursor + ctx_len];
         ctx_cursor += ctx_len;
-        out_scores[i] = score_word(
-            &counts,
-            probe_words[i],
-            ctx,
-            order,
-            model,
-            gamma,
-            discount,
-            vocab_size,
-        );
+        out_scores[i] = score_word(&counts, probe_words[i], ctx, &options);
     }
 
     if perplexity_tokens.is_empty() {
@@ -317,7 +318,7 @@ pub fn eval_ids(
         } else {
             &history[history.len() - keep_len..]
         };
-        let mut prob = score_word(&counts, tok, ctx, order, model, gamma, discount, vocab_size);
+        let mut prob = score_word(&counts, tok, ctx, &options);
         if !prob.is_finite() || prob <= 0.0 {
             prob = 1e-12;
         }

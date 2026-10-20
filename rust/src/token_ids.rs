@@ -136,14 +136,8 @@ mod tests {
         let mut offsets = [0u32; 2];
         let mut lengths = [0u32; 2];
         let mut counts = [0u64; 2];
-        fill_token_freq_dist_ids_ascii(
-            &data,
-            &mut blob,
-            &mut offsets,
-            &mut lengths,
-            &mut counts,
-        )
-        .unwrap();
+        fill_token_freq_dist_ids_ascii(&data, &mut blob, &mut offsets, &mut lengths, &mut counts)
+            .unwrap();
 
         let start = offsets[0] as usize;
         let end = start + lengths[0] as usize;

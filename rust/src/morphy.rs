@@ -9,7 +9,7 @@ pub enum WordNetPos {
 }
 
 fn ascii_lower(ch: u8) -> u8 {
-    if ch >= b'A' && ch <= b'Z' {
+    if ch.is_ascii_uppercase() {
         ch + 32
     } else {
         ch

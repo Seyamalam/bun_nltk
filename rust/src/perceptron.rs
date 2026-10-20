@@ -36,8 +36,7 @@ pub fn predict_batch(
             return Err(CoreError::InsufficientCapacity);
         }
 
-        for feature_idx in start..end {
-            let feature_id = feature_ids[feature_idx];
+        for &feature_id in &feature_ids[start..end] {
             if feature_id >= model_feature_count {
                 continue;
             }
@@ -50,9 +49,9 @@ pub fn predict_batch(
 
         let mut best_id: u16 = 0;
         let mut best_score: f32 = scores[0];
-        for tag_idx in 1..(tag_count as usize) {
-            if scores[tag_idx] > best_score {
-                best_score = scores[tag_idx];
+        for (tag_idx, &score) in scores.iter().enumerate().skip(1) {
+            if score > best_score {
+                best_score = score;
                 best_id = tag_idx as u16;
             }
         }

@@ -104,9 +104,7 @@ impl BleuAccumulator {
         let mut best_diff = i64::MAX;
         for reference in references {
             let diff = (reference.len() as i64 - hyp_len).abs();
-            if diff < best_diff
-                || (diff == best_diff && reference.len() < closest as usize)
-            {
+            if diff < best_diff || (diff == best_diff && reference.len() < closest as usize) {
                 best_diff = diff;
                 closest = reference.len() as u32;
             }
@@ -276,7 +274,9 @@ mod tests {
         let hypothesis: Vec<u32> = (0..80).collect();
         let mut longer = hypothesis.clone();
         longer.push(100);
-        let frequencies: Vec<u32> = (0..80).flat_map(|id| std::iter::repeat_n(id, id as usize + 1)).collect();
+        let frequencies: Vec<u32> = (0..80)
+            .flat_map(|id| std::iter::repeat_n(id, id as usize + 1))
+            .collect();
         for _ in 0..64 {
             let mut nist = NistAccumulator::new(1);
             nist.add_reference(&hypothesis);

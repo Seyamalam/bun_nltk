@@ -3,10 +3,10 @@
 //! All functions take u32 byte offsets into linear memory instead of raw
 //! pointers. Input staging grows on demand and is released by the wrapper.
 
+use crate::categorical_nb::CategoricalNaiveBayes;
 use std::alloc::{alloc, dealloc, realloc, Layout};
 use std::cell::RefCell;
 use std::collections::HashMap;
-use crate::categorical_nb::CategoricalNaiveBayes;
 
 thread_local! {
     static CATEGORICAL_MODELS: RefCell<(u32, HashMap<u32, CategoricalNaiveBayes>)> = RefCell::new((0, HashMap::new()));
@@ -27,87 +27,152 @@ fn register_categorical_model(model: CategoricalNaiveBayes) -> u32 {
 
 #[no_mangle]
 pub extern "C" fn bunnltk_wasm_positive_categorical_nb_train(
-    positive_ptr: u32, positive_len: u32, positive_offsets_ptr: u32, positive_offsets_len: u32,
-    unlabeled_ptr: u32, unlabeled_len: u32, unlabeled_offsets_ptr: u32, unlabeled_offsets_len: u32,
-    prior: f64, smoothing: f64,
+    positive_ptr: u32,
+    positive_len: u32,
+    positive_offsets_ptr: u32,
+    positive_offsets_len: u32,
+    unlabeled_ptr: u32,
+    unlabeled_len: u32,
+    unlabeled_offsets_ptr: u32,
+    unlabeled_offsets_len: u32,
+    prior: f64,
+    smoothing: f64,
 ) -> u32 {
     error_state::reset_error();
-    let result = unsafe { crate::positive_categorical_nb::train(
-        offset_slice(positive_ptr, positive_len as usize), offset_slice(positive_offsets_ptr, positive_offsets_len as usize),
-        offset_slice(unlabeled_ptr, unlabeled_len as usize), offset_slice(unlabeled_offsets_ptr, unlabeled_offsets_len as usize),
-        prior, smoothing,
-    ) };
+    let result = unsafe {
+        crate::positive_categorical_nb::train(
+            offset_slice(positive_ptr, positive_len as usize),
+            offset_slice(positive_offsets_ptr, positive_offsets_len as usize),
+            offset_slice(unlabeled_ptr, unlabeled_len as usize),
+            offset_slice(unlabeled_offsets_ptr, unlabeled_offsets_len as usize),
+            prior,
+            smoothing,
+        )
+    };
     match result {
         Ok(model) => register_categorical_model(model),
-        Err(error) => { error_state::set_error(error.code()); 0 }
+        Err(error) => {
+            error_state::set_error(error.code());
+            0
+        }
     }
 }
 
 #[no_mangle]
 pub extern "C" fn bunnltk_wasm_categorical_nb_train(
-    pairs_ptr: u32, pairs_len: u32, offsets_ptr: u32, offsets_len: u32,
-    labels_ptr: u32, labels_len: u32, label_count: u32, smoothing: f64,
+    pairs_ptr: u32,
+    pairs_len: u32,
+    offsets_ptr: u32,
+    offsets_len: u32,
+    labels_ptr: u32,
+    labels_len: u32,
+    label_count: u32,
+    smoothing: f64,
 ) -> u32 {
     error_state::reset_error();
-    let model = unsafe { CategoricalNaiveBayes::train(
-        offset_slice(pairs_ptr, pairs_len as usize), offset_slice(offsets_ptr, offsets_len as usize),
-        offset_slice(labels_ptr, labels_len as usize), label_count, smoothing,
-    ) };
+    let model = unsafe {
+        CategoricalNaiveBayes::train(
+            offset_slice(pairs_ptr, pairs_len as usize),
+            offset_slice(offsets_ptr, offsets_len as usize),
+            offset_slice(labels_ptr, labels_len as usize),
+            label_count,
+            smoothing,
+        )
+    };
     match model {
         Ok(model) => register_categorical_model(model),
-        Err(error) => { error_state::set_error(error.code()); 0 }
+        Err(error) => {
+            error_state::set_error(error.code());
+            0
+        }
     }
 }
 
 #[no_mangle]
 pub extern "C" fn bunnltk_wasm_categorical_nb_predict(
-    handle: u32, pairs_ptr: u32, pairs_len: u32, out_ptr: u32, out_len: u32,
+    handle: u32,
+    pairs_ptr: u32,
+    pairs_len: u32,
+    out_ptr: u32,
+    out_len: u32,
 ) {
     error_state::reset_error();
     CATEGORICAL_MODELS.with(|models| {
         let models = models.borrow();
         let result = match models.1.get(&handle) {
-            Some(model) => unsafe { model.predict(offset_slice(pairs_ptr, pairs_len as usize), offset_slice_mut(out_ptr, out_len as usize)) },
+            Some(model) => unsafe {
+                model.predict(
+                    offset_slice(pairs_ptr, pairs_len as usize),
+                    offset_slice_mut(out_ptr, out_len as usize),
+                )
+            },
             None => Err(crate::CoreError::InvalidN),
         };
-        if let Err(error) = result { error_state::set_error(error.code()); }
+        if let Err(error) = result {
+            error_state::set_error(error.code());
+        }
     });
 }
 
 #[no_mangle]
 pub extern "C" fn bunnltk_wasm_categorical_nb_free(handle: u32) {
-    CATEGORICAL_MODELS.with(|models| { models.borrow_mut().1.remove(&handle); });
+    CATEGORICAL_MODELS.with(|models| {
+        models.borrow_mut().1.remove(&handle);
+    });
 }
 
 #[no_mangle]
 pub extern "C" fn bunnltk_wasm_categorical_nb_clear() {
-    CATEGORICAL_MODELS.with(|models| { models.borrow_mut().1.clear(); });
+    CATEGORICAL_MODELS.with(|models| {
+        models.borrow_mut().1.clear();
+    });
 }
 
 #[no_mangle]
 pub extern "C" fn bunnltk_wasm_edit_distance(
-    left_ptr: u32, left_len: u32, right_ptr: u32, right_len: u32,
-    cost: f64, transpositions: u32,
+    left_ptr: u32,
+    left_len: u32,
+    right_ptr: u32,
+    right_len: u32,
+    cost: f64,
+    transpositions: u32,
 ) -> f64 {
     error_state::reset_error();
-    let result = unsafe { crate::distance::edit_distance(
-        offset_slice(left_ptr, left_len as usize), offset_slice(right_ptr, right_len as usize), cost, transpositions != 0,
-    ) };
+    let result = unsafe {
+        crate::distance::edit_distance(
+            offset_slice(left_ptr, left_len as usize),
+            offset_slice(right_ptr, right_len as usize),
+            cost,
+            transpositions != 0,
+        )
+    };
     match result {
         Ok(value) => value,
-        Err(error) => { error_state::set_error(error.code()); 0.0 }
+        Err(error) => {
+            error_state::set_error(error.code());
+            0.0
+        }
     }
 }
 
 #[no_mangle]
 pub extern "C" fn bunnltk_wasm_edit_alignment(
-    left_ptr: u32, left_len: u32, right_ptr: u32, right_len: u32,
-    cost: f64, out_ptr: u32, out_len: u32,
+    left_ptr: u32,
+    left_len: u32,
+    right_ptr: u32,
+    right_len: u32,
+    cost: f64,
+    out_ptr: u32,
+    out_len: u32,
 ) -> u32 {
     error_state::reset_error();
-    let result = unsafe { crate::distance::edit_alignment(
-        offset_slice(left_ptr, left_len as usize), offset_slice(right_ptr, right_len as usize), cost,
-    ) };
+    let result = unsafe {
+        crate::distance::edit_alignment(
+            offset_slice(left_ptr, left_len as usize),
+            offset_slice(right_ptr, right_len as usize),
+            cost,
+        )
+    };
     match result {
         Ok(alignment) => {
             let out = unsafe { offset_slice_mut::<u32>(out_ptr, out_len as usize) };
@@ -115,10 +180,15 @@ pub extern "C" fn bunnltk_wasm_edit_alignment(
                 error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
                 return 0;
             }
-            for (pair, values) in out.chunks_exact_mut(2).zip(&alignment) { pair.copy_from_slice(values); }
+            for (pair, values) in out.chunks_exact_mut(2).zip(&alignment) {
+                pair.copy_from_slice(values);
+            }
             alignment.len() as u32
-        },
-        Err(error) => { error_state::set_error(error.code()); 0 }
+        }
+        Err(error) => {
+            error_state::set_error(error.code());
+            0
+        }
     }
 }
 
@@ -159,7 +229,11 @@ unsafe fn reserve_input_buffer(required: usize) -> *mut u8 {
         let ptr = if INPUT_BUFFER_PTR.is_null() {
             alloc(alloc_layout(capacity))
         } else {
-            realloc(INPUT_BUFFER_PTR, alloc_layout(INPUT_BUFFER_CAPACITY), capacity)
+            realloc(
+                INPUT_BUFFER_PTR,
+                alloc_layout(INPUT_BUFFER_CAPACITY),
+                capacity,
+            )
         };
         if !ptr.is_null() {
             INPUT_BUFFER_PTR = ptr;
@@ -325,7 +399,6 @@ pub extern "C" fn bunnltk_wasm_compute_ascii_metrics(
         Ok(metrics) => out[..4].copy_from_slice(&metrics),
         Err(err) => {
             error_state::set_error(err.code());
-            return;
         }
     }
 }
@@ -781,7 +854,10 @@ pub extern "C" fn bunnltk_wasm_bleu_stats_ids(
 
     for h in 0..hyp_count as usize {
         let hyp_start = hyps_offsets[h] as usize;
-        let hyp_end = hyps_offsets.get(h + 1).copied().unwrap_or(hyps_flat.len() as u32) as usize;
+        let hyp_end = hyps_offsets
+            .get(h + 1)
+            .copied()
+            .unwrap_or(hyps_flat.len() as u32) as usize;
         let hypothesis = &hyps_flat[hyp_start..hyp_end.min(hyps_flat.len())];
 
         let group_start = group_starts[h] as usize;
@@ -789,7 +865,10 @@ pub extern "C" fn bunnltk_wasm_bleu_stats_ids(
         let mut references: Vec<&[u32]> = Vec::with_capacity(group_count);
         for r in group_start..group_start + group_count {
             let start = refs_offsets[r] as usize;
-            let end = refs_offsets.get(r + 1).copied().unwrap_or(refs_flat.len() as u32) as usize;
+            let end = refs_offsets
+                .get(r + 1)
+                .copied()
+                .unwrap_or(refs_flat.len() as u32) as usize;
             references.push(&refs_flat[start..end.min(refs_flat.len())]);
         }
 
@@ -797,10 +876,8 @@ pub extern "C" fn bunnltk_wasm_bleu_stats_ids(
     }
 
     let (clipped, totals, ref_len, hyp_len) = acc.finish();
-    for i in 0..5 {
-        out[i] = clipped[i];
-        out[5 + i] = totals[i];
-    }
+    out[..5].copy_from_slice(&clipped);
+    out[5..10].copy_from_slice(&totals);
     out[10] = ref_len;
     out[11] = hyp_len;
 }
@@ -864,13 +941,19 @@ pub extern "C" fn bunnltk_wasm_nist_stats_ids(
         let group_count = group_counts[h] as usize;
         for r in group_start..group_start + group_count {
             let start = refs_offsets[r] as usize;
-            let end = refs_offsets.get(r + 1).copied().unwrap_or(refs_flat.len() as u32) as usize;
+            let end = refs_offsets
+                .get(r + 1)
+                .copied()
+                .unwrap_or(refs_flat.len() as u32) as usize;
             acc.add_reference(&refs_flat[start..end.min(refs_flat.len())]);
         }
     }
     for h in 0..hyp_count as usize {
         let hyp_start = hyps_offsets[h] as usize;
-        let hyp_end = hyps_offsets.get(h + 1).copied().unwrap_or(hyps_flat.len() as u32) as usize;
+        let hyp_end = hyps_offsets
+            .get(h + 1)
+            .copied()
+            .unwrap_or(hyps_flat.len() as u32) as usize;
         let hypothesis = &hyps_flat[hyp_start..hyp_end.min(hyps_flat.len())];
 
         let group_start = group_starts[h] as usize;
@@ -878,7 +961,10 @@ pub extern "C" fn bunnltk_wasm_nist_stats_ids(
         let mut references: Vec<&[u32]> = Vec::with_capacity(group_count);
         for r in group_start..group_start + group_count {
             let start = refs_offsets[r] as usize;
-            let end = refs_offsets.get(r + 1).copied().unwrap_or(refs_flat.len() as u32) as usize;
+            let end = refs_offsets
+                .get(r + 1)
+                .copied()
+                .unwrap_or(refs_flat.len() as u32) as usize;
             references.push(&refs_flat[start..end.min(refs_flat.len())]);
         }
         acc.add_hypothesis(&references, hypothesis);

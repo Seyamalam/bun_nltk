@@ -40,6 +40,11 @@ complete before all acceptance criteria are verified.
 
 ## Verified progress
 
+- Strict Clippy passes for native (including tests) and WASM, and Rust formatting
+  is checked. CI now blocks on these checks and Rust unit tests. Native raw-pointer
+  functions document buffer alignment, lifetime and nonaliasing requirements;
+  pointer-backed handle operations are marked unsafe for Rust callers. This does
+  not validate arbitrary C pointers or make stale native handles safe.
 - Rust NIST accumulates in NLTK Counter order, including tie-sensitive reference
   lengths; the rebuilt WASM artifact passes the BLEU/NIST differential gate.
 - Categorical feature-dictionary Naive Bayes training and prediction run in Rust.

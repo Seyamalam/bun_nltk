@@ -186,6 +186,10 @@ impl NativeLinearTextResult {
         self.bytes.len()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.bytes.is_empty()
+    }
+
     pub fn copy_to(&self, out: &mut [u8]) -> CoreResult<usize> {
         if out.len() < self.bytes.len() {
             return Err(CoreError::InsufficientCapacity);

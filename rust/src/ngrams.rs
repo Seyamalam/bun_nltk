@@ -72,7 +72,11 @@ pub fn count_everygrams_ids_ascii(input: &[u8], min_len: usize, max_len: usize) 
     Ok(total as u64)
 }
 
-pub fn count_everygram_id_values_ascii(input: &[u8], min_len: usize, max_len: usize) -> CoreResult<u64> {
+pub fn count_everygram_id_values_ascii(
+    input: &[u8],
+    min_len: usize,
+    max_len: usize,
+) -> CoreResult<u64> {
     if min_len == 0 || max_len == 0 {
         return Err(CoreError::InvalidN);
     }
@@ -251,7 +255,6 @@ pub fn fill_skipgrams_ids_ascii(
 
     let tail_slots = n + k - 1;
     let mut combo: Vec<usize> = Vec::with_capacity(n - 1);
-    let mut out_idx: usize = 0;
 
     fn run(
         token_seq: &[u32],
@@ -260,8 +263,7 @@ pub fn fill_skipgrams_ids_ascii(
         need: usize,
         start_slot: usize,
         combo: &mut Vec<usize>,
-        out_ids: &mut [u32],
-        out_idx: &mut usize,
+        output: &mut (&mut [u32], usize),
     ) {
         if need == 0 {
             for &slot in combo.iter() {
@@ -271,12 +273,12 @@ pub fn fill_skipgrams_ids_ascii(
                 }
             }
 
-            out_ids[*out_idx] = token_seq[i];
-            *out_idx += 1;
+            output.0[output.1] = token_seq[i];
+            output.1 += 1;
             for &slot in combo.iter() {
                 let idx = i + 1 + slot;
-                out_ids[*out_idx] = token_seq[idx];
-                *out_idx += 1;
+                output.0[output.1] = token_seq[idx];
+                output.1 += 1;
             }
             return;
         }
@@ -284,14 +286,15 @@ pub fn fill_skipgrams_ids_ascii(
         let mut s = start_slot;
         while s <= tail_slots - need {
             combo.push(s);
-            run(token_seq, i, tail_slots, need - 1, s + 1, combo, out_ids, out_idx);
+            run(token_seq, i, tail_slots, need - 1, s + 1, combo, output);
             combo.pop();
             s += 1;
         }
     }
 
+    let mut output = (out_flat_ids, 0);
     for i in 0..token_seq.len() {
-        run(token_seq, i, tail_slots, n - 1, 0, &mut combo, out_flat_ids, &mut out_idx);
+        run(token_seq, i, tail_slots, n - 1, 0, &mut combo, &mut output);
     }
 
     Ok(total as u64)

@@ -33,7 +33,7 @@ fn is_skippable_left(ch: u8) -> bool {
 }
 
 fn lower_ascii(ch: u8) -> u8 {
-    if ch >= b'A' && ch <= b'Z' {
+    if ch.is_ascii_uppercase() {
         ch + 32
     } else {
         ch
@@ -91,7 +91,7 @@ fn is_title_abbrev(token: &[u8]) -> bool {
     norm == b"dr" || norm == b"prof"
 }
 
-fn find_prev_token<'a>(input: &'a [u8], idx: usize) -> &'a [u8] {
+fn find_prev_token(input: &[u8], idx: usize) -> &[u8] {
     if input.is_empty() {
         return b"";
     }
@@ -140,14 +140,18 @@ fn find_next_token(input: &[u8], idx: usize) -> Option<NextToken> {
     let first = input[start];
     Some(NextToken {
         start,
-        is_upper_start: first >= b'A' && first <= b'Z',
-        is_lower_start: first >= b'a' && first <= b'z',
+        is_upper_start: first.is_ascii_uppercase(),
+        is_lower_start: first.is_ascii_lowercase(),
     })
 }
 
 fn should_split_at(input: &[u8], punct_idx: usize) -> bool {
     let punct = input[punct_idx];
-    let prev = if punct_idx > 0 { input[punct_idx - 1] } else { 0 };
+    let prev = if punct_idx > 0 {
+        input[punct_idx - 1]
+    } else {
+        0
+    };
     let next = if punct_idx + 1 < input.len() {
         input[punct_idx + 1]
     } else {
