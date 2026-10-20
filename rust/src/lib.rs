@@ -15,6 +15,7 @@ pub mod morphy;
 pub mod naive_bayes;
 pub mod ngrams;
 pub mod normalize;
+mod numeric_validation;
 pub mod perceptron;
 pub mod porter;
 pub mod positive_categorical_nb;

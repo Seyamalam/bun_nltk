@@ -1,6 +1,7 @@
 import { dlopen, ptr } from "bun:ffi";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { assertFinite, assertLinearTraining, assertOffsets, assertPerceptronBuffers, assertProduct, assertU32 } from "./numeric_validation.ts";
 
 function toNumber(value: number | bigint): number {
   return typeof value === "bigint" ? Number(value) : value;
@@ -761,26 +762,21 @@ export function perceptronPredictBatchNative(
   modelFeatureCount: number,
   tagCount: number,
 ): Uint16Array {
+  assertPerceptronBuffers(featureIds, tokenOffsets, weights, modelFeatureCount, tagCount);
   if (tokenOffsets.length === 0) return new Uint16Array(0);
-  if (!Number.isInteger(modelFeatureCount) || modelFeatureCount <= 0) {
-    throw new Error("modelFeatureCount must be a positive integer");
-  }
-  if (!Number.isInteger(tagCount) || tagCount <= 0) {
-    throw new Error("tagCount must be a positive integer");
-  }
 
   const tokenCount = tokenOffsets.length - 1;
   const out = new Uint16Array(tokenCount);
   lib.symbols.bunnltk_perceptron_predict_batch(
-    ptr(featureIds),
+    featureIds.length === 0 ? null : ptr(featureIds),
     featureIds.length,
     ptr(tokenOffsets),
     tokenOffsets.length,
-    ptr(weights),
+    weights.length === 0 ? null : ptr(weights),
     weights.length,
     modelFeatureCount,
     tagCount,
-    ptr(out),
+    out.length === 0 ? null : ptr(out),
     out.length,
   );
   assertNoNativeError("perceptronPredictBatchNative");
@@ -1365,34 +1361,33 @@ export function linearScoresSparseIdsNative(input: {
   weights: Float64Array;
   bias: Float64Array;
 }): Float64Array {
-  if (input.classCount <= 0 || !Number.isInteger(input.classCount)) {
-    throw new Error("classCount must be a positive integer");
-  }
-  if (input.featureCount < 0 || !Number.isInteger(input.featureCount)) {
-    throw new Error("featureCount must be a non-negative integer");
-  }
-  if (input.docOffsets.length === 0) {
-    throw new Error("docOffsets must include at least one offset");
-  }
+  assertU32(input.classCount, "classCount");
+  assertU32(input.featureCount, "featureCount", 0);
+  assertOffsets(input.docOffsets, input.featureIds.length, "docOffsets");
+  const weightCount = assertProduct(input.classCount, input.featureCount, "weights");
+  if (input.weights.length < weightCount || input.bias.length < input.classCount) throw new RangeError("weights and bias must cover every class/feature");
+  assertFinite(input.featureValues, "featureValues");
+  assertFinite(input.weights, "weights", weightCount);
+  assertFinite(input.bias, "bias", input.classCount);
   if (input.featureIds.length !== input.featureValues.length) {
     throw new Error("featureIds and featureValues must have the same length");
   }
   const docCount = input.docOffsets.length - 1;
-  const out = new Float64Array(docCount * input.classCount);
+  const out = new Float64Array(assertProduct(docCount, input.classCount, "scores"));
   lib.symbols.bunnltk_linear_scores_sparse_ids(
     ptr(input.docOffsets),
     input.docOffsets.length,
-    ptr(input.featureIds),
+    input.featureIds.length === 0 ? null : ptr(input.featureIds),
     input.featureIds.length,
-    ptr(input.featureValues),
+    input.featureValues.length === 0 ? null : ptr(input.featureValues),
     input.featureValues.length,
     input.classCount,
     input.featureCount,
-    ptr(input.weights),
+    input.weights.length === 0 ? null : ptr(input.weights),
     input.weights.length,
     ptr(input.bias),
     input.bias.length,
-    ptr(out),
+    out.length === 0 ? null : ptr(out),
     out.length,
   );
   assertNoNativeError("linearScoresSparseIdsNative");
@@ -1414,12 +1409,11 @@ export function linearTrainSparseIdsNative(input: {
   l2: number;
   margin?: number;
 }): { weights: Float64Array; bias: Float64Array } {
-  if (input.classCount <= 0 || !Number.isInteger(input.classCount)) {
-    throw new Error("classCount must be a positive integer");
-  }
-  if (input.featureCount < 0 || !Number.isInteger(input.featureCount)) {
-    throw new Error("featureCount must be a non-negative integer");
-  }
+  assertU32(input.classCount, "classCount");
+  assertU32(input.featureCount, "featureCount", 0);
+  assertLinearTraining(input);
+  assertOffsets(input.docOffsets, input.featureIds.length, "docOffsets");
+  assertFinite(input.featureValues, "featureValues");
   const docCount = input.docOffsets.length - 1;
   if (docCount < 0 || input.labelIds.length !== docCount) {
     throw new Error("labelIds length must match docOffsets");
@@ -1427,16 +1421,17 @@ export function linearTrainSparseIdsNative(input: {
   if (input.featureIds.length !== input.featureValues.length) {
     throw new Error("featureIds and featureValues must have the same length");
   }
-  const weights = new Float64Array(input.classCount * input.featureCount);
+  for (const label of input.labelIds) if (label >= input.classCount) throw new RangeError("labelIds must be less than classCount");
+  const weights = new Float64Array(assertProduct(input.classCount, input.featureCount, "weights"));
   const bias = new Float64Array(input.classCount);
   lib.symbols.bunnltk_linear_train_sparse_ids(
     ptr(input.docOffsets),
     input.docOffsets.length,
-    ptr(input.featureIds),
+    input.featureIds.length === 0 ? null : ptr(input.featureIds),
     input.featureIds.length,
-    ptr(input.featureValues),
+    input.featureValues.length === 0 ? null : ptr(input.featureValues),
     input.featureValues.length,
-    ptr(input.labelIds),
+    input.labelIds.length === 0 ? null : ptr(input.labelIds),
     input.labelIds.length,
     input.classCount,
     input.featureCount,
@@ -1445,7 +1440,7 @@ export function linearTrainSparseIdsNative(input: {
     input.learningRate,
     input.l2,
     input.margin ?? 1,
-    ptr(weights),
+    weights.length === 0 ? null : ptr(weights),
     weights.length,
     ptr(bias),
     bias.length,
@@ -1601,6 +1596,16 @@ export function kmeansFitEuclideanNative(input: {
   initialMeans: Float64Array;
   maxIterations?: number;
 }): { means: Float64Array; iterations: number } {
+  assertU32(input.pointCount, "pointCount");
+  assertU32(input.dimensions, "dimensions");
+  assertU32(input.clusterCount, "clusterCount");
+  assertU32(input.maxIterations ?? 10_000, "maxIterations");
+  if (!Number.isFinite(input.convergence) || input.convergence < 0) throw new RangeError("convergence must be finite and nonnegative");
+  const vectorCount = assertProduct(input.pointCount, input.dimensions, "vectors");
+  const meanCount = assertProduct(input.clusterCount, input.dimensions, "initialMeans");
+  if (input.vectors.length < vectorCount || input.initialMeans.length < meanCount) throw new RangeError("vectors and initialMeans must cover every point/cluster dimension");
+  assertFinite(input.vectors, "vectors", vectorCount);
+  assertFinite(input.initialMeans, "initialMeans", meanCount);
   const means = input.initialMeans.slice();
   const iterations = lib.symbols.bunnltk_kmeans_fit_euclidean(
     ptr(input.vectors),

@@ -984,10 +984,11 @@ pub unsafe extern "C" fn bunnltk_perceptron_predict_batch(
     out_tag_ids_len: usize,
 ) {
     error_state::reset_error();
-    if token_offsets_len == 0 {
-        return;
-    }
-    if feature_ids_len == 0 || weights_len == 0 || out_tag_ids_len == 0 {
+    if (feature_ids_ptr.is_null() && feature_ids_len != 0)
+        || (token_offsets_ptr.is_null() && token_offsets_len != 0)
+        || (weights_ptr.is_null() && weights_len != 0)
+        || (out_tag_ids_ptr.is_null() && out_tag_ids_len != 0)
+    {
         error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
         return;
     }

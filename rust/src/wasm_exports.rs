@@ -539,25 +539,38 @@ pub extern "C" fn bunnltk_wasm_perceptron_predict_batch(
     model_feature_count: u32,
     tag_count: u32,
     out_tag_ids_ptr: u32,
+    weights_len: u32,
 ) {
     error_state::reset_error();
-    if token_count == 0 || tag_count == 0 {
+    if tag_count == 0 || tag_count > u16::MAX as u32 + 1 {
+        error_state::set_error(error_state::INVALID_N);
         return;
     }
-    if feature_ids_ptr == 0 || token_offsets_ptr == 0 || weights_ptr == 0 || out_tag_ids_ptr == 0 {
+    // Do not derive a raw slice length from dimensions without checking storage.
+    let Some(weight_count) = (model_feature_count as usize).checked_mul(tag_count as usize) else {
+        error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
+        return;
+    };
+    let Some(offset_count) = (token_count as usize).checked_add(1) else {
+        error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
+        return;
+    };
+    if weight_count > weights_len as usize
+        || weight_count > isize::MAX as usize / size_of::<f32>()
+        || offset_count > isize::MAX as usize / size_of::<u32>()
+        || (feature_ids_ptr == 0 && feature_ids_len != 0)
+        || token_offsets_ptr == 0
+        || (weights_ptr == 0 && weight_count != 0)
+        || (out_tag_ids_ptr == 0 && token_count != 0)
+    {
         error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
         return;
     }
 
     if let Err(err) = perceptron::predict_batch(
         unsafe { offset_slice::<u32>(feature_ids_ptr, feature_ids_len as usize) },
-        unsafe { offset_slice::<u32>(token_offsets_ptr, token_count as usize + 1) },
-        unsafe {
-            offset_slice::<f32>(
-                weights_ptr,
-                model_feature_count as usize * tag_count as usize,
-            )
-        },
+        unsafe { offset_slice::<u32>(token_offsets_ptr, offset_count) },
+        unsafe { offset_slice::<f32>(weights_ptr, weight_count) },
         model_feature_count,
         tag_count,
         unsafe { offset_slice_mut::<u16>(out_tag_ids_ptr, token_count as usize) },

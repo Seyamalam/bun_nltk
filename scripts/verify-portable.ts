@@ -44,6 +44,9 @@ try {
         const metrics = wasm.computeAsciiMetrics("a b a", 2);
         const distance = wasm.editDistance("CA", "ABC", { transpositions: true });
         const alignment = wasm.editDistanceAlign("😀", "😀x");
+        const perceptron = [...wasm.perceptronPredictBatch(Uint32Array.of(0, 1), Uint32Array.of(0, 1, 2), Float32Array.of(1, 0, 0, 1), 2, 2)];
+        let shortWeights = false;
+        try { wasm.perceptronPredictBatch(Uint32Array.of(0), Uint32Array.of(0, 1), Float32Array.of(1), 1, 2); } catch (error) { shortWeights = error instanceof RangeError; }
         const classifier = RustNaiveBayesClassifier.train(wasm, [
           [{ x: "red", y: "blue" }, "A"], [{ x: "blue", y: "red" }, "B"],
         ]);
@@ -65,12 +68,13 @@ try {
         wasm.dispose();
         let disposed = false;
         try { wasm.countTokensAscii("a"); } catch { disposed = true; }
-        return { initialBytes, tokens, metrics, distance, alignment, predictions, probability, positivePredictions, streamMetrics, invalidOrder, disposed };
+        return { initialBytes, tokens, metrics, distance, alignment, perceptron, shortWeights, predictions, probability, positivePredictions, streamMetrics, invalidOrder, disposed };
       });
       if (result.initialBytes >= 4 * 1024 * 1024 ||
           JSON.stringify(result.tokens) !== JSON.stringify(["hello", "node", "and", "bun"]) ||
           result.metrics.tokens !== 3 || JSON.stringify(result.predictions) !== '["A","B"]' ||
           result.distance !== 2 || JSON.stringify(result.alignment) !== '[[0,0],[1,1],[1,2]]' ||
+          JSON.stringify(result.perceptron) !== '[0,1]' || !result.shortWeights ||
           JSON.stringify(result.positivePredictions) !== '["pos","neg","pos"]' ||
           result.streamMetrics.tokens !== 3 || result.streamMetrics.uniqueTokens !== 2 || result.streamMetrics.ngrams !== 2 || result.streamMetrics.uniqueNgrams !== 2 ||
           Math.abs(result.probability - 0.9) > 1e-12 || !result.invalidOrder || !result.disposed) {
@@ -87,6 +91,10 @@ try {
     const wasm = await WasmNltk.init();
     if (wasm.countTokensAscii("hello node") !== 2) throw new Error("Node token mismatch");
     if (wasm.editDistance("CA","ABC",{transpositions:true}) !== 2) throw new Error("Node distance mismatch");
+    if (JSON.stringify([...wasm.perceptronPredictBatch(Uint32Array.of(0,1), Uint32Array.of(0,1,2), Float32Array.of(1,0,0,1), 2, 2)]) !== '[0,1]') throw new Error("Node perceptron mismatch");
+    let shortWeights = false;
+    try { wasm.perceptronPredictBatch(Uint32Array.of(0), Uint32Array.of(0,1), Float32Array.of(1), 1, 2); } catch (error) { shortWeights = error instanceof RangeError; }
+    if (!shortWeights) throw new Error("Node perceptron weight validation failed");
     const classifier = RustNaiveBayesClassifier.train(wasm, [[{x:"red",y:"blue"},"A"],[{x:"blue",y:"red"},"B"]]);
     if (classifier.classify({x:"red",y:"blue"}) !== "A") throw new Error("Node classifier mismatch");
     classifier.dispose();

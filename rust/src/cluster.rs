@@ -1,3 +1,4 @@
+use crate::numeric_validation::{filled, product};
 use crate::{CoreError, CoreResult};
 
 fn euclidean(left: &[f64], right: &[f64]) -> f64 {
@@ -25,19 +26,36 @@ pub fn kmeans_fit_euclidean(
     let points = point_count as usize;
     let dims = dimensions as usize;
     let clusters = cluster_count as usize;
-    if points == 0 || dims == 0 || clusters == 0 || max_iterations == 0 {
+    if points == 0
+        || dims == 0
+        || clusters == 0
+        || max_iterations == 0
+        || !convergence.is_finite()
+        || convergence < 0.0
+    {
         return Err(CoreError::InvalidN);
     }
-    if vectors.len() < points * dims || means.len() < clusters * dims {
+    let vector_count = product(points, dims)?;
+    let mean_count = product(clusters, dims)?;
+    if vectors.len() < vector_count || means.len() < mean_count {
         return Err(CoreError::InsufficientCapacity);
+    }
+    let vectors = &vectors[..vector_count];
+    let means = &mut means[..mean_count];
+    if vectors
+        .iter()
+        .chain(means.iter())
+        .any(|value| !value.is_finite())
+    {
+        return Err(CoreError::InvalidN);
     }
     if clusters >= points {
         return Ok(0);
     }
 
-    let mut sums = vec![0.0; clusters * dims];
-    let mut counts = vec![0usize; clusters];
-    let mut next_means = vec![0.0; clusters * dims];
+    let mut sums = filled(mean_count, 0.0)?;
+    let mut counts = filled(clusters, 0usize)?;
+    let mut next_means = filled(mean_count, 0.0)?;
     for iteration in 1..=max_iterations {
         sums.fill(0.0);
         counts.fill(0);
@@ -45,8 +63,14 @@ pub fn kmeans_fit_euclidean(
             let vector = &vectors[point * dims..(point + 1) * dims];
             let mut best_cluster = 0usize;
             let mut best_distance = euclidean(vector, &means[..dims]);
+            if !best_distance.is_finite() {
+                return Err(CoreError::InvalidN);
+            }
             for cluster in 1..clusters {
                 let distance = euclidean(vector, &means[cluster * dims..(cluster + 1) * dims]);
+                if !distance.is_finite() {
+                    return Err(CoreError::InvalidN);
+                }
                 if distance < best_distance {
                     best_distance = distance;
                     best_cluster = cluster;
@@ -58,6 +82,9 @@ pub fn kmeans_fit_euclidean(
             }
         }
 
+        if sums.iter().any(|value| !value.is_finite()) {
+            return Err(CoreError::InvalidN);
+        }
         for (cluster, count) in counts.iter().copied().enumerate().take(clusters) {
             if count == 0 && !avoid_empty {
                 return Err(CoreError::InsufficientCapacity);
@@ -78,6 +105,9 @@ pub fn kmeans_fit_euclidean(
                 )
             })
             .sum::<f64>();
+        if !difference.is_finite() || next_means.iter().any(|value| !value.is_finite()) {
+            return Err(CoreError::InvalidN);
+        }
         means.copy_from_slice(&next_means);
         if difference < convergence {
             return Ok(iteration);
@@ -89,6 +119,40 @@ pub fn kmeans_fit_euclidean(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn oversized_storage_keeps_unused_tail_unchanged() {
+        let vectors = [0.0, 2.0, 10.0, 12.0, f64::NAN];
+        let mut means = [0.0, 10.0, 77.0];
+        kmeans_fit_euclidean(&vectors, 4, 1, 2, 1e-9, false, 100, &mut means).unwrap();
+        assert_eq!(means, [1.0, 11.0, 77.0]);
+    }
+
+    #[test]
+    fn rejects_dimensions_capacity_nonfinite_values_and_overflow() {
+        let mut means = [0.0];
+        for convergence in [f64::NAN, f64::INFINITY, -1.0] {
+            assert_eq!(
+                kmeans_fit_euclidean(&[0.0, 1.0], 2, 1, 1, convergence, false, 100, &mut means),
+                Err(CoreError::InvalidN)
+            );
+        }
+        for value in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY, f64::MAX] {
+            assert_eq!(
+                kmeans_fit_euclidean(&[0.0, value], 2, 1, 1, 1.0, false, 100, &mut means),
+                Err(CoreError::InvalidN)
+            );
+        }
+        assert_eq!(
+            kmeans_fit_euclidean(&[], u32::MAX, u32::MAX, 1, 1.0, false, 100, &mut means),
+            Err(CoreError::InsufficientCapacity)
+        );
+        assert_eq!(means, [0.0]);
+        assert_eq!(
+            kmeans_fit_euclidean(&[0.0], 1, 1, 1, 1.0, false, 1, &mut [f64::NAN]),
+            Err(CoreError::InvalidN)
+        );
+    }
 
     #[test]
     fn kmeans_separates_two_groups() {

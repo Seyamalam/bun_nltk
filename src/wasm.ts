@@ -1,3 +1,5 @@
+import { assertPerceptronBuffers } from "./numeric_validation.ts";
+
 type WasmExports = {
   memory: WebAssembly.Memory;
   bunnltk_wasm_last_error_code: () => number;
@@ -57,6 +59,7 @@ type WasmExports = {
     modelFeatureCount: number,
     tagCount: number,
     outTagIdsPtr: number,
+    weightsLen: number,
   ) => void;
   bunnltk_wasm_wordnet_morphy_ascii: (
     inputLen: number,
@@ -226,6 +229,8 @@ export class WasmNltk {
         typeof exports.bunnltk_wasm_categorical_nb_train !== "function" ||
         typeof exports.bunnltk_wasm_positive_categorical_nb_train !== "function" ||
         typeof exports.bunnltk_wasm_metrics_stream_new !== "function" ||
+        typeof exports.bunnltk_wasm_perceptron_predict_batch !== "function" ||
+        exports.bunnltk_wasm_perceptron_predict_batch.length !== 9 ||
         typeof exports.bunnltk_wasm_edit_distance !== "function") {
       throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
     }
@@ -621,6 +626,7 @@ export class WasmNltk {
     modelFeatureCount: number,
     tagCount: number,
   ): Uint16Array {
+    assertPerceptronBuffers(featureIds, tokenOffsets, weights, modelFeatureCount, tagCount);
     if (tokenOffsets.length === 0) return new Uint16Array(0);
     const tokenCount = tokenOffsets.length - 1;
 
@@ -642,6 +648,7 @@ export class WasmNltk {
       modelFeatureCount,
       tagCount,
       outBlock.ptr,
+      weights.length,
     );
     this.assertNoError("perceptronPredictBatch");
 

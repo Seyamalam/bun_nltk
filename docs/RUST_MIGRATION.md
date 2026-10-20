@@ -40,6 +40,13 @@ complete before all acceptance criteria are verified.
 
 ## Verified progress
 
+- Sparse linear, perceptron and Euclidean k-means boundaries validate dimensions,
+  offsets, capacities and finite numeric inputs before processing. Rust workspace
+  allocations are fallible; generated numeric overflow is rejected. Oversized
+  k-means storage leaves its unused tail unchanged instead of panicking. The WASM
+  perceptron ABI now receives an explicit weight length; older artifacts must be
+  rebuilt. Raw native pointers and fabricated WASM offsets are not made safe by
+  these logical buffer checks.
 - Strict Clippy passes for native (including tests) and WASM, and Rust formatting
   is checked. CI now blocks on these checks and Rust unit tests. Native raw-pointer
   functions document buffer alignment, lifetime and nonaliasing requirements;

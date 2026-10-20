@@ -1,4 +1,16 @@
+use crate::numeric_validation::{filled, offsets, product};
 use crate::{CoreError, CoreResult};
+
+fn validate_sparse(doc_offsets: &[u32], ids: &[u32], values: &[f64]) -> CoreResult<()> {
+    offsets(doc_offsets, ids.len())?;
+    if ids.len() != values.len() {
+        return Err(CoreError::InsufficientCapacity);
+    }
+    if values.iter().any(|value| !value.is_finite()) {
+        return Err(CoreError::InvalidN);
+    }
+    Ok(())
+}
 
 // Flat row-major buffers mirror the shared native/WASM scoring ABI.
 #[allow(clippy::too_many_arguments)]
@@ -18,27 +30,30 @@ pub fn scores_sparse_ids(
     if doc_offsets.is_empty() {
         return Err(CoreError::InvalidN);
     }
-    if feature_ids.len() != feature_values.len() {
-        return Err(CoreError::InsufficientCapacity);
-    }
+    validate_sparse(doc_offsets, feature_ids, feature_values)?;
 
     let docs = doc_offsets.len() - 1;
     let classes = class_count as usize;
     let features = feature_count as usize;
-    let expected_weights = classes * features;
+    let expected_weights = product(classes, features)?;
+    let expected_scores = product(docs, classes)?;
     if weights.len() < expected_weights || bias.len() < classes {
         return Err(CoreError::InsufficientCapacity);
     }
-    if out_scores.len() < docs * classes {
+    if out_scores.len() < expected_scores {
         return Err(CoreError::InsufficientCapacity);
+    }
+    if weights[..expected_weights]
+        .iter()
+        .chain(&bias[..classes])
+        .any(|value| !value.is_finite())
+    {
+        return Err(CoreError::InvalidN);
     }
 
     for doc_idx in 0..docs {
         let start = doc_offsets[doc_idx] as usize;
         let end = doc_offsets[doc_idx + 1] as usize;
-        if start > end || end > feature_ids.len() {
-            return Err(CoreError::InsufficientCapacity);
-        }
 
         let out_base = doc_idx * classes;
         for class_idx in 0..classes {
@@ -49,6 +64,9 @@ pub fn scores_sparse_ids(
                 if feature < features {
                     score += weights[weight_base + feature] * feature_values[nnz_idx];
                 }
+            }
+            if !score.is_finite() {
+                return Err(CoreError::InvalidN);
             }
             out_scores[out_base + class_idx] = score;
         }
@@ -79,23 +97,43 @@ pub fn train_sparse_ids(
     weights: &mut [f64],
     bias: &mut [f64],
 ) -> CoreResult<()> {
-    if doc_offsets.is_empty() || class_count == 0 || epochs == 0 {
+    if doc_offsets.is_empty()
+        || class_count == 0
+        || epochs == 0
+        || !learning_rate.is_finite()
+        || learning_rate <= 0.0
+        || !l2.is_finite()
+        || l2 < 0.0
+        || !margin.is_finite()
+        || margin <= 0.0
+    {
         return Err(CoreError::InvalidN);
     }
+    validate_sparse(doc_offsets, feature_ids, feature_values)?;
     let docs = doc_offsets.len() - 1;
     let classes = class_count as usize;
     let features = feature_count as usize;
+    let weight_count = product(classes, features)?;
     if label_ids.len() != docs
         || feature_ids.len() != feature_values.len()
-        || weights.len() < classes * features
+        || weights.len() < weight_count
         || bias.len() < classes
         || label_ids.iter().any(|label| *label as usize >= classes)
     {
         return Err(CoreError::InsufficientCapacity);
     }
 
-    let mut grad_weights = vec![0.0; classes * features];
-    let mut grad_bias = vec![0.0; classes];
+    let weights = &mut weights[..weight_count];
+    let bias = &mut bias[..classes];
+    if weights
+        .iter()
+        .chain(bias.iter())
+        .any(|value| !value.is_finite())
+    {
+        return Err(CoreError::InvalidN);
+    }
+    let mut grad_weights = filled(weight_count, 0.0)?;
+    let mut grad_bias = filled(classes, 0.0)?;
     let inv_docs = 1.0 / docs.max(1) as f64;
 
     for _ in 0..epochs {
@@ -104,9 +142,6 @@ pub fn train_sparse_ids(
         for doc_idx in 0..docs {
             let start = doc_offsets[doc_idx] as usize;
             let end = doc_offsets[doc_idx + 1] as usize;
-            if start > end || end > feature_ids.len() {
-                return Err(CoreError::InsufficientCapacity);
-            }
             let gold = label_ids[doc_idx] as usize;
             for class_idx in 0..classes {
                 let weight_base = class_idx * features;
@@ -116,6 +151,9 @@ pub fn train_sparse_ids(
                     if feature < features {
                         score += weights[weight_base + feature] * feature_values[item_idx];
                     }
+                }
+                if !score.is_finite() {
+                    return Err(CoreError::InvalidN);
                 }
                 let gradient = match algorithm {
                     TrainingAlgorithm::Logistic => {
@@ -148,6 +186,13 @@ pub fn train_sparse_ids(
             }
         }
 
+        if grad_weights
+            .iter()
+            .chain(&grad_bias)
+            .any(|value| !value.is_finite())
+        {
+            return Err(CoreError::InvalidN);
+        }
         match algorithm {
             TrainingAlgorithm::Logistic => {
                 for class_idx in 0..classes {
@@ -168,6 +213,13 @@ pub fn train_sparse_ids(
                 }
             }
         }
+        if weights
+            .iter()
+            .chain(bias.iter())
+            .any(|value| !value.is_finite())
+        {
+            return Err(CoreError::InvalidN);
+        }
     }
     Ok(())
 }
@@ -175,6 +227,115 @@ pub fn train_sparse_ids(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn invalid_offsets_do_not_partially_write_or_train() {
+        for offsets in [&[0, 1, 0][..], &[1, 1], &[0, 2], &[0, 0]] {
+            let mut out = [77.0; 2];
+            assert_eq!(
+                scores_sparse_ids(offsets, &[0], &[1.0], 1, 1, &[1.0], &[0.0], &mut out),
+                Err(CoreError::InsufficientCapacity)
+            );
+            assert_eq!(out, [77.0; 2]);
+            let mut weights = [1.0];
+            let mut bias = [0.0];
+            assert_eq!(
+                train_sparse_ids(
+                    offsets,
+                    &[0],
+                    &[1.0],
+                    &[0],
+                    1,
+                    1,
+                    TrainingAlgorithm::Logistic,
+                    1,
+                    0.1,
+                    0.0,
+                    1.0,
+                    &mut weights,
+                    &mut bias
+                ),
+                Err(CoreError::InsufficientCapacity)
+            );
+            assert_eq!(weights, [1.0]);
+            assert_eq!(bias, [0.0]);
+        }
+    }
+
+    #[test]
+    fn rejects_nonfinite_inputs_and_unsafe_dimensions() {
+        for value in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY] {
+            for (values, weights, bias) in [
+                ([value], [1.0], [0.0]),
+                ([1.0], [value], [0.0]),
+                ([1.0], [1.0], [value]),
+            ] {
+                assert_eq!(
+                    scores_sparse_ids(&[0, 1], &[0], &values, 1, 1, &weights, &bias, &mut [0.0]),
+                    Err(CoreError::InvalidN)
+                );
+            }
+        }
+        assert_eq!(
+            scores_sparse_ids(&[0], &[], &[], u32::MAX, u32::MAX, &[], &[], &mut []),
+            Err(CoreError::InsufficientCapacity)
+        );
+        assert_eq!(
+            scores_sparse_ids(&[0, 1], &[0], &[f64::MAX], 1, 1, &[2.0], &[0.0], &mut [0.0]),
+            Err(CoreError::InvalidN)
+        );
+    }
+
+    #[test]
+    fn rejects_invalid_training_parameters_and_preserves_extra_storage() {
+        for (rate, l2, margin) in [
+            (f64::NAN, 0.0, 1.0),
+            (0.0, 0.0, 1.0),
+            (0.1, f64::INFINITY, 1.0),
+            (0.1, -1.0, 1.0),
+            (0.1, 0.0, f64::NAN),
+            (0.1, 0.0, 0.0),
+        ] {
+            assert_eq!(
+                train_sparse_ids(
+                    &[0, 1],
+                    &[0],
+                    &[1.0],
+                    &[0],
+                    1,
+                    1,
+                    TrainingAlgorithm::Logistic,
+                    1,
+                    rate,
+                    l2,
+                    margin,
+                    &mut [0.0],
+                    &mut [0.0]
+                ),
+                Err(CoreError::InvalidN)
+            );
+        }
+        let mut weights = [0.0, 77.0];
+        let mut bias = [0.0, 77.0];
+        train_sparse_ids(
+            &[0, 1],
+            &[0],
+            &[1.0],
+            &[0],
+            1,
+            1,
+            TrainingAlgorithm::Logistic,
+            1,
+            0.1,
+            0.0,
+            1.0,
+            &mut weights,
+            &mut bias,
+        )
+        .unwrap();
+        assert_eq!(weights, [0.05, 77.0]);
+        assert_eq!(bias, [0.05, 77.0]);
+    }
 
     #[test]
     fn scores_sparse_ids_computes_expected_class_logits() {
