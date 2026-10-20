@@ -318,6 +318,27 @@ Aggregate ASCII metrics now use collision-free token and n-gram keys. APIs whose
 names explicitly return hashes retain their legacy 64-bit hash representation;
 distinct inputs can collide there, so they are not substitutes for exact keys.
 
+For large files, `WasmNltk.createAsciiMetricsStream(n)` accepts `Uint8Array` chunks
+without keeping the corpus in memory. Token boundaries may cross chunks; `finish()`
+counts the final token and closes the stream. Dispose it when done. The same API
+works in Node, Bun, and browsers (feed byte chunks from a file/fetch stream):
+
+```ts
+const stream = runtime.createAsciiMetricsStream(2);
+try {
+  stream.update(new TextEncoder().encode("hel"));
+  stream.update(new TextEncoder().encode("lo world hello"));
+  console.log(stream.finish()); // 3 tokens, 2 unique tokens, 2 unique bigrams
+} finally { stream.dispose(); }
+```
+
+Each chunk obeys the runtime's input-byte limit; the corpus may exceed it.
+Streaming orders are bounded to 1–64; defaults bound tokens to 1 MiB each and
+distinct token/ngram keys to one million each, configurable with `maxTokenBytes`,
+`maxUniqueTokens`, and `maxUniqueNgrams`. Memory still grows with vocabulary and
+distinct n-grams. Capacity failures invalidate the stream rather than returning
+partial success. See [`examples/streaming-metrics.ts`](examples/streaming-metrics.ts).
+
 ## Run tests
 
 ```bash

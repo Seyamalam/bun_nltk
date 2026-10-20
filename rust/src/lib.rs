@@ -6,6 +6,7 @@ pub mod collocations;
 pub mod cyk;
 pub mod distance;
 pub mod error_state;
+pub mod exact_metrics_stream;
 pub mod freqdist;
 pub mod hmm;
 pub mod linear;
@@ -33,6 +34,7 @@ pub mod wordnet;
 pub mod ffi;
 
 pub mod wasm_exports;
+pub mod wasm_metrics_stream;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CoreError {

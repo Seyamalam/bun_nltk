@@ -172,7 +172,7 @@ unsafe fn reserve_input_buffer(required: usize) -> *mut u8 {
 }
 
 /// Reject lengths beyond staging rather than silently truncating the input.
-unsafe fn input_slice(len: usize) -> Option<&'static [u8]> {
+pub(crate) unsafe fn input_slice(len: usize) -> Option<&'static [u8]> {
     unsafe {
         if len == 0 {
             return Some(&[]);
@@ -193,7 +193,7 @@ unsafe fn offset_slice<'a, T>(offset: u32, len: usize) -> &'a [T] {
     }
 }
 
-unsafe fn offset_slice_mut<'a, T>(offset: u32, len: usize) -> &'a mut [T] {
+pub(crate) unsafe fn offset_slice_mut<'a, T>(offset: u32, len: usize) -> &'a mut [T] {
     if offset == 0 || len == 0 {
         &mut []
     } else {

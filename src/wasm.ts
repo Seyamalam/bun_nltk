@@ -7,6 +7,11 @@ type WasmExports = {
   bunnltk_wasm_release_input: () => void;
   bunnltk_wasm_alloc: (size: number) => number;
   bunnltk_wasm_free: (ptr: number, size: number) => void;
+  bunnltk_wasm_metrics_stream_new: (order: number, tokenBytes: number, tokens: number, grams: number) => number;
+  bunnltk_wasm_metrics_stream_update: (handle: number, inputLen: number) => void;
+  bunnltk_wasm_metrics_stream_finish: (handle: number, outPtr: number, outLen: number) => void;
+  bunnltk_wasm_metrics_stream_free: (handle: number) => void;
+  bunnltk_wasm_metrics_stream_clear: () => void;
   bunnltk_wasm_categorical_nb_train: (pairsPtr: number, pairsLen: number, offsetsPtr: number, offsetsLen: number, labelsPtr: number, labelsLen: number, labelCount: number, smoothing: number) => number;
   bunnltk_wasm_categorical_nb_predict: (handle: number, pairsPtr: number, pairsLen: number, outPtr: number, outLen: number) => void;
   bunnltk_wasm_categorical_nb_free: (handle: number) => void;
@@ -184,6 +189,13 @@ export type WasmNltkInit = {
 
 export type WasmLmModelType = "mle" | "lidstone" | "kneser_ney_interpolated";
 
+export type AsciiMetricsStreamOptions = { maxTokenBytes?: number; maxUniqueTokens?: number; maxUniqueNgrams?: number };
+export type AsciiMetricsStream = {
+  update(chunk: Uint8Array): void;
+  finish(): AsciiMetrics;
+  dispose(): void;
+};
+
 export class WasmNltk {
   private readonly exports: WasmExports;
   private inputPtr = 0;
@@ -213,6 +225,7 @@ export class WasmNltk {
         typeof exports.bunnltk_wasm_release_input !== "function" ||
         typeof exports.bunnltk_wasm_categorical_nb_train !== "function" ||
         typeof exports.bunnltk_wasm_positive_categorical_nb_train !== "function" ||
+        typeof exports.bunnltk_wasm_metrics_stream_new !== "function" ||
         typeof exports.bunnltk_wasm_edit_distance !== "function") {
       throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
     }
@@ -251,6 +264,7 @@ export class WasmNltk {
     }
     this.blocks.clear();
     this.exports.bunnltk_wasm_categorical_nb_clear();
+    this.exports.bunnltk_wasm_metrics_stream_clear();
     this.exports.bunnltk_wasm_release_input();
     this.inputPtr = 0;
     this.disposed = true;
@@ -387,6 +401,11 @@ export class WasmNltk {
     this.assertActive();
     if (typeof text !== "string") throw new TypeError("text must be a string");
     const encoded = this.encoder.encode(text);
+    return this.writeBytes(encoded);
+  }
+
+  private writeBytes(encoded: Uint8Array): number {
+    this.assertActive();
     if (encoded.length > this.maxInputBytes) {
       throw new RangeError(`input too large for wasm input buffer: ${encoded.length} > ${this.maxInputBytes}`);
     }
@@ -396,6 +415,53 @@ export class WasmNltk {
     const mem = new Uint8Array(this.exports.memory.buffer);
     mem.set(encoded, this.inputPtr);
     return encoded.length;
+  }
+
+  /** Exact streaming aggregates; memory scales with distinct keys, not input size. */
+  createAsciiMetricsStream(n: number, options: AsciiMetricsStreamOptions = {}): AsciiMetricsStream {
+    this.assertActive();
+    if (!Number.isSafeInteger(n) || n < 1 || n > 64) throw new RangeError("stream n must be an integer in [1, 64]");
+    const maxTokenBytes = options.maxTokenBytes ?? 1024 * 1024;
+    const maxUniqueTokens = options.maxUniqueTokens ?? 1_000_000;
+    const maxUniqueNgrams = options.maxUniqueNgrams ?? 1_000_000;
+    for (const value of [maxTokenBytes, maxUniqueTokens, maxUniqueNgrams]) this.assertOrder(value);
+    const handle = this.exports.bunnltk_wasm_metrics_stream_new(n, maxTokenBytes, maxUniqueTokens, maxUniqueNgrams);
+    this.assertNoError("createAsciiMetricsStream");
+    let disposed = false, finished = false, failed = false;
+    const active = () => {
+      this.assertActive();
+      if (disposed) throw new Error("metrics stream has been disposed");
+      if (failed) throw new Error("metrics stream failed; dispose and create a new stream");
+    };
+    return {
+      update: (chunk) => {
+        active();
+        if (finished) throw new Error("metrics stream has been finished");
+        if (!(chunk instanceof Uint8Array)) throw new TypeError("stream chunks must be Uint8Array bytes");
+        try {
+          const size = this.writeBytes(chunk);
+          this.exports.bunnltk_wasm_metrics_stream_update(handle, size);
+          this.assertNoError("metricsStream.update");
+        } catch (error) { failed = true; throw error; }
+      },
+      finish: () => {
+        active();
+        try {
+          const out = this.ensureBlock("stream_metrics", 4 * BigUint64Array.BYTES_PER_ELEMENT);
+          this.exports.bunnltk_wasm_metrics_stream_finish(handle, out.ptr, 4);
+          this.assertNoError("metricsStream.finish");
+          finished = true;
+          const values = new BigUint64Array(this.exports.memory.buffer, out.ptr, 4);
+          return { tokens: Number(values[0]!), uniqueTokens: Number(values[1]!), ngrams: Number(values[2]!), uniqueNgrams: Number(values[3]!) };
+        } catch (error) { failed = true; throw error; }
+      },
+      dispose: () => {
+        if (disposed) return;
+        this.assertActive();
+        this.exports.bunnltk_wasm_metrics_stream_free(handle);
+        disposed = true;
+      },
+    };
   }
 
   countTokensAscii(text: string): number {

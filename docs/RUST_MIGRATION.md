@@ -57,7 +57,11 @@ complete before all acceptance criteria are verified.
   including unrestricted Damerau transpositions, 762 exact differential cases,
   and NLTK's 2,000-code-point input bound. Ordinary distance uses two rows instead
   of a quadratic matrix. Nonfinite substitution costs are explicitly rejected.
-- The current fidelity gate has 42 passing groups and three unsupported integration
+- Exact ASCII metrics now stream in WASM with arbitrary byte boundaries and
+  explicit token/key capacity limits. A 129 MiB regression verifies two-token
+  vocabulary processing with less than 8 MiB of WASM linear memory. Node and
+  Chromium/Firefox/WebKit smoke tests exercise the same implementation.
+- The current fidelity gate has 43 passing groups and three unsupported integration
   groups. This is fixture coverage, not proof of full NLTK equivalence.
 
 Remaining: feature-dictionary MaxEnt and decision tree still use the lossy text adapter;

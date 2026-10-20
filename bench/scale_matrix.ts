@@ -39,7 +39,16 @@ async function runWorker(mode: string, path: string): Promise<void> {
     const wasm = await WasmNltk.init();
     const started = performance.now();
     try {
-      const metrics = wasm.computeAsciiMetrics(readFileSync(path, "utf8"), 2);
+      let metrics;
+      if (mode === "wasm-stream") {
+        const stream = wasm.createAsciiMetricsStream(2);
+        const fd = openSync(path, "r"), buffer = Buffer.alloc(1024 * 1024);
+        try {
+          let size: number;
+          while ((size = readSync(fd, buffer, 0, buffer.length, null)) > 0) stream.update(buffer.subarray(0, size));
+          metrics = stream.finish();
+        } finally { closeSync(fd); stream.dispose(); }
+      } else { metrics = wasm.computeAsciiMetrics(readFileSync(path, "utf8"), 2); }
       console.log(JSON.stringify({ ...metrics, seconds: (performance.now() - started) / 1000,
         runtime: process.version, ...(typeof Bun !== "undefined" ? { bunVersion: Bun.version } : {}), linearMemoryBytes: wasm.memoryBytes } satisfies Result));
     } finally { wasm.dispose(); }
@@ -114,11 +123,13 @@ async function main(): Promise<void> {
     const path = resolve(temporary, `dataset-${sizeBytes}-${Date.now()}.txt`);
     const sha256 = dataset(path, sizeBytes);
     try {
-      const samples: Record<string, Sample[]> = { python: [], native: [] };
+      const samples: Record<string, Sample[]> = { python: [], native: [], bunWasmStream: [], nodeWasmStream: [] };
       if (sizeBytes <= 64 * 1024 * 1024) { samples.bunWasm = []; samples.nodeWasm = []; }
       for (let round = 0; round < rounds; round++) {
         samples.python!.push(measure(["python3", "bench/python_scale_baseline.py", path], "python"));
         samples.native!.push(measure(["bun", "bench/scale_matrix.ts", "--worker", "native-stream", path], "native"));
+        samples.bunWasmStream!.push(measure(["bun", "bench/scale_matrix.ts", "--worker", "wasm-stream", path], "bun-wasm-stream"));
+        samples.nodeWasmStream!.push(measure(["node", "bench/scale_matrix.ts", "--worker", "wasm-stream", path], "node-wasm-stream"));
         if (samples.bunWasm) {
           samples.bunWasm.push(measure(["bun", "bench/scale_matrix.ts", "--worker", "wasm-batch", path], "bun-wasm"));
           samples.nodeWasm!.push(measure(["node", "bench/scale_matrix.ts", "--worker", "wasm-batch", path], "node-wasm"));
@@ -135,7 +146,7 @@ async function main(): Promise<void> {
         speedup: median(samples.python!.map((s) => s.seconds)) / median(group.map((s) => s.seconds)),
         memoryRatio: Math.max(...group.map((s) => s.peakRssBytes)) / Math.max(...samples.python!.map((s) => s.peakRssBytes)),
       }]));
-      rows.push({ sizeBytes, sha256, parity: true, summary, samples, wasmSkipped: sizeBytes > 64 * 1024 * 1024 ? "batch API limit; no WASM streaming implementation yet" : null });
+      rows.push({ sizeBytes, sha256, parity: true, summary, samples, wasmBatchSkipped: sizeBytes > 64 * 1024 * 1024 ? "batch cases omitted above 64 MiB; streaming tested instead" : null });
       console.error(JSON.stringify({ sizeBytes, parity: true, summary }));
     } finally { unlinkSync(path); }
   }
@@ -143,7 +154,7 @@ async function main(): Promise<void> {
   mkdirSync(dirname(output), { recursive: true });
   writeFileSync(output, JSON.stringify({ schemaVersion: 2, generatedAt: new Date().toISOString(), provenance, rounds, rows,
     scope: "ASCII token and bigram distributions; native additionally computes heuristic conditional tags. Python uses streaming NLTK FreqDist/bigrams. WASM reports matching aggregate counts only.",
-    limitations: ["Repeated low-entropy 1 MiB block; vocabulary scaling and all NLP features require separate workloads.", "Peak RSS includes runtime imports and cold-process overhead; wall time includes initialization.", "Native streaming uses 64-bit hashes, not collision-free token keys.", "WASM batches above 64 MiB are not attempted; no streaming browser parity claim."],
+    limitations: ["Repeated low-entropy 1 MiB block; vocabulary scaling and all NLP features require separate workloads.", "Peak RSS includes runtime imports and cold-process overhead; wall time includes initialization.", "Native streaming uses 64-bit hashes, not collision-free token keys.", "WASM batches above 64 MiB are not attempted. WASM streaming counts exact keys, comparing aggregate counts only; browsers have separate smoke tests."],
   }, null, 2) + "\n");
   console.log(JSON.stringify({ output, cases: rows.length, parity: true }));
 }

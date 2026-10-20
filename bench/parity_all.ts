@@ -53,6 +53,7 @@ const definitions: [string, string[], string[]][] = [
   ["classifier", ["bun", "run", "bench/parity_classifier.ts"], ["parity"]],
   ["feature_naive_bayes", ["bun", "run", "bench/parity_feature_nb.ts"], ["parity"]],
   ["feature_positive_naive_bayes", ["bun", "run", "bench/parity_feature_positive_nb.ts"], ["parity"]],
+  ["wasm_metrics_stream", ["bun", "run", "bench/parity_wasm_metrics_stream.ts"], ["parity"]],
   ["pcfg", ["bun", "run", "bench/parity_pcfg.ts"], ["parity"]],
   ["maxent", ["bun", "run", "bench/parity_maxent.ts"], ["parity"]],
   ["decision_tree", ["bun", "run", "bench/parity_decision_tree.ts"], ["parity"]],
