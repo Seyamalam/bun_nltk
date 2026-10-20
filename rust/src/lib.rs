@@ -17,6 +17,7 @@ pub mod normalize;
 pub mod perceptron;
 pub mod punkt;
 pub mod porter;
+pub mod positive_categorical_nb;
 pub mod stopwords;
 pub mod stream_freqdist;
 pub mod tagger;

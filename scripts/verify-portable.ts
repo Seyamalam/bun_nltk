@@ -50,17 +50,22 @@ try {
         const predictions = classifier.classifyMany([{ x: "red", y: "blue" }, { x: "blue", y: "red" }]);
         const probability = classifier.predict({ x: "red", y: "blue" })[0]!.probability;
         classifier.dispose();
+        const positive = RustNaiveBayesClassifier.trainPositive(wasm,
+          [{ x: "red", y: "blue" }], [{ x: "red", y: "blue" }, { x: "blue", y: "red" }]);
+        const positivePredictions = positive.classifyMany([{ x: "red", y: "blue" }, { x: "blue", y: "red" }, {}]);
+        positive.dispose();
         let invalidOrder = false;
         try { wasm.countNgramsAscii("a", 0); } catch (error) { invalidOrder = error instanceof RangeError; }
         wasm.dispose();
         let disposed = false;
         try { wasm.countTokensAscii("a"); } catch { disposed = true; }
-        return { initialBytes, tokens, metrics, distance, alignment, predictions, probability, invalidOrder, disposed };
+        return { initialBytes, tokens, metrics, distance, alignment, predictions, probability, positivePredictions, invalidOrder, disposed };
       });
       if (result.initialBytes >= 4 * 1024 * 1024 ||
           JSON.stringify(result.tokens) !== JSON.stringify(["hello", "node", "and", "bun"]) ||
           result.metrics.tokens !== 3 || JSON.stringify(result.predictions) !== '["A","B"]' ||
           result.distance !== 2 || JSON.stringify(result.alignment) !== '[[0,0],[1,1],[1,2]]' ||
+          JSON.stringify(result.positivePredictions) !== '["pos","neg","pos"]' ||
           Math.abs(result.probability - 0.9) > 1e-12 || !result.invalidOrder || !result.disposed) {
         throw new Error(`${name} portable verification failed: ${JSON.stringify(result)}`);
       }
@@ -78,6 +83,9 @@ try {
     const classifier = RustNaiveBayesClassifier.train(wasm, [[{x:"red",y:"blue"},"A"],[{x:"blue",y:"red"},"B"]]);
     if (classifier.classify({x:"red",y:"blue"}) !== "A") throw new Error("Node classifier mismatch");
     classifier.dispose();
+    const positive = RustNaiveBayesClassifier.trainPositive(wasm, [{x:"red",y:"blue"}], [{x:"red",y:"blue"},{x:"blue",y:"red"}]);
+    if (JSON.stringify(positive.classifyMany([{x:"red",y:"blue"},{x:"blue",y:"red"},{}])) !== '["pos","neg","pos"]') throw new Error("Node positive classifier mismatch");
+    positive.dispose();
     wasm.dispose();
     console.log(JSON.stringify({runtime:"node",ok:true}));
   `], { stdout: "pipe", stderr: "pipe" });

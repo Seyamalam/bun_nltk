@@ -46,6 +46,10 @@ complete before all acceptance criteria are verified.
   Its typed adapter preserves feature associations, Unicode/case, Python numeric
   equality, and implicit None training values. Differential coverage includes
   614 probes at four smoothing values. NaN is explicitly unsupported.
+- Positive/unlabeled feature Naive Bayes also runs in Rust, with 818 NLTK
+  differential probes covering priors, smoothing, zero probabilities, empty groups,
+  unseen values, and missing None. It reuses the typed feature marshaler and model
+  lifecycle. Invalid priors and lossy maxFeatures truncation are explicitly rejected.
 - Node 24, Bun, Chromium, Firefox, and Playwright WebKit run the same WASM model.
   WebKit on Ubuntu 26.04 was verified with locally extracted distribution libraries
   and `BUN_NLTK_WEBKIT_EXECUTABLE`; CI installs Playwright's host dependencies.
@@ -53,10 +57,10 @@ complete before all acceptance criteria are verified.
   including unrestricted Damerau transpositions, 762 exact differential cases,
   and NLTK's 2,000-code-point input bound. Ordinary distance uses two rows instead
   of a quadratic matrix. Nonfinite substitution costs are explicitly rejected.
-- The current fidelity gate has 41 passing groups and three unsupported integration
+- The current fidelity gate has 42 passing groups and three unsupported integration
   groups. This is fixture coverage, not proof of full NLTK equivalence.
 
-Remaining: other feature-dictionary classifiers still use the lossy text adapter;
+Remaining: feature-dictionary MaxEnt and decision tree still use the lossy text adapter;
 text classifiers, metrics, parsers, and many modules still need Rust migration.
 The root entrypoint still eagerly loads Bun FFI. Full parity, arbitrary-size input
 handling, and universal speed/memory improvements have not been established.

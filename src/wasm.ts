@@ -11,6 +11,7 @@ type WasmExports = {
   bunnltk_wasm_categorical_nb_predict: (handle: number, pairsPtr: number, pairsLen: number, outPtr: number, outLen: number) => void;
   bunnltk_wasm_categorical_nb_free: (handle: number) => void;
   bunnltk_wasm_categorical_nb_clear: () => void;
+  bunnltk_wasm_positive_categorical_nb_train: (positivePtr: number, positiveLen: number, positiveOffsetsPtr: number, positiveOffsetsLen: number, unlabeledPtr: number, unlabeledLen: number, unlabeledOffsetsPtr: number, unlabeledOffsetsLen: number, prior: number, smoothing: number) => number;
   bunnltk_wasm_edit_distance: (leftPtr: number, leftLen: number, rightPtr: number, rightLen: number, cost: number, transpositions: number) => number;
   bunnltk_wasm_edit_alignment: (leftPtr: number, leftLen: number, rightPtr: number, rightLen: number, cost: number, outPtr: number, outLen: number) => number;
   bunnltk_wasm_count_tokens_ascii: (inputLen: number) => bigint;
@@ -211,6 +212,7 @@ export class WasmNltk {
         typeof exports.bunnltk_wasm_reserve_input !== "function" ||
         typeof exports.bunnltk_wasm_release_input !== "function" ||
         typeof exports.bunnltk_wasm_categorical_nb_train !== "function" ||
+        typeof exports.bunnltk_wasm_positive_categorical_nb_train !== "function" ||
         typeof exports.bunnltk_wasm_edit_distance !== "function") {
       throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
     }
@@ -288,6 +290,26 @@ export class WasmNltk {
     this.exports.bunnltk_wasm_categorical_nb_predict(handle, input.ptr, pairs.length, output.ptr, labelCount);
     this.assertNoError("categoricalNaiveBayesPredict");
     return Float64Array.from(new Float64Array(this.exports.memory.buffer, output.ptr, labelCount));
+  }
+
+  positiveCategoricalNaiveBayesTrain(input: {
+    positivePairs: Uint32Array; positiveOffsets: Uint32Array;
+    unlabeledPairs: Uint32Array; unlabeledOffsets: Uint32Array;
+    positivePrior: number; smoothing: number;
+  }): number {
+    if (!Number.isFinite(input.positivePrior) || input.positivePrior < 0 || input.positivePrior >= 1) throw new RangeError("positivePrior must be finite and in [0, 1)");
+    if (!Number.isFinite(input.smoothing) || input.smoothing <= 0) throw new RangeError("smoothing must be positive and finite");
+    const positive = this.copyU32("positive_pairs", input.positivePairs);
+    const positiveOffsets = this.copyU32("positive_offsets", input.positiveOffsets);
+    const unlabeled = this.copyU32("unlabeled_pairs", input.unlabeledPairs);
+    const unlabeledOffsets = this.copyU32("unlabeled_offsets", input.unlabeledOffsets);
+    const handle = this.exports.bunnltk_wasm_positive_categorical_nb_train(
+      positive.ptr, input.positivePairs.length, positiveOffsets.ptr, input.positiveOffsets.length,
+      unlabeled.ptr, input.unlabeledPairs.length, unlabeledOffsets.ptr, input.unlabeledOffsets.length,
+      input.positivePrior, input.smoothing,
+    );
+    this.assertNoError("positiveCategoricalNaiveBayesTrain");
+    return handle;
   }
 
   categoricalNaiveBayesFree(handle: number): void {

@@ -12,6 +12,37 @@ thread_local! {
     static CATEGORICAL_MODELS: RefCell<(u32, HashMap<u32, CategoricalNaiveBayes>)> = RefCell::new((0, HashMap::new()));
 }
 
+fn register_categorical_model(model: CategoricalNaiveBayes) -> u32 {
+    CATEGORICAL_MODELS.with(|models| {
+        let mut state = models.borrow_mut();
+        let Some(handle) = state.0.checked_add(1) else {
+            error_state::set_error(error_state::OUT_OF_MEMORY);
+            return 0;
+        };
+        state.0 = handle;
+        state.1.insert(handle, model);
+        handle
+    })
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_positive_categorical_nb_train(
+    positive_ptr: u32, positive_len: u32, positive_offsets_ptr: u32, positive_offsets_len: u32,
+    unlabeled_ptr: u32, unlabeled_len: u32, unlabeled_offsets_ptr: u32, unlabeled_offsets_len: u32,
+    prior: f64, smoothing: f64,
+) -> u32 {
+    error_state::reset_error();
+    let result = unsafe { crate::positive_categorical_nb::train(
+        offset_slice(positive_ptr, positive_len as usize), offset_slice(positive_offsets_ptr, positive_offsets_len as usize),
+        offset_slice(unlabeled_ptr, unlabeled_len as usize), offset_slice(unlabeled_offsets_ptr, unlabeled_offsets_len as usize),
+        prior, smoothing,
+    ) };
+    match result {
+        Ok(model) => register_categorical_model(model),
+        Err(error) => { error_state::set_error(error.code()); 0 }
+    }
+}
+
 #[no_mangle]
 pub extern "C" fn bunnltk_wasm_categorical_nb_train(
     pairs_ptr: u32, pairs_len: u32, offsets_ptr: u32, offsets_len: u32,
@@ -23,16 +54,7 @@ pub extern "C" fn bunnltk_wasm_categorical_nb_train(
         offset_slice(labels_ptr, labels_len as usize), label_count, smoothing,
     ) };
     match model {
-        Ok(model) => CATEGORICAL_MODELS.with(|models| {
-            let mut state = models.borrow_mut();
-            let Some(handle) = state.0.checked_add(1) else {
-                error_state::set_error(error_state::OUT_OF_MEMORY);
-                return 0;
-            };
-            state.0 = handle;
-            state.1.insert(handle, model);
-            handle
-        }),
+        Ok(model) => register_categorical_model(model),
         Err(error) => { error_state::set_error(error.code()); 0 }
     }
 }

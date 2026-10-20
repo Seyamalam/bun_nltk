@@ -7,14 +7,14 @@ fn log2(value: f64) -> f64 {
     value.ln() / std::f64::consts::LN_2
 }
 
-struct Feature {
-    unseen: Vec<f64>,
-    values: HashMap<u32, Vec<f64>>,
+pub(crate) struct Feature {
+    pub(crate) unseen: Vec<f64>,
+    pub(crate) values: HashMap<u32, Vec<f64>>,
 }
 
 pub struct CategoricalNaiveBayes {
-    priors: Vec<f64>,
-    features: HashMap<u32, Feature>,
+    pub(crate) priors: Vec<f64>,
+    pub(crate) features: HashMap<u32, Feature>,
 }
 
 impl CategoricalNaiveBayes {
@@ -64,7 +64,9 @@ impl CategoricalNaiveBayes {
             return Err(invalid);
         }
         let total = labels.len() as f64 + smoothing * classes as f64;
-        if !total.is_finite() { return Err(invalid); }
+        if !total.is_finite() {
+            return Err(invalid);
+        }
         let priors = docs
             .iter()
             .map(|&n| log2((n as f64 + smoothing) / total))
@@ -86,7 +88,9 @@ impl CategoricalNaiveBayes {
             let bins = values.len() as f64;
             let denominators: Vec<f64> =
                 docs.iter().map(|&n| n as f64 + smoothing * bins).collect();
-            if denominators.iter().any(|d| !d.is_finite()) { return Err(invalid); }
+            if denominators.iter().any(|d| !d.is_finite()) {
+                return Err(invalid);
+            }
             let unseen = denominators.iter().map(|&d| log2(smoothing / d)).collect();
             let values = values
                 .into_iter()
@@ -121,9 +125,26 @@ impl CategoricalNaiveBayes {
                 }
             }
         }
-        let max = out.iter().copied().fold(f64::NEG_INFINITY, f64::max);
-        let sum: f64 = out.iter().map(|&score| (score - max).exp2()).sum();
-        let normalizer = max + log2(sum);
+        // NLTK uses finite -1e300 for log(0), then a left-to-right sum_logs.
+        let normalizer = out
+            .iter()
+            .copied()
+            .reduce(|a, b| {
+                const MAX_DIFF: f64 = -99.65784284662087;
+                if a < b + MAX_DIFF {
+                    return b;
+                }
+                if b < a + MAX_DIFF {
+                    return a;
+                }
+                let base = a.min(b);
+                base + log2((a - base).exp2() + (b - base).exp2())
+            })
+            .unwrap();
+        if normalizer <= -1e300 {
+            out.fill(log2(1.0 / out.len() as f64));
+            return Ok(());
+        }
         for score in out {
             *score -= normalizer;
         }

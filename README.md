@@ -289,6 +289,25 @@ values are rejected. The synchronous Bun `NaiveBayesClassifier.train` API uses
 the same Rust model; call `dispose()` when finished. See
 [`examples/feature-classifier.ts`](examples/feature-classifier.ts).
 
+The positive/unlabeled variant uses the same Rust model and typed features:
+
+```ts
+import { RustPositiveNaiveBayesClassifier } from "bun_nltk/classify-features";
+const positive = RustPositiveNaiveBayesClassifier.train(runtime,
+  [{ color: "red" }], [{ color: "red" }, { color: "blue" }],
+  { positivePrior: 0.5 });
+try { console.log(positive.classify({ color: "red" })); }
+finally { positive.dispose(); }
+```
+
+Initialize `runtime` before this example. Priors must be finite and in `[0, 1)`;
+zero is supported, one is undefined in NLTK's negative-probability calculation.
+Empty training groups follow NLTK; `maxFeatures` may bound the feature count but
+cannot silently discard features. Default labels remain `pos`/`neg`, with positive
+winning ties as Python's `True` does. The synchronous feature-dictionary
+`PositiveNaiveBayesClassifier.train` uses this implementation; the legacy text
+classifier is unchanged.
+
 `WasmNltk.editDistance` and `editDistanceAlign` share the Rust Unicode implementation
 with the synchronous Node/Bun metric APIs. Transpositions follow NLTK's unrestricted
 Damerau algorithm; alignment includes weighted transition costs. Like NLTK 3.10.3,

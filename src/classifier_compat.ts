@@ -4,7 +4,7 @@ import { DictionaryProbDist } from "./probability";
 import { MaxEntTextClassifier, type MaxEntOptions } from "./maxent";
 import { PositiveNaiveBayesTextClassifier } from "./positive_naive_bayes";
 import { syncWasm } from "./sync_wasm.ts";
-import { RustNaiveBayesClassifier } from "./feature_nb";
+import { RustNaiveBayesClassifier, type PositiveFeatureOptions } from "./feature_nb";
 import type { FeatureSet, LabeledFeatureset } from "./feature_types";
 
 export type { FeatureValue, FeatureSet, LabeledFeatureset } from "./feature_types";
@@ -161,29 +161,44 @@ export class MaxentClassifier extends FeatureClassifierBase {
 }
 
 export class PositiveNaiveBayesClassifier extends FeatureClassifierBase {
-  constructor(private readonly model: PositiveNaiveBayesTextClassifier) {
+  constructor(private readonly model: PositiveNaiveBayesTextClassifier | RustNaiveBayesClassifier) {
     super();
   }
 
   static train(
     positiveFeaturesets: Iterable<FeatureSet>,
     unlabeledFeaturesets: Iterable<FeatureSet>,
-    options?: { maxFeatures?: number; positivePrior?: number; positiveLabel?: string; negativeLabel?: string },
+    options?: PositiveFeatureOptions,
   ): PositiveNaiveBayesClassifier {
-    const positiveRows = [...positiveFeaturesets].map((features) => ({ text: featureText(features) }));
-    const unlabeledRows = [...unlabeledFeaturesets].map((features) => ({ text: featureText(features) }));
-    return new PositiveNaiveBayesClassifier(new PositiveNaiveBayesTextClassifier(options).train(positiveRows, unlabeledRows, options));
+    return new PositiveNaiveBayesClassifier(RustNaiveBayesClassifier.trainPositive(syncWasm(), positiveFeaturesets, unlabeledFeaturesets, options));
+  }
+
+  override classify(featureset: FeatureSet): string {
+    return this.model instanceof RustNaiveBayesClassifier ? this.model.classify(featureset) : super.classify(featureset);
+  }
+
+  override probClassify(featureset: FeatureSet): DictionaryProbDist<string> {
+    return this.model instanceof RustNaiveBayesClassifier
+      ? fromProbabilities(this.model.predict(featureset).sort((a, b) => b.logProb - a.logProb))
+      : super.probClassify(featureset);
+  }
+
+  dispose(): void {
+    if (this.model instanceof RustNaiveBayesClassifier) this.model.dispose();
   }
 
   protected classifyText(text: string): string {
+    if (this.model instanceof RustNaiveBayesClassifier) throw new TypeError("feature dictionary required");
     return this.model.classify(text);
   }
 
   protected probClassifyText(text: string): DictionaryProbDist<string> {
+    if (this.model instanceof RustNaiveBayesClassifier) throw new TypeError("feature dictionary required");
     return fromProbabilities(this.model.predict(text));
   }
 
   labels(): string[] {
+    if (this.model instanceof RustNaiveBayesClassifier) return this.model.labels();
     const payload = this.model.toJSON();
     return [payload.positiveLabel, payload.negativeLabel];
   }

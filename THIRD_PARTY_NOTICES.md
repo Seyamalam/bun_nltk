@@ -3,7 +3,7 @@
 ## NLTK algorithm ports
 
 Punkt training/inference, Treebank tokenization, VADER rules, and named-entity
-feature extraction/inference, categorical Naive Bayes, IIS maximum entropy,
+feature extraction/inference, categorical and positive/unlabeled Naive Bayes, IIS maximum entropy,
 decision-tree training, language-model smoothing, NIST accumulation, Unicode
 edit distance, and weighted alignment are adapted from NLTK 3.10.3, copyright 2001–2026
 NLTK Project, under Apache License 2.0 (see LICENSE). NLTK contributors include
