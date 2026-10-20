@@ -1,10 +1,9 @@
 //! WASM exports (port of zig/src/wasm_exports.zig).
 //!
 //! All functions take u32 byte offsets into linear memory instead of raw
-//! pointers. The 128MB input staging buffer is allocated lazily on first use
-//! so it does not bloat the .wasm data section.
+//! pointers. Input staging grows on demand and is released by the wrapper.
 
-use std::alloc::{alloc, dealloc, Layout};
+use std::alloc::{alloc, dealloc, realloc, Layout};
 
 use crate::ascii;
 use crate::chunk;
@@ -19,37 +18,53 @@ use crate::perceptron;
 use crate::punkt;
 use crate::translation;
 
-const INPUT_BUFFER_SIZE: usize = 128 * 1024 * 1024;
+const MAX_INPUT_BYTES: usize = 128 * 1024 * 1024;
 const ALLOC_ALIGN: usize = 16;
 
 static mut INPUT_BUFFER_PTR: *mut u8 = std::ptr::null_mut();
+static mut INPUT_BUFFER_CAPACITY: usize = 0;
 
 fn alloc_layout(size: usize) -> Layout {
     Layout::from_size_align(size, ALLOC_ALIGN).expect("invalid layout")
 }
 
-/// Returns null if the lazy allocation failed (caller sets out_of_memory).
-unsafe fn ensure_input_buffer() -> *mut u8 {
+/// Grow staging while retaining the previous allocation on failure.
+unsafe fn reserve_input_buffer(required: usize) -> *mut u8 {
     unsafe {
-        if !INPUT_BUFFER_PTR.is_null() {
+        if required > MAX_INPUT_BYTES {
+            error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
+            return std::ptr::null_mut();
+        }
+        if !INPUT_BUFFER_PTR.is_null() && required <= INPUT_BUFFER_CAPACITY {
             return INPUT_BUFFER_PTR;
         }
-        let ptr = alloc(alloc_layout(INPUT_BUFFER_SIZE));
+        let capacity = required.max(64 * 1024).next_power_of_two();
+        let ptr = if INPUT_BUFFER_PTR.is_null() {
+            alloc(alloc_layout(capacity))
+        } else {
+            realloc(INPUT_BUFFER_PTR, alloc_layout(INPUT_BUFFER_CAPACITY), capacity)
+        };
         if !ptr.is_null() {
             INPUT_BUFFER_PTR = ptr;
+            INPUT_BUFFER_CAPACITY = capacity;
+        } else {
+            error_state::set_error(error_state::OUT_OF_MEMORY);
         }
         ptr
     }
 }
 
-/// Slice of the input staging buffer; None means allocation failure.
+/// Reject lengths beyond staging rather than silently truncating the input.
 unsafe fn input_slice(len: usize) -> Option<&'static [u8]> {
-    let len = len.min(INPUT_BUFFER_SIZE);
-    let ptr = unsafe { ensure_input_buffer() };
-    if ptr.is_null() {
-        return None;
+    unsafe {
+        if len == 0 {
+            return Some(&[]);
+        }
+        if INPUT_BUFFER_PTR.is_null() || len > INPUT_BUFFER_CAPACITY {
+            return None;
+        }
+        Some(std::slice::from_raw_parts(INPUT_BUFFER_PTR, len))
     }
-    Some(unsafe { std::slice::from_raw_parts(ptr, len) })
 }
 
 /// Slice from a linear-memory offset, tolerating null / zero-length inputs.
@@ -76,17 +91,29 @@ pub extern "C" fn bunnltk_wasm_last_error_code() -> u32 {
 
 #[no_mangle]
 pub extern "C" fn bunnltk_wasm_input_ptr() -> u32 {
-    let ptr = unsafe { ensure_input_buffer() };
-    if ptr.is_null() {
-        error_state::set_error(error_state::OUT_OF_MEMORY);
-        return 0;
-    }
-    ptr as u32
+    bunnltk_wasm_reserve_input(0)
 }
 
 #[no_mangle]
 pub extern "C" fn bunnltk_wasm_input_capacity() -> u32 {
-    INPUT_BUFFER_SIZE as u32
+    unsafe { INPUT_BUFFER_CAPACITY as u32 }
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_reserve_input(required: u32) -> u32 {
+    error_state::reset_error();
+    unsafe { reserve_input_buffer(required as usize) as u32 }
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_release_input() {
+    unsafe {
+        if !INPUT_BUFFER_PTR.is_null() {
+            dealloc(INPUT_BUFFER_PTR, alloc_layout(INPUT_BUFFER_CAPACITY));
+            INPUT_BUFFER_PTR = std::ptr::null_mut();
+            INPUT_BUFFER_CAPACITY = 0;
+        }
+    }
 }
 
 #[no_mangle]

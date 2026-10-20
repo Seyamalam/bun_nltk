@@ -246,6 +246,25 @@ Other entrypoints include `bun_nltk/native`, `bun_nltk/wasm`, `bun_nltk/referenc
 bun run build:wasm
 ```
 
+The shared WASM entrypoint works in Node 24+, Bun, and browsers without loading
+Bun FFI. Input staging grows on demand instead of reserving 128 MiB at startup.
+
+```ts
+import { WasmNltk } from "bun_nltk/wasm";
+const nltk = await WasmNltk.init(); // Node/Bun: packaged artifact
+// Browser: WasmNltk.init({ wasmUrl: "/bun_nltk.wasm" })
+try {
+  console.log(nltk.tokenizeAscii("Hello world"));
+} finally {
+  nltk.dispose();
+}
+```
+
+Run `node examples/portable-wasm.ts` or `bun examples/portable-wasm.ts`.
+`bun run verify:portable` tests the same wrapper in Chromium, Firefox, WebKit,
+and Node after `bunx playwright install chromium firefox webkit`.
+These checks cover the exposed WASM algorithms, not every NLTK module.
+
 ## Run tests
 
 ```bash

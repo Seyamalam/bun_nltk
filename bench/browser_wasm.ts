@@ -51,6 +51,7 @@ async function runInBrowser(
           bunnltk_wasm_last_error_code: () => number;
           bunnltk_wasm_input_ptr: () => number;
           bunnltk_wasm_input_capacity: () => number;
+          bunnltk_wasm_reserve_input: (size: number) => number;
           bunnltk_wasm_alloc: (size: number) => number;
           bunnltk_wasm_count_tokens_ascii: (len: number) => bigint | number;
           bunnltk_wasm_count_ngrams_ascii: (len: number, n: number) => bigint | number;
@@ -100,7 +101,7 @@ async function runInBrowser(
 
         const encoder = new TextEncoder();
         const encoded = encoder.encode(sourceText as string);
-        const inputPtr = Number(exp.bunnltk_wasm_input_ptr());
+        const inputPtr = Number(exp.bunnltk_wasm_reserve_input(encoded.length));
         const capacity = Number(exp.bunnltk_wasm_input_capacity());
         if (encoded.length > capacity) {
           throw new Error(`dataset exceeds wasm input capacity: ${encoded.length} > ${capacity}`);

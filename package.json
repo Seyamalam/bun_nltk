@@ -64,6 +64,7 @@
     "native:artifacts:check": "bun run scripts/native-artifact-check.ts",
     "native:migration:gate": "bun run scripts/native-migration-gate.ts",
     "verify:native-host": "bun run scripts/verify-native-host.ts",
+    "verify:portable": "bun run scripts/verify-portable.ts",
     "model:train:tagger": "python3 scripts/train_perceptron_tagger.py --out models/perceptron_tagger_ascii.json --sentences 7000 --epochs 10 --seed 1337",
     "fixtures:import:nltk": "python3 scripts/import_nltk_fixtures.py --out-dir test/fixtures/nltk_imported --max-trees 220 --max-parser-cases 80 --train-per-label 220 --test-per-label 80",
     "wordnet:pack": "bun run scripts/pack-wordnet.ts --dict-dir ./wordnet/dict --out models/wordnet_full.bin --checksum-out models/wordnet_full.sha256.json",

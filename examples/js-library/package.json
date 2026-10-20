@@ -10,6 +10,6 @@
     "test": "bun test"
   },
   "dependencies": {
-    "bun_nltk": "0.16.0"
+    "bun_nltk": "file:../.."
   }
 }

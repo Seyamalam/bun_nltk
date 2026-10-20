@@ -1,11 +1,10 @@
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
-
 type WasmExports = {
   memory: WebAssembly.Memory;
   bunnltk_wasm_last_error_code: () => number;
   bunnltk_wasm_input_ptr: () => number;
   bunnltk_wasm_input_capacity: () => number;
+  bunnltk_wasm_reserve_input: (size: number) => number;
+  bunnltk_wasm_release_input: () => void;
   bunnltk_wasm_alloc: (size: number) => number;
   bunnltk_wasm_free: (ptr: number, size: number) => void;
   bunnltk_wasm_count_tokens_ascii: (inputLen: number) => bigint;
@@ -172,36 +171,76 @@ function toNumber(v: number | bigint): number {
 export type WasmNltkInit = {
   wasmBytes?: Uint8Array;
   wasmPath?: string;
+  wasmUrl?: string | URL;
+  maxInputBytes?: number;
 };
 
 export type WasmLmModelType = "mle" | "lidstone" | "kneser_ney_interpolated";
 
 export class WasmNltk {
   private readonly exports: WasmExports;
-  private readonly inputPtr: number;
-  private readonly inputCapacity: number;
+  private inputPtr = 0;
+  private readonly maxInputBytes: number;
+  private disposed = false;
   private readonly encoder = new TextEncoder();
   private readonly decoder = new TextDecoder();
   private readonly blocks = new Map<string, PoolBlock>();
 
-  private constructor(exports: WasmExports) {
+  private constructor(exports: WasmExports, maxInputBytes: number) {
     this.exports = exports;
-    this.inputPtr = exports.bunnltk_wasm_input_ptr();
-    this.inputCapacity = exports.bunnltk_wasm_input_capacity();
+    this.maxInputBytes = maxInputBytes;
   }
 
   static async init(init: WasmNltkInit = {}): Promise<WasmNltk> {
-    const wasmPath = init.wasmPath ?? resolve(import.meta.dir, "..", "native", "bun_nltk.wasm");
-    const bytes = init.wasmBytes ?? readFileSync(wasmPath);
+    const maxInputBytes = init.maxInputBytes ?? 128 * 1024 * 1024;
+    if (!Number.isSafeInteger(maxInputBytes) || maxInputBytes < 1 || maxInputBytes > 128 * 1024 * 1024) {
+      throw new RangeError("maxInputBytes must be an integer between 1 and 134217728");
+    }
+    let bytes = init.wasmBytes;
+    if (!bytes) {
+      const url = init.wasmUrl ?? new URL("../native/bun_nltk.wasm", import.meta.url);
+      if (init.wasmPath || new URL(url, import.meta.url).protocol === "file:") {
+        const { readFile } = await import("node:fs/promises");
+        bytes = await readFile(init.wasmPath ?? new URL(url, import.meta.url));
+      } else {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`failed to load WASM: HTTP ${response.status}`);
+        bytes = new Uint8Array(await response.arrayBuffer());
+      }
+    }
     const { instance } = await WebAssembly.instantiate(bytes, {});
-    return new WasmNltk(instance.exports as unknown as WasmExports);
+    const exports = instance.exports;
+    if (!(exports.memory instanceof WebAssembly.Memory) ||
+        typeof exports.bunnltk_wasm_reserve_input !== "function" ||
+        typeof exports.bunnltk_wasm_release_input !== "function") {
+      throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
+    }
+    return new WasmNltk(exports as unknown as WasmExports, maxInputBytes);
+  }
+
+  get memoryBytes(): number {
+    return this.exports.memory.buffer.byteLength;
   }
 
   dispose(): void {
+    if (this.disposed) return;
     for (const block of this.blocks.values()) {
       this.exports.bunnltk_wasm_free(block.ptr, block.bytes);
     }
     this.blocks.clear();
+    this.exports.bunnltk_wasm_release_input();
+    this.inputPtr = 0;
+    this.disposed = true;
+  }
+
+  private assertActive(): void {
+    if (this.disposed) throw new Error("WasmNltk has been disposed");
+  }
+
+  private assertOrder(n: number): void {
+    if (!Number.isSafeInteger(n) || n < 1 || n > 0xffffffff) {
+      throw new RangeError("n must be a positive uint32 integer");
+    }
   }
 
   private assertNoError(context: string): void {
@@ -212,6 +251,11 @@ export class WasmNltk {
   }
 
   private ensureBlock(key: string, bytes: number): PoolBlock {
+    this.assertActive();
+    if (!Number.isSafeInteger(bytes) || bytes < 0 || bytes > 0xffffffff) {
+      throw new RangeError(`invalid WASM allocation size for ${key}`);
+    }
+    bytes = Math.max(16, bytes);
     const existing = this.blocks.get(key);
     if (existing && existing.bytes >= bytes) return existing;
     if (existing) {
@@ -229,10 +273,15 @@ export class WasmNltk {
   }
 
   private writeInput(text: string): number {
+    this.assertActive();
+    if (typeof text !== "string") throw new TypeError("text must be a string");
     const encoded = this.encoder.encode(text);
-    if (encoded.length > this.inputCapacity) {
-      throw new Error(`input too large for wasm input buffer: ${encoded.length} > ${this.inputCapacity}`);
+    if (encoded.length > this.maxInputBytes) {
+      throw new RangeError(`input too large for wasm input buffer: ${encoded.length} > ${this.maxInputBytes}`);
     }
+    this.inputPtr = this.exports.bunnltk_wasm_reserve_input(encoded.length);
+    this.assertNoError("reserveInput");
+    if (!this.inputPtr) throw new Error("failed to allocate WASM input staging");
     const mem = new Uint8Array(this.exports.memory.buffer);
     mem.set(encoded, this.inputPtr);
     return encoded.length;
@@ -240,10 +289,13 @@ export class WasmNltk {
 
   countTokensAscii(text: string): number {
     const inputLen = this.writeInput(text);
-    return toNumber(this.exports.bunnltk_wasm_count_tokens_ascii(inputLen));
+    const count = toNumber(this.exports.bunnltk_wasm_count_tokens_ascii(inputLen));
+    this.assertNoError("countTokensAscii");
+    return count;
   }
 
   countNgramsAscii(text: string, n: number): number {
+    this.assertOrder(n);
     const inputLen = this.writeInput(text);
     const out = toNumber(this.exports.bunnltk_wasm_count_ngrams_ascii(inputLen, n));
     this.assertNoError("countNgramsAscii");
@@ -251,6 +303,7 @@ export class WasmNltk {
   }
 
   computeAsciiMetrics(text: string, n: number): AsciiMetrics {
+    this.assertOrder(n);
     const inputLen = this.writeInput(text);
     const block = this.ensureBlock("metrics", 4 * BigUint64Array.BYTES_PER_ELEMENT);
     this.exports.bunnltk_wasm_compute_ascii_metrics(inputLen, n, block.ptr, 4);
@@ -286,9 +339,9 @@ export class WasmNltk {
 
     return {
       total: written,
-      offsets: new Uint32Array(this.exports.memory.buffer, offsetsBlock.ptr, written),
-      lengths: new Uint32Array(this.exports.memory.buffer, lengthsBlock.ptr, written),
-      input: new Uint8Array(this.exports.memory.buffer, this.inputPtr, inputLen),
+      offsets: Uint32Array.from(new Uint32Array(this.exports.memory.buffer, offsetsBlock.ptr, written)),
+      lengths: Uint32Array.from(new Uint32Array(this.exports.memory.buffer, lengthsBlock.ptr, written)),
+      input: Uint8Array.from(new Uint8Array(this.exports.memory.buffer, this.inputPtr, inputLen)),
     };
   }
 
@@ -326,9 +379,9 @@ export class WasmNltk {
 
     return {
       total: written,
-      offsets: new Uint32Array(this.exports.memory.buffer, offsetsBlock.ptr, written),
-      lengths: new Uint32Array(this.exports.memory.buffer, lengthsBlock.ptr, written),
-      input: new Uint8Array(this.exports.memory.buffer, this.inputPtr, inputLen),
+      offsets: Uint32Array.from(new Uint32Array(this.exports.memory.buffer, offsetsBlock.ptr, written)),
+      lengths: Uint32Array.from(new Uint32Array(this.exports.memory.buffer, lengthsBlock.ptr, written)),
+      input: Uint8Array.from(new Uint8Array(this.exports.memory.buffer, this.inputPtr, inputLen)),
     };
   }
 

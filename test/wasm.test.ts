@@ -96,3 +96,33 @@ test("wasm wrapper metrics and token APIs match native", async () => {
     wasm.dispose();
   }
 });
+
+test("WASM initialization stays small and staging grows on demand", async () => {
+  const wasm = await WasmNltk.init();
+  try {
+    expect(wasm.memoryBytes).toBeLessThan(4 * 1024 * 1024);
+    expect(wasm.countTokensAscii("hello world")).toBe(2);
+    expect(wasm.memoryBytes).toBeLessThan(4 * 1024 * 1024);
+    const text = "word ".repeat(500_000);
+    expect(wasm.countTokensAscii(text)).toBe(500_000);
+    expect(wasm.memoryBytes).toBeLessThan(16 * 1024 * 1024);
+  } finally {
+    wasm.dispose();
+  }
+});
+
+test("WASM results survive pooled writes and enforce lifecycle and limits", async () => {
+  const wasm = await WasmNltk.init({ maxInputBytes: 32 });
+  const first = wasm.tokenOffsetsAscii("hello world");
+  wasm.tokenOffsetsAscii("a b c");
+  expect(new TextDecoder().decode(first.input)).toBe("hello world");
+  expect([...first.offsets]).toEqual([0, 6]);
+  expect(() => wasm.countTokensAscii("a".repeat(33))).toThrow(RangeError);
+  for (const n of [0, -1, 1.5, NaN, Infinity, 2 ** 32]) {
+    expect(() => wasm.countNgramsAscii("a b", n)).toThrow(RangeError);
+  }
+  expect(wasm.countTokensAscii("")).toBe(0);
+  wasm.dispose();
+  wasm.dispose();
+  expect(() => wasm.countTokensAscii("a")).toThrow("disposed");
+});

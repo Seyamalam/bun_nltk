@@ -4,107 +4,34 @@ import {
   tokenizeAscii as tokenizeJs,
 } from "bun_nltk/reference";
 import "./styles.css";
+import { WasmNltk } from "bun_nltk/wasm";
 
 const encoder = new TextEncoder();
-const decoder = new TextDecoder();
-
 async function instantiateWasm() {
   const wasmUrl = `${import.meta.env.BASE_URL}bun_nltk.wasm`;
-  const response = await fetch(wasmUrl);
-  if (!response.ok) throw new Error(`Unable to load ${wasmUrl}: HTTP ${response.status}`);
-  const { instance } = await WebAssembly.instantiate(await response.arrayBuffer(), {});
-  return instance.exports;
+  return WasmNltk.init({ wasmUrl });
 }
 
 function createAnalyzer(wasm) {
-  const inputPointer = Number(wasm.bunnltk_wasm_input_ptr());
-  const inputCapacity = Number(wasm.bunnltk_wasm_input_capacity());
-  const metricsPointer = Number(wasm.bunnltk_wasm_alloc(4 * BigUint64Array.BYTES_PER_ELEMENT));
-  if (!metricsPointer) throw new Error("WASM could not allocate its metrics buffer.");
-
-  function assertNoError(operation) {
-    const code = Number(wasm.bunnltk_wasm_last_error_code());
-    if (code !== 0) throw new Error(`WASM error ${code} during ${operation}`);
-  }
-
-  function writeInput(text) {
-    const bytes = encoder.encode(text);
-    if (bytes.length > inputCapacity) {
-      throw new Error(`Input is ${bytes.length.toLocaleString()} bytes; the WASM limit is ${inputCapacity.toLocaleString()}.`);
-    }
-    new Uint8Array(wasm.memory.buffer).set(bytes, inputPointer);
-    return bytes.length;
-  }
-
-  function metricsFromCurrentInput(inputLength, n) {
-    wasm.bunnltk_wasm_compute_ascii_metrics(inputLength, n, metricsPointer, 4);
-    assertNoError("computing metrics");
-    const values = new BigUint64Array(wasm.memory.buffer, metricsPointer, 4);
+  function analyze(text, n) {
+    const started = performance.now();
     return {
-      tokens: Number(values[0]),
-      uniqueTokens: Number(values[1]),
-      ngrams: Number(values[2]),
-      uniqueNgrams: Number(values[3]),
+      ...wasm.computeAsciiMetrics(text, n),
+      tokenList: wasm.tokenizeAscii(text),
+      sentenceList: wasm.sentenceTokenizePunktAscii(text),
+      elapsedMs: performance.now() - started,
     };
   }
 
-  function decodeOffsets(inputLength, count, fill, operation) {
-    if (count === 0) return [];
-    const bytes = count * Uint32Array.BYTES_PER_ELEMENT;
-    const offsetsPointer = Number(wasm.bunnltk_wasm_alloc(bytes));
-    const lengthsPointer = Number(wasm.bunnltk_wasm_alloc(bytes));
-    try {
-      if (!offsetsPointer || !lengthsPointer) throw new Error(`WASM could not allocate ${operation} buffers.`);
-      const written = Number(fill(offsetsPointer, lengthsPointer, count));
-      assertNoError(operation);
-      const offsets = new Uint32Array(wasm.memory.buffer, offsetsPointer, written);
-      const lengths = new Uint32Array(wasm.memory.buffer, lengthsPointer, written);
-      const input = new Uint8Array(wasm.memory.buffer, inputPointer, inputLength);
-      return Array.from({ length: written }, (_, index) => {
-        const start = offsets[index];
-        return decoder.decode(input.subarray(start, start + lengths[index]));
-      });
-    } finally {
-      if (lengthsPointer) wasm.bunnltk_wasm_free(lengthsPointer, bytes);
-      if (offsetsPointer) wasm.bunnltk_wasm_free(offsetsPointer, bytes);
-    }
-  }
-
-  function analyze(text, n) {
-    const inputLength = writeInput(text);
-    const started = performance.now();
-    const metrics = metricsFromCurrentInput(inputLength, n);
-    const sentenceCount = Number(wasm.bunnltk_wasm_count_sentences_punkt_ascii(inputLength));
-    assertNoError("counting sentences");
-
-    const tokens = decodeOffsets(
-      inputLength,
-      metrics.tokens,
-      (offsets, lengths, count) =>
-        wasm.bunnltk_wasm_fill_token_offsets_ascii(inputLength, offsets, lengths, count),
-      "decoding token offsets",
-    ).map((token) => token.toLowerCase());
-
-    const sentences = decodeOffsets(
-      inputLength,
-      sentenceCount,
-      (offsets, lengths, count) =>
-        wasm.bunnltk_wasm_fill_sentence_offsets_punkt_ascii(inputLength, offsets, lengths, count),
-      "decoding sentence offsets",
-    );
-
-    return { ...metrics, tokenList: tokens, sentenceList: sentences, elapsedMs: performance.now() - started };
-  }
-
   function benchmark(text, n, rounds) {
-    const inputLength = writeInput(text);
-    for (let index = 0; index < 5; index += 1) metricsFromCurrentInput(inputLength, n);
+    for (let index = 0; index < 5; index += 1) wasm.computeAsciiMetrics(text, n);
     const started = performance.now();
-    for (let index = 0; index < rounds; index += 1) metricsFromCurrentInput(inputLength, n);
+    for (let index = 0; index < rounds; index += 1) wasm.computeAsciiMetrics(text, n);
     return (performance.now() - started) / rounds;
   }
 
-  return { analyze, benchmark, inputCapacity };
+  window.addEventListener("pagehide", () => wasm.dispose(), { once: true });
+  return { analyze, benchmark, inputCapacity: 128 * 1024 * 1024 };
 }
 
 function rankedTerms(tokens, limit = 12) {
