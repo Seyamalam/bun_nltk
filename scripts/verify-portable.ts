@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 
 const root = resolve(import.meta.dir, "..");
 const output = await Bun.build({
-  entrypoints: [resolve(root, "src/wasm.ts"), resolve(root, "src/feature_nb.ts"), resolve(root, "src/feature_tree.ts")],
+  entrypoints: [resolve(root, "dist/portable/wasm.js"), resolve(root, "dist/portable/feature_nb.js"), resolve(root, "dist/portable/feature_tree.js")],
   target: "browser",
   format: "esm",
   external: ["node:fs/promises"],

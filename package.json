@@ -8,6 +8,7 @@
   "license": "Apache-2.0",
   "files": [
     "index.ts",
+    "dist/portable",
     "native/prebuilt/darwin-arm64/bun_nltk.dylib",
     "native/prebuilt/linux-x64/bun_nltk.so",
     "native/prebuilt/win32-x64/bun_nltk.dll",
@@ -48,13 +49,25 @@
   "exports": {
     ".": "./index.ts",
     "./native": "./src/native.ts",
-    "./wasm": "./src/wasm.ts",
+    "./wasm": {
+      "types": "./dist/portable/wasm.d.ts",
+      "bun": "./src/wasm.ts",
+      "default": "./dist/portable/wasm.js"
+    },
     "./reference": "./src/reference.ts",
     "./tokenize": "./src/entrypoints/tokenize.ts",
     "./wordnet": "./src/wordnet.ts",
     "./classify": "./src/classify.ts",
-    "./classify-features": "./src/feature_nb.ts",
-    "./classify-tree": "./src/feature_tree.ts",
+    "./classify-features": {
+      "types": "./dist/portable/feature_nb.d.ts",
+      "bun": "./src/feature_nb.ts",
+      "default": "./dist/portable/feature_nb.js"
+    },
+    "./classify-tree": {
+      "types": "./dist/portable/feature_tree.d.ts",
+      "bun": "./src/feature_tree.ts",
+      "default": "./dist/portable/feature_tree.js"
+    },
     "./linear-models": "./src/linear_models.ts",
     "./cluster": "./src/entrypoints/cluster.ts",
     "./metrics": "./src/entrypoints/metrics.ts",
@@ -64,6 +77,8 @@
     "build:rust": "bun run scripts/build-rust.ts",
     "build:prebuilt": "bun run scripts/build-prebuilt.ts",
     "build:wasm": "bun run scripts/build-wasm.ts",
+    "build:portable": "bun run scripts/build-portable.ts",
+    "verify:packaged-portable": "bun run scripts/verify-packaged-portable.ts",
     "native:artifacts:check": "bun run scripts/native-artifact-check.ts",
     "native:migration:gate": "bun run scripts/native-migration-gate.ts",
     "verify:native-host": "bun run scripts/verify-native-host.ts",
@@ -105,6 +120,7 @@
     "bench:compare:kmeans-native-js": "bun run bench/compare_kmeans_native_vs_js.ts 20000 16 8 5",
     "bench:native-migration:report": "bun run bench/native_migration_report.ts 15",
     "bench:compare:decision-tree": "bun run bench/compare_decision_tree.ts 2400 600 3",
+    "bench:compare:feature-tree": "bun run bench/compare_feature_tree.ts",
     "bench:compare:earley": "bun run bench/compare_earley.ts 2000 3",
     "bench:compare:leftcorner": "bun run bench/compare_leftcorner.ts 1200 3",
     "bench:compare:feature-parser": "bun run bench/compare_feature_parser.ts 1200 3",
@@ -169,7 +185,7 @@
     "pack:verify:prebuilt": "bun run scripts/check-packaged-prebuilt.ts",
     "release:validate": "bun run typecheck && bun run scripts/release-validate.ts",
     "release:local": "bun run scripts/release-local.ts",
-    "release:check": "bun run typecheck && bun run build:rust && bun run build:wasm && bun run build:prebuilt && bun run package:size:check && bun run pack:verify:prebuilt && bun run fixtures:import:nltk && bun test && bun run bench:gate && bun run bench:dashboard && bun run bench:trend:check && bun run wordnet:pack:official && bun run wordnet:verify:pack",
+    "release:check": "bun run typecheck && bun run build:rust && bun run build:wasm && bun run build:portable && bun run build:prebuilt && bun run package:size:check && bun run pack:verify:prebuilt && bun run fixtures:import:nltk && bun test && bun run bench:gate && bun run bench:dashboard && bun run bench:trend:check && bun run wordnet:pack:official && bun run wordnet:verify:pack",
     "bench:parity:nltk-models": "bun run bench/parity_nltk_models.ts",
     "models:export:nltk": "python3 scripts/export-nltk-models.py",
     "fixtures:export:nltk-models": "python3 scripts/export-nltk-parity-fixtures.py",

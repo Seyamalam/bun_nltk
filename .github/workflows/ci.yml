@@ -130,7 +130,16 @@ jobs:
           rustup target add wasm32-unknown-unknown
           bun run build:wasm
       - run: bunx --no-install playwright install --with-deps chromium firefox webkit
+      - run: bun run build:portable
+      - name: Check committed portable modules are current
+        run: git diff --exit-code -- dist/portable
       - run: bun run verify:portable
+      - name: Verify installed portable package APIs and declarations
+        run: |
+          mkdir -p artifacts/portable
+          bun pm pack --ignore-scripts --destination artifacts/portable
+          version=$(node -p "require('./package.json').version")
+          bun run verify:packaged-portable "$PWD/artifacts/portable/bun_nltk-$version.tgz"
 
   rust-lint:
     runs-on: ubuntu-latest

@@ -79,9 +79,17 @@ complete before all acceptance criteria are verified.
   probabilities). Legacy text-model constructors remain supported. Depth is bounded
   to 100, nodes to one million; lossy feature truncation is rejected. Formatting,
   explicit feature-value domains and full error-class parity remain unimplemented.
+  Matched feature-tree benchmark evidence is retained separately from legacy
+  text-tree timings; per-row prediction dispatch and RSS remain optimization gaps.
 - Node 24, Bun, Chromium, Firefox, and Playwright WebKit run the same WASM model.
   WebKit on Ubuntu 26.04 was verified with locally extracted distribution libraries
   and `BUN_NLTK_WEBKIT_EXECUTABLE`; CI installs Playwright's host dependencies.
+- The portable WASM/NB/tree package subpaths ship JavaScript and `tsrs`-generated
+  declarations. Clean tarball installs with npm and Bun run on Node 24 and Bun
+  without a TS loader; installed types are checked without library-check skipping.
+  Browser checks exercise the compiled portable modules. Root Node/browser
+  portability is still unfinished. Local `file:` example installation previously
+  failed; repaired links are not evidence of clean local-directory installation.
 - Levenshtein distance and weighted alignment run in Rust over Unicode code points,
   including unrestricted Damerau transpositions, 762 exact differential cases,
   and NLTK's 2,000-code-point input bound. Ordinary distance uses two rows instead

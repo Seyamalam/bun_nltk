@@ -4,6 +4,9 @@ node_modules
 # output
 out
 dist
+!/dist/
+/dist/*
+!/dist/portable/
 *.tgz
 examples/wasm-browser/public/bun_nltk.wasm
 examples/wasm-browser/.wrangler/
@@ -62,6 +65,7 @@ artifacts/*
 !artifacts/stream-scale-matrix.json
 !artifacts/large-stream-scale-matrix.json
 !artifacts/vocabulary-scale-matrix.json
+!artifacts/feature-tree-benchmark.json
 models/wordnet_full.bin
 paper/bench/data/prose_10000kb.txt
 

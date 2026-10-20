@@ -1,0 +1,1170 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-20T22:08:15.285Z",
+  "provenance": {
+    "startedAt": "2026-10-20T22:08:09.365Z",
+    "commit": "ff9b1b1c61c4ab52a1e5989bd3cca19420476f15",
+    "worktreeStatus": "M .github/workflows/ci.yml\n M .github/workflows/publish.yml\n M .gitignore\n M README.md\n M docs/RUST_MIGRATION.md\n M package.json\n M scripts/check-packaged-prebuilt.ts\n M scripts/release-local.ts\n M scripts/verify-portable.ts\n?? bench/compare_feature_tree.ts\n?? bench/python_feature_tree.py\n?? dist/\n?? examples/wasm-browser/dist/\n?? scripts/build-portable.ts\n?? scripts/verify-packaged-portable.ts\n?? tsconfig.portable.json",
+    "machine": {
+      "platform": "linux",
+      "release": "7.0.0-38-generic",
+      "arch": "x64",
+      "cpu": "12th Gen Intel(R) Core(TM) i3-1215U",
+      "cpuCount": 8,
+      "totalMemoryBytes": 24335413248
+    },
+    "sha256": {
+      "bench/compare_feature_tree.ts": "e662e8e8b02d5bf1023d3ac540d5f9fea653e19bb0d7d52458d82f84317186fe",
+      "bench/python_feature_tree.py": "52a4c124941905b43700042adcf749a52bc878913cce9427164d0c60afcb2ff8",
+      "rust/src/categorical_tree.rs": "d0977526e5ac481086d63a07d19596c1c21043b45cec5f72f8425b78cd78348d",
+      "native/bun_nltk.wasm": "bc4e8e4cf3e925fcf4c9201d6c20c740f2d71e0c4c05dc601d20ea6826b581be",
+      "dist/portable/feature_tree.js": "5945c1824bd2a2bf9653cde9ec9f5d56a56de2d63e6af98ab432627f47481d55",
+      "dist/portable/wasm.js": "9740072bc234aea2778850527ab2aede1c4599d0a6ec9031f1fff847e2dc556c"
+    }
+  },
+  "rounds": 3,
+  "rows": [
+    {
+      "trainingRows": 60,
+      "predictionRows": 64,
+      "datasetBytes": 13423,
+      "datasetSha256": "734c4cea3b6fe8f6ab34a3679805976c960ef11bfb84c2e82aab8fa284ee560e",
+      "profile": "categorical-stump",
+      "options": {
+        "binary": false,
+        "entropyCutoff": 0.05,
+        "depthCutoff": 100,
+        "supportCutoff": 10
+      },
+      "parity": true,
+      "summary": {
+        "python": {
+          "medianTrainSeconds": 0.000530624995008111,
+          "medianPredictSeconds": 0.000008450995665043592,
+          "medianWallSeconds": 0.164958352,
+          "peakRssBytes": 56406016,
+          "trainSpeedup": 1
+        },
+        "bunWasm": {
+          "medianTrainSeconds": 0.0024148829999999996,
+          "medianPredictSeconds": 0.000547349999999998,
+          "medianWallSeconds": 0.02208570599999996,
+          "peakRssBytes": 44032000,
+          "trainSpeedup": 0.21973114018696188
+        },
+        "nodeWasm": {
+          "medianTrainSeconds": 0.001773838000000005,
+          "medianPredictSeconds": 0.0004855670000000032,
+          "medianWallSeconds": 0.06019167899999991,
+          "peakRssBytes": 73023488,
+          "trainSpeedup": 0.2991394901947695
+        }
+      },
+      "samples": {
+        "python": [
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.0005636670102830976,
+            "predictSeconds": 0.00000830399221740663,
+            "predictionCount": 64,
+            "predictionsSha256": "5f6e04fccfbe2c9ac9dbc18dacb8d075729d82acee8557d97bff47b3f94c3ae1",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 56332288,
+            "wallSeconds": 0.343582328
+          },
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.000523227994563058,
+            "predictSeconds": 0.000008734001312404871,
+            "predictionCount": 64,
+            "predictionsSha256": "5f6e04fccfbe2c9ac9dbc18dacb8d075729d82acee8557d97bff47b3f94c3ae1",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 56332288,
+            "wallSeconds": 0.16152126300000003
+          },
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.000530624995008111,
+            "predictSeconds": 0.000008450995665043592,
+            "predictionCount": 64,
+            "predictionsSha256": "5f6e04fccfbe2c9ac9dbc18dacb8d075729d82acee8557d97bff47b3f94c3ae1",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 56406016,
+            "wallSeconds": 0.164958352
+          }
+        ],
+        "bunWasm": [
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.0032114769999999986,
+            "trainSeconds": 0.002428981,
+            "predictSeconds": 0.0005608180000000011,
+            "linearMemoryBytes": 1179648,
+            "predictionCount": 64,
+            "predictionsSha256": "5f6e04fccfbe2c9ac9dbc18dacb8d075729d82acee8557d97bff47b3f94c3ae1",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 44032000,
+            "wallSeconds": 0.022645691
+          },
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.0029858349999999996,
+            "trainSeconds": 0.0021545819999999995,
+            "predictSeconds": 0.000543799,
+            "linearMemoryBytes": 1179648,
+            "predictionCount": 64,
+            "predictionsSha256": "5f6e04fccfbe2c9ac9dbc18dacb8d075729d82acee8557d97bff47b3f94c3ae1",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 43331584,
+            "wallSeconds": 0.020909974000000033
+          },
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.0035471649999999997,
+            "trainSeconds": 0.0024148829999999996,
+            "predictSeconds": 0.000547349999999998,
+            "linearMemoryBytes": 1179648,
+            "predictionCount": 64,
+            "predictionsSha256": "5f6e04fccfbe2c9ac9dbc18dacb8d075729d82acee8557d97bff47b3f94c3ae1",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 43646976,
+            "wallSeconds": 0.02208570599999996
+          }
+        ],
+        "nodeWasm": [
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.005627270000000003,
+            "trainSeconds": 0.0017427430000000043,
+            "predictSeconds": 0.000509799000000001,
+            "linearMemoryBytes": 1179648,
+            "predictionCount": 64,
+            "predictionsSha256": "5f6e04fccfbe2c9ac9dbc18dacb8d075729d82acee8557d97bff47b3f94c3ae1",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 73023488,
+            "wallSeconds": 0.06414798200000002
+          },
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0022109999999999986,
+            "trainSeconds": 0.001773838000000005,
+            "predictSeconds": 0.0004591279999999998,
+            "linearMemoryBytes": 1179648,
+            "predictionCount": 64,
+            "predictionsSha256": "5f6e04fccfbe2c9ac9dbc18dacb8d075729d82acee8557d97bff47b3f94c3ae1",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 72916992,
+            "wallSeconds": 0.06019167899999991
+          },
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0020633109999999987,
+            "trainSeconds": 0.001774696999999996,
+            "predictSeconds": 0.0004855670000000032,
+            "linearMemoryBytes": 1179648,
+            "predictionCount": 64,
+            "predictionsSha256": "5f6e04fccfbe2c9ac9dbc18dacb8d075729d82acee8557d97bff47b3f94c3ae1",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 72884224,
+            "wallSeconds": 0.05839875300000005
+          }
+        ]
+      }
+    },
+    {
+      "trainingRows": 60,
+      "predictionRows": 64,
+      "datasetBytes": 4944,
+      "datasetSha256": "a35f81cbc9043e05d5dfc20ad969a33b30221a35a6668b32f314965989cfab89",
+      "profile": "binary-refinement",
+      "options": {
+        "binary": true,
+        "entropyCutoff": 0.05,
+        "depthCutoff": 100,
+        "supportCutoff": 10
+      },
+      "parity": true,
+      "summary": {
+        "python": {
+          "medianTrainSeconds": 0.0004969020083080977,
+          "medianPredictSeconds": 0.000008953997166827321,
+          "medianWallSeconds": 0.16564629400000014,
+          "peakRssBytes": 56324096,
+          "trainSpeedup": 1
+        },
+        "bunWasm": {
+          "medianTrainSeconds": 0.001935346000000001,
+          "medianPredictSeconds": 0.0004636620000000029,
+          "medianWallSeconds": 0.023091435000000046,
+          "peakRssBytes": 38150144,
+          "trainSpeedup": 0.25675099352162223
+        },
+        "nodeWasm": {
+          "medianTrainSeconds": 0.0015616509999999977,
+          "medianPredictSeconds": 0.0003234400000000051,
+          "medianWallSeconds": 0.06095732300000009,
+          "peakRssBytes": 72605696,
+          "trainSpeedup": 0.31819017713182934
+        }
+      },
+      "samples": {
+        "python": [
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.0005028450104873627,
+            "predictSeconds": 0.00000912402174435556,
+            "predictionCount": 64,
+            "predictionsSha256": "241d8f424363e0faae3836df298aeccc93ba7e645da3a118333bc073d1923657",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 56262656,
+            "wallSeconds": 0.16840151200000014
+          },
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.000495129992486909,
+            "predictSeconds": 0.000008903996786102653,
+            "predictionCount": 64,
+            "predictionsSha256": "241d8f424363e0faae3836df298aeccc93ba7e645da3a118333bc073d1923657",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 56266752,
+            "wallSeconds": 0.16411001399999986
+          },
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.0004969020083080977,
+            "predictSeconds": 0.000008953997166827321,
+            "predictionCount": 64,
+            "predictionsSha256": "241d8f424363e0faae3836df298aeccc93ba7e645da3a118333bc073d1923657",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 56324096,
+            "wallSeconds": 0.16564629400000014
+          }
+        ],
+        "bunWasm": [
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.0035637420000000013,
+            "trainSeconds": 0.0024512750000000023,
+            "predictSeconds": 0.0007267009999999984,
+            "linearMemoryBytes": 1179648,
+            "predictionCount": 64,
+            "predictionsSha256": "241d8f424363e0faae3836df298aeccc93ba7e645da3a118333bc073d1923657",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 37662720,
+            "wallSeconds": 0.02470271600000001
+          },
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.0033012769999999987,
+            "trainSeconds": 0.0017438210000000004,
+            "predictSeconds": 0.0004636620000000029,
+            "linearMemoryBytes": 1179648,
+            "predictionCount": 64,
+            "predictionsSha256": "241d8f424363e0faae3836df298aeccc93ba7e645da3a118333bc073d1923657",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 38150144,
+            "wallSeconds": 0.023091435000000046
+          },
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.0038314160000000007,
+            "trainSeconds": 0.001935346000000001,
+            "predictSeconds": 0.0004083660000000009,
+            "linearMemoryBytes": 1179648,
+            "predictionCount": 64,
+            "predictionsSha256": "241d8f424363e0faae3836df298aeccc93ba7e645da3a118333bc073d1923657",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 38146048,
+            "wallSeconds": 0.01944309999999996
+          }
+        ],
+        "nodeWasm": [
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0022730510000000025,
+            "trainSeconds": 0.0015285560000000019,
+            "predictSeconds": 0.0003044139999999942,
+            "linearMemoryBytes": 1179648,
+            "predictionCount": 64,
+            "predictionsSha256": "241d8f424363e0faae3836df298aeccc93ba7e645da3a118333bc073d1923657",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 72564736,
+            "wallSeconds": 0.06095732300000009
+          },
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0022346310000000004,
+            "trainSeconds": 0.0016491189999999988,
+            "predictSeconds": 0.0003275870000000012,
+            "linearMemoryBytes": 1179648,
+            "predictionCount": 64,
+            "predictionsSha256": "241d8f424363e0faae3836df298aeccc93ba7e645da3a118333bc073d1923657",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 72605696,
+            "wallSeconds": 0.063658007
+          },
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0020410229999999955,
+            "trainSeconds": 0.0015616509999999977,
+            "predictSeconds": 0.0003234400000000051,
+            "linearMemoryBytes": 1179648,
+            "predictionCount": 64,
+            "predictionsSha256": "241d8f424363e0faae3836df298aeccc93ba7e645da3a118333bc073d1923657",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 72527872,
+            "wallSeconds": 0.05943068500000004
+          }
+        ]
+      }
+    },
+    {
+      "trainingRows": 2400,
+      "predictionRows": 600,
+      "datasetBytes": 328907,
+      "datasetSha256": "66acb3632b462b344c2acd083a3c56ced52086b8d31aa572aa1b82f900acba5f",
+      "profile": "categorical-stump",
+      "options": {
+        "binary": false,
+        "entropyCutoff": 0.05,
+        "depthCutoff": 100,
+        "supportCutoff": 10
+      },
+      "parity": true,
+      "summary": {
+        "python": {
+          "medianTrainSeconds": 0.00862460897769779,
+          "medianPredictSeconds": 0.00005685701034963131,
+          "medianWallSeconds": 0.17632080600000016,
+          "peakRssBytes": 59072512,
+          "trainSpeedup": 1
+        },
+        "bunWasm": {
+          "medianTrainSeconds": 0.018101451,
+          "medianPredictSeconds": 0.002086728999999998,
+          "medianWallSeconds": 0.041025078000000124,
+          "peakRssBytes": 65224704,
+          "trainSpeedup": 0.47645953784024214
+        },
+        "nodeWasm": {
+          "medianTrainSeconds": 0.014467960999999996,
+          "medianPredictSeconds": 0.0022462189999999964,
+          "medianWallSeconds": 0.079782557,
+          "peakRssBytes": 88944640,
+          "trainSpeedup": 0.5961177928042377
+        }
+      },
+      "samples": {
+        "python": [
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.008516824018443003,
+            "predictSeconds": 0.00005624702316708863,
+            "predictionCount": 600,
+            "predictionsSha256": "4f254bf886bb4ae05cbfc3d37182db751bdf01588b77bb3b9cde4c5c1488b38f",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 59068416,
+            "wallSeconds": 0.17749318700000002
+          },
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.00862460897769779,
+            "predictSeconds": 0.00006030700751580298,
+            "predictionCount": 600,
+            "predictionsSha256": "4f254bf886bb4ae05cbfc3d37182db751bdf01588b77bb3b9cde4c5c1488b38f",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 59072512,
+            "wallSeconds": 0.17632080600000016
+          },
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.009235211997292936,
+            "predictSeconds": 0.00005685701034963131,
+            "predictionCount": 600,
+            "predictionsSha256": "4f254bf886bb4ae05cbfc3d37182db751bdf01588b77bb3b9cde4c5c1488b38f",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 58970112,
+            "wallSeconds": 0.1758513909999997
+          }
+        ],
+        "bunWasm": [
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.0033753980000000004,
+            "trainSeconds": 0.015165848000000001,
+            "predictSeconds": 0.002086728999999998,
+            "linearMemoryBytes": 1572864,
+            "predictionCount": 600,
+            "predictionsSha256": "4f254bf886bb4ae05cbfc3d37182db751bdf01588b77bb3b9cde4c5c1488b38f",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 65224704,
+            "wallSeconds": 0.03429362600000013
+          },
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.003254752999999999,
+            "trainSeconds": 0.018699848999999998,
+            "predictSeconds": 0.0036353320000000054,
+            "linearMemoryBytes": 1572864,
+            "predictionCount": 600,
+            "predictionsSha256": "4f254bf886bb4ae05cbfc3d37182db751bdf01588b77bb3b9cde4c5c1488b38f",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 64229376,
+            "wallSeconds": 0.044674705000000356
+          },
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.0032088739999999996,
+            "trainSeconds": 0.018101451,
+            "predictSeconds": 0.002070926,
+            "linearMemoryBytes": 1572864,
+            "predictionCount": 600,
+            "predictionsSha256": "4f254bf886bb4ae05cbfc3d37182db751bdf01588b77bb3b9cde4c5c1488b38f",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 62988288,
+            "wallSeconds": 0.041025078000000124
+          }
+        ],
+        "nodeWasm": [
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0016932399999999958,
+            "trainSeconds": 0.014467960999999996,
+            "predictSeconds": 0.002192048999999997,
+            "linearMemoryBytes": 1572864,
+            "predictionCount": 600,
+            "predictionsSha256": "4f254bf886bb4ae05cbfc3d37182db751bdf01588b77bb3b9cde4c5c1488b38f",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 88772608,
+            "wallSeconds": 0.07904167499999994
+          },
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0017242600000000011,
+            "trainSeconds": 0.016494933000000003,
+            "predictSeconds": 0.0037357120000000065,
+            "linearMemoryBytes": 1572864,
+            "predictionCount": 600,
+            "predictionsSha256": "4f254bf886bb4ae05cbfc3d37182db751bdf01588b77bb3b9cde4c5c1488b38f",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 88223744,
+            "wallSeconds": 0.08691260000000012
+          },
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0016115059999999984,
+            "trainSeconds": 0.013432879999999998,
+            "predictSeconds": 0.0022462189999999964,
+            "linearMemoryBytes": 1572864,
+            "predictionCount": 600,
+            "predictionsSha256": "4f254bf886bb4ae05cbfc3d37182db751bdf01588b77bb3b9cde4c5c1488b38f",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 88944640,
+            "wallSeconds": 0.079782557
+          }
+        ]
+      }
+    },
+    {
+      "trainingRows": 2400,
+      "predictionRows": 600,
+      "datasetBytes": 122756,
+      "datasetSha256": "46a45cb6eece2a1de4aef168612acd1766537289329900429f8e1d7f976b9fad",
+      "profile": "binary-refinement",
+      "options": {
+        "binary": true,
+        "entropyCutoff": 0.05,
+        "depthCutoff": 100,
+        "supportCutoff": 10
+      },
+      "parity": true,
+      "summary": {
+        "python": {
+          "medianTrainSeconds": 0.01435722500900738,
+          "medianPredictSeconds": 0.00006204599048942327,
+          "medianWallSeconds": 0.1785569300000002,
+          "peakRssBytes": 57634816,
+          "trainSpeedup": 1
+        },
+        "bunWasm": {
+          "medianTrainSeconds": 0.007347913,
+          "medianPredictSeconds": 0.0028355509999999987,
+          "medianWallSeconds": 0.02872124699999995,
+          "peakRssBytes": 58114048,
+          "trainSpeedup": 1.9539187533939744
+        },
+        "nodeWasm": {
+          "medianTrainSeconds": 0.009000170000000004,
+          "medianPredictSeconds": 0.0015709620000000015,
+          "medianWallSeconds": 0.0769226279999998,
+          "peakRssBytes": 87085056,
+          "trainSpeedup": 1.5952170913446495
+        }
+      },
+      "samples": {
+        "python": [
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.01435722500900738,
+            "predictSeconds": 0.00006204599048942327,
+            "predictionCount": 600,
+            "predictionsSha256": "e1f396798a7bf84849da1f4d51324b3e67fa9ac24415b70cf7580c29fe9d2bb1",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 57597952,
+            "wallSeconds": 0.1785569300000002
+          },
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.014357042004121467,
+            "predictSeconds": 0.0000646479893475771,
+            "predictionCount": 600,
+            "predictionsSha256": "e1f396798a7bf84849da1f4d51324b3e67fa9ac24415b70cf7580c29fe9d2bb1",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 57634816,
+            "wallSeconds": 0.17745253300000013
+          },
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.0152500260155648,
+            "predictSeconds": 0.00006128300447016954,
+            "predictionCount": 600,
+            "predictionsSha256": "e1f396798a7bf84849da1f4d51324b3e67fa9ac24415b70cf7580c29fe9d2bb1",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 57384960,
+            "wallSeconds": 0.18421710699999994
+          }
+        ],
+        "bunWasm": [
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.002606624,
+            "trainSeconds": 0.007007996999999999,
+            "predictSeconds": 0.0028355509999999987,
+            "linearMemoryBytes": 1441792,
+            "predictionCount": 600,
+            "predictionsSha256": "e1f396798a7bf84849da1f4d51324b3e67fa9ac24415b70cf7580c29fe9d2bb1",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 56553472,
+            "wallSeconds": 0.02872124699999995
+          },
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.0029379949999999992,
+            "trainSeconds": 0.008878957,
+            "predictSeconds": 0.003700763000000002,
+            "linearMemoryBytes": 1441792,
+            "predictionCount": 600,
+            "predictionsSha256": "e1f396798a7bf84849da1f4d51324b3e67fa9ac24415b70cf7580c29fe9d2bb1",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 58114048,
+            "wallSeconds": 0.030095506999999997
+          },
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.002900658999999999,
+            "trainSeconds": 0.007347913,
+            "predictSeconds": 0.002366607999999999,
+            "linearMemoryBytes": 1441792,
+            "predictionCount": 600,
+            "predictionsSha256": "e1f396798a7bf84849da1f4d51324b3e67fa9ac24415b70cf7580c29fe9d2bb1",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 56979456,
+            "wallSeconds": 0.026202903999999763
+          }
+        ],
+        "nodeWasm": [
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0014149999999999992,
+            "trainSeconds": 0.008899519999999996,
+            "predictSeconds": 0.0015709620000000015,
+            "linearMemoryBytes": 1441792,
+            "predictionCount": 600,
+            "predictionsSha256": "e1f396798a7bf84849da1f4d51324b3e67fa9ac24415b70cf7580c29fe9d2bb1",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 86437888,
+            "wallSeconds": 0.07068059399999993
+          },
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0016444579999999932,
+            "trainSeconds": 0.012570902999999994,
+            "predictSeconds": 0.0015468369999999964,
+            "linearMemoryBytes": 1441792,
+            "predictionCount": 600,
+            "predictionsSha256": "e1f396798a7bf84849da1f4d51324b3e67fa9ac24415b70cf7580c29fe9d2bb1",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 87085056,
+            "wallSeconds": 0.07726414700000032
+          },
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0016293250000000016,
+            "trainSeconds": 0.009000170000000004,
+            "predictSeconds": 0.0016230969999999941,
+            "linearMemoryBytes": 1441792,
+            "predictionCount": 600,
+            "predictionsSha256": "e1f396798a7bf84849da1f4d51324b3e67fa9ac24415b70cf7580c29fe9d2bb1",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 86687744,
+            "wallSeconds": 0.0769226279999998
+          }
+        ]
+      }
+    },
+    {
+      "trainingRows": 12000,
+      "predictionRows": 3000,
+      "datasetBytes": 1644107,
+      "datasetSha256": "f51b4150b85e171bd099d2acb72f22602d9405de03aee03b50ee9d19662afdc0",
+      "profile": "categorical-stump",
+      "options": {
+        "binary": false,
+        "entropyCutoff": 0.05,
+        "depthCutoff": 100,
+        "supportCutoff": 10
+      },
+      "parity": true,
+      "summary": {
+        "python": {
+          "medianTrainSeconds": 0.04359898800612427,
+          "medianPredictSeconds": 0.00030260399216786027,
+          "medianWallSeconds": 0.22848085599999968,
+          "peakRssBytes": 69328896,
+          "trainSpeedup": 1
+        },
+        "bunWasm": {
+          "medianTrainSeconds": 0.036816879,
+          "medianPredictSeconds": 0.007776136000000008,
+          "medianWallSeconds": 0.06841970799999944,
+          "peakRssBytes": 80924672,
+          "trainSpeedup": 1.1842119481698674
+        },
+        "nodeWasm": {
+          "medianTrainSeconds": 0.042752952,
+          "medianPredictSeconds": 0.008072554000000011,
+          "medianWallSeconds": 0.12303910299999961,
+          "peakRssBytes": 106983424,
+          "trainSpeedup": 1.0197889494536956
+        }
+      },
+      "samples": {
+        "python": [
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.04425072102458216,
+            "predictSeconds": 0.00029229497886262834,
+            "predictionCount": 3000,
+            "predictionsSha256": "8e61a167b90219376122d80a48008d41fd4fea7477ba5ae30089b09071048f5c",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 69185536,
+            "wallSeconds": 0.22848085599999968
+          },
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.04359898800612427,
+            "predictSeconds": 0.0003297259972896427,
+            "predictionCount": 3000,
+            "predictionsSha256": "8e61a167b90219376122d80a48008d41fd4fea7477ba5ae30089b09071048f5c",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 69328896,
+            "wallSeconds": 0.22704617499999996
+          },
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.043482656008563936,
+            "predictSeconds": 0.00030260399216786027,
+            "predictionCount": 3000,
+            "predictionsSha256": "8e61a167b90219376122d80a48008d41fd4fea7477ba5ae30089b09071048f5c",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 69287936,
+            "wallSeconds": 0.2292997260000002
+          }
+        ],
+        "bunWasm": [
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.0030120260000000005,
+            "trainSeconds": 0.034942425,
+            "predictSeconds": 0.009322587999999996,
+            "linearMemoryBytes": 3211264,
+            "predictionCount": 3000,
+            "predictionsSha256": "8e61a167b90219376122d80a48008d41fd4fea7477ba5ae30089b09071048f5c",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 80924672,
+            "wallSeconds": 0.06741462199999979
+          },
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.0028682370000000005,
+            "trainSeconds": 0.036816879,
+            "predictSeconds": 0.007179246999999996,
+            "linearMemoryBytes": 3211264,
+            "predictionCount": 3000,
+            "predictionsSha256": "8e61a167b90219376122d80a48008d41fd4fea7477ba5ae30089b09071048f5c",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 80408576,
+            "wallSeconds": 0.06841970799999944
+          },
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.0036515570000000006,
+            "trainSeconds": 0.040637566,
+            "predictSeconds": 0.007776136000000008,
+            "linearMemoryBytes": 3211264,
+            "predictionCount": 3000,
+            "predictionsSha256": "8e61a167b90219376122d80a48008d41fd4fea7477ba5ae30089b09071048f5c",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 77537280,
+            "wallSeconds": 0.0758996360000001
+          }
+        ],
+        "nodeWasm": [
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0016967209999999965,
+            "trainSeconds": 0.038588644000000005,
+            "predictSeconds": 0.010146714000000003,
+            "linearMemoryBytes": 3211264,
+            "predictionCount": 3000,
+            "predictionsSha256": "8e61a167b90219376122d80a48008d41fd4fea7477ba5ae30089b09071048f5c",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 106983424,
+            "wallSeconds": 0.12303910299999961
+          },
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0017761530000000008,
+            "trainSeconds": 0.043050188999999996,
+            "predictSeconds": 0.007818711999999992,
+            "linearMemoryBytes": 3211264,
+            "predictionCount": 3000,
+            "predictionsSha256": "8e61a167b90219376122d80a48008d41fd4fea7477ba5ae30089b09071048f5c",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 106196992,
+            "wallSeconds": 0.12276103800000056
+          },
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0016455490000000027,
+            "trainSeconds": 0.042752952,
+            "predictSeconds": 0.008072554000000011,
+            "linearMemoryBytes": 3211264,
+            "predictionCount": 3000,
+            "predictionsSha256": "8e61a167b90219376122d80a48008d41fd4fea7477ba5ae30089b09071048f5c",
+            "labels": [
+              "L0",
+              "L1",
+              "L2"
+            ],
+            "peakRssBytes": 103452672,
+            "wallSeconds": 0.12729478399999972
+          }
+        ]
+      }
+    },
+    {
+      "trainingRows": 12000,
+      "predictionRows": 3000,
+      "datasetBytes": 613356,
+      "datasetSha256": "c43e47a4be3ad286d2372640687a96c7703fc3fe1453f028719baa0e545aa4c1",
+      "profile": "binary-refinement",
+      "options": {
+        "binary": true,
+        "entropyCutoff": 0.05,
+        "depthCutoff": 100,
+        "supportCutoff": 10
+      },
+      "parity": true,
+      "summary": {
+        "python": {
+          "medianTrainSeconds": 0.07341475199791603,
+          "medianPredictSeconds": 0.00029821801581420004,
+          "medianWallSeconds": 0.2462765529999997,
+          "peakRssBytes": 62525440,
+          "trainSpeedup": 1
+        },
+        "bunWasm": {
+          "medianTrainSeconds": 0.028705004000000003,
+          "medianPredictSeconds": 0.005629984,
+          "medianWallSeconds": 0.058465384000000085,
+          "peakRssBytes": 72794112,
+          "trainSpeedup": 2.557559371805558
+        },
+        "nodeWasm": {
+          "medianTrainSeconds": 0.02422424600000001,
+          "medianPredictSeconds": 0.00635498299999999,
+          "medianWallSeconds": 0.09629289699999935,
+          "peakRssBytes": 95784960,
+          "trainSpeedup": 3.0306310461805914
+        }
+      },
+      "samples": {
+        "python": [
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.0730074490129482,
+            "predictSeconds": 0.00027933501405641437,
+            "predictionCount": 3000,
+            "predictionsSha256": "5e56b2c53439669a4a57299bed833c31784afdbb5da95854cfefe617e3fff7c5",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 62484480,
+            "wallSeconds": 0.2462765529999997
+          },
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.07341475199791603,
+            "predictSeconds": 0.00029821801581420004,
+            "predictionCount": 3000,
+            "predictionsSha256": "5e56b2c53439669a4a57299bed833c31784afdbb5da95854cfefe617e3fff7c5",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 62337024,
+            "wallSeconds": 0.2492229639999996
+          },
+          {
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "trainSeconds": 0.07466557799489237,
+            "predictSeconds": 0.00030300600337795913,
+            "predictionCount": 3000,
+            "predictionsSha256": "5e56b2c53439669a4a57299bed833c31784afdbb5da95854cfefe617e3fff7c5",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 62525440,
+            "wallSeconds": 0.24583654500000013
+          }
+        ],
+        "bunWasm": [
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.0028334159999999996,
+            "trainSeconds": 0.028705004000000003,
+            "predictSeconds": 0.006187163000000005,
+            "linearMemoryBytes": 2424832,
+            "predictionCount": 3000,
+            "predictionsSha256": "5e56b2c53439669a4a57299bed833c31784afdbb5da95854cfefe617e3fff7c5",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 72794112,
+            "wallSeconds": 0.058465384000000085
+          },
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.003534032,
+            "trainSeconds": 0.036568437,
+            "predictSeconds": 0.005629984,
+            "linearMemoryBytes": 2424832,
+            "predictionCount": 3000,
+            "predictionsSha256": "5e56b2c53439669a4a57299bed833c31784afdbb5da95854cfefe617e3fff7c5",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 72331264,
+            "wallSeconds": 0.06654794599999968
+          },
+          {
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "initSeconds": 0.002693020000000001,
+            "trainSeconds": 0.022726357000000003,
+            "predictSeconds": 0.0048803459999999955,
+            "linearMemoryBytes": 2424832,
+            "predictionCount": 3000,
+            "predictionsSha256": "5e56b2c53439669a4a57299bed833c31784afdbb5da95854cfefe617e3fff7c5",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 71675904,
+            "wallSeconds": 0.04986315100000047
+          }
+        ],
+        "nodeWasm": [
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.005875312999999998,
+            "trainSeconds": 0.023950157000000003,
+            "predictSeconds": 0.00635498299999999,
+            "linearMemoryBytes": 2424832,
+            "predictionCount": 3000,
+            "predictionsSha256": "5e56b2c53439669a4a57299bed833c31784afdbb5da95854cfefe617e3fff7c5",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 95019008,
+            "wallSeconds": 0.09629289699999935
+          },
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0022338859999999983,
+            "trainSeconds": 0.02422424600000001,
+            "predictSeconds": 0.0060635569999999885,
+            "linearMemoryBytes": 2424832,
+            "predictionCount": 3000,
+            "predictionsSha256": "5e56b2c53439669a4a57299bed833c31784afdbb5da95854cfefe617e3fff7c5",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 95784960,
+            "wallSeconds": 0.0915452519999999
+          },
+          {
+            "runtime": "v24.21.0",
+            "initSeconds": 0.0026727770000000033,
+            "trainSeconds": 0.029068571999999997,
+            "predictSeconds": 0.006364067000000005,
+            "linearMemoryBytes": 2424832,
+            "predictionCount": 3000,
+            "predictionsSha256": "5e56b2c53439669a4a57299bed833c31784afdbb5da95854cfefe617e3fff7c5",
+            "labels": [
+              "A",
+              "B",
+              "C"
+            ],
+            "peakRssBytes": 95465472,
+            "wallSeconds": 0.09923446800000056
+          }
+        ]
+      }
+    }
+  ],
+  "scope": "Lossless RustDecisionTreeClassifier WASM versus unmodified NLTK 3.10.3 feature trees; identical JSON training/probe sets and matched prediction digests/label sets.",
+  "limitations": [
+    "Synthetic balanced low-cardinality features; not all NLP tasks, tree shapes or adversarial inputs.",
+    "Prediction parity does not imply identical tied split structures; Python retains its randomized set ordering.",
+    "Training/prediction timings exclude JSON reads/imports/WASM initialization; Rust training includes feature marshaling. Init timings are reported separately.",
+    "Peak RSS and wall time include cold runtime/imports, JSON data and output hashing. WASM linear memory is not total memory.",
+    "No browser timing or native tree ABI is measured; legacy text-tree benchmarks are unrelated."
+  ]
+}

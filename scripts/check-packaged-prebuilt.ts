@@ -13,6 +13,20 @@ const requiredFiles = [
   "native/prebuilt/linux-x64/bun_nltk.so",
   "native/prebuilt/win32-x64/bun_nltk.dll",
   "native/bun_nltk.wasm",
+  "LICENSE",
+  "THIRD_PARTY_NOTICES.md",
+  "dist/portable/wasm.js",
+  "dist/portable/wasm.d.ts",
+  "dist/portable/feature_nb.js",
+  "dist/portable/feature_nb.d.ts",
+  "dist/portable/feature_tree.js",
+  "dist/portable/feature_tree.d.ts",
+  "dist/portable/feature_encoding.js",
+  "dist/portable/feature_encoding.d.ts",
+  "dist/portable/feature_types.js",
+  "dist/portable/feature_types.d.ts",
+  "dist/portable/numeric_validation.js",
+  "dist/portable/numeric_validation.d.ts",
   "models/wordnet_extended.json",
   "models/wordnet_mini.json",
   "models/perceptron_tagger_ascii.json",
@@ -47,11 +61,13 @@ function runNpmPackDryRun(): NpmPackRecord {
   }
 
   const stdout = new TextDecoder().decode(proc.stdout).trim();
-  const parsed = JSON.parse(stdout) as NpmPackRecord[];
-  if (!Array.isArray(parsed) || parsed.length === 0 || !Array.isArray(parsed[0]?.files)) {
-    throw new Error(`unexpected npm pack JSON output: ${stdout}`);
+  const parsed = JSON.parse(stdout) as NpmPackRecord[] | Record<string, NpmPackRecord>;
+  // npm 11 returns an array; npm 12 returns a package-name keyed object.
+  const records = Array.isArray(parsed) ? parsed : Object.values(parsed);
+  if (records.length !== 1 || !Array.isArray(records[0]?.files)) {
+    throw new Error("expected exactly one npm pack record with files");
   }
-  return parsed[0]!;
+  return records[0]!;
 }
 
 async function main() {

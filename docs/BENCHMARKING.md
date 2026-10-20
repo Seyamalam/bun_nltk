@@ -103,3 +103,25 @@ stores distinct keys and reports aggregates, while native/Python also build full
 frequency counts and sorted digests. Native used 517.36 MiB, slightly **more**
 than Python, despite running about twice as fast. No universal lower-memory
 claim is warranted.
+
+## Lossless feature decision trees
+
+`bun run bench:compare:feature-tree` measures the new `RustDecisionTreeClassifier`
+against unmodified NLTK 3.10.3, not the legacy text-tree implementation. Three
+cold-process rounds at 60/2,400/12,000 training rows cover categorical stumps and
+binary refinement. Identical JSON inputs, prediction SHA-256 digests and label
+sets match across Python, Bun WASM and Node WASM. Raw timings, peak RSS, machine
+metadata and source/artifact hashes are retained in
+`artifacts/feature-tree-benchmark.json`.
+
+At 12,000 rows, binary training took 28.71 ms in Bun and 24.22 ms in Node versus
+73.41 ms in Python (2.56×/3.03× faster). However, 3,000 predictions took
+5.63/6.35 ms versus Python's 0.30 ms, and peak RSS was 69.42/91.35 MiB versus
+59.63 MiB. Small Rust training cases were slower too. Per-row feature marshaling
+and WASM dispatch remain optimization targets; neither universal speed nor
+lower-memory claims follow from these balanced low-cardinality workloads.
+
+Training/prediction timers exclude JSON reads, module imports and WASM startup.
+Rust training includes feature marshaling; initialization is separately reported.
+Wall time and RSS include cold-process/runtime/input overhead and output hashing.
+No browser timing, native tree ABI or arbitrary tree structure is measured.

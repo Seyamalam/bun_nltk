@@ -19,6 +19,7 @@ run("lint", ["bun", "run", "lint"]);
 run("Rust tests", ["cargo", "test", "--manifest-path", "rust/Cargo.toml"]);
 run("three-platform native build", ["bun", "run", "build:prebuilt"]);
 run("WASM build", ["bun", "run", "build:wasm"]);
+run("portable JavaScript and declarations", ["bun", "run", "build:portable"]);
 run("native artifact formats and sizes", ["bun", "run", "native:artifacts:check"]);
 run("TypeScript test suite", ["bun", "test", "--timeout", "30000"]);
 run("separate Python-oracle behavioral fidelity gate", ["bun", "run", "fidelity:gate"]);
@@ -34,6 +35,7 @@ run("pack actual tarball", [
   artifactDir,
 ]);
 run("install and execute packaged prebuilt", ["bun", "run", "scripts/npm-smoke-test.ts", tarball]);
+run("installed Node/Bun portable subpaths", ["bun", "run", "verify:packaged-portable", tarball]);
 
 console.log(`\nLocal release validation passed: ${tarball}`);
 console.log("Run native Linux validation with: bash scripts/verify-linux.sh");

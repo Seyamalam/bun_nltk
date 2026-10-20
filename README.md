@@ -248,6 +248,9 @@ bun run build:wasm
 
 The shared WASM entrypoint works in Node 24+, Bun, and browsers without loading
 Bun FFI. Input staging grows on demand instead of reserving 128 MiB at startup.
+The installed `wasm`, `classify-features`, and `classify-tree` subpaths ship plain
+JavaScript and type declarations for Node/browser consumers; no TypeScript loader
+is needed. Bun uses the matching source adapters. The root import remains Bun-only.
 
 ```ts
 import { WasmNltk } from "bun_nltk/wasm";
@@ -264,6 +267,9 @@ Run `node examples/portable-wasm.ts` or `bun examples/portable-wasm.ts`.
 `bun run verify:portable` tests the same wrapper in Chromium, Firefox, WebKit,
 and Node after `bunx playwright install chromium firefox webkit`.
 These checks cover the exposed WASM algorithms, not every NLTK module.
+After `bun run build:portable` and `bun pm pack --destination /tmp/opencode`, run
+`bun run verify:packaged-portable /tmp/opencode/bun_nltk-1.0.0.tgz` to check clean
+npm/Bun installs, Node/Bun execution, and installed declarations with `tsrs`.
 
 Categorical feature-dictionary Naive Bayes also runs entirely in Rust:
 
@@ -307,6 +313,22 @@ cannot silently discard features. Default labels remain `pos`/`neg`, with positi
 winning ties as Python's `True` does. The synchronous feature-dictionary
 `PositiveNaiveBayesClassifier.train` uses this implementation; the legacy text
 classifier is unchanged.
+
+Feature-dictionary decision trees share the same lossless encoding:
+
+```ts
+import { RustDecisionTreeClassifier } from "bun_nltk/classify-tree";
+const tree = RustDecisionTreeClassifier.train(runtime, [
+  [{ color: "Red" }, "upper"], [{ color: "red" }, "lower"],
+]);
+try { console.log(tree.classifyMany([{ color: "Red" }, { color: "red" }, {}])); }
+finally { tree.dispose(); }
+```
+
+Initialize `runtime` as above. Split ties use first-seen feature/value order;
+unseen branches match NLTK 3.10.3's last-training-label fallback. Depth is limited
+to 100 and lossy feature truncation is rejected. See
+[`examples/js-library/feature-tree.ts`](examples/js-library/feature-tree.ts).
 
 `WasmNltk.editDistance` and `editDistanceAlign` share the Rust Unicode implementation
 with the synchronous Node/Bun metric APIs. Transpositions follow NLTK's unrestricted

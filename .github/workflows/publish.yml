@@ -29,7 +29,7 @@ jobs:
           bun-version: latest
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           registry-url: https://registry.npmjs.org
       - uses: actions/setup-python@v5
         with:
@@ -42,6 +42,7 @@ jobs:
       - run: bun test ./test
       - run: bun run fidelity:gate
       - run: bun run native:artifacts:check
+      - run: bun run build:portable
       - run: bun run package:size:check
       - run: bun run pack:verify:prebuilt
       - name: Pack and test the actual release tarball
@@ -50,6 +51,7 @@ jobs:
           bun pm pack --ignore-scripts --destination artifacts/publish
           version=$(node -p "require('./package.json').version")
           bun run scripts/npm-smoke-test.ts "$PWD/artifacts/publish/bun_nltk-$version.tgz"
+          bun run verify:packaged-portable "$PWD/artifacts/publish/bun_nltk-$version.tgz"
       - name: Publish the validated tarball
         run: |
           version=$(node -p "require('./package.json').version")
