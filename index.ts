@@ -39,6 +39,8 @@ export {
 
 export type { StreamBigramFreq, StreamConditionalFreq } from "./src/native";
 export type { NativeLmModelType } from "./src/native";
+export { RustDecisionTreeClassifier } from "./src/feature_tree";
+export type { FeatureTreeOptions } from "./src/feature_tree";
 export type { NativeLinearTextModel, NativeLinearTrainingAlgorithm } from "./src/native";
 
 export {

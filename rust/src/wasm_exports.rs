@@ -259,7 +259,7 @@ pub(crate) unsafe fn input_slice(len: usize) -> Option<&'static [u8]> {
 }
 
 /// Slice from a linear-memory offset, tolerating null / zero-length inputs.
-unsafe fn offset_slice<'a, T>(offset: u32, len: usize) -> &'a [T] {
+pub(crate) unsafe fn offset_slice<'a, T>(offset: u32, len: usize) -> &'a [T] {
     if offset == 0 || len == 0 {
         &[]
     } else {

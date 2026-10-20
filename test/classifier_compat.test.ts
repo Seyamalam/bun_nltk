@@ -26,7 +26,9 @@ test("NaiveBayesClassifier supports feature-dict training and probability output
 test("DecisionTreeClassifier supports feature-dict compatibility workflow", () => {
   const classifier = DecisionTreeClassifier.train(labeled, { maxDepth: 4 });
   expect(classifier.classify({ good: true, score: 9 })).toBe("pos");
-  expect(classifier.classifyMany([{ bad: true, score: 1 }, { bright: true, score: 8 }])).toEqual(["neg", "pos"]);
+  // First-seen split is `good`; an unseen/missing branch follows NLTK's
+  // last-training-label fallback rather than the old lossy text adapter.
+  expect(classifier.classifyMany([{ bad: true, score: 1 }, { bright: true, score: 8 }])).toEqual(["neg", "neg"]);
 });
 
 test("MaxentClassifier exposes NLTK-style classify/probClassify methods", () => {

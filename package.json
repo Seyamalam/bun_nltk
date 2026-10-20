@@ -54,6 +54,7 @@
     "./wordnet": "./src/wordnet.ts",
     "./classify": "./src/classify.ts",
     "./classify-features": "./src/feature_nb.ts",
+    "./classify-tree": "./src/feature_tree.ts",
     "./linear-models": "./src/linear_models.ts",
     "./cluster": "./src/entrypoints/cluster.ts",
     "./metrics": "./src/entrypoints/metrics.ts",

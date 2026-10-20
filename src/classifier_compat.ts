@@ -5,6 +5,7 @@ import { MaxEntTextClassifier, type MaxEntOptions } from "./maxent";
 import { PositiveNaiveBayesTextClassifier } from "./positive_naive_bayes";
 import { syncWasm } from "./sync_wasm.ts";
 import { RustNaiveBayesClassifier, type PositiveFeatureOptions } from "./feature_nb";
+import { RustDecisionTreeClassifier, type FeatureTreeOptions } from "./feature_tree.ts";
 import type { FeatureSet, LabeledFeatureset } from "./feature_types";
 
 export type { FeatureValue, FeatureSet, LabeledFeatureset } from "./feature_types";
@@ -109,27 +110,42 @@ export class NaiveBayesClassifier extends FeatureClassifierBase {
 }
 
 export class DecisionTreeClassifier extends FeatureClassifierBase {
-  constructor(private readonly model: DecisionTreeTextClassifier) {
+  constructor(private readonly model: DecisionTreeTextClassifier | RustDecisionTreeClassifier) {
     super();
   }
 
   static train(
     labeledFeaturesets: Iterable<LabeledFeatureset>,
-    options?: { maxDepth?: number; minSamples?: number; maxCandidateFeatures?: number; maxFeatures?: number },
+    options?: FeatureTreeOptions,
   ): DecisionTreeClassifier {
-    const rows = [...labeledFeaturesets].map(([features, label]) => ({ label, text: featureText(features) }));
-    return new DecisionTreeClassifier(new DecisionTreeTextClassifier(options).train(rows));
+    return new DecisionTreeClassifier(RustDecisionTreeClassifier.train(syncWasm(), labeledFeaturesets, options));
   }
 
+  override classify(featureset: FeatureSet): string {
+    return this.model instanceof RustDecisionTreeClassifier ? this.model.classify(featureset) : super.classify(featureset);
+  }
+
+  override probClassify(featureset: FeatureSet): DictionaryProbDist<string> {
+    if (!(this.model instanceof RustDecisionTreeClassifier)) return super.probClassify(featureset);
+    // NLTK trees do not implement prob_classify; retain our extension as one-hot.
+    const label = this.model.classify(featureset);
+    return fromProbabilities(this.model.labels().map((candidate) => ({ label: candidate, probability: Number(candidate === label) })));
+  }
+
+  dispose(): void { if (this.model instanceof RustDecisionTreeClassifier) this.model.dispose(); }
+
   protected classifyText(text: string): string {
+    if (this.model instanceof RustDecisionTreeClassifier) throw new TypeError("feature dictionary required");
     return this.model.classify(text);
   }
 
   protected probClassifyText(text: string): DictionaryProbDist<string> {
+    if (this.model instanceof RustDecisionTreeClassifier) throw new TypeError("feature dictionary required");
     return fromProbabilities(this.model.predict(text).map((row) => ({ label: row.label, probability: row.score })));
   }
 
   labels(): string[] {
+    if (this.model instanceof RustDecisionTreeClassifier) return this.model.labels();
     return this.model.toJSON().labels;
   }
 }

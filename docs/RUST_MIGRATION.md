@@ -70,6 +70,15 @@ complete before all acceptance criteria are verified.
   differential probes covering priors, smoothing, zero probabilities, empty groups,
   unseen values, and missing None. It reuses the typed feature marshaler and model
   lifecycle. Invalid priors and lossy maxFeatures truncation are explicitly rejected.
+- Feature-dictionary decision trees use lossless Rust categorical stumps, binary
+  defaults and entropy/support/depth refinement through `bun_nltk/classify-tree`.
+  They match NLTK 3.10.3's last-training-label fallback for unseen branches. Split
+  ties use first-seen names/values rather than Python's randomized set order;
+  differential tie cases control only upstream candidate ordering. The compatibility
+  API retains a one-hot probability extension (NLTK does not implement tree
+  probabilities). Legacy text-model constructors remain supported. Depth is bounded
+  to 100, nodes to one million; lossy feature truncation is rejected. Formatting,
+  explicit feature-value domains and full error-class parity remain unimplemented.
 - Node 24, Bun, Chromium, Firefox, and Playwright WebKit run the same WASM model.
   WebKit on Ubuntu 26.04 was verified with locally extracted distribution libraries
   and `BUN_NLTK_WEBKIT_EXECUTABLE`; CI installs Playwright's host dependencies.
@@ -84,7 +93,7 @@ complete before all acceptance criteria are verified.
 - The current fidelity gate has 43 passing groups and three unsupported integration
   groups. This is fixture coverage, not proof of full NLTK equivalence.
 
-Remaining: feature-dictionary MaxEnt and decision tree still use the lossy text adapter;
+Remaining: feature-dictionary MaxEnt still uses the lossy text adapter;
 text classifiers, metrics, parsers, and many modules still need Rust migration.
 The root entrypoint still eagerly loads Bun FFI. Full parity, arbitrary-size input
 handling, and universal speed/memory improvements have not been established.

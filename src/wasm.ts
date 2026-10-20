@@ -1,4 +1,4 @@
-import { assertPerceptronBuffers } from "./numeric_validation.ts";
+import { assertOffsets, assertPerceptronBuffers, assertU32 } from "./numeric_validation.ts";
 
 type WasmExports = {
   memory: WebAssembly.Memory;
@@ -19,6 +19,11 @@ type WasmExports = {
   bunnltk_wasm_categorical_nb_free: (handle: number) => void;
   bunnltk_wasm_categorical_nb_clear: () => void;
   bunnltk_wasm_positive_categorical_nb_train: (positivePtr: number, positiveLen: number, positiveOffsetsPtr: number, positiveOffsetsLen: number, unlabeledPtr: number, unlabeledLen: number, unlabeledOffsetsPtr: number, unlabeledOffsetsLen: number, prior: number, smoothing: number) => number;
+  bunnltk_wasm_decision_tree_train: (pairsPtr: number, pairsLen: number, offsetsPtr: number, offsetsLen: number, labelsPtr: number, labelsLen: number, labelCount: number, entropy: number, depth: number, support: number, binary: number) => number;
+  bunnltk_wasm_decision_tree_classify: (handle: number, pairsPtr: number, pairsLen: number) => number;
+  bunnltk_wasm_decision_tree_labels: (handle: number, outPtr: number, outLen: number) => number;
+  bunnltk_wasm_decision_tree_free: (handle: number) => void;
+  bunnltk_wasm_decision_tree_clear: () => void;
   bunnltk_wasm_edit_distance: (leftPtr: number, leftLen: number, rightPtr: number, rightLen: number, cost: number, transpositions: number) => number;
   bunnltk_wasm_edit_alignment: (leftPtr: number, leftLen: number, rightPtr: number, rightLen: number, cost: number, outPtr: number, outLen: number) => number;
   bunnltk_wasm_count_tokens_ascii: (inputLen: number) => bigint;
@@ -269,6 +274,7 @@ export class WasmNltk {
     }
     this.blocks.clear();
     this.exports.bunnltk_wasm_categorical_nb_clear();
+    this.exports.bunnltk_wasm_decision_tree_clear?.();
     this.exports.bunnltk_wasm_metrics_stream_clear();
     this.exports.bunnltk_wasm_release_input();
     this.inputPtr = 0;
@@ -341,6 +347,48 @@ export class WasmNltk {
     const block = this.ensureBlock(key, values.byteLength);
     new Uint32Array(this.exports.memory.buffer, block.ptr, values.length).set(values);
     return block;
+  }
+
+  decisionTreeTrain(input: {
+    pairs: Uint32Array; offsets: Uint32Array; labels: Uint32Array; labelCount: number;
+    entropyCutoff: number; depthCutoff: number; supportCutoff: number; binary: boolean;
+  }): number {
+    this.assertActive();
+    if (typeof this.exports.bunnltk_wasm_decision_tree_train !== "function") throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
+    assertU32(input.labelCount, "labelCount");
+    assertU32(input.depthCutoff, "depthCutoff", 1, 100);
+    assertU32(input.supportCutoff, "supportCutoff", 0);
+    if (!Number.isFinite(input.entropyCutoff) || input.entropyCutoff < 0) throw new RangeError("entropyCutoff must be finite and nonnegative");
+    if (input.pairs.length % 2 !== 0) throw new RangeError("pairs must contain feature/value pairs");
+    assertOffsets(input.offsets, input.pairs.length / 2, "offsets");
+    if (input.labels.length === 0 || input.offsets.length !== input.labels.length + 1) throw new RangeError("labels must match nonempty training rows");
+    const pairs = this.copyU32("tree_pairs", input.pairs), offsets = this.copyU32("tree_offsets", input.offsets), labels = this.copyU32("tree_labels", input.labels);
+    const handle = this.exports.bunnltk_wasm_decision_tree_train(pairs.ptr, input.pairs.length, offsets.ptr, input.offsets.length,
+      labels.ptr, input.labels.length, input.labelCount, input.entropyCutoff, input.depthCutoff, input.supportCutoff, input.binary ? 1 : 0);
+    this.assertNoError("decisionTreeTrain");
+    return handle;
+  }
+
+  decisionTreeClassify(handle: number, pairs: Uint32Array): number {
+    this.assertActive(); this.assertOrder(handle);
+    const input = this.copyU32("tree_pairs", pairs);
+    const label = this.exports.bunnltk_wasm_decision_tree_classify(handle, input.ptr, pairs.length);
+    this.assertNoError("decisionTreeClassify");
+    return label;
+  }
+
+  decisionTreeLabels(handle: number, labelCount: number): Uint32Array {
+    this.assertActive(); this.assertOrder(handle); this.assertOrder(labelCount);
+    const out = this.ensureBlock("tree_labels_output", labelCount * 4);
+    const count = this.exports.bunnltk_wasm_decision_tree_labels(handle, out.ptr, labelCount);
+    this.assertNoError("decisionTreeLabels");
+    return Uint32Array.from(new Uint32Array(this.exports.memory.buffer, out.ptr, count));
+  }
+
+  decisionTreeFree(handle: number): void {
+    if (this.disposed) return;
+    this.assertOrder(handle);
+    this.exports.bunnltk_wasm_decision_tree_free(handle);
   }
 
   private distanceInputs(left: string, right: string, cost: number): { left: Uint32Array; right: Uint32Array } {

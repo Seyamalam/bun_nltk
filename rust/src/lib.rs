@@ -1,5 +1,6 @@
 pub mod ascii;
 pub mod categorical_nb;
+pub mod categorical_tree;
 pub mod chunk;
 pub mod cluster;
 pub mod collocations;
@@ -34,6 +35,7 @@ pub mod wordnet;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod ffi;
 
+pub mod wasm_decision_tree;
 pub mod wasm_exports;
 pub mod wasm_metrics_stream;
 
