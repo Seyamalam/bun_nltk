@@ -60,6 +60,8 @@ test/fixtures/nltk_imported/
 artifacts/*
 !artifacts/scale-matrix.json
 !artifacts/stream-scale-matrix.json
+!artifacts/large-stream-scale-matrix.json
+!artifacts/vocabulary-scale-matrix.json
 models/wordnet_full.bin
 paper/bench/data/prose_10000kb.txt
 

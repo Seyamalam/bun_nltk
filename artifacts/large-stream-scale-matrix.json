@@ -1,0 +1,407 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-20T21:11:28.977Z",
+  "provenance": {
+    "startedAt": "2026-10-20T21:01:50.960Z",
+    "commit": "ba542eac3eb4c456133255d926414006ac01d197",
+    "worktreeStatus": "",
+    "machine": {
+      "platform": "linux",
+      "release": "7.0.0-38-generic",
+      "arch": "x64",
+      "cpu": "12th Gen Intel(R) Core(TM) i3-1215U",
+      "cpuCount": 8,
+      "totalMemoryBytes": 24335413248
+    },
+    "sha256": {
+      "bench/scale_matrix.ts": "1f15dc083661dd3f7f0852fbd2d9934cfbce1c638987ae87d52e5eb937150a35",
+      "bench/python_scale_baseline.py": "f0b431e54995b2205c23d6f44145edb962d3efc785998948d71fab1f67e224af",
+      "native/bun_nltk.wasm": "bd81f32c0580d7250e43a198f27cd07322e9f936708ccf3fe5d2154082bafea4",
+      "native/prebuilt/linux-x64/bun_nltk.so": "332df5cba3b5ae9d69b828167dbfbd2648f5380ff17d4873a0973dcf72977eb9"
+    }
+  },
+  "rounds": 3,
+  "rows": [
+    {
+      "sizeBytes": 268435456,
+      "sha256": "bedce56ac8eba8092d4fcf586734108f6b8f4074eaff2defbfb39915fbe74118",
+      "parity": true,
+      "summary": {
+        "python": {
+          "medianSeconds": 28.58872303800308,
+          "medianWallSeconds": 28.769297586,
+          "peakRssBytes": 84287488,
+          "speedup": 1,
+          "memoryRatio": 1
+        },
+        "native": {
+          "medianSeconds": 3.6275385379999996,
+          "medianWallSeconds": 3.6475521930000103,
+          "peakRssBytes": 75558912,
+          "speedup": 7.881025311936489,
+          "memoryRatio": 0.8964428029934882
+        },
+        "bunWasmStream": {
+          "medianSeconds": 2.726940791,
+          "medianWallSeconds": 2.74332145399999,
+          "peakRssBytes": 47923200,
+          "speedup": 10.483807764494687,
+          "memoryRatio": 0.5685683739916415
+        },
+        "nodeWasmStream": {
+          "medianSeconds": 2.8769603590000004,
+          "medianWallSeconds": 2.9493511509999952,
+          "peakRssBytes": 86409216,
+          "speedup": 9.937127895616959,
+          "memoryRatio": 1.0251725143356982
+        }
+      },
+      "samples": {
+        "python": [
+          {
+            "seconds": 25.569343504001154,
+            "tokens": 37598209,
+            "ngrams": 37598208,
+            "uniqueTokens": 130,
+            "uniqueNgrams": 16385,
+            "countsSha256": "1fa25bb6316d3842c9faffe76927455cf09eeb9a7483f083ddf2e59b31141da0",
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "peakRssBytes": 84111360,
+            "wallSeconds": 25.739839098999997
+          },
+          {
+            "seconds": 28.58872303800308,
+            "tokens": 37598209,
+            "ngrams": 37598208,
+            "uniqueTokens": 130,
+            "uniqueNgrams": 16385,
+            "countsSha256": "1fa25bb6316d3842c9faffe76927455cf09eeb9a7483f083ddf2e59b31141da0",
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "peakRssBytes": 84045824,
+            "wallSeconds": 28.769297586
+          },
+          {
+            "seconds": 28.610355776007054,
+            "tokens": 37598209,
+            "ngrams": 37598208,
+            "uniqueTokens": 130,
+            "uniqueNgrams": 16385,
+            "countsSha256": "1fa25bb6316d3842c9faffe76927455cf09eeb9a7483f083ddf2e59b31141da0",
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "peakRssBytes": 84287488,
+            "wallSeconds": 28.803952149999997
+          }
+        ],
+        "native": [
+          {
+            "seconds": 3.130933384,
+            "tokens": 37598209,
+            "ngrams": 37598208,
+            "uniqueTokens": 130,
+            "uniqueNgrams": 16385,
+            "countsSha256": "1fa25bb6316d3842c9faffe76927455cf09eeb9a7483f083ddf2e59b31141da0",
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "peakRssBytes": 75558912,
+            "wallSeconds": 3.1500350780000006
+          },
+          {
+            "seconds": 3.781316809,
+            "tokens": 37598209,
+            "ngrams": 37598208,
+            "uniqueTokens": 130,
+            "uniqueNgrams": 16385,
+            "countsSha256": "1fa25bb6316d3842c9faffe76927455cf09eeb9a7483f083ddf2e59b31141da0",
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "peakRssBytes": 68440064,
+            "wallSeconds": 3.8021258549999986
+          },
+          {
+            "seconds": 3.6275385379999996,
+            "tokens": 37598209,
+            "ngrams": 37598208,
+            "uniqueTokens": 130,
+            "uniqueNgrams": 16385,
+            "countsSha256": "1fa25bb6316d3842c9faffe76927455cf09eeb9a7483f083ddf2e59b31141da0",
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "peakRssBytes": 67723264,
+            "wallSeconds": 3.6475521930000103
+          }
+        ],
+        "bunWasmStream": [
+          {
+            "tokens": 37598209,
+            "uniqueTokens": 130,
+            "ngrams": 37598208,
+            "uniqueNgrams": 16385,
+            "seconds": 2.627151294,
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "linearMemoryBytes": 3145728,
+            "peakRssBytes": 47919104,
+            "wallSeconds": 2.6447542499999983
+          },
+          {
+            "tokens": 37598209,
+            "uniqueTokens": 130,
+            "ngrams": 37598208,
+            "uniqueNgrams": 16385,
+            "seconds": 3.0721197380000005,
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "linearMemoryBytes": 3145728,
+            "peakRssBytes": 47554560,
+            "wallSeconds": 3.0923789950000065
+          },
+          {
+            "tokens": 37598209,
+            "uniqueTokens": 130,
+            "ngrams": 37598208,
+            "uniqueNgrams": 16385,
+            "seconds": 2.726940791,
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "linearMemoryBytes": 3145728,
+            "peakRssBytes": 47923200,
+            "wallSeconds": 2.74332145399999
+          }
+        ],
+        "nodeWasmStream": [
+          {
+            "tokens": 37598209,
+            "uniqueTokens": 130,
+            "ngrams": 37598208,
+            "uniqueNgrams": 16385,
+            "seconds": 2.585932769,
+            "runtime": "v24.21.0",
+            "linearMemoryBytes": 3145728,
+            "peakRssBytes": 86061056,
+            "wallSeconds": 2.6569218489999984
+          },
+          {
+            "tokens": 37598209,
+            "uniqueTokens": 130,
+            "ngrams": 37598208,
+            "uniqueNgrams": 16385,
+            "seconds": 2.9365305900000003,
+            "runtime": "v24.21.0",
+            "linearMemoryBytes": 3145728,
+            "peakRssBytes": 86409216,
+            "wallSeconds": 3.0099050290000013
+          },
+          {
+            "tokens": 37598209,
+            "uniqueTokens": 130,
+            "ngrams": 37598208,
+            "uniqueNgrams": 16385,
+            "seconds": 2.8769603590000004,
+            "runtime": "v24.21.0",
+            "linearMemoryBytes": 3145728,
+            "peakRssBytes": 85880832,
+            "wallSeconds": 2.9493511509999952
+          }
+        ]
+      },
+      "wasmBatchSkipped": "batch cases omitted above 64 MiB; streaming tested instead"
+    },
+    {
+      "sizeBytes": 1073741824,
+      "sha256": "6bedc5423d7b5c2391c511a227b5497c8e75351b523d544dab7c0cd264d2f73e",
+      "parity": true,
+      "summary": {
+        "python": {
+          "medianSeconds": 119.00251349600148,
+          "medianWallSeconds": 119.19751158500003,
+          "peakRssBytes": 84955136,
+          "speedup": 1,
+          "memoryRatio": 1
+        },
+        "native": {
+          "medianSeconds": 13.769076719,
+          "medianWallSeconds": 13.790315905000083,
+          "peakRssBytes": 70516736,
+          "speedup": 8.642737339954644,
+          "memoryRatio": 0.830046767272552
+        },
+        "bunWasmStream": {
+          "medianSeconds": 11.730855512,
+          "medianWallSeconds": 11.749051805000054,
+          "peakRssBytes": 47939584,
+          "speedup": 10.144401947007928,
+          "memoryRatio": 0.5642929463381707
+        },
+        "nodeWasmStream": {
+          "medianSeconds": 11.633414338,
+          "medianWallSeconds": 11.71135141500004,
+          "peakRssBytes": 85790720,
+          "speedup": 10.229371192194657,
+          "memoryRatio": 1.0098355913408226
+        }
+      },
+      "samples": {
+        "python": [
+          {
+            "seconds": 113.65242603799561,
+            "tokens": 150392833,
+            "ngrams": 150392832,
+            "uniqueTokens": 130,
+            "uniqueNgrams": 16385,
+            "countsSha256": "eaed843041e82bdbc0950854d2999952ad0b72000a631b9859d6009ef1980b94",
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "peakRssBytes": 84955136,
+            "wallSeconds": 113.82983754000001
+          },
+          {
+            "seconds": 119.00251349600148,
+            "tokens": 150392833,
+            "ngrams": 150392832,
+            "uniqueTokens": 130,
+            "uniqueNgrams": 16385,
+            "countsSha256": "eaed843041e82bdbc0950854d2999952ad0b72000a631b9859d6009ef1980b94",
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "peakRssBytes": 84123648,
+            "wallSeconds": 119.19751158500003
+          },
+          {
+            "seconds": 121.07658047100995,
+            "tokens": 150392833,
+            "ngrams": 150392832,
+            "uniqueTokens": 130,
+            "uniqueNgrams": 16385,
+            "countsSha256": "eaed843041e82bdbc0950854d2999952ad0b72000a631b9859d6009ef1980b94",
+            "runtime": "3.14.4",
+            "nltk": "3.10.3",
+            "peakRssBytes": 84193280,
+            "wallSeconds": 121.26792754400003
+          }
+        ],
+        "native": [
+          {
+            "seconds": 13.844133022999998,
+            "tokens": 150392833,
+            "ngrams": 150392832,
+            "uniqueTokens": 130,
+            "uniqueNgrams": 16385,
+            "countsSha256": "eaed843041e82bdbc0950854d2999952ad0b72000a631b9859d6009ef1980b94",
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "peakRssBytes": 69181440,
+            "wallSeconds": 13.863977752000006
+          },
+          {
+            "seconds": 13.68091508,
+            "tokens": 150392833,
+            "ngrams": 150392832,
+            "uniqueTokens": 130,
+            "uniqueNgrams": 16385,
+            "countsSha256": "eaed843041e82bdbc0950854d2999952ad0b72000a631b9859d6009ef1980b94",
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "peakRssBytes": 69267456,
+            "wallSeconds": 13.700592968000041
+          },
+          {
+            "seconds": 13.769076719,
+            "tokens": 150392833,
+            "ngrams": 150392832,
+            "uniqueTokens": 130,
+            "uniqueNgrams": 16385,
+            "countsSha256": "eaed843041e82bdbc0950854d2999952ad0b72000a631b9859d6009ef1980b94",
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "peakRssBytes": 70516736,
+            "wallSeconds": 13.790315905000083
+          }
+        ],
+        "bunWasmStream": [
+          {
+            "tokens": 150392833,
+            "uniqueTokens": 130,
+            "ngrams": 150392832,
+            "uniqueNgrams": 16385,
+            "seconds": 11.457890715,
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "linearMemoryBytes": 3145728,
+            "peakRssBytes": 47779840,
+            "wallSeconds": 11.475066462999996
+          },
+          {
+            "tokens": 150392833,
+            "uniqueTokens": 130,
+            "ngrams": 150392832,
+            "uniqueNgrams": 16385,
+            "seconds": 11.909977363,
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "linearMemoryBytes": 3145728,
+            "peakRssBytes": 47939584,
+            "wallSeconds": 11.928351322999982
+          },
+          {
+            "tokens": 150392833,
+            "uniqueTokens": 130,
+            "ngrams": 150392832,
+            "uniqueNgrams": 16385,
+            "seconds": 11.730855512,
+            "runtime": "v26.3.0",
+            "bunVersion": "1.4.2",
+            "linearMemoryBytes": 3145728,
+            "peakRssBytes": 47906816,
+            "wallSeconds": 11.749051805000054
+          }
+        ],
+        "nodeWasmStream": [
+          {
+            "tokens": 150392833,
+            "uniqueTokens": 130,
+            "ngrams": 150392832,
+            "uniqueNgrams": 16385,
+            "seconds": 11.560889621,
+            "runtime": "v24.21.0",
+            "linearMemoryBytes": 3145728,
+            "peakRssBytes": 85520384,
+            "wallSeconds": 11.633882371000015
+          },
+          {
+            "tokens": 150392833,
+            "uniqueTokens": 130,
+            "ngrams": 150392832,
+            "uniqueNgrams": 16385,
+            "seconds": 11.733396290999998,
+            "runtime": "v24.21.0",
+            "linearMemoryBytes": 3145728,
+            "peakRssBytes": 85647360,
+            "wallSeconds": 11.815396917999955
+          },
+          {
+            "tokens": 150392833,
+            "uniqueTokens": 130,
+            "ngrams": 150392832,
+            "uniqueNgrams": 16385,
+            "seconds": 11.633414338,
+            "runtime": "v24.21.0",
+            "linearMemoryBytes": 3145728,
+            "peakRssBytes": 85790720,
+            "wallSeconds": 11.71135141500004
+          }
+        ]
+      },
+      "wasmBatchSkipped": "batch cases omitted above 64 MiB; streaming tested instead"
+    }
+  ],
+  "scope": "ASCII token and bigram distributions; native additionally computes heuristic conditional tags. Python uses streaming NLTK FreqDist/bigrams. WASM reports matching aggregate counts only.",
+  "limitations": [
+    "Repeated low-entropy 1 MiB block; vocabulary scaling and all NLP features require separate workloads.",
+    "Peak RSS includes runtime imports and cold-process overhead; wall time includes initialization.",
+    "Native streaming uses 64-bit hashes, not collision-free token keys.",
+    "WASM batches above 64 MiB are not attempted. WASM streaming counts exact keys, comparing aggregate counts only; browsers have separate smoke tests."
+  ]
+}

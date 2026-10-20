@@ -68,11 +68,40 @@ function measure(command: string[], name: string): Sample {
   } finally { unlinkSync(rssPath); }
 }
 
-function dataset(path: string, size: number): string {
+function dataset(path: string, size: number, vocabulary = 128, growingVocabulary = false): string {
   // Fixed 1 MiB pseudorandom ASCII block, repeated for larger sizes. Low-entropy
   // vocabulary intentionally isolates input-size scaling, not vocabulary growth.
   let seed = 1337;
-  const words = Array.from({ length: 128 }, (_, i) => `word${i}`);
+  const words = Array.from({ length: vocabulary }, (_, i) => `word${i}`);
+  const fd = openSync(path, "wx");
+  const hash = createHash("sha256");
+  const write = (bytes: Buffer) => {
+    let written = 0;
+    while (written < bytes.length) {
+      const count = writeSync(fd, bytes, written, bytes.length - written);
+      if (count === 0) throw new Error("dataset write made no progress");
+      written += count;
+    }
+    hash.update(bytes);
+  };
+  if (growingVocabulary) {
+    // Fresh seeded words instead of repetitions of a small block. Map all 32
+    // seed bits so vocabularies larger than 65536 remain reachable.
+    let offset = 0, pending = "";
+    try {
+      while (offset < size) {
+        while (pending.length < Math.min(1024 * 1024, size - offset)) {
+          seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+          pending += `${words[Math.floor(seed / 2 ** 32 * words.length)]} `;
+        }
+        const length = Math.min(pending.length, size - offset);
+        write(Buffer.from(pending.slice(0, length)));
+        pending = pending.slice(length);
+        offset += length;
+      }
+    } finally { closeSync(fd); }
+    return hash.digest("hex");
+  }
   const fragments: string[] = [];
   let length = 0;
   while (length < 1024 * 1024) {
@@ -82,18 +111,10 @@ function dataset(path: string, size: number): string {
     length += text.length;
   }
   const block = Buffer.from(fragments.join("").slice(0, 1024 * 1024));
-  const fd = openSync(path, "wx");
-  const hash = createHash("sha256");
   try {
     for (let offset = 0; offset < size; offset += block.length) {
       const bytes = block.subarray(0, Math.min(block.length, size - offset));
-      let written = 0;
-      while (written < bytes.length) {
-        const count = writeSync(fd, bytes, written, bytes.length - written);
-        if (count === 0) throw new Error("dataset write made no progress");
-        written += count;
-      }
-      hash.update(bytes);
+      write(bytes);
     }
   } finally { closeSync(fd); }
   return hash.digest("hex");
@@ -104,7 +125,9 @@ function median(values: number[]): number { const sorted = [...values].sort((a, 
 async function main(): Promise<void> {
   const sizes = (process.env.BUN_NLTK_BENCH_SIZES ?? "1024,1048576,16777216,67108864,268435456,1073741824").split(",").map(Number);
   const rounds = Number(process.env.BUN_NLTK_BENCH_ROUNDS ?? 3);
+  const vocabularies = process.env.BUN_NLTK_BENCH_VOCABULARIES?.split(",").map(Number);
   if (sizes.some((s) => !Number.isSafeInteger(s) || s < 1 || s > 2 ** 31) || !Number.isSafeInteger(rounds) || rounds < 3 || rounds % 2 === 0) throw new RangeError("positive sizes up to 2 GiB and odd rounds >=3 required");
+  if (vocabularies && (vocabularies.length !== sizes.length || vocabularies.some((v) => !Number.isSafeInteger(v) || v < 1 || v > 1_000_000))) throw new RangeError("one vocabulary size in [1, 1000000] per input size required");
   mkdirSync(temporary, { recursive: true });
   const startedAt = new Date().toISOString();
   const git = (args: string[]) => {
@@ -119,9 +142,10 @@ async function main(): Promise<void> {
     sha256: Object.fromEntries(["bench/scale_matrix.ts", "bench/python_scale_baseline.py", "native/bun_nltk.wasm", "native/prebuilt/linux-x64/bun_nltk.so"].map((path) => [path, digest(path)])),
   };
   const rows: unknown[] = [];
-  for (const sizeBytes of sizes) {
+  for (const [sizeIndex, sizeBytes] of sizes.entries()) {
     const path = resolve(temporary, `dataset-${sizeBytes}-${Date.now()}.txt`);
-    const sha256 = dataset(path, sizeBytes);
+    const vocabularySize = vocabularies?.[sizeIndex] ?? 128;
+    const sha256 = dataset(path, sizeBytes, vocabularySize, Boolean(vocabularies));
     try {
       const samples: Record<string, Sample[]> = { python: [], native: [], bunWasmStream: [], nodeWasmStream: [] };
       if (sizeBytes <= 64 * 1024 * 1024) { samples.bunWasm = []; samples.nodeWasm = []; }
@@ -146,7 +170,7 @@ async function main(): Promise<void> {
         speedup: median(samples.python!.map((s) => s.seconds)) / median(group.map((s) => s.seconds)),
         memoryRatio: Math.max(...group.map((s) => s.peakRssBytes)) / Math.max(...samples.python!.map((s) => s.peakRssBytes)),
       }]));
-      rows.push({ sizeBytes, sha256, parity: true, summary, samples, wasmBatchSkipped: sizeBytes > 64 * 1024 * 1024 ? "batch cases omitted above 64 MiB; streaming tested instead" : null });
+      rows.push({ sizeBytes, vocabularySize, datasetKind: vocabularies ? "fresh-seeded-word-sequence" : "repeated-1MiB-block", sha256, parity: true, summary, samples, wasmBatchSkipped: sizeBytes > 64 * 1024 * 1024 ? "batch cases omitted above 64 MiB; streaming tested instead" : null });
       console.error(JSON.stringify({ sizeBytes, parity: true, summary }));
     } finally { unlinkSync(path); }
   }
@@ -154,7 +178,7 @@ async function main(): Promise<void> {
   mkdirSync(dirname(output), { recursive: true });
   writeFileSync(output, JSON.stringify({ schemaVersion: 2, generatedAt: new Date().toISOString(), provenance, rounds, rows,
     scope: "ASCII token and bigram distributions; native additionally computes heuristic conditional tags. Python uses streaming NLTK FreqDist/bigrams. WASM reports matching aggregate counts only.",
-    limitations: ["Repeated low-entropy 1 MiB block; vocabulary scaling and all NLP features require separate workloads.", "Peak RSS includes runtime imports and cold-process overhead; wall time includes initialization.", "Native streaming uses 64-bit hashes, not collision-free token keys.", "WASM batches above 64 MiB are not attempted. WASM streaming counts exact keys, comparing aggregate counts only; browsers have separate smoke tests."],
+    limitations: [vocabularies ? "Fresh seeded ASCII words with configured vocabulary; does not measure all NLP features or adversarial inputs." : "Repeated low-entropy 1 MiB block; vocabulary scaling and all NLP features require separate workloads.", "Peak RSS includes runtime imports and cold-process overhead; wall time includes initialization.", "Native streaming uses 64-bit hashes, not collision-free token keys.", "WASM batches above 64 MiB are not attempted. WASM streaming counts exact keys, comparing aggregate counts only; browsers have separate smoke tests."],
   }, null, 2) + "\n");
   console.log(JSON.stringify({ output, cases: rows.length, parity: true }));
 }

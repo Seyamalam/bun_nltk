@@ -34,6 +34,20 @@ Override sizes/rounds for a shorter or larger run:
 BUN_NLTK_BENCH_SIZES=1024,1048576 BUN_NLTK_BENCH_ROUNDS=3 bun run bench:scale
 ```
 
+To measure vocabulary growth instead of repeating a block, provide one vocabulary
+size per input size. This uses a fresh seeded word sequence for the whole file:
+
+```bash
+BUN_NLTK_BENCH_SIZES=1048576,4194304,8388608 \
+BUN_NLTK_BENCH_VOCABULARIES=128,2048,65536 \
+BUN_NLTK_BENCH_OUTPUT=artifacts/vocabulary-scale-matrix.json bun run bench:scale
+```
+
+Default streaming capacity limits still apply. Workloads exceeding one million
+distinct bigrams fail rather than silently truncating. Vocabulary sizes describe
+the available word pool; actual observed counts are retained with every sample.
+An exact byte-size cutoff may add one truncated final word outside that pool.
+
 The harness creates and removes only its own dataset files under
 `/tmp/opencode/bun-nltk-scale-matrix`. It requires GNU `/usr/bin/time`, Node 24+,
 Bun, and Python NLTK 3.10.3. Other NLP families have dedicated `bench:compare:*`
@@ -50,6 +64,12 @@ That recorded run predates WASM streaming, so its missing large WASM cases must
 not be interpreted as streaming measurements. New runs measure both streaming
 and batch paths.
 
+Raw evidence is versioned in `artifacts/scale-matrix.json`. This run began before
+the harness's output/path isolation edits and Rust style cleanup. It exercised the
+exact-key aggregate fix, not the earlier colliding-hash implementation. It did not
+record machine metadata or source/artifact hashes; the updated harness records
+those for future comparisons across machines or revisions.
+
 ## Exact WASM streaming follow-up
 
 The three-round 1/64 MiB follow-up is retained in
@@ -60,8 +80,26 @@ At 64 MiB, Bun streaming used 42.29 MiB peak RSS versus batch's 231.05 MiB
 roughly matching NLTK rather than guaranteeing lower RSS. Both streaming paths
 matched aggregate counts. This is still a bounded-vocabulary workload.
 
-Raw evidence is versioned in `artifacts/scale-matrix.json`. This run began before
-the harness's output/path isolation edits and Rust style cleanup. It exercised the
-exact-key aggregate fix, not the earlier colliding-hash implementation. It did not
-record machine metadata or source/artifact hashes; the updated harness records
-those for future comparisons across machines or revisions.
+The 256 MiB/1 GiB three-round extension is retained separately in
+`artifacts/large-stream-scale-matrix.json`. At 1 GiB, Bun WASM streaming took
+11.731 s versus NLTK's 119.003 s (10.14×), with 45.72 MiB peak RSS versus
+81.02 MiB (43.6% lower). Node WASM took 11.633 s (10.23×) and used 81.82 MiB,
+about 1% more RSS than Python. Native/Python full-count digests and all WASM
+aggregate comparisons passed at both sizes. The report records the dirty Rust
+worktree while exercising the pre-cleanup binary hashes; it is not a benchmark
+of the later rebuilt artifacts.
+
+## Vocabulary-growth follow-up
+
+`artifacts/vocabulary-scale-matrix.json` retains three-round fresh-sequence cases
+at 1/4/8 MiB, with word pools of 128/2048/65536. The 8 MiB case observed 65,537
+tokens (including a truncated final word) and 853,323 distinct bigrams. Every
+native/Python count digest and WASM aggregate comparison passed.
+
+At 8 MiB, Bun streaming took 0.220 s and 71.29 MiB peak RSS versus NLTK's
+3.183 s and 486.56 MiB. WASM linear memory grew to 33.06 MiB versus 3 MiB in
+the small-vocabulary case. These numbers are not equivalent-work speedups: WASM
+stores distinct keys and reports aggregates, while native/Python also build full
+frequency counts and sorted digests. Native used 517.36 MiB, slightly **more**
+than Python, despite running about twice as fast. No universal lower-memory
+claim is warranted.
