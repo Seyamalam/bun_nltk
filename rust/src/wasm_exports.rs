@@ -62,6 +62,44 @@ pub extern "C" fn bunnltk_wasm_categorical_nb_clear() {
     CATEGORICAL_MODELS.with(|models| { models.borrow_mut().1.clear(); });
 }
 
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_edit_distance(
+    left_ptr: u32, left_len: u32, right_ptr: u32, right_len: u32,
+    cost: f64, transpositions: u32,
+) -> f64 {
+    error_state::reset_error();
+    let result = unsafe { crate::distance::edit_distance(
+        offset_slice(left_ptr, left_len as usize), offset_slice(right_ptr, right_len as usize), cost, transpositions != 0,
+    ) };
+    match result {
+        Ok(value) => value,
+        Err(error) => { error_state::set_error(error.code()); 0.0 }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_edit_alignment(
+    left_ptr: u32, left_len: u32, right_ptr: u32, right_len: u32,
+    cost: f64, out_ptr: u32, out_len: u32,
+) -> u32 {
+    error_state::reset_error();
+    let result = unsafe { crate::distance::edit_alignment(
+        offset_slice(left_ptr, left_len as usize), offset_slice(right_ptr, right_len as usize), cost,
+    ) };
+    match result {
+        Ok(alignment) => {
+            let out = unsafe { offset_slice_mut::<u32>(out_ptr, out_len as usize) };
+            if out.len() < alignment.len() * 2 {
+                error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
+                return 0;
+            }
+            for (pair, values) in out.chunks_exact_mut(2).zip(&alignment) { pair.copy_from_slice(values); }
+            alignment.len() as u32
+        },
+        Err(error) => { error_state::set_error(error.code()); 0 }
+    }
+}
+
 use crate::ascii;
 use crate::chunk;
 use crate::cyk;

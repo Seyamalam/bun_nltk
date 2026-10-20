@@ -1,6 +1,5 @@
 struct NextToken {
     start: usize,
-    len: usize,
     is_upper_start: bool,
     is_lower_start: bool,
 }
@@ -141,7 +140,6 @@ fn find_next_token(input: &[u8], idx: usize) -> Option<NextToken> {
     let first = input[start];
     Some(NextToken {
         start,
-        len: i - start,
         is_upper_start: first >= b'A' && first <= b'Z',
         is_lower_start: first >= b'a' && first <= b'z',
     })

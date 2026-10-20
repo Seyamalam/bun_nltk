@@ -49,7 +49,11 @@ complete before all acceptance criteria are verified.
 - Node 24, Bun, Chromium, Firefox, and Playwright WebKit run the same WASM model.
   WebKit on Ubuntu 26.04 was verified with locally extracted distribution libraries
   and `BUN_NLTK_WEBKIT_EXECUTABLE`; CI installs Playwright's host dependencies.
-- The current fidelity gate has 40 passing groups and three unsupported integration
+- Levenshtein distance and weighted alignment run in Rust over Unicode code points,
+  including unrestricted Damerau transpositions, 762 exact differential cases,
+  and NLTK's 2,000-code-point input bound. Ordinary distance uses two rows instead
+  of a quadratic matrix. Nonfinite substitution costs are explicitly rejected.
+- The current fidelity gate has 41 passing groups and three unsupported integration
   groups. This is fixture coverage, not proof of full NLTK equivalence.
 
 Remaining: other feature-dictionary classifiers still use the lossy text adapter;

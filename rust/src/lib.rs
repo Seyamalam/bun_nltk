@@ -4,6 +4,7 @@ pub mod chunk;
 pub mod cluster;
 pub mod collocations;
 pub mod cyk;
+pub mod distance;
 pub mod error_state;
 pub mod freqdist;
 pub mod hmm;

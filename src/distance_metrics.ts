@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { syncWasm } from "./sync_wasm.ts";
 
 /**
  * Pure-algorithm distance metrics ported from NLTK for parity with
@@ -191,45 +192,6 @@ export function customDistance(file: string): (x: string, y: string) => number {
   };
 }
 
-function editDistInit(len1: number, len2: number): number[][] {
-  const lev: number[][] = [];
-  for (let i = 0; i < len1; i += 1) lev.push(new Array<number>(len2).fill(0));
-  for (let i = 0; i < len1; i += 1) lev[i]![0] = i;
-  for (let j = 0; j < len2; j += 1) lev[0]![j] = j;
-  return lev;
-}
-
-function editDistBacktrace(lev: number[][]): Array<[number, number]> {
-  let i = lev.length - 1;
-  let j = (lev[0]?.length ?? 0) - 1;
-  const alignment: Array<[number, number]> = [[i, j]];
-
-  while (i !== 0 || j !== 0) {
-    // Operation precedence: substitute, skip s1, skip s2 (first minimum wins,
-    // mirroring Python's stable `min` over the ordered directions list).
-    const directions: Array<[number, number]> = [
-      [i - 1, j - 1],
-      [i - 1, j],
-      [i, j - 1],
-    ];
-    let bestCost = Number.POSITIVE_INFINITY;
-    const first = directions[0];
-    if (first === undefined) throw new RangeError("no directions to backtrace");
-    let best: [number, number] = first;
-    for (const [di, dj] of directions) {
-      const cost = di >= 0 && dj >= 0 ? (lev[di]?.[dj] ?? Number.POSITIVE_INFINITY) : Number.POSITIVE_INFINITY;
-      if (cost < bestCost) {
-        bestCost = cost;
-        best = [di, dj];
-      }
-    }
-    [i, j] = best;
-    alignment.push([i, j]);
-  }
-
-  return alignment.reverse();
-}
-
 /**
  * Port of `nltk.metrics.distance.edit_distance_align`.
  *
@@ -243,22 +205,7 @@ export function editDistanceAlign(
   s2: string,
   substitutionCost = 1,
 ): Array<[number, number]> {
-  const len1 = s1.length;
-  const len2 = s2.length;
-  const lev = editDistInit(len1 + 1, len2 + 1);
-
-  for (let i = 1; i <= len1; i += 1) {
-    for (let j = 1; j <= len2; j += 1) {
-      const c1 = s1[i - 1];
-      const c2 = s2[j - 1];
-      const a = lev[i - 1]![j]! + 1;
-      const b = lev[i]![j - 1]! + 1;
-      const c = lev[i - 1]![j - 1]! + (c1 !== c2 ? substitutionCost : 0);
-      lev[i]![j] = Math.min(a, b, c);
-    }
-  }
-
-  return editDistBacktrace(lev);
+  return syncWasm().editDistanceAlign(s1, s2, substitutionCost);
 }
 
 /**

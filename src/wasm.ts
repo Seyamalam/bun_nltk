@@ -11,6 +11,8 @@ type WasmExports = {
   bunnltk_wasm_categorical_nb_predict: (handle: number, pairsPtr: number, pairsLen: number, outPtr: number, outLen: number) => void;
   bunnltk_wasm_categorical_nb_free: (handle: number) => void;
   bunnltk_wasm_categorical_nb_clear: () => void;
+  bunnltk_wasm_edit_distance: (leftPtr: number, leftLen: number, rightPtr: number, rightLen: number, cost: number, transpositions: number) => number;
+  bunnltk_wasm_edit_alignment: (leftPtr: number, leftLen: number, rightPtr: number, rightLen: number, cost: number, outPtr: number, outLen: number) => number;
   bunnltk_wasm_count_tokens_ascii: (inputLen: number) => bigint;
   bunnltk_wasm_count_ngrams_ascii: (inputLen: number, n: number) => bigint;
   bunnltk_wasm_compute_ascii_metrics: (
@@ -208,7 +210,8 @@ export class WasmNltk {
     if (!(exports.memory instanceof WebAssembly.Memory) ||
         typeof exports.bunnltk_wasm_reserve_input !== "function" ||
         typeof exports.bunnltk_wasm_release_input !== "function" ||
-        typeof exports.bunnltk_wasm_categorical_nb_train !== "function") {
+        typeof exports.bunnltk_wasm_categorical_nb_train !== "function" ||
+        typeof exports.bunnltk_wasm_edit_distance !== "function") {
       throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
     }
     return new WasmNltk(exports as unknown as WasmExports, maxInputBytes);
@@ -297,6 +300,36 @@ export class WasmNltk {
     const block = this.ensureBlock(key, values.byteLength);
     new Uint32Array(this.exports.memory.buffer, block.ptr, values.length).set(values);
     return block;
+  }
+
+  private distanceInputs(left: string, right: string, cost: number): { left: Uint32Array; right: Uint32Array } {
+    this.assertActive();
+    if (typeof left !== "string" || typeof right !== "string") throw new TypeError("distance inputs must be strings");
+    if (!Number.isFinite(cost)) throw new RangeError("substitutionCost must be finite");
+    if (Math.max(left.length, right.length) > 4000) throw new RangeError("input length exceeds MAX_DISTANCE_INPUT_LEN (2000)");
+    const a = Array.from(left), b = Array.from(right);
+    if (Math.max(a.length, b.length) > 2000) throw new RangeError("input length exceeds MAX_DISTANCE_INPUT_LEN (2000)");
+    return { left: Uint32Array.from(a, (c) => c.codePointAt(0)!), right: Uint32Array.from(b, (c) => c.codePointAt(0)!) };
+  }
+
+  editDistance(left: string, right: string, options: { substitutionCost?: number; transpositions?: boolean } = {}): number {
+    const cost = options.substitutionCost ?? 1;
+    const points = this.distanceInputs(left, right, cost);
+    const a = this.copyU32("distance_left", points.left), b = this.copyU32("distance_right", points.right);
+    const result = this.exports.bunnltk_wasm_edit_distance(a.ptr, points.left.length, b.ptr, points.right.length, cost, options.transpositions ? 1 : 0);
+    this.assertNoError("editDistance");
+    return result;
+  }
+
+  editDistanceAlign(left: string, right: string, substitutionCost = 1): Array<[number, number]> {
+    const points = this.distanceInputs(left, right, substitutionCost);
+    const a = this.copyU32("distance_left", points.left), b = this.copyU32("distance_right", points.right);
+    const size = (points.left.length + points.right.length + 1) * 2;
+    const out = this.ensureBlock("distance_alignment", size * Uint32Array.BYTES_PER_ELEMENT);
+    const count = this.exports.bunnltk_wasm_edit_alignment(a.ptr, points.left.length, b.ptr, points.right.length, substitutionCost, out.ptr, size);
+    this.assertNoError("editDistanceAlign");
+    const data = new Uint32Array(this.exports.memory.buffer, out.ptr, count * 2);
+    return Array.from({ length: count }, (_, i) => [data[i * 2]!, data[i * 2 + 1]!] as [number, number]);
   }
 
   private assertNoError(context: string): void {

@@ -3,16 +3,11 @@ import { DecisionTreeTextClassifier } from "./decision_tree";
 import { DictionaryProbDist } from "./probability";
 import { MaxEntTextClassifier, type MaxEntOptions } from "./maxent";
 import { PositiveNaiveBayesTextClassifier } from "./positive_naive_bayes";
-import { readFileSync } from "node:fs";
-import { WasmNltk } from "./wasm";
+import { syncWasm } from "./sync_wasm.ts";
 import { RustNaiveBayesClassifier } from "./feature_nb";
 import type { FeatureSet, LabeledFeatureset } from "./feature_types";
 
 export type { FeatureValue, FeatureSet, LabeledFeatureset } from "./feature_types";
-let featureRuntime: WasmNltk | undefined;
-function getFeatureRuntime(): WasmNltk {
-  return featureRuntime ??= WasmNltk.initSync(readFileSync(new URL("../native/bun_nltk.wasm", import.meta.url)));
-}
 
 function normalizeToken(value: string): string {
   const cleaned = value.toLowerCase().replace(/[^a-z0-9']+/g, " ");
@@ -81,7 +76,7 @@ export class NaiveBayesClassifier extends FeatureClassifierBase {
   }
 
   static train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: { smoothing?: number }): NaiveBayesClassifier {
-    return new NaiveBayesClassifier(RustNaiveBayesClassifier.train(getFeatureRuntime(), labeledFeaturesets, options));
+    return new NaiveBayesClassifier(RustNaiveBayesClassifier.train(syncWasm(), labeledFeaturesets, options));
   }
 
   override classify(featureset: FeatureSet): string {

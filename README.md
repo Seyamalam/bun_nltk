@@ -289,6 +289,12 @@ values are rejected. The synchronous Bun `NaiveBayesClassifier.train` API uses
 the same Rust model; call `dispose()` when finished. See
 [`examples/feature-classifier.ts`](examples/feature-classifier.ts).
 
+`WasmNltk.editDistance` and `editDistanceAlign` share the Rust Unicode implementation
+with the synchronous Node/Bun metric APIs. Transpositions follow NLTK's unrestricted
+Damerau algorithm; alignment includes weighted transition costs. Like NLTK 3.10.3,
+inputs longer than 2,000 Unicode code points are rejected. Ordinary distance uses
+linear auxiliary memory; transpositions and alignment still use a quadratic matrix.
+
 ## Run tests
 
 ```bash

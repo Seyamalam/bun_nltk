@@ -65,6 +65,7 @@ const definitions: [string, string[], string[]][] = [
   ["condexp", ["bun", "run", "bench/parity_condexp.ts"], ["parity"]],
   ["positive_nb", ["bun", "run", "bench/parity_positive_nb.ts"], ["parity"]],
   ["distance", ["bun", "run", "bench/parity_distance.ts"], ["parity"]],
+  ["rust_distance", ["bun", "run", "bench/parity_rust_distance.ts"], ["parity"]],
   ["seq_taggers", ["bun", "run", "bench/parity_seq_taggers.ts"], ["parity"]],
   ["wsd", ["bun", "run", "bench/parity_wsd.ts"], ["parity"]],
   ["chrf_nist", ["bun", "run", "bench/parity_chrf_nist.ts"], ["parity"]],
