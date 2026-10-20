@@ -252,6 +252,17 @@ bun run build:wasm
 bun run test
 ```
 
+Type-check with the pinned Rust TypeScript 7 compiler and lint with Oxlint:
+
+```bash
+bun install --frozen-lockfile
+bun run typecheck  # npx --no-install tsrs
+bun run lint
+```
+
+See [the Rust-first migration plan](docs/RUST_MIGRATION.md) for acceptance criteria
+and the remaining cross-runtime work.
+
 ## Generate synthetic dataset
 
 ```bash

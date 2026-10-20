@@ -41,7 +41,7 @@ jobs:
           restore-keys: bun-${{ runner.os }}-
       - run: bun install --frozen-lockfile
       # Fast-fail on type errors before spending time on tests.
-      - run: bunx tsc -p tsconfig.json --noEmit
+      - run: bun run typecheck
 
   lint:
     runs-on: ubuntu-latest

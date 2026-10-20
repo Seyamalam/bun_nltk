@@ -77,8 +77,8 @@
     "example:document-api:test": "bun --cwd examples/js-library test",
     "example:wasm-browser": "bun --cwd examples/wasm-browser dev",
     "example:wasm-browser:build": "bun --cwd examples/wasm-browser build",
-    "typecheck": "bunx tsc -p tsconfig.json --noEmit",
-    "lint": "bunx @biomejs/biome check src test bench scripts index.ts",
+    "typecheck": "npx --no-install tsrs -p tsconfig.json --noEmit",
+    "lint": "oxlint src test bench scripts index.ts",
     "bench:generate": "python3 bench/generate_synthetic.py --size-mb 64 --seed 1337 --out bench/datasets/synthetic.txt",
     "bench:compare": "bun run bench/compare.ts bench/datasets/synthetic.txt 2 5",
     "bench:compare:collocations": "bun run bench/compare_collocations.ts bench/datasets/synthetic.txt 50 5",
@@ -174,11 +174,9 @@
     "bench:release": "bun run bench/release_benchmarks.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "playwright": "^1.52.0",
-    "@biomejs/biome": "^2.5.10"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
+    "@types/bun": "1.4.3",
+    "playwright": "1.64.1",
+    "tsrs": "0.18.0-ts7.1.0-dev.20260929",
+    "oxlint": "1.89.0"
   }
 }
