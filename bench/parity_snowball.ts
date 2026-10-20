@@ -54,8 +54,9 @@ function main() {
   }
 
   const payload = JSON.stringify({ lang_words: langWords });
-  const proc = Bun.spawnSync(["python3", "bench/python_snowball_baseline.py", "--payload", payload], {
+  const proc = Bun.spawnSync(["python3", "bench/python_snowball_baseline.py"], {
     cwd: resolve(import.meta.dir, ".."),
+    stdin: new TextEncoder().encode(payload),
     stdout: "pipe",
     stderr: "pipe",
   });

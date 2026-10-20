@@ -236,8 +236,8 @@ async function main() {
     })),
   );
   const proc = Bun.spawnSync(
-    ["python3", "bench/python_bleu_nist_baseline.py", "--payload", payload],
-    { cwd: resolve(import.meta.dir, ".."), stdout: "pipe", stderr: "pipe" },
+    ["python3", "bench/python_bleu_nist_baseline.py"],
+    { cwd: resolve(import.meta.dir, ".."), stdin: new TextEncoder().encode(payload), stdout: "pipe", stderr: "pipe" },
   );
   if (proc.exitCode !== 0) {
     throw new Error(`python bleu/nist baseline failed: ${new TextDecoder().decode(proc.stderr)}`);

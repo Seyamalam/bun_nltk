@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import sys
 
 from nltk.translate.bleu_score import corpus_bleu
 from nltk.translate.nist_score import corpus_nist
@@ -17,9 +18,9 @@ from nltk.translate.nist_score import corpus_nist
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--payload", required=True)
+    parser.add_argument("--payload")
     args = parser.parse_args()
-    cases = json.loads(args.payload)
+    cases = json.loads(args.payload) if args.payload is not None else json.load(sys.stdin)
 
     bleu_scores = []
     nist_scores = []

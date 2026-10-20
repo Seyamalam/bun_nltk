@@ -1,9 +1,9 @@
 import { expect, test } from "bun:test";
 import { resolve } from "node:path";
 import { lesk, synsetDefinition, type WsdSynset as Synset } from "../index";
-import { loadWordNet } from "../src/wordnet";
+import { loadWordNetExtended } from "../src/wordnet";
 
-const wn = loadWordNet();
+const wn = loadWordNetExtended();
 
 test("synsetDefinition strips quoted examples like nltk Synset.definition()", () => {
   const row = wn.synsets("run")[0]!;
@@ -11,16 +11,16 @@ test("synsetDefinition strips quoted examples like nltk Synset.definition()", ()
 });
 
 test("lesk disambiguates run toward the verb sense in a computing context", () => {
-  const sense = lesk(["the", "computer", "can", "run", "and", "improve", "its", "speed"], "run");
+  const sense = lesk(["the", "computer", "can", "run", "and", "improve", "its", "speed"], "run", undefined, wn.synsets("run"));
   expect(sense).not.toBeNull();
-  expect(sense!.id).toBe("01927447.v");
+  expect(sense!.id).toBe("run.v.01");
 });
 
 test("lesk filters by pos", () => {
-  const adj = lesk(["the", "slow", "computer", "could", "not", "parse", "the", "document"], "slow", "a");
-  const verb = lesk(["to", "slow", "the", "speed", "of", "the", "machine"], "slow", "v");
-  expect(adj?.id).toBe("00036998.a");
-  expect(verb?.id).toBe("00440580.v");
+  const adj = lesk(["the", "slow", "computer", "could", "not", "parse", "the", "document"], "slow", "a", wn.synsets("slow"));
+  const verb = lesk(["to", "slow", "the", "speed", "of", "the", "machine"], "slow", "v", wn.synsets("slow"));
+  expect(adj?.id).toBe("slow.a.01");
+  expect(verb?.id).toBe("slow.v.01");
 
   const noMatch = lesk(["the", "banana", "ripened"], "banana", "v");
   expect(noMatch).toBeNull();
@@ -75,7 +75,7 @@ test("optional python parity for lesk via nltk.wsd baseline", () => {
       pos: "a" as string | null,
     },
   ];
-  const jsSenses = cases.map((c) => lesk(c.context, c.word, c.pos ?? undefined)?.id ?? null);
+  const jsSenses = cases.map((c) => lesk(c.context, c.word, c.pos ?? undefined, wn.synsets(c.word))?.id ?? null);
 
   const payloadCases = cases.map((c) => ({
     id: c.id,

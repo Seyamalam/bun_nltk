@@ -3,16 +3,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 
 from nltk.stem.snowball import SnowballStemmer
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--payload", required=True)
+    parser.add_argument("--payload")
     args = parser.parse_args()
 
-    payload = json.loads(args.payload)
+    payload = json.loads(args.payload) if args.payload is not None else json.load(sys.stdin)
     lang_words = payload.get("lang_words", {})
 
     out = {}
