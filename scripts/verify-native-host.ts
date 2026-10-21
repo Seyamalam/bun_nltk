@@ -2,19 +2,53 @@ import { existsSync, mkdirSync, mkdtempSync, rmSync, statSync, writeFileSync } f
 import { cpus, release, tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { bootstrapMedianRatio, median } from "../bench/statistics";
+import { artifactPath, hostStatus, inspectNativeArtifact, nativeTargets } from "./native-provenance";
+import type { NativeTarget } from "./native-provenance";
+import { smokeNativeSource } from "./smoke-native-source";
 
 type JsonObject = Record<string, unknown>;
 
 const root = resolve(import.meta.dir, "..");
 const args = process.argv.slice(2);
+const booleanOptions = new Set(["--status", "--smoke"]);
+const valueOptions = new Set(["--target", "--rounds", "--output", "--library", "--provenance"]);
+const seen = new Set<string>();
+for (let i = 0; i < args.length; i++) {
+  const name = args[i]!;
+  if (seen.has(name) || (!booleanOptions.has(name) && !valueOptions.has(name))) throw new Error(`Unknown or duplicate native-host option: ${name}`);
+  seen.add(name);
+  if (valueOptions.has(name) && (!args[++i] || args[i]!.startsWith("--"))) throw new Error(`Missing value for ${name}`);
+}
 
 function argument(name: string): string | undefined {
   const index = args.indexOf(name);
   return index >= 0 ? args[index + 1] : undefined;
 }
 
-const rounds = Math.max(5, Number(argument("--rounds") ?? "7"));
-if (!Number.isInteger(rounds) || !Number.isFinite(rounds)) {
+const requestedTarget = argument("--target") ?? `${process.platform}-${process.arch}`;
+if (!nativeTargets.includes(requestedTarget as NativeTarget)) throw new Error(`Unsupported native host: ${requestedTarget}`);
+const requested = requestedTarget as NativeTarget;
+const gate = hostStatus(requested, process.platform, process.arch);
+if (args.includes("--status") || gate.status === "blocked") {
+  console.log(JSON.stringify({ ok: false, target: requested, host_validation: gate, artifact: inspectNativeArtifact(root, requested) }, null, 2));
+  process.exit(args.includes("--status") ? 0 : 1);
+} else if (args.includes("--smoke")) {
+  const library = resolve(argument("--library") ?? artifactPath(root, requested));
+  const artifact = inspectNativeArtifact(root, requested, library, argument("--provenance"));
+  if (artifact.status !== "fresh") throw new Error(`Source-native smoke requires fresh provenance: ${artifact.status}: ${artifact.reason}`);
+  const report = { ...(await smokeNativeSource(library, requested)), artifact };
+  const output = argument("--output");
+  if (output) {
+    mkdirSync(dirname(resolve(output)), { recursive: true });
+    writeFileSync(resolve(output), `${JSON.stringify(report, null, 2)}\n`);
+  }
+  console.log(JSON.stringify(report, null, 2));
+  process.exit(report.ok ? 0 : 1);
+}
+if (args.includes("--library") || process.env.BUN_NLTK_NATIVE_LIB) throw new Error("Candidate overrides require --smoke; full validation must load the actual packaged prebuilt");
+
+const rounds = Number(argument("--rounds") ?? "7");
+if (!Number.isInteger(rounds) || !Number.isFinite(rounds) || rounds < 5) {
   throw new Error("--rounds must be an integer of at least 5");
 }
 
@@ -28,6 +62,10 @@ if (!supportedTargets.has(target)) {
 
 const extension = process.platform === "win32" ? "dll" : process.platform === "darwin" ? "dylib" : "so";
 const expectedNativePath = resolve(root, "native", "prebuilt", target, `bun_nltk.${extension}`);
+const artifactFreshness = inspectNativeArtifact(root, requested, expectedNativePath, argument("--provenance"));
+if (artifactFreshness.status !== "fresh") {
+  throw new Error(`Packaged native artifact is ${artifactFreshness.status}: ${artifactFreshness.reason}. Run scripts/native-freshness-check.ts and stage a genuine-host refresh; current HEAD alone is not binary provenance.`);
+}
 const expectedPackageArtifacts = [
   resolve(root, "native", "prebuilt", "darwin-arm64", "bun_nltk.dylib"),
   resolve(root, "native", "prebuilt", "linux-x64", "bun_nltk.so"),
@@ -164,21 +202,26 @@ try {
     "scripts/npm-smoke-test.ts",
     tarball,
   ]);
+  if (packageSmoke.ok !== true) throw new Error("Installed tarball smoke did not report ok: true");
 } finally {
   rmSync(packageTemp, { recursive: true, force: true });
 }
 
 const revision = runText("git revision", ["git", "rev-parse", "HEAD"]);
+const finalFreshness = inspectNativeArtifact(root, requested, expectedNativePath, argument("--provenance"));
+if (finalFreshness.status !== "fresh" || finalFreshness.sha256 !== artifactFreshness.sha256) throw new Error("Native artifact or sources changed during host validation");
 const outputPath = resolve(
   argument("--output") ?? resolve(root, "artifacts", `native-host-${target}.json`),
 );
 mkdirSync(dirname(outputPath), { recursive: true });
 
 const report = {
-  schema_version: 1,
+  schema_version: 2,
   generated_at: new Date().toISOString(),
   ok: true,
-  source_revision: revision,
+  validation_revision: revision,
+  source_revision: artifactFreshness.source_revision,
+  artifact_freshness: artifactFreshness,
   environment: {
     platform: process.platform,
     architecture: process.arch,
