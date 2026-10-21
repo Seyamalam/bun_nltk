@@ -61,11 +61,12 @@ own trained model; it can choose different boundaries from multiclass mode.
 
 ## Statistical models and current global findings
 
-The September 13, 2026 local run with Bun 1.4.0 / NLTK 3.10.3 reports **39 passed,
-0 failed, 0 skipped, and 3 unsupported groups**. The three previously failing
-groups are fixed: Kneser–Ney scores and perplexity match, decision-tree labels
-agree 100%, and imported checks match all seven parser trees/probabilities and
-all 80 predictions from each classifier.
+The October 20, 2026 Linux x64 run with Bun 1.4.2 / Python 3.14.4 / NLTK 3.10.3
+reports **43 passed, 0 failed, 0 skipped, and 3 unsupported groups** of 46. The
+three unsupported groups are GUI, Java, and network integrations and are never
+counted as passed. Earlier fixes remain in place: Kneser–Ney scores and perplexity
+match, decision-tree labels agree 100%, and imported checks match all seven parser
+trees/probabilities and all 80 predictions from each classifier.
 
 `bun run bench:parity:statistical` adds 332 language-model configurations and 12
 seeded classifier datasets. It checks orders 1–5, all six model families, four

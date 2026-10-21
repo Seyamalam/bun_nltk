@@ -1,7 +1,7 @@
 /**
  * Real Snowball (Porter2-family) stemmers, ported line-for-line from
- * NLTK's nltk/stem/snowball.py (see nltk.md in this repo), which itself is a
- * Python translation of the Snowball spec at http://snowball.tartarus.org/.
+ * NLTK's nltk/stem/snowball.py (the upstream NLTK 3.10.3 source), which itself
+ * is a Python translation of the Snowball spec at http://snowball.tartarus.org/.
  *
  * Supported languages: danish, dutch, english, french, german, italian,
  * norwegian, portuguese, romanian, russian, spanish, swedish.

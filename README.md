@@ -1,85 +1,171 @@
 # bun_nltk
 
-Fast NLP primitives in Rust with Bun bindings.
+Rust-first NLP for Bun, Node.js, and browsers. Algorithms live in Rust behind a
+shared native/WASM core; TypeScript provides the typed API, runtime loading, and
+marshaling. The compatibility target is Python NLTK 3.10.3.
 
 ![module surfaces 241/241](https://img.shields.io/badge/module_surfaces-241%2F241-blue)
+![fidelity 43 passed](https://img.shields.io/badge/fidelity-43_passed-blue)
 ![version 1.0.0](https://img.shields.io/badge/version-1.0.0-blue)
 
-## NLTK module coverage
+## Status
 
-**241 of 241 public `nltk.*` module names have TypeScript surfaces — 46/46 families** — see the auto-generated
-[docs/PARITY_CHECKLIST.md](docs/PARITY_CHECKLIST.md), which diffs the
-[NLTK API index](https://www.nltk.org/api/nltk.html) against this repo.
-Regenerate after adding modules: `bun run parity:checklist`. This counts importable
-surfaces, including partial implementations and shims; it is not a behavioral
-parity percentage.
-
-`bun run fidelity:gate` writes `artifacts/fidelity-report.json`, including failed
-runs. It reports **passed, failed, skipped, and unsupported** separately. Missing
-required fixtures fail the gate. Prediction checks require exact label agreement;
-numerical checks state their tolerances. Benchmark speed does not affect correctness
-or implementation status. GUI and external-service shims are explicitly unsupported.
+- **241 of 241 public `nltk.*` module names** have TypeScript surfaces — 46/46
+  families. The [parity checklist](docs/PARITY_CHECKLIST.md) diffs the
+  [NLTK API index](https://www.nltk.org/api/nltk.html) against this repo.
+  Importable surfaces include partial implementations and shims; this is not a
+  behavioral-parity percentage. Regenerate with `bun run parity:checklist`.
+- The fidelity gate reports **43 passed, 0 failed, 0 skipped, and 3 unsupported**
+  of 46 groups in the current Linux x64 run (Bun 1.4.2, Python 3.14.4,
+  NLTK 3.10.3, 2026-10-20). Missing required fixtures fail the gate; unsupported
+  GUI, Java, and network integrations are reported separately and never counted
+  as passed.
+- The Rust crate passes 59 unit tests; the TypeScript suite passes 491 tests.
+- Passing fixtures establishes agreement for those cases and tolerances, not
+  complete NLTK equivalence. See [behavioral validation](docs/BEHAVIORAL_PARITY.md).
 
 The full NLTK 3.10.3 VADER lexicon, trained English Punkt parameters, and binary /
-multiclass named-entity models are bundled. `bun run bench:parity:nltk-models` checks
-all four VADER fields, Treebank/WordPunct tokens, Punkt boundaries and training
-parameters, and NE IOB labels against versioned Python outputs. Passing these cases
-does not establish equivalence on every possible input. Other algorithms may still
-fail the strict global gate even when their older quality-floor checks passed.
-See [behavioral validation](docs/BEHAVIORAL_PARITY.md) and
-[model provenance](THIRD_PARTY_NOTICES.md).
+multiclass named-entity models are bundled. `bun run bench:parity:nltk-models`
+checks all four VADER fields, Treebank/WordPunct tokens, Punkt boundaries and
+training parameters, and NE IOB labels against versioned Python outputs.
 
-| Family | Modules | Status | Notes |
-|---|---:|---|---|
-| `parse` | 20/20 | ✅ real port | cfg/chart/earley/feature/pcfg + wrappers for bllip/corenlp/malt/stanford |
-| `translate` | 20/20 | ✅ real port | bleu/chrf/gleu/ribes/meteor + IBM1–5, phrase/stack/GDFA/Gale-Church |
-| `tokenize` | 19/19 | ✅ real port | punkt/treebank/toktok/mwe/casual/nist/sexpr + Stanford/REPP shims |
-| `classify` | 15/15 | ✅ real port | NB/MaxEnt/DT/Perceptron + megam/tadm/weka/sklearn/senna shims |
-| `sem` | 15/15 | ✅ real port | logic/DRT/skolemize/Glue/Hole/Cooper/Boxer/LFG/Chat80 |
-| `tag` | 14/14 | ✅ real port | perceptron/brill/hmm/tnt/crf + Stanford/HunPos/Senna shims |
-| `stem` | 13/13 | ✅ real port | porter/snowball/lancaster/regexp/rslp/cistem/arlstem/isri/wordnet |
-| `app` | 10/10 | ⚠️ shim | GUI (Tkinter) — throws with programmatic alternative hint |
-| `metrics` | 10/10 | ✅ real port | distance/confusionmatrix/agreement/paice/aline/spearman/segmentation |
-| `inference` | 8/8 | ✅ real port | resolution/tableau/prover9/mace/discourse + API/demonstration |
-| `lm` | 8/8 | ✅ real port | MLE/Lidstone/Kneser-Ney + counter/vocab/preprocessing |
-| `tree` | 8/8 | ✅ real port | Tree/Immutable/Parented/Probabilistic + transforms/prettyprinter |
-| `chat` | 7/7 | ⚠️ shim | eliza/iesha/rude/suntsu/zen — re-exports `Chat` from `chat_util` (real) |
-| `tbl` | 7/7 | ✅ real port | Brill TBL — rule/template/feature/demo/erroranalysis |
-| `ccg` | 6/6 | ✅ real port | cat/lexicon/combinator/chart/logic + CCGChartParser |
-| `cluster` | 6/6 | ✅ real port | kmeans/EM/GAAC + api/util |
-| `draw` | 6/6 | ⚠️ shim | cfg/dispersion/table/tree — throws (requires Tk/matplotlib) |
-| `misc` | 6/6 | ✅ real port | chomsky/babelfish/minimalset/sort/wordfinder |
-| `twitter` | 6/6 | ⚠️ shim | twitterclient/util/demo — throws (requires network/API keys) |
-| `chunk` | 5/5 | ✅ real port | regexp/named_entity + api/util |
-| *roots & shims* | — | ⚠️ shim | `collections`/`compat`/`data`/`decorators`/`internals`/`jsontags`/`lazyimport`/`tabdata`/`langnames`/`cli`/`corpus.europarl_raw` — thin re-exports/compat helpers |
-
-> **Shim vs real port:** “real port” = TypeScript implementation, with the tested behavioral scope varying by module; “shim” = API surface present (importable, parity checklist passes) but runtime throws a descriptive error directing to the programmatic alternative or explains the missing native dependency (Tkinter, network, Java subprocess, etc.). A present module is not necessarily behaviorally complete.
-
-Quick start examples:
+## Install
 
 ```bash
-bun run examples/ccg_quickstart.ts      # CCG chart: I sleep → S
-bun run examples/inference_resolution.ts # FOL resolution: Socrates is mortal
+bun add bun_nltk
+# or
+npm install bun_nltk
 ```
 
-Standalone example projects:
+The root entry point uses Bun FFI and is **Bun-only**. The `wasm`,
+`classify-features`, and `classify-tree` subpaths ship plain JavaScript and
+TypeScript declarations for Node.js 24+ and browsers.
 
-- [`examples/js-library`](examples/js-library) is a tested Bun document-analysis API and CLI with validation, batch processing, sentence-level sentiment, keyword frequency, and configurable n-grams.
-- [`examples/wasm-browser`](examples/wasm-browser) is a local-first browser workbench with file import, JavaScript/WASM parity and benchmarking, token search, ranked terms, sentence inspection, and JSON export.
+### Quick start (Bun)
 
-Try the [live browser playground](https://bun-nltk-playground.seyamalam41.workers.dev), or see [`examples/README.md`](examples/README.md) for clone-and-run commands.
+```ts
+import { countTokensAscii, sentenceTokenizePunkt } from "bun_nltk";
 
-## Package docs
+console.log(countTokensAscii("Hello world"));        // 2
+console.log(sentenceTokenizePunkt("One. Two!"));      // ["One.", "Two!"]
+```
 
-- API reference: [docs/API.md](docs/API.md)
-- Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md)
-- Publishing guide: [docs/PUBLISHING.md](docs/PUBLISHING.md)
-- Linux and Windows native-host validation: [docs/NATIVE_HOST_VALIDATION.md](docs/NATIVE_HOST_VALIDATION.md)
-- Changelog: [CHANGELOG.md](CHANGELOG.md)
+### Portable WASM (Node, Bun, browsers)
+
+```ts
+import { WasmNltk } from "bun_nltk/wasm";
+
+const nltk = await WasmNltk.init(); // Node/Bun: packaged artifact
+// Browser: WasmNltk.init({ wasmUrl: "/bun_nltk.wasm" })
+try {
+  console.log(nltk.tokenizeAscii("Hello world"));
+} finally {
+  nltk.dispose();
+}
+```
+
+Run `node examples/portable-wasm.ts` or `bun examples/portable-wasm.ts`.
+`bun run verify:portable` exercises the same wrapper in Chromium, Firefox,
+WebKit, and Node after `bunx playwright install chromium firefox webkit`.
+These checks cover the exposed WASM algorithms, not every NLTK module.
+
+To verify the published package shape from a clean tarball:
+
+```bash
+bun run build:portable
+bun pm pack --destination /tmp/opencode
+bun run verify:packaged-portable /tmp/opencode/bun_nltk-1.0.0.tgz
+```
+
+This installs with npm and Bun, runs Node/Bun execution checks, and type-checks
+the installed declarations with `tsrs`.
+
+### Focused entry points
+
+Use focused imports when the root compatibility barrel is unnecessary:
+
+```ts
+import { tokenizeAscii } from "bun_nltk/tokenize";
+import { KMeansClusterer } from "bun_nltk/cluster";
+import { loadWordNetPacked } from "bun_nltk/wordnet";
+```
+
+Other entry points: `bun_nltk/native`, `bun_nltk/wasm`, `bun_nltk/reference`,
+`bun_nltk/classify`, `bun_nltk/classify-features`, `bun_nltk/classify-tree`,
+`bun_nltk/linear-models`, and `bun_nltk/metrics`.
+
+## What is implemented
+
+| Area | Highlights |
+|---|---|
+| Tokens & metrics | ASCII token/ngram/unique counts, exact aggregate keys, streaming metrics, PMI collocations, `FreqDist`/`ConditionalFreqDist`, SIMD fast path |
+| Tokenizers | Punkt (train + bundled model), Treebank, WordPunct, Toktok, MWE, Tweet, NIST, casual, S-expression |
+| Classification | Feature-dictionary Naive Bayes, positive NB, and decision trees in Rust/WASM; text NB, DT, MaxEnt, Perceptron, logistic/linear SVM, conditional exponential |
+| Tagging | Perceptron, Brill TBL, HMM, TnT, CRF; regex/heuristic POS baseline |
+| Stemming | Porter, Snowball (12+ languages), Lancaster, Regexp, RSLP, Cistem, ISRI, ARLSTem, WordNet lemmatizer |
+| Parsing & chunking | CFG, Earley, left-corner, feature chart/Earley, recursive descent, PCFG, dependency; regexp/named-entity chunking |
+| Semantics & translation | First-order logic, DRT, Glue semantics, model evaluation; BLEU, NIST, chrF, GLEU, RIBES, METEOR, IBM models |
+| Corpora & WordNet | Corpus reader framework, ConLL/Brown readers, mini and packed WordNet, sense keys, graph similarity |
+| Infrastructure | Shared native/WASM ABI, browser wrapper with memory reuse, portable packaging, Docker, release checks |
+
+A “real port” in the [API reference](docs/API.md) means TypeScript/Rust logic
+with a tested behavioral scope that varies by module. **Shims** expose an
+importable API but throw a descriptive error for GUI, network, or Java
+dependencies (`app`, `draw`, `twitter`, chatbot demos). They count toward import
+coverage only.
+
+## Behavioral validation
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install nltk==3.10.3 numpy scipy
+bun install --frozen-lockfile
+bun run fixtures:import:nltk
+bun run fidelity:gate
+```
+
+The gate writes `artifacts/fidelity-report.json` before returning nonzero for a
+required failure or skip. Prediction checks require exact label agreement;
+numeric checks state explicit tolerances. `bun run bench:parity:all` runs the
+per-family parity harnesses; `bun run bench:parity:nltk-models` runs the bundled
+model checks without Python. See [behavioral parity](docs/BEHAVIORAL_PARITY.md)
+and [model provenance](THIRD_PARTY_NOTICES.md).
+
+## Benchmarks
+
+Retained evidence is workload-specific; it is not a universal speed or memory
+claim. The maintained methodology, raw artifacts, and caveats are in
+[docs/BENCHMARKING.md](docs/BENCHMARKING.md).
+
+| Workload | Result | Evidence |
+|---|---|---|
+| Native token counting, 1.3 MB / 225k tokens | 1.67 ms native vs 16.83 ms TypeScript median (10.06×; 95% CI 7.74–12.94×) | `artifacts/native-host-linux-x64.json` |
+| 1 GiB bounded-vocabulary ASCII stream | Bun WASM 11.73 s / 45.72 MiB RSS vs NLTK 119.00 s / 81.02 MiB; Node WASM 11.63 s / 81.82 MiB | `artifacts/large-stream-scale-matrix.json` |
+| Feature decision tree, 12,000 training rows | Train: 28.71 ms Bun, 24.22 ms Node, 73.41 ms Python. Predict 3,000: 5.63 / 6.35 / 0.30 ms. Peak RSS: 69.42 / 91.35 / 59.63 MiB | `artifacts/feature-tree-benchmark.json` |
+
+The 1 GiB stream uses a repeated bounded vocabulary; native streaming also
+computes conditional tags, so the operations are similar but not identical.
+The feature-tree workload is balanced and low-cardinality, and prediction
+marshaling plus RSS remain optimization targets. Small native cases can be
+slower than TypeScript.
+
+Reproduce the main suites:
+
+```bash
+bun run bench:compare:feature-tree   # NLTK feature decision tree
+bun run bench:scale                  # 1 KiB → 1 GiB scale matrix
+bun run bench:compare                # legacy token/ngram diagnostics
+bun run bench:gate                   # regression + SLA + parity gate
+```
+
+Additional `bench:compare:*` commands cover tokenizers, stemmers, taggers,
+parsers, classifiers, language models, WordNet, and streaming distributions.
+See `package.json` for the full list.
 
 ## Validate on a real Linux or Windows host
 
-The release binaries are committed, so testers do not need a compiler toolchain.
+Release binaries are committed, so testers do not need a compiler toolchain.
 
 ```bash
 # Linux x64
@@ -91,191 +177,34 @@ bash scripts/verify-linux.sh
 .\scripts\verify-windows.cmd
 ```
 
-Each command installs the locked JavaScript dependencies, tests the native library on that operating system, compares native Rust with the TypeScript fallback on the same machine, and writes a JSON report under `artifacts/`. See [the native-host guide](docs/NATIVE_HOST_VALIDATION.md) for Bun installation commands and the 15-round paper run.
+Each command installs locked dependencies, tests the native library, compares
+native Rust with the TypeScript fallback on the same machine, installs and runs
+the packed tarball, and writes a JSON report under `artifacts/`. The current
+7-round Linux run passed on 2026-10-21 and is retained as
+`artifacts/native-host-linux-x64.json`. See the
+[native-host guide](docs/NATIVE_HOST_VALIDATION.md) for Bun installation and the
+15-round paper run.
 
-
-## Implemented in this milestone
-
-- ASCII token counting
-- ASCII unique-token counting (`FreqDist`-style cardinality)
-- ASCII n-gram counting
-- ASCII unique n-gram counting
-- Hashed frequency distributions for tokens and n-grams
-- Native token materialization and n-gram materialization APIs
-- Top-K bigram PMI collocation scoring (native, with `window_size >= 2`)
-- NLTK-style bigram collocation compatibility layer (`BigramAssocMeasures`, `BigramCollocationFinder`)
-- Higher-order collocation compatibility (`TrigramAssocMeasures`, `QuadgramAssocMeasures`, `TrigramCollocationFinder`, `QuadgramCollocationFinder`)
-- Text exploration compatibility layer (`ConcordanceIndex`, `ContextIndex`, `Text`)
-- Core `nltk.probability` compatibility layer (`ProbDistI`, `MLEProbDist`, `Lidstone` family, `ConditionalProbDist`)
-- Advanced smoothing distributions (`WittenBellProbDist`, `SimpleGoodTuringProbDist`)
-- NLTK-style feature-dict classifier wrappers (`NaiveBayesClassifier`, `DecisionTreeClassifier`, `MaxentClassifier`, `PositiveNaiveBayesClassifier`)
-- NLTK-style parser/tagger wrappers (`CFG`, `PCFG`, `ChartParser`, `EarleyChartParser`, `ViterbiParser`, `PerceptronTagger`, `pos_tag`)
-- Collision-free token ID frequency distribution API (`id <-> token`)
-- Native windowed bigram stats API (`left_id`, `right_id`, `count`, `pmi`)
-- Native Porter stemmer (ASCII, lowercasing)
-- Tokenizer parity layer (`wordTokenizeSubset`, `tweetTokenizeSubset`)
-- Expanded tokenizer family (`TreebankWordTokenizer`, `WordPunctTokenizer`, `ToktokTokenizer`, `MWETokenizer`, `TweetTokenizer`)
-- Sentence tokenizer parity subset (`sentenceTokenizeSubset`) + Python parity harness
-- Trainable Punkt tokenizer/model APIs (`trainPunktModel`, `sentenceTokenizePunkt`)
-- NLTK-style Punkt wrapper APIs (`PunktTrainer`, `PunktSentenceTokenizer`, plus subset wrappers)
-- Native Punkt sentence-splitting fast path (`sentenceTokenizePunktAsciiNative`) with WASM equivalent
-- Native normalization pipeline (ASCII fast path with optional stopword filtering)
-- Unicode normalization fallback pipeline (`normalizeTokensUnicode`)
-- Native POS regex/heuristic tagger baseline (`posTagAsciiNative`)
-- Native streaming `FreqDist`/`ConditionalFreqDist` builder with JSON export (`NativeFreqDistStream`)
-- NLTK-style `FreqDist` / `ConditionalFreqDist` compatibility classes with native-backed ASCII builders
-- NLTK-style probability distribution layer (`MLEProbDist`, `Lidstone`, `Laplace`, `ELE`, `ConditionalProbDist`)
-- Mini WordNet reader with synset lookup, relation traversal, and morphy-style inflection recovery
-- WordNet compatibility helpers (`lemmaNames`, `synsetFromPosAndOffset`, `senseKeys`, `synsetFromSenseKey`)
-- WordNet graph helpers (`hypernymPaths`, `lowestCommonHypernyms`, `shortestPathDistance`, `pathSimilarity`)
-- Native morphy accelerator (`wordnetMorphyAsciiNative`) with WASM equivalent
-- Packed WordNet corpus pipeline (`wordnet:pack`) with binary loader (`loadWordNetPacked`)
-- Stateful native WordNet loader with batched lookup and lazy JavaScript row materialization
-- Default WordNet runtime loader (`loadWordNet`) that uses an explicit packed corpus when present
-- N-gram language model stack (`MLE`, `Lidstone`, `Kneser-Ney Interpolated`) with Python comparison harness
-- Native/WASM LM ID-evaluation hot loop for batched score + perplexity paths
-- Regexp chunk parser primitives with IOB conversion and Python parity harness
-- Native/WASM chunk IOB hot loop for compiled grammar matching
-- CFG grammar parser + chart parser subset with Python parity harness
-- Earley recognizer/parser API for non-CNF grammar recognition (`earleyRecognize`, `earleyParse`, `parseTextWithEarley`)
-- Recursive-descent CFG parser API (`recursiveDescentParse`, `parseTextWithRecursiveDescent`)
-- Left-corner CFG parser API (`leftCornerParse`, `parseTextWithLeftCorner`)
-- Feature-chart parser subset APIs (`parseFeatureCfgGrammar`, `featureChartParse`, `parseTextWithFeatureCfg`)
-- Lightweight dependency parser API (`dependencyParse`, `dependencyParseText`)
-- Naive Bayes text classifier with train/predict/evaluate/serialize APIs and Python parity harness
-- Shared sparse text vectorizer (`TextFeatureVectorizer`) + sparse batch flattening utility
-- Decision tree text classifier APIs (`DecisionTreeTextClassifier`)
-- Linear text models (`LogisticTextClassifier`, `LinearSvmTextClassifier`) with native sparse scoring fast path
-- Native text vectorization and optimization for logistic regression and linear SVM training
-- Native Viterbi decoding for hidden Markov model taggers
-- Native Euclidean K-means convergence loop with TypeScript fallback for custom distance functions
-- Perceptron text classifier APIs (`PerceptronTextClassifier`)
-- Conditional Exponential classifier compatibility APIs (`ConditionalExponentialTextClassifier`)
-- Positive Naive Bayes classifier APIs (`PositiveNaiveBayesTextClassifier`)
-- Stemming and lemmatization suite (`RegexpStemmer`, `LancasterStemmer`, `SnowballStemmer`, `WordNetLemmatizer`)
-- Real Snowball (Porter2) stemmers for 12+ languages with Python NLTK parity (`snowballStem`, `SNOWBALL_LANGUAGES`)
-- Brill transformation-based tagging (`BrillTagger`, `BrillTaggerTrainer`, templates/rules) with Python NLTK parity
-- Supervised Hidden Markov Model POS tagger (training + Viterbi decoding) with Python NLTK parity
-- Inter-annotator agreement metrics (`AnnotationTask`: avg Ao, kappa family, Krippendorff's alpha) with Python NLTK parity
-- First-order logic semantics subset (`SemLogicParser` + model evaluation/satisfaction) with Python NLTK parity
-- Full NLTK VADER sentiment analyzer (`SentimentIntensityAnalyzer`) with exact differential score tests
-- Statistical NLTK named-entity chunking (`neChunk`, `neChunkIob`) with lazily loaded binary/multiclass models
-- Translation/eval metrics helpers (`sentenceBleu`, `corpusBleu`, `editDistance`, `confusionMatrix`)
-- Corpus reader framework (`CorpusReader`) with bundled mini corpora
-- Optional external corpus bundle loader + tagged/chunked corpus readers (`parseConllTagged`, `parseBrownTagged`, `parseConllChunked`)
-- Corpus registry manifest loader/downloader with checksum validation (`loadCorpusRegistryManifest`, `downloadCorpusRegistry`)
-- SIMD token counting fast path (`x86_64` vectorized path + scalar fallback)
-- Shared perceptron inference core used by both native and WASM runtimes
-- Browser-focused WASM API wrapper with memory pool reuse (`WasmNltk`)
-- WASM target for browser/runtime usage with parity benchmarks
-- Browser WASM benchmark harness (Chromium/Firefox in CI strict mode)
-- Performance regression gate script + CI workflow
-- SLA gate script (p95 latency + memory delta) and NLTK parity tracker artifacts
-- Global parity suite on PRs across tokenizer, punkt, lm, chunk, wordnet, parser, classifier, and tagger
-- Python baseline comparison on the same dataset
-
-## Benchmark results (64MB synthetic dataset)
-
-All benchmarks below use `bench/datasets/synthetic.txt` on this machine.
-
-These timings predate the statistical-model corrections. NB, MaxEnt, decision-tree,
-conditional-exponential and language-model timings below do not describe the current defaults;
-rerun their comparison scripts to measure current performance.
-
-| Workload | Rust/Bun median sec | Python sec | Faster side | Speedup | Percent faster |
-|---|---:|---:|---|---:|---:|
-| Token + unique + ngram + unique ngram (`bench:compare`) | 2.767 | 10.071 | Rust native | 3.64x | 263.93% |
-| Top-K PMI collocations (`bench:compare:collocations`) | 2.090 | 23.945 | Rust native | 11.46x | 1045.90% |
-| Porter stemming (`bench:compare:porter`) | 11.942 | 120.101 | Rust native | 10.06x | 905.70% |
-| WASM token/ngram path (`bench:compare:wasm`) | 4.150 | 13.241 | Rust WASM | 3.19x | 219.06% |
-| Native vs Python in wasm suite (`bench:compare:wasm`) | 1.719 | 13.241 | Rust native | 7.70x | 670.48% |
-| Sentence tokenizer subset (`bench:compare:sentence`) | 1.680 | 16.580 | Rust/Bun subset | 9.87x | 886.70% |
-| Perceptron POS tagger (`bench:compare:tagger`) | 19.880 | 82.849 | Rust native | 4.17x | 316.75% |
-| Streaming FreqDist + ConditionalFreqDist (`bench:compare:freqdist`) | 3.206 | 20.971 | Rust native | 6.54x | 554.17% |
-
-Notes:
-- These native/WASM sentence benchmarks measure explicit ASCII subsets. The default `sentenceTokenizePunkt` now uses trained English Punkt inference in TypeScript; historical native speedups do not describe that path.
-- The core npm package omits the 30 MB full WordNet payload. Set `BUN_NLTK_WORDNET_PATH` or pass a packed path to `loadWordNetPacked()` to opt in.
-- Runtime `loadWordNet()` uses an explicit packed corpus when available, then falls back to the bundled extended JSON corpus.
-- Fixture parity harnesses are available via `bench:parity:sentence` and `bench:parity:tagger`.
-- SIMD fast path benchmark (`bench:compare:simd`) shows `countTokensAscii` at `1.22x` and normalization no-stopword path at `2.73x` over scalar baseline.
-
-## Current release benchmarks (1.0.0)
-
-Apple M5 Pro / macOS arm64, Bun 1.4.0 versus NLTK 3.10.3. Medians of five
-in-process runs after warmup, with matched workloads and passing output comparisons.
-
-| Workload | Bun median (ms) | Python median (ms) | Python / Bun |
-|---|---:|---:|---:|
-| Categorical Naive Bayes | 2.56 | 8.30 | 3.24× |
-| Decision tree | 6.08 | 18.17 | 2.99× |
-| IIS MaxEnt | 4.83 | 74.37 | 15.39× |
-| Conditional exponential (IIS) | 4.39 | 85.28 | 19.42× |
-| Kneser–Ney LM | 111.71 | 410.90 | 3.68× |
-| Trained English Punkt | 1.97 | 5.33 | 2.70× |
-| Full VADER | 37.18 | 59.52 | 1.60× |
-| Multiclass named entities | 97.96 | 156.72 | 1.60× |
-| PCFG best parse | 30.95 | 1337.38 | 43.21× |
-
-Classifier inputs are synthetic short documents with a small vocabulary. These
-ratios describe the measured workloads on this host. See the [benchmark methodology
-and raw samples](docs/BENCHMARKS.md) for input sizes, timing boundaries and reproduction.
-
-## Build native Rust library
+## Build
 
 ```bash
-bun run build:rust
+bun run build:rust      # native library for this host
+bun run build:wasm      # native/bun_nltk.wasm
+bun run build:portable  # dist/portable JS + declarations
+bun run build:prebuilt  # all committed platform binaries (macOS host)
 ```
 
-## Focused package entrypoints
+Portable entry points grow WASM input staging on demand instead of reserving
+128 MiB at startup. The WASM batch APIs still enforce an input-byte limit;
+exact streaming metrics accept larger corpora in chunks. Root imports still
+require Bun FFI.
 
-Use focused imports when the root compatibility barrel is unnecessary:
-
-```ts
-import { tokenizeAscii } from "bun_nltk/tokenize";
-import { KMeansClusterer } from "bun_nltk/cluster";
-import { loadWordNetPacked } from "bun_nltk/wordnet";
-```
-
-Other entrypoints include `bun_nltk/native`, `bun_nltk/wasm`, `bun_nltk/reference`,
-`bun_nltk/classify`, `bun_nltk/linear-models`, and `bun_nltk/metrics`.
-
-## Build WASM library
-
-```bash
-bun run build:wasm
-```
-
-The shared WASM entrypoint works in Node 24+, Bun, and browsers without loading
-Bun FFI. Input staging grows on demand instead of reserving 128 MiB at startup.
-The installed `wasm`, `classify-features`, and `classify-tree` subpaths ship plain
-JavaScript and type declarations for Node/browser consumers; no TypeScript loader
-is needed. Bun uses the matching source adapters. The root import remains Bun-only.
-
-```ts
-import { WasmNltk } from "bun_nltk/wasm";
-const nltk = await WasmNltk.init(); // Node/Bun: packaged artifact
-// Browser: WasmNltk.init({ wasmUrl: "/bun_nltk.wasm" })
-try {
-  console.log(nltk.tokenizeAscii("Hello world"));
-} finally {
-  nltk.dispose();
-}
-```
-
-Run `node examples/portable-wasm.ts` or `bun examples/portable-wasm.ts`.
-`bun run verify:portable` tests the same wrapper in Chromium, Firefox, WebKit,
-and Node after `bunx playwright install chromium firefox webkit`.
-These checks cover the exposed WASM algorithms, not every NLTK module.
-After `bun run build:portable` and `bun pm pack --destination /tmp/opencode`, run
-`bun run verify:packaged-portable /tmp/opencode/bun_nltk-1.0.0.tgz` to check clean
-npm/Bun installs, Node/Bun execution, and installed declarations with `tsrs`.
-
-Categorical feature-dictionary Naive Bayes also runs entirely in Rust:
+### Classifiers in Rust/WASM
 
 ```ts
 import { WasmNltk } from "bun_nltk/wasm";
 import { RustNaiveBayesClassifier } from "bun_nltk/classify-features";
+
 const runtime = await WasmNltk.init();
 const classifier = RustNaiveBayesClassifier.train(runtime, [
   [{ color: "red", shape: "round" }, "apple"],
@@ -290,60 +219,50 @@ try {
 ```
 
 Feature names and string values remain case-sensitive. `null`/`undefined` map
-to NLTK's `None`; booleans match equal numeric values as in Python. NaN feature
+to NLTK’s `None`; booleans match equal numeric values as in Python. NaN feature
 values are rejected. The synchronous Bun `NaiveBayesClassifier.train` API uses
 the same Rust model; call `dispose()` when finished. See
 [`examples/feature-classifier.ts`](examples/feature-classifier.ts).
 
-The positive/unlabeled variant uses the same Rust model and typed features:
+Positive/unlabeled training and feature-dictionary decision trees use the same
+typed encoding:
 
 ```ts
 import { RustPositiveNaiveBayesClassifier } from "bun_nltk/classify-features";
+import { RustDecisionTreeClassifier } from "bun_nltk/classify-tree";
+
 const positive = RustPositiveNaiveBayesClassifier.train(runtime,
   [{ color: "red" }], [{ color: "red" }, { color: "blue" }],
   { positivePrior: 0.5 });
-try { console.log(positive.classify({ color: "red" })); }
-finally { positive.dispose(); }
-```
-
-Initialize `runtime` before this example. Priors must be finite and in `[0, 1)`;
-zero is supported, one is undefined in NLTK's negative-probability calculation.
-Empty training groups follow NLTK; `maxFeatures` may bound the feature count but
-cannot silently discard features. Default labels remain `pos`/`neg`, with positive
-winning ties as Python's `True` does. The synchronous feature-dictionary
-`PositiveNaiveBayesClassifier.train` uses this implementation; the legacy text
-classifier is unchanged.
-
-Feature-dictionary decision trees share the same lossless encoding:
-
-```ts
-import { RustDecisionTreeClassifier } from "bun_nltk/classify-tree";
 const tree = RustDecisionTreeClassifier.train(runtime, [
   [{ color: "Red" }, "upper"], [{ color: "red" }, "lower"],
 ]);
-try { console.log(tree.classifyMany([{ color: "Red" }, { color: "red" }, {}])); }
-finally { tree.dispose(); }
+try {
+  console.log(positive.classify({ color: "red" }));
+  console.log(tree.classifyMany([{ color: "Red" }, { color: "red" }, {}]));
+} finally {
+  positive.dispose();
+  tree.dispose();
+}
 ```
 
-Initialize `runtime` as above. Split ties use first-seen feature/value order;
-unseen branches match NLTK 3.10.3's last-training-label fallback. Depth is limited
-to 100 and lossy feature truncation is rejected. See
-[`examples/js-library/feature-tree.ts`](examples/js-library/feature-tree.ts).
+Priors must be finite and in `[0, 1)`; zero is supported. Tree split ties use
+first-seen feature/value order, unseen branches match NLTK 3.10.3’s
+last-training-label fallback, depth is bounded to 100, and lossy feature
+truncation is rejected. Feature-dictionary MaxEnt still uses the lossy text
+adapter. See [`examples/js-library/feature-tree.ts`](examples/js-library/feature-tree.ts).
 
-`WasmNltk.editDistance` and `editDistanceAlign` share the Rust Unicode implementation
-with the synchronous Node/Bun metric APIs. Transpositions follow NLTK's unrestricted
-Damerau algorithm; alignment includes weighted transition costs. Like NLTK 3.10.3,
-inputs longer than 2,000 Unicode code points are rejected. Ordinary distance uses
-linear auxiliary memory; transpositions and alignment still use a quadratic matrix.
+`WasmNltk.editDistance` and `editDistanceAlign` share the Rust Unicode
+implementation with the synchronous metric APIs, including unrestricted Damerau
+transpositions and NLTK’s 2,000-code-point input bound. Ordinary distance uses
+linear auxiliary memory; transpositions and alignment still use a quadratic
+matrix.
 
-Aggregate ASCII metrics now use collision-free token and n-gram keys. APIs whose
-names explicitly return hashes retain their legacy 64-bit hash representation;
-distinct inputs can collide there, so they are not substitutes for exact keys.
+### Streaming large inputs
 
-For large files, `WasmNltk.createAsciiMetricsStream(n)` accepts `Uint8Array` chunks
-without keeping the corpus in memory. Token boundaries may cross chunks; `finish()`
-counts the final token and closes the stream. Dispose it when done. The same API
-works in Node, Bun, and browsers (feed byte chunks from a file/fetch stream):
+`WasmNltk.createAsciiMetricsStream(n)` accepts `Uint8Array` chunks without
+keeping the whole corpus in memory. Token boundaries may cross chunks; `finish()`
+counts the final token and closes the stream.
 
 ```ts
 const stream = runtime.createAsciiMetricsStream(2);
@@ -351,262 +270,62 @@ try {
   stream.update(new TextEncoder().encode("hel"));
   stream.update(new TextEncoder().encode("lo world hello"));
   console.log(stream.finish()); // 3 tokens, 2 unique tokens, 2 unique bigrams
-} finally { stream.dispose(); }
+} finally {
+  stream.dispose();
+}
 ```
 
-Each chunk obeys the runtime's input-byte limit; the corpus may exceed it.
-Streaming orders are bounded to 1–64; defaults bound tokens to 1 MiB each and
-distinct token/ngram keys to one million each, configurable with `maxTokenBytes`,
-`maxUniqueTokens`, and `maxUniqueNgrams`. Memory still grows with vocabulary and
-distinct n-grams. Capacity failures invalidate the stream rather than returning
+Each chunk obeys the runtime input-byte limit; the corpus may exceed it.
+Streaming orders are bounded to 1–64; tokens default to 1 MiB each and distinct
+token/ngram keys to one million each, configurable with `maxTokenBytes`,
+`maxUniqueTokens`, and `maxUniqueNgrams`. Memory grows with vocabulary and
+distinct n-grams. Capacity failures invalidate the stream instead of returning
 partial success. See [`examples/streaming-metrics.ts`](examples/streaming-metrics.ts).
 
-## Run tests
-
-```bash
-bun run test
-```
-
-Type-check with the pinned Rust TypeScript 7 compiler and lint with Oxlint:
+## Tests and hygiene
 
 ```bash
 bun install --frozen-lockfile
-bun run typecheck  # npx --no-install tsrs
-bun run lint
+bun run test          # TypeScript suite
+bun run typecheck     # npx --no-install tsrs
+bun run lint          # Oxlint
 ```
 
-See [the Rust-first migration plan](docs/RUST_MIGRATION.md) for acceptance criteria
-and the remaining cross-runtime work.
-
-## Generate synthetic dataset
+Rust checks:
 
 ```bash
-bun run bench:generate
+cargo test --locked --manifest-path rust/Cargo.toml
+cargo clippy --locked --manifest-path rust/Cargo.toml --all-targets -- -D warnings
+cargo fmt --manifest-path rust/Cargo.toml --check
 ```
 
-## Benchmark vs Python baseline
+Additional checks:
 
 ```bash
-bun run bench:compare
-```
-
-## Benchmark collocations vs Python baseline
-
-```bash
-bun run bench:compare:collocations
-```
-
-## Benchmark Porter stemmer vs Python NLTK
-
-```bash
-bun run bench:compare:porter
-```
-
-## Benchmark Native vs WASM vs Python
-
-```bash
-bun run bench:compare:wasm
-```
-
-## Benchmark sentence tokenizer vs Python
-
-```bash
-bun run bench:compare:sentence
-```
-
-## Benchmark POS tagger vs Python
-
-```bash
-bun run bench:compare:tagger
-```
-
-## Benchmark streaming FreqDist vs Python
-
-```bash
-bun run bench:compare:freqdist
-```
-
-## Benchmark SIMD fast path vs scalar baseline
-
-```bash
-bun run bench:compare:simd
-```
-
-## Benchmark parser vs Python
-
-```bash
-bun run bench:compare:parser
-```
-
-## Benchmark decision tree classifier vs Python
-
-```bash
-bun run bench:compare:decision-tree
-```
-
-## Benchmark Earley parser vs Python
-
-```bash
-bun run bench:compare:earley
-```
-
-## Benchmark left-corner parser vs Python
-
-```bash
-bun run bench:compare:leftcorner
-```
-
-## Benchmark feature parser vs Python
-
-```bash
-bun run bench:compare:feature-parser
-```
-
-## Benchmark feature Earley parser vs Python
-
-```bash
-bun run bench:compare:feature-earley
-```
-
-## Benchmark classifier vs Python
-
-```bash
-bun run bench:compare:classifier
-```
-
-## Benchmark sparse linear scorer vs Python
-
-```bash
-bun run bench:compare:linear
-```
-
-## Benchmark linear-model training native scoring vs JS scoring
-
-```bash
-bun run bench:compare:linear-train
-```
-
-## Benchmark conditional exponential classifier vs Python
-
-```bash
-bun run bench:compare:condexp
-```
-
-## Benchmark positive naive bayes vs Python
-
-```bash
-bun run bench:compare:positive-nb
-```
-
-## Run parity harnesses
-
-```bash
-bun run fixtures:import:nltk
-bun run bench:parity:sentence
-bun run bench:parity:punkt
-bun run bench:parity:punkt-extended
-bun run bench:parity:tokenizer
-bun run bench:parity:tokenizer-family
-bun run bench:parity:stemmers
-bun run bench:parity:metrics
-bun run bench:parity:sentiment
-bun run bench:parity:parser
-bun run bench:parity:classifier
-bun run bench:parity:pcfg
-bun run bench:parity:maxent
-bun run bench:parity:decision-tree
-bun run bench:parity:earley
-bun run bench:parity:leftcorner
-bun run bench:parity:feature-parser
-bun run bench:parity:feature-earley
-bun run bench:parity:corpus-imported
-bun run bench:parity:imported
-bun run bench:parity:wordnet
-bun run bench:parity:wordnet-compat
-bun run bench:parity:tagger
-bun run bench:parity:condexp
-bun run bench:parity:positive-nb
-bun run bench:parity:snowball
-bun run bench:parity:brill
-bun run bench:parity:hmm-tagger
-bun run bench:parity:agreement
-bun run bench:parity:sem
-bun run bench:parity:all
-bun run parity:report
-```
-
-## Benchmark trend tracking
-
-```bash
-bun run bench:trend:check
-bun run bench:trend:record
-```
-
-## Browser/WASM checks
-
-```bash
+bun run native:artifacts:check
+bun run package:size:check
 bun run wasm:size:check
-bun run bench:browser:wasm
-```
-
-## Pack WordNet corpus
-
-```bash
-bun run wordnet:pack
-```
-
-## Prepare default packed WordNet runtime dataset
-
-```bash
-bun run wordnet:prepare:default
-```
-
-## Pack Official WordNet + Verify
-
-```bash
-bun run wordnet:pack:official
-bun run wordnet:verify:pack
-```
-
-## Run regression gate
-
-```bash
-bun run bench:gate
-```
-
-## Run SLA gate only
-
-```bash
-bun run sla:gate
-```
-
-## Generate parity tracker
-
-```bash
-bun run parity:tracker
-```
-
-## Release readiness check
-
-```bash
 bun run release:check
+bash scripts/loc-guard.sh 600
 ```
+
+The npm package currently contains 252 files / 10,776,058 unpacked bytes, below
+the 400-file and 12 MB limits. The LOC guard rejects non-grandfathered `.ts` and
+`.rs` files above 600 lines.
 
 ## Environment
 
-Optional environment variables (see `.env.example` for the full annotated list):
+See [`.env.example`](.env.example) for the annotated list.
 
 | Variable | Purpose | Default |
 |---|---|---|
-| `BUN_NLTK_NATIVE_LIB` | Path to the compiled Rust native library | prebuilt path under `native/` |
-| `BUN_NLTK_CARGO_BIN` | cargo binary for build scripts | `cargo` on PATH |
-| `BUN_NLTK_WORDNET_PATH` | WordNet data dir overriding the bundled mini corpus | bundled mini |
-| `BENCH_TREND_MAX_REGRESSION_PCT` | Max regression percent for bench trend checks | repo default |
-| `GIT_TAG` | Tag injected into release builds (set by CI) | — |
+| `BUN_NLTK_NATIVE_LIB` | Path to a compiled Rust native library | prebuilt path under `native/` |
+| `BUN_NLTK_CARGO_BIN` | `cargo` binary for build scripts | `cargo` on `PATH` |
+| `BUN_NLTK_WORDNET_PATH` | WordNet data directory overriding the bundled corpus | bundled mini corpus |
+| `BENCH_TREND_MAX_REGRESSION_PCT` | Maximum regression for bench trend checks | repo default |
+| `GIT_TAG` | Tag injected into release builds | set by release tooling |
 
 ## Docker
-
-One-command reproducible environment (Bun + Rust + Python/nltk):
 
 ```bash
 docker compose run --rm test     # full test suite in a container
@@ -619,17 +338,40 @@ Or directly:
 docker build -t bun_nltk . && docker run --rm bun_nltk
 ```
 
-## Project hygiene
+## Limitations
 
-- **CI** (`.github/workflows/ci.yml`): typecheck fast-fail → lint → tests (+ Rust fmt/clippy) on every push and PR. `bun install --frozen-lockfile` enforces `bun.lock`.
-- **Lint**: `bun run lint` (Biome). Zero errors enforced; warnings tracked.
-- **LOC guard**: `bash scripts/loc-guard.sh 600` fails if any non-grandfathered `.ts`/`.rs` file exceeds 600 lines. Legacy files over the limit are listed inside the script and shrink over time.
+- The root entry point eagerly imports `bun:ffi`; Node and browser consumers
+  must use the portable subpaths (`wasm`, `classify-features`, `classify-tree`)
+  or focused source entry points under Bun. Root Node/browser portability is
+  unfinished.
+- Committed native binaries cover `darwin-arm64`, `linux-x64`, and `win32-x64`.
+  The Linux x64 binary and WASM artifact were rebuilt and validated on this host;
+  the macOS and Windows binaries were not rebuilt in the latest Linux run.
+- No implicit fallback to a locally built native library exists. Set
+  `BUN_NLTK_NATIVE_LIB` for development; there are no install-time scripts.
+- GUI, external Java integrations, and credential-dependent network services are
+  shims that throw descriptive errors.
+- Feature-dictionary MaxEnt remains lossy. Full error-class parity, formatting,
+  explicit feature-value domains, and every Python split-tie behavior are not
+  established.
+- WASM batch inputs are capped at 128 MiB. Streaming supports large ASCII
+  aggregates, not every large-input API.
+- Raw native pointers and fabricated WASM offsets are outside the logical buffer
+  validation performed by the adapters.
+- The full WordNet payload is not in the core package. Set
+  `BUN_NLTK_WORDNET_PATH` or pass a packed path to `loadWordNetPacked()`.
+- No complete NLTK parity, universal speedup, universal memory reduction, or
+  comprehensive security guarantee is claimed.
 
-## Notes
+## Documentation
 
-- Native library output path is `native/bun_nltk.{dll|so|dylib}`.
-- npm package ships prebuilt native binaries for `darwin-arm64`, `linux-x64`, and `win32-x64`, plus `native/bun_nltk.wasm`.
-- Runtime native loading is prebuilt-first with no implicit local native fallback.
-- No install-time lifecycle scripts are used, so `bun pm trust` is not required for install.
-- Current tokenizer rule is `[A-Za-z0-9']+` (lowercased ASCII).
-- This is the first optimization loop and intentionally scoped.
+- [API reference](docs/API.md)
+- [Behavioral parity](docs/BEHAVIORAL_PARITY.md)
+- [Benchmark methodology](docs/BENCHMARKING.md)
+- [Native-host validation](docs/NATIVE_HOST_VALIDATION.md)
+- [Rust-first migration plan](docs/RUST_MIGRATION.md)
+- [Parity checklist](docs/PARITY_CHECKLIST.md)
+- [Versioning](docs/VERSIONING.md)
+- [Publishing](docs/PUBLISHING.md)
+- [Changelog](CHANGELOG.md)
+- [Third-party notices](THIRD_PARTY_NOTICES.md)
