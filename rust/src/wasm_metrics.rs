@@ -12,7 +12,7 @@ unsafe fn input<'a, T>(ptr: u32, len: u32) -> Result<&'a [T], MetricError> {
     let end = (ptr as usize)
         .checked_add(bytes)
         .ok_or(MetricError::InvalidInput)?;
-    if ptr == 0 || ptr as usize % std::mem::align_of::<T>() != 0 {
+    if ptr == 0 || !(ptr as usize).is_multiple_of(std::mem::align_of::<T>()) {
         return Err(MetricError::InvalidInput);
     }
     #[cfg(target_arch = "wasm32")]
@@ -52,6 +52,9 @@ unsafe fn scalar(result: MetricResult, out: u32) -> u32 {
     }
 }
 
+/// # Safety
+/// All pointer arguments are offsets into WASM linear memory and are
+/// range-checked against the memory size before any access.
 #[no_mangle]
 pub unsafe extern "C" fn bunnltk_wasm_set_score(
     op: u32,
@@ -68,10 +71,16 @@ pub unsafe extern "C" fn bunnltk_wasm_set_score(
         out,
     )
 }
+/// # Safety
+/// All pointer arguments are offsets into WASM linear memory and are
+/// range-checked against the memory size before any access.
 #[no_mangle]
 pub extern "C" fn bunnltk_wasm_interval_score(a: f64, b: f64) -> f64 {
     metrics::interval(a, b)
 }
+/// # Safety
+/// All pointer arguments are offsets into WASM linear memory and are
+/// range-checked against the memory size before any access.
 #[no_mangle]
 pub extern "C" fn bunnltk_wasm_binary_score(equal: u32) -> f64 {
     if equal == 0 {
@@ -80,6 +89,9 @@ pub extern "C" fn bunnltk_wasm_binary_score(equal: u32) -> f64 {
         0.0
     }
 }
+/// # Safety
+/// All pointer arguments are offsets into WASM linear memory and are
+/// range-checked against the memory size before any access.
 #[no_mangle]
 pub unsafe extern "C" fn bunnltk_wasm_accuracy_score(
     ap: u32,
@@ -93,10 +105,16 @@ pub unsafe extern "C" fn bunnltk_wasm_accuracy_score(
         out,
     )
 }
+/// # Safety
+/// All pointer arguments are offsets into WASM linear memory and are
+/// range-checked against the memory size before any access.
 #[no_mangle]
 pub unsafe extern "C" fn bunnltk_wasm_log_likelihood_score(p: u32, n: u32, out: u32) -> u32 {
     scalar((|| metrics::log_likelihood(input(p, n)?))(), out)
 }
+/// # Safety
+/// All pointer arguments are offsets into WASM linear memory and are
+/// range-checked against the memory size before any access.
 #[no_mangle]
 pub unsafe extern "C" fn bunnltk_wasm_spearman_score(
     ap: u32,
@@ -119,6 +137,9 @@ pub unsafe extern "C" fn bunnltk_wasm_spearman_score(
         out,
     )
 }
+/// # Safety
+/// All pointer arguments are offsets into WASM linear memory and are
+/// range-checked against the memory size before any access.
 #[no_mangle]
 pub unsafe extern "C" fn bunnltk_wasm_ranks_from_scores(p: u32, n: u32, gap: f64, out: u32) -> u32 {
     let result = (|| {
@@ -131,6 +152,9 @@ pub unsafe extern "C" fn bunnltk_wasm_ranks_from_scores(p: u32, n: u32, gap: f64
         Err(e) => status(e),
     }
 }
+/// # Safety
+/// All pointer arguments are offsets into WASM linear memory and are
+/// range-checked against the memory size before any access.
 #[no_mangle]
 pub unsafe extern "C" fn bunnltk_wasm_segmentation_score(
     ap: u32,
@@ -171,6 +195,9 @@ pub unsafe extern "C" fn bunnltk_wasm_segmentation_score(
     })();
     scalar(result, out)
 }
+/// # Safety
+/// All pointer arguments are offsets into WASM linear memory and are
+/// range-checked against the memory size before any access.
 #[no_mangle]
 pub unsafe extern "C" fn bunnltk_wasm_confusion_build(
     ap: u32,
@@ -235,6 +262,9 @@ pub unsafe extern "C" fn bunnltk_wasm_confusion_build(
         Err(e) => status(e),
     }
 }
+/// # Safety
+/// All pointer arguments are offsets into WASM linear memory and are
+/// range-checked against the memory size before any access.
 #[no_mangle]
 pub unsafe extern "C" fn bunnltk_wasm_confusion_score(
     op: u32,
@@ -250,6 +280,9 @@ pub unsafe extern "C" fn bunnltk_wasm_confusion_score(
     )
 }
 
+/// # Safety
+/// All pointer arguments are offsets into WASM linear memory and are
+/// range-checked against the memory size before any access.
 #[no_mangle]
 pub unsafe extern "C" fn bunnltk_wasm_translation_score(
     op: u32,
@@ -279,6 +312,9 @@ pub unsafe extern "C" fn bunnltk_wasm_translation_score(
         out,
     )
 }
+/// # Safety
+/// All pointer arguments are offsets into WASM linear memory and are
+/// range-checked against the memory size before any access.
 #[no_mangle]
 pub unsafe extern "C" fn bunnltk_wasm_nist_length_score(
     reference: f64,

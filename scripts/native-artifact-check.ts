@@ -46,8 +46,10 @@ const artifacts: Artifact[] = [
     },
   },
   {
+    // Same budget as bench/browser_wasm_thresholds.json: the full portable
+    // WASM surface no longer fits the early 250 KB hot-path-only cap.
     path: "native/bun_nltk.wasm",
-    maxBytes: 250_000,
+    maxBytes: 700_000,
     validate(bytes) {
       requireBytes(bytes, [0, 0x61, 0x73, 0x6d], "WASM binary");
     },

@@ -128,12 +128,8 @@ pub fn nist_length_penalty(reference: f64, hypothesis: f64) -> MetricResult {
     Ok(Some(if ratio > 0.0 && ratio < 1.0 {
         let beta = 0.5f64.ln() / 1.5f64.ln().powi(2);
         (beta * ratio.ln().powi(2)).exp()
-    } else if ratio > 1.0 {
-        1.0
-    } else if ratio < 0.0 {
-        0.0
     } else {
-        ratio
+        ratio.clamp(0.0, 1.0)
     }))
 }
 pub fn nist(sentences: &[Sentence<'_>], order: usize) -> MetricResult {

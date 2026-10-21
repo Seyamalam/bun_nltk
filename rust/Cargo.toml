@@ -16,8 +16,14 @@ codegen-units = 1
 panic = "abort"
 strip = true
 
+# Browser bundle profile: same sources as release, tuned for download size.
+# Native builds keep opt-level 3; only the wasm32 build uses this profile.
+[profile.wasm]
+inherits = "release"
+opt-level = "z"
+lto = "fat"
+
 [dependencies]
-serde = { version = "=1.0.229", features = ["derive"] }
-serde_json = { version = "=1.0.151", features = ["float_roundtrip"] }
-regex = { version = "=1.13.1", default-features = false, features = ["std"] }
-unicode-general-category = "=1.1.0"
+serde = { version = "=1.0.229", default-features = false, features = ["derive", "alloc"] }
+serde_json = { version = "=1.0.151", default-features = false, features = ["std"] }
+regex-lite = "=0.1.9"

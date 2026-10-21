@@ -1,7 +1,8 @@
-import { existsSync } from "node:fs";
-import { createRequire } from "node:module";
-import { resolve } from "node:path";
 import { assertFinite, assertLinearTraining, assertOffsets, assertPerceptronBuffers, assertProduct, assertU32 } from "./numeric_validation.ts";
+
+// Node builtins are required lazily inside the functions that use them:
+// shared portable chunks can reach this module in a browser, where static
+// `node:` imports would fail before any native call is attempted.
 
 function toNumber(value: number | bigint): number {
   return typeof value === "bigint" ? Number(value) : value;
@@ -11,16 +12,13 @@ const moduleDir = typeof import.meta.dir === "string"
   ? import.meta.dir
   : new URL(".", import.meta.url).pathname;
 
-const ext = process.platform === "win32" ? "dll" : process.platform === "darwin" ? "dylib" : "so";
-const prebuiltLibPath = resolve(
-  moduleDir,
-  "..",
-  "native",
-  "prebuilt",
-  `${process.platform}-${process.arch}`,
-  `bun_nltk.${ext}`,
-);
-const nativeLibPath = process.env.BUN_NLTK_NATIVE_LIB ?? prebuiltLibPath;
+// This module can be reached from shared portable chunks in a browser,
+// where `process` does not exist. Native calls still fail with the
+// Bun-required error below; only the path probe must be inert there.
+const hasProcess = typeof process !== "undefined";
+const ext = hasProcess && process.platform === "win32" ? "dll" : hasProcess && process.platform === "darwin" ? "dylib" : "so";
+const prebuiltLibPath = `${moduleDir}/../native/prebuilt/${hasProcess ? process.platform : "unknown"}-${hasProcess ? process.arch : "unknown"}/bun_nltk.${ext}`;
+const nativeLibPath = (hasProcess ? process.env.BUN_NLTK_NATIVE_LIB : undefined) ?? prebuiltLibPath;
 
 type BunFfi = typeof import("bun:ffi");
 let ffiCache: BunFfi | undefined;
@@ -30,12 +28,10 @@ function bunFfi(): BunFfi {
   if (typeof Bun === "undefined") {
     throw new Error("bun_nltk native APIs require Bun. Use bun_nltk/wasm for Node.js and browsers.");
   }
-  const require = createRequire(import.meta.url);
-  try {
-    ffiCache = require("bun:ffi") as BunFfi;
-  } catch (error) {
-    throw new Error("bun_nltk native APIs require Bun. Use bun_nltk/wasm for Node.js and browsers.", { cause: error });
-  }
+  // Bun.FFI is the same surface as the "bun:ffi" module, reached through the
+  // global so bundlers do not inject a Node `createRequire` shim into
+  // browser-shared chunks.
+  ffiCache = (Bun as unknown as { FFI: BunFfi }).FFI;
   return ffiCache;
 }
 
@@ -372,7 +368,7 @@ let libraryCache: NativeLibrary | undefined;
 function nativeLib(): NativeLibrary {
   if (libraryCache) return libraryCache;
   const ffi = bunFfi();
-  if (!existsSync(nativeLibPath)) {
+  if (Bun.file(nativeLibPath).size === 0) {
     throw new Error(
       `native library not found for platform=${process.platform} arch=${process.arch}: ${nativeLibPath}.` +
         `\nSupported prebuilt targets: darwin-arm64, linux-x64, win32-x64.` +

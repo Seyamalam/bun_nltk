@@ -2,7 +2,7 @@ export { WasmNltk, type WasmNltkInit } from './wasm.js';
 export { type GrammarSymbol, Nonterminal, Production, CFG as RustCFG, RustEarleyParser, type RustParseOptions, type RustParseResult, type RustTreeOrder, type RustTreePosition, type StringTree, Tree, type TreeFormatOptions, nonterminals } from './rust_parse.js';
 export { type PositiveFeatureOptions, RustNaiveBayesClassifier, RustPositiveNaiveBayesClassifier } from './feature_nb.js';
 export { type FeatureTreeOptions, RustDecisionTreeClassifier } from './feature_tree.js';
-export { type FeatureMaxentOptions, type FeatureMaxentSerialized, RustMaxentClassifier } from './feature_maxent.js';
+export { type a as FeatureMaxentOptions, type g as FeatureMaxentSerialized, R as RustMaxentClassifier } from './types/feature_maxent.d-CKmlWHYi.js';
 export { type BlanklineHandling, type TokenSpan } from './tokenizer_types.js';
 export { BlanklineTokenizer, LineTokenizer, SpaceTokenizer, TabTokenizer, WhitespaceTokenizer, blanklineTokenize, blanklineTokenize as blankline_tokenize, lineTokenize, lineTokenize as line_tokenize } from './tokenizers_basic.js';
 export { type FeatureSet, type FeatureValue, type LabeledFeatureset } from './feature_types.js';

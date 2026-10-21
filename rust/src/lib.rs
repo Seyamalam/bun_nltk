@@ -13,6 +13,7 @@ pub mod freqdist;
 pub mod hmm;
 pub mod linear;
 pub mod lm;
+pub mod maxent_encoding;
 pub mod metrics;
 pub mod morphy;
 pub mod naive_bayes;
@@ -25,9 +26,6 @@ pub mod perceptron;
 pub mod porter;
 pub mod positive_categorical_nb;
 pub mod probability_contracts;
-pub mod maxent_encoding;
-#[cfg(any(target_arch = "wasm32", test))]
-pub mod wasm_probability_contracts;
 pub mod punkt;
 pub mod punkt_unicode;
 pub mod stopwords;
@@ -37,9 +35,12 @@ pub mod tagger;
 pub mod text_linear;
 pub mod text_naive_bayes;
 pub mod token_ids;
+mod tokenizer_unicode;
 pub mod tokenizers;
 pub mod translation;
 pub mod translation_metrics;
+#[cfg(any(target_arch = "wasm32", test))]
+pub mod wasm_probability_contracts;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub mod wordnet;
@@ -49,11 +50,11 @@ pub mod ffi;
 
 pub mod wasm_decision_tree;
 pub mod wasm_exports;
-pub mod wasm_metrics_stream;
-pub mod wasm_tokenizers;
-pub mod wasm_punkt;
 pub mod wasm_metrics;
+pub mod wasm_metrics_stream;
+pub mod wasm_punkt;
 pub mod wasm_text_naive_bayes;
+pub mod wasm_tokenizers;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CoreError {

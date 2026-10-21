@@ -1,11 +1,13 @@
 import { RustNaiveBayesClassifier, PositiveFeatureOptions } from './feature_nb.js';
 export { RustPositiveNaiveBayesClassifier } from './feature_nb.js';
-import { RustMaxentClassifier, FeatureMaxentOptions } from './feature_maxent.js';
-export { type FeatureMaxentSerialized } from './feature_maxent.js';
+import { P as ProbDistLike, F as FreqDist, D as DictionaryProbDist, R as RustMaxentClassifier, a as FeatureMaxentOptions, C as ConditionalProbDist } from './types/feature_maxent.d-CKmlWHYi.js';
+import { MaxentEncodingExample, MaxentFeatureset } from './feature_maxent.js';
+export { B as BinaryMaxentFeatureEncoding, c as ConditionalFreqDist, type d as ConditionalFreqDistInput, e as ConditionalProbDistI, f as DictionaryConditionalProbDist, E as ELEProbDist, type g as FeatureMaxentSerialized, type h as FreqDistInput, L as LaplaceProbDist, i as LidstoneProbDist, j as MLEProbDist, k as MutableProbDist, l as PYTHON_BOOL, m as PYTHON_FLOAT, n as PYTHON_INT, type o as ProbDistFactory, p as ProbDistI, S as SimpleGoodTuringProbDist, T as TypedMaxentFeatureEncoding, U as UniformProbDist, W as WittenBellProbDist, q as addLogs, q as add_logs, r as entropy, s as logLikelihood, s as log_likelihood, t as pythonFloat, u as sumLogs, u as sum_logs } from './types/feature_maxent.d-CKmlWHYi.js';
 import { RustDecisionTreeClassifier, FeatureTreeOptions } from './feature_tree.js';
 export { MWETokenizer, type NgramOptions, type PunktModelSerialized, PunktSentenceTokenizer, PunktSentenceTokenizerSubset, PunktTrainer, PunktTrainerSubset, type PunktTrainingOptions, ToktokTokenizer, TweetTokenizer, bigramWindowStatsAsciiIds as bigramWindowStatsAsciiIdsJs, bigramWindowStatsAscii as bigramWindowStatsAsciiJs, bigramWindowStatsAsciiIds as bigram_window_stats_ascii_ids_js, bigramWindowStatsAscii as bigram_window_stats_ascii_js, bigrams, computeAsciiMetrics as computeAsciiMetricsJs, computeAsciiMetrics as compute_ascii_metrics_js, countNgramsAscii as countNgramsAsciiJs, countTokensAscii as countTokensAsciiJs, countUniqueNgramsAscii as countUniqueNgramsAsciiJs, countUniqueTokensAscii as countUniqueTokensAsciiJs, countNgramsAscii as count_ngrams_ascii_js, countTokensAscii as count_tokens_ascii_js, countUniqueNgramsAscii as count_unique_ngrams_ascii_js, countUniqueTokensAscii as count_unique_tokens_ascii_js, defaultPunktModel, defaultPunktModel as default_punkt_model, everygramsAscii, everygramsAscii as everygrams_ascii, hashNgram, hashTokenAscii, hashNgram as hash_ngram, hashTokenAscii as hash_token_ascii, mweTokenize, mweTokenize as mwe_tokenize, ngramFreqDistHashAscii as ngramFreqDistHashAsciiJs, ngramFreqDistHashAscii as ngram_freq_dist_hash_ascii_js, ngrams, ngramsAscii, ngramsAscii as ngrams_ascii, ngrams_iter, normalizeTokensAscii, normalizeTokensUnicode, normalizeTokensAscii as normalize_tokens_ascii, normalizeTokensUnicode as normalize_tokens_unicode, parsePunktModel, parsePunktModel as parse_punkt_model, posTagAscii, posTagAscii as pos_tag_ascii, sent_tokenize, sentenceTokenizePunkt, sentenceTokenizePunktCompat, sentenceTokenizeSubset, sentenceTokenizePunkt as sentence_tokenize_punkt, sentenceTokenizePunktCompat as sentence_tokenize_punkt_compat, sentenceTokenizeSubset as sentence_tokenize_subset, serializePunktModel, serializePunktModel as serialize_punkt_model, skipgramsAscii, skipgramsAscii as skipgrams_ascii, tokenFreqDistHashAscii as tokenFreqDistHashAsciiJs, tokenFreqDistIdsAscii as tokenFreqDistIdsAsciiJs, tokenFreqDistHashAscii as token_freq_dist_hash_ascii_js, tokenFreqDistIdsAscii as token_freq_dist_ids_ascii_js, tokenizeAscii, tokenizeAscii as tokenize_ascii, toktokTokenize, toktokTokenize as toktok_tokenize, topPmiBigramsAscii as topPmiBigramsAsciiJs, topPmiBigramsAscii as top_pmi_bigrams_ascii_js, trainPunktModel, trainPunktModel as train_punkt_model, trigrams, tweetTokenize, tweetTokenizeSubset, tweetTokenize as tweet_tokenize, tweetTokenizeSubset as tweet_tokenize_subset, wordTokenizeSubset, word_tokenize, wordTokenizeSubset as word_tokenize_subset, wordpunct_tokenize } from './index.browser.js';
 export { type BlanklineHandling, type TokenSpan } from './tokenizer_types.js';
-import { FeatureValue, FeatureSet, LabeledFeatureset } from './feature_types.js';
+import { FeatureSet, LabeledFeatureset } from './feature_types.js';
+export { type FeatureValue } from './feature_types.js';
 export { type BleuWeights, type ConfusionMatrixResult, type EditDistanceOptions, confusionMatrix, confusionMatrix as confusion_matrix, corpusBleu, corpusBleu as corpus_bleu, editDistance, editDistance as edit_distance, sentenceBleu, sentenceBleu as sentence_bleu } from './metrics.js';
 import { WasmNltk } from './wasm.js';
 export { type WasmNltkInit } from './wasm.js';
@@ -17,6 +19,63 @@ export { ConfusionMatrix, accuracy } from './confusion_metrics.js';
 export { ParsingRuntime } from './parsing_runtime.js';
 export { TreebankWordDetokenizer, TreebankWordTokenizer, WordPunctTokenizer, treebankWordTokenize, treebankWordTokenize as treebank_word_tokenize, wordPunctTokenize, wordPunctTokenize as word_punct_tokenize } from './tokenizers_treebank.js';
 import './metrics_wasm.js';
+
+/** NLTK intentionally returns None for unseen values when Nr(0) is zero. */
+declare class HeldoutProbDist<T> {
+    private readonly base;
+    private readonly held;
+    readonly SUM_TO_ONE = false;
+    private readonly countEstimates;
+    private readonly maxCount;
+    private readonly unseen;
+    constructor(base: FreqDist<T>, held: FreqDist<T>, bins?: number | null);
+    base_fdist(): FreqDist<T>;
+    heldout_fdist(): FreqDist<T>;
+    prob(sample: T): number | null;
+    logprob(sample: T): number;
+    logProb(sample: T): number;
+    samples(): Iterable<T>;
+    max(): T;
+    discount(): never;
+    toString(): string;
+}
+declare abstract class CrossValidationProbDist<T> implements ProbDistLike<T> {
+    readonly SUM_TO_ONE = false;
+    private readonly estimates;
+    private readonly unseen;
+    private readonly noPairs;
+    private readonly sampleValues;
+    private readonly distributions;
+    constructor(freqdists: Iterable<FreqDist<T>>, bins: number | null);
+    freqdists(): FreqDist<T>[];
+    prob(sample: T): number;
+    logprob(sample: T): number;
+    logProb(sample: T): number;
+    samples(): Iterable<T>;
+    abstract max(): T;
+    discount(): never;
+    toString(): string;
+}
+type Trigram<T> = readonly [T, T, T];
+declare class KneserNeyProbDist<T> implements ProbDistLike<Trigram<T>> {
+    private readonly freqdist;
+    readonly SUM_TO_ONE = true;
+    private readonly symbols;
+    private readonly handle;
+    private disposed;
+    private discountValue;
+    constructor(freqdist: FreqDist<Trigram<T>>, _bins?: number | null, discount?: number);
+    private ids;
+    prob(trigram: Trigram<T>): number;
+    logprob(sample: Trigram<T>): number;
+    logProb(sample: Trigram<T>): number;
+    discount(): number;
+    set_discount(value: number): void;
+    samples(): Iterable<Trigram<T>>;
+    max(): Trigram<T>;
+    dispose(): void;
+    toString(): string;
+}
 
 declare function countTokensAscii(text: string): number;
 declare function countTokensAsciiScalar(text: string): number;
@@ -439,77 +498,6 @@ declare class ImmutableTree extends ParentedTree {
     removeChild(_index: number): never;
 }
 
-type FreqDistInput<S> = FreqDist<S> | ReadonlyMap<S, number> | Iterable<S> | Record<string, number>;
-type ConditionalFreqDistInput<C, S> = ConditionalFreqDist<C, S> | ReadonlyMap<C, FreqDist<S>> | Iterable<readonly [C, S]>;
-declare class FreqDist<S> implements Iterable<S> {
-    #private;
-    constructor(samples?: FreqDistInput<S>);
-    static fromTextAscii(text: string, options?: {
-        native?: boolean;
-    }): FreqDist<string>;
-    get(sample: S): number;
-    count(sample: S): number;
-    has(sample: S): boolean;
-    set(sample: S, count: number): this;
-    inc(sample: S, count?: number): this;
-    delete(sample: S): boolean;
-    clear(): void;
-    update(samples?: FreqDistInput<S>): this;
-    N(): number;
-    B(): number;
-    freq(sample: S): number;
-    max(): S;
-    hapaxes(): S[];
-    r_Nr(bins?: number): Record<number, number>;
-    Nr(r: number, bins?: number): number;
-    mostCommon(count?: number): Array<[S, number]>;
-    samples(): S[];
-    copy(): FreqDist<S>;
-    add(other: FreqDist<S>): FreqDist<S>;
-    subtract(other: FreqDist<S>): FreqDist<S>;
-    union(other: FreqDist<S>): FreqDist<S>;
-    intersection(other: FreqDist<S>): FreqDist<S>;
-    isSubsetOf(other: FreqDist<S>): boolean;
-    isSupersetOf(other: FreqDist<S>): boolean;
-    equals(other: FreqDist<S>): boolean;
-    pformat(maxlen?: number): string;
-    pprint(maxlen?: number, writer?: (line: string) => void): void;
-    keys(): IterableIterator<S>;
-    values(): IterableIterator<number>;
-    entries(): IterableIterator<[S, number]>;
-    [Symbol.iterator](): IterableIterator<S>;
-    toString(): string;
-}
-declare class ConditionalFreqDist<C, S> implements Iterable<C> {
-    #private;
-    constructor(condSamples?: ConditionalFreqDistInput<C, S>);
-    static fromTaggedTextAscii(text: string, options?: {
-        native?: boolean;
-    }): ConditionalFreqDist<string, string>;
-    get(condition: C): FreqDist<S>;
-    peek(condition: C): FreqDist<S> | undefined;
-    has(condition: C): boolean;
-    set(condition: C, dist: FreqDist<S>): this;
-    delete(condition: C): boolean;
-    clear(): void;
-    update(condSamples?: ConditionalFreqDistInput<C, S>): this;
-    conditions(): C[];
-    N(): number;
-    copy(): ConditionalFreqDist<C, S>;
-    add(other: ConditionalFreqDist<C, S>): ConditionalFreqDist<C, S>;
-    subtract(other: ConditionalFreqDist<C, S>): ConditionalFreqDist<C, S>;
-    union(other: ConditionalFreqDist<C, S>): ConditionalFreqDist<C, S>;
-    intersection(other: ConditionalFreqDist<C, S>): ConditionalFreqDist<C, S>;
-    isSubsetOf(other: ConditionalFreqDist<C, S>): boolean;
-    isSupersetOf(other: ConditionalFreqDist<C, S>): boolean;
-    equals(other: ConditionalFreqDist<C, S>): boolean;
-    keys(): IterableIterator<C>;
-    values(): IterableIterator<FreqDist<S>>;
-    entries(): IterableIterator<[C, FreqDist<S>]>;
-    [Symbol.iterator](): IterableIterator<C>;
-    toString(): string;
-}
-
 type BigramScoreFn<_T> = (n_ii: number, marginals: [number, number], total: number) => number;
 type TrigramScoreFn<_T> = (n_iii: number, bigramMarginals: [number, number, number], unigramMarginals: [number, number, number], total: number) => number;
 type QuadgramScoreFn<_T> = (n_iiii: number, trigramMarginals: [number, number, number, number], bigramMarginals: [number, number, number, number, number, number], unigramMarginals: [number, number, number, number], total: number) => number;
@@ -636,233 +624,6 @@ declare class QuadgramCollocationFinder<T = string> {
     scoreNgrams(scoreFn: QuadgramScoreFn<T>): Array<[[T, T, T, T], number]>;
     nbest(scoreFn: QuadgramScoreFn<T>, count: number): Array<[T, T, T, T]>;
     aboveScore(scoreFn: QuadgramScoreFn<T>, minScore: number): IterableIterator<[T, T, T, T]>;
-}
-
-/** NLTK intentionally returns None for unseen values when Nr(0) is zero. */
-declare class HeldoutProbDist<T> {
-    private readonly base;
-    private readonly held;
-    readonly SUM_TO_ONE = false;
-    private readonly countEstimates;
-    private readonly maxCount;
-    private readonly unseen;
-    constructor(base: FreqDist<T>, held: FreqDist<T>, bins?: number | null);
-    base_fdist(): FreqDist<T>;
-    heldout_fdist(): FreqDist<T>;
-    prob(sample: T): number | null;
-    logprob(sample: T): number;
-    logProb(sample: T): number;
-    samples(): Iterable<T>;
-    max(): T;
-    discount(): never;
-    toString(): string;
-}
-declare abstract class CrossValidationProbDist<T> implements ProbDistLike<T> {
-    readonly SUM_TO_ONE = false;
-    private readonly estimates;
-    private readonly unseen;
-    private readonly noPairs;
-    private readonly sampleValues;
-    private readonly distributions;
-    constructor(freqdists: Iterable<FreqDist<T>>, bins: number | null);
-    freqdists(): FreqDist<T>[];
-    prob(sample: T): number;
-    logprob(sample: T): number;
-    logProb(sample: T): number;
-    samples(): Iterable<T>;
-    abstract max(): T;
-    discount(): never;
-    toString(): string;
-}
-type Trigram<T> = readonly [T, T, T];
-declare class KneserNeyProbDist<T> implements ProbDistLike<Trigram<T>> {
-    private readonly freqdist;
-    readonly SUM_TO_ONE = true;
-    private readonly symbols;
-    private readonly handle;
-    private disposed;
-    private discountValue;
-    constructor(freqdist: FreqDist<Trigram<T>>, _bins?: number | null, discount?: number);
-    private ids;
-    prob(trigram: Trigram<T>): number;
-    logprob(sample: Trigram<T>): number;
-    logProb(sample: Trigram<T>): number;
-    discount(): number;
-    set_discount(value: number): void;
-    samples(): Iterable<Trigram<T>>;
-    max(): Trigram<T>;
-    dispose(): void;
-    toString(): string;
-}
-
-interface ProbDistLike<T> {
-    prob(sample: T): number;
-    logprob(sample: T): number;
-    logProb?(sample: T): number;
-    max(): T;
-    samples(): Iterable<T>;
-}
-declare function addLogs(logx: number, logy: number): number;
-declare function sumLogs(logs: number[]): number;
-declare function logLikelihood<T>(testPdist: ProbDistLike<T>, actualPdist: ProbDistLike<T>): number;
-declare function entropy<T>(pdist: ProbDistLike<T>): number;
-declare abstract class ProbDistI<T> implements ProbDistLike<T> {
-    abstract prob(sample: T): number;
-    abstract max(): T;
-    abstract samples(): Iterable<T>;
-    logprob(sample: T): number;
-    logProb(sample: T): number;
-}
-declare class DictionaryProbDist<T> extends ProbDistI<T> {
-    #private;
-    constructor(probDict?: ReadonlyMap<T, number> | Record<string, number>, log?: boolean, normalize?: boolean);
-    prob(sample: T): number;
-    logprob(sample: T): number;
-    max(): T;
-    samples(): IterableIterator<T>;
-    toString(): string;
-}
-declare class MLEProbDist<T> extends ProbDistI<T> {
-    private readonly freqDistValue;
-    constructor(freqDistValue: FreqDist<T>);
-    freqdist(): FreqDist<T>;
-    prob(sample: T): number;
-    max(): T;
-    samples(): Iterable<T>;
-    toString(): string;
-}
-declare class LidstoneProbDist<T> extends ProbDistI<T> {
-    protected readonly freqDistValue: FreqDist<T>;
-    protected gammaValue: number;
-    protected readonly totalCount: number;
-    protected readonly binsValue: number;
-    protected divisor: number;
-    constructor(freqdist: FreqDist<T>, gamma: number, bins?: number);
-    freqdist(): FreqDist<T>;
-    prob(sample: T): number;
-    max(): T;
-    samples(): Iterable<T>;
-    discount(): number;
-    toString(): string;
-}
-declare class LaplaceProbDist<T> extends LidstoneProbDist<T> {
-    constructor(freqdist: FreqDist<T>, bins?: number);
-    toString(): string;
-}
-declare class ELEProbDist<T> extends LidstoneProbDist<T> {
-    constructor(freqdist: FreqDist<T>, bins?: number);
-    toString(): string;
-}
-type ProbDistFactory<T, Args extends unknown[] = []> = (new (freqdist: FreqDist<T>, ...args: Args) => ProbDistLike<T>) | ((freqdist: FreqDist<T>, ...args: Args) => ProbDistLike<T>);
-declare class WittenBellProbDist<T> extends ProbDistI<T> {
-    #private;
-    constructor(freqdist: FreqDist<T>, bins?: number);
-    prob(sample: T): number;
-    max(): T;
-    samples(): Iterable<T>;
-    freqdist(): FreqDist<T>;
-    discount(): never;
-    toString(): string;
-}
-declare class SimpleGoodTuringProbDist<T> extends ProbDistI<T> {
-    #private;
-    constructor(freqdist: FreqDist<T>, bins?: number);
-    smoothedNr(r: number): number;
-    prob(sample: T): number;
-    discount(): number;
-    max(): T;
-    samples(): Iterable<T>;
-    freqdist(): FreqDist<T>;
-    toString(): string;
-}
-declare class UniformProbDist<T> extends ProbDistI<T> {
-    #private;
-    constructor(samples: Iterable<T>);
-    prob(sample: T): number;
-    max(): T;
-    samples(): Iterable<T>;
-}
-declare class MutableProbDist<T> extends ProbDistI<T> {
-    #private;
-    constructor(probDist: ProbDistLike<T>, samples: Iterable<T>, storeLogs?: boolean);
-    update(sample: T, value: number, log?: boolean): void;
-    prob(sample: T): number;
-    logprob(sample: T): number;
-    max(): T;
-    samples(): IterableIterator<T>;
-}
-declare abstract class ConditionalProbDistI<C, T> {
-    abstract get(condition: C): ProbDistLike<T>;
-    abstract conditions(): C[];
-}
-
-declare class ConditionalProbDist<C, T, Args extends unknown[] = unknown[]> extends ConditionalProbDistI<C, T> {
-    #private;
-    private readonly cfdist;
-    constructor(cfdist: ConditionalFreqDist<C, T>, probdistFactory: ProbDistFactory<T, Args>, ...factoryArgs: Args);
-    get(condition: C): ProbDistLike<T>;
-    peek(condition: C): ProbDistLike<T> | undefined;
-    conditions(): C[];
-    prob(condition: C, sample: T): number;
-    logprob(condition: C, sample: T): number;
-    logProb(condition: C, sample: T): number;
-    entries(): IterableIterator<[C, ProbDistLike<T>]>;
-}
-declare class DictionaryConditionalProbDist<C, T> extends ConditionalProbDistI<C, T> {
-    private readonly distributions;
-    constructor(probdists: ReadonlyMap<C, ProbDistLike<T>> | Iterable<readonly [C, ProbDistLike<T>]>);
-    update(probdists: Iterable<readonly [C, ProbDistLike<T>]>): void;
-    get(condition: C): ProbDistLike<T>;
-    peek(condition: C): ProbDistLike<T> | undefined;
-    conditions(): C[];
-    entries(): IterableIterator<[C, ProbDistLike<T>]>;
-}
-
-/** Preserve Python float-vs-int identity, including integral floats (1.0). */
-type PythonFloatFeature = {
-    readonly pythonType: "float";
-    readonly value: number;
-};
-declare function pythonFloat(value: number): PythonFloatFeature;
-declare const PYTHON_INT: unique symbol;
-declare const PYTHON_FLOAT: unique symbol;
-declare const PYTHON_BOOL: unique symbol;
-type MaxentFeatureValue = FeatureValue | PythonFloatFeature;
-type MaxentFeatureset = Record<string, MaxentFeatureValue>;
-type MaxentEncodingExample = readonly [MaxentFeatureset, string];
-type MaxentMappingValue = MaxentFeatureValue | typeof PYTHON_INT | typeof PYTHON_FLOAT | typeof PYTHON_BOOL;
-type MaxentFeatureMapping = Iterable<readonly [readonly [string, MaxentMappingValue, string], number]>;
-type MaxentEncodingOptions = {
-    unseen_features?: boolean;
-    alwayson_features?: boolean;
-};
-/** Rust-owned NLTK joint encoding, independent of classifier training. */
-declare class BinaryMaxentFeatureEncoding {
-    protected typed: boolean;
-    private readonly names;
-    private readonly values;
-    private readonly valueObjects;
-    private readonly displayIds;
-    private readonly labelIds;
-    private labelNames;
-    private handle;
-    private descriptors;
-    private disposed;
-    constructor(labels: Iterable<string>, mapping: MaxentFeatureMapping, unseen_features?: boolean, alwayson_features?: boolean);
-    private label;
-    private value;
-    private display;
-    private inputs;
-    private readDescriptors;
-    static train(train_toks: Iterable<MaxentEncodingExample>, count_cutoff?: number, labels?: Iterable<string> | null, options?: MaxentEncodingOptions): BinaryMaxentFeatureEncoding;
-    encode(featureset: MaxentFeatureset, label: string): Array<[number, number]>;
-    labels(): string[];
-    length(): number;
-    describe(f_id: number): string;
-    dispose(): void;
-}
-declare class TypedMaxentFeatureEncoding extends BinaryMaxentFeatureEncoding {
-    static train(train_toks: Iterable<MaxentEncodingExample>, count_cutoff?: number, labels?: Iterable<string> | null, options?: MaxentEncodingOptions): TypedMaxentFeatureEncoding;
 }
 
 type ConcordanceLine = {
@@ -1399,9 +1160,14 @@ type MaxentCompatOptions = Omit<FeatureMaxentOptions, "algorithm"> & {
 declare class MaxentClassifier extends FeatureClassifierBase {
     private readonly model;
     constructor(model: RustMaxentClassifier | MaxEntTextClassifier);
-    static train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: MaxentCompatOptions): MaxentClassifier;
-    classify(featureset: FeatureSet): string;
-    probClassify(featureset: FeatureSet): DictionaryProbDist<string>;
+    static train(labeledFeaturesets: Iterable<MaxentEncodingExample>, options?: MaxentCompatOptions): MaxentClassifier;
+    classify(featureset: MaxentFeatureset): string;
+    probClassify(featureset: MaxentFeatureset): DictionaryProbDist<string>;
+    classifyMany(featuresets: Iterable<MaxentFeatureset>): string[];
+    probClassifyMany(featuresets: Iterable<MaxentFeatureset>): DictionaryProbDist<string>[];
+    prob_classify(featureset: MaxentFeatureset): DictionaryProbDist<string>;
+    classify_many(featuresets: Iterable<MaxentFeatureset>): string[];
+    prob_classify_many(featuresets: Iterable<MaxentFeatureset>): DictionaryProbDist<string>[];
     dispose(): void;
     protected classifyText(text: string): string;
     protected probClassifyText(text: string): DictionaryProbDist<string>;
@@ -6398,5 +6164,5 @@ declare class PorterStemmer {
     stem(token: string, to_lowercase?: boolean): string;
 }
 
-export { MAX_ALIGN_INPUT_LEN as ALINE_MAX_INPUT_LEN, APP, ARLSTem, ARLSTem2, Agenda, AlignmentInfo, AllExpression, AnnotationTask, ApplicationExpression$1 as ApplicationExpression, ApplicationRuleSet, BLOCK_COMPARISON, BackwardApplication, BackwardBx, BackwardCombinator, BackwardComposition, BackwardSx, BackwardT, BackwardTypeRaiseRule, BaseModelBuilderCommand, BaseProverCommand, BaseTheoremToolCommand, BigramAssocMeasures, BigramCollocationFinder, BigramTagger, BinaryCombinatorRule, BinaryMaxentFeatureEncoding, BindingDict, BindingException, BllipParser, Boxer, BrillTagger, BrillTaggerTrainer, CCGCat, CCGChart, CCGChartParser, CCGEdge, CCGLeafEdge, CCGLexicon, CCGVar, CFG, CRFTagger, Categories, CfgReadingCommand, ChartParser, Chat80CorpusReader, CistemStemmer, Clause, ClusterI, CompositionRuleSet, ConcordanceIndex, ConditionalExponentialTextClassifier, ConditionalFreqDist, ConditionalProbDist, ConditionalProbDistI, ConstantExpression$1 as ConstantExpression, ContextIndex, ContextTagger, CoreNLPParser, CorpusReader, CrossValidationProbDist, DEFAULT_NE_GRAMMAR, DRS, DecisionTreeClassifier, DecisionTreeTextClassifier, DefaultRuleSet, DefaultTagger, Dendrogram, DendrogramNode, DictionaryConditionalProbDist, DictionaryProbDist, Direction, DiscourseTester, Downloader, DrtAbstractVariableExpression, DrtApplicationExpression, DrtConcatenation, DrtConstantExpression, DrtEqualityExpression, DrtEventVariableExpression, DrtFunctionVariableExpression, DrtGlueDemo, DrtGlueReadingCommand, DrtIndividualVariableExpression, DrtLambdaExpression, DrtNegatedExpression, DrtOrExpression, DrtParser, DrtProposition, DrtTokens, DrtVariableExpression, ELEProbDist, EMClusterer, EarleyChartParser, EventVariableExpression, ExistsExpression, ExpectedMoreTokensException, Expression$1 as Expression, FeatStruct, FeatureCFG, FeatureChartParser, FeatureEarleyChartParser, type FeatureMaxentOptions, type FeatureSet, type FeatureTreeOptions, type FeatureValue, ForwardApplication, ForwardCombinator, ForwardComposition, ForwardSubstitution, ForwardT, ForwardTypeRaiseRule, FreqDist, FunctionVariableExpression, FunctionalCategory, GAACClusterer, GAACluster, GAAClusterer, LanguageIndependent as GaleChurchLanguageIndependent, Glue, GlueDict, HeldoutProbDist, HiddenMarkovModelTagger, HiddenMarkovModelTrainer, HoleSemantics, HunPosTagger, Counts as IBMCounts, IBMModel1, IBMModel2, IBMModel3, IBMModel4, IBMModel5, MIN_PROB as IBM_MIN_PROB, ISRIStemmer, ISRI_STOP_WORDS, ImmutableTree, ImpExpression, IndividualVariableExpression, IotaExpression, KMeansClusterer, KneserNeyProbDist, type LabeledFeatureset, LambdaExpression, LancasterStemmer, LaplaceProbDist, LeftCornerChartParser, LegalitySyllableTokenizer, LidstoneProbDist, Atom as LinearAtom, GlueFormula$1 as LinearGlueFormula, LinearLogicParser, LinearSvmTextClassifier, LogicalExpressionException, LogisticTextClassifier, MAX_ALIGN_BLOCKS, MAX_GENERATE_OPERATIONS, MAX_PHRASE_EXTRACTION_DEFAULT_LEN, MLEProbDist, Mace, MaceCommand, MaltParser, MaxEntTextClassifier, MaxentClassifier, MegamMaxentClassifier, MinimalSet, ModelBuilder, ModelBuilderCommand, ModelBuilderCommandDecorator, MutableProbDist, NISTTokenizer, NaiveBayesClassifier, NaiveBayesTextClassifier, NativeFreqDistStream, NegatedExpression, NgramLanguageModel, NgramTagger, NonmonotonicProver, PCFG, PYTHON_BOOL, PYTHON_FLOAT, PYTHON_INT, Paice, ParExpression, ParentedTree, PerceptronTagger, PerceptronTextClassifier, PorterStemmer, Pos, type PositiveFeatureOptions, PositiveNaiveBayesClassifier, PositiveNaiveBayesTextClassifier, PrimitiveCategory, ProbDistI, Prover, Prover9, Prover9Command, Prover9CommandParent, Prover9Exception, Prover9FatalException, Prover9LimitExceededException, Prover9Parent, ProverCommand, ProverCommandDecorator, QuadgramAssocMeasures, QuadgramCollocationFinder, RSLPStemmer, ReadingCommand, RecursiveDescentParser, RegexpStemmer, RegexpTagger, ReppTokenizer, ResolutionProver, ResolutionProverCommand, ProverParseError$1 as ResolutionProverParseError, RteClassifier, RustDecisionTreeClassifier, RustMaxentClassifier, RustNaiveBayesClassifier, SEM_PACKAGE, SExprTokenizer, SNOWBALL_LANGUAGES, STEM_PACKAGE, LogicParser as SemLogicParser, SennaChunkTagger, SennaClassifier, SennaNERTagger, SennaTagger, SentimentAnalyzer, SentimentIntensityAnalyzer, SequentialBackoffTagger, ShiftReduceParser, SimpleGoodTuringProbDist, SklearnClassifier, type SNOWBALL_LANGUAGES as SnowballLanguages, SnowballStemmer, StackDecoder, StandardFormat, StanfordNERTagger, StanfordPOSTagger, StanfordParser, StanfordSegmenter, StanfordTokenizer, SubstitutionRuleSet, SvmClassifier, SyllableTokenizer, TAG_PACKAGE, TBL_PACKAGE, TRANSLATE_PACKAGE, HC as TT_HC, LC as TT_LC, TableauProver, TableauProverCommand, ProverParseError as TableauProverParseError, TadmMaxentClassifier, TblFeature, TblRule, Template, Text, TextCat, TextFeatureVectorizer, TextTilingTokenizer, TheoremToolCommand, TheoremToolCommandDecorator, TnT, Token, Tokens, ToolboxData, ToolboxSettings, TransitionParser, TreePrettyPrinter, TrigramAssocMeasures, TrigramCollocationFinder, TrigramTagger, TypeRaiseRuleSet, TypedMaxentFeatureEncoding, UndefinedError, UndirectedComposition, UndirectedFunctionApplication, UndirectedSubstitution, UndirectedTypeRaise, UnexpectedTokenException, UniformProbDist, UnigramTagger, VOCABULARY_INTRODUCTION, Variable, VectorSpaceClusterer, ViterbiParser, WasmNltk, WekaClassifier, WittenBellProbDist, Word, WordNet, WordNetLemmatizer, _build_tgrep_parser, _internal, addBlankLines, addDefaultFields, addLogs, add_blank_lines, add_default_fields, addLogs as add_logs, alignBlocks, alignLogProb, alignWords, alignBlocks as align_blocks, alignLogProb as align_log_prob, alignWords as align_words, align as alineAlign, delta as alineDelta, diff as alineDiff, align as aline_align, delta as aline_delta, diff as aline_diff, ancestors, app_chartparser_app_d as app_chartparser_app_ns, app_chunkparser_app_d as app_chunkparser_app_ns, app_collocations_app_d as app_collocations_app_ns, app_concordance_app_d as app_concordance_app_ns, app_nemo_app_d as app_nemo_app_ns, app_d as app_ns, app_rdparser_app_d as app_rdparser_app_ns, app_srparser_app_d as app_srparser_app_ns, app_wordfreq_app_d as app_wordfreq_app_ns, app_wordnet_app_d as app_wordnet_app_ns, augParseCategory, augParseCategory as aug_parse_category, averageObservedAgreement, averageObservedAgreement as average_observed_agreement, babelizeShell, babelize_shell, backwardOnly, backwardOnly as backward_only, barendregtNormalize, barendregtNormalize as barendregt_normalize, bigramWindowStatsAscii, bigramWindowStatsAsciiIds, bigramWindowStatsAscii as bigram_window_stats_ascii, bigramWindowStatsAsciiIds as bigram_window_stats_ascii_ids, book, bothBackward, bothForward, bothBackward as both_backward, bothForward as both_forward, bracketToTree, bracketToTree as bracket_to_tree, bubble, buildTemplates, buildTgrepParser, buildTemplates as build_templates, buildTgrepParser as build_tgrep_parser, chartParse, chartParse as chart_parse, chat_eliza_d as chat_eliza_ns, chat_iesha_d as chat_iesha_ns, chat_d as chat_ns, chat_rude_d as chat_rude_ns, chat_suntsu_d as chat_suntsu_ns, chat_util_d as chat_util_ns, chat_zen_d as chat_zen_ns, chunkIobIdsNative, chunkTreeToIob, chunkIobIdsNative as chunk_iob_ids_native, chunkTreeToIob as chunk_tree_to_iob, cistemStem, cistemStem as cistem_stem, clausify, clearTemplateRegistry, clearTemplateRegistry as clear_template_registry, cli_d as cli_ns, collapseUnaryChains, collapseUnaryChains as collapse_unary_chains, collections_d as collections_ns, compat_d as compat_ns, computeAsciiMetrics, computeCompositionSemantics, computeFunctionSemantics, computeSemantics, computeSubstitutionSemantics, computeTypeRaisedSemantics, computeAsciiMetrics as compute_ascii_metrics, computeCompositionSemantics as compute_composition_semantics, computeFunctionSemantics as compute_function_semantics, computeSemantics as compute_semantics, computeSubstitutionSemantics as compute_substitution_semantics, computeTypeRaisedSemantics as compute_type_raised_semantics, convertToProver9, convertToProver9 as convert_to_prover9, cooperStore, cooperStore as cooper_store, copyVector, copyVector as copy_vector, corpusGleu, corpusLepor, corpusRibes, corpus_europarl_raw_d as corpus_europarl_raw_ns, corpusGleu as corpus_gleu, corpusLepor as corpus_lepor, corpusRibes as corpus_ribes, cosineDistance, cosineDistance as cosine_distance, countNgramsAscii, countNormalizedTokensAscii, countNormalizedTokensAsciiScalar, countTokensAscii, countTokensAsciiScalar, countUniqueNgramsAscii, countUniqueTokensAscii, countNgramsAscii as count_ngrams_ascii, countNormalizedTokensAscii as count_normalized_tokens_ascii, countNormalizedTokensAsciiScalar as count_normalized_tokens_ascii_scalar, countTokensAscii as count_tokens_ascii, countTokensAsciiScalar as count_tokens_ascii_scalar, countUniqueNgramsAscii as count_unique_ngrams_ascii, countUniqueTokensAscii as count_unique_tokens_ascii, cykRecognizeIdsNative, cykRecognizeIdsNative as cyk_recognize_ids_native, data_d as data_ns, decorators_d as decorators_ns, demo$6 as demo, dependencyEvaluate, dependencyParse, dependencyParseText, dependencyEvaluate as dependency_evaluate, dependencyParse as dependency_parse, dependencyParseText as dependency_parse_text, dotProduct, dotProduct as dot_product, downloadCorpusRegistry, downloadCorpusRegistry as download_corpus_registry, draw_cfg_d as draw_cfg_ns, draw_dispersion_d as draw_dispersion_ns, draw_d as draw_ns, draw_table_d as draw_table_ns, draw_tree_d as draw_tree_ns, draw_util_d as draw_util_ns, earleyParse, earleyRecognize, earleyParse as earley_parse, earleyRecognize as earley_recognize, entropy, errorList, errorList as error_list, euclideanDistance, euclideanDistance as euclidean_distance, evaluateLanguageModelIdsNative, evaluateLanguageModelIdsNative as evaluate_language_model_ids_native, everygramsAsciiNative, everygramsAsciiNative as everygrams_ascii_native, exactMatch, exactMatch as exact_match, extractRels, extractRels as extract_rels, featureChartParse, featureEarleyParse, featureChartParse as feature_chart_parse, featureEarleyParse as feature_earley_parse, findIncreasingSequences, findIncreasingSequences as find_increasing_sequences, flattenSparseBatch, flattenSparseBatch as flatten_sparse_batch, forwardOnly, forwardOnly as forward_only, fromString, fromString as from_string, trace as galeChurchTrace, trace as gale_church_trace, generate, generateChomsky, generateSentences, generate_chomsky, generateSentences as generate_sentences, growDiagFinalAnd, growDiagFinalAnd as grow_diag_final_and, helpInfo, helpInfo as help_info, hmmViterbiIdsNative, hmmViterbiIdsNative as hmm_viterbi_ids_native, factorial as ibmFactorial, factorial as ibm_factorial, innermostFunction, innermostFunction as innermost_function, internals_d as internals_ns, invertDict, invertDict as invert_dict, is_eventvar, is_funcvar, is_indvar, jsontags_d as jsontags_ns, kendallTau, kendallTau as kendall_tau, kmeansFitEuclideanNative, kmeansFitEuclideanNative as kmeans_fit_euclidean_native, langnames_d as langnames_ns, lazyimport_d as lazyimport_ns, leadins, leftCornerParse, leftCornerParse as left_corner_parse, legalityTokenize, legalityTokenize as legality_tokenize, lengthPenalty, lengthPenalty as length_penalty, alignment as leporAlignment, alignment as lepor_alignment, lesk, lfgParse, lfgParse as lfg_parse, linearScoresSparseIdsNative, linearTextTrainNative, linearTrainSparseIdsNative, linearScoresSparseIdsNative as linear_scores_sparse_ids_native, linearTextTrainNative as linear_text_train_native, linearTrainSparseIdsNative as linear_train_sparse_ids_native, loadBundledMiniCorpus, loadConditionalExponentialTextClassifier, loadCorpusBundleFromIndex, loadCorpusRegistryManifest, loadDecisionTreeTextClassifier, loadLinearSvmTextClassifier, loadLogisticTextClassifier, loadMaxEntTextClassifier, loadNaiveBayesTextClassifier, loadPerceptronTaggerModel, loadPerceptronTextClassifier, loadPositiveNaiveBayesTextClassifier, loadWordNet, loadWordNetExtended, loadWordNetMini, loadWordNetPacked, loadBundledMiniCorpus as load_bundled_mini_corpus, loadConditionalExponentialTextClassifier as load_conditional_exponential_text_classifier, loadCorpusBundleFromIndex as load_corpus_bundle_from_index, loadCorpusRegistryManifest as load_corpus_registry_manifest, loadDecisionTreeTextClassifier as load_decision_tree_text_classifier, loadLinearSvmTextClassifier as load_linear_svm_text_classifier, loadLogisticTextClassifier as load_logistic_text_classifier, loadMaxEntTextClassifier as load_max_ent_text_classifier, loadNaiveBayesTextClassifier as load_naive_bayes_text_classifier, loadPerceptronTaggerModel as load_perceptron_tagger_model, loadPerceptronTextClassifier as load_perceptron_text_classifier, loadPositiveNaiveBayesTextClassifier as load_positive_naive_bayes_text_classifier, loadWordNet as load_word_net, loadWordNetExtended as load_word_net_extended, loadWordNetMini as load_word_net_mini, loadWordNetPacked as load_word_net_packed, logLikelihood, logLikelihood as log_likelihood, makeVariableExpression, makeVariableExpression as make_variable_expression, mapTag, mapTreeLabels, mapTag as map_tag, mapTreeLabels as map_tree_labels, meanVector, meanVector as mean_vector, memoize$1 as memoize, merge, meteorScore, meteorScore as meteor_score, mostGeneralUnification, mostGeneralUnification as most_general_unification, naiveBayesLogScoresIdsNative, naiveBayesLogScoresIdsNative as naive_bayes_log_scores_ids_native, nativeLibraryPath, nativeLibraryPath as native_library_path, neChunk, neChunkIob, neChunk as ne_chunk, neChunkIob as ne_chunk_iob, nextUniqueCounterValue, nextUniqueCounterValue as next_unique_counter_value, ngramFreqDistHashAscii, ngramPositionalPenalty, ngramFreqDistHashAscii as ngram_freq_dist_hash_ascii, ngramPositionalPenalty as ngram_positional_penalty, ngramsAsciiNative, ngramsAsciiNative as ngrams_ascii_native, nistInternationalTokenize, nistTokenize, nistInternationalTokenize as nist_international_tokenize, nistTokenize as nist_tokenize, normalizeTokens, normalizeTokensAsciiNative, normalizeVector, normalizeTokens as normalize_tokens, normalizeTokensAsciiNative as normalize_tokens_ascii_native, normalizeVector as normalize_vector, objects, openccgTinytiny, openccgTinytiny as openccg_tinytiny, p9ReturnCodes, p9ReturnCodes as p9_return_codes, pairwise, parseApplication, parseBrownTagged, parseCategory, parseCfgGrammar, parseConllChunked, parseConllTagged, parseFeatStruct, parseFeatureCfgGrammar, parseLexicon, parsePcfgGrammar, parseSFMString, parseSents, parseSubscripts, parseTextWithCfg, parseTextWithEarley, parseTextWithFeatureCfg, parseTextWithFeatureEarley, parseTextWithLeftCorner, parseTextWithPcfg, parseTextWithRecursiveDescent, parseApplication as parse_application, parseBrownTagged as parse_brown_tagged, parseCategory as parse_category, parseCfgGrammar as parse_cfg_grammar, parseConllChunked as parse_conll_chunked, parseConllTagged as parse_conll_tagged, parseFeatStruct as parse_feat_struct, parseFeatureCfgGrammar as parse_feature_cfg_grammar, parseLexicon as parse_lexicon, parsePcfgGrammar as parse_pcfg_grammar, parseSents as parse_sents, parseSFMString as parse_sfm_string, parseSubscripts as parse_subscripts, parseTextWithCfg as parse_text_with_cfg, parseTextWithEarley as parse_text_with_earley, parseTextWithFeatureCfg as parse_text_with_feature_cfg, parseTextWithFeatureEarley as parse_text_with_feature_earley, parseTextWithLeftCorner as parse_text_with_left_corner, parseTextWithPcfg as parse_text_with_pcfg, parseTextWithRecursiveDescent as parse_text_with_recursive_descent, perceptronPredictBatchNative, perceptronPredictBatchNative as perceptron_predict_batch_native, extract as phraseExtract, phraseExtraction, extract as phrase_extract, phraseExtraction as phrase_extraction, porterStemAscii, porterStemAsciiTokens, porterStemAscii as porter_stem_ascii, porterStemAsciiTokens as porter_stem_ascii_tokens, posTag, posTagAsciiNative, posTagPerceptronAscii, pos_tag, posTagAsciiNative as pos_tag_ascii_native, posTagPerceptronAscii as pos_tag_perceptron_ascii, preparePerceptronTaggerModel, preparePerceptronTaggerModel as prepare_perceptron_tagger_model, prettyPrint, prettyPrint as pretty_print, probabilisticChartParse, probabilisticChartParse as probabilistic_chart_parse, pythonFloat, quick, recursiveDescentParse, recursiveDescentParse as recursive_descent_parse, regexpChunkParse, regexpChunkParse as regexp_chunk_parse, clause as relextractClause, clause as relextract_clause, removeBlanks, remove_blanks, resetUniqueVariableCounter, resetUniqueVariableCounter as reset_unique_variable_counter, revword, rootSemrep, rootSemrep as root_semrep, rslpStem, rslpStem as rslp_stem, rteClassify, rteClassify as rte_classify, selection, sem_package, sentenceGleu, sentenceLepor, sentenceRibes, sentenceTokenizePunktAsciiNative, sentenceGleu as sentence_gleu, sentenceLepor as sentence_lepor, sentenceRibes as sentence_ribes, sentenceTokenizePunktAsciiNative as sentence_tokenize_punkt_ascii_native, sexprTokenize, sexprTokenize as sexpr_tokenize, sigmaExp, sigmaSkip, sigmaSub, sigmaExp as sigma_exp, sigmaSkip as sigma_skip, sigmaSub as sigma_sub, singleMeteorScore, singleMeteorScore as single_meteor_score, skipgramsAsciiNative, skipgramsAsciiNative as skipgrams_ascii_native, skolemize, snowballStem, snowballStem as snowball_stem, sonorityTokenize, sonorityTokenize as sonority_tokenize, sortFields, sort_fields, spearmanRho, spearmanRho as spearman_rho, standardTemplates, standardTemplates as standard_templates, stemMatch, stemMatch as stem_match, stem_package, subjects, sumLogs, sumVectors, sumLogs as sum_logs, sumVectors as sum_vectors, synsetDefinition, synsetDefinition as synset_definition, tabdata_d as tabdata_ns, tag_package, tagsetMapping, tagsetMapping as tagset_mapping, demo$7 as tblDemo, demo$7 as tbl_demo, tbl_package, tgrepCompile, tgrepNodes, tgrepPositions, tgrepTokenize, tgrep_compile, tgrep_nodes, tgrep_positions, tgrep_tokenize, toSFMString, toSettingsString, to_settings_string, to_sfm_string, tokenFreqDistHashAscii, tokenFreqDistIdsAscii, tokenFreqDistHashAscii as token_freq_dist_hash_ascii, tokenFreqDistIdsAscii as token_freq_dist_ids_ascii, tokenizeAsciiNative, tokenizeAsciiNative as tokenize_ascii_native, topPmiBigramsAscii, topPmiBigramsAscii as top_pmi_bigrams_ascii, trainConditionalExponentialTextClassifier, trainDecisionTreeTextClassifier, trainLinearSvmTextClassifier, trainLogisticTextClassifier, trainMaxEntTextClassifier, trainNaiveBayesTextClassifier, trainNgramLanguageModel, trainPerceptronTextClassifier, trainPositiveNaiveBayesTextClassifier, trainConditionalExponentialTextClassifier as train_conditional_exponential_text_classifier, trainDecisionTreeTextClassifier as train_decision_tree_text_classifier, trainLinearSvmTextClassifier as train_linear_svm_text_classifier, trainLogisticTextClassifier as train_logistic_text_classifier, trainMaxEntTextClassifier as train_max_ent_text_classifier, trainNaiveBayesTextClassifier as train_naive_bayes_text_classifier, trainNgramLanguageModel as train_ngram_language_model, trainPerceptronTextClassifier as train_perceptron_text_classifier, trainPositiveNaiveBayesTextClassifier as train_positive_naive_bayes_text_classifier, translate_package, treeDepth, treeLeaves, treeToBracket, treeDepth as tree_depth, treeLeaves as tree_leaves, treeToBracket as tree_to_bracket, treepositionsNoLeaves, treepositions_no_leaves, smooth as ttSmooth, smooth as tt_smooth, twitter_api_d as twitter_api_ns, twitter_common_d as twitter_common_ns, twitter_d as twitter_ns, twitter_twitter_demo_d as twitter_twitter_demo_ns, twitter_twitterclient_d as twitter_twitterclient_ns, twitter_util_d as twitter_util_ns, uniqueAncestors, uniqueVariable, unique_ancestors, uniqueVariable as unique_variable, untag, untagSents, untagSents as untag_sents, vectorAdd, vectorDiv, vectorNorm, vectorScale, vectorSub, vectorAdd as vector_add, vectorDiv as vector_div, vectorNorm as vector_norm, vectorScale as vector_scale, vectorSub as vector_sub, verbs, wordRankAlignment, word_finder, wordRankAlignment as word_rank_alignment, wordfinder, wordnetMorphyAsciiNative, wordnetMorphyAsciiNative as wordnet_morphy_ascii_native, zeroVector, zeroVector as zero_vector };
-export type { AbstractCCGCategory, AgreementDistanceFn, AlignedSentInput, AlignmentPair, AnnotationLabel, AnnotationTriple, AnyEdge, BigramScoreFn, BrillSentence, BrillToken, BrillTrainerOptions, BrillTrainingStats, CCGCategory, CfgGrammar, CfgProduction, ChartRule, ChunkElement, ChunkNode, ChunkedSentence, ChunkedToken, ConcordanceLine, Condition, ConditionalExponentialExample, ConditionalExponentialSerialized, ConditionalFreqDistInput, CorpusFile, CorpusMiniIndex, CorpusRegistryEntry, CorpusRegistryManifest, TaggedSentence$1 as CorpusTaggedSentence, TaggedToken$2 as CorpusTaggedToken, DecisionTreeExample, DecisionTreeSerialized, DependencyArc, DependencyEvalNode, DependencyParse, DirectedBinaryCombinator, DirectionChar, DiscourseTesterOptions, DistanceFn, Drs, EMOptions, FeatureCfgGrammar, FeatureMap, FeatureProduction, FeatureSpec, FeatureSymbol, FreqDistInput, GoldSentence, HiddenMarkovModelTrainerOptions, Estimator as HmmEstimator, Scorer as IBMScore, InitialTaggerLike, IobRow, KMeansOptions, LanguageDistance, LanguageModelType, LinearModelExample, LinearSvmSerialized, LogisticSerialized, MaxEntExample, MaxEntPrediction, MaxEntSerialized, MeteorOptions, MeteorStemmer, NaiveBayesExample, NaiveBayesPrediction, NaiveBayesSerialized, NativeLinearTextModel, NativeLinearTrainingAlgorithm, NativeLmModelType, NeChunkOptions, NeIobTuple, NgramLanguageModelOptions, NgramTaggerOptions, ParseTree, PcfgGrammar, PcfgProduction, PerceptronExample, PerceptronSerialized, PositiveNaiveBayesSerialized, ProbDist, ProbDistFactory, ProbDistLike, ProbabilisticParse, QuadgramScoreFn, Restriction, RuleEffect, SFMField, TaggedToken$1 as SeqTaggedToken, SparseVector, StreamBigramFreq, StreamConditionalFreq, TGrepPattern, TGrepPredicate, TagContext, TaggedToken$3 as TaggedToken, TaggerModel, TextCatOptions, TreePosition$1 as TreePosition, TreePositionsOrder, TrigramScoreFn, UndirectedBinaryCombinator, UntaggedSentence, VaderOptions, VaderPolarity, Vector, VectorizerOptions, VectorizerSerialized, WordFinderResult, WordNetLookupQuery, WordNetLookupResult, WordNetMiniPayload, WordNetPos, WordNetSynset, Synset as WsdSynset };
+export { MAX_ALIGN_INPUT_LEN as ALINE_MAX_INPUT_LEN, APP, ARLSTem, ARLSTem2, Agenda, AlignmentInfo, AllExpression, AnnotationTask, ApplicationExpression$1 as ApplicationExpression, ApplicationRuleSet, BLOCK_COMPARISON, BackwardApplication, BackwardBx, BackwardCombinator, BackwardComposition, BackwardSx, BackwardT, BackwardTypeRaiseRule, BaseModelBuilderCommand, BaseProverCommand, BaseTheoremToolCommand, BigramAssocMeasures, BigramCollocationFinder, BigramTagger, BinaryCombinatorRule, BindingDict, BindingException, BllipParser, Boxer, BrillTagger, BrillTaggerTrainer, CCGCat, CCGChart, CCGChartParser, CCGEdge, CCGLeafEdge, CCGLexicon, CCGVar, CFG, CRFTagger, Categories, CfgReadingCommand, ChartParser, Chat80CorpusReader, CistemStemmer, Clause, ClusterI, CompositionRuleSet, ConcordanceIndex, ConditionalExponentialTextClassifier, ConditionalProbDist, ConstantExpression$1 as ConstantExpression, ContextIndex, ContextTagger, CoreNLPParser, CorpusReader, CrossValidationProbDist, DEFAULT_NE_GRAMMAR, DRS, DecisionTreeClassifier, DecisionTreeTextClassifier, DefaultRuleSet, DefaultTagger, Dendrogram, DendrogramNode, DictionaryProbDist, Direction, DiscourseTester, Downloader, DrtAbstractVariableExpression, DrtApplicationExpression, DrtConcatenation, DrtConstantExpression, DrtEqualityExpression, DrtEventVariableExpression, DrtFunctionVariableExpression, DrtGlueDemo, DrtGlueReadingCommand, DrtIndividualVariableExpression, DrtLambdaExpression, DrtNegatedExpression, DrtOrExpression, DrtParser, DrtProposition, DrtTokens, DrtVariableExpression, EMClusterer, EarleyChartParser, EventVariableExpression, ExistsExpression, ExpectedMoreTokensException, Expression$1 as Expression, FeatStruct, FeatureCFG, FeatureChartParser, FeatureEarleyChartParser, type FeatureMaxentOptions, type FeatureSet, type FeatureTreeOptions, ForwardApplication, ForwardCombinator, ForwardComposition, ForwardSubstitution, ForwardT, ForwardTypeRaiseRule, FreqDist, FunctionVariableExpression, FunctionalCategory, GAACClusterer, GAACluster, GAAClusterer, LanguageIndependent as GaleChurchLanguageIndependent, Glue, GlueDict, HeldoutProbDist, HiddenMarkovModelTagger, HiddenMarkovModelTrainer, HoleSemantics, HunPosTagger, Counts as IBMCounts, IBMModel1, IBMModel2, IBMModel3, IBMModel4, IBMModel5, MIN_PROB as IBM_MIN_PROB, ISRIStemmer, ISRI_STOP_WORDS, ImmutableTree, ImpExpression, IndividualVariableExpression, IotaExpression, KMeansClusterer, KneserNeyProbDist, type LabeledFeatureset, LambdaExpression, LancasterStemmer, LeftCornerChartParser, LegalitySyllableTokenizer, Atom as LinearAtom, GlueFormula$1 as LinearGlueFormula, LinearLogicParser, LinearSvmTextClassifier, LogicalExpressionException, LogisticTextClassifier, MAX_ALIGN_BLOCKS, MAX_GENERATE_OPERATIONS, MAX_PHRASE_EXTRACTION_DEFAULT_LEN, Mace, MaceCommand, MaltParser, MaxEntTextClassifier, MaxentClassifier, MegamMaxentClassifier, MinimalSet, ModelBuilder, ModelBuilderCommand, ModelBuilderCommandDecorator, NISTTokenizer, NaiveBayesClassifier, NaiveBayesTextClassifier, NativeFreqDistStream, NegatedExpression, NgramLanguageModel, NgramTagger, NonmonotonicProver, PCFG, Paice, ParExpression, ParentedTree, PerceptronTagger, PerceptronTextClassifier, PorterStemmer, Pos, type PositiveFeatureOptions, PositiveNaiveBayesClassifier, PositiveNaiveBayesTextClassifier, PrimitiveCategory, type ProbDistLike, Prover, Prover9, Prover9Command, Prover9CommandParent, Prover9Exception, Prover9FatalException, Prover9LimitExceededException, Prover9Parent, ProverCommand, ProverCommandDecorator, QuadgramAssocMeasures, QuadgramCollocationFinder, RSLPStemmer, ReadingCommand, RecursiveDescentParser, RegexpStemmer, RegexpTagger, ReppTokenizer, ResolutionProver, ResolutionProverCommand, ProverParseError$1 as ResolutionProverParseError, RteClassifier, RustDecisionTreeClassifier, RustMaxentClassifier, RustNaiveBayesClassifier, SEM_PACKAGE, SExprTokenizer, SNOWBALL_LANGUAGES, STEM_PACKAGE, LogicParser as SemLogicParser, SennaChunkTagger, SennaClassifier, SennaNERTagger, SennaTagger, SentimentAnalyzer, SentimentIntensityAnalyzer, SequentialBackoffTagger, ShiftReduceParser, SklearnClassifier, type SNOWBALL_LANGUAGES as SnowballLanguages, SnowballStemmer, StackDecoder, StandardFormat, StanfordNERTagger, StanfordPOSTagger, StanfordParser, StanfordSegmenter, StanfordTokenizer, SubstitutionRuleSet, SvmClassifier, SyllableTokenizer, TAG_PACKAGE, TBL_PACKAGE, TRANSLATE_PACKAGE, HC as TT_HC, LC as TT_LC, TableauProver, TableauProverCommand, ProverParseError as TableauProverParseError, TadmMaxentClassifier, TblFeature, TblRule, Template, Text, TextCat, TextFeatureVectorizer, TextTilingTokenizer, TheoremToolCommand, TheoremToolCommandDecorator, TnT, Token, Tokens, ToolboxData, ToolboxSettings, TransitionParser, TreePrettyPrinter, TrigramAssocMeasures, TrigramCollocationFinder, TrigramTagger, TypeRaiseRuleSet, UndefinedError, UndirectedComposition, UndirectedFunctionApplication, UndirectedSubstitution, UndirectedTypeRaise, UnexpectedTokenException, UnigramTagger, VOCABULARY_INTRODUCTION, Variable, VectorSpaceClusterer, ViterbiParser, WasmNltk, WekaClassifier, Word, WordNet, WordNetLemmatizer, _build_tgrep_parser, _internal, addBlankLines, addDefaultFields, add_blank_lines, add_default_fields, alignBlocks, alignLogProb, alignWords, alignBlocks as align_blocks, alignLogProb as align_log_prob, alignWords as align_words, align as alineAlign, delta as alineDelta, diff as alineDiff, align as aline_align, delta as aline_delta, diff as aline_diff, ancestors, app_chartparser_app_d as app_chartparser_app_ns, app_chunkparser_app_d as app_chunkparser_app_ns, app_collocations_app_d as app_collocations_app_ns, app_concordance_app_d as app_concordance_app_ns, app_nemo_app_d as app_nemo_app_ns, app_d as app_ns, app_rdparser_app_d as app_rdparser_app_ns, app_srparser_app_d as app_srparser_app_ns, app_wordfreq_app_d as app_wordfreq_app_ns, app_wordnet_app_d as app_wordnet_app_ns, augParseCategory, augParseCategory as aug_parse_category, averageObservedAgreement, averageObservedAgreement as average_observed_agreement, babelizeShell, babelize_shell, backwardOnly, backwardOnly as backward_only, barendregtNormalize, barendregtNormalize as barendregt_normalize, bigramWindowStatsAscii, bigramWindowStatsAsciiIds, bigramWindowStatsAscii as bigram_window_stats_ascii, bigramWindowStatsAsciiIds as bigram_window_stats_ascii_ids, book, bothBackward, bothForward, bothBackward as both_backward, bothForward as both_forward, bracketToTree, bracketToTree as bracket_to_tree, bubble, buildTemplates, buildTgrepParser, buildTemplates as build_templates, buildTgrepParser as build_tgrep_parser, chartParse, chartParse as chart_parse, chat_eliza_d as chat_eliza_ns, chat_iesha_d as chat_iesha_ns, chat_d as chat_ns, chat_rude_d as chat_rude_ns, chat_suntsu_d as chat_suntsu_ns, chat_util_d as chat_util_ns, chat_zen_d as chat_zen_ns, chunkIobIdsNative, chunkTreeToIob, chunkIobIdsNative as chunk_iob_ids_native, chunkTreeToIob as chunk_tree_to_iob, cistemStem, cistemStem as cistem_stem, clausify, clearTemplateRegistry, clearTemplateRegistry as clear_template_registry, cli_d as cli_ns, collapseUnaryChains, collapseUnaryChains as collapse_unary_chains, collections_d as collections_ns, compat_d as compat_ns, computeAsciiMetrics, computeCompositionSemantics, computeFunctionSemantics, computeSemantics, computeSubstitutionSemantics, computeTypeRaisedSemantics, computeAsciiMetrics as compute_ascii_metrics, computeCompositionSemantics as compute_composition_semantics, computeFunctionSemantics as compute_function_semantics, computeSemantics as compute_semantics, computeSubstitutionSemantics as compute_substitution_semantics, computeTypeRaisedSemantics as compute_type_raised_semantics, convertToProver9, convertToProver9 as convert_to_prover9, cooperStore, cooperStore as cooper_store, copyVector, copyVector as copy_vector, corpusGleu, corpusLepor, corpusRibes, corpus_europarl_raw_d as corpus_europarl_raw_ns, corpusGleu as corpus_gleu, corpusLepor as corpus_lepor, corpusRibes as corpus_ribes, cosineDistance, cosineDistance as cosine_distance, countNgramsAscii, countNormalizedTokensAscii, countNormalizedTokensAsciiScalar, countTokensAscii, countTokensAsciiScalar, countUniqueNgramsAscii, countUniqueTokensAscii, countNgramsAscii as count_ngrams_ascii, countNormalizedTokensAscii as count_normalized_tokens_ascii, countNormalizedTokensAsciiScalar as count_normalized_tokens_ascii_scalar, countTokensAscii as count_tokens_ascii, countTokensAsciiScalar as count_tokens_ascii_scalar, countUniqueNgramsAscii as count_unique_ngrams_ascii, countUniqueTokensAscii as count_unique_tokens_ascii, cykRecognizeIdsNative, cykRecognizeIdsNative as cyk_recognize_ids_native, data_d as data_ns, decorators_d as decorators_ns, demo$6 as demo, dependencyEvaluate, dependencyParse, dependencyParseText, dependencyEvaluate as dependency_evaluate, dependencyParse as dependency_parse, dependencyParseText as dependency_parse_text, dotProduct, dotProduct as dot_product, downloadCorpusRegistry, downloadCorpusRegistry as download_corpus_registry, draw_cfg_d as draw_cfg_ns, draw_dispersion_d as draw_dispersion_ns, draw_d as draw_ns, draw_table_d as draw_table_ns, draw_tree_d as draw_tree_ns, draw_util_d as draw_util_ns, earleyParse, earleyRecognize, earleyParse as earley_parse, earleyRecognize as earley_recognize, errorList, errorList as error_list, euclideanDistance, euclideanDistance as euclidean_distance, evaluateLanguageModelIdsNative, evaluateLanguageModelIdsNative as evaluate_language_model_ids_native, everygramsAsciiNative, everygramsAsciiNative as everygrams_ascii_native, exactMatch, exactMatch as exact_match, extractRels, extractRels as extract_rels, featureChartParse, featureEarleyParse, featureChartParse as feature_chart_parse, featureEarleyParse as feature_earley_parse, findIncreasingSequences, findIncreasingSequences as find_increasing_sequences, flattenSparseBatch, flattenSparseBatch as flatten_sparse_batch, forwardOnly, forwardOnly as forward_only, fromString, fromString as from_string, trace as galeChurchTrace, trace as gale_church_trace, generate, generateChomsky, generateSentences, generate_chomsky, generateSentences as generate_sentences, growDiagFinalAnd, growDiagFinalAnd as grow_diag_final_and, helpInfo, helpInfo as help_info, hmmViterbiIdsNative, hmmViterbiIdsNative as hmm_viterbi_ids_native, factorial as ibmFactorial, factorial as ibm_factorial, innermostFunction, innermostFunction as innermost_function, internals_d as internals_ns, invertDict, invertDict as invert_dict, is_eventvar, is_funcvar, is_indvar, jsontags_d as jsontags_ns, kendallTau, kendallTau as kendall_tau, kmeansFitEuclideanNative, kmeansFitEuclideanNative as kmeans_fit_euclidean_native, langnames_d as langnames_ns, lazyimport_d as lazyimport_ns, leadins, leftCornerParse, leftCornerParse as left_corner_parse, legalityTokenize, legalityTokenize as legality_tokenize, lengthPenalty, lengthPenalty as length_penalty, alignment as leporAlignment, alignment as lepor_alignment, lesk, lfgParse, lfgParse as lfg_parse, linearScoresSparseIdsNative, linearTextTrainNative, linearTrainSparseIdsNative, linearScoresSparseIdsNative as linear_scores_sparse_ids_native, linearTextTrainNative as linear_text_train_native, linearTrainSparseIdsNative as linear_train_sparse_ids_native, loadBundledMiniCorpus, loadConditionalExponentialTextClassifier, loadCorpusBundleFromIndex, loadCorpusRegistryManifest, loadDecisionTreeTextClassifier, loadLinearSvmTextClassifier, loadLogisticTextClassifier, loadMaxEntTextClassifier, loadNaiveBayesTextClassifier, loadPerceptronTaggerModel, loadPerceptronTextClassifier, loadPositiveNaiveBayesTextClassifier, loadWordNet, loadWordNetExtended, loadWordNetMini, loadWordNetPacked, loadBundledMiniCorpus as load_bundled_mini_corpus, loadConditionalExponentialTextClassifier as load_conditional_exponential_text_classifier, loadCorpusBundleFromIndex as load_corpus_bundle_from_index, loadCorpusRegistryManifest as load_corpus_registry_manifest, loadDecisionTreeTextClassifier as load_decision_tree_text_classifier, loadLinearSvmTextClassifier as load_linear_svm_text_classifier, loadLogisticTextClassifier as load_logistic_text_classifier, loadMaxEntTextClassifier as load_max_ent_text_classifier, loadNaiveBayesTextClassifier as load_naive_bayes_text_classifier, loadPerceptronTaggerModel as load_perceptron_tagger_model, loadPerceptronTextClassifier as load_perceptron_text_classifier, loadPositiveNaiveBayesTextClassifier as load_positive_naive_bayes_text_classifier, loadWordNet as load_word_net, loadWordNetExtended as load_word_net_extended, loadWordNetMini as load_word_net_mini, loadWordNetPacked as load_word_net_packed, makeVariableExpression, makeVariableExpression as make_variable_expression, mapTag, mapTreeLabels, mapTag as map_tag, mapTreeLabels as map_tree_labels, meanVector, meanVector as mean_vector, memoize$1 as memoize, merge, meteorScore, meteorScore as meteor_score, mostGeneralUnification, mostGeneralUnification as most_general_unification, naiveBayesLogScoresIdsNative, naiveBayesLogScoresIdsNative as naive_bayes_log_scores_ids_native, nativeLibraryPath, nativeLibraryPath as native_library_path, neChunk, neChunkIob, neChunk as ne_chunk, neChunkIob as ne_chunk_iob, nextUniqueCounterValue, nextUniqueCounterValue as next_unique_counter_value, ngramFreqDistHashAscii, ngramPositionalPenalty, ngramFreqDistHashAscii as ngram_freq_dist_hash_ascii, ngramPositionalPenalty as ngram_positional_penalty, ngramsAsciiNative, ngramsAsciiNative as ngrams_ascii_native, nistInternationalTokenize, nistTokenize, nistInternationalTokenize as nist_international_tokenize, nistTokenize as nist_tokenize, normalizeTokens, normalizeTokensAsciiNative, normalizeVector, normalizeTokens as normalize_tokens, normalizeTokensAsciiNative as normalize_tokens_ascii_native, normalizeVector as normalize_vector, objects, openccgTinytiny, openccgTinytiny as openccg_tinytiny, p9ReturnCodes, p9ReturnCodes as p9_return_codes, pairwise, parseApplication, parseBrownTagged, parseCategory, parseCfgGrammar, parseConllChunked, parseConllTagged, parseFeatStruct, parseFeatureCfgGrammar, parseLexicon, parsePcfgGrammar, parseSFMString, parseSents, parseSubscripts, parseTextWithCfg, parseTextWithEarley, parseTextWithFeatureCfg, parseTextWithFeatureEarley, parseTextWithLeftCorner, parseTextWithPcfg, parseTextWithRecursiveDescent, parseApplication as parse_application, parseBrownTagged as parse_brown_tagged, parseCategory as parse_category, parseCfgGrammar as parse_cfg_grammar, parseConllChunked as parse_conll_chunked, parseConllTagged as parse_conll_tagged, parseFeatStruct as parse_feat_struct, parseFeatureCfgGrammar as parse_feature_cfg_grammar, parseLexicon as parse_lexicon, parsePcfgGrammar as parse_pcfg_grammar, parseSents as parse_sents, parseSFMString as parse_sfm_string, parseSubscripts as parse_subscripts, parseTextWithCfg as parse_text_with_cfg, parseTextWithEarley as parse_text_with_earley, parseTextWithFeatureCfg as parse_text_with_feature_cfg, parseTextWithFeatureEarley as parse_text_with_feature_earley, parseTextWithLeftCorner as parse_text_with_left_corner, parseTextWithPcfg as parse_text_with_pcfg, parseTextWithRecursiveDescent as parse_text_with_recursive_descent, perceptronPredictBatchNative, perceptronPredictBatchNative as perceptron_predict_batch_native, extract as phraseExtract, phraseExtraction, extract as phrase_extract, phraseExtraction as phrase_extraction, porterStemAscii, porterStemAsciiTokens, porterStemAscii as porter_stem_ascii, porterStemAsciiTokens as porter_stem_ascii_tokens, posTag, posTagAsciiNative, posTagPerceptronAscii, pos_tag, posTagAsciiNative as pos_tag_ascii_native, posTagPerceptronAscii as pos_tag_perceptron_ascii, preparePerceptronTaggerModel, preparePerceptronTaggerModel as prepare_perceptron_tagger_model, prettyPrint, prettyPrint as pretty_print, probabilisticChartParse, probabilisticChartParse as probabilistic_chart_parse, quick, recursiveDescentParse, recursiveDescentParse as recursive_descent_parse, regexpChunkParse, regexpChunkParse as regexp_chunk_parse, clause as relextractClause, clause as relextract_clause, removeBlanks, remove_blanks, resetUniqueVariableCounter, resetUniqueVariableCounter as reset_unique_variable_counter, revword, rootSemrep, rootSemrep as root_semrep, rslpStem, rslpStem as rslp_stem, rteClassify, rteClassify as rte_classify, selection, sem_package, sentenceGleu, sentenceLepor, sentenceRibes, sentenceTokenizePunktAsciiNative, sentenceGleu as sentence_gleu, sentenceLepor as sentence_lepor, sentenceRibes as sentence_ribes, sentenceTokenizePunktAsciiNative as sentence_tokenize_punkt_ascii_native, sexprTokenize, sexprTokenize as sexpr_tokenize, sigmaExp, sigmaSkip, sigmaSub, sigmaExp as sigma_exp, sigmaSkip as sigma_skip, sigmaSub as sigma_sub, singleMeteorScore, singleMeteorScore as single_meteor_score, skipgramsAsciiNative, skipgramsAsciiNative as skipgrams_ascii_native, skolemize, snowballStem, snowballStem as snowball_stem, sonorityTokenize, sonorityTokenize as sonority_tokenize, sortFields, sort_fields, spearmanRho, spearmanRho as spearman_rho, standardTemplates, standardTemplates as standard_templates, stemMatch, stemMatch as stem_match, stem_package, subjects, sumVectors, sumVectors as sum_vectors, synsetDefinition, synsetDefinition as synset_definition, tabdata_d as tabdata_ns, tag_package, tagsetMapping, tagsetMapping as tagset_mapping, demo$7 as tblDemo, demo$7 as tbl_demo, tbl_package, tgrepCompile, tgrepNodes, tgrepPositions, tgrepTokenize, tgrep_compile, tgrep_nodes, tgrep_positions, tgrep_tokenize, toSFMString, toSettingsString, to_settings_string, to_sfm_string, tokenFreqDistHashAscii, tokenFreqDistIdsAscii, tokenFreqDistHashAscii as token_freq_dist_hash_ascii, tokenFreqDistIdsAscii as token_freq_dist_ids_ascii, tokenizeAsciiNative, tokenizeAsciiNative as tokenize_ascii_native, topPmiBigramsAscii, topPmiBigramsAscii as top_pmi_bigrams_ascii, trainConditionalExponentialTextClassifier, trainDecisionTreeTextClassifier, trainLinearSvmTextClassifier, trainLogisticTextClassifier, trainMaxEntTextClassifier, trainNaiveBayesTextClassifier, trainNgramLanguageModel, trainPerceptronTextClassifier, trainPositiveNaiveBayesTextClassifier, trainConditionalExponentialTextClassifier as train_conditional_exponential_text_classifier, trainDecisionTreeTextClassifier as train_decision_tree_text_classifier, trainLinearSvmTextClassifier as train_linear_svm_text_classifier, trainLogisticTextClassifier as train_logistic_text_classifier, trainMaxEntTextClassifier as train_max_ent_text_classifier, trainNaiveBayesTextClassifier as train_naive_bayes_text_classifier, trainNgramLanguageModel as train_ngram_language_model, trainPerceptronTextClassifier as train_perceptron_text_classifier, trainPositiveNaiveBayesTextClassifier as train_positive_naive_bayes_text_classifier, translate_package, treeDepth, treeLeaves, treeToBracket, treeDepth as tree_depth, treeLeaves as tree_leaves, treeToBracket as tree_to_bracket, treepositionsNoLeaves, treepositions_no_leaves, smooth as ttSmooth, smooth as tt_smooth, twitter_api_d as twitter_api_ns, twitter_common_d as twitter_common_ns, twitter_d as twitter_ns, twitter_twitter_demo_d as twitter_twitter_demo_ns, twitter_twitterclient_d as twitter_twitterclient_ns, twitter_util_d as twitter_util_ns, uniqueAncestors, uniqueVariable, unique_ancestors, uniqueVariable as unique_variable, untag, untagSents, untagSents as untag_sents, vectorAdd, vectorDiv, vectorNorm, vectorScale, vectorSub, vectorAdd as vector_add, vectorDiv as vector_div, vectorNorm as vector_norm, vectorScale as vector_scale, vectorSub as vector_sub, verbs, wordRankAlignment, word_finder, wordRankAlignment as word_rank_alignment, wordfinder, wordnetMorphyAsciiNative, wordnetMorphyAsciiNative as wordnet_morphy_ascii_native, zeroVector, zeroVector as zero_vector };
+export type { AbstractCCGCategory, AgreementDistanceFn, AlignedSentInput, AlignmentPair, AnnotationLabel, AnnotationTriple, AnyEdge, BigramScoreFn, BrillSentence, BrillToken, BrillTrainerOptions, BrillTrainingStats, CCGCategory, CfgGrammar, CfgProduction, ChartRule, ChunkElement, ChunkNode, ChunkedSentence, ChunkedToken, ConcordanceLine, Condition, ConditionalExponentialExample, ConditionalExponentialSerialized, CorpusFile, CorpusMiniIndex, CorpusRegistryEntry, CorpusRegistryManifest, TaggedSentence$1 as CorpusTaggedSentence, TaggedToken$2 as CorpusTaggedToken, DecisionTreeExample, DecisionTreeSerialized, DependencyArc, DependencyEvalNode, DependencyParse, DirectedBinaryCombinator, DirectionChar, DiscourseTesterOptions, DistanceFn, Drs, EMOptions, FeatureCfgGrammar, FeatureMap, FeatureProduction, FeatureSpec, FeatureSymbol, GoldSentence, HiddenMarkovModelTrainerOptions, Estimator as HmmEstimator, Scorer as IBMScore, InitialTaggerLike, IobRow, KMeansOptions, LanguageDistance, LanguageModelType, LinearModelExample, LinearSvmSerialized, LogisticSerialized, MaxEntExample, MaxEntPrediction, MaxEntSerialized, MeteorOptions, MeteorStemmer, NaiveBayesExample, NaiveBayesPrediction, NaiveBayesSerialized, NativeLinearTextModel, NativeLinearTrainingAlgorithm, NativeLmModelType, NeChunkOptions, NeIobTuple, NgramLanguageModelOptions, NgramTaggerOptions, ParseTree, PcfgGrammar, PcfgProduction, PerceptronExample, PerceptronSerialized, PositiveNaiveBayesSerialized, ProbDist, ProbabilisticParse, QuadgramScoreFn, Restriction, RuleEffect, SFMField, TaggedToken$1 as SeqTaggedToken, SparseVector, StreamBigramFreq, StreamConditionalFreq, TGrepPattern, TGrepPredicate, TagContext, TaggedToken$3 as TaggedToken, TaggerModel, TextCatOptions, TreePosition$1 as TreePosition, TreePositionsOrder, TrigramScoreFn, UndirectedBinaryCombinator, UntaggedSentence, VaderOptions, VaderPolarity, Vector, VectorizerOptions, VectorizerSerialized, WordFinderResult, WordNetLookupQuery, WordNetLookupResult, WordNetMiniPayload, WordNetPos, WordNetSynset, Synset as WsdSynset };

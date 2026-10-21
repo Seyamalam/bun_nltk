@@ -62,7 +62,7 @@ pub extern "C" fn bunnltk_wasm_punkt_spans(
         }
         let spans = model.spans(text, realign != 0);
         if capacity != 0 {
-            if out_ptr == 0 || out_ptr % 4 != 0 || (capacity as usize) < spans.len() {
+            if out_ptr == 0 || !out_ptr.is_multiple_of(4) || (capacity as usize) < spans.len() {
                 error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
                 return spans.len() as u32;
             }

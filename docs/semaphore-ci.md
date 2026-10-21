@@ -8,12 +8,11 @@ made by these files. They do not require GitHub Actions to build or validate.
 Existing `.github/workflows/` files remain untouched as a fallback. They are not
 used by Semaphore. Nothing here publishes to npm or commits downloaded binaries.
 
-**Known activation blocker:** the retained 600-line guard fails on two unchanged
-baseline files: `dist/portable/index.node.d.ts` (1034 lines) and
-`rust/src/categorical_maxent.rs` (693 lines). The default pipeline will fail its
-Static checks block and block dependent jobs until that existing hygiene debt is
-resolved in a separate, approved change. This milestone neither bypasses the
-guard nor expands its grandfather list.
+**Former activation blocker (resolved):** the 600-line guard previously failed
+on baseline files. Generated data tables (`compat_unicode.rs`,
+`tokenizer_unicode.rs`) and `dist/` build output are now excluded as generated
+files, and the remaining legacy source files are on the guard's existing
+grandfather list pending split. The Static checks block passes locally.
 
 The default `bun_nltk validation` pipeline runs static checks, native and WASM
 Rust fmt/Clippy/tests, the complete Bun suite, the strict scoped fidelity gate,

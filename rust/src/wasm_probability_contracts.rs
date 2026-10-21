@@ -173,7 +173,7 @@ fn dispatch(op: u32, input: &[f64]) -> Result<Vec<f64>> {
                     let fit = probability::GoodTuring::new(values)?;
                     vec![fit.slope, fit.intercept, fit.switch_at, fit.renormal]
                 }
-                13 | 14 | 15 => {
+                13..=15 => {
                     let fit = probability::GoodTuring {
                         slope: r.number()?,
                         intercept: r.number()?,
@@ -556,8 +556,8 @@ pub extern "C" fn bunnltk_wasm_probability_contract(
     let memory_bytes = core::arch::wasm32::memory_size::<0>() as u64 * 65_536;
     let input_end = input_ptr as u64 + input_len as u64 * 8;
     let out_end = out_ptr as u64 + out_len as u64 * 8;
-    if input_ptr % 8 != 0
-        || out_ptr % 8 != 0
+    if !input_ptr.is_multiple_of(8)
+        || !out_ptr.is_multiple_of(8)
         || out_ptr == 0
         || out_len == 0
         || (input_len > 0 && input_ptr == 0)

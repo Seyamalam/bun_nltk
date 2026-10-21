@@ -1,6 +1,7 @@
 const MAX_FILES = 400;
-// Includes both full NLTK NE models (~5.5 MB compressed) and English Punkt/VADER data.
-const MAX_UNPACKED_BYTES = 13_000_000;
+// Includes both full NLTK NE models (~5.5 MB compressed), three native
+// prebuilt libraries, the portable bundle and English Punkt/VADER data.
+const MAX_UNPACKED_BYTES = 14_000_000;
 
 const forbidden = [
   /^rust\//,

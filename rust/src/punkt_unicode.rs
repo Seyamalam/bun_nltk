@@ -1,7 +1,14 @@
 //! English Punkt inference from NLTK 3.10.3 (Apache-2.0).
 //! Offsets are UTF-8 bytes. The trained model is supplied by the caller.
 use std::collections::{HashMap, HashSet};
-use unicode_general_category::{get_general_category, GeneralCategory};
+
+use crate::tokenizer_unicode as unicode;
+
+fn in_ranges(c: char, ranges: &[(u32, u32)]) -> bool {
+    let cp = c as u32;
+    let index = ranges.partition_point(|&(_, end)| end < cp);
+    ranges.get(index).is_some_and(|&(start, _)| start <= cp)
+}
 
 #[derive(Default, Debug)]
 pub struct PunktModel {
@@ -27,22 +34,12 @@ fn word_start(c: char) -> bool {
 }
 
 fn decimal(c: char) -> bool {
-    get_general_category(c) == GeneralCategory::DecimalNumber
+    in_ranges(c, unicode::DECIMAL)
 }
 
 fn initial_char(c: char) -> bool {
-    use GeneralCategory::*;
-    c == '_'
-        || matches!(
-            get_general_category(c),
-            UppercaseLetter
-                | LowercaseLetter
-                | TitlecaseLetter
-                | ModifierLetter
-                | OtherLetter
-                | LetterNumber
-                | OtherNumber
-        )
+    // Python alnum covers L* + N* (Nd, Nl, No); Punkt initials exclude Nd.
+    c == '_' || (in_ranges(c, unicode::WORD) && !in_ranges(c, unicode::DECIMAL))
 }
 
 /// The three alternatives of PunktLanguageVars._re_multi_char_punct.

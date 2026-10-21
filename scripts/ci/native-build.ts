@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { release } from "node:os";
+import { optimizeWasmInPlace } from "../wasm-opt.ts";
 
 const root = resolve(import.meta.dir, "../..");
 const host = `${process.platform}-${process.arch}`;
@@ -28,13 +29,15 @@ const rustc = run(["rustc", "-vV"]);
 if (!rustc.includes(`host: ${triples[host]}`)) throw new Error(`Rust host is not ${triples[host]}\n${rustc}`);
 const triple = mode === "wasm" ? "wasm32-unknown-unknown" : triples[host]!;
 const manifest = resolve(root, "rust/Cargo.toml");
-run(["cargo", "build", "--locked", "--release", "--manifest-path", manifest, "--target", triple]);
+const profile = mode === "wasm" ? "wasm" : "release";
+run(["cargo", "build", "--locked", "--profile", profile, "--manifest-path", manifest, "--target", triple]);
 const extension = process.platform === "win32" ? "dll" : process.platform === "darwin" ? "dylib" : "so";
 const filename = mode === "wasm" ? "bun_nltk.wasm" : process.platform === "win32" ? "bun_nltk.dll" : `libbun_nltk.${extension}`;
 const output = mode === "wasm" ? "native/bun_nltk.wasm" : `native/prebuilt/${host}/bun_nltk.${extension}`;
-const source = resolve(targetDir, triple, "release", filename);
+const source = resolve(targetDir, triple, profile, filename);
 mkdirSync(dirname(resolve(root, output)), { recursive: true });
 copyFileSync(source, resolve(root, output));
+if (mode === "wasm") optimizeWasmInPlace(resolve(root, output), root);
 if (mode === "native") copyFileSync(source, resolve(root, `native/bun_nltk.${extension}`));
 const sha256 = (path: string) => createHash("sha256").update(readFileSync(path)).digest("hex");
 const reportDirectory = resolve(root, "artifacts/semaphore-native", host);
@@ -44,7 +47,7 @@ writeFileSync(resolve(reportDirectory, `build-${mode}.json`), JSON.stringify({
   source_revision: run(["git", "rev-parse", "HEAD"]),
   cargo_lock_sha256: sha256(resolve(root, "rust/Cargo.lock")),
   host, os_release: release(), triple, rustc, bun: Bun.version,
-  artifact: { path: output, sha256: sha256(resolve(root, output)), bytes: readFileSync(source).length },
+  artifact: { path: output, sha256: sha256(resolve(root, output)), bytes: readFileSync(resolve(root, output)).length },
   cargo_target_dir: relative(root, targetDir),
   scope: "Locked source build on the stated host; behavioral verification is a separate step.",
 }, null, 2) + "\n");

@@ -1,11 +1,10 @@
 //! NLTK 3.10.3 Treebank and basic tokenizers. Spans count Unicode scalars,
 //! matching Python indices, not UTF-8 bytes or JavaScript UTF-16 code units.
-use regex::Regex;
+use regex_lite::Regex;
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
 
-#[path = "tokenizer_unicode.rs"]
-mod unicode;
+use crate::tokenizer_unicode as unicode;
 
 const PY_SPACE: &str = r"[\x09-\x0d\x1c-\x20\x{85}\x{a0}\x{1680}\x{2000}-\x{200a}\x{2028}\x{2029}\x{202f}\x{205f}\x{3000}]";
 const REGEX_SPACE: &str =
@@ -51,19 +50,59 @@ struct Rule {
     not_followed_by_period: bool,
 }
 
+// regex-lite has no nested classes: expand \s to the class body inside
+// an enclosing [...] and to the full class outside one.
+fn expand_python_space(source: &str) -> String {
+    let body = &PY_SPACE[1..PY_SPACE.len() - 1];
+    let mut out = String::with_capacity(source.len());
+    let mut chars = source.chars().peekable();
+    let mut in_class = false;
+    let mut class_fresh = false;
+    while let Some(c) = chars.next() {
+        if c == '\\' {
+            match chars.peek() {
+                Some('s') => {
+                    chars.next();
+                    out.push_str(if in_class { body } else { PY_SPACE });
+                }
+                Some(&next) => {
+                    out.push(c);
+                    out.push(next);
+                    chars.next();
+                }
+                None => out.push(c),
+            }
+            class_fresh = false;
+            continue;
+        }
+        match c {
+            '[' if !in_class => {
+                in_class = true;
+                class_fresh = true;
+            }
+            ']' if in_class && !class_fresh => in_class = false,
+            '^' if class_fresh => {}
+            _ => class_fresh = false,
+        }
+        out.push(c);
+    }
+    out
+}
+
 fn rules(rows: &[(&str, &'static str)]) -> Vec<Rule> {
     rows.iter()
         .map(|&(source, replacement)| {
             // Python re's whitespace includes U+001C..001F. Its decimal table
             // is pinned independently of the regex crate's Unicode version.
             let not_followed_by_period = source.contains(r"(?!\.)");
-            let source = source
-                .replace(
-                    r"[^\d]",
-                    &format!("[^{}]", &decimal_class()[1..decimal_class().len() - 1]),
-                )
-                .replace(r"\s", PY_SPACE)
-                .replace(r"(?!\.)", "");
+            let source = expand_python_space(
+                &source
+                    .replace(
+                        r"[^\d]",
+                        &format!("[^{}]", &decimal_class()[1..decimal_class().len() - 1]),
+                    )
+                    .replace(r"(?!\.)", ""),
+            );
             let source = if let Some(prefix) = source.strip_suffix('$') {
                 // Final-period rules already consume every trailing Python
                 // whitespace, so absolute end is equivalent to Python's $.
@@ -152,7 +191,7 @@ const PARENS: [(&str, &str); 6] = [
 ];
 
 struct Contraction {
-    regex: regex::Regex,
+    regex: Regex,
     whitespace_end: bool,
     initial_space: bool,
 }
@@ -202,7 +241,7 @@ fn contractions(reverse: bool) -> &'static [Contraction] {
                     python_ignorecase(right)
                 );
                 Contraction {
-                    regex: regex::Regex::new(&source).expect("static contraction"),
+                    regex: Regex::new(&source).expect("static contraction"),
                     whitespace_end: i == 7,
                     initial_space: i >= 8,
                 }
@@ -322,8 +361,8 @@ pub fn detokenize(tokens: &[String], convert_parentheses: bool) -> Result<String
 pub fn treebank_spans(text: &str) -> Result<Vec<(usize, usize)>, String> {
     let mut tokens = treebank(text, false)?;
     if text.contains('"') || text.contains("''") {
-        static QUOTES: OnceLock<regex::Regex> = OnceLock::new();
-        let regex = QUOTES.get_or_init(|| regex::Regex::new(r#"``|'{2}|""#).unwrap());
+        static QUOTES: OnceLock<Regex> = OnceLock::new();
+        let regex = QUOTES.get_or_init(|| Regex::new(r#"``|'{2}|""#).unwrap());
         let mut quotes = regex.find_iter(text);
         for token in &mut tokens {
             if matches!(token.as_str(), "\"" | "``" | "''") {
@@ -352,31 +391,29 @@ pub fn treebank_spans(text: &str) -> Result<Vec<(usize, usize)>, String> {
     Ok(spans)
 }
 
-fn simple_regex(kind: &str) -> Option<&'static regex::Regex> {
-    static WORD: OnceLock<regex::Regex> = OnceLock::new();
-    static SPACE: OnceLock<regex::Regex> = OnceLock::new();
-    static BLANK: OnceLock<regex::Regex> = OnceLock::new();
-    static LINE: OnceLock<regex::Regex> = OnceLock::new();
+fn simple_regex(kind: &str) -> Option<&'static Regex> {
+    static WORD: OnceLock<Regex> = OnceLock::new();
+    static SPACE: OnceLock<Regex> = OnceLock::new();
+    static BLANK: OnceLock<Regex> = OnceLock::new();
+    static LINE: OnceLock<Regex> = OnceLock::new();
     Some(match kind {
         "wordpunct" => WORD.get_or_init(|| {
             let word = regex_word_class();
-            let source = format!(r"{word}+|[^{word}{REGEX_SPACE}]+");
-            regex::Regex::new(&source).unwrap()
+            let word_body = &word[1..word.len() - 1];
+            let space_body = &REGEX_SPACE[1..REGEX_SPACE.len() - 1];
+            let source = format!(r"{word}+|[^{word_body}{space_body}]+");
+            Regex::new(&source).unwrap()
         }),
-        "whitespace" => {
-            SPACE.get_or_init(|| regex::Regex::new(&format!("{REGEX_SPACE}+")).unwrap())
-        }
+        "whitespace" => SPACE.get_or_init(|| Regex::new(&format!("{REGEX_SPACE}+")).unwrap()),
         "blankline" => BLANK.get_or_init(|| {
-            regex::Regex::new(&format!(r"{REGEX_SPACE}*\n{REGEX_SPACE}*\n{REGEX_SPACE}*")).unwrap()
+            Regex::new(&format!(r"{REGEX_SPACE}*\n{REGEX_SPACE}*\n{REGEX_SPACE}*")).unwrap()
         }),
-        "line" => {
-            LINE.get_or_init(|| regex::Regex::new(&format!(r"\n({REGEX_SPACE}+\n)*")).unwrap())
-        }
+        "line" => LINE.get_or_init(|| Regex::new(&format!(r"\n({REGEX_SPACE}+\n)*")).unwrap()),
         _ => return None,
     })
 }
 
-fn gap_spans(text: &str, regex: &regex::Regex, discard_empty: bool) -> Vec<(usize, usize)> {
+fn gap_spans(text: &str, regex: &Regex, discard_empty: bool) -> Vec<(usize, usize)> {
     let mut spans = Vec::new();
     let mut left = 0;
     for matched in regex.find_iter(text) {
