@@ -9,7 +9,9 @@ as behavioral evidence.
 
 - `compatibility/inventory.json`: hand-reviewed scope, exclusions, implementation
   routes, source/test anchors, explicit Bun signatures, signature gaps and fixture
-  gaps. Change this file when reviewing an implementation.
+  gaps. `reviewedRoutes` binds each reviewed name to a specific entrypoint and
+  source provenance; subpaths do not inherit root reviews from spelling alone.
+  Change this file when reviewing an implementation.
 - `compatibility/discovery.json`: deterministic reflection of installed NLTK
   **3.10.3**, public callable class members/signatures, excluded public attributes,
   every package Bun runtime value export grouped by provenance, source/test SHA256
@@ -22,11 +24,14 @@ as behavioral evidence.
 - `test/compatibility_inventory.test.ts`: inventory contract tests. These are
   **not NLP behavior or parity tests**.
 
-The recorded environment used Python 3.14.4, Bun 1.4.2, tsrs
-`0.18.0-ts7.1.0-dev.20260929`, and Oxlint `1.89.0`. Python standard-library
-inherited signatures may change on another interpreter release: use this
-environment for byte-identical regeneration, or review the interpreter-specific
-diff explicitly. NLTK code was supplied through the parent's pinned oracle path;
+The inventory explicitly requires Python **3.14.4** because standard-library
+inherited names and signatures vary between interpreter releases. A different
+interpreter fails with an actionable error before reflection, rather than
+silently changing the baseline. An intentional interpreter update requires
+updating both version checks and reviewing the discovery diff. This interpreter
+pin applies to the inventory, not the library runtime. The recorded environment
+also used Bun 1.4.2, tsrs `0.18.0-ts7.1.0-dev.20260929`, and Oxlint `1.89.0`.
+NLTK code was supplied through the parent's pinned oracle path;
 this tool does not install or silently substitute a different release.
 
 ```sh
@@ -43,7 +48,7 @@ affected mappings. Generation imports Bun entrypoints to discover value exports;
 it does **not** invoke NLP operations. Native/WASM artifacts must already be
 available for module loading. No binaries are built or fetched by this tool.
 
-Recommended `package.json` entries for the parent (not edited in this milestone):
+Available package scripts:
 
 ```json
 {
@@ -53,11 +58,10 @@ Recommended `package.json` entries for the parent (not edited in this milestone)
 }
 ```
 
-Add `compatibility:check` to the existing **Semaphore** job with the same pinned
-NLTK/PYTHONPATH as the differential suite. No GitHub Actions changes are needed.
-Full-project tsrs currently has two unrelated unresolved self-package imports in
-`examples/js-library/feature-tree.ts`; the dedicated config checks all new
-inventory code without hiding those existing full-project errors.
+Add `compatibility:check` to **Semaphore** after configuring Python 3.14.4 and
+the same pinned NLTK/PYTHONPATH as the differential suite. No GitHub Actions
+changes are needed. `compatibility:typecheck` checks the audit tooling; the
+full-project `typecheck` remains a separate required gate.
 
 ## Contract and counting
 
@@ -76,7 +80,9 @@ reviews. Family summaries count **module-qualified names**, so reexports can
 repeat reviewed mappings; do not sum those rows as unique algorithm coverage.
 `resolveBunExports()` lists each entrypoint/name/provenance and reviewed
 classification; unreviewed Bun exports are gaps in the audit, not supported APIs
-inferred from spelling. Primitive provenance is the entrypoint; object/function
+inferred from spelling. Only explicitly reviewed entrypoint/provenance pairs
+receive classifications, even when the root exports an identically named value.
+Primitive provenance is the entrypoint; object/function
 provenance is a deterministic matching reexport module by value identity, not an
 automatic claim about its ultimate algorithm implementation.
 
@@ -105,11 +111,13 @@ the same bundled payload are not official NLTK behavioral evidence.
 ## Gate and maintenance
 
 `--check` rejects schema/version mismatch, unknown enums, duplicate mappings,
-stale source/test/signature anchors, missing Bun exports or Python members, and
+stale source/test/signature anchors, missing Bun root exports or Python members,
+reviewed export-route changes, interpreter mismatch, and
 public name/signature/export/source/evidence drift. Python default-object memory
 addresses are stripped; host corpus availability and wall clock are not stored.
 `--write` cannot silently remove a reviewed mapping/export/member, downgrade an
-implemented subset, or discard pinned fixture status. Such an intentional scope
+implemented subset, discard a reviewed entrypoint/provenance route, or discard
+pinned fixture status. Such an intentional scope
 break requires an explicit gate-policy change and review, not a baseline refresh.
 This gates inventory regressions, **not** semantic correctness: rerun differential
 tests separately. Host data availability never upgrades fixture classification.
@@ -130,5 +138,5 @@ unmapped class members. It also does not establish complete runtime signatures
 for all reviewed classes: the 31 explicit bindings are only the audited subset.
 Node/browser artifact exports and nested namespace APIs need separate platform
 inventories. The selected-family findings and remaining work are detailed in
-`docs/compatibility-family-coverage.md`. Shared exports/build scripts, package
-metadata, README and migration docs were left unchanged.
+`docs/compatibility-family-coverage.md`. Shared exports and algorithm sources
+are unchanged by the inventory.

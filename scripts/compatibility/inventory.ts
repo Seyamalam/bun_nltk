@@ -29,8 +29,10 @@ export type Mapping = {
 export type Manifest = {
   schemaVersion: number;
   nltkVersion: string;
+  pythonVersion: string;
   reviewBase: string;
   policy: Record<string, string>;
+  reviewedRoutes: Record<string, Record<string, string>>;
   modules: string[];
   excludedModules: Array<{ prefix: string; reason: string }>;
   dataResources: string[];
@@ -46,14 +48,16 @@ export type PythonTarget = {
   members: Record<string, string | null>;
 };
 export type ModuleDiscovery = { module: string; targets: PythonTarget[]; excludedAttributes: string[] };
-export type OracleDiscovery = { nltkVersion: string; modules: ModuleDiscovery[]; resources: Record<string, "available" | "missing"> };
+export type OracleDiscovery = { nltkVersion: string; pythonVersion: string; modules: ModuleDiscovery[]; resources: Record<string, "available" | "missing"> };
 export type Snapshot = {
   schemaVersion: number;
   nltkVersion: string;
+  pythonVersion: string;
   modules: ModuleDiscovery[];
   bunEntrypoints: Record<string, Record<string, string[]>>;
   review: Mapping[];
   signatureBindings: Manifest["signatureBindings"];
+  reviewedRoutes: Manifest["reviewedRoutes"];
   sourceHashes: Record<string, string>;
 };
 
@@ -92,6 +96,7 @@ export function validateManifest(value: unknown): asserts value is Manifest {
   const manifest = object(value, "inventory");
   if (manifest.schemaVersion !== 1) throw new Error("inventory: schemaVersion must be 1");
   if (manifest.nltkVersion !== "3.10.3") throw new Error("inventory: nltkVersion must be 3.10.3");
+  if (manifest.pythonVersion !== "3.14.4") throw new Error("inventory: pythonVersion must be 3.14.4");
   if (typeof manifest.reviewBase !== "string" || !/^[a-f0-9]{7,40}$/.test(manifest.reviewBase)) throw new Error("inventory: reviewBase must be a commit ID");
   for (const key of ["publicNames", "classMembers", "bunExports", "behavior"]) text(object(manifest.policy, "policy")[key], `policy.${key}`);
   strings(manifest.modules, "modules");
@@ -156,6 +161,17 @@ export function validateManifest(value: unknown): asserts value is Manifest {
     if (mapping.category === "gap" && mapping.status !== "unsupported") throw new Error("reviewed gap must be unsupported");
     if (mapping.category === "external-integration" && !mapping.evidence.some((id) => evidenceById.get(id)?.kind === "integration")) throw new Error("external integration needs real integration evidence");
   }
+  const routes = object(manifest.reviewedRoutes, "reviewedRoutes");
+  const reviewedNames = new Set((manifest.mappings as Mapping[]).flatMap((mapping) => mapping.exports));
+  for (const [entrypoint, value] of Object.entries(routes)) {
+    if (entrypoint !== "." && !/^\.\/[a-z0-9_-]+$/.test(entrypoint)) throw new Error("reviewedRoutes: invalid package subpath");
+    for (const [name, path] of Object.entries(object(value, "reviewedRoutes.entrypoint"))) {
+      if (!reviewedNames.has(name)) throw new Error(`reviewed route has no mapping: ${name}`);
+      sourcePath(path, "reviewedRoutes.provenance");
+    }
+  }
+  const rootRoutes = object(routes["."], "reviewedRoutes.root");
+  for (const name of reviewedNames) text(rootRoutes[name], `reviewed root route ${name}`);
   const signatures = new Set<string>();
   for (const item of array(manifest.signatureBindings, "signatureBindings")) {
     const binding = object(item, "signatureBinding");
@@ -244,9 +260,10 @@ export async function discoverBun(): Promise<Snapshot["bunEntrypoints"]> {
 
 export function validateDiscovery(manifest: Manifest, discovery: Snapshot): void {
   if (discovery.schemaVersion !== 1 || discovery.nltkVersion !== "3.10.3") throw new Error("snapshot must pin schema 1 and NLTK 3.10.3");
+  if (discovery.pythonVersion !== manifest.pythonVersion) throw new Error("snapshot interpreter version drift");
   if (JSON.stringify(discovery.modules.map((module) => module.module)) !== JSON.stringify(manifest.modules)) throw new Error("snapshot selected module scope drift");
   const targets = new Map<string, PythonTarget>(discovery.modules.flatMap((module) => module.targets.map((target) => [`${module.module}.${target.name}`, target] as const)));
-  const exports = new Set(Object.values(discovery.bunEntrypoints).flatMap((groups) => Object.values(groups).flat()));
+  const exports = new Set(Object.values(discovery.bunEntrypoints["."] ?? {}).flat());
   for (const mapping of manifest.mappings) {
     const target = targets.get(mapping.target);
     if (!target) throw new Error(`target absent in pinned NLTK: ${mapping.target}`);
@@ -260,6 +277,11 @@ export function validateDiscovery(manifest: Manifest, discovery: Snapshot): void
       if (!Object.hasOwn(targets.get(parts.join("."))?.members ?? {}, member)) throw new Error(`signature member absent: ${binding.target}`);
     }
     if (!exports.has(binding.callable.split(".")[0]!)) throw new Error(`signature callable export absent: ${binding.callable}`);
+  }
+  for (const [entrypoint, routes] of Object.entries(manifest.reviewedRoutes)) {
+    for (const [name, provenance] of Object.entries(routes)) {
+      if (!discovery.bunEntrypoints[entrypoint]?.[provenance]?.includes(name)) throw new Error(`reviewed export route drift: ${entrypoint}:${name}`);
+    }
   }
 }
 
@@ -299,7 +321,8 @@ export function resolveBunExports(manifest: Manifest, discovery: Snapshot): Arra
 }> {
   return Object.entries(discovery.bunEntrypoints).flatMap(([entrypoint, groups]) =>
     Object.entries(groups).flatMap(([provenance, names]) => names.map((name) => {
-      const mappings = manifest.mappings.filter((mapping) => mapping.exports.includes(name));
+      const mappings = manifest.reviewedRoutes[entrypoint]?.[name] === provenance
+        ? manifest.mappings.filter((mapping) => mapping.exports.includes(name)) : [];
       return { entrypoint, name, provenance,
         categories: mappings.length ? [...new Set(mappings.map((mapping) => mapping.category))] : ["gap" as const],
         targets: mappings.map((mapping) => mapping.target), review: mappings.length ? "reviewed" as const : "unreviewed" as const };
@@ -325,6 +348,12 @@ export function checkRegression(current: Mapping[], baseline: Mapping[]): void {
 export function checkSignatureRegression(current: Manifest["signatureBindings"], baseline: Manifest["signatureBindings"]): void {
   const targets = new Set(current.map((binding) => binding.target));
   for (const binding of baseline) if (!targets.has(binding.target)) throw new Error(`inventory regression: explicit signature binding lost ${binding.target}`);
+}
+
+export function checkRouteRegression(current: Manifest["reviewedRoutes"], baseline: Manifest["reviewedRoutes"]): void {
+  for (const [entrypoint, routes] of Object.entries(baseline)) for (const [name, provenance] of Object.entries(routes)) {
+    if (current[entrypoint]?.[name] !== provenance) throw new Error(`inventory regression: reviewed route lost ${entrypoint}:${name}`);
+  }
 }
 
 export function summarize(manifest: Manifest, discovery: Snapshot): string {
@@ -354,12 +383,13 @@ export function serializeSnapshot(snapshot: Snapshot): string {
   const modules = snapshot.modules.map((module) => `    ${JSON.stringify(module)}`).join(",\n");
   const entries = Object.entries(snapshot.bunEntrypoints).map(([entry, groups]) => `    ${JSON.stringify(entry)}: ${JSON.stringify(groups)}`).join(",\n");
   const review = snapshot.review.map((mapping) => `    ${JSON.stringify(mapping)}`).join(",\n");
-  return `{\n  "schemaVersion": 1,\n  "nltkVersion": "3.10.3",\n  "modules": [\n${modules}\n  ],\n  "bunEntrypoints": {\n${entries}\n  },\n  "sourceHashes": ${JSON.stringify(snapshot.sourceHashes)},\n  "signatureBindings": ${JSON.stringify(snapshot.signatureBindings)},\n  "review": [\n${review}\n  ]\n}\n`;
+  return `{\n  "schemaVersion": 1,\n  "nltkVersion": "3.10.3",\n  "pythonVersion": ${JSON.stringify(snapshot.pythonVersion)},\n  "modules": [\n${modules}\n  ],\n  "bunEntrypoints": {\n${entries}\n  },\n  "sourceHashes": ${JSON.stringify(snapshot.sourceHashes)},\n  "signatureBindings": ${JSON.stringify(snapshot.signatureBindings)},\n  "reviewedRoutes": ${JSON.stringify(snapshot.reviewedRoutes)},\n  "review": [\n${review}\n  ]\n}\n`;
 }
 
 export function checkSnapshot(current: Snapshot, stored: Snapshot): void {
   for (const snapshot of [current, stored]) {
     if (snapshot.schemaVersion !== 1 || snapshot.nltkVersion !== "3.10.3") throw new Error("snapshot must pin schema 1 and NLTK 3.10.3");
+    if (snapshot.pythonVersion !== "3.14.4") throw new Error("snapshot must pin Python 3.14.4");
   }
   if (serializeSnapshot(current) !== serializeSnapshot(stored)) throw new Error("compatibility inventory drift: public names, signatures, exports, or review changed; inspect diff then regenerate with --write");
 }
@@ -369,13 +399,14 @@ export async function main(args: string[]): Promise<void> {
   const manifest = loadManifest();
   checkEvidenceFiles(manifest);
   const oracle = discoverOracle(manifest);
-  const snapshot: Snapshot = { schemaVersion: 1, nltkVersion: oracle.nltkVersion, modules: oracle.modules, bunEntrypoints: await discoverBun(), review: manifest.mappings, signatureBindings: manifest.signatureBindings, sourceHashes: sourceHashes(manifest) };
+  const snapshot: Snapshot = { schemaVersion: 1, nltkVersion: oracle.nltkVersion, pythonVersion: oracle.pythonVersion, modules: oracle.modules, bunEntrypoints: await discoverBun(), review: manifest.mappings, signatureBindings: manifest.signatureBindings, reviewedRoutes: manifest.reviewedRoutes, sourceHashes: sourceHashes(manifest) };
   validateDiscovery(manifest, snapshot);
   if (args.includes("--write")) {
     if (existsSync(snapshotPath)) {
       const stored = JSON.parse(readFileSync(snapshotPath, "utf8")) as Snapshot;
       checkRegression(snapshot.review, stored.review);
       checkSignatureRegression(snapshot.signatureBindings, stored.signatureBindings);
+      checkRouteRegression(snapshot.reviewedRoutes, stored.reviewedRoutes);
     }
     writeFileSync(snapshotPath, serializeSnapshot(snapshot));
   }

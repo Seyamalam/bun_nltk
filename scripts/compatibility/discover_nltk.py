@@ -9,6 +9,7 @@ import re
 import sys
 
 EXPECTED_VERSION = "3.10.3"
+EXPECTED_PYTHON = "3.14.4"
 
 
 def signature(value):
@@ -47,7 +48,12 @@ def main():
     import nltk
     if nltk.__version__ != EXPECTED_VERSION:
         raise RuntimeError(f"NLTK {EXPECTED_VERSION} required, found {nltk.__version__}")
+    python_version = ".".join(map(str, sys.version_info[:3]))
+    if python_version != EXPECTED_PYTHON:
+        raise RuntimeError(f"Python {EXPECTED_PYTHON} required for inventory reflection, found {python_version}")
     request = json.load(sys.stdin)
+    if request.get("pythonVersion") != EXPECTED_PYTHON:
+        raise RuntimeError(f"Inventory must pin Python {EXPECTED_PYTHON}")
     # No file paths, wall clock, repr(object), or host data availability in the snapshot.
     # Module discovery is identical with or without installed corpora.
     modules = [discover(name) for name in request["modules"]]
@@ -58,7 +64,7 @@ def main():
             resources[resource] = "available"
         except LookupError:
             resources[resource] = "missing"
-    print(json.dumps({"nltkVersion": EXPECTED_VERSION, "modules": modules,
+    print(json.dumps({"nltkVersion": EXPECTED_VERSION, "pythonVersion": python_version, "modules": modules,
                       "resources": resources}, sort_keys=True, ensure_ascii=False))
 
 

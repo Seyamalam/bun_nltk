@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import {
-  checkEvidenceFiles, checkRegression, checkSignatureRegression, checkSnapshot, discoverBun, discoverOracle,
+  checkEvidenceFiles, checkRegression, checkRouteRegression, checkSignatureRegression, checkSnapshot, discoverBun, discoverOracle,
   loadManifest, resolveBunExports, resolveTargets, serializeSnapshot, snapshotPath, sourceHashes, validateDiscovery, validateManifest,
   type Manifest, type Snapshot,
 } from "../scripts/compatibility/inventory";
@@ -14,6 +14,7 @@ const copy = (): Manifest => structuredClone(manifest);
 test("compatibility inventory pins schema, NLTK and an explicit module scope", () => {
   expect(manifest.nltkVersion).toBe("3.10.3");
   expect(manifest.schemaVersion).toBe(1);
+  expect(manifest.pythonVersion).toBe("3.14.4");
   expect(manifest.modules.length).toBeGreaterThan(30);
   expect(manifest.modules).not.toContain("nltk");
   expect(manifest.excludedModules.some((entry) => entry.prefix === "*")).toBe(true);
@@ -84,12 +85,14 @@ test("inventory refresh blocks removed mappings, member contracts and downgraded
   members.mappings.find((mapping) => mapping.signatures.members.length)!.signatures.members = [];
   expect(() => checkRegression(members.mappings, snapshot.review)).toThrow("member lost");
   expect(() => checkSignatureRegression(manifest.signatureBindings.slice(1), snapshot.signatureBindings)).toThrow("signature binding lost");
+  expect(() => checkRouteRegression({}, snapshot.reviewedRoutes)).toThrow("reviewed route lost");
 });
 
 test("pinned offline NLTK discovery is reproducible and rejects version/signature drift", () => {
   const first = discoverOracle(manifest);
   const second = discoverOracle(manifest);
   expect(first.nltkVersion).toBe("3.10.3");
+  expect(first.pythonVersion).toBe(manifest.pythonVersion);
   expect(first.modules).toEqual(second.modules);
   expect(first.modules).toEqual(snapshot.modules);
   const changed = structuredClone(snapshot);
@@ -108,6 +111,28 @@ runpy.run_path(sys.argv[1],run_name='__main__')
 `, resolve(import.meta.dir, "../scripts/compatibility/discover_nltk.py")], { stdout: "pipe", stderr: "pipe" });
   expect(wrongOracle.exitCode).not.toBe(0);
   expect(new TextDecoder().decode(wrongOracle.stderr)).toContain("NLTK 3.10.3 required, found 3.9.2");
+  const wrongPython = Bun.spawnSync(["python3", "-c", `
+import runpy,sys,types
+sys.modules['nltk']=types.SimpleNamespace(__version__='3.10.3')
+sys.version_info=(3,12,0)
+runpy.run_path(sys.argv[1],run_name='__main__')
+`, resolve(import.meta.dir, "../scripts/compatibility/discover_nltk.py")], { stdout: "pipe", stderr: "pipe" });
+  expect(wrongPython.exitCode).not.toBe(0);
+  expect(new TextDecoder().decode(wrongPython.stderr)).toContain("Python 3.14.4 required for inventory reflection, found 3.12.0");
+});
+
+test("reviewed classifications require the exact entrypoint and source route, not a matching name", () => {
+  const changed = structuredClone(snapshot);
+  changed.bunEntrypoints["./classify"] = { "src/classify.ts": ["NaiveBayesClassifier"] };
+  changed.bunEntrypoints["."]!["src/classifier_compat.ts"] = changed.bunEntrypoints["."]!["src/classifier_compat.ts"]!.filter((name) => name !== "NaiveBayesClassifier");
+  expect(() => validateDiscovery(manifest, changed)).toThrow("Bun export absent: NaiveBayesClassifier");
+  const subpath = resolveBunExports(manifest, changed).find((entry) => entry.entrypoint === "./classify" && entry.name === "NaiveBayesClassifier")!;
+  expect(subpath.review).toBe("unreviewed");
+  expect(subpath.categories).toEqual(["gap"]);
+  const route = structuredClone(snapshot);
+  route.bunEntrypoints["."]!["src/other.ts"] = ["NaiveBayesClassifier"];
+  route.bunEntrypoints["."]!["src/classifier_compat.ts"] = route.bunEntrypoints["."]!["src/classifier_compat.ts"]!.filter((name) => name !== "NaiveBayesClassifier");
+  expect(() => validateDiscovery(manifest, route)).toThrow("reviewed export route drift");
 });
 
 test("all package Bun value exports are discovered with provenance; names are not behavior", async () => {
