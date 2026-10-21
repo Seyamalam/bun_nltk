@@ -5,16 +5,24 @@ export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$PWD/rust/target/semaphore-${SEMAPH
 case "${1:-}" in
   static)
     npx --no-install tsrs -p tsconfig.json --noEmit
+    bun run compatibility:typecheck
+    bun run compatibility:check
     npx --no-install oxlint src test bench scripts index.ts
     bash scripts/loc-guard.sh 600
     python3 scripts/ci/validate-config.py
     python3 -m unittest discover -s scripts/ci -p 'test_*.py'
     ;;
   rust)
-    cargo fmt --manifest-path rust/Cargo.toml --check
-    cargo clippy --locked --manifest-path rust/Cargo.toml --all-targets -- -D warnings
-    cargo clippy --locked --manifest-path rust/Cargo.toml --target wasm32-unknown-unknown -- -D warnings
-    cargo test --locked --manifest-path rust/Cargo.toml
+    for manifest in rust/Cargo.toml rust/compat/Cargo.toml; do
+      cargo fmt --manifest-path "$manifest" --check
+      cargo clippy --locked --manifest-path "$manifest" --all-targets -- -D warnings
+      cargo clippy --locked --manifest-path "$manifest" --target wasm32-unknown-unknown --all-targets -- -D warnings
+      cargo test --locked --manifest-path "$manifest"
+    done
+    bun run scripts/ci/native-build.ts native
+    bun run scripts/ci/native-build.ts wasm
+    bun run scripts/ci/native-build.ts compat
+    bun run scripts/build-nltk-compat.ts --check
     ;;
   tests)
     python3 scripts/ci/oracle.py check
@@ -39,11 +47,19 @@ case "${1:-}" in
     bun run build:portable
     git diff --exit-code -- dist/portable
     bun run verify:portable
+    # Family verifiers are parent-owned; call their real entrypoints, not a
+    # duplicate browser harness or inferred package-script registration.
+    bun run scripts/verify-tokenizers-portable.ts
+    bun run scripts/verify-punkt-portable.ts
+    bun run scripts/verify-metrics-portable.ts
+    bun run scripts/verify-parsing-portable.ts
     # The installed-package verifier currently uses this Linux-only temp root.
     mkdir -p /tmp/opencode artifacts/semaphore-package
     bun pm pack --ignore-scripts --destination artifacts/semaphore-package
     version=$(node -p "require('./package.json').version")
     bun run verify:packaged-portable "$PWD/artifacts/semaphore-package/bun_nltk-$version.tgz"
+    bun run scripts/verify-parsing-packaged.ts "$PWD/artifacts/semaphore-package/bun_nltk-$version.tgz"
+    bun run wasm:size:check
     bun run package:size:check
     bun run pack:verify:prebuilt
     ;;

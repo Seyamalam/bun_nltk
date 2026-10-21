@@ -49,6 +49,7 @@ bun --version
 rustc --version
 
 if [[ "$CI_HOST" == linux-x64 ]]; then
+  python3 -c 'import json,platform; expected=json.load(open("scripts/ci/versions.json"))["python"]; actual=platform.python_version(); assert actual == expected, f"Expected Python {expected}, got {actual}"'
   python3 -m venv .venv
   export PATH="$CI_ROOT/.venv/bin:$PATH"
   python3 -m pip install --require-hashes --only-binary=:all: -r scripts/ci/oracle-requirements.txt

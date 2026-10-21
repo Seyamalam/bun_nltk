@@ -19,14 +19,14 @@ blocks:
     dependencies: []
     task:
       jobs:
-        - name: tsrs, Oxlint and CI configuration
+        - name: tsrs, compatibility inventory, Oxlint and CI configuration
           commands:
             - bash scripts/ci/validate.sh static
   - name: Rust native and WASM
     dependencies: []
     task:
       jobs:
-        - name: Format, Clippy and Rust unit tests
+        - name: Main and compatibility format, Clippy, tests and locked builds
           commands:
             - bash scripts/ci/validate.sh rust
   - name: Behavioral tests

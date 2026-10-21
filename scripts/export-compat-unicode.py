@@ -4,20 +4,24 @@ Run with PYTHONPATH=/tmp/opencode/bun-nltk-oracle. The UCD input is downloaded
 to /tmp/opencode, checked by SHA-256, and never executed.
 """
 import hashlib
+import argparse
 import pathlib
 import re
+import sys
 import unicodedata
 import urllib.request
 import regex
 
-assert unicodedata.unidata_version == "16.0.0", unicodedata.unidata_version
-assert regex.__version__ == "2026.9.29", regex.__version__
+if (sys.version_info[:3] != (3, 14, 4) or unicodedata.unidata_version != "16.0.0"
+        or regex.__version__ != "2026.9.29"):
+    raise RuntimeError("Requires Python 3.14.4, Unicode 16.0.0, regex 2026.9.29")
 UCD_SHA256 = "39d35161f2954497f69e08bdb9e701493f476a3d30222de20028feda36c1dabd"
 path = pathlib.Path("/tmp/opencode/DerivedCoreProperties-16.0.0.txt")
 if not path.exists():
-    path.write_bytes(urllib.request.urlopen("https://www.unicode.org/Public/16.0.0/ucd/DerivedCoreProperties.txt").read())
+    path.write_bytes(urllib.request.urlopen("https://www.unicode.org/Public/16.0.0/ucd/DerivedCoreProperties.txt", timeout=120).read())
 data = path.read_bytes()
-assert hashlib.sha256(data).hexdigest() == UCD_SHA256
+if hashlib.sha256(data).hexdigest() != UCD_SHA256:
+    raise ValueError("UCD DerivedCoreProperties SHA256 mismatch")
 
 def ranges(values):
     result = []
@@ -29,8 +33,8 @@ def ranges(values):
     return result
 
 def table(name, values):
-    rows = ",\n".join(f"    (0x{a:x}, 0x{b:x})" for a, b in ranges(sorted(set(values))))
-    return f"const {name}: &[(u32, u32)] = &[\n{rows}\n];\n"
+    rows = "\n".join(f"    (0x{a:x}, 0x{b:x})," for a, b in ranges(sorted(set(values))))
+    return f"pub(super) const {name}: &[(u32, u32)] = &[\n{rows}\n];\n"
 
 props = {"Cased": [], "Case_Ignorable": []}
 for line in data.decode().splitlines():
@@ -48,24 +52,17 @@ source += table("PYSPACE", [i for i in range(0x110000) if chr(i).isspace()])
 source += table("DECIMAL", [i for i in range(0x110000) if chr(i).isdecimal()])
 for name, values in props.items():
     source += table(name.upper(), values)
-source += """
-fn in_ranges(ch: u32, ranges: &[(u32, u32)]) -> bool {
-    let i = ranges.partition_point(|&(_, end)| end < ch);
-    i < ranges.len() && ranges[i].0 <= ch
-}
-pub fn is_word(ch: u32) -> bool { in_ranges(ch, WORD) }
-pub fn is_space(ch: u32) -> bool { in_ranges(ch, SPACE) }
-pub fn is_pyword(ch: u32) -> bool { in_ranges(ch, PYWORD) }
-pub fn is_pyspace(ch: u32) -> bool { in_ranges(ch, PYSPACE) }
-pub fn is_decimal(ch: u32) -> bool { in_ranges(ch, DECIMAL) }
-pub fn is_cased(ch: u32) -> bool { in_ranges(ch, CASED) }
-pub fn is_case_ignorable(ch: u32) -> bool { in_ranges(ch, CASE_IGNORABLE) }
-pub fn lowercase_char(ch: u32, out: &mut Vec<u32>) {
-    match ch {
-"""
+source += "pub(super) const LOWERCASE: &[(u32, &[u32])] = &[\n"
 for i in range(0x110000):
     lowered = chr(i).lower()
     if lowered != chr(i):
-        source += f"        0x{i:x} => out.extend([{', '.join(f'0x{ord(c):x}' for c in lowered)}]),\n"
-source += "        _ => out.push(ch),\n    }\n}\n"
-pathlib.Path("rust/src/compat_unicode.rs").write_text(source)
+        source += f"    (0x{i:x}, &[{', '.join(f'0x{ord(c):x}' for c in lowered)}]),\n"
+source += "];\n"
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--check", action="store_true")
+output = pathlib.Path(__file__).resolve().parents[1] / "rust/src/compat_unicode_data.rs"
+if parser.parse_args().check:
+    if output.read_text() != source:
+        raise RuntimeError(f"Generated Unicode drift: {output}")
+else:
+    output.write_text(source)

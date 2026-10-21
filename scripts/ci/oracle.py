@@ -15,6 +15,13 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
 LOCK = json.loads((ROOT / "scripts/ci/nltk-data-lock.json").read_text())
+VERSIONS = json.loads((ROOT / "scripts/ci/versions.json").read_text())
+
+
+def check_python() -> None:
+    actual = ".".join(map(str, sys.version_info[:3]))
+    if actual != VERSIONS["python"]:
+        raise ValueError(f"Expected Python {VERSIONS['python']}, got {actual}")
 
 
 def verified_bytes(url: str, expected: str) -> bytes:
@@ -73,6 +80,7 @@ def prepare() -> None:
 
 
 def check() -> None:
+    check_python()
     import nltk
     import numpy
     import scipy

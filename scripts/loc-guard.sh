@@ -5,6 +5,9 @@
 set -euo pipefail
 MAX_LOC="${1:-600}"
 violations=0
+# Exact generator exceptions are audited before skipping their line counts.
+# See docs/generated-source-audit.md; no new legacy grandfather entries.
+bun run scripts/audit-generated.ts
 while IFS= read -r file; do
   # skip generated/bundled data modules, build output and test files
   case "$file" in

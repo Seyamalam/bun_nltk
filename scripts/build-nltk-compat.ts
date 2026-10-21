@@ -7,7 +7,7 @@ const compiler = Bun.spawnSync(["rustc", "--version"], { stdout: "pipe", stderr:
 if (compiler.exitCode !== 0 || !new TextDecoder().decode(compiler.stdout).startsWith("rustc 1.97.1 ")) {
   throw new Error("nltk compatibility artifact requires pinned rustc 1.97.1");
 }
-const target = resolve(root, "rust/target/nltk-compat");
+const target = resolve(root, process.env.CARGO_TARGET_DIR ?? "rust/target/nltk-compat");
 const result = Bun.spawnSync(["cargo", "build", "--locked", "--release", "--target", "wasm32-unknown-unknown", "--manifest-path", "rust/compat/Cargo.toml"], {
   cwd: root, env: { ...process.env, CARGO_TARGET_DIR: target, RUSTFLAGS: `--remap-path-prefix=${root}=/bun_nltk` }, stdout: "pipe", stderr: "pipe",
 });
