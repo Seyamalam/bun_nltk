@@ -153,16 +153,28 @@ declare function defaultPunktModel(): PunktModelSerialized;
 declare function serializePunktModel(model: PunktModelSerialized): string;
 declare function parsePunktModel(payload: string | PunktModelSerialized): PunktModelSerialized;
 
+type NgramOptions<P = null> = {
+    pad_left?: boolean;
+    pad_right?: boolean;
+    left_pad_symbol?: P;
+    right_pad_symbol?: P;
+};
+/** Lazy NLTK iterator semantics, with Rust-owned windows and JS object marshaling. */
+declare function ngramsIterator<T, P = null>(sequence: Iterable<T>, n: number, options?: NgramOptions<P>): Generator<Array<T | P | null>, void, unknown>;
+
 /** NLTK-compatible sentence tokenizer backed by the bundled English Punkt model. */
 declare function sent_tokenize(text: string, language?: string): string[];
-/** NLTK-compatible word tokenizer: sentence splitting followed by Treebank tokenization. */
+/** NLTK word tokenizer: Punkt sentences followed by the destructive word tokenizer. */
 declare function word_tokenize(text: string, language?: string, preserve_line?: boolean): string[];
 /** NLTK-compatible word-punctuation tokenizer. */
 declare function wordpunct_tokenize(text: string): string[];
-/** NLTK's ngrams helper. Returns an array of n-length slices. */
+/** Materialized NLTK windows; preserves the existing array-returning API. */
 declare function ngrams<T>(sequence: Iterable<T>, n: number): T[][];
+declare function ngrams<T, P>(sequence: Iterable<T>, n: number, options: NgramOptions<P>): Array<Array<T | P | null>>;
 declare function bigrams<T>(sequence: Iterable<T>): T[][];
+declare function bigrams<T, P>(sequence: Iterable<T>, options: NgramOptions<P>): Array<Array<T | P | null>>;
 declare function trigrams<T>(sequence: Iterable<T>): T[][];
+declare function trigrams<T, P>(sequence: Iterable<T>, options: NgramOptions<P>): Array<Array<T | P | null>>;
 
-export { MWETokenizer, PunktSentenceTokenizer, PunktSentenceTokenizerSubset, PunktTrainer, PunktTrainerSubset, ToktokTokenizer, TreebankWordTokenizer, TweetTokenizer, WordPunctTokenizer, bigramWindowStatsAscii, bigramWindowStatsAsciiIds, bigrams, computeAsciiMetrics, countNgramsAscii, countTokensAscii, countUniqueNgramsAscii, countUniqueTokensAscii, defaultPunktModel, everygramsAscii, hashNgram, hashTokenAscii, mweTokenize, ngramFreqDistHashAscii, ngrams, ngramsAscii, normalizeTokensAscii, normalizeTokensUnicode, parsePunktModel, posTagAscii, sent_tokenize, sentenceTokenizePunkt, sentenceTokenizePunktCompat, sentenceTokenizeSubset, serializePunktModel, skipgramsAscii, tokenFreqDistHashAscii, tokenFreqDistIdsAscii, tokenizeAscii, toktokTokenize, topPmiBigramsAscii, trainPunktModel, treebankWordTokenize, trigrams, tweetTokenize, tweetTokenizeSubset, wordPunctTokenize, wordTokenizeSubset, word_tokenize, wordpunct_tokenize };
-export type { AsciiMetrics, BigramWindowStatId, BigramWindowStatToken, PmiBigram, PosTag, PosTagName, PunktModelSerialized, PunktTrainingOptions, SentenceTokenizerOptions, TokenFreqDistIds, TweetTokenizerOptions };
+export { MWETokenizer, PunktSentenceTokenizer, PunktSentenceTokenizerSubset, PunktTrainer, PunktTrainerSubset, ToktokTokenizer, TreebankWordTokenizer, TweetTokenizer, WordPunctTokenizer, bigramWindowStatsAscii, bigramWindowStatsAsciiIds, bigrams, computeAsciiMetrics, countNgramsAscii, countTokensAscii, countUniqueNgramsAscii, countUniqueTokensAscii, defaultPunktModel, everygramsAscii, hashNgram, hashTokenAscii, mweTokenize, ngramFreqDistHashAscii, ngrams, ngramsAscii, ngramsIterator as ngrams_iter, normalizeTokensAscii, normalizeTokensUnicode, parsePunktModel, posTagAscii, sent_tokenize, sentenceTokenizePunkt, sentenceTokenizePunktCompat, sentenceTokenizeSubset, serializePunktModel, skipgramsAscii, tokenFreqDistHashAscii, tokenFreqDistIdsAscii, tokenizeAscii, toktokTokenize, topPmiBigramsAscii, trainPunktModel, treebankWordTokenize, trigrams, tweetTokenize, tweetTokenizeSubset, wordPunctTokenize, wordTokenizeSubset, word_tokenize, wordpunct_tokenize };
+export type { AsciiMetrics, BigramWindowStatId, BigramWindowStatToken, NgramOptions, PmiBigram, PosTag, PosTagName, PunktModelSerialized, PunktTrainingOptions, SentenceTokenizerOptions, TokenFreqDistIds, TweetTokenizerOptions };
