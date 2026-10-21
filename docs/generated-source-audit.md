@@ -13,6 +13,9 @@ following exact generator-owned outputs:
 - `rust/src/tokenizer_unicode.rs`: only Unicode range constants. Python 3.14.4,
   Unicode 16.0.0 and regex 2026.9.29 are enforced by
   `scripts/generate-tokenizer-unicode.py --check`; its complete output must match.
+- `rust/src/regexp_unicode.rs`: only pinned V0 decimal ranges and directed
+  simple IGNORECASE pairs. `scripts/generate-regexp-unicode.py --check` enforces
+  Python 3.14.4, NLTK 3.10.3 and regex 2026.9.29 and requires byte equality.
 - `rust/src/compat_unicode_data.rs`: range and lowercase-mapping constants only.
   `scripts/export-compat-unicode.py --check` enforces the same Python/Unicode/regex
   pins and the existing SHA256-locked Unicode 16 DerivedCoreProperties download.

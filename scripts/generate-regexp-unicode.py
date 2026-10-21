@@ -27,7 +27,13 @@ def main():
                 rows.append(f"    (0x{cp:x}, 0x{other:x}),")
     rows.append("];")
     root = pathlib.Path(__file__).resolve().parents[1]
-    (root / "rust/src/regexp_unicode.rs").write_text("\n".join(rows) + "\n")
+    target = root / "rust/src/regexp_unicode.rs"
+    content = "\n".join(rows) + "\n"
+    if "--check" in sys.argv[1:]:
+        if not target.exists() or target.read_text() != content:
+            raise SystemExit(f"{target} does not match the pinned generator")
+    else:
+        target.write_text(content)
 
 
 if __name__ == "__main__":

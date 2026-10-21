@@ -22,8 +22,8 @@ marshaling, and remaining legacy algorithms. The target is Python NLTK 3.10.3.
   as passed.
 - The integrated Rust crate passes **112 tests**, plus **4 compatibility-crate
   tests**. The Bun suite has **601 passes and 1 failure**: the shipped WASM is
-  **1,055,427 bytes** against the unchanged 700,000-byte gate.
-- The package gate passes at **12,894,700 unpacked bytes** across **316 files**
+  **1,055,547 bytes** against the unchanged 700,000-byte gate.
+- The package gate passes at **12,894,980 unpacked bytes** across **316 files**
   (limits: 13,000,000 bytes / 400 files). NE chunker models ship as Brotli.
 - The WASM gate is the remaining release blocker. Exact float round-tripping
   (required for model snapshots) already consumes most of the old margin, and

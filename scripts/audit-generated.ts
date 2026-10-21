@@ -35,7 +35,7 @@ export function auditDeclaration(path: string, text: string): void {
 }
 
 if (import.meta.main) {
-  for (const generator of ["scripts/export-compat-unicode.py", "scripts/generate-tokenizer-unicode.py"]) {
+  for (const generator of ["scripts/export-compat-unicode.py", "scripts/generate-tokenizer-unicode.py", "scripts/generate-regexp-unicode.py"]) {
     const child = Bun.spawnSync(["python3", generator, "--check"], { cwd: root, stdout: "pipe", stderr: "pipe" });
     if (child.exitCode !== 0) throw new Error(new TextDecoder().decode(child.stderr));
   }

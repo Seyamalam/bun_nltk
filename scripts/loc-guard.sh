@@ -11,7 +11,7 @@ bun run scripts/audit-generated.ts
 while IFS= read -r file; do
   # skip generated/bundled data modules, build output and test files
   case "$file" in
-    *_data.ts|*.test.ts|*_data.rs|dist/*|rust/src/compat_unicode.rs|rust/src/tokenizer_unicode.rs) continue ;;
+    *_data.ts|*.test.ts|*_data.rs|dist/*|rust/src/compat_unicode.rs|rust/src/tokenizer_unicode.rs|rust/src/regexp_unicode.rs) continue ;;
   esac
   # Grandfathered legacy files pending split; shrink this list over time.
   case "$file" in

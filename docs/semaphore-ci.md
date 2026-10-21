@@ -21,12 +21,12 @@ the only local failure. No gate is suppressed to obtain green CI.
 - Rust: **112 tests** pass; the compatibility crate passes **4 tests**;
   `cargo fmt --check` and Clippy `-D warnings` pass.
 - Bun: **601 pass, 1 fail** — only `test/wasm_size.test.ts`. The shipped WASM is
-  **1,055,427 bytes** against the unchanged **700,000**-byte gate. Restoring
+  **1,055,547 bytes** against the unchanged **700,000**-byte gate. Restoring
   exact float round-tripping (needed for model snapshots) and the recovered
   Punkt training, regexp tokenizer, Tree/PCFG, and legacy text-classifier
   kernels account for the overage.
 - Fidelity: **43 passed, 0 failed, 0 skipped, 3 unsupported**.
-- Package: **316 files, 12,894,700 unpacked bytes** against 400 files /
+- Package: **316 files, 12,894,980 unpacked bytes** against 400 files /
   13,000,000 bytes. NE chunker models ship as deterministic Brotli.
 - Portable verification passes on **Chromium, Firefox, WebKit, and Node 24**
   after installing the Playwright WebKit system dependencies. The packaged
