@@ -66,6 +66,7 @@ export class WasmNltk {
       this.exports.bunnltk_wasm_free(block.ptr, block.bytes);
     }
     this.blocks.clear();
+    this.exports.bunnltk_wasm_text_naive_bayes_clear?.();
     this.exports.bunnltk_wasm_categorical_nb_clear();
     this.exports.bunnltk_wasm_decision_tree_clear?.();
     this.exports.bunnltk_wasm_metrics_stream_clear();
@@ -81,6 +82,18 @@ export class WasmNltk {
   probabilityContractExports() {
     this.assertActive();
     return this.exports;
+  }
+  textNaiveBayes(request) {
+    if (typeof this.exports.bunnltk_wasm_text_naive_bayes !== "function") {
+      throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
+    }
+    const inputLen = this.writeInput(request);
+    const length = this.exports.bunnltk_wasm_text_naive_bayes(inputLen);
+    this.assertNoError("textNaiveBayes");
+    const output = this.ensureBlock("text_naive_bayes_output", length);
+    this.exports.bunnltk_wasm_text_naive_bayes_copy(output.ptr, length);
+    this.assertNoError("textNaiveBayesCopy");
+    return this.decoder.decode(new Uint8Array(this.exports.memory.buffer, output.ptr, length));
   }
   assertOrder(n) {
     if (!Number.isSafeInteger(n) || n < 1 || n > 4294967295) {

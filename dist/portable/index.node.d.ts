@@ -1296,6 +1296,12 @@ declare class MaxEntTextClassifier {
 declare function trainMaxEntTextClassifier(examples: MaxEntExample[], options?: MaxEntOptions): MaxEntTextClassifier;
 declare function loadMaxEntTextClassifier(payload: MaxEntSerialized): MaxEntTextClassifier;
 
+type PositivePrediction = {
+    label: string;
+    probability: number;
+    logProb: number;
+};
+
 type PositiveNaiveBayesSerialized = {
     version: number;
     positiveLabel: string;
@@ -1312,40 +1318,24 @@ type PositiveNaiveBayesSerialized = {
         maxFeatures: number;
     };
 };
-type Prediction = {
-    label: string;
-    probability: number;
-    logProb: number;
+type Options = {
+    maxFeatures?: number;
+    positivePrior?: number;
+    positiveLabel?: string;
+    negativeLabel?: string;
 };
+type TextRows = string[] | Array<{
+    text: string;
+}>;
+/** Legacy Bernoulli positive/unlabeled text extension, not NLTK's categorical variant. */
 declare class PositiveNaiveBayesTextClassifier {
-    private readonly options;
-    private positiveLabel;
-    private negativeLabel;
-    private positivePrior;
-    private vocabulary;
-    private tokenToId;
-    private presentLogPos;
-    private absentLogPos;
-    private presentLogNeg;
-    private absentLogNeg;
-    private absentLogPosSum;
-    private absentLogNegSum;
-    constructor(options?: {
-        maxFeatures?: number;
-        positivePrior?: number;
-        positiveLabel?: string;
-        negativeLabel?: string;
-    });
+    private state;
+    constructor(options?: Options);
     static fromJSON(payload: PositiveNaiveBayesSerialized): PositiveNaiveBayesTextClassifier;
-    train(positiveRows: string[] | Array<{
-        text: string;
-    }>, unlabeledRows: string[] | Array<{
-        text: string;
-    }>, options?: {
+    train(positiveRows: TextRows, unlabeledRows: TextRows, options?: {
         positivePrior?: number;
     }): this;
-    private score;
-    predict(text: string): Prediction[];
+    predict(text: string): PositivePrediction[];
     classify(text: string): string;
     evaluate(examples: Array<{
         label: string;
@@ -1357,16 +1347,7 @@ declare class PositiveNaiveBayesTextClassifier {
     };
     toJSON(): PositiveNaiveBayesSerialized;
 }
-declare function trainPositiveNaiveBayesTextClassifier(positiveRows: string[] | Array<{
-    text: string;
-}>, unlabeledRows: string[] | Array<{
-    text: string;
-}>, options?: {
-    maxFeatures?: number;
-    positivePrior?: number;
-    positiveLabel?: string;
-    negativeLabel?: string;
-}): PositiveNaiveBayesTextClassifier;
+declare function trainPositiveNaiveBayesTextClassifier(positiveRows: TextRows, unlabeledRows: TextRows, options?: Options): PositiveNaiveBayesTextClassifier;
 declare function loadPositiveNaiveBayesTextClassifier(payload: PositiveNaiveBayesSerialized): PositiveNaiveBayesTextClassifier;
 
 declare abstract class FeatureClassifierBase {

@@ -33,6 +33,7 @@ pub mod stream_freqdist;
 pub mod tagger;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod text_linear;
+pub mod text_naive_bayes;
 pub mod token_ids;
 pub mod tokenizers;
 pub mod translation;
@@ -50,6 +51,7 @@ pub mod wasm_metrics_stream;
 pub mod wasm_tokenizers;
 pub mod wasm_punkt;
 pub mod wasm_metrics;
+pub mod wasm_text_naive_bayes;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CoreError {

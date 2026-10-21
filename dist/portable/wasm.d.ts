@@ -49,6 +49,8 @@ declare class WasmNltk {
     dispose(): void;
     private assertActive;
     probabilityContractExports(): ContractExports;
+    /** JSON transport for legacy text NB; all training and scoring happen in Rust. */
+    textNaiveBayes(request: string): string;
     private assertOrder;
     private tokenizerRequest;
     tokenize(text: string, kind?: TokenizerKind, options?: TokenizerOptions): string[];

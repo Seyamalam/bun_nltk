@@ -5,6 +5,9 @@ import { MetricsWasm, type MetricsExports } from "./metrics_wasm.ts";
 import type { ContractExports } from "./probability_abi.ts";
 
 type WasmExports = MetricsExports & ContractExports & {
+  bunnltk_wasm_text_naive_bayes: (inputLen: number) => number;
+  bunnltk_wasm_text_naive_bayes_copy: (outPtr: number, outLen: number) => void;
+  bunnltk_wasm_text_naive_bayes_clear: () => void;
   memory: WebAssembly.Memory;
   bunnltk_wasm_tokenizer_run: (inputPtr: number, inputLen: number) => number;
   bunnltk_wasm_tokenizer_output_ptr: () => number;
@@ -302,6 +305,7 @@ export class WasmNltk {
       this.exports.bunnltk_wasm_free(block.ptr, block.bytes);
     }
     this.blocks.clear();
+    this.exports.bunnltk_wasm_text_naive_bayes_clear?.();
     this.exports.bunnltk_wasm_categorical_nb_clear();
     this.exports.bunnltk_wasm_decision_tree_clear?.();
     this.exports.bunnltk_wasm_metrics_stream_clear();
@@ -318,6 +322,20 @@ export class WasmNltk {
   probabilityContractExports(): ContractExports {
     this.assertActive();
     return this.exports;
+  }
+
+  /** JSON transport for legacy text NB; all training and scoring happen in Rust. */
+  textNaiveBayes(request: string): string {
+    if (typeof this.exports.bunnltk_wasm_text_naive_bayes !== "function") {
+      throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
+    }
+    const inputLen = this.writeInput(request);
+    const length = this.exports.bunnltk_wasm_text_naive_bayes(inputLen);
+    this.assertNoError("textNaiveBayes");
+    const output = this.ensureBlock("text_naive_bayes_output", length);
+    this.exports.bunnltk_wasm_text_naive_bayes_copy(output.ptr, length);
+    this.assertNoError("textNaiveBayesCopy");
+    return this.decoder.decode(new Uint8Array(this.exports.memory.buffer, output.ptr, length));
   }
 
   private assertOrder(n: number): void {
