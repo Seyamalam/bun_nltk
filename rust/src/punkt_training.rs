@@ -242,7 +242,7 @@ mod tests {
     #[test]
     fn training_and_reclassification() {
         let first = "Dr. Smith left. Dr. Jones stayed. He slept. ".repeat(4);
-        let m = train(&[first.clone()], &TrainingOptions::default());
+        let m = train(std::slice::from_ref(&first), &TrainingOptions::default());
         assert!(m.abbreviations.contains(&"dr".into()));
         assert_eq!(m.ortho_context.get("he"), Some(&2));
         let m = train(

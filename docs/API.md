@@ -688,5 +688,5 @@ rounding. Custom entries augment or override the bundled lexicon.
 Default NE inference uses the bundled English maximum-entropy model and requires
 POS-tagged input. `binary: true` selects the separately trained binary model, so
 its boundaries can differ from multiclass output. `grammar` explicitly selects
-rule-based parsing. Models load lazily on Bun/Node from packaged gzip assets;
+rule-based parsing. Models load lazily on Bun/Node from packaged Brotli assets;
 no Python or network access is needed. See `THIRD_PARTY_NOTICES.md` for data terms.

@@ -1,4 +1,4 @@
-import { ConditionalFreqDist, FreqDist } from "./freqdist";
+import { ConditionalFreqDist, FreqDist } from "./freqdist.ts";
 export { HeldoutProbDist, CrossValidationProbDist, KneserNeyProbDist } from "./probability_missing.ts";
 export type { Trigram } from "./probability_missing.ts";
 import { probabilityKey, probabilityRuntime } from "./probability_abi.ts";
@@ -154,28 +154,30 @@ export class DictionaryProbDist<T> extends ProbDistI<T> {
 }
 
 export class MLEProbDist<T> extends ProbDistI<T> {
-  constructor(private readonly freqDistValue: FreqDist<T>) {
+  readonly #freqDistValue: FreqDist<T>;
+  constructor(freqDistValue: FreqDist<T>) {
     super();
+    this.#freqDistValue = freqDistValue;
   }
 
   freqdist(): FreqDist<T> {
-    return this.freqDistValue;
+    return this.#freqDistValue;
   }
 
   prob(sample: T): number {
-    return numeric(6, [this.freqDistValue.get(sample), this.freqDistValue.N()])[0]!;
+    return numeric(6, [this.#freqDistValue.get(sample), this.#freqDistValue.N()])[0]!;
   }
 
   max(): T {
-    return this.freqDistValue.max();
+    return this.#freqDistValue.max();
   }
 
   samples(): Iterable<T> {
-    return this.freqDistValue.keys();
+    return this.#freqDistValue.keys();
   }
 
   override toString(): string {
-    return `<MLEProbDist based on ${this.freqDistValue.N()} samples>`;
+    return `<MLEProbDist based on ${this.#freqDistValue.N()} samples>`;
   }
 }
 
@@ -441,13 +443,15 @@ export { type ProbDistFactory };
 export class ConditionalProbDist<C, T, Args extends unknown[] = unknown[]> extends ConditionalProbDistI<C, T> {
   readonly #cache = new Map<string, { condition: C; pdist: ProbDistLike<T> }>();
   readonly #createDistribution: (freqdist: FreqDist<T>) => ProbDistLike<T>;
+  readonly #cfdist: ConditionalFreqDist<C, T>;
 
   constructor(
-    private readonly cfdist: ConditionalFreqDist<C, T>,
+    cfdist: ConditionalFreqDist<C, T>,
     probdistFactory: ProbDistFactory<T, Args>,
     ...factoryArgs: Args
   ) {
     super();
+    this.#cfdist = cfdist;
     this.#createDistribution = /^class\s/.test(Function.prototype.toString.call(probdistFactory))
       ? freqdist => new (probdistFactory as new (freqdist: FreqDist<T>, ...args: Args) => ProbDistLike<T>)(freqdist, ...factoryArgs)
       : freqdist => (probdistFactory as (freqdist: FreqDist<T>, ...args: Args) => ProbDistLike<T>)(freqdist, ...factoryArgs);
@@ -476,7 +480,7 @@ export class ConditionalProbDist<C, T, Args extends unknown[] = unknown[]> exten
     const existing = this.#cache.get(key);
     if (existing) return existing.pdist;
 
-    const source = this.cfdist.peek(condition) ?? new FreqDist<T>();
+    const source = this.#cfdist.peek(condition) ?? new FreqDist<T>();
     const pdist = this.#create(source);
     this.#cache.set(key, { condition, pdist });
     return pdist;

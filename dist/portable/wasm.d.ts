@@ -2,6 +2,16 @@ import { TokenizerKind, TokenizerOptions, TokenSpan } from './tokenizer_types.js
 export { type BlanklineHandling } from './tokenizer_types.js';
 import { MetricsWasm } from './metrics_wasm.js';
 
+type RegexpTokenizerRequest = {
+    kind: "regexp";
+    pattern: string;
+    text: string;
+    gaps: boolean;
+    discard_empty: boolean;
+    flags: number;
+    spans: boolean;
+};
+
 type ContractExports = {
     memory: WebAssembly.Memory;
     bunnltk_wasm_alloc(size: number): number;
@@ -51,13 +61,19 @@ declare class WasmNltk {
     probabilityContractExports(): ContractExports;
     /** JSON transport for legacy text NB; all training and scoring happen in Rust. */
     textNaiveBayes(request: string): string;
+    /** Typed callers marshal only versioned legacy text models, never feature dictionaries. */
+    textClassifiers(request: string): string;
     private assertOrder;
     private tokenizerRequest;
     tokenize(text: string, kind?: TokenizerKind, options?: TokenizerOptions): string[];
+    /** Dedicated regexp transport; pattern translation and matching stay in Rust. */
+    regexpTokenizer(request: RegexpTokenizerRequest): unknown;
     /** Spans use Python code-point indices; Array.from(text).slice(start, end) extracts a token. */
     tokenizerSpans(text: string, kind?: TokenizerKind, options?: TokenizerOptions): TokenSpan[];
     treebankDetokenize(tokens: readonly string[], convertParentheses?: boolean): string;
     punktLoad(model: Uint8Array): number;
+    /** Stateless training/legacy control ABI; algorithms live in Rust. */
+    punktRequest(request: unknown): unknown;
     punktSpans(handle: number, text: string, realignBoundaries?: boolean): Uint32Array;
     punktFree(handle: number): void;
     categoricalNaiveBayesTrain(input: {

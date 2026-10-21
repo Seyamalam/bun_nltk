@@ -20,11 +20,15 @@ marshaling, and remaining legacy algorithms. The target is Python NLTK 3.10.3.
    NLTK 3.10.3, 2026-10-21). Missing required fixtures fail the gate; unsupported
   GUI, Java, and network integrations are reported separately and never counted
   as passed.
-- The integrated Rust crate passes **98 tests**, plus **4 compatibility-crate
-  tests**. The Bun suite currently has **564 passes and 2 stale inventory
-  failures**; inventory signatures and export snapshots are being reviewed.
-- Combined WASM and package size gates currently fail; their unchanged limits
-  are 700,000 bytes and 13,000,000 unpacked bytes. This integration is not release-ready.
+- The integrated Rust crate passes **112 tests**, plus **4 compatibility-crate
+  tests**. The Bun suite has **601 passes and 1 failure**: the shipped WASM is
+  **1,055,427 bytes** against the unchanged 700,000-byte gate.
+- The package gate passes at **12,894,700 unpacked bytes** across **316 files**
+  (limits: 13,000,000 bytes / 400 files). NE chunker models ship as Brotli.
+- The WASM gate is the remaining release blocker. Exact float round-tripping
+  (required for model snapshots) already consumes most of the old margin, and
+  the recovered Punkt training, regexp tokenizer, Tree/PCFG, and legacy text
+  classifier kernels add the rest. No gate is relaxed or bypassed.
 - [Semaphore pipelines](docs/semaphore-ci.md) are prepared, not activated.
   Account authorization and a genuine Windows self-hosted runner remain required.
 - Passing fixtures establishes agreement for those cases and tolerances, not

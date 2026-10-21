@@ -25,5 +25,5 @@ lto = "fat"
 
 [dependencies]
 serde = { version = "=1.0.229", default-features = false, features = ["derive", "alloc"] }
-serde_json = { version = "=1.0.151", default-features = false, features = ["std"] }
+serde_json = { version = "=1.0.151", default-features = false, features = ["std", "float_roundtrip"] }
 regex-lite = "=0.1.9"

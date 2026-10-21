@@ -25,11 +25,15 @@ function maximum<T>(freqdist: FreqDist<T>): T {
 /** NLTK intentionally returns None for unseen values when Nr(0) is zero. */
 export class HeldoutProbDist<T> {
   readonly SUM_TO_ONE = false;
+  private readonly base: FreqDist<T>;
+  private readonly held: FreqDist<T>;
   private readonly countEstimates = new Map<number, number | null>();
   private readonly maxCount: number;
   private readonly unseen: number | null;
 
-  constructor(private readonly base: FreqDist<T>, private readonly held: FreqDist<T>, bins?: number | null) {
+  constructor(base: FreqDist<T>, held: FreqDist<T>, bins?: number | null) {
+    this.base = base;
+    this.held = held;
     const b = snapshot(base), h = snapshot(held);
     const keys = [...new Set([...b.keys(), ...h.keys()])];
     const input = [bins ?? NaN, keys.length];
@@ -110,11 +114,13 @@ export type Trigram<T> = readonly [T, T, T];
 export class KneserNeyProbDist<T> implements ProbDistLike<Trigram<T>> {
   readonly SUM_TO_ONE = true;
   private readonly symbols = new Map<string, number>();
+  private readonly freqdist: FreqDist<Trigram<T>>;
   private readonly handle: number;
   private disposed = false;
   private discountValue: number;
 
-  constructor(private readonly freqdist: FreqDist<Trigram<T>>, _bins?: number | null, discount = 0.75) {
+  constructor(freqdist: FreqDist<Trigram<T>>, _bins?: number | null, discount = 0.75) {
+    this.freqdist = freqdist;
     this.discountValue = discount;
     const rows = snapshot(freqdist);
     const input = [discount, rows.size];

@@ -164,7 +164,7 @@ declare class DictionaryProbDist<T> extends ProbDistI<T> {
     toString(): string;
 }
 declare class MLEProbDist<T> extends ProbDistI<T> {
-    private readonly freqDistValue;
+    #private;
     constructor(freqDistValue: FreqDist<T>);
     freqdist(): FreqDist<T>;
     prob(sample: T): number;
@@ -240,7 +240,6 @@ declare abstract class ConditionalProbDistI<C, T> {
 
 declare class ConditionalProbDist<C, T, Args extends unknown[] = unknown[]> extends ConditionalProbDistI<C, T> {
     #private;
-    private readonly cfdist;
     constructor(cfdist: ConditionalFreqDist<C, T>, probdistFactory: ProbDistFactory<T, Args>, ...factoryArgs: Args);
     get(condition: C): ProbDistLike<T>;
     peek(condition: C): ProbDistLike<T> | undefined;

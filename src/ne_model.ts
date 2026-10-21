@@ -1,7 +1,7 @@
 /** NLTK 3.10.3 maximum-entropy NE inference. See THIRD_PARTY_NOTICES.md. */
 import { pythonIsTitle, pythonIsLower } from "./python_text";
 import { readFileSync } from "node:fs";
-import { gunzipSync } from "node:zlib";
+import { brotliDecompressSync } from "node:zlib";
 import type { TaggedToken } from "./chunk";
 type Value = string | number | boolean | null;
 type Model = {
@@ -17,10 +17,10 @@ function getModel(binary: boolean): Prepared {
   let result = cache.get(binary);
   if (!result) {
     const model: Model = JSON.parse(
-      gunzipSync(
+      brotliDecompressSync(
         readFileSync(
           new URL(
-            `${import.meta.url.includes("/dist/portable/") ? "../../" : "../"}models/ne-chunker-${binary ? "binary" : "multiclass"}.json.gz`,
+            `${import.meta.url.includes("/dist/portable/") ? "../../" : "../"}models/ne-chunker-${binary ? "binary" : "multiclass"}.json.br`,
             import.meta.url,
           ),
         ),

@@ -9,13 +9,13 @@
       "bytes": 279192,
       "sha256": "8fb6648850a18006548d5bdfe45651ad09159293cd6852a222edef3cf3cacb6e"
     },
-    "models/ne-chunker-multiclass.json.gz": {
-      "bytes": 2841125,
-      "sha256": "ab517f9de1415d17f35e04e27b084b10491e24b9b8379fcde59902b0357048ee"
+    "models/ne-chunker-multiclass.json.br": {
+      "bytes": 2216723,
+      "sha256": "92344fda00c6c0da453f9d5e382aa88f1197419f34106064b63ff7b3ae5f50af"
     },
-    "models/ne-chunker-binary.json.gz": {
-      "bytes": 2682529,
-      "sha256": "f9f0fe3dcd15520eddb5ecbd9ad018bb131f5360d550a0d96dcf921a602ed47c"
+    "models/ne-chunker-binary.json.br": {
+      "bytes": 2100396,
+      "sha256": "a76735a51787926d4ee43d692879f44eb022751fa95c33012184d0079cb65435"
     }
   }
 }

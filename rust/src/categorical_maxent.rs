@@ -600,7 +600,6 @@ struct TrainingData<'a> {
     cutoff: CutoffState,
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;

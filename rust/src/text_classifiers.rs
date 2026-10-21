@@ -281,10 +281,10 @@ fn build_tree(
     {
         if rows.len() as u64 > options.min_samples && depth + 1 < options.max_depth {
             if entropy(&best_rows.0) > 0.05 {
-                *absent = Box::new(build_tree(&best_rows.0, vocabulary, options, depth + 1));
+                **absent = build_tree(&best_rows.0, vocabulary, options, depth + 1);
             }
             if entropy(&best_rows.1) > 0.05 {
-                *present = Box::new(build_tree(&best_rows.1, vocabulary, options, depth + 1));
+                **present = build_tree(&best_rows.1, vocabulary, options, depth + 1);
             }
         }
     }

@@ -2,7 +2,7 @@ export { WasmNltk, type WasmNltkInit } from './wasm.js';
 export { type GrammarSymbol, Nonterminal, Production, CFG as RustCFG, RustEarleyParser, type RustParseOptions, type RustParseResult, type RustTreeOrder, type RustTreePosition, type StringTree, Tree, type TreeFormatOptions, nonterminals } from './rust_parse.js';
 export { type PositiveFeatureOptions, RustNaiveBayesClassifier, RustPositiveNaiveBayesClassifier } from './feature_nb.js';
 export { type FeatureTreeOptions, RustDecisionTreeClassifier } from './feature_tree.js';
-export { type a as FeatureMaxentOptions, type g as FeatureMaxentSerialized, R as RustMaxentClassifier } from './types/feature_maxent.d-CKmlWHYi.js';
+export { type a as FeatureMaxentOptions, type g as FeatureMaxentSerialized, R as RustMaxentClassifier } from './types/feature_maxent.d-DoqsStDs.js';
 export { type BlanklineHandling, type TokenSpan } from './tokenizer_types.js';
 export { BlanklineTokenizer, LineTokenizer, SpaceTokenizer, TabTokenizer, WhitespaceTokenizer, blanklineTokenize, blanklineTokenize as blankline_tokenize, lineTokenize, lineTokenize as line_tokenize } from './tokenizers_basic.js';
 export { type FeatureSet, type FeatureValue, type LabeledFeatureset } from './feature_types.js';
@@ -127,6 +127,21 @@ type PunktTrainingOptions = {
     minCollocationCount?: number;
     minSentenceStarterCount?: number;
 };
+type PunktDebugDecision = {
+    /** JavaScript UTF-16 index, unlike Python's code-point index. */
+    period_index: number;
+    text: string;
+    type1: string;
+    type2: string;
+    type1_in_abbrs: boolean;
+    type1_is_initial: boolean;
+    type2_is_sent_starter: boolean;
+    type2_ortho_heuristic: boolean | "unknown";
+    type2_ortho_contexts: string[];
+    collocation: boolean;
+    reason: string;
+    break_decision: boolean | null;
+};
 declare class PunktTrainerSubset {
     private readonly chunks;
     private options;
@@ -134,9 +149,11 @@ declare class PunktTrainerSubset {
     train(text: string, options?: PunktTrainingOptions): this;
     finalize(): PunktModelSerialized;
     getParams(): PunktModelSerialized;
+    get_params(): PunktModelSerialized;
 }
 declare class PunktTrainer extends PunktTrainerSubset {
     loadTrainText(text: string): this;
+    load_train_text(text: string): this;
 }
 declare class PunktSentenceTokenizerSubset {
     protected model: PunktModelSerialized;
@@ -144,11 +161,16 @@ declare class PunktSentenceTokenizerSubset {
     tokenize(text: string, realignBoundaries?: boolean): string[];
     /** UTF-16 offsets for the Rust NLTK inference model (version 2). */
     spanTokenize(text: string, realignBoundaries?: boolean): PunktSpan[];
+    span_tokenize(text: string, realignBoundaries?: boolean): PunktSpan[];
+    debugDecisions(text: string): PunktDebugDecision[];
+    debug_decisions(text: string): PunktDebugDecision[];
     train(text: string, options?: PunktTrainingOptions): this;
     getParams(): PunktModelSerialized;
+    get_params(): PunktModelSerialized;
 }
 declare class PunktSentenceTokenizer extends PunktSentenceTokenizerSubset {
     setParams(model: PunktModelSerialized): this;
+    set_params(model: PunktModelSerialized): this;
 }
 declare function trainPunktModel(text: string, options?: PunktTrainingOptions): PunktModelSerialized;
 declare function sentenceTokenizePunkt(text: string, model?: PunktModelSerialized, realignBoundaries?: boolean): string[];
@@ -181,4 +203,4 @@ declare function trigrams<T>(sequence: Iterable<T>): T[][];
 declare function trigrams<T, P>(sequence: Iterable<T>, options: NgramOptions<P>): Array<Array<T | P | null>>;
 
 export { MWETokenizer, PunktSentenceTokenizer, PunktSentenceTokenizerSubset, PunktTrainer, PunktTrainerSubset, ToktokTokenizer, TweetTokenizer, bigramWindowStatsAscii, bigramWindowStatsAsciiIds, bigrams, computeAsciiMetrics, countNgramsAscii, countTokensAscii, countUniqueNgramsAscii, countUniqueTokensAscii, defaultPunktModel, everygramsAscii, hashNgram, hashTokenAscii, mweTokenize, ngramFreqDistHashAscii, ngrams, ngramsAscii, ngramsIterator as ngrams_iter, normalizeTokensAscii, normalizeTokensUnicode, parsePunktModel, posTagAscii, sent_tokenize, sentenceTokenizePunkt, sentenceTokenizePunktCompat, sentenceTokenizeSubset, serializePunktModel, skipgramsAscii, tokenFreqDistHashAscii, tokenFreqDistIdsAscii, tokenizeAscii, toktokTokenize, topPmiBigramsAscii, trainPunktModel, trigrams, tweetTokenize, tweetTokenizeSubset, wordTokenizeSubset, word_tokenize, wordpunct_tokenize };
-export type { AsciiMetrics, BigramWindowStatId, BigramWindowStatToken, NgramOptions, PmiBigram, PosTag, PosTagName, PunktModelSerialized, PunktTrainingOptions, SentenceTokenizerOptions, TokenFreqDistIds, TweetTokenizerOptions };
+export type { AsciiMetrics, BigramWindowStatId, BigramWindowStatToken, NgramOptions, PmiBigram, PosTag, PosTagName, PunktDebugDecision, PunktModelSerialized, PunktTrainingOptions, SentenceTokenizerOptions, TokenFreqDistIds, TweetTokenizerOptions };

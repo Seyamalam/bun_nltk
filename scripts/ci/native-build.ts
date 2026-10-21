@@ -30,25 +30,15 @@ const rustc = run(["rustc", "-vV"]);
 const versions = JSON.parse(readFileSync(resolve(root, "scripts/ci/versions.json"), "utf8")) as { rust: string };
 if (!rustc.startsWith(`rustc ${versions.rust} `)) throw new Error(`Expected pinned Rust ${versions.rust}\n${rustc}`);
 if (!rustc.includes(`host: ${triples[host]}`)) throw new Error(`Rust host is not ${triples[host]}\n${rustc}`);
-<<<<<<< HEAD
 const triple = mode === "wasm" ? "wasm32-unknown-unknown" : triples[host]!;
-const manifest = resolve(root, "rust/Cargo.toml");
+const crate = mode === "compat" ? "rust/compat" : "rust";
+const manifest = resolve(root, crate, "Cargo.toml");
 const profile = mode === "wasm" ? "wasm" : "release";
 run(["cargo", "build", "--locked", "--profile", profile, "--manifest-path", manifest, "--target", triple]);
 const extension = process.platform === "win32" ? "dll" : process.platform === "darwin" ? "dylib" : "so";
-const filename = mode === "wasm" ? "bun_nltk.wasm" : process.platform === "win32" ? "bun_nltk.dll" : `libbun_nltk.${extension}`;
-const output = mode === "wasm" ? "native/bun_nltk.wasm" : `native/prebuilt/${host}/bun_nltk.${extension}`;
-const source = resolve(targetDir, triple, profile, filename);
-=======
-const triple = mode === "native" ? triples[host]! : "wasm32-unknown-unknown";
-const crate = mode === "compat" ? "rust/compat" : "rust";
-const manifest = resolve(root, crate, "Cargo.toml");
-run(["cargo", "build", "--locked", "--release", "--manifest-path", manifest, "--target", triple]);
-const extension = process.platform === "win32" ? "dll" : process.platform === "darwin" ? "dylib" : "so";
 const filename = mode === "compat" ? "bun_nltk_compat.wasm" : mode === "wasm" ? "bun_nltk.wasm" : process.platform === "win32" ? "bun_nltk.dll" : `libbun_nltk.${extension}`;
 const output = mode === "compat" ? `artifacts/semaphore-native/${host}/bun_nltk_compat.wasm` : mode === "wasm" ? "native/bun_nltk.wasm" : `native/prebuilt/${host}/bun_nltk.${extension}`;
-const source = resolve(targetDir, triple, "release", filename);
->>>>>>> f8b59c1 (ci: pin inventory oracle and enforce integrated Rust hygiene checks)
+const source = resolve(targetDir, triple, profile, filename);
 mkdirSync(dirname(resolve(root, output)), { recursive: true });
 copyFileSync(source, resolve(root, output));
 if (mode === "wasm") optimizeWasmInPlace(resolve(root, output), root);

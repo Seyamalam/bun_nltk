@@ -1,5 +1,5 @@
-import { posTagAsciiNative, tokenFreqDistIdsAscii } from "./native";
-import { posTagAscii, tokenizeAscii } from "./reference";
+import { posTagAsciiNative, tokenFreqDistIdsAscii } from "./native.ts";
+import { posTagAscii, tokenizeAscii } from "./reference.ts";
 
 type StoredCount<T> = {
   count: number;

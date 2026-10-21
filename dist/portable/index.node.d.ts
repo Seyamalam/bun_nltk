@@ -1,8 +1,8 @@
 import { RustNaiveBayesClassifier, PositiveFeatureOptions } from './feature_nb.js';
 export { RustPositiveNaiveBayesClassifier } from './feature_nb.js';
-import { P as ProbDistLike, F as FreqDist, D as DictionaryProbDist, R as RustMaxentClassifier, a as FeatureMaxentOptions, C as ConditionalProbDist } from './types/feature_maxent.d-CKmlWHYi.js';
+import { P as ProbDistLike, F as FreqDist, D as DictionaryProbDist, R as RustMaxentClassifier, a as FeatureMaxentOptions, C as ConditionalProbDist } from './types/feature_maxent.d-DoqsStDs.js';
 import { MaxentEncodingExample, MaxentFeatureset } from './feature_maxent.js';
-export { B as BinaryMaxentFeatureEncoding, c as ConditionalFreqDist, type d as ConditionalFreqDistInput, e as ConditionalProbDistI, f as DictionaryConditionalProbDist, E as ELEProbDist, type g as FeatureMaxentSerialized, type h as FreqDistInput, L as LaplaceProbDist, i as LidstoneProbDist, j as MLEProbDist, k as MutableProbDist, l as PYTHON_BOOL, m as PYTHON_FLOAT, n as PYTHON_INT, type o as ProbDistFactory, p as ProbDistI, S as SimpleGoodTuringProbDist, T as TypedMaxentFeatureEncoding, U as UniformProbDist, W as WittenBellProbDist, q as addLogs, q as add_logs, r as entropy, s as logLikelihood, s as log_likelihood, t as pythonFloat, u as sumLogs, u as sum_logs } from './types/feature_maxent.d-CKmlWHYi.js';
+export { B as BinaryMaxentFeatureEncoding, c as ConditionalFreqDist, type d as ConditionalFreqDistInput, e as ConditionalProbDistI, f as DictionaryConditionalProbDist, E as ELEProbDist, type g as FeatureMaxentSerialized, type h as FreqDistInput, L as LaplaceProbDist, i as LidstoneProbDist, j as MLEProbDist, k as MutableProbDist, l as PYTHON_BOOL, m as PYTHON_FLOAT, n as PYTHON_INT, type o as ProbDistFactory, p as ProbDistI, S as SimpleGoodTuringProbDist, T as TypedMaxentFeatureEncoding, U as UniformProbDist, W as WittenBellProbDist, q as addLogs, q as add_logs, r as entropy, s as logLikelihood, s as log_likelihood, t as pythonFloat, u as sumLogs, u as sum_logs } from './types/feature_maxent.d-DoqsStDs.js';
 import { RustDecisionTreeClassifier, FeatureTreeOptions } from './feature_tree.js';
 export { MWETokenizer, type NgramOptions, type PunktModelSerialized, PunktSentenceTokenizer, PunktSentenceTokenizerSubset, PunktTrainer, PunktTrainerSubset, type PunktTrainingOptions, ToktokTokenizer, TweetTokenizer, bigramWindowStatsAsciiIds as bigramWindowStatsAsciiIdsJs, bigramWindowStatsAscii as bigramWindowStatsAsciiJs, bigramWindowStatsAsciiIds as bigram_window_stats_ascii_ids_js, bigramWindowStatsAscii as bigram_window_stats_ascii_js, bigrams, computeAsciiMetrics as computeAsciiMetricsJs, computeAsciiMetrics as compute_ascii_metrics_js, countNgramsAscii as countNgramsAsciiJs, countTokensAscii as countTokensAsciiJs, countUniqueNgramsAscii as countUniqueNgramsAsciiJs, countUniqueTokensAscii as countUniqueTokensAsciiJs, countNgramsAscii as count_ngrams_ascii_js, countTokensAscii as count_tokens_ascii_js, countUniqueNgramsAscii as count_unique_ngrams_ascii_js, countUniqueTokensAscii as count_unique_tokens_ascii_js, defaultPunktModel, defaultPunktModel as default_punkt_model, everygramsAscii, everygramsAscii as everygrams_ascii, hashNgram, hashTokenAscii, hashNgram as hash_ngram, hashTokenAscii as hash_token_ascii, mweTokenize, mweTokenize as mwe_tokenize, ngramFreqDistHashAscii as ngramFreqDistHashAsciiJs, ngramFreqDistHashAscii as ngram_freq_dist_hash_ascii_js, ngrams, ngramsAscii, ngramsAscii as ngrams_ascii, ngrams_iter, normalizeTokensAscii, normalizeTokensUnicode, normalizeTokensAscii as normalize_tokens_ascii, normalizeTokensUnicode as normalize_tokens_unicode, parsePunktModel, parsePunktModel as parse_punkt_model, posTagAscii, posTagAscii as pos_tag_ascii, sent_tokenize, sentenceTokenizePunkt, sentenceTokenizePunktCompat, sentenceTokenizeSubset, sentenceTokenizePunkt as sentence_tokenize_punkt, sentenceTokenizePunktCompat as sentence_tokenize_punkt_compat, sentenceTokenizeSubset as sentence_tokenize_subset, serializePunktModel, serializePunktModel as serialize_punkt_model, skipgramsAscii, skipgramsAscii as skipgrams_ascii, tokenFreqDistHashAscii as tokenFreqDistHashAsciiJs, tokenFreqDistIdsAscii as tokenFreqDistIdsAsciiJs, tokenFreqDistHashAscii as token_freq_dist_hash_ascii_js, tokenFreqDistIdsAscii as token_freq_dist_ids_ascii_js, tokenizeAscii, tokenizeAscii as tokenize_ascii, toktokTokenize, toktokTokenize as toktok_tokenize, topPmiBigramsAscii as topPmiBigramsAsciiJs, topPmiBigramsAscii as top_pmi_bigrams_ascii_js, trainPunktModel, trainPunktModel as train_punkt_model, trigrams, tweetTokenize, tweetTokenizeSubset, tweetTokenize as tweet_tokenize, tweetTokenizeSubset as tweet_tokenize_subset, wordTokenizeSubset, word_tokenize, wordTokenizeSubset as word_tokenize_subset, wordpunct_tokenize } from './index.browser.js';
 export { type BlanklineHandling, type TokenSpan } from './tokenizer_types.js';
@@ -22,9 +22,9 @@ import './metrics_wasm.js';
 
 /** NLTK intentionally returns None for unseen values when Nr(0) is zero. */
 declare class HeldoutProbDist<T> {
+    readonly SUM_TO_ONE = false;
     private readonly base;
     private readonly held;
-    readonly SUM_TO_ONE = false;
     private readonly countEstimates;
     private readonly maxCount;
     private readonly unseen;
@@ -58,9 +58,9 @@ declare abstract class CrossValidationProbDist<T> implements ProbDistLike<T> {
 }
 type Trigram<T> = readonly [T, T, T];
 declare class KneserNeyProbDist<T> implements ProbDistLike<Trigram<T>> {
-    private readonly freqdist;
     readonly SUM_TO_ONE = true;
     private readonly symbols;
+    private readonly freqdist;
     private readonly handle;
     private disposed;
     private discountValue;
@@ -922,7 +922,7 @@ declare class TextFeatureVectorizer {
     readonly ngramMax: number;
     readonly binary: boolean;
     readonly maxFeatures: number;
-    private readonly featureToId;
+    private features;
     constructor(options?: VectorizerOptions);
     static fromJSON(payload: VectorizerSerialized): TextFeatureVectorizer;
     get featureCount(): number;
@@ -964,21 +964,21 @@ type DecisionTreeNodeSerialized = {
     absent: DecisionTreeNodeSerialized;
     present: DecisionTreeNodeSerialized;
 };
+type DecisionTreeOptions = {
+    maxDepth?: number;
+    minSamples?: number;
+    maxCandidateFeatures?: number;
+    maxFeatures?: number;
+};
+/** Rust owns legacy text stump/refinement training and tree traversal. */
 declare class DecisionTreeTextClassifier {
     private readonly options;
-    private readonly vectorizer;
-    private labels;
-    private tree;
-    constructor(options?: {
-        maxDepth?: number;
-        minSamples?: number;
-        maxCandidateFeatures?: number;
-        maxFeatures?: number;
-    });
+    private vectorizer;
+    private model;
+    constructor(options?: DecisionTreeOptions);
     static fromJSON(payload: DecisionTreeSerialized): DecisionTreeTextClassifier;
-    private buildNode;
     train(examples: DecisionTreeExample[]): this;
-    private ensureTree;
+    private ensureModel;
     classify(text: string): string;
     predict(text: string): Array<{
         label: string;
@@ -991,12 +991,7 @@ declare class DecisionTreeTextClassifier {
     };
     toJSON(): DecisionTreeSerialized;
 }
-declare function trainDecisionTreeTextClassifier(examples: DecisionTreeExample[], options?: {
-    maxDepth?: number;
-    minSamples?: number;
-    maxCandidateFeatures?: number;
-    maxFeatures?: number;
-}): DecisionTreeTextClassifier;
+declare function trainDecisionTreeTextClassifier(examples: DecisionTreeExample[], options?: DecisionTreeOptions): DecisionTreeTextClassifier;
 declare function loadDecisionTreeTextClassifier(payload: DecisionTreeSerialized): DecisionTreeTextClassifier;
 
 type MaxEntExample = {

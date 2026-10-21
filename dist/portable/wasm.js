@@ -1,1 +1,1 @@
-import{u}from"./chunk-gg4npz87.js";import"./chunk-3tpmnsqr.js";import"./chunk-n5d1ff16.js";export{u as WasmNltk};
+import{g}from"./chunk-wz99dfhn.js";import"./chunk-pwr3nh03.js";import"./chunk-bg761gk1.js";export{g as WasmNltk};

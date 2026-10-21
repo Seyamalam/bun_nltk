@@ -13,8 +13,26 @@ and a narrow, documented generated-output audit (see
 [generated-source-audit.md](generated-source-audit.md)). The legacy grandfather
 list and size budgets are unchanged. Static checks also enforce compatibility
 inventory freshness and its tsrs consumer types. Rust fmt/Clippy and inventory
-anchors now pass locally; source-built WASM and package sizes still block
-release. No gate is suppressed to obtain green CI.
+anchors now pass locally. The package gate passes; the WASM size gate remains
+the only local failure. No gate is suppressed to obtain green CI.
+
+### Current local integration result (2026-10-21)
+
+- Rust: **112 tests** pass; the compatibility crate passes **4 tests**;
+  `cargo fmt --check` and Clippy `-D warnings` pass.
+- Bun: **601 pass, 1 fail** — only `test/wasm_size.test.ts`. The shipped WASM is
+  **1,055,427 bytes** against the unchanged **700,000**-byte gate. Restoring
+  exact float round-tripping (needed for model snapshots) and the recovered
+  Punkt training, regexp tokenizer, Tree/PCFG, and legacy text-classifier
+  kernels account for the overage.
+- Fidelity: **43 passed, 0 failed, 0 skipped, 3 unsupported**.
+- Package: **316 files, 12,894,700 unpacked bytes** against 400 files /
+  13,000,000 bytes. NE chunker models ship as deterministic Brotli.
+- Portable verification passes on **Chromium, Firefox, WebKit, and Node 24**
+  after installing the Playwright WebKit system dependencies. The packaged
+  npm/Bun install check passes on Node 24 and Node 26.
+- Semaphore activation still requires owner account/project linking, secrets,
+  cost/license approval, and genuine macOS/Windows hosts.
 
 The default `bun_nltk validation` pipeline runs static checks, native and WASM
 Rust fmt/Clippy/tests, the complete Bun suite, the strict scoped fidelity gate,
