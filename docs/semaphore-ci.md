@@ -13,20 +13,20 @@ and a narrow, documented generated-output audit (see
 [generated-source-audit.md](generated-source-audit.md)). The legacy grandfather
 list and size budgets are unchanged. Static checks also enforce compatibility
 inventory freshness and its tsrs consumer types. Rust fmt/Clippy and inventory
-anchors now pass locally. The package gate passes; the WASM size gate remains
-the only local failure. No gate is suppressed to obtain green CI.
+anchors now pass locally. The package and (owner-approved 1,100,000-byte) WASM
+size gates pass. No gate is suppressed to obtain green CI.
 
 ### Current local integration result (2026-10-21)
 
 - Rust: **112 tests** pass; the compatibility crate passes **4 tests**;
   `cargo fmt --check` and Clippy `-D warnings` pass.
-- Bun: **601 pass, 1 fail** — only `test/wasm_size.test.ts`. The shipped WASM is
-  **1,055,547 bytes** against the unchanged **700,000**-byte gate. Restoring
-  exact float round-tripping (needed for model snapshots) and the recovered
-  Punkt training, regexp tokenizer, Tree/PCFG, and legacy text-classifier
-  kernels account for the overage.
+- Bun: **602 pass, 0 fail**. The shipped WASM is **1,055,547 bytes** within the
+  owner-approved **1,100,000**-byte browser budget. The budget was raised from
+  700,000 on 2026-10-21; restoring exact float round-tripping (needed for model
+  snapshots) and the recovered Punkt training, regexp tokenizer, Tree/PCFG, and
+  legacy text-classifier kernels exceed the old limit.
 - Fidelity: **43 passed, 0 failed, 0 skipped, 3 unsupported**.
-- Package: **316 files, 12,894,980 unpacked bytes** against 400 files /
+- Package: **316 files, 12,895,060 unpacked bytes** against 400 files /
   13,000,000 bytes. NE chunker models ship as deterministic Brotli.
 - Portable verification passes on **Chromium, Firefox, WebKit, and Node 24**
   after installing the Playwright WebKit system dependencies. The packaged

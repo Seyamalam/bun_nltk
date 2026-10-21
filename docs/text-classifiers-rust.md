@@ -1,5 +1,9 @@
 # Legacy text classifiers: milestone 9 completion slice
 
+> **Budget update (2026-10-21):** the browser WASM budget is now 1,100,000
+> bytes by explicit owner decision. Figures below that compare against the
+> former 700,000-byte limit are historical measurements.
+
 `TextFeatureVectorizer`, `DecisionTreeTextClassifier`, legacy MaxEnt SGD (v1),
 and legacy text IIS (v2) now use Rust/WASM algorithms. Their public factories,
 camelCase APIs, existing snake_case factory aliases, option defaults/clamping,

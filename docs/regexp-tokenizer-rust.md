@@ -1,5 +1,9 @@
 # RegexpTokenizer implementation slice
 
+> **Budget update (2026-10-21):** the browser WASM budget is now 1,100,000
+> bytes by explicit owner decision. Figures below that compare against the
+> former 700,000-byte limit are historical measurements.
+
 Base: `28b0818`. This adds a **bounded** Rust implementation of NLTK 3.10.3
 `RegexpTokenizer` / `regexp_tokenize`; it is not arbitrary Python regexp parity.
 Oracle: specifically **Python 3.14.4**, NLTK **3.10.3**, `regex` **2026.9.29**,

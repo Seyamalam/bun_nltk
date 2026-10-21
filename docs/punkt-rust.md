@@ -1,5 +1,9 @@
 # Rust Punkt training and versioned inference
 
+> **Budget update (2026-10-21):** the browser WASM budget is now 1,100,000
+> bytes by explicit owner decision. Figures below that compare against the
+> former 700,000-byte limit are historical measurements.
+
 `sentenceTokenizePunkt` and the `PunktSentenceTokenizer` classes now use Rust/WASM
 for the bundled English model and all version-2 custom models. The parameters
 are the NLTK English `punkt_tab` abbreviations, collocations, sentence starters,

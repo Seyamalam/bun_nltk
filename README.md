@@ -23,12 +23,13 @@ marshaling, and remaining legacy algorithms. The target is Python NLTK 3.10.3.
 - The integrated Rust crate passes **112 tests**, plus **4 compatibility-crate
   tests**. The Bun suite has **601 passes and 1 failure**: the shipped WASM is
   **1,055,547 bytes** against the unchanged 700,000-byte gate.
-- The package gate passes at **12,894,980 unpacked bytes** across **316 files**
+- The package gate passes at **12,895,060 unpacked bytes** across **316 files**
   (limits: 13,000,000 bytes / 400 files). NE chunker models ship as Brotli.
-- The WASM gate is the remaining release blocker. Exact float round-tripping
-  (required for model snapshots) already consumes most of the old margin, and
-  the recovered Punkt training, regexp tokenizer, Tree/PCFG, and legacy text
-  classifier kernels add the rest. No gate is relaxed or bypassed.
+- The browser WASM budget was raised from 700,000 to **1,100,000 bytes** on
+  2026-10-21 by explicit owner decision. Exact float round-tripping (required
+  for model snapshots) and the recovered Punkt training, regexp tokenizer,
+  Tree/PCFG, and legacy text-classifier kernels exceed the old limit; the new
+  budget keeps every portable API instead of silently dropping algorithms.
 - [Semaphore pipelines](docs/semaphore-ci.md) are prepared, not activated.
   Account authorization and a genuine Windows self-hosted runner remain required.
 - Passing fixtures establishes agreement for those cases and tolerances, not

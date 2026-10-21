@@ -1,5 +1,9 @@
 # Probability and MaxEnt encoding contracts (milestone 8)
 
+> **Budget update (2026-10-21):** the browser WASM budget is now 1,100,000
+> bytes by explicit owner decision. Figures below that compare against the
+> former 700,000-byte limit are historical measurements.
+
 ## Remainder implementation (based on parent `169d004`)
 
 The first slice (`79af67a`, integrated as `7a763c9`) is extended here. This

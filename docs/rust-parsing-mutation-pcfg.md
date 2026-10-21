@@ -1,5 +1,9 @@
 # Tree mutation and PCFG/Viterbi extension
 
+> **Budget update (2026-10-21):** the browser WASM budget is now 1,100,000
+> bytes by explicit owner decision. Figures below that compare against the
+> former 700,000-byte limit are historical measurements.
+
 This additive slice starts from `28b0818` and extends the contract described in
 `docs/rust-parsing.md`. Existing legacy `src/parse.ts` algorithms and root exports
 are unchanged. No duplicate legacy implementation has been removed; broad parser

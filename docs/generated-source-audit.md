@@ -36,8 +36,12 @@ Unicode checks are byte-for-byte generator audits, not Unicode parity claims.
 Declaration shape checks alone do not establish provenance: regeneration and
 consumer checks are required as well. Existing `_data` exceptions are not widened.
 The generator scripts and handwritten lookup/API code themselves remain guarded.
-Regeneration does not authorize increasing the 700,000-byte WASM or
-400-file/13,000,000-byte unpacked package budgets.
+Regeneration does not authorize increasing the WASM or package budgets. The
+browser WASM budget is **1,100,000 bytes** as of 2026-10-21, raised from 700,000
+by explicit owner decision after exact float round-tripping and the recovered
+Punkt training, regexp, Tree/PCFG, and legacy text-classifier kernels pushed the
+single portable artifact to 1,055,547 bytes. The 400-file/13,000,000-byte
+unpacked package budget is unchanged.
 
 ## Integration boundaries
 

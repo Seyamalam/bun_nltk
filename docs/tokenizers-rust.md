@@ -1,5 +1,9 @@
 # Rust tokenizer family
 
+> **Budget update (2026-10-21):** the browser WASM budget is now 1,100,000
+> bytes by explicit owner decision. Figures below that compare against the
+> former 700,000-byte limit are historical measurements.
+
 `TreebankWordTokenizer`, `WordPunctTokenizer`, and their existing functions now
 run Rust/WASM. The JavaScript algorithm copies were removed only after the
 NLTK 3.10.3 differential suite passed. The ASCII/tweet/Toktok/MWE subset APIs

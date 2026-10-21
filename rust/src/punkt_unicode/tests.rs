@@ -1,4 +1,3 @@
-
 use super::*;
 fn sentences<'a>(m: &PunktModel, text: &'a str) -> Vec<&'a str> {
     m.spans(text, true)

@@ -8,6 +8,13 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+- Recovered and integrated the Punkt training/legacy migration, bounded regexp tokenizer (regex-lite), identity-safe Tree list edits with PCFG Viterbi, and the legacy text vectorizer/tree/MaxEnt SGD/IIS kernels. Exact `serde_json` float round-tripping is restored for model snapshots.
+- NE chunker models now ship as deterministic Brotli (about 4.3 MB instead of 5.5 MB); only `docs/API.md` is included in the npm package.
+
+### Changed
+
+- The browser WASM budget is 1,100,000 bytes (raised from 700,000 by explicit owner decision on 2026-10-21). The single portable artifact is 1,055,547 bytes and keeps every integrated API; the 400-file / 13,000,000-byte package budget is unchanged and passes at 316 files / 12,895,060 bytes.
+
 - Generated Python NLTK-style snake_case aliases for 259 camelCase root exports, plus runtime-specific package roots: Bun FFI, bundled Node, and a browser WASM/tokenization subset.
 - Added NLTK helper names `sent_tokenize`, `word_tokenize`, `wordpunct_tokenize`, `ngrams`, `bigrams`, `trigrams`, and `PorterStemmer`; the root Node/browser declaration facades resolve every exported name.
 
