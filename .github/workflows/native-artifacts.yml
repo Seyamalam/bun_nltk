@@ -1,0 +1,66 @@
+name: Native artifacts
+
+# Builds the three committed native libraries on their real target hosts. The
+# Linux x64 library can be built locally; macOS arm64 and Windows x64 require
+# these runners (or equivalent user-owned hosts). Download the artifacts and
+# commit them under native/prebuilt/ when refreshing a release.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            target: darwin-arm64
+            ext: dylib
+          - os: ubuntu-latest
+            target: linux-x64
+            ext: so
+          - os: windows-latest
+            target: win32-x64
+            ext: dll
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install locked JavaScript dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Rust
+        run: rustup toolchain install stable --profile minimal
+
+      - name: Build native library for this host
+        run: bun run build:rust
+
+      - name: Check native artifact signatures and size gates
+        run: bun run native:artifacts:check
+
+      - name: Validate native host behavior
+        run: bun run verify:native-host -- --rounds 7
+
+      - name: Upload native library
+        uses: actions/upload-artifact@v4
+        with:
+          name: bun-nltk-${{ matrix.target }}
+          path: native/prebuilt/${{ matrix.target }}/bun_nltk.${{ matrix.ext }}
+          if-no-files-found: error
+
+      - name: Upload validation report
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-host-${{ matrix.target }}
+          path: artifacts/native-host-*.json
+          if-no-files-found: error
