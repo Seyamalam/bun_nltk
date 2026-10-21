@@ -76,6 +76,12 @@ source/Rust/tests/docs whitespace checks pass. Do not trim the literal.
 
 ## Remaining milestone 9 work
 
+**Follow-up:** the legacy text vectorizer/tree and MaxEnt SGD/IIS items below
+are now implemented by the completion slice in `text-classifiers-rust.md`.
+That document records the preserved contracts, differential fixtures, shared
+registrations, and unresolved combined artifact/package/inventory gates. The
+list below describes the state at the original NB-only slice.
+
 1. Legacy text decision tree and `TextFeatureVectorizer` are still TS algorithms.
    Rust categorical-tree feature mode is not a text/v1 serialization replacement.
 2. `src/maxent_sgd.ts` remains TS. Existing native `text_linear` uses batch

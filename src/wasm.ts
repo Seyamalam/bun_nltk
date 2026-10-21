@@ -8,6 +8,9 @@ type WasmExports = MetricsExports & ContractExports & {
   bunnltk_wasm_text_naive_bayes: (inputLen: number) => number;
   bunnltk_wasm_text_naive_bayes_copy: (outPtr: number, outLen: number) => void;
   bunnltk_wasm_text_naive_bayes_clear: () => void;
+  bunnltk_wasm_text_classifiers: (inputLen: number) => number;
+  bunnltk_wasm_text_classifiers_copy: (outPtr: number, outLen: number) => void;
+  bunnltk_wasm_text_classifiers_clear: () => void;
   memory: WebAssembly.Memory;
   bunnltk_wasm_tokenizer_run: (inputPtr: number, inputLen: number) => number;
   bunnltk_wasm_tokenizer_output_ptr: () => number;
@@ -306,6 +309,7 @@ export class WasmNltk {
     }
     this.blocks.clear();
     this.exports.bunnltk_wasm_text_naive_bayes_clear?.();
+    this.exports.bunnltk_wasm_text_classifiers_clear?.();
     this.exports.bunnltk_wasm_categorical_nb_clear();
     this.exports.bunnltk_wasm_decision_tree_clear?.();
     this.exports.bunnltk_wasm_metrics_stream_clear();
@@ -335,6 +339,20 @@ export class WasmNltk {
     const output = this.ensureBlock("text_naive_bayes_output", length);
     this.exports.bunnltk_wasm_text_naive_bayes_copy(output.ptr, length);
     this.assertNoError("textNaiveBayesCopy");
+    return this.decoder.decode(new Uint8Array(this.exports.memory.buffer, output.ptr, length));
+  }
+
+  /** Typed callers marshal only versioned legacy text models, never feature dictionaries. */
+  textClassifiers(request: string): string {
+    if (typeof this.exports.bunnltk_wasm_text_classifiers !== "function") {
+      throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
+    }
+    const inputLen = this.writeInput(request);
+    const length = this.exports.bunnltk_wasm_text_classifiers(inputLen);
+    this.assertNoError("textClassifiers");
+    const output = this.ensureBlock("text_classifiers_output", length);
+    this.exports.bunnltk_wasm_text_classifiers_copy(output.ptr, length);
+    this.assertNoError("textClassifiersCopy");
     return this.decoder.decode(new Uint8Array(this.exports.memory.buffer, output.ptr, length));
   }
 

@@ -34,6 +34,7 @@ pub mod tagger;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod text_linear;
 pub mod text_naive_bayes;
+pub mod text_classifiers;
 pub mod token_ids;
 mod tokenizer_unicode;
 pub mod tokenizers;
@@ -54,6 +55,7 @@ pub mod wasm_metrics;
 pub mod wasm_metrics_stream;
 pub mod wasm_punkt;
 pub mod wasm_text_naive_bayes;
+pub mod wasm_text_classifiers;
 pub mod wasm_tokenizers;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

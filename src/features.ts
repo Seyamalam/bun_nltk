@@ -1,3 +1,5 @@
+import { textClassifier } from "./text_classifier_transport.ts";
+
 export type SparseVector = {
   indices: Uint32Array;
   values: Float64Array;
@@ -19,31 +21,12 @@ export type VectorizerOptions = {
   maxFeatures?: number;
 };
 
-const TOKEN_RE = /[A-Za-z0-9']+/g;
-
-function tokenize(text: string): string[] {
-  const out: string[] = [];
-  for (const m of text.matchAll(TOKEN_RE)) out.push((m[0] ?? "").toLowerCase());
-  return out;
-}
-
-function pushNgrams(tokens: string[], minN: number, maxN: number, out: string[]): void {
-  if (tokens.length === 0) return;
-  const hi = Math.max(minN, maxN);
-  for (let n = minN; n <= hi; n += 1) {
-    if (n <= 0 || tokens.length < n) continue;
-    for (let i = 0; i <= tokens.length - n; i += 1) {
-      out.push(tokens.slice(i, i + n).join("\u0001"));
-    }
-  }
-}
-
 export class TextFeatureVectorizer {
   readonly ngramMin: number;
   readonly ngramMax: number;
   readonly binary: boolean;
   readonly maxFeatures: number;
-  private readonly featureToId = new Map<string, number>();
+  private features: string[] = [];
 
   constructor(options: VectorizerOptions = {}) {
     this.ngramMin = Math.max(1, Math.floor(options.ngramMin ?? 1));
@@ -60,60 +43,30 @@ export class TextFeatureVectorizer {
       binary: payload.binary,
       maxFeatures: payload.maxFeatures,
     });
-    for (const feature of payload.vocabulary) vec.featureToId.set(feature, vec.featureToId.size);
+    vec.features = textClassifier({ action: "loadVectorizer", model: { ...vec.toJSON(), vocabulary: payload.vocabulary } }).vocabulary;
     return vec;
   }
 
   get featureCount(): number {
-    return this.featureToId.size;
+    return this.features.length;
   }
 
   vocabulary(): string[] {
-    return [...this.featureToId.entries()]
-      .sort((a, b) => a[1] - b[1])
-      .map(([feature]) => feature);
+    return [...this.features];
   }
 
   fit(texts: string[]): this {
-    const counts = new Map<string, number>();
-    for (const text of texts) {
-      const tokens = tokenize(text);
-      const feats: string[] = [];
-      pushNgrams(tokens, this.ngramMin, this.ngramMax, feats);
-      for (const feat of feats) counts.set(feat, (counts.get(feat) ?? 0) + 1);
-    }
-
-    const ranked = [...counts.entries()]
-      .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
-      .slice(0, this.maxFeatures);
-
-    this.featureToId.clear();
-    for (const [feature] of ranked) this.featureToId.set(feature, this.featureToId.size);
+    this.features = textClassifier({ action: "fitVectorizer", model: this.toJSON(), texts }).vocabulary;
     return this;
   }
 
   transform(text: string): SparseVector {
-    const tokens = tokenize(text);
-    const feats: string[] = [];
-    pushNgrams(tokens, this.ngramMin, this.ngramMax, feats);
-
-    const map = new Map<number, number>();
-    for (const feat of feats) {
-      const id = this.featureToId.get(feat);
-      if (id === undefined) continue;
-      if (this.binary) map.set(id, 1);
-      else map.set(id, (map.get(id) ?? 0) + 1);
-    }
-
-    const entries = [...map.entries()].sort((a, b) => a[0] - b[0]);
-    return {
-      indices: Uint32Array.from(entries.map(([id]) => id)),
-      values: Float64Array.from(entries.map(([, value]) => value)),
-    };
+    return this.transformMany([text])[0]!;
   }
 
   transformMany(texts: string[]): SparseVector[] {
-    return texts.map((text) => this.transform(text));
+    return textClassifier({ action: "transformVectorizer", model: this.toJSON(), texts })
+      .map((row) => ({ indices: Uint32Array.from(row.indices), values: Float64Array.from(row.values) }));
   }
 
   toJSON(): VectorizerSerialized {
