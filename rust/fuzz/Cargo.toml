@@ -1,0 +1,23 @@
+[package]
+name = "bun-nltk-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "=0.4.13"
+bun_nltk = { path = ".." }
+serde_json = { version = "=1.0.151", features = ["float_roundtrip"] }
+
+[[bin]]
+name = "adversarial"
+path = "fuzz_targets/adversarial.rs"
+test = false
+doc = false
+bench = false
+
+[workspace]
+members = ["."]

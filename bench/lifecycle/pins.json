@@ -1,0 +1,14 @@
+{
+  "unicode-wordpunct-v1": {
+    "inputSha256": "5ab439741f950200b4b79c60991cdd7282ec880e726cbddada0274ce9ac54b91",
+    "outputSha256": "7277ed88778c6538c1f404c04d1136e17508573d39f38aac82da06b76f1425e3"
+  },
+  "ascii-metrics-v1": {
+    "inputSha256": "9c47b9db48801e2079bca4589aa45af6ece4716a995186847b6c7b9f23d44446",
+    "outputSha256": "15316e6e1f00a0fa6ac464b2890fdb54b6d4a0a22694b4ef8c43873732740811"
+  },
+  "unicode-distance-v1": {
+    "inputSha256": "414b4360439059849992aa456574944f381d7732fcca77d22ec2d479e0685670",
+    "outputSha256": "e9d5027a87722ccc5b3e9366c337c0fcf84ef98bb62c6e644a71e6da7aa96389"
+  }
+}

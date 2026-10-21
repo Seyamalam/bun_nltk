@@ -1,0 +1,7 @@
+{
+  "bun": { "bunVersion": "1.4.2" },
+  "node": { "runtime": "v24.21.0" },
+  "python": { "nltk": "3.10.3", "pythonVersion": "3.14.4" },
+  "chromium": { "runtime": "156.0.8078.4" },
+  "firefox": { "runtime": "157.0" }
+}
