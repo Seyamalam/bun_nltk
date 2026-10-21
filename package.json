@@ -47,7 +47,24 @@
     "url": "https://github.com/Seyamalam/bun_nltk/issues"
   },
   "exports": {
-    ".": "./index.ts",
+    ".": {
+      "bun": {
+        "types": "./index.ts",
+        "default": "./index.ts"
+      },
+      "node": {
+        "types": "./dist/portable/index.node.d.ts",
+        "default": "./dist/portable/index.node.js"
+      },
+      "browser": {
+        "types": "./dist/portable/index.browser.d.ts",
+        "default": "./dist/portable/index.browser.js"
+      },
+      "default": {
+        "types": "./dist/portable/index.node.d.ts",
+        "default": "./dist/portable/index.node.js"
+      }
+    },
     "./native": "./src/native.ts",
     "./wasm": {
       "types": "./dist/portable/wasm.d.ts",
@@ -197,7 +214,8 @@
     "fixtures:export:statistical": "python3 scripts/export-statistical-fixtures.py",
     "bench:parity:statistical": "bun run bench/parity_statistical.ts",
     "bench:release": "bun run bench/release_benchmarks.ts",
-    "bench:scale": "bun run bench/scale_matrix.ts"
+    "bench:scale": "bun run bench/scale_matrix.ts",
+    "nltk:aliases": "bun run scripts/generate-nltk-aliases.ts"
   },
   "devDependencies": {
     "@types/bun": "1.4.3",

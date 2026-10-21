@@ -33,12 +33,16 @@ try {
   assert.deepEqual(runtime.tokenizeAscii("Hello package!"), ["hello","package"]);
   assert.deepEqual([...runtime.perceptronPredictBatch(Uint32Array.of(0,1), Uint32Array.of(0,1,2), Float32Array.of(1,0,0,1),2,2)], [0,1]);
   assert.throws(() => runtime.perceptronPredictBatch(Uint32Array.of(0),Uint32Array.of(0,1),Float32Array.of(1),1,2), RangeError);
+  const root = await import("bun_nltk");
+  assert.deepEqual(root.word_tokenize("Hello."), ["Hello", "."]);
   if (typeof Bun !== "undefined") {
-    const root = await import("bun_nltk");
     assert.equal(root.countTokensAscii("one two"), 2);
     const compat = root.DecisionTreeClassifier.train([[{x:"Red"},"upper"],[{x:"red"},"lower"]]);
     try { assert.deepEqual(compat.classifyMany([{x:"Red"},{x:"red"}]),["upper","lower"]); }
     finally { compat.dispose(); }
+  } else {
+    assert.deepEqual(root.word_tokenize_subset("Node root"), ["Node","root"]);
+    assert.throws(() => root.countTokensAscii("one two"), /require Bun/);
   }
   console.log(JSON.stringify({ok:true,runtime:process.version,bunVersion:typeof Bun !== "undefined" ? Bun.version : undefined,resolved,linearMemoryBytes:runtime.memoryBytes}));
 } finally { tree.dispose(); nb.dispose(); maxent.dispose(); runtime.dispose(); }
@@ -54,9 +58,12 @@ import { WasmNltk } from "bun_nltk/wasm";
 import { RustDecisionTreeClassifier } from "bun_nltk/classify-tree";
 import { RustNaiveBayesClassifier } from "bun_nltk/classify-features";
 import { RustMaxentClassifier } from "bun_nltk/classify-maxent";
+import { word_tokenize, word_tokenize_subset } from "bun_nltk";
 const runtime = await WasmNltk.init();
 const tree = RustDecisionTreeClassifier.train(runtime, [[{x:true},"A"]]);
 const label: string = tree.classify({x:1});
+const rootLabel: string = word_tokenize_subset("Node root")[0]!;
+const nltkTokens: string[] = word_tokenize("Hello.");
 const nb = RustNaiveBayesClassifier.train(runtime, [[{x:"Red"},label]]);
 const maxent = RustMaxentClassifier.train(runtime, [[{x:"a"},"A"],[{x:"b"},"B"]]);
 // @ts-expect-error Feature values cannot be arbitrary objects.

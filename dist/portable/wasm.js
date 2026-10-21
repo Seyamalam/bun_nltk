@@ -2,6 +2,10 @@ import { assertOffsets, assertPerceptronBuffers, assertU32 } from "./numeric_val
 function toNumber(v) {
   return typeof v === "bigint" ? Number(v) : v;
 }
+function defaultWasmUrl() {
+  const relative = import.meta.url.includes("/dist/portable/") ? "../../native/bun_nltk.wasm" : "../native/bun_nltk.wasm";
+  return new URL(relative, import.meta.url);
+}
 
 export class WasmNltk {
   exports;
@@ -36,7 +40,7 @@ export class WasmNltk {
     }
     let bytes = init.wasmBytes;
     if (!bytes) {
-      const url = init.wasmUrl ?? new URL("../../native/bun_nltk.wasm", import.meta.url);
+      const url = init.wasmUrl ?? defaultWasmUrl();
       if (init.wasmPath || new URL(url, import.meta.url).protocol === "file:") {
         const { readFile } = await import("node:fs/promises");
         bytes = await readFile(init.wasmPath ?? new URL(url, import.meta.url));

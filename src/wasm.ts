@@ -207,6 +207,13 @@ export type WasmNltkInit = {
 
 export type WasmLmModelType = "mle" | "lidstone" | "kneser_ney_interpolated";
 
+function defaultWasmUrl(): URL {
+  const relative = import.meta.url.includes("/dist/portable/")
+    ? "../../native/bun_nltk.wasm"
+    : "../native/bun_nltk.wasm";
+  return new URL(relative, import.meta.url);
+}
+
 export type AsciiMetricsStreamOptions = { maxTokenBytes?: number; maxUniqueTokens?: number; maxUniqueNgrams?: number };
 export type AsciiMetricsStream = {
   update(chunk: Uint8Array): void;
@@ -259,7 +266,7 @@ export class WasmNltk {
     }
     let bytes = init.wasmBytes;
     if (!bytes) {
-      const url = init.wasmUrl ?? new URL("../native/bun_nltk.wasm", import.meta.url);
+      const url = init.wasmUrl ?? defaultWasmUrl();
       if (init.wasmPath || new URL(url, import.meta.url).protocol === "file:") {
         const { readFile } = await import("node:fs/promises");
         bytes = await readFile(init.wasmPath ?? new URL(url, import.meta.url));

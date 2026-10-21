@@ -6,5 +6,5 @@
     "emitDeclarationOnly": true,
     "rootDir": "src"
   },
-  "include": ["src/wasm.ts", "src/feature_nb.ts", "src/feature_tree.ts", "src/feature_maxent.ts"]
+  "include": ["src/wasm.ts", "src/feature_nb.ts", "src/feature_tree.ts", "src/feature_maxent.ts", "src/index_browser.ts"]
 }

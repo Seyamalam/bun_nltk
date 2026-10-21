@@ -19,6 +19,7 @@ const server = Bun.serve({
     const module = modules.get(path.slice(1));
     if (module) return new Response(module, { headers: { "content-type": "text/javascript" } });
     if (path === "/native/bun_nltk.wasm") return new Response(Bun.file(resolve(root, "native/bun_nltk.wasm")));
+    if (path === "/index.browser.js") return new Response(Bun.file(resolve(root, "dist/portable/index.browser.js")), { headers: { "content-type": "text/javascript" } });
     return new Response("<!doctype html><title>WASM verification</title>", { headers: { "content-type": "text/html" } });
   },
 });
@@ -67,6 +68,10 @@ try {
         const maxent = RustMaxentClassifier.train(wasm, [[{ x: "a" }, "A"], [{ x: "b" }, "B"]]);
         const maxentPrediction = maxent.classify({ x: "a" });
         maxent.dispose();
+        const browserPath = "/index.browser.js";
+        const browserRoot = await import(browserPath) as typeof import("../src/index_browser");
+        const browserTokens = browserRoot.wordTokenizeSubset("Browser root");
+        const browserNltkTokens = browserRoot.word_tokenize("Hello.");
         const stream = wasm.createAsciiMetricsStream(2);
         const encoder = new TextEncoder();
         stream.update(encoder.encode("hel"));
@@ -78,7 +83,7 @@ try {
         wasm.dispose();
         let disposed = false;
         try { wasm.countTokensAscii("a"); } catch { disposed = true; }
-        return { initialBytes, tokens, metrics, distance, alignment, perceptron, shortWeights, predictions, probability, positivePredictions, treePredictions, maxentPrediction, streamMetrics, invalidOrder, disposed };
+        return { initialBytes, tokens, metrics, distance, alignment, perceptron, shortWeights, predictions, probability, positivePredictions, treePredictions, maxentPrediction, browserTokens, browserNltkTokens, streamMetrics, invalidOrder, disposed };
       });
       if (result.initialBytes >= 4 * 1024 * 1024 ||
           JSON.stringify(result.tokens) !== JSON.stringify(["hello", "node", "and", "bun"]) ||
@@ -88,6 +93,8 @@ try {
           JSON.stringify(result.positivePredictions) !== '["pos","neg","pos"]' ||
           JSON.stringify(result.treePredictions) !== '["upper","lower","lower"]' ||
           result.maxentPrediction !== "A" ||
+          JSON.stringify(result.browserTokens) !== '["Browser","root"]' ||
+          JSON.stringify(result.browserNltkTokens) !== '["Hello","."]' ||
           result.streamMetrics.tokens !== 3 || result.streamMetrics.uniqueTokens !== 2 || result.streamMetrics.ngrams !== 2 || result.streamMetrics.uniqueNgrams !== 2 ||
           Math.abs(result.probability - 0.9) > 1e-12 || !result.invalidOrder || !result.disposed) {
         throw new Error(`${name} portable verification failed: ${JSON.stringify(result)}`);
@@ -102,6 +109,7 @@ try {
     import { RustNaiveBayesClassifier } from ${JSON.stringify(new URL("../src/feature_nb.ts", import.meta.url).href)};
     import { RustDecisionTreeClassifier } from ${JSON.stringify(new URL("../src/feature_tree.ts", import.meta.url).href)};
     import { RustMaxentClassifier } from ${JSON.stringify(new URL("../src/feature_maxent.ts", import.meta.url).href)};
+    const root = await import(${JSON.stringify(new URL("../dist/portable/index.node.js", import.meta.url).href)});
     const wasm = await WasmNltk.init();
     if (wasm.countTokensAscii("hello node") !== 2) throw new Error("Node token mismatch");
     if (wasm.editDistance("CA","ABC",{transpositions:true}) !== 2) throw new Error("Node distance mismatch");
@@ -121,6 +129,15 @@ try {
     const maxent = RustMaxentClassifier.train(wasm, [[{x:"a"},"A"],[{x:"b"},"B"]]);
     if (maxent.classify({x:"a"}) !== "A") throw new Error("Node maxent mismatch");
     maxent.dispose();
+    if (JSON.stringify(root.word_tokenize_subset("Node root")) !== '["Node","root"]') throw new Error("Node root mismatch");
+    if (JSON.stringify(root.word_tokenize("Hello.")) !== '["Hello","."]') throw new Error("Node NLTK helper mismatch");
+    const rootWasm = await root.WasmNltk.init();
+    const rootClassifier = root.RustNaiveBayesClassifier.train(rootWasm, [[{x:"a"},"A"],[{x:"b"},"B"]]);
+    if (rootClassifier.classify({x:"a"}) !== "A") throw new Error("Node root WASM classifier mismatch");
+    rootClassifier.dispose(); rootWasm.dispose();
+    let nativeMessage = "";
+    try { root.countTokensAscii("a"); } catch (error) { nativeMessage = error.message; }
+    if (!nativeMessage.includes("require Bun")) throw new Error("Node native error mismatch: " + nativeMessage);
     const stream = wasm.createAsciiMetricsStream(2);
     const encoder = new TextEncoder();
     stream.update(encoder.encode("hel")); stream.update(encoder.encode("lo world hello"));

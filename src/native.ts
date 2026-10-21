@@ -1,5 +1,5 @@
-import { dlopen, ptr } from "bun:ffi";
 import { existsSync } from "node:fs";
+import { createRequire } from "node:module";
 import { resolve } from "node:path";
 import { assertFinite, assertLinearTraining, assertOffsets, assertPerceptronBuffers, assertProduct, assertU32 } from "./numeric_validation.ts";
 
@@ -7,9 +7,13 @@ function toNumber(value: number | bigint): number {
   return typeof value === "bigint" ? Number(value) : value;
 }
 
+const moduleDir = typeof import.meta.dir === "string"
+  ? import.meta.dir
+  : new URL(".", import.meta.url).pathname;
+
 const ext = process.platform === "win32" ? "dll" : process.platform === "darwin" ? "dylib" : "so";
 const prebuiltLibPath = resolve(
-  import.meta.dir,
+  moduleDir,
   "..",
   "native",
   "prebuilt",
@@ -18,16 +22,29 @@ const prebuiltLibPath = resolve(
 );
 const nativeLibPath = process.env.BUN_NLTK_NATIVE_LIB ?? prebuiltLibPath;
 
-if (!existsSync(nativeLibPath)) {
-  throw new Error(
-    `native library not found for platform=${process.platform} arch=${process.arch}: ${nativeLibPath}.` +
-      `\nSupported prebuilt targets: darwin-arm64, linux-x64, win32-x64.` +
-      `\nNo install-time native fallback is available.` +
-      `\nFor local development overrides, set BUN_NLTK_NATIVE_LIB to a compiled binary path.`,
-  );
+type BunFfi = typeof import("bun:ffi");
+let ffiCache: BunFfi | undefined;
+
+function bunFfi(): BunFfi {
+  if (ffiCache) return ffiCache;
+  if (typeof Bun === "undefined") {
+    throw new Error("bun_nltk native APIs require Bun. Use bun_nltk/wasm for Node.js and browsers.");
+  }
+  const require = createRequire(import.meta.url);
+  try {
+    ffiCache = require("bun:ffi") as BunFfi;
+  } catch (error) {
+    throw new Error("bun_nltk native APIs require Bun. Use bun_nltk/wasm for Node.js and browsers.", { cause: error });
+  }
+  return ffiCache;
 }
 
-const lib = dlopen(nativeLibPath, {
+function ptr(value: unknown, byteOffset?: number): ReturnType<BunFfi["ptr"]> {
+  const fn = bunFfi().ptr as unknown as (value: unknown, byteOffset?: number) => ReturnType<BunFfi["ptr"]>;
+  return fn(value, byteOffset);
+}
+
+const nativeSymbols = {
   bunnltk_last_error_code: {
     args: [],
     returns: "u32",
@@ -347,6 +364,28 @@ const lib = dlopen(nativeLibPath, {
     args: ["u64", "ptr", "usize"],
     returns: "u64",
   },
+} as const;
+
+type NativeLibrary = import("bun:ffi").Library<typeof nativeSymbols>;
+let libraryCache: NativeLibrary | undefined;
+
+function nativeLib(): NativeLibrary {
+  if (libraryCache) return libraryCache;
+  const ffi = bunFfi();
+  if (!existsSync(nativeLibPath)) {
+    throw new Error(
+      `native library not found for platform=${process.platform} arch=${process.arch}: ${nativeLibPath}.` +
+        `\nSupported prebuilt targets: darwin-arm64, linux-x64, win32-x64.` +
+        `\nNo install-time native fallback is available.` +
+        `\nFor local development overrides, set BUN_NLTK_NATIVE_LIB to a compiled binary path.`,
+    );
+  }
+  libraryCache = ffi.dlopen(nativeLibPath, nativeSymbols);
+  return libraryCache;
+}
+
+const lib = new Proxy({} as NativeLibrary, {
+  get(_target, property) { return Reflect.get(nativeLib(), property); },
 });
 
 function toBuffer(text: string): Uint8Array {

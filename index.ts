@@ -39,6 +39,9 @@ export {
 
 export type { StreamBigramFreq, StreamConditionalFreq } from "./src/native";
 export type { NativeLmModelType } from "./src/native";
+export { RustNaiveBayesClassifier, RustPositiveNaiveBayesClassifier } from "./src/feature_nb";
+export { RustMaxentClassifier } from "./src/feature_maxent";
+export type { FeatureMaxentOptions, FeatureMaxentSerialized } from "./src/feature_maxent";
 export { RustDecisionTreeClassifier } from "./src/feature_tree";
 export type { FeatureTreeOptions } from "./src/feature_tree";
 export type { NativeLinearTextModel, NativeLinearTrainingAlgorithm } from "./src/native";
@@ -542,3 +545,9 @@ export * as tabdata_ns from "./src/tabdata";
 export * as langnames_ns from "./src/langnames";
 export * as cli_ns from "./src/cli";
 export * as corpus_europarl_raw_ns from "./src/corpus_europarl_raw";
+
+export { sent_tokenize, word_tokenize, wordpunct_tokenize, ngrams, bigrams, trigrams } from "./src/nltk_compat";
+export { PorterStemmer } from "./src/porter_stemmer";
+
+// Python NLTK-style snake_case aliases (generated).
+export * from "./src/nltk_aliases";
