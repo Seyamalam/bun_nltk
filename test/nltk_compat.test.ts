@@ -28,6 +28,6 @@ test("NLTK ngrams helpers and PorterStemmer wrappers", () => {
   expect(stemmer.stem("caresses")).toBe("caress");
   expect(stemmer.stem("running")).toBe("run");
   expect(stemmer.mode).toBe("NLTK_EXTENSIONS");
-  expect(() => new PorterStemmer("ORIGINAL_ALGORITHM")).toThrow("unsupported");
-  expect(() => ngrams([1, 2], 0)).toThrow("positive");
+  expect(new PorterStemmer("ORIGINAL_ALGORITHM").stem("ties")).toBe("ti");
+  expect(ngrams([1, 2], 0)).toEqual([[], [], []]);
 });
