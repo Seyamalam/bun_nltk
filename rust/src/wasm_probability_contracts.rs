@@ -2,6 +2,7 @@
 //! Input integers are checked before conversion. Outputs start with a status
 //! (0 success, 1 invalid, 2 empty base, 3 division by zero, 4 None probability,
 //! 5 bad feature id, 6 missing handle). No platform-specific native binary.
+use crate::categorical_maxent::{CategoricalMaxent, MaxentAlgorithm, MaxentOptions};
 use crate::maxent_encoding::{InputFeature, Key, MaxentEncoding};
 use crate::probability_contracts::{self as probability, ContractError, KneserNey, Result};
 #[cfg(target_arch = "wasm32")]
@@ -12,6 +13,7 @@ use std::collections::HashMap;
 enum Model {
     Kneser(KneserNey),
     Encoding(MaxentEncoding),
+    Classifier(CategoricalMaxent),
 }
 thread_local! {
     static MODELS: RefCell<(u32, HashMap<u32, Model>)> = RefCell::new((0, HashMap::new()));
@@ -58,6 +60,13 @@ impl<'a> Reader<'a> {
         }
         Ok(result)
     }
+    fn vector(&mut self) -> Result<Vec<(u32, f64)>> {
+        let n = self.id()? as usize;
+        if n > (self.input.len() - self.index) / 2 {
+            return Err(ContractError::Invalid);
+        }
+        (0..n).map(|_| Ok((self.id()?, self.number()?))).collect()
+    }
 }
 
 fn register(model: Model) -> Result<Vec<f64>> {
@@ -82,6 +91,247 @@ fn key_parts(key: Key) -> (f64, f64) {
 fn dispatch(op: u32, input: &[f64]) -> Result<Vec<f64>> {
     let mut r = Reader::new(input);
     match op {
+        30 => {
+            let kind = r.id()?;
+            let values = &input[r.index..];
+            let out = match kind {
+                0 => vec![probability::sum_logs(values)],
+                1 => probability::normalize(values, false)?,
+                2 => probability::normalize(values, true)?,
+                3 | 4 => {
+                    let p = r.number()?;
+                    r.end()?;
+                    vec![probability::log_probability(
+                        p,
+                        if kind == 3 {
+                            probability::NINF
+                        } else {
+                            f64::NEG_INFINITY
+                        },
+                    )?]
+                }
+                5 => {
+                    let log = r.number()?;
+                    r.end()?;
+                    vec![log.exp2()]
+                }
+                6 => {
+                    let c = r.number()?;
+                    let n = r.number()?;
+                    r.end()?;
+                    vec![if n == 0.0 { 0.0 } else { c / n }]
+                }
+                7 => {
+                    let c = r.number()?;
+                    let gamma = r.number()?;
+                    let divisor = r.number()?;
+                    r.end()?;
+                    vec![probability::divide(c + gamma, divisor)?]
+                }
+                8 => {
+                    let n = r.number()?;
+                    let bins = r.number()?;
+                    let gamma = r.number()?;
+                    r.end()?;
+                    let divisor = n + bins * gamma;
+                    vec![
+                        if divisor == 0.0 { 0.0 } else { gamma },
+                        if divisor == 0.0 { 1.0 } else { divisor },
+                    ]
+                }
+                9 => {
+                    let n = r.number()?;
+                    let bins = r.number()?;
+                    let gamma = r.number()?;
+                    r.end()?;
+                    vec![probability::divide(gamma * bins, n + gamma * bins)?]
+                }
+                10 => {
+                    let n = r.number()?;
+                    let t = r.number()?;
+                    let bins = r.number()?;
+                    r.end()?;
+                    vec![if n == 0.0 {
+                        probability::divide(1.0, bins - t)?
+                    } else {
+                        probability::divide(t, (bins - t) * (n + t))?
+                    }]
+                }
+                11 => {
+                    let c = r.number()?;
+                    let n = r.number()?;
+                    let t = r.number()?;
+                    let p0 = r.number()?;
+                    r.end()?;
+                    vec![if c == 0.0 {
+                        p0
+                    } else {
+                        probability::divide(c, n + t)?
+                    }]
+                }
+                12 => {
+                    let fit = probability::GoodTuring::new(values)?;
+                    vec![fit.slope, fit.intercept, fit.switch_at, fit.renormal]
+                }
+                13 | 14 | 15 => {
+                    let fit = probability::GoodTuring {
+                        slope: r.number()?,
+                        intercept: r.number()?,
+                        switch_at: r.number()?,
+                        renormal: r.number()?,
+                    };
+                    let value = r.number()?;
+                    if kind == 13 {
+                        r.end()?;
+                        vec![fit.smoothed(value)?]
+                    } else if kind == 15 {
+                        r.end()?;
+                        vec![probability::divide(fit.smoothed(1.0)?, value)?]
+                    } else {
+                        let total = r.number()?;
+                        let bins = r.number()?;
+                        vec![fit.prob(value, total, bins, &input[r.index..])?]
+                    }
+                }
+                16 => {
+                    let mut entropy = 0.0;
+                    for &p in values {
+                        if p <= 0.0 {
+                            return Err(ContractError::Invalid);
+                        }
+                        entropy -= p * p.log2();
+                    }
+                    vec![entropy]
+                }
+                // Keep the existing logLikelihood extension: unlike NLTK's
+                // non-iterable default distributions, it accepts samples().
+                17 => {
+                    if !values.len().is_multiple_of(2) {
+                        return Err(ContractError::Invalid);
+                    }
+                    vec![values
+                        .chunks_exact(2)
+                        .filter(|p| p[0] > 0.0)
+                        .map(|p| p[0] * p[1].max(f64::from_bits(1)).log2())
+                        .sum()]
+                }
+                18 => {
+                    if values.is_empty() {
+                        return Err(ContractError::EmptyBase);
+                    }
+                    let mut best = 0;
+                    for i in 1..values.len() {
+                        if values[i] > values[best] {
+                            best = i;
+                        }
+                    }
+                    vec![best as f64]
+                }
+                19 => {
+                    let count = r.number()?;
+                    r.end()?;
+                    vec![probability::divide(1.0, count)?]
+                }
+                _ => return Err(ContractError::Invalid),
+            };
+            Ok(out)
+        }
+        20 => {
+            let algorithm = match r.id()? {
+                0 => MaxentAlgorithm::Iis,
+                1 => MaxentAlgorithm::Gis,
+                _ => return Err(ContractError::Invalid),
+            };
+            let max_iter = r.id()?;
+            let mut optional = || r.number().map(|v| (!v.is_nan()).then_some(v));
+            let min_ll = optional()?;
+            let min_lldelta = optional()?;
+            let max_acc = optional()?;
+            let min_accdelta = optional()?;
+            let constant = optional()?;
+            let label_count = r.id()?;
+            let length = r.id()? as usize;
+            // Each feature consumes at least one output weight. Bound allocations
+            // before parsing attacker-controlled dimensions.
+            if length > 1_000_000 || label_count == 0 {
+                return Err(ContractError::Invalid);
+            }
+            let n = r.id()? as usize;
+            if n > input.len() - r.index || label_count as usize > input.len() - r.index {
+                return Err(ContractError::Invalid);
+            }
+            let mut labels = Vec::with_capacity(n);
+            let mut rows = Vec::with_capacity(n);
+            for _ in 0..n {
+                labels.push(r.id()?);
+                let mut row = Vec::new();
+                for _ in 0..label_count {
+                    row.push(r.vector()?);
+                }
+                rows.push(row);
+            }
+            r.end()?;
+            let model = CategoricalMaxent::train_encoded(
+                &rows,
+                &labels,
+                label_count,
+                length,
+                constant,
+                MaxentOptions {
+                    algorithm,
+                    max_iter,
+                    min_ll,
+                    min_lldelta,
+                    max_acc,
+                    min_accdelta,
+                    count_cutoff: 0,
+                },
+            )
+            .map_err(|_| ContractError::Invalid)?;
+            register(Model::Classifier(model))
+        }
+        21 | 22 => {
+            let handle = r.id()?;
+            MODELS.with(|models| {
+                let state = models.borrow();
+                let Some(Model::Classifier(model)) = state.1.get(&handle) else {
+                    return Err(ContractError::MissingHandle);
+                };
+                let out = if op == 21 {
+                    let mut vectors = Vec::new();
+                    for _ in 0..model.label_count() {
+                        vectors.push(r.vector()?);
+                    }
+                    model
+                        .predict_encoded(vectors)
+                        .map_err(|_| ContractError::Invalid)?
+                } else {
+                    let mut weights = vec![0.0; model.weight_count()];
+                    model
+                        .copy_weights(&mut weights)
+                        .map_err(|_| ContractError::Invalid)?;
+                    weights
+                };
+                r.end()?;
+                Ok(out)
+            })
+        }
+        23 => {
+            let label_count = r.id()?;
+            let n = r.id()? as usize;
+            if n > input.len() - r.index {
+                return Err(ContractError::Invalid);
+            }
+            let mut weights = Vec::with_capacity(n);
+            for _ in 0..n {
+                weights.push(r.number()?);
+            }
+            r.end()?;
+            register(Model::Classifier(
+                CategoricalMaxent::from_encoded_weights(&weights, label_count)
+                    .map_err(|_| ContractError::Invalid)?,
+            ))
+        }
         1 => {
             let bins = r.number()?;
             let n = r.id()? as usize;
@@ -314,7 +564,7 @@ pub extern "C" fn bunnltk_wasm_probability_contract(
         || input_end > memory_bytes
         || out_end > memory_bytes
         || (input_len > 0 && (input_ptr as u64) < out_end && (out_ptr as u64) < input_end)
-        || (matches!(op, 3 | 6 | 7) && out_len < 2)
+        || (matches!(op, 3 | 6 | 7 | 20 | 23) && out_len < 2)
     {
         return 0;
     }
@@ -348,11 +598,28 @@ mod tests {
     use super::*;
     #[test]
     fn abi_rejects_malformed_buffers() {
-        for op in 1..=10 {
+        for op in (1..=10).chain([20, 21, 22, 23, 30]) {
             assert!(dispatch(op, &[]).is_err());
         }
         assert!(dispatch(6, &[1.0, 0.0, 0.0, 0.0, 1e9]).is_err());
         assert!(dispatch(3, &[0.75, 1.0, 0.0, 0.0, 0.0, -1.0]).is_err());
         assert!(dispatch(4, &[1.5, 0.0, 0.0, 0.0]).is_err());
+        assert!(dispatch(
+            20,
+            &[
+                0.0,
+                5.0,
+                f64::NAN,
+                f64::NAN,
+                f64::NAN,
+                f64::NAN,
+                f64::NAN,
+                2.0,
+                2.0,
+                1e9
+            ]
+        )
+        .is_err());
+        assert!(dispatch(23, &[2.0, 1e9]).is_err());
     }
 }

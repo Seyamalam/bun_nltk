@@ -7,6 +7,8 @@ import { syncWasm } from "./sync_wasm.ts";
 import { RustNaiveBayesClassifier, type PositiveFeatureOptions } from "./feature_nb";
 import { RustDecisionTreeClassifier, type FeatureTreeOptions } from "./feature_tree.ts";
 import { RustMaxentClassifier, type FeatureMaxentOptions } from "./feature_maxent.ts";
+import type { MaxentEncodingExample, MaxentFeatureset } from "./maxent_feature_encoding.ts";
+export type { MaxentEncodingExample, MaxentFeatureset } from "./maxent_feature_encoding.ts";
 import type { FeatureSet, LabeledFeatureset } from "./feature_types";
 
 export type { FeatureValue, FeatureSet, LabeledFeatureset } from "./feature_types";
@@ -171,13 +173,14 @@ export class MaxentClassifier extends FeatureClassifierBase {
   }
 
   static train(
-    labeledFeaturesets: Iterable<LabeledFeatureset>,
+    labeledFeaturesets: Iterable<MaxentEncodingExample>,
     options: MaxentCompatOptions = {},
   ): MaxentClassifier {
     const legacy = options.algorithm === "sgd" || options.epochs !== undefined ||
       options.learningRate !== undefined || options.l2 !== undefined || options.maxFeatures !== undefined;
     if (legacy) {
-      const rows = [...labeledFeaturesets].map(([features, label]) => ({ label, text: featureText(features) }));
+      if (options.encoding !== undefined) throw new TypeError("custom encodings require the Rust IIS/GIS model");
+      const rows = [...labeledFeaturesets].map(([features, label]) => ({ label, text: featureText(features as FeatureSet) }));
       return new MaxentClassifier(new MaxEntTextClassifier(options as MaxEntOptions).train(rows));
     }
     const algorithm = options.algorithm === "gis" ? "gis" : "iis";
@@ -186,15 +189,25 @@ export class MaxentClassifier extends FeatureClassifierBase {
     }));
   }
 
-  override classify(featureset: FeatureSet): string {
-    return this.model instanceof RustMaxentClassifier ? this.model.classify(featureset) : super.classify(featureset);
+  override classify(featureset: MaxentFeatureset): string {
+    return this.model instanceof RustMaxentClassifier ? this.model.classify(featureset) : super.classify(featureset as FeatureSet);
   }
 
-  override probClassify(featureset: FeatureSet): DictionaryProbDist<string> {
+  override probClassify(featureset: MaxentFeatureset): DictionaryProbDist<string> {
     return this.model instanceof RustMaxentClassifier
-      ? fromProbabilities(this.model.predict(featureset))
-      : super.probClassify(featureset);
+      ? this.model.probClassify(featureset)
+      : super.probClassify(featureset as FeatureSet);
   }
+
+  override classifyMany(featuresets: Iterable<MaxentFeatureset>): string[] {
+    return [...featuresets].map(row => this.classify(row));
+  }
+  override probClassifyMany(featuresets: Iterable<MaxentFeatureset>): DictionaryProbDist<string>[] {
+    return [...featuresets].map(row => this.probClassify(row));
+  }
+  override prob_classify(featureset: MaxentFeatureset): DictionaryProbDist<string> { return this.probClassify(featureset); }
+  override classify_many(featuresets: Iterable<MaxentFeatureset>): string[] { return this.classifyMany(featuresets); }
+  override prob_classify_many(featuresets: Iterable<MaxentFeatureset>): DictionaryProbDist<string>[] { return this.probClassifyMany(featuresets); }
 
   dispose(): void {
     if (this.model instanceof RustMaxentClassifier) this.model.dispose();

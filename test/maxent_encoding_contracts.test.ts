@@ -76,12 +76,15 @@ test("Typed encoding integral Python floats, bool subclass behavior, zeros and e
   expect(() => empty.encode({}, "A")).toThrow("disposed");
 });
 
-test("Custom encoding is rejected rather than silently training the default binary model", async () => {
+test("Custom encoding trains IIS but GIS still requires an explicit C", async () => {
   const runtime = await WasmNltk.init();
   const encoding = BinaryMaxentFeatureEncoding.train([[{ x: true }, "A"]]);
   try {
-    const options = { encoding } as unknown as FeatureMaxentOptions;
-    expect(() => RustMaxentClassifier.train(runtime, [[{ x: true }, "A"]], options)).toThrow("not integrated");
+    const options: FeatureMaxentOptions = { encoding };
+    const model = RustMaxentClassifier.train(runtime, [[{ x: true }, "A"]], options);
+    expect(model.predict({ x: true })[0]!.probability).toBe(1);
+    model.dispose();
+    expect(() => RustMaxentClassifier.train(runtime, [[{ x: true }, "A"]], { ...options, algorithm: "gis" })).toThrow("defines C");
   } finally { encoding.dispose(); runtime.dispose(); }
 });
 

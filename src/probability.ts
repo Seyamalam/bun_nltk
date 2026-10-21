@@ -1,10 +1,16 @@
 import { ConditionalFreqDist, FreqDist } from "./freqdist";
 export { HeldoutProbDist, CrossValidationProbDist, KneserNeyProbDist } from "./probability_missing.ts";
 export type { Trigram } from "./probability_missing.ts";
-import { probabilityKey } from "./probability_abi.ts";
+import { probabilityKey, probabilityRuntime } from "./probability_abi.ts";
 
 const NEG_INF = Number.NEGATIVE_INFINITY;
-const ADD_LOGS_MAX_DIFF = Math.log2(1e-30);
+export const add_logs = addLogs;
+export const sum_logs = sumLogs;
+export const log_likelihood = logLikelihood;
+
+function numeric(kind: number, values: number[], capacity = 1): number[] {
+  return probabilityRuntime().call(30, [kind, ...values], capacity);
+}
 
 function keyOf(value: unknown): string {
   switch (typeof value) {
@@ -53,35 +59,25 @@ export interface ProbDistLike<T> {
 }
 
 export function addLogs(logx: number, logy: number): number {
-  if (logx < logy + ADD_LOGS_MAX_DIFF) return logy;
-  if (logy < logx + ADD_LOGS_MAX_DIFF) return logx;
-  const base = Math.min(logx, logy);
-  return base + Math.log2(2 ** (logx - base) + 2 ** (logy - base));
+  return numeric(0, [logx, logy])[0]!;
 }
 
 export function sumLogs(logs: number[]): number {
-  if (logs.length === 0) return NEG_INF;
-  return logs.slice(1).reduce((acc, value) => addLogs(acc, value), logs[0]!);
+  return numeric(0, logs)[0]!;
 }
 
 export function logLikelihood<T>(testPdist: ProbDistLike<T>, actualPdist: ProbDistLike<T>): number {
-  let total = 0;
+  const values: number[] = [];
   for (const sample of actualPdist.samples()) {
     const actualProb = actualPdist.prob(sample);
     if (actualProb <= 0) continue;
-    total += actualProb * Math.log2(Math.max(testPdist.prob(sample), Number.MIN_VALUE));
+    values.push(actualProb, testPdist.prob(sample));
   }
-  return total;
+  return numeric(17, values)[0]!;
 }
 
 export function entropy<T>(pdist: ProbDistLike<T>): number {
-  let total = 0;
-  for (const sample of pdist.samples()) {
-    const prob = pdist.prob(sample);
-    if (prob <= 0) continue;
-    total -= prob * Math.log2(prob);
-  }
-  return total;
+  return numeric(16, [...pdist.samples()].map(sample => pdist.prob(sample)))[0]!;
 }
 
 export abstract class ProbDistI<T> implements ProbDistLike<T> {
@@ -90,9 +86,7 @@ export abstract class ProbDistI<T> implements ProbDistLike<T> {
   abstract samples(): Iterable<T>;
 
   logprob(sample: T): number {
-    const prob = this.prob(sample);
-    if (prob <= 0) return NEG_INF;
-    return Math.log2(prob);
+    return numeric(3, [this.prob(sample)])[0]!;
   }
 
   logProb(sample: T): number {
@@ -109,7 +103,8 @@ export class DictionaryProbDist<T> extends ProbDistI<T> {
     super();
     this.#log = log;
     for (const [sample, prob] of asEntries(probDict)) {
-      this.#probMap.set(keyOf(sample), { sample, value: prob });
+      const key = conditionKey(sample), previous = this.#probMap.get(key);
+      this.#probMap.set(key, { sample: previous ? previous.sample : sample, value: prob });
     }
 
     if (normalize) {
@@ -118,49 +113,31 @@ export class DictionaryProbDist<T> extends ProbDistI<T> {
         throw new Error("A DictionaryProbDist must have at least one sample before it can be normalized.");
       }
 
-      if (this.#log) {
-        const valueSum = sumLogs(entries.map((entry) => entry.value));
-        if (valueSum <= NEG_INF) {
-          const uniform = Math.log2(1 / entries.length);
-          for (const entry of entries) entry.value = uniform;
-        } else {
-          for (const entry of entries) entry.value -= valueSum;
-        }
-      } else {
-        const valueSum = entries.reduce((acc, entry) => acc + entry.value, 0);
-        if (valueSum === 0) {
-          const uniform = 1 / entries.length;
-          for (const entry of entries) entry.value = uniform;
-        } else {
-          for (const entry of entries) entry.value /= valueSum;
-        }
-      }
+      const values = numeric(this.#log ? 2 : 1, entries.map(entry => entry.value), entries.length);
+      for (const [i, entry] of entries.entries()) entry.value = values[i]!;
     }
   }
 
   prob(sample: T): number {
-    const value = this.#probMap.get(keyOf(sample))?.value;
+    const value = this.#probMap.get(conditionKey(sample))?.value;
     if (value === undefined) return 0;
-    return this.#log ? 2 ** value : value;
+    return this.#log ? numeric(5, [value])[0]! : value;
   }
 
   override logprob(sample: T): number {
-    const value = this.#probMap.get(keyOf(sample))?.value;
-    if (value === undefined) return NEG_INF;
+    const value = this.#probMap.get(conditionKey(sample))?.value;
+    if (value === undefined) return -1e300;
     if (this.#log) return value;
-    if (value <= 0) return NEG_INF;
-    return Math.log2(value);
+    return numeric(3, [value])[0]!;
   }
 
   max(): T {
     if (this.#maxSample !== undefined) return this.#maxSample;
-    const best = [...this.#probMap.values()].reduce((acc, value) => {
-      if (!acc) return value;
-      const accProb = this.#log ? acc.value : Math.log2(Math.max(acc.value, Number.MIN_VALUE));
-      const valueProb = this.#log ? value.value : Math.log2(Math.max(value.value, Number.MIN_VALUE));
-      return valueProb > accProb ? value : acc;
-    }, undefined as { sample: T; value: number } | undefined);
+    const entries = [...this.#probMap.values()];
+    const best = entries.length === 0 ? undefined : entries[numeric(18, entries.map(entry => entry.value))[0]!];
     if (!best) throw new Error("A DictionaryProbDist must have at least one sample before max is defined.");
+    // Preserve the existing adapter tie order (some classifier adapters rely on
+    // first-insertion ties), rather than silently changing their predictions.
     this.#maxSample = best.sample;
     return best.sample;
   }
@@ -186,7 +163,7 @@ export class MLEProbDist<T> extends ProbDistI<T> {
   }
 
   prob(sample: T): number {
-    return this.freqDistValue.freq(sample);
+    return numeric(6, [this.freqDistValue.get(sample), this.freqDistValue.N()])[0]!;
   }
 
   max(): T {
@@ -227,12 +204,7 @@ export class LidstoneProbDist<T> extends ProbDistI<T> {
     this.gammaValue = Number(gamma);
     this.totalCount = freqdist.N();
     this.binsValue = bins ?? freqdist.B();
-    this.divisor = this.totalCount + this.binsValue * this.gammaValue;
-
-    if (this.divisor === 0) {
-      this.gammaValue = 0;
-      this.divisor = 1;
-    }
+    [this.gammaValue, this.divisor] = numeric(8, [this.totalCount, this.binsValue, this.gammaValue], 2) as [number, number];
   }
 
   freqdist(): FreqDist<T> {
@@ -240,7 +212,7 @@ export class LidstoneProbDist<T> extends ProbDistI<T> {
   }
 
   prob(sample: T): number {
-    return (this.freqDistValue.get(sample) + this.gammaValue) / this.divisor;
+    return numeric(7, [this.freqDistValue.get(sample), this.gammaValue, this.divisor])[0]!;
   }
 
   max(): T {
@@ -252,8 +224,7 @@ export class LidstoneProbDist<T> extends ProbDistI<T> {
   }
 
   discount(): number {
-    const gb = this.gammaValue * this.binsValue;
-    return gb / (this.totalCount + gb);
+    return numeric(9, [this.totalCount, this.binsValue, this.gammaValue])[0]!;
   }
 
   override toString(): string {
@@ -288,7 +259,6 @@ type ProbDistFactory<T, Args extends unknown[] = []> =
 export class WittenBellProbDist<T> extends ProbDistI<T> {
   readonly #freqdist: FreqDist<T>;
   readonly #T: number;
-  readonly #Z: number;
   readonly #N: number;
   readonly #P0: number;
 
@@ -300,21 +270,13 @@ export class WittenBellProbDist<T> extends ProbDistI<T> {
     const resolvedBins = bins ?? freqdist.B();
     this.#freqdist = freqdist;
     this.#T = freqdist.B();
-    this.#Z = resolvedBins - freqdist.B();
     this.#N = freqdist.N();
-    if (this.#N === 0) {
-      if (this.#Z <= 0) {
-        throw new Error("WittenBellProbDist needs at least one unseen bin when freqdist is empty.");
-      }
-      this.#P0 = 1 / this.#Z;
-    } else {
-      this.#P0 = this.#Z > 0 ? this.#T / (this.#Z * (this.#N + this.#T)) : 0;
-    }
+    this.#P0 = numeric(10, [this.#N, this.#T, resolvedBins])[0]!;
   }
 
   prob(sample: T): number {
     const count = this.#freqdist.get(sample);
-    return count !== 0 ? count / (this.#N + this.#T) : this.#P0;
+    return numeric(11, [count, this.#N, this.#T, this.#P0])[0]!;
   }
 
   max(): T {
@@ -341,10 +303,7 @@ export class WittenBellProbDist<T> extends ProbDistI<T> {
 export class SimpleGoodTuringProbDist<T> extends ProbDistI<T> {
   readonly #freqdist: FreqDist<T>;
   readonly #bins: number;
-  #slope = 0;
-  #intercept = 0;
-  #switchAt = 0;
-  #renormal = 1;
+  readonly #fit: number[];
 
   constructor(freqdist: FreqDist<T>, bins?: number) {
     super();
@@ -354,111 +313,21 @@ export class SimpleGoodTuringProbDist<T> extends ProbDistI<T> {
     this.#freqdist = freqdist;
     this.#bins = bins ?? (freqdist.B() + 1);
 
-    const [r, nr] = this.#rNr();
-    this.#findBestFit(r, nr);
-    this.#switch(r, nr);
-    this.#renormalize(r, nr);
-  }
-
-  #rNrNonZero(): Record<number, number> {
-    const out = this.#freqdist.r_Nr();
-    delete out[0];
-    return out;
-  }
-
-  #rNr(): [number[], number[]] {
-    const nonzero = this.#rNrNonZero();
-    const pairs = Object.entries(nonzero)
-      .map(([r, nr]) => [Number(r), nr] as const)
-      .sort((left, right) => left[0] - right[0]);
-    return [pairs.map(([r]) => r), pairs.map(([, nr]) => nr)];
-  }
-
-  #findBestFit(r: number[], nr: number[]): void {
-    if (r.length === 0 || nr.length === 0) return;
-
-    const zr: number[] = [];
-    for (let j = 0; j < r.length; j += 1) {
-      const i = j > 0 ? r[j - 1]! : 0;
-      const k = j === r.length - 1 ? 2 * r[j]! - i : r[j + 1]!;
-      zr.push((2 * nr[j]!) / (k - i));
-    }
-
-    const logR = r.map((value) => Math.log(value));
-    const logZr = zr.map((value) => Math.log(value));
-    const xMean = logR.reduce((acc, value) => acc + value, 0) / logR.length;
-    const yMean = logZr.reduce((acc, value) => acc + value, 0) / logZr.length;
-
-    let xyCov = 0;
-    let xVar = 0;
-    for (let i = 0; i < logR.length; i += 1) {
-      xyCov += (logR[i]! - xMean) * (logZr[i]! - yMean);
-      xVar += (logR[i]! - xMean) ** 2;
-    }
-
-    this.#slope = xVar === 0 ? 0 : xyCov / xVar;
-    this.#intercept = yMean - this.#slope * xMean;
-  }
-
-  #switch(r: number[], nr: number[]): void {
-    for (let i = 0; i < r.length; i += 1) {
-      const count = r[i]!;
-      if (i === r.length - 1 || r[i + 1]! !== count + 1) {
-        this.#switchAt = count;
-        break;
-      }
-
-      const smooth = (count + 1) * this.smoothedNr(count + 1) / this.smoothedNr(count);
-      const unsmoothed = ((count + 1) * nr[i + 1]!) / nr[i]!;
-      const std = Math.sqrt(this.#variance(count, nr[i]!, nr[i + 1]!));
-      if (Math.abs(unsmoothed - smooth) <= 1.96 * std) {
-        this.#switchAt = count;
-        break;
-      }
-    }
-  }
-
-  #variance(r: number, nr: number, nr1: number): number {
-    return (r + 1) ** 2 * (nr1 / (nr ** 2)) * (1 + nr1 / nr);
-  }
-
-  #renormalize(r: number[], nr: number[]): void {
-    let probCov = 0;
-    for (let i = 0; i < r.length; i += 1) {
-      probCov += nr[i]! * this.#probMeasure(r[i]!);
-    }
-    if (probCov !== 0) {
-      this.#renormal = (1 - this.#probMeasure(0)) / probCov;
-    }
+    this.#fit = numeric(12, [...freqdist.values()], 4);
   }
 
   smoothedNr(r: number): number {
-    return Math.exp(this.#intercept + this.#slope * Math.log(r));
+    return numeric(13, [...this.#fit, r])[0]!;
   }
-
-  #probMeasure(count: number): number {
-    if (count === 0 && this.#freqdist.N() === 0) return 1;
-    if (count === 0) return this.#freqdist.Nr(1) / this.#freqdist.N();
-
-    const er1 = this.#switchAt > count ? this.#freqdist.Nr(count + 1) : this.smoothedNr(count + 1);
-    const er = this.#switchAt > count ? this.#freqdist.Nr(count) : this.smoothedNr(count);
-    const rStar = ((count + 1) * er1) / er;
-    return rStar / this.#freqdist.N();
-  }
+  smoothed_nr(r: number): number { return this.smoothedNr(r); }
 
   prob(sample: T): number {
-    const count = this.#freqdist.get(sample);
-    let prob = this.#probMeasure(count);
-    if (count === 0) {
-      prob = this.#bins === this.#freqdist.B() ? 0 : prob / (this.#bins - this.#freqdist.B());
-    } else {
-      prob *= this.#renormal;
-    }
-    return prob;
+    return numeric(14, [...this.#fit, this.#freqdist.get(sample), this.#freqdist.N(), this.#bins,
+      ...this.#freqdist.values()])[0]!;
   }
 
   discount(): number {
-    return this.smoothedNr(1) / this.#freqdist.N();
+    return numeric(15, [...this.#fit, this.#freqdist.N()])[0]!;
   }
 
   max(): T {
@@ -480,17 +349,23 @@ export class SimpleGoodTuringProbDist<T> extends ProbDistI<T> {
 
 export class UniformProbDist<T> extends ProbDistI<T> {
   readonly #samples: T[];
+  readonly #keys: Set<string>;
+  readonly #probability: number;
 
   constructor(samples: Iterable<T>) {
     super();
-    this.#samples = [...samples];
+    const unique = new Map<string, T>();
+    for (const sample of samples) if (!unique.has(conditionKey(sample))) unique.set(conditionKey(sample), sample);
+    this.#samples = [...unique.values()];
     if (this.#samples.length === 0) {
       throw new Error("A UniformProbDist must have at least one sample.");
     }
+    this.#keys = new Set(unique.keys());
+    this.#probability = numeric(19, [this.#keys.size])[0]!;
   }
 
   prob(sample: T): number {
-    return this.#samples.some((item) => keyOf(item) === keyOf(sample)) ? 1 / this.#samples.length : 0;
+    return this.#keys.has(conditionKey(sample)) ? this.#probability : 0;
   }
 
   max(): T {
@@ -505,52 +380,54 @@ export class UniformProbDist<T> extends ProbDistI<T> {
 export class MutableProbDist<T> extends ProbDistI<T> {
   readonly #probMap = new Map<string, { sample: T; value: number }>();
   readonly #storeLogs: boolean;
+  readonly #samples: T[];
+  readonly #indices = new Map<string, number>();
 
   constructor(probDist: ProbDistLike<T>, samples: Iterable<T>, storeLogs = true) {
     super();
     this.#storeLogs = storeLogs;
-    for (const sample of samples) {
+    this.#samples = Array.isArray(samples) ? samples : [...samples];
+    for (const [i, sample] of this.#samples.entries()) {
       const value = storeLogs ? probDist.logprob(sample) : probDist.prob(sample);
-      this.#probMap.set(keyOf(sample), { sample, value });
+      const key = conditionKey(sample), previous = this.#probMap.get(key);
+      this.#indices.set(key, i);
+      this.#probMap.set(key, { sample: previous ? previous.sample : sample, value });
     }
   }
 
-  update(sample: T, value: number, log = false): void {
-    const stored = this.#storeLogs
-      ? (log ? value : (value <= 0 ? NEG_INF : Math.log2(value)))
-      : (log ? 2 ** value : value);
-    this.#probMap.set(keyOf(sample), { sample, value: stored });
+  update(sample: T, value: number, log = true): void {
+    const previous = this.#probMap.get(conditionKey(sample));
+    if (!previous) throw new RangeError("sample is not in this mutable distribution");
+    if (this.#storeLogs && !log && value <= 0) throw new RangeError("math domain error");
+    const stored = this.#storeLogs ? (log ? value : numeric(4, [value])[0]!)
+      : (log ? numeric(5, [value])[0]! : value);
+    this.#probMap.set(conditionKey(sample), { sample: previous.sample, value: stored });
   }
 
   prob(sample: T): number {
-    const value = this.#probMap.get(keyOf(sample))?.value;
+    const value = this.#probMap.get(conditionKey(sample))?.value;
     if (value === undefined) return 0;
-    return this.#storeLogs ? (value <= NEG_INF ? 0 : 2 ** value) : value;
+    return this.#storeLogs ? numeric(5, [value])[0]! : value;
   }
 
   override logprob(sample: T): number {
-    const value = this.#probMap.get(keyOf(sample))?.value;
+    const value = this.#probMap.get(conditionKey(sample))?.value;
     if (value === undefined) return NEG_INF;
     if (this.#storeLogs) return value;
-    if (value <= 0) return NEG_INF;
-    return Math.log2(value);
+    if (value <= 0) throw new RangeError("math domain error");
+    return numeric(4, [value])[0]!;
   }
 
   max(): T {
-    const best = [...this.#probMap.values()].reduce((acc, current) => {
-      if (!acc) return current;
-      const accValue = this.#storeLogs ? acc.value : Math.log2(Math.max(acc.value, Number.MIN_VALUE));
-      const currentValue = this.#storeLogs ? current.value : Math.log2(Math.max(current.value, Number.MIN_VALUE));
-      return currentValue > accValue ? current : acc;
-    }, undefined as { sample: T; value: number } | undefined);
-    if (!best) throw new Error("A MutableProbDist must have at least one sample before max is defined.");
-    return best.sample;
+    if (this.#samples.length === 0) throw new Error("A MutableProbDist must have at least one sample before max is defined.");
+    // NLTK's max reads _sample_dict's indices, not the mutable probabilities.
+    const entries = [...this.#probMap.entries()];
+    const best = numeric(18, entries.map(([key]) => this.#indices.get(key)!), 1)[0]!;
+    return entries[best]![1].sample;
   }
 
   *samples(): IterableIterator<T> {
-    for (const entry of this.#probMap.values()) {
-      yield entry.sample;
-    }
+    yield* this.#samples;
   }
 }
 

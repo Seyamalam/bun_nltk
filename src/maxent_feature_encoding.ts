@@ -18,6 +18,42 @@ export type MaxentMappingValue = MaxentFeatureValue | typeof PYTHON_INT | typeof
 export type MaxentFeatureMapping = Iterable<readonly [readonly [string, MaxentMappingValue, string], number]>;
 export type MaxentEncodingOptions = { unseen_features?: boolean; alwayson_features?: boolean };
 type Descriptor = { kind: number; name?: string; value?: MaxentMappingValue; label?: string };
+type SerializedValue = { type: "int" | "float" | "bool" | "none" | "pythonFloat"; value?: number } |
+  { type: "value"; value: string | number | boolean };
+export type MaxentEncodingSerialized = {
+  version: 1;
+  typed: boolean;
+  labels: string[];
+  mapping: Array<[[string, SerializedValue, string], number]>;
+  alwaysOn: boolean;
+  unseen: boolean;
+};
+
+function serializeValue(value: MaxentMappingValue): SerializedValue {
+  if (value === PYTHON_INT) return { type: "int" };
+  if (value === PYTHON_FLOAT) return { type: "float" };
+  if (value === PYTHON_BOOL) return { type: "bool" };
+  if (value === null || value === undefined) return { type: "none" };
+  if (typeof value === "object") return { type: "pythonFloat", value: value.value };
+  return { type: "value", value };
+}
+function deserializeValue(value: SerializedValue): MaxentMappingValue {
+  if (!value || typeof value !== "object") throw new TypeError("invalid serialized feature value");
+  switch (value.type) {
+    case "int": return PYTHON_INT;
+    case "float": return PYTHON_FLOAT;
+    case "bool": return PYTHON_BOOL;
+    case "none": return null;
+    case "pythonFloat":
+      if (typeof value.value !== "number") throw new TypeError("invalid serialized float");
+      return pythonFloat(value.value);
+    case "value":
+      if (typeof value.value !== "string" && typeof value.value !== "boolean" &&
+        !(typeof value.value === "number" && Number.isFinite(value.value))) throw new TypeError("invalid serialized value");
+      return value.value;
+    default: throw new TypeError("invalid serialized feature type");
+  }
+}
 
 function rawValue(value: MaxentFeatureValue): FeatureValue {
   if (value !== null && typeof value === "object") {
@@ -50,7 +86,7 @@ function intern(map: Map<string, number>, key: string): number {
   return map.get(key)!;
 }
 
-/** Rust-owned NLTK joint encoding, independent of classifier training. */
+/** Rust-owned NLTK joint encoding, usable standalone or for MaxEnt training. */
 export class BinaryMaxentFeatureEncoding {
   protected typed = false;
   private readonly names = new Map<string, number>();
@@ -173,6 +209,28 @@ export class BinaryMaxentFeatureEncoding {
   }
   labels(): string[] { return [...this.labelNames]; }
   length(): number { return this.descriptors.length; }
+  toJSON(): MaxentEncodingSerialized {
+    if (this.disposed) throw new Error("encoding has been disposed");
+    return {
+      version: 1, typed: this.typed, labels: this.labels(),
+      mapping: this.descriptors.filter(row => row.kind === 0).map((row, id) =>
+        [[row.name!, serializeValue(row.value), row.label!], id]),
+      alwaysOn: this.descriptors.some(row => row.kind === 1),
+      unseen: this.descriptors.some(row => row.kind === 2),
+    };
+  }
+  static fromJSON(payload: MaxentEncodingSerialized): BinaryMaxentFeatureEncoding {
+    if (!payload || payload.version !== 1 || typeof payload.typed !== "boolean" ||
+      typeof payload.alwaysOn !== "boolean" || typeof payload.unseen !== "boolean" ||
+      !Array.isArray(payload.labels) || !Array.isArray(payload.mapping)) throw new TypeError("invalid serialized encoding");
+    const mapping: Array<[[string, MaxentMappingValue, string], number]> = payload.mapping.map(row => {
+      if (!Array.isArray(row) || row.length !== 2 || !Array.isArray(row[0]) || row[0].length !== 3)
+        throw new TypeError("invalid serialized mapping");
+      return [[row[0][0], deserializeValue(row[0][1]), row[0][2]], row[1]];
+    });
+    const Encoding = payload.typed ? TypedMaxentFeatureEncoding : BinaryMaxentFeatureEncoding;
+    return new Encoding(payload.labels, mapping, payload.unseen, payload.alwaysOn);
+  }
   describe(f_id: number): string {
     if (!Number.isInteger(f_id)) throw new TypeError("describe() expected an int");
     // Python permits negative indexing into the inverse base mapping.

@@ -1,5 +1,6 @@
-//! Standalone NLTK joint feature encodings. This does not replace or change
-//! categorical_maxent's existing training/serialization contract.
+//! NLTK joint feature encodings. Weighted vectors also feed categorical_maxent's
+//! shared optimizer through the dedicated probability ABI; the original default
+//! categorical model serialization contract stays unchanged.
 use crate::probability_contracts::{ContractError, Result};
 use std::collections::{HashMap, HashSet};
 

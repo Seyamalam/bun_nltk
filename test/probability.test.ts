@@ -29,7 +29,7 @@ test("DictionaryProbDist supports normalization and log space", () => {
   const logDist = new DictionaryProbDist(new Map([["x", -2], ["y", -1]]), true, false);
   expectClose(logDist.logprob("y"), -1);
   expectClose(logDist.prob("x"), 0.25);
-  expect(logDist.logprob("missing")).toBe(Number.NEGATIVE_INFINITY);
+  expect(logDist.logprob("missing")).toBe(-1e300);
 });
 
 test("MLE, Lidstone, Laplace, and ELE distributions match NLTK formulas", () => {

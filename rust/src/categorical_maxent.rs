@@ -46,8 +46,7 @@ impl Default for MaxentOptions {
 
 #[derive(Debug, Clone)]
 struct EncodedLabel {
-    ids: Vec<u32>,
-    correction: f64,
+    values: Vec<(u32, f64)>,
 }
 
 pub struct CategoricalMaxent {
@@ -143,11 +142,8 @@ impl CategoricalMaxent {
         let mut empirical = vec![0.0; length];
         for (row, &label) in labels.iter().enumerate() {
             let encoded = &encodings[row][label as usize];
-            for &id in &encoded.ids {
-                empirical[id as usize] += 1.0;
-            }
-            if correction.is_some() {
-                empirical[base_len] += encoded.correction;
+            for &(id, value) in &encoded.values {
+                empirical[id as usize] += value;
             }
         }
 
@@ -172,7 +168,7 @@ impl CategoricalMaxent {
         let mut data = TrainingData {
             encodings: &encodings,
             labels,
-            base_len,
+            length,
             empirical_counts: empirical,
             unattested,
             options,
@@ -183,6 +179,126 @@ impl CategoricalMaxent {
             MaxentAlgorithm::Gis => model.train_gis(&mut data),
         }?;
         Ok(model)
+    }
+
+    /// Weighted joint vectors from an explicit Binary/Typed encoding. Keep
+    /// optimization and probability normalization in the existing Rust engine.
+    pub fn train_encoded(
+        encodings: &[Vec<Vec<(u32, f64)>>],
+        labels: &[u32],
+        label_count: u32,
+        length: usize,
+        constant: Option<f64>,
+        options: MaxentOptions,
+    ) -> CoreResult<Self> {
+        if label_count == 0
+            || labels.is_empty()
+            || encodings.len() != labels.len()
+            || labels.iter().any(|&l| l >= label_count)
+            || encodings
+                .iter()
+                .any(|row| row.len() != label_count as usize)
+            || constant.is_some_and(|c| !c.is_finite() || c == 0.0)
+            || (options.algorithm == MaxentAlgorithm::Gis && constant.is_none())
+            || [
+                options.min_ll,
+                options.min_lldelta,
+                options.max_acc,
+                options.min_accdelta,
+            ]
+            .into_iter()
+            .flatten()
+            .any(|v| !v.is_finite())
+        {
+            return Err(CoreError::InvalidN);
+        }
+        let mut empirical = vec![0.0; length];
+        let mut rows = Vec::with_capacity(encodings.len());
+        for (row, &label) in encodings.iter().zip(labels) {
+            let mut encoded = Vec::with_capacity(row.len());
+            for values in row {
+                if values
+                    .iter()
+                    .any(|&(id, v)| id as usize >= length || !v.is_finite())
+                {
+                    return Err(CoreError::InvalidN);
+                }
+                encoded.push(EncodedLabel {
+                    values: values.clone(),
+                });
+            }
+            for &(id, value) in &encoded[label as usize].values {
+                empirical[id as usize] += value;
+            }
+            rows.push(encoded);
+        }
+        let unattested: Vec<usize> = empirical
+            .iter()
+            .enumerate()
+            .filter_map(|(id, &v)| (v == 0.0).then_some(id))
+            .collect();
+        let mut weights = vec![0.0; length];
+        for &id in &unattested {
+            weights[id] = f64::NEG_INFINITY;
+        }
+        let mut model = Self {
+            label_count: label_count as usize,
+            mapping: HashMap::new(),
+            features: Vec::new(),
+            weights,
+            correction: constant,
+        };
+        // NLTK permits empty IIS spaces (uniform predictions).
+        if length != 0 {
+            let mut data = TrainingData {
+                encodings: &rows,
+                labels,
+                length,
+                empirical_counts: empirical,
+                unattested,
+                options,
+                cutoff: CutoffState::new(options),
+            };
+            match options.algorithm {
+                MaxentAlgorithm::Iis => model.train_iis(&mut data),
+                MaxentAlgorithm::Gis => model.train_gis(&mut data),
+            }?;
+        }
+        Ok(model)
+    }
+
+    pub fn from_encoded_weights(weights: &[f64], label_count: u32) -> CoreResult<Self> {
+        if label_count == 0 || weights.iter().any(|w| w.is_nan() || *w == f64::INFINITY) {
+            return Err(CoreError::InvalidN);
+        }
+        Ok(Self {
+            label_count: label_count as usize,
+            mapping: HashMap::new(),
+            features: Vec::new(),
+            weights: weights.to_vec(),
+            correction: None,
+        })
+    }
+
+    pub fn predict_encoded(&self, vectors: Vec<Vec<(u32, f64)>>) -> CoreResult<Vec<f64>> {
+        if vectors.len() != self.label_count
+            || vectors
+                .iter()
+                .flatten()
+                .any(|&(id, v)| id as usize >= self.weights.len() || !v.is_finite())
+        {
+            return Err(CoreError::InvalidN);
+        }
+        let encoded: Vec<_> = vectors
+            .into_iter()
+            .map(|values| EncodedLabel { values })
+            .collect();
+        let logs = normalize_log_probs(&self.logits(&encoded));
+        Ok(logs
+            .iter()
+            .copied()
+            .chain(logs.iter().map(|v| v.exp2()))
+            .collect())
     }
 
     /// Rebuild a trained model from its numeric encoding, for serialization.
@@ -233,32 +349,27 @@ impl CategoricalMaxent {
     }
 
     fn encode_label(&self, pairs: &[u32], label: u32) -> EncodedLabel {
-        let mut ids = Vec::new();
+        let mut values = Vec::new();
         for pair in pairs.chunks_exact(2) {
             if let Some(&id) = self.mapping.get(&(pair[0], pair[1], label)) {
-                ids.push(id);
+                values.push((id, 1.0));
             }
         }
-        let correction = self
-            .correction
-            .map(|constant| constant - ids.len() as f64)
-            .unwrap_or(0.0);
-        EncodedLabel { ids, correction }
+        if let Some(constant) = self.correction {
+            values.push((self.features.len() as u32, constant - values.len() as f64));
+        }
+        EncodedLabel { values }
     }
 
     fn logits(&self, encoded: &[EncodedLabel]) -> Vec<f64> {
         encoded
             .iter()
             .map(|label| {
-                let mut total = label
-                    .ids
+                label
+                    .values
                     .iter()
-                    .map(|&id| self.weights[id as usize])
-                    .sum::<f64>();
-                if self.correction.is_some() {
-                    total += self.weights[self.features.len()] * label.correction;
-                }
-                total
+                    .map(|&(id, value)| self.weights[id as usize] * value)
+                    .sum::<f64>()
             })
             .collect()
     }
@@ -339,7 +450,7 @@ impl CategoricalMaxent {
     }
 
     fn train_iis(&mut self, data: &mut TrainingData<'_>) -> CoreResult<()> {
-        let length = data.base_len;
+        let length = data.length;
         let empirical: Vec<f64> = if length == 0 {
             Vec::new()
         } else {
@@ -349,19 +460,22 @@ impl CategoricalMaxent {
                 .collect()
         };
 
-        // calculate_nfmap: the sum of active binary features for every
+        // calculate_nfmap: the sum of active weighted features for every
         // (row, label) pair, compressed to sorted distinct values.
-        let mut nf_values: Vec<u32> = data
+        let mut nf_values: Vec<f64> = data
             .encodings
             .iter()
-            .flat_map(|row| row.iter().map(|label| label.ids.len() as u32))
+            .flat_map(|row| {
+                row.iter()
+                    .map(|label| label.values.iter().map(|&(_, v)| v).sum::<f64>())
+            })
             .collect();
-        nf_values.sort_unstable();
+        nf_values.sort_by(f64::total_cmp);
         nf_values.dedup();
-        let nf_index: HashMap<u32, usize> = nf_values
+        let nf_index: HashMap<u64, usize> = nf_values
             .iter()
             .enumerate()
-            .map(|(index, &nf)| (nf, index))
+            .map(|(index, &nf)| ((if nf == 0.0 { 0.0 } else { nf }).to_bits(), index))
             .collect();
 
         loop {
@@ -371,10 +485,10 @@ impl CategoricalMaxent {
             for row in data.encodings {
                 let probabilities = self.probabilities(row);
                 for (label, encoded) in row.iter().enumerate() {
-                    let nf = encoded.ids.len() as u32;
-                    let row_index = nf_index[&nf];
-                    for &id in &encoded.ids {
-                        a[row_index][id as usize] += probabilities[label];
+                    let nf = encoded.values.iter().map(|&(_, v)| v).sum::<f64>();
+                    let row_index = nf_index[&(if nf == 0.0 { 0.0 } else { nf }).to_bits()];
+                    for &(id, value) in &encoded.values {
+                        a[row_index][id as usize] += probabilities[label] * value;
                     }
                 }
             }
@@ -390,9 +504,9 @@ impl CategoricalMaxent {
                 let mut sum2 = vec![0.0; length];
                 for (row_index, &nf) in nf_values.iter().enumerate() {
                     for id in 0..length {
-                        let weight = (nf as f64 * deltas[id]).exp2();
+                        let weight = (nf * deltas[id]).exp2();
                         sum1[id] += weight * a[row_index][id];
-                        sum2[id] += nf as f64 * weight * a[row_index][id];
+                        sum2[id] += nf * weight * a[row_index][id];
                     }
                 }
                 for &id in &data.unattested {
@@ -428,7 +542,7 @@ impl CategoricalMaxent {
     }
 
     fn train_gis(&mut self, data: &mut TrainingData<'_>) -> CoreResult<()> {
-        let length = data.base_len + 1;
+        let length = data.length;
         let constant = self.correction.ok_or(CoreError::InvalidN)?;
         let log_empirical: Vec<f64> = data
             .empirical_counts
@@ -448,10 +562,9 @@ impl CategoricalMaxent {
                 let probabilities = self.probabilities(row);
                 for (label, encoded) in row.iter().enumerate() {
                     let probability = probabilities[label];
-                    for &id in &encoded.ids {
-                        estimated[id as usize] += probability;
+                    for &(id, value) in &encoded.values {
+                        estimated[id as usize] += probability * value;
                     }
-                    estimated[data.base_len] += probability * encoded.correction;
                 }
             }
             for &id in &data.unattested {
@@ -477,7 +590,7 @@ impl CategoricalMaxent {
 struct TrainingData<'a> {
     encodings: &'a [Vec<EncodedLabel>],
     labels: &'a [u32],
-    base_len: usize,
+    length: usize,
     empirical_counts: Vec<f64>,
     unattested: Vec<usize>,
     options: MaxentOptions,
@@ -542,16 +655,16 @@ fn encode_training_rows(
         let end = 2 * offsets[row + 1] as usize;
         let mut encoded = Vec::with_capacity(label_count);
         for label in 0..label_count {
-            let mut ids = Vec::new();
+            let mut values = Vec::new();
             for pair in pairs[start..end].chunks_exact(2) {
                 if let Some(&id) = mapping.get(&(pair[0], pair[1], label as u32)) {
-                    ids.push(id);
+                    values.push((id, 1.0));
                 }
             }
-            let correction = correction
-                .map(|constant| constant - ids.len() as f64)
-                .unwrap_or(0.0);
-            encoded.push(EncodedLabel { ids, correction });
+            if let Some(constant) = correction {
+                values.push((mapping.len() as u32, constant - values.len() as f64));
+            }
+            encoded.push(EncodedLabel { values });
         }
         rows.push(encoded);
     }
@@ -627,6 +740,46 @@ impl CutoffState {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn weighted_vectors_use_the_existing_optimizer_and_roundtrip() {
+        let rows = vec![
+            vec![vec![(0, 0.5)], vec![(1, 0.5)]],
+            vec![vec![(0, 1.5)], vec![(1, 1.5)]],
+            vec![vec![(0, 2.0)], vec![(1, 2.0)]],
+        ];
+        for algorithm in [MaxentAlgorithm::Iis, MaxentAlgorithm::Gis] {
+            let model = CategoricalMaxent::train_encoded(
+                &rows,
+                &[0, 1, 1],
+                2,
+                3,
+                Some(4.0),
+                options(algorithm),
+            )
+            .unwrap();
+            let mut weights = vec![0.0; model.weight_count()];
+            model.copy_weights(&mut weights).unwrap();
+            assert_eq!(weights[2], f64::NEG_INFINITY);
+            let restored = CategoricalMaxent::from_encoded_weights(&weights, 2).unwrap();
+            let out = model.predict_encoded(rows[0].clone()).unwrap();
+            assert_eq!(out, restored.predict_encoded(rows[0].clone()).unwrap());
+            assert!((out[2] + out[3] - 1.0).abs() < 1e-12);
+        }
+        assert!(CategoricalMaxent::train_encoded(
+            &rows,
+            &[0, 1, 1],
+            2,
+            2,
+            None,
+            options(MaxentAlgorithm::Gis)
+        )
+        .is_err());
+        assert!(CategoricalMaxent::from_encoded_weights(&[f64::NAN], 2).is_err());
+        let model = CategoricalMaxent::from_encoded_weights(&[1.0], 1).unwrap();
+        assert!(model.predict_encoded(vec![vec![(1, 1.0)]]).is_err());
+        assert!(model.predict_encoded(vec![vec![(0, f64::NAN)]]).is_err());
+    }
 
     fn options(algorithm: MaxentAlgorithm) -> MaxentOptions {
         MaxentOptions {
