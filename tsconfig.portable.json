@@ -4,7 +4,8 @@
     "noEmit": false,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "rootDir": "src"
+    "noEmitOnError": true,
+    "rootDir": "."
   },
-  "include": ["src/wasm.ts", "src/feature_nb.ts", "src/feature_tree.ts", "src/feature_maxent.ts", "src/index_browser.ts"]
+  "include": ["index.ts", "src/index_browser.ts"]
 }

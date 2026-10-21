@@ -1,27 +1,27 @@
-export type AsciiMetrics = {
+type AsciiMetrics = {
     tokens: number;
     uniqueTokens: number;
     ngrams: number;
     uniqueNgrams: number;
 };
-export type WasmNltkInit = {
+type WasmNltkInit = {
     wasmBytes?: Uint8Array;
     wasmPath?: string;
     wasmUrl?: string | URL;
     maxInputBytes?: number;
 };
-export type WasmLmModelType = "mle" | "lidstone" | "kneser_ney_interpolated";
-export type AsciiMetricsStreamOptions = {
+type WasmLmModelType = "mle" | "lidstone" | "kneser_ney_interpolated";
+type AsciiMetricsStreamOptions = {
     maxTokenBytes?: number;
     maxUniqueTokens?: number;
     maxUniqueNgrams?: number;
 };
-export type AsciiMetricsStream = {
+type AsciiMetricsStream = {
     update(chunk: Uint8Array): void;
     finish(): AsciiMetrics;
     dispose(): void;
 };
-export declare class WasmNltk {
+declare class WasmNltk {
     private readonly exports;
     private inputPtr;
     private readonly maxInputBytes;
@@ -219,3 +219,6 @@ export declare class WasmNltk {
         lSys: number;
     };
 }
+
+export { WasmNltk };
+export type { AsciiMetrics, AsciiMetricsStream, AsciiMetricsStreamOptions, WasmLmModelType, WasmNltkInit };

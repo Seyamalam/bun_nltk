@@ -1,5 +1,7 @@
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { rollup } from "rollup";
+import { dts } from "rollup-plugin-dts";
 
 const root = resolve(import.meta.dir, "..");
 const output = resolve(root, "dist/portable");
@@ -10,77 +12,23 @@ const compiler = Bun.spawnSync(["npx", "--no-install", "tsrs", "-p", "tsconfig.p
 });
 if (compiler.exitCode !== 0) throw new Error(new TextDecoder().decode(compiler.stdout) + new TextDecoder().decode(compiler.stderr));
 
-// Preserve individual modules and relative imports; no bundler or TS loader is
-// required by consumers. Declarations resolve the same JS module paths.
+// All declaration input is emitted by the pinned Rust compiler. Rollup only
+// links .d.ts files: it never infers types from TS, or pulls Bun's implementation
+// imports into the portable consumer graph. Multiple entries share nominal
+// class types, so a root WasmNltk is also a classifier-subpath WasmNltk.
 function jsImports(source: string): string {
-  return source.replace(/(\bfrom\s*["']|\bimport\s*\(\s*["'])(\.\/?[^"']+)(["'])/g, (_, prefix: string, path: string, quote: string) => {
-    return `${prefix}${path.replace(/\.ts$/, "").replace(/\.js$/, "")}.js${quote}`;
+  return source.replace(/(\bfrom\s*["']|\bimport\s*\(\s*["'])(\.{1,2}\/[^"']+)(["'])/g, (_, prefix: string, path: string, quote: string) => {
+    return `${prefix}${path.replace(/(?:\.d)?\.ts$/, "").replace(/\.js$/, "")}.js${quote}`;
   });
 }
-
-const preciseValues = new Set([
-  "WasmNltk",
-  "RustNaiveBayesClassifier",
-  "RustPositiveNaiveBayesClassifier",
-  "RustDecisionTreeClassifier",
-  "RustMaxentClassifier",
-]);
-const preciseTypes = new Set([
-  "WasmNltkInit",
-  "FeatureSet",
-  "FeatureValue",
-  "LabeledFeatureset",
-  "PositiveFeatureOptions",
-  "FeatureTreeOptions",
-  "FeatureMaxentOptions",
-  "FeatureMaxentSerialized",
-]);
-
-function rootFacade(names: readonly string[], types: readonly string[]): string {
-  const lines = [
-    "// Generated runtime-compatible root declarations.",
-    "// Portable classifiers and WASM options are precise; other root names are",
-    "// runtime facades. Use the wasm/classifier subpaths for precise types.",
-  ];
-  lines.push('export { WasmNltk } from "./wasm.js";');
-  lines.push('export type { WasmNltkInit } from "./wasm.js";');
-  lines.push('export { RustNaiveBayesClassifier, RustPositiveNaiveBayesClassifier } from "./feature_nb.js";');
-  lines.push('export type { FeatureSet, FeatureValue, LabeledFeatureset, PositiveFeatureOptions } from "./feature_nb.js";');
-  lines.push('export { RustDecisionTreeClassifier } from "./feature_tree.js";');
-  lines.push('export type { FeatureTreeOptions } from "./feature_tree.js";');
-  lines.push('export { RustMaxentClassifier } from "./feature_maxent.js";');
-  lines.push('export type { FeatureMaxentOptions, FeatureMaxentSerialized } from "./feature_maxent.js";');
-  for (const name of types) if (!preciseTypes.has(name)) lines.push(`export type ${name} = any;`);
-  for (const name of names) if (!preciseValues.has(name)) lines.push(`export const ${name}: any;`);
-  return `${lines.join("\n")}\n`;
-}
-
-function declaredTypes(source: string): string[] {
-  const names = new Set<string>();
-  for (const match of source.matchAll(/export\s+type\s*\{([^}]*)\}/g)) {
-    for (const raw of match[1]!.split(",")) {
-      const spec = raw.trim();
-      if (!spec) continue;
-      const parts = spec.split(/\s+as\s+/);
-      names.add((parts[1] ?? parts[0])!.trim());
-    }
-  }
-  for (const match of source.matchAll(/export\s*\{([^}]*)\}/g)) {
-    for (const raw of match[1]!.split(",")) {
-      const spec = raw.trim();
-      if (!spec.startsWith("type ")) continue;
-      const parts = spec.slice(5).trim().split(/\s+as\s+/);
-      names.add((parts[1] ?? parts[0])!.trim());
-    }
-  }
-  return [...names].sort();
-}
 const transpiler = new Bun.Transpiler({ target: "browser" });
+// Only the build-owned output directory is replaced; stale declaration chunks
+// otherwise leak into the tarball and consume the existing package budgets.
+rmSync(output, { recursive: true, force: true });
 mkdirSync(output, { recursive: true });
 for (const name of modules) {
   const source = readFileSync(resolve(root, `src/${name}.ts`), "utf8");
   writeFileSync(resolve(output, `${name}.js`), jsImports(transpiler.transformSync(source, "ts")));
-  writeFileSync(resolve(output, `${name}.d.ts`), jsImports(readFileSync(resolve(declarations, `${name}.d.ts`), "utf8")));
 }
 for (const [entrypoint, naming, target] of [
   ["index.ts", "index.node.js", "node"],
@@ -97,10 +45,42 @@ for (const [entrypoint, naming, target] of [
   });
   if (!bundle.success) throw new Error(bundle.logs.map(String).join("\n"));
 }
-const rootSource = readFileSync(resolve(root, "index.ts"), "utf8");
-const browserSource = readFileSync(resolve(root, "src/index_browser.ts"), "utf8");
-const rootApi = await import(resolve(root, "index.ts")) as Record<string, unknown>;
-const browserApi = await import(resolve(root, "src/index_browser.ts")) as Record<string, unknown>;
-writeFileSync(resolve(output, "index.node.d.ts"), rootFacade(Object.keys(rootApi).sort(), declaredTypes(rootSource)));
-writeFileSync(resolve(output, "index.browser.d.ts"), rootFacade(Object.keys(browserApi).sort(), declaredTypes(browserSource)));
+// Retain previously published type-only conveniences without adding runtime
+// exports. All values still come exclusively from the corresponding root.
+for (const [name, entry] of [["node", "../index"], ["browser", "./index_browser"]] as const) {
+  writeFileSync(resolve(declarations, `src/portable_${name}.d.ts`), `
+export * from "${entry}";
+export type { WasmNltkInit } from "./wasm";
+export type { FeatureSet, FeatureValue, LabeledFeatureset, PositiveFeatureOptions } from "./feature_nb";
+export type { FeatureTreeOptions } from "./feature_tree";
+export type { FeatureMaxentOptions, FeatureMaxentSerialized } from "./feature_maxent";
+`);
+}
+const declarationBundle = await rollup({
+  input: {
+    "index.node": resolve(declarations, "src/portable_node.d.ts"),
+    "index.browser": resolve(declarations, "src/portable_browser.d.ts"),
+    ...Object.fromEntries(modules.map((name) => [name, resolve(declarations, `src/${name}.d.ts`)])),
+  },
+  plugins: [dts({ respectExternal: true })],
+  onwarn(warning) { throw new Error(warning.message); },
+});
+try {
+  const result = await declarationBundle.generate({
+    format: "esm", entryFileNames: "[name].d.ts", chunkFileNames: "types/[name]-[hash].d.ts",
+  });
+  for (const file of result.output) {
+    if (file.type !== "chunk") throw new Error(`unexpected declaration asset: ${file.fileName}`);
+    const path = resolve(output, file.fileName);
+    mkdirSync(resolve(path, ".."), { recursive: true });
+    writeFileSync(path, jsImports(file.code));
+  }
+  const linked = Bun.spawnSync(["node", resolve(root, "scripts/link-portable-types.mjs"), declarations, output], {
+    cwd: root, stdout: "pipe", stderr: "pipe", timeout: 120_000,
+  });
+  if (linked.exitCode !== 0) throw new Error(new TextDecoder().decode(linked.stdout) + new TextDecoder().decode(linked.stderr));
+} finally {
+  await declarationBundle.close();
+  rmSync(declarations, { recursive: true, force: true });
+}
 console.log(JSON.stringify({ ok: true, output, modules, roots: ["index.node.js", "index.browser.js"] }));

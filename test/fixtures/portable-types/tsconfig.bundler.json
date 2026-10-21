@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strict": true, "noEmit": true, "target": "ESNext",
+    "module": "Preserve", "moduleResolution": "bundler",
+    "lib": ["ESNext", "DOM"], "types": [], "skipLibCheck": false,
+    "verbatimModuleSyntax": true
+  },
+  "files": ["common.ts", "node.ts", "exports.ts"]
+}

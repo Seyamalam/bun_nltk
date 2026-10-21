@@ -1,8 +1,9 @@
-import type { FeatureSet, FeatureValue } from "./feature_types.js";
-export declare function valueKey(value: FeatureValue): string;
-export declare function intern(map: Map<string, number>, key: string): number;
+import { FeatureSet, FeatureValue } from './feature_types.js';
+
+declare function valueKey(value: FeatureValue): string;
+declare function intern(map: Map<string, number>, key: string): number;
 /** Lossless typed marshaling only; the Rust model owns all statistics. */
-export declare class FeatureEncoding {
+declare class FeatureEncoding {
     readonly names: Map<string, number>;
     readonly values: Map<string, number>;
     /** Restore intern tables from a serialized model without changing ids. */
@@ -14,3 +15,5 @@ export declare class FeatureEncoding {
     };
     predictionPairs(features: FeatureSet): Uint32Array;
 }
+
+export { FeatureEncoding, intern, valueKey };

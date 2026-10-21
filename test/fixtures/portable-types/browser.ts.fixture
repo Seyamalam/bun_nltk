@@ -1,0 +1,16 @@
+import * as root from "bun_nltk";
+import type { AsciiMetrics, TweetTokenizerOptions, PunktModelSerialized } from "bun_nltk";
+const options: TweetTokenizerOptions = { stripHandles: true };
+const model: PunktModelSerialized = root.defaultPunktModel();
+const metrics: AsciiMetrics = root.computeAsciiMetrics("a b", 2);
+const tokens: string[] = root.tweetTokenize("hello", options);
+// @ts-expect-error Browser root must not advertise native-only APIs.
+root.nativeLibraryPath();
+// @ts-expect-error Browser root must not advertise Node-only compatibility classes.
+root.NaiveBayesClassifier.train([]);
+// @ts-expect-error Browser root has no extra snake-case alias facade.
+root.word_tokenize_subset("browser");
+// @ts-expect-error Browser root has no Node namespace exports.
+root.chat_util_ns;
+// @ts-expect-error Browser metrics retain their return type.
+const bad: string = root.computeAsciiMetrics("a b", 2);

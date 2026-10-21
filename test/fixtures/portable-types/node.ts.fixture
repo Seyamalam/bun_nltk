@@ -1,0 +1,39 @@
+import {
+  FreqDist, CFG, ChartParser, PorterStemmer, NaiveBayesClassifier,
+  corpusBleu, computeAsciiMetrics, word_tokenize_subset, chat_util_ns,
+  type CfgGrammar, type SnowballLanguages, type ProbDistFactory,
+} from "bun_nltk";
+const distribution = new FreqDist<string>(["word"]);
+const frequency: number = distribution.get("word");
+const grammar: CfgGrammar = CFG.fromstring("S -> 'word'").grammar;
+const parsed = new ChartParser(grammar).parse(["word"]);
+const stem: string = new PorterStemmer().stem("running");
+const tokens: string[] = word_tokenize_subset("Node root");
+const metrics: { tokens: number; uniqueTokens: number; ngrams: number; uniqueNgrams: number } = computeAsciiMetrics("a b", 2);
+const bleu: number = corpusBleu([[["word"]]], [["word"]]);
+const chat = new chat_util_ns.Chat([["hi", ["hello"]]], {});
+const reply: string = chat.respond("hi");
+const classifier = NaiveBayesClassifier.train([[{ x: true }, "A"]]);
+const label: string = classifier.classify({ x: true });
+// @ts-expect-error Generic frequency distribution retains key types.
+distribution.get(42);
+// @ts-expect-error CFG factories require a string.
+CFG.fromstring(42);
+// @ts-expect-error Parser tokens must be strings.
+new ChartParser(grammar).parse([42]);
+// @ts-expect-error Stemmer input must be a string.
+new PorterStemmer().stem(42);
+// @ts-expect-error Root legacy aliases retain their signatures.
+word_tokenize_subset(42);
+// @ts-expect-error Native metrics order must be numeric.
+computeAsciiMetrics("a b", "two");
+// @ts-expect-error BLEU hypotheses are nested string arrays.
+corpusBleu([[["word"]]], [42]);
+// @ts-expect-error Namespaced exports are not any facades.
+chat.respond(42);
+// @ts-expect-error Compatibility classifier features are precise.
+classifier.classify({ x: { nested: true } });
+// @ts-expect-error A type-only alias to a value is not a runtime export.
+import { SnowballLanguages as RuntimeLanguages } from "bun_nltk";
+// @ts-expect-error The type-only alias cannot be accessed as a value either.
+const impossible = RuntimeLanguages;

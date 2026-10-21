@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strict": true, "noEmit": true, "target": "ESNext",
+    "module": "NodeNext", "moduleResolution": "NodeNext",
+    "lib": ["ESNext", "DOM"], "types": [], "skipLibCheck": false,
+    "verbatimModuleSyntax": true
+  },
+  "files": ["common.ts", "node.ts", "exports.ts"]
+}

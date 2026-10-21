@@ -1,6 +1,7 @@
-import type { WasmNltk } from "./wasm.js";
-import type { FeatureSet, LabeledFeatureset } from "./feature_types.js";
-export type FeatureMaxentOptions = {
+import { WasmNltk } from './wasm.js';
+import { LabeledFeatureset, FeatureSet } from './feature_types.js';
+
+type FeatureMaxentOptions = {
     algorithm?: "iis" | "gis";
     maxIter?: number;
     minLl?: number;
@@ -18,7 +19,7 @@ export type FeatureMaxentOptions = {
     min_accdelta?: number;
     count_cutoff?: number;
 };
-export type FeatureMaxentSerialized = {
+type FeatureMaxentSerialized = {
     version: 1;
     algorithm: "iis" | "gis";
     labels: string[];
@@ -29,7 +30,7 @@ export type FeatureMaxentSerialized = {
     correction?: number;
 };
 /** Lossless Rust feature-dictionary MaxEnt matching NLTK's MaxentClassifier. */
-export declare class RustMaxentClassifier {
+declare class RustMaxentClassifier {
     private disposed;
     private readonly runtime;
     private readonly handle;
@@ -59,3 +60,6 @@ export declare class RustMaxentClassifier {
     static fromJSON(runtime: WasmNltk, payload: FeatureMaxentSerialized): RustMaxentClassifier;
     dispose(): void;
 }
+
+export { RustMaxentClassifier };
+export type { FeatureMaxentOptions, FeatureMaxentSerialized };

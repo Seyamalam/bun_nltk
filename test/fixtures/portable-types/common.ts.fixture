@@ -1,0 +1,71 @@
+import {
+  WasmNltk, RustNaiveBayesClassifier, RustPositiveNaiveBayesClassifier,
+  RustDecisionTreeClassifier, RustMaxentClassifier, TreebankWordTokenizer,
+  MWETokenizer, TweetTokenizer, PunktTrainer, word_tokenize, countTokensAscii,
+  ngrams, type FeatureSet, type FeatureTreeOptions, type FeatureMaxentOptions,
+  type FeatureMaxentSerialized, type PositiveFeatureOptions, type WasmNltkInit,
+} from "bun_nltk";
+import { WasmNltk as SubpathWasm } from "bun_nltk/wasm";
+import { RustDecisionTreeClassifier as SubpathTree } from "bun_nltk/classify-tree";
+import { RustNaiveBayesClassifier as SubpathNb } from "bun_nltk/classify-features";
+import { RustMaxentClassifier as SubpathMaxent } from "bun_nltk/classify-maxent";
+type IsAny<T> = 0 extends (1 & T) ? true : false;
+type AssertFalse<T extends false> = T;
+type RootIsPrecise = AssertFalse<IsAny<typeof word_tokenize>>;
+type FeaturesArePrecise = AssertFalse<IsAny<FeatureSet>>;
+const init: WasmNltkInit = { wasmBytes: new Uint8Array(), maxInputBytes: 1024 };
+const runtime: SubpathWasm = await WasmNltk.init(init);
+const rootRuntime: WasmNltk = await SubpathWasm.init(init);
+const examples: [FeatureSet, string][] = [[{ x: "a", absent: null }, "A"]];
+const treeOptions: FeatureTreeOptions = { depthCutoff: 2, binary: true };
+const maxentOptions: FeatureMaxentOptions = { algorithm: "iis", maxIter: 2 };
+const positiveOptions: PositiveFeatureOptions = { positivePrior: 0.5 };
+const rootTree: RustDecisionTreeClassifier = SubpathTree.train(rootRuntime, examples, treeOptions);
+const subTree: SubpathTree = RustDecisionTreeClassifier.train(runtime, examples);
+const nb: SubpathNb = RustNaiveBayesClassifier.train(runtime, examples);
+const rootNb: RustNaiveBayesClassifier = SubpathNb.train(rootRuntime, examples);
+const maxent: SubpathMaxent = RustMaxentClassifier.train(runtime, examples, maxentOptions);
+const serialized: FeatureMaxentSerialized = maxent.toJSON();
+const rootMaxent: RustMaxentClassifier = SubpathMaxent.fromJSON(rootRuntime, serialized);
+const positive = RustPositiveNaiveBayesClassifier.train(runtime, [{ x: true }], [{ x: false }], positiveOptions);
+const label: string = subTree.classify({ x: 1 });
+const tokens: string[] = word_tokenize("Hello.");
+const count: number = countTokensAscii("a b");
+const grouped: number[][] = ngrams([1, 2, 3], 2);
+const trainer = new PunktTrainer().train("Sentence.", { minAbbrevCount: 2 });
+new TreebankWordTokenizer().tokenize("text");
+new MWETokenizer([["New", "York"]], "_").tokenize(tokens);
+new TweetTokenizer({ preserveCase: true }).tokenize("text");
+// @ts-expect-error Text must be a string, including the root convenience helper.
+word_tokenize(42);
+// @ts-expect-error Native/portable root count APIs both require a string.
+countTokensAscii(["a"]);
+// @ts-expect-error Preserve-line option must be boolean.
+word_tokenize("Hello.", "english", "yes");
+// @ts-expect-error Generic ngrams retains element types.
+const wrongGroups: string[][] = ngrams([1, 2], 2);
+// @ts-expect-error Tokenizer methods are not any facades.
+new TreebankWordTokenizer().tokenize(123);
+// @ts-expect-error MWE phrases are nested string arrays.
+new MWETokenizer(["one", "two"]);
+// @ts-expect-error Tweet options retain their property types.
+new TweetTokenizer({ preserveCase: "yes" });
+// @ts-expect-error Punkt options retain their property types.
+trainer.train("text", { minAbbrevCount: "two" });
+// @ts-expect-error Feature values cannot contain nested objects.
+rootTree.classify({ x: { nested: true } });
+// @ts-expect-error Tree depth must be numeric at the root.
+RustDecisionTreeClassifier.train(runtime, examples, { depthCutoff: "deep" });
+// @ts-expect-error Subpath depth remains precise.
+SubpathTree.train(runtime, examples, { depthCutoff: "deep" });
+// @ts-expect-error Naive Bayes examples have string labels.
+RustNaiveBayesClassifier.train(runtime, [[{ x: 1 }, 42]]);
+// @ts-expect-error Maxent algorithms are a closed union.
+RustMaxentClassifier.train(runtime, examples, { algorithm: "unknown" });
+// @ts-expect-error Positive classifier options are precise.
+RustPositiveNaiveBayesClassifier.train(runtime, [], [], { positivePrior: "half" });
+// @ts-expect-error WASM loader options are not any.
+WasmNltk.init({ maxInputBytes: "unlimited" });
+// @ts-expect-error Disposing does not return a numeric status.
+const status: number = runtime.dispose();
+rootTree.dispose(); subTree.dispose(); nb.dispose(); rootNb.dispose(); maxent.dispose(); rootMaxent.dispose(); positive.dispose(); runtime.dispose(); rootRuntime.dispose();

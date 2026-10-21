@@ -1,4 +1,5 @@
-import { mkdtempSync, realpathSync, writeFileSync } from "node:fs";
+import assert from "node:assert/strict";
+import { copyFileSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const archive = process.argv[2];
@@ -53,36 +54,59 @@ for (const installer of ["npm", "bun"] as const) {
   const directory = mkdtempSync(`/tmp/opencode/bun-nltk-packaged-${installer}-`);
   writeFileSync(resolve(directory, "package.json"), JSON.stringify({ name: "packaged-portable-check", private: true, type: "module" }));
   writeFileSync(resolve(directory, "smoke.mjs"), smoke);
-  writeFileSync(resolve(directory, "types.ts"), `
-import { WasmNltk } from "bun_nltk/wasm";
-import { RustDecisionTreeClassifier } from "bun_nltk/classify-tree";
-import { RustNaiveBayesClassifier } from "bun_nltk/classify-features";
-import { RustMaxentClassifier } from "bun_nltk/classify-maxent";
-import { word_tokenize, word_tokenize_subset } from "bun_nltk";
-const runtime = await WasmNltk.init();
-const tree = RustDecisionTreeClassifier.train(runtime, [[{x:true},"A"]]);
-const label: string = tree.classify({x:1});
-const rootLabel: string = word_tokenize_subset("Node root")[0]!;
-const nltkTokens: string[] = word_tokenize("Hello.");
-const nb = RustNaiveBayesClassifier.train(runtime, [[{x:"Red"},label]]);
-const maxent = RustMaxentClassifier.train(runtime, [[{x:"a"},"A"],[{x:"b"},"B"]]);
-// @ts-expect-error Feature values cannot be arbitrary objects.
-tree.classify({x:{nested:true}});
-// @ts-expect-error Tree depth must be numeric.
-RustDecisionTreeClassifier.train(runtime, [[{x:1},"A"]], {depthCutoff:"deep"});
-nb.dispose(); maxent.dispose(); tree.dispose(); runtime.dispose();
-`);
-  writeFileSync(resolve(directory, "tsconfig.json"), JSON.stringify({
-    compilerOptions: { strict: true, noEmit: true, target: "ESNext", module: "NodeNext", moduleResolution: "NodeNext", lib: ["ESNext", "DOM"], types: [], skipLibCheck: false },
-    files: ["types.ts"],
-  }));
+  const fixtures = resolve(import.meta.dir, "../test/fixtures/portable-types");
+  for (const name of ["common", "node", "browser"]) {
+    copyFileSync(resolve(fixtures, `${name}.ts.fixture`), resolve(directory, `${name}.ts`));
+  }
+  for (const name of ["nodenext", "bundler", "browser"]) {
+    copyFileSync(resolve(fixtures, `tsconfig.${name}.json`), resolve(directory, `tsconfig.${name}.json`));
+  }
   const install = installer === "npm"
     ? ["npm", "install", "--ignore-scripts", "--no-audit", "--no-fund", tarball]
     : ["bun", "add", "--ignore-scripts", tarball];
   run(install, directory);
+  const portable = resolve(directory, "node_modules/bun_nltk/dist/portable");
+  const declarationCheck = JSON.parse(run(["node", resolve(import.meta.dir, "verify-portable-declarations.mjs"), portable], directory));
+  // Every runtime name must be accessible to the consumer checker, not just a
+  // handwritten sample. IsAny also catches root-wide facade regressions.
+  const runtimeKeys = (entry: string): string[] => JSON.parse(run([
+    "node", "--input-type=module", "-e",
+    `console.log(JSON.stringify(Object.keys(await import(${JSON.stringify(entry)})).sort()))`,
+  ], directory));
+  const exportCheck = (names: string[]) => `
+import * as root from "bun_nltk";
+type IsAny<T> = 0 extends (1 & T) ? true : false;
+type AssertFalse<T extends false> = T;
+${names.map((name, index) => `const value${index} = root.${name};\ntype Precise${index} = AssertFalse<IsAny<typeof value${index}>>;`).join("\n")}
+`;
+  const nodeKeys = runtimeKeys("bun_nltk");
+  const browserKeys = runtimeKeys(resolve(portable, "index.browser.js"));
+  writeFileSync(resolve(directory, "exports.ts"), exportCheck(nodeKeys));
+  writeFileSync(resolve(directory, "exports.browser.ts"), exportCheck(browserKeys));
+  // Exercise browser condition selection through the installed package's export
+  // map. Node --conditions=browser would still select the earlier node branch.
+  writeFileSync(resolve(directory, "browser-entry.ts"), 'export * from "bun_nltk";');
+  const browserBundle = await Bun.build({
+    entrypoints: [resolve(directory, "browser-entry.ts")], target: "browser", format: "esm",
+  });
+  if (!browserBundle.success) throw new Error(browserBundle.logs.map(String).join("\n"));
+  const browserCode = await browserBundle.outputs[0]!.text();
+  assert.doesNotMatch(browserCode, /bun:ffi|from\s*["']node:/);
+  writeFileSync(resolve(directory, "browser.mjs"), browserCode);
+  assert.deepEqual(runtimeKeys(resolve(directory, "browser.mjs")), browserKeys, "browser export condition changed the runtime surface");
   const compiler = realpathSync(resolve(import.meta.dir, "../node_modules/.bin/tsrs"));
-  run([compiler, "-p", "tsconfig.json"], directory);
+  for (const mode of ["nodenext", "bundler", "browser"]) {
+    run([compiler, "-p", `tsconfig.${mode}.json`], directory);
+  }
+  // A deliberately unsuppressed error must fail the gate too: this checks a
+  // negative consumer type contract, not just successful imports.
+  writeFileSync(resolve(directory, "wrong-arg.ts"), 'import { word_tokenize } from "bun_nltk"; word_tokenize(42);');
+  const config = JSON.parse(readFileSync(resolve(directory, "tsconfig.nodenext.json"), "utf8"));
+  writeFileSync(resolve(directory, "tsconfig.negative.json"), JSON.stringify({ ...config, files: ["wrong-arg.ts"] }));
+  const negative = Bun.spawnSync([compiler, "-p", "tsconfig.negative.json"], { cwd: directory, stdout: "pipe", stderr: "pipe", timeout: 120_000 });
+  assert.equal(negative.exitCode, 2, "wrong root argument must fail consumer compilation");
+  assert.match(new TextDecoder().decode(negative.stdout), /TS2345/);
   for (const runtime of ["node", "bun"]) {
-    console.log(JSON.stringify({ installer, directory, typesChecked: true, ...JSON.parse(run([runtime, "smoke.mjs"], directory)) }));
+    console.log(JSON.stringify({ installer, directory, typesChecked: ["NodeNext", "bundler", "browser"], negativeCompileChecked: true, ...declarationCheck, ...JSON.parse(run([runtime, "smoke.mjs"], directory)) }));
   }
 }

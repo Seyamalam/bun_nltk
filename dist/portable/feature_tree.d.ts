@@ -1,6 +1,7 @@
-import type { WasmNltk } from "./wasm.js";
-import type { FeatureSet, LabeledFeatureset } from "./feature_types.js";
-export type FeatureTreeOptions = {
+import { WasmNltk } from './wasm.js';
+import { LabeledFeatureset, FeatureSet } from './feature_types.js';
+
+type FeatureTreeOptions = {
     entropyCutoff?: number;
     depthCutoff?: number;
     supportCutoff?: number;
@@ -12,7 +13,7 @@ export type FeatureTreeOptions = {
     maxFeatures?: number;
 };
 /** Rust NLTK-style categorical tree; split ties use first-seen names/values. */
-export declare class RustDecisionTreeClassifier {
+declare class RustDecisionTreeClassifier {
     private disposed;
     private readonly runtime;
     private readonly handle;
@@ -25,3 +26,6 @@ export declare class RustDecisionTreeClassifier {
     labels(): string[];
     dispose(): void;
 }
+
+export { RustDecisionTreeClassifier };
+export type { FeatureTreeOptions };

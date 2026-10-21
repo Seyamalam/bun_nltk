@@ -1,8 +1,9 @@
-import type { WasmNltk } from "./wasm.js";
-import type { FeatureSet, LabeledFeatureset } from "./feature_types.js";
-export type { FeatureSet, FeatureValue, LabeledFeatureset } from "./feature_types.js";
+import { WasmNltk } from './wasm.js';
+import { LabeledFeatureset, FeatureSet } from './feature_types.js';
+export { type FeatureValue } from './feature_types.js';
+
 /** Rust categorical classifier shared by Bun, Node and browsers. Owns one model, not its runtime. */
-export declare class RustNaiveBayesClassifier {
+declare class RustNaiveBayesClassifier {
     private disposed;
     private readonly runtime;
     private readonly handle;
@@ -25,7 +26,7 @@ export declare class RustNaiveBayesClassifier {
     classifyMany(features: Iterable<FeatureSet>): string[];
     dispose(): void;
 }
-export type PositiveFeatureOptions = {
+type PositiveFeatureOptions = {
     smoothing?: number;
     positivePrior?: number;
     positiveLabel?: string;
@@ -33,6 +34,9 @@ export type PositiveFeatureOptions = {
     maxFeatures?: number;
 };
 /** Portable factory returning a disposable Rust model with the same prediction API. */
-export declare const RustPositiveNaiveBayesClassifier: {
+declare const RustPositiveNaiveBayesClassifier: {
     train: typeof RustNaiveBayesClassifier.trainPositive;
 };
+
+export { type FeatureSet, type LabeledFeatureset, RustNaiveBayesClassifier, RustPositiveNaiveBayesClassifier };
+export type { PositiveFeatureOptions };
