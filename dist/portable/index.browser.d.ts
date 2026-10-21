@@ -1,4 +1,5 @@
-export { WasmNltk, type WasmNltkInit } from './wasm.js';
+import { WasmNltk } from './wasm.js';
+export { type WasmNltkInit } from './wasm.js';
 export { type GrammarSymbol, Nonterminal, Production, CFG as RustCFG, RustEarleyParser, type RustParseOptions, type RustParseResult, type RustTreeOrder, type RustTreePosition, type StringTree, Tree, type TreeFormatOptions, nonterminals } from './rust_parse.js';
 export { type PositiveFeatureOptions, RustNaiveBayesClassifier, RustPositiveNaiveBayesClassifier } from './feature_nb.js';
 export { type FeatureTreeOptions, RustDecisionTreeClassifier } from './feature_tree.js';
@@ -9,6 +10,58 @@ export { type FeatureSet, type FeatureValue, type LabeledFeatureset } from './fe
 export { ParsingRuntime } from './parsing_runtime.js';
 export { TreebankWordDetokenizer, TreebankWordTokenizer, WordPunctTokenizer, treebankWordTokenize, wordPunctTokenize } from './tokenizers_treebank.js';
 import './metrics_wasm.js';
+
+type LanguageModelType = "mle" | "lidstone" | "laplace" | "kneser_ney_interpolated" | "stupid_backoff" | "witten_bell_interpolated" | "absolute_discounting_interpolated";
+type NgramLanguageModelOptions = {
+    order: number;
+    model?: LanguageModelType;
+    gamma?: number;
+    discount?: number;
+    alpha?: number;
+    padLeft?: boolean;
+    padRight?: boolean;
+    startToken?: string;
+    endToken?: string;
+};
+type LmProbe = {
+    word: string;
+    context?: string[];
+};
+/** Existing normalized-token contract; vocabulary/counts/smoothing/evaluation are Rust-owned. */
+declare class NgramLanguageModel {
+    readonly order: number;
+    readonly model: LanguageModelType;
+    readonly gamma: number;
+    readonly discount: number;
+    readonly alpha: number;
+    readonly padLeft: boolean;
+    readonly padRight: boolean;
+    readonly startToken: string;
+    readonly endToken: string;
+    readonly vocabulary: string[];
+    private readonly tokenToId;
+    private readonly transport;
+    private readonly handle;
+    private readonly unknownId;
+    private disposed;
+    constructor(sentences: string[][], options: NgramLanguageModelOptions, runtime?: WasmNltk);
+    private encodeToken;
+    private evaluate;
+    score(word: string, context?: string[]): number;
+    logScore(word: string, context?: string[]): number;
+    logscore(word: string, context?: string[]): number;
+    perplexity(tokens: string[]): number;
+    evaluateBatch(probes: LmProbe[], perplexityTokens: string[]): {
+        scores: number[];
+        perplexity: number;
+    };
+    dispose(): void;
+}
+/** Explicit-runtime portable surface: one shared artifact, no native imports or fallback. */
+declare class RustNgramLanguageModel extends NgramLanguageModel {
+    constructor(runtime: WasmNltk, sentences: string[][], options: NgramLanguageModelOptions);
+}
+declare function trainNgramLanguageModel(sentences: string[][], options: NgramLanguageModelOptions): NgramLanguageModel;
 
 declare function tokenizeAscii(text: string): string[];
 declare function normalizeTokensAscii(text: string, removeStopwords?: boolean): string[];
@@ -202,5 +255,5 @@ declare function bigrams<T, P>(sequence: Iterable<T>, options: NgramOptions<P>):
 declare function trigrams<T>(sequence: Iterable<T>): T[][];
 declare function trigrams<T, P>(sequence: Iterable<T>, options: NgramOptions<P>): Array<Array<T | P | null>>;
 
-export { MWETokenizer, PunktSentenceTokenizer, PunktSentenceTokenizerSubset, PunktTrainer, PunktTrainerSubset, ToktokTokenizer, TweetTokenizer, bigramWindowStatsAscii, bigramWindowStatsAsciiIds, bigrams, computeAsciiMetrics, countNgramsAscii, countTokensAscii, countUniqueNgramsAscii, countUniqueTokensAscii, defaultPunktModel, everygramsAscii, hashNgram, hashTokenAscii, mweTokenize, ngramFreqDistHashAscii, ngrams, ngramsAscii, ngramsIterator as ngrams_iter, normalizeTokensAscii, normalizeTokensUnicode, parsePunktModel, posTagAscii, sent_tokenize, sentenceTokenizePunkt, sentenceTokenizePunktCompat, sentenceTokenizeSubset, serializePunktModel, skipgramsAscii, tokenFreqDistHashAscii, tokenFreqDistIdsAscii, tokenizeAscii, toktokTokenize, topPmiBigramsAscii, trainPunktModel, trigrams, tweetTokenize, tweetTokenizeSubset, wordTokenizeSubset, word_tokenize, wordpunct_tokenize };
-export type { AsciiMetrics, BigramWindowStatId, BigramWindowStatToken, NgramOptions, PmiBigram, PosTag, PosTagName, PunktDebugDecision, PunktModelSerialized, PunktTrainingOptions, SentenceTokenizerOptions, TokenFreqDistIds, TweetTokenizerOptions };
+export { MWETokenizer, NgramLanguageModel, PunktSentenceTokenizer, PunktSentenceTokenizerSubset, PunktTrainer, PunktTrainerSubset, RustNgramLanguageModel, ToktokTokenizer, TweetTokenizer, WasmNltk, bigramWindowStatsAscii, bigramWindowStatsAsciiIds, bigrams, computeAsciiMetrics, countNgramsAscii, countTokensAscii, countUniqueNgramsAscii, countUniqueTokensAscii, defaultPunktModel, everygramsAscii, hashNgram, hashTokenAscii, mweTokenize, ngramFreqDistHashAscii, ngrams, ngramsAscii, ngramsIterator as ngrams_iter, normalizeTokensAscii, normalizeTokensUnicode, parsePunktModel, posTagAscii, sent_tokenize, sentenceTokenizePunkt, sentenceTokenizePunktCompat, sentenceTokenizeSubset, serializePunktModel, skipgramsAscii, tokenFreqDistHashAscii, tokenFreqDistIdsAscii, tokenizeAscii, toktokTokenize, topPmiBigramsAscii, trainNgramLanguageModel, trainPunktModel, trainNgramLanguageModel as train_ngram_language_model, trigrams, tweetTokenize, tweetTokenizeSubset, wordTokenizeSubset, word_tokenize, wordpunct_tokenize };
+export type { AsciiMetrics, BigramWindowStatId, BigramWindowStatToken, LanguageModelType, LmProbe, NgramLanguageModelOptions, NgramOptions, PmiBigram, PosTag, PosTagName, PunktDebugDecision, PunktModelSerialized, PunktTrainingOptions, SentenceTokenizerOptions, TokenFreqDistIds, TweetTokenizerOptions };

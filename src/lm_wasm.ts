@@ -17,7 +17,8 @@ type Buffer = Uint32Array | Float64Array;
 
 /** One compact numeric allocation per request; models/counts remain in Rust. */
 export class LmWasm {
-  constructor(private readonly runtime: WasmNltk) {}
+  private readonly runtime: WasmNltk;
+  constructor(runtime: WasmNltk) { this.runtime = runtime; }
   private get exports(): LmExports { return this.runtime.languageModelExports(); }
   private check(wasm: LmExports): void {
     const code = wasm.bunnltk_wasm_last_error_code();

@@ -19,6 +19,18 @@ type ContractExports = {
     bunnltk_wasm_probability_contract(op: number, input: number, inputLength: number, output: number, outputLength: number): number;
 };
 
+type LmExports = {
+    memory: WebAssembly.Memory;
+    bunnltk_wasm_alloc(size: number): number;
+    bunnltk_wasm_free(ptr: number, size: number): void;
+    bunnltk_wasm_last_error_code(): number;
+    bunnltk_wasm_lm_train(tokens: number, tokenCount: number, offsets: number, offsetCount: number, config: number, params: number): number;
+    bunnltk_wasm_lm_vocabulary(handle: number, out: number, capacity: number): number;
+    bunnltk_wasm_lm_evaluate(handle: number, flat: number, flatLen: number, lens: number, words: number, count: number, scores: number, tokens: number, tokenCount: number, perplexity: number): number;
+    bunnltk_wasm_lm_free(handle: number): void;
+    bunnltk_wasm_lm_clear(): void;
+};
+
 type AsciiMetrics = {
     tokens: number;
     uniqueTokens: number;
@@ -59,6 +71,7 @@ declare class WasmNltk {
     dispose(): void;
     private assertActive;
     probabilityContractExports(): ContractExports;
+    languageModelExports(): LmExports;
     /** JSON transport for legacy text NB; all training and scoring happen in Rust. */
     textNaiveBayes(request: string): string;
     /** Typed callers marshal only versioned legacy text models, never feature dictionaries. */
