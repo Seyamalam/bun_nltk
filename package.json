@@ -72,6 +72,11 @@
       "default": "./dist/portable/wasm.js"
     },
     "./reference": "./src/reference.ts",
+    "./parse": {
+      "types": "./dist/portable/rust_parse.d.ts",
+      "bun": "./src/rust_parse.ts",
+      "default": "./dist/portable/rust_parse.js"
+    },
     "./tokenize": "./src/entrypoints/tokenize.ts",
     "./wordnet": "./src/wordnet.ts",
     "./classify": "./src/classify.ts",

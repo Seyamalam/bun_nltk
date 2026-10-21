@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/rust_parse.ts", "src/parsing_runtime.ts", "scripts/verify-parsing-portable.ts", "scripts/verify-parsing-packaged.ts", "test/rust_parse.test.ts"]
+}
