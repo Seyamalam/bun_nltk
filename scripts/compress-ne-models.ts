@@ -10,6 +10,7 @@ import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { constants, brotliCompressSync, gunzipSync } from "node:zlib";
+import { compactNeModel, type NeModel } from "../src/ne_model_storage.ts";
 
 const root = resolve(import.meta.dir, "..");
 const manifestPath = resolve(root, "models/nltk-models.manifest.json");
@@ -20,7 +21,10 @@ const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as {
 for (const mode of ["multiclass", "binary"] as const) {
   const source = resolve(root, `models/ne-chunker-${mode}.json.gz`);
   const target = `models/ne-chunker-${mode}.json.br`;
-  const raw = gunzipSync(readFileSync(source));
+  // The exporter retains its safe interchange JSON. The shipped storage only
+  // deduplicates mapping strings and implicit dense weight indices; no rounding.
+  const model = JSON.parse(gunzipSync(readFileSync(source)).toString()) as NeModel;
+  const raw = Buffer.from(JSON.stringify(compactNeModel(model)));
   const compressed = brotliCompressSync(raw, {
     params: {
       [constants.BROTLI_PARAM_QUALITY]: 11,

@@ -8,6 +8,10 @@ type Artifact = {
 };
 
 const root = resolve(import.meta.dir, "..");
+const wasmThresholds = JSON.parse(readFileSync(resolve(root, "bench/browser_wasm_thresholds.json"), "utf8")) as { size_bytes_max: number };
+if (!Number.isSafeInteger(wasmThresholds.size_bytes_max) || wasmThresholds.size_bytes_max <= 0) {
+  throw new Error("Invalid browser WASM size threshold");
+}
 
 function requireBytes(bytes: Uint8Array, expected: readonly number[], label: string): void {
   if (expected.some((value, index) => bytes[index] !== value)) {
@@ -46,10 +50,9 @@ const artifacts: Artifact[] = [
     },
   },
   {
-    // Same budget as bench/browser_wasm_thresholds.json: the full portable
-    // WASM surface no longer fits the early 250 KB hot-path-only cap.
+    // Share the owner-approved browser budget rather than a stale local cap.
     path: "native/bun_nltk.wasm",
-    maxBytes: 700_000,
+    maxBytes: wasmThresholds.size_bytes_max,
     validate(bytes) {
       requireBytes(bytes, [0, 0x61, 0x73, 0x6d], "WASM binary");
     },

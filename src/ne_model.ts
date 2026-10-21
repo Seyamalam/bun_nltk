@@ -3,20 +3,13 @@ import { pythonIsTitle, pythonIsLower } from "./python_text";
 import { readFileSync } from "node:fs";
 import { brotliDecompressSync } from "node:zlib";
 import type { TaggedToken } from "./chunk";
-type Value = string | number | boolean | null;
-type Model = {
-  labels: string[];
-  mapping: [string, Value, string, number][];
-  weights: number[];
-  alwaysOn: Record<string, number>;
-  wordlist: string[];
-};
+import { expandNeModel, type NeModel as Model, type NeFeatureValue as Value } from "./ne_model_storage.ts";
 type Prepared = { model: Model; mapping: Map<string, number>; words: Set<string> };
 const cache = new Map<boolean, Prepared>();
 function getModel(binary: boolean): Prepared {
   let result = cache.get(binary);
   if (!result) {
-    const model: Model = JSON.parse(
+    const model = expandNeModel(JSON.parse(
       brotliDecompressSync(
         readFileSync(
           new URL(
@@ -25,7 +18,7 @@ function getModel(binary: boolean): Prepared {
           ),
         ),
       ).toString(),
-    );
+    ));
     result = {
       model,
       mapping: new Map(

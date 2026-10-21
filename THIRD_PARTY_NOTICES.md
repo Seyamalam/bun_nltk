@@ -17,8 +17,9 @@ Source: https://github.com/nltk/nltk/tree/3.10.3/nltk
 `scripts/export-nltk-models.py` exports the full NLTK VADER lexicon, English Punkt
 parameters, and binary/multiclass maximum-entropy NE models into JSON without
 pickle. `models/nltk-models.manifest.json` pins SHA-256 digests and NLTK version.
-The NE assets are loaded lazily from gzip files on Bun/Node; Python and network
-access are unnecessary at runtime.
+The NE assets are loaded lazily from Brotli files on Bun/Node; Python and network
+access are unnecessary at runtime. Their lossless storage dictionary preserves
+the original feature mapping, weight indices, and IEEE-754 double weights.
 
 - VADER lexicon: C. J. Hutto, MIT license reproduced below. Reference: Hutto,
   C. J. & Gilbert, E. E. (2014), *VADER: A Parsimonious Rule-based Model for
