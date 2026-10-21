@@ -79,9 +79,12 @@ supported model orders. These are distinct from the gate's three external
 integration groups.
 
 Text Naive Bayes now uses categorical token-count features with Lidstone
-smoothing (default 0.5). MaxEnt now uses NLTK's binary feature-value encoding and
-IIS training. Decision trees choose stumps by training error, retain first-seen
-majority labels on ties, and refine according to NLTK's support/depth rules.
+smoothing (default 0.5). Feature-dictionary MaxEnt uses NLTK's
+`BinaryMaxentFeatureEncoding` with IIS and GIS, including its cutoff semantics and
+serialization; differential cases match probabilities to better than 1e-9
+(observed around 1e-16). Decision trees choose stumps by training error, retain
+first-seen majority labels on ties, and refine according to NLTK's support/depth
+rules.
 The Python tree oracle explicitly sorts feature names before calling NLTK's
 stump selector; otherwise Python hash randomization changes tied feature choices.
 Both implementations use the same depth, support, smoothing and iteration settings.
@@ -91,8 +94,9 @@ Version-1 multinomial NB and SGD MaxEnt models remain loadable. Request
 IIS scales its starting update on documents with more than 900 active features
 to avoid exponent overflow, and rejects nonfinite updates. Ordinary golden
 fixtures retain NLTK's original arithmetic. IIS uses `epochs`; `learningRate`, `l2` and `maxFeatures` apply only to SGD.
-The feature-dictionary compatibility adapters still encode dictionaries as text;
-these text-classifier checks do not establish general dictionary-feature parity.
+`MaxentClassifier.train` uses the Rust feature model by default. Passing legacy
+text options (`epochs`, `learningRate`, `l2`, `maxFeatures`, or
+`algorithm: "sgd"`) keeps the older text adapter for compatibility.
 
 Explicit PCFG probabilities are preserved, including rounded values, zero, and
 values below 1e-12. Fully specified distributions must sum to 1 within NLTK's

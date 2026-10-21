@@ -3,14 +3,14 @@ import { resolve } from "node:path";
 
 const root = resolve(import.meta.dir, "..");
 const output = await Bun.build({
-  entrypoints: [resolve(root, "dist/portable/wasm.js"), resolve(root, "dist/portable/feature_nb.js"), resolve(root, "dist/portable/feature_tree.js")],
+  entrypoints: [resolve(root, "dist/portable/wasm.js"), resolve(root, "dist/portable/feature_nb.js"), resolve(root, "dist/portable/feature_tree.js"), resolve(root, "dist/portable/feature_maxent.js")],
   target: "browser",
   format: "esm",
   external: ["node:fs/promises"],
 });
 if (!output.success) throw new Error(output.logs.join("\n"));
 const modules = new Map(output.outputs.map((artifact) => [new URL(artifact.path, "file:///").pathname.split("/").at(-1), artifact]));
-if (!modules.has("wasm.js") || !modules.has("feature_nb.js") || !modules.has("feature_tree.js")) throw new Error("missing browser modules");
+if (!modules.has("wasm.js") || !modules.has("feature_nb.js") || !modules.has("feature_tree.js") || !modules.has("feature_maxent.js")) throw new Error("missing browser modules");
 const server = Bun.serve({
   hostname: "127.0.0.1",
   port: 0,
@@ -62,6 +62,11 @@ try {
         const tree = RustDecisionTreeClassifier.train(wasm, [[{ "😀": "Red" }, "upper"], [{ "😀": "red" }, "lower"]]);
         const treePredictions = tree.classifyMany([{ "😀": "Red" }, { "😀": "red" }, {}]);
         tree.dispose();
+        const maxentPath = "/feature_maxent.js";
+        const { RustMaxentClassifier } = await import(maxentPath) as typeof import("../src/feature_maxent");
+        const maxent = RustMaxentClassifier.train(wasm, [[{ x: "a" }, "A"], [{ x: "b" }, "B"]]);
+        const maxentPrediction = maxent.classify({ x: "a" });
+        maxent.dispose();
         const stream = wasm.createAsciiMetricsStream(2);
         const encoder = new TextEncoder();
         stream.update(encoder.encode("hel"));
@@ -73,7 +78,7 @@ try {
         wasm.dispose();
         let disposed = false;
         try { wasm.countTokensAscii("a"); } catch { disposed = true; }
-        return { initialBytes, tokens, metrics, distance, alignment, perceptron, shortWeights, predictions, probability, positivePredictions, treePredictions, streamMetrics, invalidOrder, disposed };
+        return { initialBytes, tokens, metrics, distance, alignment, perceptron, shortWeights, predictions, probability, positivePredictions, treePredictions, maxentPrediction, streamMetrics, invalidOrder, disposed };
       });
       if (result.initialBytes >= 4 * 1024 * 1024 ||
           JSON.stringify(result.tokens) !== JSON.stringify(["hello", "node", "and", "bun"]) ||
@@ -82,6 +87,7 @@ try {
           JSON.stringify(result.perceptron) !== '[0,1]' || !result.shortWeights ||
           JSON.stringify(result.positivePredictions) !== '["pos","neg","pos"]' ||
           JSON.stringify(result.treePredictions) !== '["upper","lower","lower"]' ||
+          result.maxentPrediction !== "A" ||
           result.streamMetrics.tokens !== 3 || result.streamMetrics.uniqueTokens !== 2 || result.streamMetrics.ngrams !== 2 || result.streamMetrics.uniqueNgrams !== 2 ||
           Math.abs(result.probability - 0.9) > 1e-12 || !result.invalidOrder || !result.disposed) {
         throw new Error(`${name} portable verification failed: ${JSON.stringify(result)}`);
@@ -95,6 +101,7 @@ try {
     import { WasmNltk } from ${JSON.stringify(new URL("../src/wasm.ts", import.meta.url).href)};
     import { RustNaiveBayesClassifier } from ${JSON.stringify(new URL("../src/feature_nb.ts", import.meta.url).href)};
     import { RustDecisionTreeClassifier } from ${JSON.stringify(new URL("../src/feature_tree.ts", import.meta.url).href)};
+    import { RustMaxentClassifier } from ${JSON.stringify(new URL("../src/feature_maxent.ts", import.meta.url).href)};
     const wasm = await WasmNltk.init();
     if (wasm.countTokensAscii("hello node") !== 2) throw new Error("Node token mismatch");
     if (wasm.editDistance("CA","ABC",{transpositions:true}) !== 2) throw new Error("Node distance mismatch");
@@ -111,6 +118,9 @@ try {
     const tree = RustDecisionTreeClassifier.train(wasm, [[{"😀":"Red"},"upper"],[{"😀":"red"},"lower"]]);
     if (JSON.stringify(tree.classifyMany([{"😀":"Red"},{"😀":"red"},{}])) !== '["upper","lower","lower"]') throw new Error("Node tree mismatch");
     tree.dispose();
+    const maxent = RustMaxentClassifier.train(wasm, [[{x:"a"},"A"],[{x:"b"},"B"]]);
+    if (maxent.classify({x:"a"}) !== "A") throw new Error("Node maxent mismatch");
+    maxent.dispose();
     const stream = wasm.createAsciiMetricsStream(2);
     const encoder = new TextEncoder();
     stream.update(encoder.encode("hel")); stream.update(encoder.encode("lo world hello"));

@@ -63,6 +63,11 @@
       "bun": "./src/feature_nb.ts",
       "default": "./dist/portable/feature_nb.js"
     },
+    "./classify-maxent": {
+      "types": "./dist/portable/feature_maxent.d.ts",
+      "bun": "./src/feature_maxent.ts",
+      "default": "./dist/portable/feature_maxent.js"
+    },
     "./classify-tree": {
       "types": "./dist/portable/feature_tree.d.ts",
       "bun": "./src/feature_tree.ts",

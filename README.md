@@ -20,7 +20,7 @@ marshaling. The compatibility target is Python NLTK 3.10.3.
   NLTK 3.10.3, 2026-10-20). Missing required fixtures fail the gate; unsupported
   GUI, Java, and network integrations are reported separately and never counted
   as passed.
-- The Rust crate passes 59 unit tests; the TypeScript suite passes 491 tests.
+- The Rust crate passes 62 unit tests; the TypeScript suite passes 495 tests.
 - Passing fixtures establishes agreement for those cases and tolerances, not
   complete NLTK equivalence. See [behavioral validation](docs/BEHAVIORAL_PARITY.md).
 
@@ -38,8 +38,8 @@ npm install bun_nltk
 ```
 
 The root entry point uses Bun FFI and is **Bun-only**. The `wasm`,
-`classify-features`, and `classify-tree` subpaths ship plain JavaScript and
-TypeScript declarations for Node.js 24+ and browsers.
+`classify-features`, `classify-tree`, and `classify-maxent` subpaths ship plain
+JavaScript and TypeScript declarations for Node.js 24+ and browsers.
 
 ### Quick start (Bun)
 
@@ -100,7 +100,7 @@ Other entry points: `bun_nltk/native`, `bun_nltk/wasm`, `bun_nltk/reference`,
 |---|---|
 | Tokens & metrics | ASCII token/ngram/unique counts, exact aggregate keys, streaming metrics, PMI collocations, `FreqDist`/`ConditionalFreqDist`, SIMD fast path |
 | Tokenizers | Punkt (train + bundled model), Treebank, WordPunct, Toktok, MWE, Tweet, NIST, casual, S-expression |
-| Classification | Feature-dictionary Naive Bayes, positive NB, and decision trees in Rust/WASM; text NB, DT, MaxEnt, Perceptron, logistic/linear SVM, conditional exponential |
+| Classification | Feature-dictionary Naive Bayes, positive NB, decision trees, and lossless MaxEnt in Rust/WASM; text NB, DT, MaxEnt, Perceptron, logistic/linear SVM, conditional exponential |
 | Tagging | Perceptron, Brill TBL, HMM, TnT, CRF; regex/heuristic POS baseline |
 | Stemming | Porter, Snowball (12+ languages), Lancaster, Regexp, RSLP, Cistem, ISRI, ARLSTem, WordNet lemmatizer |
 | Parsing & chunking | CFG, Earley, left-corner, feature chart/Earley, recursive descent, PCFG, dependency; regexp/named-entity chunking |
@@ -249,8 +249,33 @@ try {
 Priors must be finite and in `[0, 1)`; zero is supported. Tree split ties use
 first-seen feature/value order, unseen branches match NLTK 3.10.3’s
 last-training-label fallback, depth is bounded to 100, and lossy feature
-truncation is rejected. Feature-dictionary MaxEnt still uses the lossy text
-adapter. See [`examples/js-library/feature-tree.ts`](examples/js-library/feature-tree.ts).
+truncation is rejected. See [`examples/js-library/feature-tree.ts`](examples/js-library/feature-tree.ts).
+
+Feature-dictionary maximum entropy is lossless and Rust-backed. It uses NLTK's
+`BinaryMaxentFeatureEncoding`, IIS or GIS training, the same cutoff semantics,
+label ordering, typed values, and serialization:
+
+```ts
+import { RustMaxentClassifier } from "bun_nltk/classify-maxent";
+
+const maxent = RustMaxentClassifier.train(runtime, [
+  [{ color: "red", shape: "round" }, "apple"],
+  [{ color: "yellow", shape: "long" }, "banana"],
+], { algorithm: "iis", maxIter: 100 });
+try {
+  const rows = maxent.predict({ color: "red", shape: "round" });
+  console.log(maxent.classify({ color: "red", shape: "round" }), rows[0]?.probability);
+  const restored = RustMaxentClassifier.fromJSON(runtime, maxent.toJSON());
+  restored.dispose();
+} finally {
+  maxent.dispose();
+}
+```
+
+`MaxentClassifier.train` uses the same Rust model by default. Its legacy text
+options (`epochs`, `learningRate`, `l2`, `maxFeatures`, or `algorithm: "sgd"`)
+continue to select the older text adapter. NLTK accepts `count_cutoff` but its
+default encoding ignores it; the Rust model matches that behavior.
 
 `WasmNltk.editDistance` and `editDistanceAlign` share the Rust Unicode
 implementation with the synchronous metric APIs, including unrestricted Damerau
@@ -309,7 +334,7 @@ bun run release:check
 bash scripts/loc-guard.sh 600
 ```
 
-The npm package currently contains 252 files / 10,776,058 unpacked bytes, below
+The npm package currently contains 255 files / 10,847,978 unpacked bytes, below
 the 400-file and 12 MB limits. The LOC guard rejects non-grandfathered `.ts` and
 `.rs` files above 600 lines.
 
@@ -341,9 +366,9 @@ docker build -t bun_nltk . && docker run --rm bun_nltk
 ## Limitations
 
 - The root entry point eagerly imports `bun:ffi`; Node and browser consumers
-  must use the portable subpaths (`wasm`, `classify-features`, `classify-tree`)
-  or focused source entry points under Bun. Root Node/browser portability is
-  unfinished.
+  must use the portable subpaths (`wasm`, `classify-features`, `classify-tree`,
+  `classify-maxent`) or focused source entry points under Bun. Root Node/browser
+  portability is unfinished.
 - Committed native binaries cover `darwin-arm64`, `linux-x64`, and `win32-x64`.
   The Linux x64 binary and WASM artifact were rebuilt and validated on this host;
   the macOS and Windows binaries were not rebuilt in the latest Linux run.
@@ -351,9 +376,10 @@ docker build -t bun_nltk . && docker run --rm bun_nltk
   `BUN_NLTK_NATIVE_LIB` for development; there are no install-time scripts.
 - GUI, external Java integrations, and credential-dependent network services are
   shims that throw descriptive errors.
-- Feature-dictionary MaxEnt remains lossy. Full error-class parity, formatting,
-  explicit feature-value domains, and every Python split-tie behavior are not
-  established.
+- MaxEnt supports NLTK's default binary encoding with IIS and GIS. Custom
+  `encoding=` objects, `explicit`/`bernoulli` encodings, and exact Python
+  formatting of `most_informative_features` are not exposed. Very large feature
+  sets remain bounded by WASM memory.
 - WASM batch inputs are capped at 128 MiB. Streaming supports large ASCII
   aggregates, not every large-input API.
 - Raw native pointers and fabricated WASM offsets are outside the logical buffer

@@ -6,6 +6,7 @@ import { PositiveNaiveBayesTextClassifier } from "./positive_naive_bayes";
 import { syncWasm } from "./sync_wasm.ts";
 import { RustNaiveBayesClassifier, type PositiveFeatureOptions } from "./feature_nb";
 import { RustDecisionTreeClassifier, type FeatureTreeOptions } from "./feature_tree.ts";
+import { RustMaxentClassifier, type FeatureMaxentOptions } from "./feature_maxent.ts";
 import type { FeatureSet, LabeledFeatureset } from "./feature_types";
 
 export type { FeatureValue, FeatureSet, LabeledFeatureset } from "./feature_types";
@@ -69,6 +70,11 @@ abstract class FeatureClassifierBase {
   probClassifyMany(featuresets: Iterable<FeatureSet>): DictionaryProbDist<string>[] {
     return [...featuresets].map((featureset) => this.probClassify(featureset));
   }
+
+  // NLTK snake_case aliases; the camelCase names remain available.
+  prob_classify(featureset: FeatureSet): DictionaryProbDist<string> { return this.probClassify(featureset); }
+  classify_many(featuresets: Iterable<FeatureSet>): string[] { return this.classifyMany(featuresets); }
+  prob_classify_many(featuresets: Iterable<FeatureSet>): DictionaryProbDist<string>[] { return this.probClassifyMany(featuresets); }
 }
 
 export class NaiveBayesClassifier extends FeatureClassifierBase {
@@ -150,29 +156,71 @@ export class DecisionTreeClassifier extends FeatureClassifierBase {
   }
 }
 
+export type MaxentCompatOptions = Omit<FeatureMaxentOptions, "algorithm"> & {
+  algorithm?: "iis" | "gis" | "sgd";
+  /** Legacy text-model options; using any of them keeps the old adapter. */
+  epochs?: number;
+  learningRate?: number;
+  l2?: number;
+  maxFeatures?: number;
+};
+
 export class MaxentClassifier extends FeatureClassifierBase {
-  constructor(private readonly model: MaxEntTextClassifier) {
+  constructor(private readonly model: RustMaxentClassifier | MaxEntTextClassifier) {
     super();
   }
 
   static train(
     labeledFeaturesets: Iterable<LabeledFeatureset>,
-    options?: MaxEntOptions,
+    options: MaxentCompatOptions = {},
   ): MaxentClassifier {
-    const rows = [...labeledFeaturesets].map(([features, label]) => ({ label, text: featureText(features) }));
-    return new MaxentClassifier(new MaxEntTextClassifier(options).train(rows));
+    const legacy = options.algorithm === "sgd" || options.epochs !== undefined ||
+      options.learningRate !== undefined || options.l2 !== undefined || options.maxFeatures !== undefined;
+    if (legacy) {
+      const rows = [...labeledFeaturesets].map(([features, label]) => ({ label, text: featureText(features) }));
+      return new MaxentClassifier(new MaxEntTextClassifier(options as MaxEntOptions).train(rows));
+    }
+    const algorithm = options.algorithm === "gis" ? "gis" : "iis";
+    return new MaxentClassifier(RustMaxentClassifier.train(syncWasm(), labeledFeaturesets, {
+      ...options, algorithm,
+    }));
+  }
+
+  override classify(featureset: FeatureSet): string {
+    return this.model instanceof RustMaxentClassifier ? this.model.classify(featureset) : super.classify(featureset);
+  }
+
+  override probClassify(featureset: FeatureSet): DictionaryProbDist<string> {
+    return this.model instanceof RustMaxentClassifier
+      ? fromProbabilities(this.model.predict(featureset))
+      : super.probClassify(featureset);
+  }
+
+  dispose(): void {
+    if (this.model instanceof RustMaxentClassifier) this.model.dispose();
   }
 
   protected classifyText(text: string): string {
+    if (this.model instanceof RustMaxentClassifier) throw new TypeError("feature dictionary required");
     return this.model.classify(text);
   }
 
   protected probClassifyText(text: string): DictionaryProbDist<string> {
+    if (this.model instanceof RustMaxentClassifier) throw new TypeError("feature dictionary required");
     return fromProbabilities(this.model.predict(text));
   }
 
   labels(): string[] {
-    return this.model.labelsList();
+    return this.model instanceof RustMaxentClassifier ? this.model.labels() : this.model.labelsList();
+  }
+
+  mostInformativeFeatures(limit = 10): Array<{ weight: number; feature: string; value: string; label: string }> {
+    if (!(this.model instanceof RustMaxentClassifier)) throw new Error("most_informative_features requires the Rust feature model");
+    return this.model.mostInformativeFeatures(limit);
+  }
+
+  most_informative_features(limit = 10): Array<{ weight: number; feature: string; value: string; label: string }> {
+    return this.mostInformativeFeatures(limit);
   }
 }
 

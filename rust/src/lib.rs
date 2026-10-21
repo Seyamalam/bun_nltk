@@ -1,4 +1,5 @@
 pub mod ascii;
+pub mod categorical_maxent;
 pub mod categorical_nb;
 pub mod categorical_tree;
 pub mod chunk;

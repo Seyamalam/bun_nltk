@@ -21,6 +21,8 @@ const requiredFiles = [
   "dist/portable/feature_nb.d.ts",
   "dist/portable/feature_tree.js",
   "dist/portable/feature_tree.d.ts",
+  "dist/portable/feature_maxent.js",
+  "dist/portable/feature_maxent.d.ts",
   "dist/portable/feature_encoding.js",
   "dist/portable/feature_encoding.d.ts",
   "dist/portable/feature_types.js",

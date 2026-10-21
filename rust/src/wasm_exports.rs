@@ -3,6 +3,7 @@
 //! All functions take u32 byte offsets into linear memory instead of raw
 //! pointers. Input staging grows on demand and is released by the wrapper.
 
+use crate::categorical_maxent::{CategoricalMaxent, MaxentAlgorithm, MaxentOptions};
 use crate::categorical_nb::CategoricalNaiveBayes;
 use std::alloc::{alloc, dealloc, realloc, Layout};
 use std::cell::RefCell;
@@ -10,6 +11,36 @@ use std::collections::HashMap;
 
 thread_local! {
     static CATEGORICAL_MODELS: RefCell<(u32, HashMap<u32, CategoricalNaiveBayes>)> = RefCell::new((0, HashMap::new()));
+    static CATEGORICAL_MAXENT_MODELS: RefCell<(u32, HashMap<u32, CategoricalMaxent>)> = RefCell::new((0, HashMap::new()));
+}
+
+fn option(value: f64) -> Option<f64> {
+    if value.is_nan() {
+        None
+    } else {
+        Some(value)
+    }
+}
+
+fn algorithm(value: u32) -> Option<MaxentAlgorithm> {
+    match value {
+        0 => Some(MaxentAlgorithm::Iis),
+        1 => Some(MaxentAlgorithm::Gis),
+        _ => None,
+    }
+}
+
+fn register_maxent_model(model: CategoricalMaxent) -> u32 {
+    CATEGORICAL_MAXENT_MODELS.with(|models| {
+        let mut state = models.borrow_mut();
+        let Some(handle) = state.0.checked_add(1) else {
+            error_state::set_error(error_state::OUT_OF_MEMORY);
+            return 0;
+        };
+        state.0 = handle;
+        state.1.insert(handle, model);
+        handle
+    })
 }
 
 fn register_categorical_model(model: CategoricalNaiveBayes) -> u32 {
@@ -125,6 +156,210 @@ pub extern "C" fn bunnltk_wasm_categorical_nb_free(handle: u32) {
 pub extern "C" fn bunnltk_wasm_categorical_nb_clear() {
     CATEGORICAL_MODELS.with(|models| {
         models.borrow_mut().1.clear();
+    });
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_maxent_train(
+    pairs_ptr: u32,
+    pairs_len: u32,
+    offsets_ptr: u32,
+    offsets_len: u32,
+    labels_ptr: u32,
+    labels_len: u32,
+    label_count: u32,
+    algorithm_id: u32,
+    max_iter: u32,
+    min_ll: f64,
+    min_lldelta: f64,
+    max_acc: f64,
+    min_accdelta: f64,
+    count_cutoff: u32,
+) -> u32 {
+    error_state::reset_error();
+    let Some(algorithm) = algorithm(algorithm_id) else {
+        error_state::set_error(error_state::INVALID_N);
+        return 0;
+    };
+    let options = MaxentOptions {
+        algorithm,
+        max_iter,
+        min_ll: option(min_ll),
+        min_lldelta: option(min_lldelta),
+        max_acc: option(max_acc),
+        min_accdelta: option(min_accdelta),
+        count_cutoff,
+    };
+    let model = unsafe {
+        CategoricalMaxent::train(
+            offset_slice(pairs_ptr, pairs_len as usize),
+            offset_slice(offsets_ptr, offsets_len as usize),
+            offset_slice(labels_ptr, labels_len as usize),
+            label_count,
+            options,
+        )
+    };
+    match model {
+        Ok(model) => register_maxent_model(model),
+        Err(error) => {
+            error_state::set_error(error.code());
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_maxent_load(
+    features_ptr: u32,
+    feature_count: u32,
+    weights_ptr: u32,
+    weights_len: u32,
+    label_count: u32,
+    algorithm_id: u32,
+    correction: f64,
+) -> u32 {
+    error_state::reset_error();
+    let Some(algorithm) = algorithm(algorithm_id) else {
+        error_state::set_error(error_state::INVALID_N);
+        return 0;
+    };
+    let Some(features_len) = (feature_count as usize).checked_mul(3) else {
+        error_state::set_error(error_state::INVALID_N);
+        return 0;
+    };
+    let model = unsafe {
+        CategoricalMaxent::from_parts(
+            offset_slice(features_ptr, features_len),
+            offset_slice(weights_ptr, weights_len as usize),
+            label_count,
+            algorithm,
+            correction,
+        )
+    };
+    match model {
+        Ok(model) => register_maxent_model(model),
+        Err(error) => {
+            error_state::set_error(error.code());
+            0
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_maxent_predict(
+    handle: u32,
+    pairs_ptr: u32,
+    pairs_len: u32,
+    out_ptr: u32,
+    out_len: u32,
+) {
+    error_state::reset_error();
+    CATEGORICAL_MAXENT_MODELS.with(|models| {
+        let models = models.borrow();
+        let result = match models.1.get(&handle) {
+            Some(model) => unsafe {
+                model.predict(
+                    offset_slice(pairs_ptr, pairs_len as usize),
+                    offset_slice_mut(out_ptr, out_len as usize),
+                )
+            },
+            None => Err(crate::CoreError::InvalidN),
+        };
+        if let Err(error) = result {
+            error_state::set_error(error.code());
+        }
+    });
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_maxent_free(handle: u32) {
+    CATEGORICAL_MAXENT_MODELS.with(|models| {
+        models.borrow_mut().1.remove(&handle);
+    });
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_maxent_clear() {
+    CATEGORICAL_MAXENT_MODELS.with(|models| {
+        models.borrow_mut().1.clear();
+    });
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_maxent_feature_count(handle: u32) -> u32 {
+    error_state::reset_error();
+    CATEGORICAL_MAXENT_MODELS.with(|models| match models.borrow().1.get(&handle) {
+        Some(model) => model.feature_count() as u32,
+        None => {
+            error_state::set_error(error_state::INVALID_N);
+            0
+        }
+    })
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_maxent_weight_count(handle: u32) -> u32 {
+    error_state::reset_error();
+    CATEGORICAL_MAXENT_MODELS.with(|models| match models.borrow().1.get(&handle) {
+        Some(model) => model.weight_count() as u32,
+        None => {
+            error_state::set_error(error_state::INVALID_N);
+            0
+        }
+    })
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_maxent_correction(handle: u32) -> f64 {
+    error_state::reset_error();
+    CATEGORICAL_MAXENT_MODELS.with(|models| match models.borrow().1.get(&handle) {
+        Some(model) => model.correction().unwrap_or(f64::NAN),
+        None => {
+            error_state::set_error(error_state::INVALID_N);
+            f64::NAN
+        }
+    })
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_maxent_copy_features(
+    handle: u32,
+    out_ptr: u32,
+    out_len: u32,
+) {
+    error_state::reset_error();
+    CATEGORICAL_MAXENT_MODELS.with(|models| {
+        let models = models.borrow();
+        let result = match models.1.get(&handle) {
+            Some(model) => unsafe {
+                model.copy_features(offset_slice_mut(out_ptr, out_len as usize))
+            },
+            None => Err(crate::CoreError::InvalidN),
+        };
+        if let Err(error) = result {
+            error_state::set_error(error.code());
+        }
+    });
+}
+
+#[no_mangle]
+pub extern "C" fn bunnltk_wasm_categorical_maxent_copy_weights(
+    handle: u32,
+    out_ptr: u32,
+    out_len: u32,
+) {
+    error_state::reset_error();
+    CATEGORICAL_MAXENT_MODELS.with(|models| {
+        let models = models.borrow();
+        let result = match models.1.get(&handle) {
+            Some(model) => unsafe {
+                model.copy_weights(offset_slice_mut(out_ptr, out_len as usize))
+            },
+            None => Err(crate::CoreError::InvalidN),
+        };
+        if let Err(error) = result {
+            error_state::set_error(error.code());
+        }
     });
 }
 

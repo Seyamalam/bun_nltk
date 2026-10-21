@@ -81,6 +81,15 @@ complete before all acceptance criteria are verified.
   explicit feature-value domains and full error-class parity remain unimplemented.
   Matched feature-tree benchmark evidence is retained separately from legacy
   text-tree timings; per-row prediction dispatch and RSS remain optimization gaps.
+- Feature-dictionary maximum entropy runs in Rust through
+  `bun_nltk/classify-maxent`. It implements NLTK's default
+  `BinaryMaxentFeatureEncoding`, IIS and GIS, labels, min_ll/min_lldelta and
+  max_acc/min_accdelta cutoffs, serialization, and typed feature values. The
+  differential suite covers 16 algorithm/iteration configurations plus explicit
+  labels, cutoff paths, unseen values, and round trips, matching NLTK 3.10.3
+  probabilities to better than 1e-9. NLTK's default encoding ignores
+  `count_cutoff`; the Rust path mirrors that. Custom encodings and
+  explicit/bernoulli encodings are not exposed.
 - Node 24, Bun, Chromium, Firefox, and Playwright WebKit run the same WASM model.
   WebKit on Ubuntu 26.04 was verified with locally extracted distribution libraries
   and `BUN_NLTK_WEBKIT_EXECUTABLE`; CI installs Playwright's host dependencies.
@@ -101,8 +110,8 @@ complete before all acceptance criteria are verified.
 - The current fidelity gate has 43 passing groups and three unsupported integration
   groups. This is fixture coverage, not proof of full NLTK equivalence.
 
-Remaining: feature-dictionary MaxEnt still uses the lossy text adapter;
-text classifiers, metrics, parsers, and many modules still need Rust migration.
+Remaining: text classifiers, metrics, parsers, and many modules still need Rust
+migration.
 The root entrypoint still eagerly loads Bun FFI. Full parity, arbitrary-size input
 handling, and universal speed/memory improvements have not been established.
 

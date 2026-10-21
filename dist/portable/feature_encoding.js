@@ -1,4 +1,4 @@
-function valueKey(value) {
+export function valueKey(value) {
   if (value === null || value === undefined)
     return "null";
   if (typeof value === "string")
@@ -28,6 +28,22 @@ export function intern(map, key) {
 export class FeatureEncoding {
   names = new Map;
   values = new Map([["null", 0]]);
+  static fromMaps(names, values) {
+    if (!Array.isArray(names) || !Array.isArray(values) || values[0] !== "null") {
+      throw new TypeError("invalid feature encoding maps");
+    }
+    const encoding = new FeatureEncoding;
+    encoding.names.clear();
+    encoding.values.clear();
+    for (const [id, name] of names.entries())
+      encoding.names.set(name, id);
+    for (const [id, value] of values.entries())
+      encoding.values.set(value, id);
+    if (encoding.names.size !== names.length || encoding.values.size !== values.length) {
+      throw new TypeError("feature encoding maps contain duplicate entries");
+    }
+    return encoding;
+  }
   trainingPairs(features) {
     return entries(features).flatMap(([name, value]) => [intern(this.names, name), intern(this.values, valueKey(value))]);
   }

@@ -19,14 +19,17 @@ import { fileURLToPath } from "node:url";
 import { WasmNltk } from "bun_nltk/wasm";
 import { RustDecisionTreeClassifier } from "bun_nltk/classify-tree";
 import { RustNaiveBayesClassifier } from "bun_nltk/classify-features";
+import { RustMaxentClassifier } from "bun_nltk/classify-maxent";
 const resolved = realpathSync(fileURLToPath(import.meta.resolve("bun_nltk/classify-tree")));
 assert.ok(resolved.startsWith(process.cwd() + "/node_modules/"), resolved);
 const runtime = await WasmNltk.init();
 const tree = RustDecisionTreeClassifier.train(runtime, [[{"color 😀":"Red"},"upper"],[{"color 😀":"red"},"lower"]]);
 const nb = RustNaiveBayesClassifier.train(runtime, [[{x:1},"number"],[{x:"1"},"string"]]);
+const maxent = RustMaxentClassifier.train(runtime, [[{x:"a"},"A"],[{x:"b"},"B"]]);
 try {
   assert.deepEqual(tree.classifyMany([{"color 😀":"Red"},{"color 😀":"red"},{}]), ["upper","lower","lower"]);
   assert.deepEqual(nb.classifyMany([{x:true},{x:"1"}]), ["number","string"]);
+  assert.equal(maxent.classify({x:"a"}), "A");
   assert.deepEqual(runtime.tokenizeAscii("Hello package!"), ["hello","package"]);
   assert.deepEqual([...runtime.perceptronPredictBatch(Uint32Array.of(0,1), Uint32Array.of(0,1,2), Float32Array.of(1,0,0,1),2,2)], [0,1]);
   assert.throws(() => runtime.perceptronPredictBatch(Uint32Array.of(0),Uint32Array.of(0,1),Float32Array.of(1),1,2), RangeError);
@@ -38,7 +41,7 @@ try {
     finally { compat.dispose(); }
   }
   console.log(JSON.stringify({ok:true,runtime:process.version,bunVersion:typeof Bun !== "undefined" ? Bun.version : undefined,resolved,linearMemoryBytes:runtime.memoryBytes}));
-} finally { tree.dispose(); nb.dispose(); runtime.dispose(); }
+} finally { tree.dispose(); nb.dispose(); maxent.dispose(); runtime.dispose(); }
 assert.throws(() => tree.classify({}), /disposed/);
 `;
 
@@ -50,15 +53,17 @@ for (const installer of ["npm", "bun"] as const) {
 import { WasmNltk } from "bun_nltk/wasm";
 import { RustDecisionTreeClassifier } from "bun_nltk/classify-tree";
 import { RustNaiveBayesClassifier } from "bun_nltk/classify-features";
+import { RustMaxentClassifier } from "bun_nltk/classify-maxent";
 const runtime = await WasmNltk.init();
 const tree = RustDecisionTreeClassifier.train(runtime, [[{x:true},"A"]]);
 const label: string = tree.classify({x:1});
 const nb = RustNaiveBayesClassifier.train(runtime, [[{x:"Red"},label]]);
+const maxent = RustMaxentClassifier.train(runtime, [[{x:"a"},"A"],[{x:"b"},"B"]]);
 // @ts-expect-error Feature values cannot be arbitrary objects.
 tree.classify({x:{nested:true}});
 // @ts-expect-error Tree depth must be numeric.
 RustDecisionTreeClassifier.train(runtime, [[{x:1},"A"]], {depthCutoff:"deep"});
-nb.dispose(); tree.dispose(); runtime.dispose();
+nb.dispose(); maxent.dispose(); tree.dispose(); runtime.dispose();
 `);
   writeFileSync(resolve(directory, "tsconfig.json"), JSON.stringify({
     compilerOptions: { strict: true, noEmit: true, target: "ESNext", module: "NodeNext", moduleResolution: "NodeNext", lib: ["ESNext", "DOM"], types: [], skipLibCheck: false },

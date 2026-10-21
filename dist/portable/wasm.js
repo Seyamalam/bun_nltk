@@ -114,9 +114,115 @@ export class WasmNltk {
     this.assertOrder(handle);
     this.exports.bunnltk_wasm_categorical_nb_free(handle);
   }
+  categoricalMaxentTrain(input) {
+    this.assertActive();
+    if (typeof this.exports.bunnltk_wasm_categorical_maxent_train !== "function")
+      throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
+    this.assertOrder(input.labelCount);
+    assertU32(input.maxIter, "maxIter", 0);
+    assertU32(input.countCutoff, "countCutoff", 0);
+    for (const [name, value] of [
+      ["minLl", input.minLl],
+      ["minLldelta", input.minLldelta],
+      ["maxAcc", input.maxAcc],
+      ["minAccdelta", input.minAccdelta]
+    ]) {
+      if (value !== undefined && !Number.isFinite(value))
+        throw new RangeError(`${name} must be finite`);
+    }
+    if (input.pairs.length % 2 !== 0)
+      throw new RangeError("pairs must contain feature/value pairs");
+    assertOffsets(input.offsets, input.pairs.length / 2, "offsets");
+    if (input.labels.length === 0 || input.offsets.length !== input.labels.length + 1)
+      throw new RangeError("labels must match nonempty training rows");
+    const pairs = this.copyU32("maxent_pairs", input.pairs);
+    const offsets = this.copyU32("maxent_offsets", input.offsets);
+    const labels = this.copyU32("maxent_labels", input.labels);
+    const handle = this.exports.bunnltk_wasm_categorical_maxent_train(pairs.ptr, input.pairs.length, offsets.ptr, input.offsets.length, labels.ptr, input.labels.length, input.labelCount, input.algorithm === "gis" ? 1 : 0, input.maxIter, input.minLl ?? Number.NaN, input.minLldelta ?? Number.NaN, input.maxAcc ?? Number.NaN, input.minAccdelta ?? Number.NaN, input.countCutoff);
+    this.assertNoError("categoricalMaxentTrain");
+    return handle;
+  }
+  categoricalMaxentLoad(input) {
+    this.assertActive();
+    if (typeof this.exports.bunnltk_wasm_categorical_maxent_load !== "function")
+      throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
+    this.assertOrder(input.labelCount);
+    if (input.features.length % 3 !== 0)
+      throw new RangeError("features must contain name/value/label triples");
+    const expected = input.features.length / 3 + (input.algorithm === "gis" ? 1 : 0);
+    if (input.weights.length !== expected)
+      throw new RangeError(`weights length must be ${expected}`);
+    if (input.algorithm === "gis" && (!Number.isFinite(input.correction) || input.correction <= 0))
+      throw new RangeError("GIS correction must be finite and positive");
+    const features = this.copyU32("maxent_features_load", input.features);
+    const weights = this.copyF64("maxent_weights_load", input.weights);
+    const handle = this.exports.bunnltk_wasm_categorical_maxent_load(features.ptr, input.features.length / 3, weights.ptr, input.weights.length, input.labelCount, input.algorithm === "gis" ? 1 : 0, input.correction ?? Number.NaN);
+    this.assertNoError("categoricalMaxentLoad");
+    return handle;
+  }
+  categoricalMaxentPredict(handle, pairs, labelCount) {
+    this.assertOrder(handle);
+    this.assertOrder(labelCount);
+    const input = this.copyU32("maxent_pairs", pairs);
+    const length = 2 * labelCount;
+    const output = this.ensureBlock("maxent_output", length * Float64Array.BYTES_PER_ELEMENT);
+    this.exports.bunnltk_wasm_categorical_maxent_predict(handle, input.ptr, pairs.length, output.ptr, length);
+    this.assertNoError("categoricalMaxentPredict");
+    return Float64Array.from(new Float64Array(this.exports.memory.buffer, output.ptr, length));
+  }
+  categoricalMaxentFeatureCount(handle) {
+    this.assertOrder(handle);
+    const count = this.exports.bunnltk_wasm_categorical_maxent_feature_count(handle);
+    this.assertNoError("categoricalMaxentFeatureCount");
+    return count;
+  }
+  categoricalMaxentWeightCount(handle) {
+    this.assertOrder(handle);
+    const count = this.exports.bunnltk_wasm_categorical_maxent_weight_count(handle);
+    this.assertNoError("categoricalMaxentWeightCount");
+    return count;
+  }
+  categoricalMaxentCorrection(handle) {
+    this.assertOrder(handle);
+    const value = this.exports.bunnltk_wasm_categorical_maxent_correction(handle);
+    this.assertNoError("categoricalMaxentCorrection");
+    return value;
+  }
+  categoricalMaxentFeatures(handle) {
+    this.assertOrder(handle);
+    const count = this.categoricalMaxentFeatureCount(handle);
+    if (count === 0)
+      return new Uint32Array;
+    const length = count * 3;
+    const output = this.ensureBlock("maxent_features", length * Uint32Array.BYTES_PER_ELEMENT);
+    this.exports.bunnltk_wasm_categorical_maxent_copy_features(handle, output.ptr, length);
+    this.assertNoError("categoricalMaxentFeatures");
+    return Uint32Array.from(new Uint32Array(this.exports.memory.buffer, output.ptr, length));
+  }
+  categoricalMaxentWeights(handle) {
+    this.assertOrder(handle);
+    const count = this.categoricalMaxentWeightCount(handle);
+    if (count === 0)
+      return new Float64Array;
+    const output = this.ensureBlock("maxent_weights", count * Float64Array.BYTES_PER_ELEMENT);
+    this.exports.bunnltk_wasm_categorical_maxent_copy_weights(handle, output.ptr, count);
+    this.assertNoError("categoricalMaxentWeights");
+    return Float64Array.from(new Float64Array(this.exports.memory.buffer, output.ptr, count));
+  }
+  categoricalMaxentFree(handle) {
+    if (this.disposed)
+      return;
+    this.assertOrder(handle);
+    this.exports.bunnltk_wasm_categorical_maxent_free(handle);
+  }
   copyU32(key, values) {
     const block = this.ensureBlock(key, values.byteLength);
     new Uint32Array(this.exports.memory.buffer, block.ptr, values.length).set(values);
+    return block;
+  }
+  copyF64(key, values) {
+    const block = this.ensureBlock(key, values.byteLength);
+    new Float64Array(this.exports.memory.buffer, block.ptr, values.length).set(values);
     return block;
   }
   decisionTreeTrain(input) {

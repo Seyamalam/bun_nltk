@@ -54,7 +54,35 @@ export declare class WasmNltk {
         smoothing: number;
     }): number;
     categoricalNaiveBayesFree(handle: number): void;
+    categoricalMaxentTrain(input: {
+        pairs: Uint32Array;
+        offsets: Uint32Array;
+        labels: Uint32Array;
+        labelCount: number;
+        algorithm: "iis" | "gis";
+        maxIter: number;
+        countCutoff: number;
+        minLl?: number;
+        minLldelta?: number;
+        maxAcc?: number;
+        minAccdelta?: number;
+    }): number;
+    categoricalMaxentLoad(input: {
+        features: Uint32Array;
+        weights: Float64Array;
+        labelCount: number;
+        algorithm: "iis" | "gis";
+        correction?: number;
+    }): number;
+    categoricalMaxentPredict(handle: number, pairs: Uint32Array, labelCount: number): Float64Array;
+    categoricalMaxentFeatureCount(handle: number): number;
+    categoricalMaxentWeightCount(handle: number): number;
+    categoricalMaxentCorrection(handle: number): number;
+    categoricalMaxentFeatures(handle: number): Uint32Array;
+    categoricalMaxentWeights(handle: number): Float64Array;
+    categoricalMaxentFree(handle: number): void;
     private copyU32;
+    private copyF64;
     decisionTreeTrain(input: {
         pairs: Uint32Array;
         offsets: Uint32Array;

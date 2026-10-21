@@ -387,13 +387,37 @@ serialize as version 2.
 - `type LabeledFeatureset = readonly [FeatureSet, string]`
 - `NaiveBayesClassifier.train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: { smoothing?: number }): NaiveBayesClassifier`
 - `DecisionTreeClassifier.train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: { maxDepth?: number; minSamples?: number; maxCandidateFeatures?: number; maxFeatures?: number }): DecisionTreeClassifier`
-- `MaxentClassifier.train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: { algorithm?: "iis" | "sgd"; epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number }): MaxentClassifier`
+- `MaxentClassifier.train(labeledFeaturesets: Iterable<LabeledFeatureset>, options?: { algorithm?: "iis" | "gis" | "sgd"; maxIter?: number; minLl?: number; minLldelta?: number; maxAcc?: number; minAccdelta?: number; countCutoff?: number; labels?: string[]; epochs?: number; learningRate?: number; l2?: number; maxFeatures?: number }): MaxentClassifier`
 - `PositiveNaiveBayesClassifier.train(positiveFeaturesets: Iterable<FeatureSet>, unlabeledFeaturesets: Iterable<FeatureSet>, options?: { maxFeatures?: number; positivePrior?: number; positiveLabel?: string; negativeLabel?: string }): PositiveNaiveBayesClassifier`
 - `classify(featureset: FeatureSet): string`
 - `probClassify(featureset: FeatureSet): DictionaryProbDist<string>`
 - `classifyMany(featuresets: Iterable<FeatureSet>): string[]`
 - `probClassifyMany(featuresets: Iterable<FeatureSet>): DictionaryProbDist<string>[]`
 - `labels(): string[]`
+- `prob_classify`, `classify_many`, and `prob_classify_many` are NLTK snake_case aliases for the methods above.
+
+## Lossless Feature MaxEnt (Rust/WASM)
+
+`RustMaxentClassifier` implements NLTK's default `BinaryMaxentFeatureEncoding`
+with IIS or GIS, including label ordering, `min_ll`/`min_lldelta`,
+`max_acc`/`min_accdelta`, typed feature values, and model serialization. It is
+available at `bun_nltk/classify-maxent` and accepts NLTK keyword aliases
+(`max_iter`, `min_ll`, `min_lldelta`, `max_acc`, `min_accdelta`, `count_cutoff`).
+NLTK's default encoding ignores `count_cutoff`; this implementation matches that.
+
+- `RustMaxentClassifier.train(runtime: WasmNltk, examples: Iterable<LabeledFeatureset>, options?): RustMaxentClassifier`
+- `predict(featureset: FeatureSet): Array<{ label: string; logProb: number; probability: number }>`
+- `classify(featureset: FeatureSet): string`
+- `classifyMany(featuresets: Iterable<FeatureSet>): string[]`
+- `labels(): string[]`
+- `mostInformativeFeatures(limit?: number): Array<{ weight: number; feature: string; value: string; label: string }>`
+- `toJSON(): FeatureMaxentSerialized`
+- `RustMaxentClassifier.fromJSON(runtime: WasmNltk, payload: FeatureMaxentSerialized): RustMaxentClassifier`
+- `dispose(): void`
+
+`MaxentClassifier.train` uses this Rust model by default. Legacy text options
+(`epochs`, `learningRate`, `l2`, `maxFeatures`, or `algorithm: "sgd"`) select the
+older text adapter.
 
 ## Classification (Decision Tree / Linear / Perceptron)
 

@@ -1,7 +1,7 @@
 import type { FeatureSet, FeatureValue } from "./feature_types";
 
 // Python hashes bool and equal numbers together; None represents missing values.
-function valueKey(value: FeatureValue): string {
+export function valueKey(value: FeatureValue): string {
   if (value === null || value === undefined) return "null";
   if (typeof value === "string") return `string:${value}`;
   if (typeof value === "boolean") return `number:${Number(value)}`;
@@ -26,7 +26,23 @@ export function intern(map: Map<string, number>, key: string): number {
 /** Lossless typed marshaling only; the Rust model owns all statistics. */
 export class FeatureEncoding {
   readonly names = new Map<string, number>();
-  private readonly values = new Map<string, number>([["null", 0]]);
+  readonly values = new Map<string, number>([["null", 0]]);
+
+  /** Restore intern tables from a serialized model without changing ids. */
+  static fromMaps(names: string[], values: string[]): FeatureEncoding {
+    if (!Array.isArray(names) || !Array.isArray(values) || values[0] !== "null") {
+      throw new TypeError("invalid feature encoding maps");
+    }
+    const encoding = new FeatureEncoding();
+    encoding.names.clear();
+    encoding.values.clear();
+    for (const [id, name] of names.entries()) encoding.names.set(name, id);
+    for (const [id, value] of values.entries()) encoding.values.set(value, id);
+    if (encoding.names.size !== names.length || encoding.values.size !== values.length) {
+      throw new TypeError("feature encoding maps contain duplicate entries");
+    }
+    return encoding;
+  }
 
   trainingPairs(features: FeatureSet): number[] {
     return entries(features).flatMap(([name, value]) => [intern(this.names, name), intern(this.values, valueKey(value))]);

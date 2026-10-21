@@ -6,6 +6,10 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+### Added
+
+- Lossless feature-dictionary MaxEnt in Rust/WASM (`bun_nltk/classify-maxent`) with NLTK-compatible `BinaryMaxentFeatureEncoding`, IIS/GIS training, cutoff semantics, typed values, NLTK aliases, and model serialization. `MaxentClassifier.train` now uses it by default; legacy text options still select the previous adapter.
+
 ## [1.0.0] - 2026-09-13
 
 ### Migration from 0.16.x
