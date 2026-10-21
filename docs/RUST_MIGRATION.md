@@ -96,9 +96,12 @@ complete before all acceptance criteria are verified.
 - The portable WASM/NB/tree package subpaths ship JavaScript and `tsrs`-generated
   declarations. Clean tarball installs with npm and Bun run on Node 24 and Bun
   without a TS loader; installed types are checked without library-check skipping.
-  Browser checks exercise the compiled portable modules. Root Node/browser
-  portability is still unfinished. Local `file:` example installation previously
-  failed; repaired links are not evidence of clean local-directory installation.
+  Browser checks exercise the compiled portable modules. The root package now
+  resolves to a bundled Node root and a smaller browser root; native-only calls
+  throw a descriptive error outside Bun, and the browser root is a curated WASM,
+  tokenization, Punkt, and reference-metric subset rather than the full native
+  API. Local `file:` example installation previously failed; repaired links are
+  not evidence of clean local-directory installation.
 - Levenshtein distance and weighted alignment run in Rust over Unicode code points,
   including unrestricted Damerau transpositions, 762 exact differential cases,
   and NLTK's 2,000-code-point input bound. Ordinary distance uses two rows instead
@@ -111,9 +114,10 @@ complete before all acceptance criteria are verified.
   groups. This is fixture coverage, not proof of full NLTK equivalence.
 
 Remaining: text classifiers, metrics, parsers, and many modules still need Rust
-migration.
-The root entrypoint still eagerly loads Bun FFI. Full parity, arbitrary-size input
-handling, and universal speed/memory improvements have not been established.
+migration. The native FFI is loaded lazily so the Node/browser root bundles can
+import without `bun:ffi`; this does not make native-only algorithms portable.
+Full parity, arbitrary-size input handling, and universal speed/memory
+improvements have not been established.
 
 Aggregate ASCII metrics use exact keys after a scale workload exposed two bigram
 hash collisions. Explicit hash-returning APIs retain their legacy representation.

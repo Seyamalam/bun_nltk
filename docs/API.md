@@ -23,6 +23,32 @@ import {
 } from "bun_nltk";
 ```
 
+## Runtime roots
+
+`bun_nltk` resolves per runtime. Bun imports the TypeScript source and uses the
+Rust FFI library. Node.js 24+ imports `dist/portable/index.node.js`; WASM-backed
+APIs work there, while native-only calls throw
+`bun_nltk native APIs require Bun. Use bun_nltk/wasm for Node.js and browsers.`
+Browsers import `dist/portable/index.browser.js`, a curated WASM, tokenization,
+Punkt, and reference-metric subset. The generated root declarations are runtime
+facades; use `bun_nltk/wasm`, `bun_nltk/classify-features`,
+`bun_nltk/classify-tree`, and `bun_nltk/classify-maxent` for precise types.
+
+## NLTK-style aliases and core helpers
+
+The root exports 259 generated snake_case aliases alongside the camelCase API.
+For example `word_tokenize_subset`, `pos_tag`, `count_tokens_ascii`, and
+`treebank_word_tokenize` refer to the same functions as `wordTokenizeSubset`,
+`posTag`, `countTokensAscii`, and `treebankWordTokenize`. Regenerate them with
+`bun run nltk:aliases` after changing root exports. Classes retain NLTK's
+PascalCase names.
+
+Core NLTK helper names are available directly: `sent_tokenize`, `word_tokenize`,
+`wordpunct_tokenize`, `ngrams`, `bigrams`, `trigrams`, and `PorterStemmer`.
+`sent_tokenize` and `word_tokenize` use the bundled English Punkt model;
+`PorterStemmer` calls the Rust stemmer and currently supports
+`NLTK_EXTENSIONS`/`PORTER`.
+
 ## Native Rust API
 
 These functions call the dynamic native library through Bun FFI.

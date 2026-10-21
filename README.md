@@ -20,7 +20,7 @@ marshaling. The compatibility target is Python NLTK 3.10.3.
   NLTK 3.10.3, 2026-10-20). Missing required fixtures fail the gate; unsupported
   GUI, Java, and network integrations are reported separately and never counted
   as passed.
-- The Rust crate passes 62 unit tests; the TypeScript suite passes 495 tests.
+- The Rust crate passes 62 unit tests; the TypeScript suite passes 498 tests.
 - Passing fixtures establishes agreement for those cases and tolerances, not
   complete NLTK equivalence. See [behavioral validation](docs/BEHAVIORAL_PARITY.md).
 
@@ -37,9 +37,13 @@ bun add bun_nltk
 npm install bun_nltk
 ```
 
-The root entry point uses Bun FFI and is **Bun-only**. The `wasm`,
-`classify-features`, `classify-tree`, and `classify-maxent` subpaths ship plain
-JavaScript and TypeScript declarations for Node.js 24+ and browsers.
+The root entry point resolves per runtime. Bun uses the Rust FFI library; Node.js
+24+ uses a bundled root where WASM-backed APIs work and native-only calls throw a
+descriptive error; browsers use a bundled WASM/tokenization root. The `wasm`,
+`classify-features`, `classify-tree`, and `classify-maxent` subpaths also ship
+plain JavaScript and TypeScript declarations for Node.js 24+ and browsers. The
+root Node/browser declarations are generated runtime facades so every exported
+name resolves; use those subpaths for precise TypeScript types.
 
 ### Quick start (Bun)
 
@@ -163,7 +167,7 @@ Additional `bench:compare:*` commands cover tokenizers, stemmers, taggers,
 parsers, classifiers, language models, WordNet, and streaming distributions.
 See `package.json` for the full list.
 
-## Validate on a real Linux or Windows host
+## Validate on a real Linux, Windows, or macOS host
 
 Release binaries are committed, so testers do not need a compiler toolchain.
 
@@ -177,11 +181,15 @@ bash scripts/verify-linux.sh
 .\scripts\verify-windows.cmd
 ```
 
-Each command installs locked dependencies, tests the native library, compares
-native Rust with the TypeScript fallback on the same machine, installs and runs
-the packed tarball, and writes a JSON report under `artifacts/`. The current
-7-round Linux run passed on 2026-10-21 and is retained as
-`artifacts/native-host-linux-x64.json`. See the
+On macOS arm64, run `bun run verify:native-host -- --rounds 7` after
+`bun run build:rust`. Each validator tests the native library, compares native
+Rust with the TypeScript fallback on the same machine where applicable, installs
+and runs the packed tarball, and writes a JSON report under `artifacts/`. The
+current 7-round Linux run passed on 2026-10-21 and is retained as
+`artifacts/native-host-linux-x64.json`. The manual **Native artifacts** GitHub
+Actions workflow builds and validates the macOS arm64, Linux x64, and Windows x64
+libraries on their native runners; download those artifacts and commit them
+under `native/prebuilt/` when refreshing release binaries. See the
 [native-host guide](docs/NATIVE_HOST_VALIDATION.md) for Bun installation and the
 15-round paper run.
 
@@ -196,8 +204,9 @@ bun run build:prebuilt  # all committed platform binaries (macOS host)
 
 Portable entry points grow WASM input staging on demand instead of reserving
 128 MiB at startup. The WASM batch APIs still enforce an input-byte limit;
-exact streaming metrics accept larger corpora in chunks. Root imports still
-require Bun FFI.
+exact streaming metrics accept larger corpora in chunks. Node and browser root
+bundles are produced by `bun run build:portable`; native-only calls still require
+Bun.
 
 ### Classifiers in Rust/WASM
 
@@ -334,8 +343,8 @@ bun run release:check
 bash scripts/loc-guard.sh 600
 ```
 
-The npm package currently contains 255 files / 10,847,978 unpacked bytes, below
-the 400-file and 12 MB limits. The LOC guard rejects non-grandfathered `.ts` and
+The npm package currently contains 263 files / 12,229,658 unpacked bytes, below
+the 400-file and 13 MB limits. The LOC guard rejects non-grandfathered `.ts` and
 `.rs` files above 600 lines.
 
 ## Environment
@@ -365,10 +374,11 @@ docker build -t bun_nltk . && docker run --rm bun_nltk
 
 ## Limitations
 
-- The root entry point eagerly imports `bun:ffi`; Node and browser consumers
-  must use the portable subpaths (`wasm`, `classify-features`, `classify-tree`,
-  `classify-maxent`) or focused source entry points under Bun. Root Node/browser
-  portability is unfinished.
+- The root entry point is importable on Node.js and browsers, but native-only
+  APIs still require Bun. The browser root exposes the Rust/WASM classifiers plus
+  tokenization, sentence splitting, Punkt, and reference metrics; it is not the
+  full native API surface. Use the `wasm` and classifier subpaths for portable
+  code.
 - Committed native binaries cover `darwin-arm64`, `linux-x64`, and `win32-x64`.
   The Linux x64 binary and WASM artifact were rebuilt and validated on this host;
   the macOS and Windows binaries were not rebuilt in the latest Linux run.

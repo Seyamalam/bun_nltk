@@ -120,7 +120,7 @@ bun run bench:parity:nltk-models
 Exports are JSON and gzip, never pickle. The model manifest records SHA-256 hashes
 and sizes, checked in the test suite. The npm tarball includes the model assets,
 and its installation smoke test runs VADER, Punkt, Treebank, and both NE modes.
-The compressed NE models add about 5.5 MB; the complete package is about 10.5 MB
-unpacked, within the updated 12 MB budget. Test corpora and Python scripts are
+The compressed NE models add about 5.5 MB; the complete package is about 12.2 MB
+unpacked, within the updated 13 MB budget. Test corpora and Python scripts are
 excluded from the npm package. See [third-party notices](../THIRD_PARTY_NOTICES.md)
 for source attribution and model-data licensing details.

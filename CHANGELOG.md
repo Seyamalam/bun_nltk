@@ -8,6 +8,9 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+- Generated Python NLTK-style snake_case aliases for 259 camelCase root exports, plus runtime-specific package roots: Bun FFI, bundled Node, and a browser WASM/tokenization subset.
+- Added NLTK helper names `sent_tokenize`, `word_tokenize`, `wordpunct_tokenize`, `ngrams`, `bigrams`, `trigrams`, and `PorterStemmer`; the root Node/browser declaration facades resolve every exported name.
+
 - Lossless feature-dictionary MaxEnt in Rust/WASM (`bun_nltk/classify-maxent`) with NLTK-compatible `BinaryMaxentFeatureEncoding`, IIS/GIS training, cutoff semantics, typed values, NLTK aliases, and model serialization. `MaxentClassifier.train` now uses it by default; legacy text options still select the previous adapter.
 
 ## [1.0.0] - 2026-09-13
