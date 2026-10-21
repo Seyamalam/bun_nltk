@@ -1,0 +1,4 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["../scripts/compatibility/**/*.ts", "../test/compatibility_inventory.test.ts"]
+}
