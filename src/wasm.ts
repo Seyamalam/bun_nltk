@@ -3,6 +3,7 @@ import type { TokenizerKind, TokenizerOptions, TokenizerRequest, TokenSpan } fro
 export type { TokenizerKind, TokenizerOptions, TokenSpan, BlanklineHandling } from "./tokenizer_types.ts";
 import { MetricsWasm, type MetricsExports } from "./metrics_wasm.ts";
 import type { ContractExports } from "./probability_abi.ts";
+import type { LmExports } from "./lm_wasm.ts";
 
 type WasmExports = MetricsExports & ContractExports & {
   bunnltk_wasm_text_naive_bayes: (inputLen: number) => number;
@@ -312,6 +313,7 @@ export class WasmNltk {
     this.blocks.clear();
     this.exports.bunnltk_wasm_text_naive_bayes_clear?.();
     this.exports.bunnltk_wasm_text_classifiers_clear?.();
+    (this.exports as unknown as Partial<LmExports>).bunnltk_wasm_lm_clear?.();
     this.exports.bunnltk_wasm_categorical_nb_clear();
     this.exports.bunnltk_wasm_decision_tree_clear?.();
     this.exports.bunnltk_wasm_metrics_stream_clear();
@@ -328,6 +330,15 @@ export class WasmNltk {
   probabilityContractExports(): ContractExports {
     this.assertActive();
     return this.exports;
+  }
+
+  languageModelExports(): LmExports {
+    this.assertActive();
+    const exports = this.exports as unknown as LmExports;
+    if (typeof exports.bunnltk_wasm_lm_train !== "function") {
+      throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
+    }
+    return exports;
   }
 
   /** JSON transport for legacy text NB; all training and scoring happen in Rust. */
@@ -1010,6 +1021,9 @@ export class WasmNltk {
     perplexityTokenIds: Uint32Array;
     prefixTokenIds: Uint32Array;
   }): { scores: Float64Array; perplexity: number } {
+    assertU32(input.order, "order", 1, 64);
+    assertOffsets(input.sentenceOffsets, input.tokenIds.length, "sentenceOffsets");
+    if (input.probeContextLens.length !== input.probeWordIds.length) throw new RangeError("probe buffer length mismatch");
     const tokenBlock = this.ensureBlock("lm_token_ids", input.tokenIds.length * Uint32Array.BYTES_PER_ELEMENT);
     const sentBlock = this.ensureBlock("lm_sentence_offsets", input.sentenceOffsets.length * Uint32Array.BYTES_PER_ELEMENT);
     const probeFlatBlock = this.ensureBlock(

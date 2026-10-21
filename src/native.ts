@@ -1263,6 +1263,9 @@ export function evaluateLanguageModelIdsNative(input: {
   perplexityTokenIds: Uint32Array;
   prefixTokenIds: Uint32Array;
 }): { scores: Float64Array; perplexity: number } {
+  assertU32(input.order, "order", 1, 64);
+  assertOffsets(input.sentenceOffsets, input.tokenIds.length, "sentenceOffsets");
+  if (input.probeContextLens.length !== input.probeWordIds.length) throw new RangeError("probe buffer length mismatch");
   // Bun FFI rejects pointers to zero-byte typed arrays, even for a zero length.
   const emptyBuffer = new Uint32Array(1);
   const pointer = (values: Uint32Array | Float64Array) => ptr(values.length ? values : emptyBuffer);

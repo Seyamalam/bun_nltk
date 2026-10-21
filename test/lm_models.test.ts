@@ -126,7 +126,7 @@ test("StupidBackoff scores are backoff weights, not a distribution", () => {
   expect(lm.score("fox", ["a"])).toBeCloseTo(expected, 12);
 });
 
-test("new models route through the JS path (native gate)", () => {
+test("all smoothing models share the Rust batch and scalar paths", () => {
   for (const model of [
     "stupid_backoff",
     "witten_bell_interpolated",

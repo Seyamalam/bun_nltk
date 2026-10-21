@@ -57,6 +57,7 @@ function runNative(sentences: string[][], probes: Probe[], perplexityTokens: str
     perplexity = evalOut.perplexity;
     checksum = local;
     timings.push((performance.now() - started) / 1000);
+    model.dispose();
   }
   return {
     checksum,

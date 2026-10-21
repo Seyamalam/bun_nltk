@@ -164,8 +164,8 @@ export {
 export type { CorpusFile, CorpusMiniIndex, CorpusRegistryEntry, CorpusRegistryManifest } from "./src/corpus";
 export { parseBrownTagged, parseConllChunked, parseConllTagged } from "./src/corpus_readers";
 export type { ChunkedSentence, ChunkedToken, TaggedSentence as CorpusTaggedSentence, TaggedToken as CorpusTaggedToken } from "./src/corpus_readers";
-export { NgramLanguageModel, trainNgramLanguageModel } from "./src/lm";
-export type { LanguageModelType, NgramLanguageModelOptions } from "./src/lm";
+export { NgramLanguageModel, RustNgramLanguageModel, trainNgramLanguageModel } from "./src/lm";
+export type { LanguageModelType, NgramLanguageModelOptions, LmProbe } from "./src/lm";
 export {
   chartParse,
   earleyParse,

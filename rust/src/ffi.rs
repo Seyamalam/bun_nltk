@@ -1441,16 +1441,16 @@ pub unsafe extern "C" fn bunnltk_lm_eval_ids(
     prefix_len: usize,
 ) -> f64 {
     error_state::reset_error();
-    if order == 0 || order > 3 {
+    if order == 0 || order > lm::MAX_ORDER {
         error_state::set_error(error_state::INVALID_N);
         return f64::INFINITY;
     }
-    if token_ids_len == 0 || sentence_offsets_len < 2 {
+    if sentence_offsets_len == 0 {
         error_state::set_error(error_state::INSUFFICIENT_CAPACITY);
         return f64::INFINITY;
     }
 
-    lm::eval_ids(
+    let result = lm::try_eval_ids(
         const_slice(token_ids_ptr, token_ids_len),
         const_slice(sentence_offsets_ptr, sentence_offsets_len),
         order,
@@ -1464,7 +1464,11 @@ pub unsafe extern "C" fn bunnltk_lm_eval_ids(
         mut_slice(out_scores_ptr, out_scores_len),
         const_slice(perplexity_tokens_ptr, perplexity_len),
         const_slice(prefix_tokens_ptr, prefix_len),
-    )
+    );
+    match result {
+        Ok(value) => value,
+        Err(error) => { error_state::set_error(error.code()); f64::INFINITY }
+    }
 }
 
 #[no_mangle]

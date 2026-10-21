@@ -7,6 +7,9 @@ export type { StringTree, GrammarSymbol, RustTreePosition, RustTreeOrder, TreeFo
 export { RustNaiveBayesClassifier, RustPositiveNaiveBayesClassifier } from "./feature_nb.ts";
 export { RustDecisionTreeClassifier } from "./feature_tree.ts";
 export { RustMaxentClassifier } from "./feature_maxent.ts";
+export { NgramLanguageModel, RustNgramLanguageModel, trainNgramLanguageModel } from "./lm.ts";
+export { trainNgramLanguageModel as train_ngram_language_model } from "./lm.ts";
+export type { LanguageModelType, NgramLanguageModelOptions, LmProbe } from "./lm.ts";
 export * from "./reference.ts";
 export * from "./tokenizers.ts";
 export * from "./sentence_tokenizer.ts";

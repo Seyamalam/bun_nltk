@@ -1,366 +1,343 @@
+use crate::{numeric_validation, CoreError, CoreResult};
 use std::collections::HashMap;
+
+// Bound both construction work and key storage, not just the number of tokens.
+pub const MAX_ORDER: u32 = 64;
+pub const MAX_TOKENS: usize = 1_000_000;
+pub const MAX_NGRAMS: usize = 1_000_000;
+pub const MAX_KEY_UNITS: usize = 8_000_000;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ModelType {
     Mle = 0,
     Lidstone = 1,
     KneserNeyInterpolated = 2,
+    StupidBackoff = 3,
+    WittenBellInterpolated = 4,
+    AbsoluteDiscountingInterpolated = 5,
 }
 
-struct Counts {
-    order: u32,
-    context1_total: HashMap<u32, u32>,
-    context2_total: HashMap<u64, u32>,
-    continuation2: HashMap<u64, u32>,
-    continuation2_total: HashMap<u32, u32>,
-    unigram: HashMap<u32, u32>,
-    bigram: HashMap<u64, u32>,
-    trigram: HashMap<u128, u32>,
-
-    followers1: HashMap<u32, u32>,
-    followers2: HashMap<u64, u32>,
-    continuation: HashMap<u32, u32>,
-
-    seen_bigram_len: u64,
-    unigram_total: u64,
-    continuation_type_count: u64,
-}
-
-fn key_bigram(a: u32, b: u32) -> u64 {
-    ((a as u64) << 32) | (b as u64)
-}
-
-fn key_trigram(a: u32, b: u32, c: u32) -> u128 {
-    ((a as u128) << 64) | ((b as u128) << 32) | (c as u128)
-}
-
-fn build_counts(token_ids: &[u32], sentence_offsets: &[u32], order: u32) -> Counts {
-    let mut counts = Counts {
-        order,
-        context1_total: HashMap::new(),
-        context2_total: HashMap::new(),
-        continuation2: HashMap::new(),
-        continuation2_total: HashMap::new(),
-        unigram: HashMap::new(),
-        bigram: HashMap::new(),
-        trigram: HashMap::new(),
-        followers1: HashMap::new(),
-        followers2: HashMap::new(),
-        continuation: HashMap::new(),
-        seen_bigram_len: 0,
-        unigram_total: 0,
-        continuation_type_count: 0,
-    };
-
-    // Dedup sets are only needed during construction; we track sizes for
-    // continuation_type_count and use the follower/continuation maps' insert
-    // semantics to mirror "first time this bigram is seen".
-    let mut seen_bigram: std::collections::HashSet<u64> = std::collections::HashSet::new();
-    let mut seen_trigram: std::collections::HashSet<u128> = std::collections::HashSet::new();
-
-    let mut sent_idx: usize = 0;
-    while sent_idx + 1 < sentence_offsets.len() {
-        let start = sentence_offsets[sent_idx] as usize;
-        let end = sentence_offsets[sent_idx + 1] as usize;
-        sent_idx += 1;
-        if end <= start || end > token_ids.len() {
-            continue;
+impl ModelType {
+    pub fn from_u32(value: u32) -> CoreResult<Self> {
+        match value {
+            0 => Ok(Self::Mle),
+            1 => Ok(Self::Lidstone),
+            2 => Ok(Self::KneserNeyInterpolated),
+            3 => Ok(Self::StupidBackoff),
+            4 => Ok(Self::WittenBellInterpolated),
+            5 => Ok(Self::AbsoluteDiscountingInterpolated),
+            _ => Err(CoreError::InvalidN),
         }
-        let sentence = &token_ids[start..end];
+    }
+}
 
-        for (i, &tok) in sentence.iter().enumerate() {
-            *counts.unigram.entry(tok).or_insert(0) += 1;
-            counts.unigram_total += 1;
+#[derive(Clone, Copy)]
+pub struct Options {
+    pub order: u32,
+    pub model: ModelType,
+    pub gamma: f64,
+    pub discount: f64,
+    pub alpha: f64,
+    pub vocab_size: u32,
+}
 
-            if order >= 2 && i >= 1 {
-                let prev = sentence[i - 1];
-                *counts.bigram.entry(key_bigram(prev, tok)).or_insert(0) += 1;
-                *counts.context1_total.entry(prev).or_insert(0) += 1;
+impl Options {
+    pub fn validate(&self) -> CoreResult<()> {
+        if !(1..=MAX_ORDER).contains(&self.order)
+            || !self.gamma.is_finite()
+            || self.gamma < 0.0
+            || !self.discount.is_finite()
+            || !(0.0..=1.0).contains(&self.discount)
+            || !self.alpha.is_finite()
+            || self.alpha < 0.0
+        {
+            return Err(CoreError::InvalidN);
+        }
+        Ok(())
+    }
+}
 
-                let k = key_bigram(prev, tok);
-                if seen_bigram.insert(k) {
-                    *counts.followers1.entry(prev).or_insert(0) += 1;
-                    *counts.continuation.entry(tok).or_insert(0) += 1;
-                }
-            }
-            if order >= 3 && i >= 2 {
-                let a = sentence[i - 2];
-                let b = sentence[i - 1];
-                *counts.trigram.entry(key_trigram(a, b, tok)).or_insert(0) += 1;
-                *counts.context2_total.entry(key_bigram(a, b)).or_insert(0) += 1;
+#[derive(Default, Clone, Copy)]
+struct Frequency {
+    count: u32,
+    total: u32,
+    followers: u32,
+    continuation: u32,
+    continuation_total: u32,
+}
 
-                let trigram_k = key_trigram(a, b, tok);
-                if seen_trigram.insert(trigram_k) {
-                    let context_k = key_bigram(a, b);
-                    *counts.followers2.entry(context_k).or_insert(0) += 1;
-                    *counts.continuation2.entry(key_bigram(b, tok)).or_insert(0) += 1;
-                    *counts.continuation2_total.entry(b).or_insert(0) += 1;
+/// Raw counts, follower counts and unique-predecessor counts share one key store.
+pub struct Counts {
+    frequencies: HashMap<Vec<u32>, Frequency>,
+}
+
+fn copy_key(key: &[u32]) -> CoreResult<Vec<u32>> {
+    let mut out = Vec::new();
+    out.try_reserve_exact(key.len())
+        .map_err(|_| CoreError::OutOfMemory)?;
+    out.extend_from_slice(key);
+    Ok(out)
+}
+
+impl Counts {
+    pub fn build(tokens: &[u32], offsets: &[u32], order: u32) -> CoreResult<Self> {
+        numeric_validation::offsets(offsets, tokens.len())?;
+        if !(1..=MAX_ORDER).contains(&order)
+            || tokens.len() > MAX_TOKENS
+            || offsets.len() > MAX_TOKENS + 1
+        {
+            return Err(CoreError::InvalidN);
+        }
+        let mut grams = 0usize;
+        let mut key_units = 0usize;
+        for bounds in offsets.windows(2) {
+            let len = (bounds[1] - bounds[0]) as usize;
+            for n in 1..=(order as usize).min(len) {
+                grams += len + 1 - n;
+                key_units += (len + 1 - n) * n;
+                if grams > MAX_NGRAMS || key_units > MAX_KEY_UNITS {
+                    return Err(CoreError::InsufficientCapacity);
                 }
             }
         }
-    }
-
-    counts.seen_bigram_len = seen_bigram.len() as u64;
-    counts.continuation_type_count = counts.seen_bigram_len;
-    counts
-}
-
-fn count_context(counts: &Counts, ctx: &[u32]) -> u32 {
-    match ctx.len() {
-        0 => {
-            if counts.unigram_total > u32::MAX as u64 {
-                u32::MAX
-            } else {
-                counts.unigram_total as u32
+        let mut counts = Self {
+            frequencies: HashMap::new(),
+        };
+        for bounds in offsets.windows(2) {
+            let row = &tokens[bounds[0] as usize..bounds[1] as usize];
+            for n in 1..=(order as usize).min(row.len()) {
+                for gram in row.windows(n) {
+                    let frequency = counts.entry(gram)?;
+                    let first = frequency.count == 0;
+                    frequency.count += 1;
+                    let context = &gram[..n - 1];
+                    counts.entry(context)?.total += 1;
+                    if first && n > 1 {
+                        counts.entry(context)?.followers += 1;
+                        counts.entry(&gram[1..])?.continuation += 1;
+                        counts.entry(&gram[1..n - 1])?.continuation_total += 1;
+                    }
+                }
             }
         }
-        1 => counts.context1_total.get(&ctx[0]).copied().unwrap_or(0),
-        2 => counts
-            .context2_total
-            .get(&key_bigram(ctx[0], ctx[1]))
-            .copied()
-            .unwrap_or(0),
-        _ => 0,
+        Ok(counts)
     }
-}
 
-fn ngram_count(counts: &Counts, ctx: &[u32], word: u32) -> u32 {
-    match ctx.len() {
-        0 => counts.unigram.get(&word).copied().unwrap_or(0),
-        1 => counts
-            .bigram
-            .get(&key_bigram(ctx[0], word))
-            .copied()
-            .unwrap_or(0),
-        2 => counts
-            .trigram
-            .get(&key_trigram(ctx[0], ctx[1], word))
-            .copied()
-            .unwrap_or(0),
-        _ => 0,
-    }
-}
-
-fn follower_count(counts: &Counts, ctx: &[u32]) -> u32 {
-    match ctx.len() {
-        1 => counts.followers1.get(&ctx[0]).copied().unwrap_or(0),
-        2 => counts
-            .followers2
-            .get(&key_bigram(ctx[0], ctx[1]))
-            .copied()
-            .unwrap_or(0),
-        _ => 0,
-    }
-}
-
-fn backoff_tail(ctx: &[u32]) -> &[u32] {
-    if ctx.is_empty() {
-        return ctx;
-    }
-    &ctx[1..]
-}
-
-fn score_mle(counts: &Counts, word: u32, ctx: &[u32]) -> f64 {
-    if ctx.is_empty() {
-        if counts.unigram_total == 0 {
-            return 0.0;
+    fn entry(&mut self, key: &[u32]) -> CoreResult<&mut Frequency> {
+        if !self.frequencies.contains_key(key) {
+            self.frequencies
+                .try_reserve(1)
+                .map_err(|_| CoreError::OutOfMemory)?;
+            self.frequencies
+                .insert(copy_key(key)?, Frequency::default());
         }
-        return (ngram_count(counts, ctx, word) as f64) / (counts.unigram_total as f64);
+        Ok(self.frequencies.get_mut(key).unwrap())
     }
-    let ctx_count = count_context(counts, ctx);
-    if ctx_count == 0 {
-        return 0.0;
-    }
-    let gram_count = ngram_count(counts, ctx, word);
-    (gram_count as f64) / (ctx_count as f64)
-}
 
-fn score_lidstone(counts: &Counts, word: u32, ctx: &[u32], gamma: f64, vocab_size: u32) -> f64 {
-    let vocab_f = 1u32.max(vocab_size) as f64;
-    if ctx.is_empty() {
-        let gram = ngram_count(counts, ctx, word) as f64;
-        let denom = (counts.unigram_total as f64) + gamma * vocab_f;
-        if denom <= 0.0 {
-            return 0.0;
+    fn get(&self, key: &[u32]) -> Frequency {
+        self.frequencies.get(key).copied().unwrap_or_default()
+    }
+
+    pub fn vocabulary(&self, unknown: u32) -> Vec<u32> {
+        let mut ids: Vec<_> = self
+            .frequencies
+            .iter()
+            .filter(|(key, value)| key.len() == 1 && value.count > 0)
+            .map(|(key, _)| key[0])
+            .collect();
+        if !ids.contains(&unknown) {
+            ids.push(unknown);
         }
-        return (gram + gamma) / denom;
+        ids.sort_unstable();
+        ids
     }
-    let ctx_count = count_context(counts, ctx);
-    let gram_count = ngram_count(counts, ctx, word) as f64;
-    let denom = (ctx_count as f64) + gamma * vocab_f;
-    if denom <= 0.0 {
-        return 0.0;
+
+    pub fn score(&self, word: u32, context: &[u32], options: &Options) -> f64 {
+        let keep = context.len().min(options.order as usize - 1);
+        self.score_context(word, &context[context.len() - keep..], options)
     }
-    (gram_count + gamma) / denom
+
+    fn score_context(&self, word: u32, context: &[u32], options: &Options) -> f64 {
+        let mut gram = [0u32; MAX_ORDER as usize];
+        gram[..context.len()].copy_from_slice(context);
+        gram[context.len()] = word;
+        let frequency = self.get(&gram[..context.len() + 1]);
+        let prefix = self.get(context);
+        let count = frequency.count as f64;
+        let total = prefix.total as f64;
+        match options.model {
+            ModelType::Mle => {
+                if total > 0.0 {
+                    count / total
+                } else {
+                    0.0
+                }
+            }
+            ModelType::Lidstone => {
+                (count + options.gamma) / (total + options.gamma * options.vocab_size.max(1) as f64)
+            }
+            ModelType::KneserNeyInterpolated if context.is_empty() => {
+                if prefix.continuation_total == 0 {
+                    return 0.0;
+                }
+                frequency.continuation as f64 / prefix.continuation_total as f64
+            }
+            _ if context.is_empty() => {
+                if total > 0.0 {
+                    count / total
+                } else {
+                    0.0
+                }
+            }
+            ModelType::StupidBackoff if count > 0.0 => count / total,
+            _ => {
+                let lower = self.score_context(word, &context[1..], options);
+                if options.model == ModelType::StupidBackoff {
+                    return options.alpha * lower;
+                }
+                if total == 0.0 {
+                    return lower;
+                }
+                let followers = prefix.followers as f64;
+                if options.model == ModelType::WittenBellInterpolated {
+                    let gamma = followers / (followers + total);
+                    return (1.0 - gamma) * (count / total) + gamma * lower;
+                }
+                let (count, total) = if options.model == ModelType::KneserNeyInterpolated
+                    && context.len() + 1 != options.order as usize
+                {
+                    (
+                        frequency.continuation as f64,
+                        prefix.continuation_total as f64,
+                    )
+                } else {
+                    (count, total)
+                };
+                if total == 0.0 {
+                    return lower;
+                }
+                (count - options.discount).max(0.0) / total
+                    + options.discount * followers / total * lower
+            }
+        }
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn evaluate(
+        &self,
+        options: &Options,
+        flat: &[u32],
+        lens: &[u32],
+        words: &[u32],
+        scores: &mut [f64],
+        sequence: &[u32],
+        prefix: &[u32],
+    ) -> CoreResult<f64> {
+        if lens.len() != words.len()
+            || scores.len() < words.len()
+            || lens.iter().map(|&n| n as u64).sum::<u64>() != flat.len() as u64
+            || sequence.len() > MAX_TOKENS
+            || words.len() > MAX_TOKENS
+            || flat.len() > MAX_KEY_UNITS
+        {
+            return Err(CoreError::InsufficientCapacity);
+        }
+        let mut cursor = 0;
+        for (i, &len) in lens.iter().enumerate() {
+            let end = cursor + len as usize;
+            scores[i] = self.score(words[i], &flat[cursor..end], options);
+            cursor = end;
+        }
+        if sequence.is_empty() {
+            return Ok(f64::INFINITY);
+        }
+        // At most order-1 context IDs, regardless of evaluation sequence length.
+        let mut history = [0u32; MAX_ORDER as usize];
+        let capacity = options.order as usize - 1;
+        let mut len = prefix.len().min(capacity);
+        history[..len].copy_from_slice(&prefix[prefix.len() - len..]);
+        let mut neg_log2 = 0.0;
+        for &word in sequence {
+            neg_log2 -= safe_prob(self.score(word, &history[..len], options)).log2();
+            if capacity > 0 {
+                if len == capacity {
+                    history.copy_within(1..len, 0);
+                    len -= 1;
+                }
+                history[len] = word;
+                len += 1;
+            }
+        }
+        Ok(2f64.powf(neg_log2 / sequence.len() as f64))
+    }
 }
 
-fn continuation_prob(counts: &Counts, word: u32) -> f64 {
-    if counts.continuation_type_count == 0 {
-        return 0.0;
-    }
-    let cont = counts.continuation.get(&word).copied().unwrap_or(0);
-    (cont as f64) / (counts.continuation_type_count as f64)
-}
-
-fn score_kneser_ney(counts: &Counts, word: u32, ctx: &[u32], discount: f64) -> f64 {
-    if ctx.is_empty() {
-        return continuation_prob(counts, word);
-    }
-
-    let ctx_count = count_context(counts, ctx);
-    if ctx_count == 0 {
-        return score_kneser_ney(counts, word, backoff_tail(ctx), discount);
-    }
-
-    let (gram_count, ctx_count) = if ctx.len() == 1 && counts.order == 3 {
-        (
-            counts
-                .continuation2
-                .get(&key_bigram(ctx[0], word))
-                .copied()
-                .unwrap_or(0),
-            counts
-                .continuation2_total
-                .get(&ctx[0])
-                .copied()
-                .unwrap_or(0),
-        )
+pub fn safe_prob(probability: f64) -> f64 {
+    if probability.is_finite() && probability > 0.0 {
+        probability
     } else {
-        (ngram_count(counts, ctx, word), ctx_count)
-    };
-    if ctx_count == 0 {
-        return score_kneser_ney(counts, word, backoff_tail(ctx), discount);
-    }
-    let followers = follower_count(counts, ctx);
-
-    let ctx_f = ctx_count as f64;
-    let discounted = (((gram_count as f64) - discount).max(0.0)) / ctx_f;
-    let lambda = (discount * (followers as f64)) / ctx_f;
-    discounted + lambda * score_kneser_ney(counts, word, backoff_tail(ctx), discount)
-}
-
-struct ScoringOptions {
-    order: u32,
-    model: ModelType,
-    gamma: f64,
-    discount: f64,
-    vocab_size: u32,
-}
-
-fn score_word(counts: &Counts, word: u32, context: &[u32], options: &ScoringOptions) -> f64 {
-    let keep_len = (options.order.saturating_sub(1)) as usize;
-    let keep: &[u32] = if context.len() > keep_len {
-        &context[context.len() - keep_len..]
-    } else {
-        context
-    };
-    match options.model {
-        ModelType::Mle => score_mle(counts, word, keep),
-        ModelType::Lidstone => {
-            score_lidstone(counts, word, keep, options.gamma, options.vocab_size)
-        }
-        ModelType::KneserNeyInterpolated => score_kneser_ney(counts, word, keep, options.discount),
+        1e-12
     }
 }
 
-// Preserve the flat buffer interface shared by the native and WASM adapters.
+// Existing flat-buffer ABI delegates to the same generic, validated count kernel.
 #[allow(clippy::too_many_arguments)]
-pub fn eval_ids(
-    token_ids: &[u32],
-    sentence_offsets: &[u32],
+pub fn try_eval_ids(
+    tokens: &[u32],
+    offsets: &[u32],
     order: u32,
     model: ModelType,
     gamma: f64,
     discount: f64,
     vocab_size: u32,
-    probe_context_flat: &[u32],
-    probe_context_lens: &[u32],
-    probe_words: &[u32],
-    out_scores: &mut [f64],
-    perplexity_tokens: &[u32],
-    prefix_tokens: &[u32],
-) -> f64 {
-    let counts = build_counts(token_ids, sentence_offsets, order);
-    let options = ScoringOptions {
+    flat: &[u32],
+    lens: &[u32],
+    words: &[u32],
+    scores: &mut [f64],
+    sequence: &[u32],
+    prefix: &[u32],
+) -> CoreResult<f64> {
+    let options = Options {
         order,
         model,
         gamma,
         discount,
+        alpha: 0.4,
         vocab_size,
     };
+    options.validate()?;
+    Counts::build(tokens, offsets, order)?
+        .evaluate(&options, flat, lens, words, scores, sequence, prefix)
+}
 
-    let mut ctx_cursor: usize = 0;
-    let probe_count = probe_context_lens
-        .len()
-        .min(probe_words.len())
-        .min(out_scores.len());
-    for i in 0..probe_count {
-        let ctx_len = probe_context_lens[i] as usize;
-        if ctx_cursor + ctx_len > probe_context_flat.len() {
-            out_scores[i] = 0.0;
-            continue;
+#[allow(clippy::too_many_arguments)]
+pub fn eval_ids(
+    tokens: &[u32],
+    offsets: &[u32],
+    order: u32,
+    model: ModelType,
+    gamma: f64,
+    discount: f64,
+    vocab_size: u32,
+    flat: &[u32],
+    lens: &[u32],
+    words: &[u32],
+    scores: &mut [f64],
+    sequence: &[u32],
+    prefix: &[u32],
+) -> f64 {
+    match try_eval_ids(
+        tokens, offsets, order, model, gamma, discount, vocab_size, flat, lens, words, scores,
+        sequence, prefix,
+    ) {
+        Ok(value) => value,
+        Err(error) => {
+            crate::error_state::set_error(error.code());
+            f64::INFINITY
         }
-        let ctx = &probe_context_flat[ctx_cursor..ctx_cursor + ctx_len];
-        ctx_cursor += ctx_len;
-        out_scores[i] = score_word(&counts, probe_words[i], ctx, &options);
     }
-
-    if perplexity_tokens.is_empty() {
-        return f64::INFINITY;
-    }
-    let mut history: Vec<u32> = prefix_tokens.to_vec();
-
-    let mut neg_log2: f64 = 0.0;
-    for &tok in perplexity_tokens {
-        let keep_len = history.len().min((order.saturating_sub(1)) as usize);
-        let ctx: &[u32] = if keep_len == 0 {
-            &history[0..0]
-        } else {
-            &history[history.len() - keep_len..]
-        };
-        let mut prob = score_word(&counts, tok, ctx, &options);
-        if !prob.is_finite() || prob <= 0.0 {
-            prob = 1e-12;
-        }
-        neg_log2 += -prob.log2();
-        history.push(tok);
-    }
-
-    2f64.powf(neg_log2 / (perplexity_tokens.len() as f64))
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn lm_eval_ids_basic_parity_sanity() {
-        let tokens: [u32; 8] = [1, 2, 3, 4, 1, 2, 5, 4];
-        let offsets: [u32; 3] = [0, 4, 8];
-        let probe_ctx: [u32; 4] = [1, 2, 1, 2];
-        let probe_lens: [u32; 2] = [2, 2];
-        let probe_words: [u32; 2] = [3, 5];
-        let mut out = [0f64; 2];
-        let perplexity_tokens: [u32; 4] = [1, 2, 3, 4];
-        let prefix: [u32; 2] = [0, 0];
-
-        let ppl = eval_ids(
-            &tokens,
-            &offsets,
-            3,
-            ModelType::KneserNeyInterpolated,
-            0.1,
-            0.75,
-            6,
-            &probe_ctx,
-            &probe_lens,
-            &probe_words,
-            &mut out,
-            &perplexity_tokens,
-            &prefix,
-        );
-        assert!(out[0] > 0.0);
-        assert!(out[1] > 0.0);
-        assert!(ppl.is_finite());
-    }
-}
+#[path = "lm_tests.rs"]
+mod tests;

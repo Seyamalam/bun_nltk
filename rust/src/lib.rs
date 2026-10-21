@@ -13,6 +13,7 @@ pub mod freqdist;
 pub mod hmm;
 pub mod linear;
 pub mod lm;
+pub mod lm_model;
 pub mod maxent_encoding;
 pub mod metrics;
 pub mod morphy;
@@ -53,6 +54,7 @@ pub mod ffi;
 
 pub mod wasm_decision_tree;
 pub mod wasm_exports;
+pub mod wasm_lm;
 pub mod wasm_metrics;
 pub mod wasm_metrics_stream;
 pub mod wasm_punkt;
