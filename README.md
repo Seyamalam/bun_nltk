@@ -20,7 +20,7 @@ marshaling. The compatibility target is Python NLTK 3.10.3.
   NLTK 3.10.3, 2026-10-20). Missing required fixtures fail the gate; unsupported
   GUI, Java, and network integrations are reported separately and never counted
   as passed.
-- The Rust crate passes 62 unit tests; the TypeScript suite passes 498 tests.
+- The Rust crate passes 62 unit tests; the TypeScript suite passes 499 tests.
 - Passing fixtures establishes agreement for those cases and tolerances, not
   complete NLTK equivalence. See [behavioral validation](docs/BEHAVIORAL_PARITY.md).
 
@@ -344,7 +344,7 @@ bun run release:check
 bash scripts/loc-guard.sh 600
 ```
 
-The npm package currently contains 263 files / 12,230,478 unpacked bytes, below
+The npm package currently contains 263 files / 12,230,592 unpacked bytes, below
 the 400-file and 13 MB limits. The LOC guard rejects non-grandfathered `.ts` and
 `.rs` files above 600 lines.
 

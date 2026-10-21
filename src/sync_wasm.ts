@@ -4,5 +4,8 @@ import { WasmNltk } from "./wasm.ts";
 let runtime: WasmNltk | undefined;
 /** Lazy shared instance for synchronous Node/Bun APIs; browsers initialize WasmNltk explicitly. */
 export function syncWasm(): WasmNltk {
-  return runtime ??= WasmNltk.initSync(readFileSync(new URL("../native/bun_nltk.wasm", import.meta.url)));
+  const relative = import.meta.url.includes("/dist/portable/")
+    ? "../../native/bun_nltk.wasm"
+    : "../native/bun_nltk.wasm";
+  return runtime ??= WasmNltk.initSync(readFileSync(new URL(relative, import.meta.url)));
 }
