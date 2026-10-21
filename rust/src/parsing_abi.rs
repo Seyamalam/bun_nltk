@@ -1,13 +1,42 @@
 //! Dedicated JSON ABI: inputs are borrowed for one call; the result buffer lives
-//! until the next call or release. All algorithms reside in `parsing`.
+//! until the next call or release. Algorithms reside in cohesive parsing modules.
 use crate::parsing::{earley, Child, Format, Grammar, Production, Symbol, Tree};
 use serde::Deserialize;
 use serde_json::{json, Value};
 use std::cell::RefCell;
 
+#[path = "parsing_pcfg.rs"]
+mod pcfg;
+#[path = "parsing_tree_list.rs"]
+mod tree_list;
+
 #[derive(Deserialize)]
 #[serde(tag = "op", rename_all = "snake_case")]
 enum Request {
+    TreeListPlan {
+        len: usize,
+        edit: tree_list::Edit,
+    },
+    PcfgFromstring {
+        text: String,
+    },
+    PcfgValidate {
+        grammar: pcfg::Pcfg,
+    },
+    PcfgProductions {
+        grammar: pcfg::Pcfg,
+        lhs: Option<String>,
+        rhs: Option<Symbol>,
+        empty: bool,
+    },
+    WeightedProductionFormat {
+        production: pcfg::WeightedProduction,
+    },
+    Viterbi {
+        grammar: pcfg::Pcfg,
+        tokens: Vec<String>,
+        max_work: usize,
+    },
     TreeFromstring {
         text: String,
         brackets: String,
@@ -94,6 +123,24 @@ enum Request {
 
 fn dispatch(request: Request) -> crate::parsing::Result<Value> {
     Ok(match request {
+        Request::TreeListPlan { len, edit } => json!(tree_list::plan(len, edit)?),
+        Request::PcfgFromstring { text } => json!(pcfg::Pcfg::fromstring(&text)?),
+        Request::PcfgValidate { grammar } => {
+            grammar.validate()?;
+            Value::Null
+        }
+        Request::PcfgProductions {
+            grammar,
+            lhs,
+            rhs,
+            empty,
+        } => json!(pcfg::productions(grammar, lhs, rhs, empty)?),
+        Request::WeightedProductionFormat { production } => json!(production.format()),
+        Request::Viterbi {
+            grammar,
+            tokens,
+            max_work,
+        } => json!(pcfg::viterbi(&grammar, &tokens, max_work)?),
         Request::TreeFromstring {
             text,
             brackets,

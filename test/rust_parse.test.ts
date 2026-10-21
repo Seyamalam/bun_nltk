@@ -1,9 +1,9 @@
 import { expect, test } from "bun:test";
-import { ParsingRuntime, Tree, Nonterminal, Production, RustCFG, RustEarleyParser, nonterminals, type TreeFormatOptions } from "../src/rust_parse";
+import { ParsingRuntime, Tree, Nonterminal, Production, ProbabilisticProduction, RustCFG, RustPCFG, RustViterbiParser, RustEarleyParser, nonterminals, type TreeFormatOptions, type TreeSlice } from "../src/rust_parse";
 import type { ParseTree } from "../src/parse";
 
 function oracle<T>(code: string, input: object): T {
-  const python = Bun.spawnSync(["python3", "-c", `import json,sys,nltk\nassert nltk.__version__ == '3.10.3', nltk.__version__\n${code}`], {
+  const python = Bun.spawnSync(["python3", "-c", `import json,sys,nltk\nassert sys.version_info[:3] == (3,14,4), sys.version\nassert nltk.__version__ == '3.10.3', nltk.__version__\n${code}`], {
     stdin: new TextEncoder().encode(JSON.stringify(input)), stdout: "pipe", stderr: "pipe",
   });
   if (python.exitCode !== 0) throw new Error(new TextDecoder().decode(python.stderr));
@@ -68,6 +68,215 @@ print(json.dumps(out,ensure_ascii=False))`, { cases });
         spans, subtrees: [...tree.subtrees()].map((s) => s.toPlain()) };
       expect(snapshot).toEqual(e);
     }
+  } finally { runtime.dispose(); }
+});
+
+test("Rust Tree Python slices and list edits match NLTK across clipped, reversed and extended slices", async () => {
+  const slices: TreeSlice[] = [];
+  for (const start of [undefined, -20, -5, -1, 0, 2, 5, 20]) {
+    for (const stop of [undefined, -20, -5, -1, 0, 2, 5, 20]) {
+      for (const step of [undefined, -3, -1, 1, 2, 4, 0]) slices.push({ start, stop, step });
+    }
+  }
+  const expected = oracle<Array<{ slice?: string[]; assigned?: string[]; deleted?: string[]; error?: boolean }>>(`
+out=[]
+for o in json.load(sys.stdin)['slices']:
+ s=slice(o.get('start'),o.get('stop'),o.get('step'))
+ try:
+  t=nltk.Tree('S',list('abcde')); selected=t[s]
+  replacement=['X','Y'] if s.step in (None,1) else ['X']*len(selected)
+  t[s]=replacement
+  d=nltk.Tree('S',list('abcde')); del d[s]
+  out.append({'slice':selected,'assigned':list(t),'deleted':list(d)})
+ except ValueError: out.append({'error':True})
+print(json.dumps(out))`, { slices });
+  const runtime = await ParsingRuntime.load();
+  try {
+    for (let i = 0; i < slices.length; i++) {
+      const o = slices[i]!;
+      const e = expected[i]!;
+      const t = new Tree(runtime, "S", [..."abcde"]);
+      if (e.error) { expect(() => t.slice(o)).toThrow(); expect(() => t.setSlice(o, [])).toThrow(); expect(() => t.deleteSlice(o)).toThrow(); continue; }
+      const selected = t.slice(o);
+      expect(selected).toEqual(e.slice!);
+      const replacement = o.step === undefined || o.step === 1 ? ["X", "Y"] : Array<string>(selected.length).fill("X");
+      t.setSlice(o, replacement); expect([...t]).toEqual(e.assigned!);
+      const d = new Tree(runtime, "S", [..."abcde"]); d.delete_slice(o); expect([...d]).toEqual(e.deleted!);
+    }
+    const indices = [-100, -6, -5, -1, 0, 1, 4, 5, 100];
+    const edits = oracle<Array<{ inserted: string[]; popped?: string; remaining?: string[]; error?: boolean }>>(`
+out=[]
+for i in json.load(sys.stdin)['indices']:
+ t=nltk.Tree('S',list('abcde')); t.insert(i,'X')
+ row={'inserted':list(t)}
+ p=nltk.Tree('S',list('abcde'))
+ try: row.update(popped=p.pop(i),remaining=list(p))
+ except IndexError: row['error']=True
+ out.append(row)
+print(json.dumps(out))`, { indices });
+    for (let i = 0; i < indices.length; i++) {
+      const t = new Tree(runtime, "S", [..."abcde"]); t.insert(indices[i]!, "X"); expect([...t]).toEqual(edits[i]!.inserted);
+      const p = new Tree(runtime, "S", [..."abcde"]);
+      if (edits[i]!.error) expect(() => p.pop(indices[i]!)).toThrow();
+      else { expect(p.pop(indices[i]!)).toBe(edits[i]!.popped!); expect([...p]).toEqual(edits[i]!.remaining!); }
+    }
+    const t = Tree.fromstring(runtime, "(S (A a) b)");
+    t.extend(t); expect(t.length).toBe(4); t.append("c"); t.reverse(); expect(t.leaves()).toEqual(["c", "b", "a", "b", "a"]);
+    const before = t.toPlain(); expect(() => t.set_slice({ step: 2 }, ["x"])).toThrow("size mismatch"); expect(t.toPlain()).toEqual(before);
+    t.clear(); expect(t.length).toBe(0); expect(() => t.pop()).toThrow();
+    for (const index of [0.5, Infinity, NaN]) expect(() => t.insert(index, "x")).toThrow();
+    for (const start of [0.5, Infinity, NaN, Number.MAX_SAFE_INTEGER + 1]) expect(() => t.slice({ start })).toThrow();
+  } finally { runtime.dispose(); }
+});
+
+test("Rust Tree nonstring leaves retain identity through traversal, slices, mutation and shallow/deep copies", async () => {
+  const runtime = await ParsingRuntime.load();
+  try {
+    const a = { label: "not a subtree", children: ["opaque"] };
+    const b = { label: "not a subtree", children: ["opaque"] };
+    const tuple = ["tag", 7];
+    const cyclic: { self?: unknown } = {}; cyclic.self = cyclic;
+    const token = Symbol("token");
+    const values: unknown[] = [a, b, tuple, cyclic, 7, "7", false, null, undefined, NaN, -0, 123n, token];
+    const subtree = new Tree<unknown>(runtime, "A", values);
+    const t = new Tree<unknown>(runtime, "S", [subtree, a]);
+    const expected = oracle<{ positions: number[][]; height: number; shallowShared: boolean; deepShared: boolean; deepLeafShared: boolean }>(`
+a={'label':'not a subtree','children':['opaque']}
+values=[a,dict(a),('tag',7),{},7,'7',False,None,None,float('nan'),0,123,object()]
+t=nltk.Tree('S',[nltk.Tree('A',values),a])
+shallow=t.copy(); deep=t.copy(deep=True)
+print(json.dumps({'positions':t.treepositions(),'height':t.height(),'shallowShared':shallow[0] is t[0],
+ 'deepShared':deep[0] is t[0],'deepLeafShared':deep[0][0] is t[0][0]}))`, {});
+    expect(t.treePositions()).toEqual(expected.positions); expect(t.height()).toBe(expected.height);
+    const leaves = t.leaves();
+    for (let i = 0; i < values.length; i++) { expect(Object.is(leaves[i], values[i])).toBeTrue(); expect(Object.is(t.get([0, i]), values[i])).toBeTrue(); }
+    expect(leaves[values.length]).toBe(a);
+    expect(t.pos()[0]![0]).toBe(a); expect(t.pos()[0]![1]).toBe("A");
+    expect(t.leafTreeposition(2)).toEqual([0, 2]); expect(t.treepositionSpanningLeaves(0, values.length)).toEqual([0]);
+    const shallow = t.copy(false); const deep = t.copy(true);
+    const shallowChild = shallow.get(0); const deepChild = deep.get(0);
+    if (!(shallowChild instanceof Tree) || !(deepChild instanceof Tree)) throw new Error("expected trees");
+    shallowChild.setLabel("shared"); expect((t.get(0) as Tree<unknown>).label() === "shared").toBe(expected.shallowShared);
+    deepChild.setLabel("deep"); expect((t.get(0) as Tree<unknown>).label() === "deep").toBe(expected.deepShared);
+    expect(deepChild.get(0) === a).toBe(expected.deepLeafShared);
+    expect(t.copy().get([0, 0])).toBe(a); // existing no-argument deep-copy API retained
+    expect(t.toPlain().children[1]).toBe(a); expect(t.flatten().get(0)).toBe(a);
+    const selected = subtree.slice({ step: -1 }); expect(selected[0]).toBe(token); expect(selected.at(-1)).toBe(a);
+    subtree.setSlice({ start: 0, stop: 2 }, [b, a]); expect(t.get([0, 0])).toBe(b); expect(t.get([0, 1])).toBe(a);
+    expect(subtree.pop()).toBe(token); subtree.insert(0, cyclic); expect(t.get([0, 0])).toBe(cyclic);
+    expect(() => t.pformat()).toThrow("string leaves"); expect(() => t.productions()).toThrow("string leaves");
+    const loop = new Tree<unknown>(runtime, "loop"); loop.append(loop);
+    expect(() => loop.leaves()).toThrow("cyclic"); expect(() => loop.toPlain()).toThrow("cyclic"); expect(() => loop.copy()).toThrow("cyclic");
+  } finally { runtime.dispose(); }
+});
+
+test("Rust PCFG grammar probabilities, typed filters and errors match NLTK 3.10.3", async () => {
+  const texts = [
+    "S -> A B [.7] | 'S' [.3]\nA -> 'a' [1]\nB -> 'b' [1]",
+    "%start ROOT\nROOT -> S [1]\nS -> 'a|[.2]' [.25] | \"a b\" [.75]",
+    "S -> [.2] | 'a' [.8]", "S -> 'a' | 'b' [1]", "S -> 'a' [.4] | 'a' [.6]",
+    "S -> 'a' [.000001] | 'b' [.999999]", "S -> A [.25] | \\\n 'b' [.75]\nA -> 'a' [1]",
+    "S -> [1]", "S -> [.25] | [.75]", "S -> 'a' [1.]", "S -> 'a' [0.9999999]",
+  ];
+  const expected = oracle<Array<{ start: string; rows: Array<{ text: string; prob: number; logprob: number | null; lexical: boolean }>; rhs: number[]; empty: number[]; lhs: number[] }>>(`
+out=[]
+for text in json.load(sys.stdin)['texts']:
+ g=nltk.PCFG.fromstring(text)
+ out.append({'start':g.start().symbol(),'rows':[{'text':str(p),'prob':p.prob(),'logprob':p.logprob() if p.prob() else None,'lexical':p.is_lexical()} for p in g.productions()],
+ 'rhs':[p.prob() for p in g.productions(rhs='a')],'empty':[p.prob() for p in g.productions(empty=True)],'lhs':[p.prob() for p in g.productions(lhs=g.start())]})
+print(json.dumps(out))`, { texts });
+  const runtime = await ParsingRuntime.load();
+  try {
+    for (let i = 0; i < texts.length; i++) {
+      const g = RustPCFG.fromString(runtime, texts[i]!); const e = expected[i]!;
+      expect(g.start().symbol()).toBe(e.start);
+      const rows = g.productions(); expect(rows.length).toBe(e.rows.length);
+      for (let j = 0; j < rows.length; j++) {
+        expect(String(rows[j]!)).toBe(e.rows[j]!.text); expect(rows[j]!.prob()).toBe(e.rows[j]!.prob);
+        if (e.rows[j]!.logprob === null) expect(rows[j]!.logprob()).toBe(-Infinity); else expect(rows[j]!.logprob()).toBeCloseTo(e.rows[j]!.logprob!, 12);
+        expect(rows[j]!.is_lexical()).toBe(e.rows[j]!.lexical);
+      }
+      expect(g.productions({ rhs: "a" }).map((p) => p.prob())).toEqual(e.rhs);
+      expect(g.productions({ empty: true }).map((p) => p.prob())).toEqual(e.empty);
+      expect(g.productions({ lhs: g.start() }).map((p) => p.prob())).toEqual(e.lhs);
+    }
+    const invalid = ["", "S -> 'a' [.99]", "S -> 'a' [1.01]", "S -> 'a' [.5]", "S -> 'a' [-1]", "S -> 'a' [nan]", "S -> 'a' [1e0]", "S -> 'a' [..1]", "S -> 'a' [1", "S[1] -> 'a'", "S -> 'a' [1]\nA -> 'b' [.8]", "S -> 'a' [1] # inline"];
+    const errors = oracle<boolean[]>(`
+out=[]
+for text in json.load(sys.stdin)['invalid']:
+ try: nltk.PCFG.fromstring(text); out.append(False)
+ except ValueError: out.append(True)
+print(json.dumps(out))`, { invalid });
+    for (let i = 0; i < invalid.length; i++) { expect(errors[i]).toBeTrue(); expect(() => RustPCFG.fromstring(runtime, invalid[i]!)).toThrow(); }
+    const s = new Nonterminal("S"); const p = new ProbabilisticProduction(runtime, s, ["a"], 1);
+    expect(p.equals(new ProbabilisticProduction(runtime, s, ["a"], 1))).toBeTrue(); expect(p.equals(new Production(runtime, s, ["a"]))).toBeFalse();
+    expect(() => new RustPCFG(runtime, s, [new ProbabilisticProduction(runtime, s, ["a"], 0.8)])).toThrow("sum to 1");
+    expect(() => new ProbabilisticProduction(runtime, s, ["a"], NaN)).toThrow();
+  } finally { runtime.dispose(); }
+});
+
+test("Rust Viterbi best original-rule trees and probabilities match NLTK for ambiguity, mixed RHS and unary cycles", async () => {
+  const cases = [
+    { grammar: "S -> NP VP [1]\nNP -> 'alice' [.6] | 'bob' [.4]\nVP -> 'sees' NP [1]", tokens: ["alice", "sees", "bob"] },
+    { grammar: "S -> S S [.4] | 'a' [.6]", tokens: ["a", "a", "a", "a", "a"] },
+    { grammar: "S -> A [.5] | B [.5]\nA -> 'a' [1]\nB -> 'a' [1]", tokens: ["a"] },
+    { grammar: "S -> A [.2] | B [.8]\nA -> 'a' [1]\nB -> 'a' [1]", tokens: ["a"] },
+    { grammar: "S -> 'a' [0] | 'b' [1]", tokens: ["a"] },
+    { grammar: "S -> A [.4] | 'a' [.6]\nA -> S [.4] | 'a' [.6]", tokens: ["a"] },
+    { grammar: "S -> S [.4] | 'a' [.6]", tokens: ["a"] },
+    { grammar: "S -> A [1]\nA -> A [0] | 'a' [1]", tokens: ["a"] },
+    { grammar: "S -> A 'x' B C [1]\nA -> 'a' [1]\nB -> 'b' [1]\nC -> 'c' [1]", tokens: ["a", "x", "b", "c"] },
+    { grammar: "S -> 'S' S [.4] | 'S' [.6]", tokens: ["S", "S", "S"] },
+    { grammar: "S -> 'a' 'b' [1]", tokens: ["b", "a"] },
+    { grammar: "S -> A [1]\nA -> B [1]\nB -> [1]", tokens: [] },
+    { grammar: "S -> A 'a' [1]\nA -> [1]", tokens: ["a"] },
+    { grammar: "%start ROOT\nS -> 'unused' [1]\nROOT -> 'a|b' [.3] | \"a b\" [.7]", tokens: ["a b"] },
+    { grammar: "S -> A [.5] | B [.5]\nA -> C [1]\nC -> 'a' [1]\nB -> 'a' [1]", tokens: ["a"] },
+    { grammar: "S -> 'a' [.500000000000001] | A [.499999999999999]\nA -> 'a' [1]", tokens: ["a"] },
+    { grammar: "%start S\nS -> A B [1]\nA -> 'café' [1]\nB -> '😀' [1]", tokens: ["café", "😀"] },
+  ];
+  cases.push({ grammar: Array.from({ length: 55 }, (_, i) => `N${i} -> N${i+1} [.000001] | 'b' [.999999]`).join("\n") + "\nN55 -> 'a' [1]", tokens: ["a"] });
+  const inputs: string[][] = [[]];
+  for (let length = 1; length <= 4; length++) {
+    for (let bits = 0; bits < 2 ** length; bits++) inputs.push(Array.from({ length }, (_, i) => bits & (1 << i) ? "b" : "a"));
+  }
+  for (const grammar of [
+    "S -> A B [.6] | B A [.3] | A [.1]\nA -> 'a' [.8] | 'b' [.2]\nB -> 'a' [.3] | 'b' [.7]",
+    "S -> S S [.3] | A [.7]\nA -> 'a' [.65] | 'b' [.35]",
+    "S -> A A A [.7] | 'a' A [.3]\nA -> 'a' [.4] | 'b' [.6]",
+    "S -> A [.3] | B [.7]\nA -> B [.2] | 'a' [.8]\nB -> A [.1] | 'b' [.9]",
+  ]) for (const tokens of inputs) cases.push({ grammar, tokens });
+  const expected = oracle<Array<{ tree: ParseTree; prob: number } | null>>(`
+def plain(t):
+ return {'label':t.label(),'children':[plain(c) if isinstance(c,nltk.Tree) else c for c in t]}
+out=[]
+for c in json.load(sys.stdin)['cases']:
+ rows=list(nltk.ViterbiParser(nltk.PCFG.fromstring(c['grammar'])).parse(c['tokens']))
+ out.append({'tree':plain(rows[0]),'prob':rows[0].prob()} if rows else None)
+print(json.dumps(out))`, { cases });
+  const runtime = await ParsingRuntime.load();
+  try {
+    for (let i = 0; i < cases.length; i++) {
+      const c = cases[i]!; const e = expected[i]!;
+      const parser = new RustViterbiParser(RustPCFG.fromstring(runtime, c.grammar));
+      const result = parser.parse_result(c.tokens);
+      if (e === null) { expect(result).toBeNull(); expect(parser.parse(c.tokens)).toEqual([]); }
+      else {
+        expect(result).not.toBeNull(); expect(result!.tree.toPlain()).toEqual(e.tree);
+        expect(result!.prob).toBe(e.prob);
+        if (e.prob === 0) expect(result!.logProb).toBe(-Infinity); else expect(result!.logProb).toBeCloseTo(Math.log(e.prob), 12);
+        expect(parser.parse(c.tokens)[0]!.toPlain()).toEqual(e.tree);
+      }
+    }
+    const grammar = RustPCFG.fromstring(runtime, "S -> S S [.4] | 'a' [.6]");
+    expect(() => new RustViterbiParser(grammar, { max_work: 2 }).parse(["a"])).toThrow("resource");
+    expect(() => new RustViterbiParser(grammar, { maxWork: 2000001 }).parse(["a"])).toThrow("limits");
+    expect(() => new RustViterbiParser(grammar).parse(["missing"])).toThrow("cover");
+    expect(() => new RustViterbiParser(grammar).parse(Array<string>(513).fill("a"))).toThrow("limits");
+    const long = new RustPCFG(runtime, new Nonterminal("S"), [new ProbabilisticProduction(runtime, new Nonterminal("S"), Array<string>(257).fill("a"), 1)]);
+    expect(() => new RustViterbiParser(long).parse(["a"])).toThrow("RHS depth");
+    expect(new RustEarleyParser(RustCFG.fromString(runtime, "S -> 'a'"), { max_trees: 1, max_states: 100 }).parse_result(["a"]).recognized).toBeTrue();
+    expect(grammar.checkCoverage(["a"])).toBeUndefined(); expect(grammar.isNonempty()).toBeTrue();
   } finally { runtime.dispose(); }
 });
 
