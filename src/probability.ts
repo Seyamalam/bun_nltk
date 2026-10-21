@@ -1,4 +1,7 @@
 import { ConditionalFreqDist, FreqDist } from "./freqdist";
+export { HeldoutProbDist, CrossValidationProbDist, KneserNeyProbDist } from "./probability_missing.ts";
+export type { Trigram } from "./probability_missing.ts";
+import { probabilityKey } from "./probability_abi.ts";
 
 const NEG_INF = Number.NEGATIVE_INFINITY;
 const ADD_LOGS_MAX_DIFF = Math.log2(1e-30);
@@ -29,6 +32,10 @@ function keyOf(value: unknown): string {
     default:
       throw new Error(`unsupported condition type: ${typeof value}`);
   }
+}
+
+function conditionKey(value: unknown): string {
+  try { return probabilityKey(value); } catch { return keyOf(value); }
 }
 
 function asEntries<T>(probDict?: ReadonlyMap<T, number> | Record<string, number>): Array<[T, number]> {
@@ -274,7 +281,9 @@ export class ELEProbDist<T> extends LidstoneProbDist<T> {
   }
 }
 
-type ProbDistFactory<T> = (new (freqdist: FreqDist<T>, ...args: any[]) => ProbDistLike<T>) | ((freqdist: FreqDist<T>, ...args: any[]) => ProbDistLike<T>);
+type ProbDistFactory<T, Args extends unknown[] = []> =
+  | (new (freqdist: FreqDist<T>, ...args: Args) => ProbDistLike<T>)
+  | ((freqdist: FreqDist<T>, ...args: Args) => ProbDistLike<T>);
 
 export class WittenBellProbDist<T> extends ProbDistI<T> {
   readonly #freqdist: FreqDist<T>;
@@ -552,36 +561,41 @@ export abstract class ConditionalProbDistI<C, T> {
 
 export { type ProbDistFactory };
 
-export class ConditionalProbDist<C, T> extends ConditionalProbDistI<C, T> {
+export class ConditionalProbDist<C, T, Args extends unknown[] = unknown[]> extends ConditionalProbDistI<C, T> {
   readonly #cache = new Map<string, { condition: C; pdist: ProbDistLike<T> }>();
-  readonly #factoryArgs: any[];
+  readonly #createDistribution: (freqdist: FreqDist<T>) => ProbDistLike<T>;
 
   constructor(
     private readonly cfdist: ConditionalFreqDist<C, T>,
-    private readonly probdistFactory: ProbDistFactory<T>,
-    ...factoryArgs: any[]
+    probdistFactory: ProbDistFactory<T, Args>,
+    ...factoryArgs: Args
   ) {
     super();
-    this.#factoryArgs = factoryArgs;
+    this.#createDistribution = /^class\s/.test(Function.prototype.toString.call(probdistFactory))
+      ? freqdist => new (probdistFactory as new (freqdist: FreqDist<T>, ...args: Args) => ProbDistLike<T>)(freqdist, ...factoryArgs)
+      : freqdist => (probdistFactory as (freqdist: FreqDist<T>, ...args: Args) => ProbDistLike<T>)(freqdist, ...factoryArgs);
+    const sources = new Map<string, { condition: C; freqdist: FreqDist<T>; copied: boolean }>();
     for (const condition of cfdist.conditions()) {
-      this.#cache.set(keyOf(condition), {
+      const key = conditionKey(condition), existing = sources.get(key);
+      if (existing) {
+        if (!existing.copied) { existing.freqdist = existing.freqdist.copy(); existing.copied = true; }
+        existing.freqdist.update(cfdist.get(condition));
+      } else sources.set(key, { condition, freqdist: cfdist.get(condition), copied: false });
+    }
+    for (const [key, { condition, freqdist }] of sources) {
+      this.#cache.set(key, {
         condition,
-        pdist: this.#create(cfdist.get(condition)),
+        pdist: this.#create(freqdist),
       });
     }
   }
 
   #create(freqdist: FreqDist<T>): ProbDistLike<T> {
-    const factory = this.probdistFactory as any;
-    try {
-      return factory(freqdist, ...this.#factoryArgs);
-    } catch {
-      return new factory(freqdist, ...this.#factoryArgs);
-    }
+    return this.#createDistribution(freqdist);
   }
 
   get(condition: C): ProbDistLike<T> {
-    const key = keyOf(condition);
+    const key = conditionKey(condition);
     const existing = this.#cache.get(key);
     if (existing) return existing.pdist;
 
@@ -592,7 +606,7 @@ export class ConditionalProbDist<C, T> extends ConditionalProbDistI<C, T> {
   }
 
   peek(condition: C): ProbDistLike<T> | undefined {
-    return this.#cache.get(keyOf(condition))?.pdist;
+    return this.#cache.get(conditionKey(condition))?.pdist;
   }
 
   conditions(): C[] {
@@ -615,5 +629,33 @@ export class ConditionalProbDist<C, T> extends ConditionalProbDistI<C, T> {
     for (const entry of this.#cache.values()) {
       yield [entry.condition, entry.pdist];
     }
+  }
+}
+
+export class DictionaryConditionalProbDist<C, T> extends ConditionalProbDistI<C, T> {
+  private readonly distributions = new Map<string, { condition: C; pdist: ProbDistLike<T> }>();
+  constructor(probdists: ReadonlyMap<C, ProbDistLike<T>> | Iterable<readonly [C, ProbDistLike<T>]>) {
+    super();
+    this.update(probdists);
+  }
+  update(probdists: Iterable<readonly [C, ProbDistLike<T>]>): void {
+    for (const [condition, pdist] of probdists) {
+      const key = conditionKey(condition), previous = this.distributions.get(key);
+      this.distributions.set(key, { condition: previous ? previous.condition : condition, pdist });
+    }
+  }
+  override get(condition: C): ProbDistLike<T> {
+    const key = conditionKey(condition);
+    let row = this.distributions.get(key);
+    if (!row) {
+      row = { condition, pdist: new DictionaryProbDist<T>() };
+      this.distributions.set(key, row);
+    }
+    return row.pdist;
+  }
+  peek(condition: C): ProbDistLike<T> | undefined { return this.distributions.get(conditionKey(condition))?.pdist; }
+  override conditions(): C[] { return [...this.distributions.values()].map(row => row.condition); }
+  *entries(): IterableIterator<[C, ProbDistLike<T>]> {
+    for (const row of this.distributions.values()) yield [row.condition, row.pdist];
   }
 }

@@ -133,6 +133,10 @@ export {
   ConditionalProbDist,
   ConditionalProbDistI,
   DictionaryProbDist,
+  DictionaryConditionalProbDist,
+  HeldoutProbDist,
+  CrossValidationProbDist,
+  KneserNeyProbDist,
   ELEProbDist,
   entropy,
   LaplaceProbDist,
@@ -147,6 +151,7 @@ export {
   WittenBellProbDist,
 } from "./src/probability";
 export type { ProbDistFactory, ProbDistLike } from "./src/probability";
+export { BinaryMaxentFeatureEncoding, TypedMaxentFeatureEncoding, pythonFloat, PYTHON_INT, PYTHON_FLOAT, PYTHON_BOOL } from "./src/maxent_feature_encoding.ts";
 export { ConcordanceIndex, ContextIndex, Text } from "./src/text";
 export type { ConcordanceLine } from "./src/text";
 export {

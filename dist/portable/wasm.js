@@ -78,6 +78,10 @@ export class WasmNltk {
     if (this.disposed)
       throw new Error("WasmNltk has been disposed");
   }
+  probabilityContractExports() {
+    this.assertActive();
+    return this.exports;
+  }
   assertOrder(n) {
     if (!Number.isSafeInteger(n) || n < 1 || n > 4294967295) {
       throw new RangeError("n must be a positive uint32 integer");

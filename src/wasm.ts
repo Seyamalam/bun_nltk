@@ -2,8 +2,9 @@ import { assertOffsets, assertPerceptronBuffers, assertU32 } from "./numeric_val
 import type { TokenizerKind, TokenizerOptions, TokenizerRequest, TokenSpan } from "./tokenizer_types.ts";
 export type { TokenizerKind, TokenizerOptions, TokenSpan, BlanklineHandling } from "./tokenizer_types.ts";
 import { MetricsWasm, type MetricsExports } from "./metrics_wasm.ts";
+import type { ContractExports } from "./probability_abi.ts";
 
-type WasmExports = MetricsExports & {
+type WasmExports = MetricsExports & ContractExports & {
   memory: WebAssembly.Memory;
   bunnltk_wasm_tokenizer_run: (inputPtr: number, inputLen: number) => number;
   bunnltk_wasm_tokenizer_output_ptr: () => number;
@@ -312,6 +313,11 @@ export class WasmNltk {
 
   private assertActive(): void {
     if (this.disposed) throw new Error("WasmNltk has been disposed");
+  }
+
+  probabilityContractExports(): ContractExports {
+    this.assertActive();
+    return this.exports;
   }
 
   private assertOrder(n: number): void {

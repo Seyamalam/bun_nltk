@@ -34,6 +34,9 @@ export class RustMaxentClassifier {
     this.correction = correction;
   }
   static train(runtime, examples, options = {}) {
+    if ("encoding" in options) {
+      throw new TypeError("custom MaxEnt encoding training is not integrated; standalone encodings are available separately");
+    }
     const algorithm = options.algorithm ?? "iis";
     if (algorithm !== "iis" && algorithm !== "gis")
       throw new TypeError("algorithm must be iis or gis");

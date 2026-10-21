@@ -77,6 +77,9 @@ export class RustMaxentClassifier {
     examples: Iterable<LabeledFeatureset>,
     options: FeatureMaxentOptions = {},
   ): RustMaxentClassifier {
+    if ("encoding" in options) {
+      throw new TypeError("custom MaxEnt encoding training is not integrated; standalone encodings are available separately");
+    }
     const algorithm = options.algorithm ?? "iis";
     if (algorithm !== "iis" && algorithm !== "gis") throw new TypeError("algorithm must be iis or gis");
     const maxIter = nonnegativeInteger(pick(options.maxIter, options.max_iter, "maxIter/max_iter"), "maxIter", 100);

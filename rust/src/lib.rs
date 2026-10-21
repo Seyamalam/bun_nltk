@@ -22,6 +22,10 @@ mod numeric_validation;
 pub mod perceptron;
 pub mod porter;
 pub mod positive_categorical_nb;
+pub mod probability_contracts;
+pub mod maxent_encoding;
+#[cfg(any(target_arch = "wasm32", test))]
+pub mod wasm_probability_contracts;
 pub mod punkt;
 pub mod punkt_unicode;
 pub mod stopwords;

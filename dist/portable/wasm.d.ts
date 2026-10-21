@@ -2,6 +2,13 @@ import { TokenizerKind, TokenizerOptions, TokenSpan } from './tokenizer_types.js
 export { type BlanklineHandling } from './tokenizer_types.js';
 import { MetricsWasm } from './metrics_wasm.js';
 
+type ContractExports = {
+    memory: WebAssembly.Memory;
+    bunnltk_wasm_alloc(size: number): number;
+    bunnltk_wasm_free(ptr: number, size: number): void;
+    bunnltk_wasm_probability_contract(op: number, input: number, inputLength: number, output: number, outputLength: number): number;
+};
+
 type AsciiMetrics = {
     tokens: number;
     uniqueTokens: number;
@@ -41,6 +48,7 @@ declare class WasmNltk {
     get memoryBytes(): number;
     dispose(): void;
     private assertActive;
+    probabilityContractExports(): ContractExports;
     private assertOrder;
     private tokenizerRequest;
     tokenize(text: string, kind?: TokenizerKind, options?: TokenizerOptions): string[];
