@@ -1,17 +1,8 @@
 import { trainPunkt } from "./punkt_trainer";
 import englishModel from "./data/punkt-english.json";
 import { punktSentences, punktSpans } from "./punkt_engine";
-import type { PunktSpan } from "./punkt_wasm";
-
-const TITLE_ABBREVIATIONS = new Set(["dr", "prof"]);
-
-type TokenLook = {
-  token: string;
-  lower: string;
-  start: number;
-  isUpperStart: boolean;
-  isLowerStart: boolean;
-};
+import { encodePunktModel, type PunktSpan } from "./punkt_wasm";
+import { syncWasm } from "./sync_wasm";
 
 export type PunktModelSerialized = {
   version: number;
@@ -27,6 +18,22 @@ export type PunktTrainingOptions = {
   minAbbrevCount?: number;
   minCollocationCount?: number;
   minSentenceStarterCount?: number;
+};
+
+export type PunktDebugDecision = {
+  /** JavaScript UTF-16 index, unlike Python's code-point index. */
+  period_index: number;
+  text: string;
+  type1: string;
+  type2: string;
+  type1_in_abbrs: boolean;
+  type1_is_initial: boolean;
+  type2_is_sent_starter: boolean;
+  type2_ortho_heuristic: boolean | "unknown";
+  type2_ortho_contexts: string[];
+  collocation: boolean;
+  reason: string;
+  break_decision: boolean | null;
 };
 
 export class PunktTrainerSubset {
@@ -56,12 +63,14 @@ export class PunktTrainerSubset {
   getParams(): PunktModelSerialized {
     return this.finalize();
   }
+  get_params(): PunktModelSerialized { return this.getParams(); }
 }
 
 export class PunktTrainer extends PunktTrainerSubset {
   loadTrainText(text: string): this {
     return this.train(text);
   }
+  load_train_text(text: string): this { return this.loadTrainText(text); }
 }
 
 export class PunktSentenceTokenizerSubset {
@@ -80,6 +89,13 @@ export class PunktSentenceTokenizerSubset {
     if (this.model.version < 2) throw new RangeError("spanTokenize requires a version 2 Punkt model");
     return punktSpans(text, this.model, realignBoundaries);
   }
+  span_tokenize(text: string, realignBoundaries = true): PunktSpan[] { return this.spanTokenize(text, realignBoundaries); }
+
+  debugDecisions(text: string): PunktDebugDecision[] {
+    if (this.model.version < 2) throw new RangeError("debugDecisions requires a version 2 Punkt model");
+    return syncWasm().punktRequest({ op: "debug", text, model: Array.from(encodePunktModel(this.model)) }) as PunktDebugDecision[];
+  }
+  debug_decisions(text: string): PunktDebugDecision[] { return this.debugDecisions(text); }
 
   train(text: string, options: PunktTrainingOptions = {}): this {
     const trainer = new PunktTrainerSubset();
@@ -91,6 +107,7 @@ export class PunktSentenceTokenizerSubset {
   getParams(): PunktModelSerialized {
     return parsePunktModel(this.model);
   }
+  get_params(): PunktModelSerialized { return this.getParams(); }
 }
 
 export class PunktSentenceTokenizer extends PunktSentenceTokenizerSubset {
@@ -98,142 +115,7 @@ export class PunktSentenceTokenizer extends PunktSentenceTokenizerSubset {
     this.model = parsePunktModel(model);
     return this;
   }
-}
-
-type PunktPreparedModel = {
-  abbreviations: Set<string>;
-  collocations: Set<string>;
-  sentenceStarters: Set<string>;
-  abbreviationScores: Map<string, number>;
-  orthographicContext: Map<string, { lower: number; upper: number }>;
-};
-
-function isWhitespace(ch: string): boolean {
-  return /\s/.test(ch);
-}
-
-function isSentencePunct(ch: string): boolean {
-  return ch === "." || ch === "!" || ch === "?";
-}
-
-function isCloser(ch: string): boolean {
-  return ch === '"' || ch === "'" || ch === ")" || ch === "]" || ch === "}";
-}
-
-function findPrevToken(text: string, idx: number): string {
-  let end = idx;
-  while (end >= 0 && /[\s"'()[\]{}]/.test(text[end]!)) end -= 1;
-  if (end < 0) return "";
-
-  let start = end;
-  while (start >= 0 && /[A-Za-z0-9.]/.test(text[start]!)) start -= 1;
-  return text.slice(start + 1, end + 1);
-}
-
-function findNextToken(text: string, idx: number): TokenLook | null {
-  let i = idx;
-  while (i < text.length && (isWhitespace(text[i]!) || isCloser(text[i]!))) i += 1;
-  if (i >= text.length) return null;
-
-  const start = i;
-  while (i < text.length && /[A-Za-z0-9.]/.test(text[i]!)) i += 1;
-  const token = text.slice(start, i);
-  if (!token) return null;
-  const first = token[0]!;
-  return {
-    token,
-    lower: token.toLowerCase(),
-    start,
-    isUpperStart: /[A-Z]/.test(first),
-    isLowerStart: /[a-z]/.test(first),
-  };
-}
-
-function normalizeAbbrev(token: string): string {
-  return token.replace(/\.+$/, "").toLowerCase();
-}
-
-function preparePunktModel(model: PunktModelSerialized): PunktPreparedModel {
-  const abbreviations = new Set<string>();
-  const collocations = new Set<string>();
-  const sentenceStarters = new Set<string>();
-  const abbreviationScores = new Map<string, number>();
-  const orthographicContext = new Map<string, { lower: number; upper: number }>();
-
-  for (const abbr of model.abbreviations) {
-    abbreviations.add(normalizeAbbrev(abbr));
-  }
-  for (const [left, right] of model.collocations) {
-    collocations.add(`${normalizeAbbrev(left)}\u0001${right.toLowerCase()}`);
-  }
-  for (const starter of model.sentenceStarters) {
-    sentenceStarters.add(starter.toLowerCase());
-  }
-  for (const [abbr, score] of Object.entries(model.abbreviationScores ?? {})) {
-    abbreviationScores.set(normalizeAbbrev(abbr), score);
-  }
-  for (const [token, ctx] of Object.entries(model.orthographicContext ?? {})) {
-    orthographicContext.set(token.toLowerCase(), {
-      lower: Math.max(0, ctx.lower ?? 0),
-      upper: Math.max(0, ctx.upper ?? 0),
-    });
-  }
-
-  return {
-    abbreviations,
-    collocations,
-    sentenceStarters,
-    abbreviationScores,
-    orthographicContext,
-  };
-}
-
-function shouldSplitAt(text: string, punctIdx: number, model: PunktPreparedModel): boolean {
-  const punct = text[punctIdx]!;
-  const prev = punctIdx > 0 ? text[punctIdx - 1]! : "";
-  const next = punctIdx + 1 < text.length ? text[punctIdx + 1]! : "";
-
-  if (punct === "." && /\d/.test(prev) && /\d/.test(next)) return false;
-  if (punct === "." && next === ".") return false;
-  if (
-    punct === "." &&
-    /[A-Za-z]/.test(next) &&
-    punctIdx + 2 < text.length &&
-    text[punctIdx + 2] === "."
-  ) {
-    return false;
-  }
-
-  const prevToken = findPrevToken(text, punctIdx - 1);
-  const prevNorm = normalizeAbbrev(prevToken);
-  const look = findNextToken(text, punctIdx + 1);
-  if (!look) return true;
-
-  if (punct === "." && /^[A-Za-z]$/.test(prevNorm) && look.isUpperStart) {
-    return false;
-  }
-  if (punct === "." && (prevNorm === "a.m" || prevNorm === "p.m")) {
-    return false;
-  }
-
-  if (punct === "." && model.abbreviations.has(prevNorm)) {
-    const abbrScore = model.abbreviationScores.get(prevNorm) ?? 0;
-    const lookCtx = model.orthographicContext.get(look.lower);
-    if (TITLE_ABBREVIATIONS.has(prevNorm) && look.isUpperStart) return false;
-    if (look.isLowerStart) return false;
-    if (lookCtx && lookCtx.lower > lookCtx.upper * 1.5) return false;
-    const pairKey = `${prevNorm}\u0001${look.lower}`;
-    if (model.collocations.has(pairKey)) return false;
-    if (abbrScore >= 0.75 && !model.sentenceStarters.has(look.lower)) return false;
-    if (!look.isUpperStart && !model.sentenceStarters.has(look.lower)) return false;
-  }
-
-  if (look.isUpperStart) return true;
-  if (/[0-9]/.test(look.token[0]!)) return true;
-  if (look.token[0] === '"' || look.token[0] === "'" || look.token[0] === "(") return true;
-  if (punct === "!" || punct === "?") return true;
-  if (look.isLowerStart && !model.sentenceStarters.has(look.lower)) return false;
-  return true;
+  set_params(model: PunktModelSerialized): this { return this.setParams(model); }
 }
 
 export function trainPunktModel(
@@ -246,24 +128,13 @@ export function trainPunktModel(
 export function sentenceTokenizePunkt(text: string, model?: PunktModelSerialized, realignBoundaries = true): string[] {
   if (!model || model.version >= 2) return punktSentences(text, model ?? defaultPunktModel(), realignBoundaries);
   if (!realignBoundaries) throw new RangeError("raw Punkt boundaries require a version 2 model");
-  const prepared = preparePunktModel(model);
-  const out: string[] = [];
-  let start = 0;
-
-  for (let i = 0; i < text.length; i += 1) {
-    if (!isSentencePunct(text[i]!)) continue;
-    if (!shouldSplitAt(text, i, prepared)) continue;
-
-    let end = i + 1;
-    while (end < text.length && isCloser(text[end]!)) end += 1;
-    const sentence = text.slice(start, end).trim();
-    if (sentence) out.push(sentence);
-    start = end;
-  }
-
-  const tail = text.slice(start).trim();
-  if (tail) out.push(tail);
-  return out;
+  const units = Array.from({ length: text.length }, (_, i) => text.charCodeAt(i));
+  const spans = syncWasm().punktRequest({ op: "legacy", units, model: {
+    ...model,
+    abbreviationScores: Object.entries(model.abbreviationScores ?? {}),
+    orthographicContext: Object.entries(model.orthographicContext ?? {}),
+  } }) as PunktSpan[];
+  return spans.map(([start, end]) => text.slice(start, end));
 }
 
 export function sentenceTokenizePunktCompat(text: string, model?: PunktModelSerialized): string[] {

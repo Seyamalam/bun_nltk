@@ -26,6 +26,8 @@ type WasmExports = MetricsExports & ContractExports & {
   bunnltk_wasm_punkt_spans: (handle: number, inputLen: number, realign: number, outPtr: number, capacity: number) => number;
   bunnltk_wasm_punkt_free: (handle: number) => void;
   bunnltk_wasm_punkt_clear: () => void;
+  bunnltk_wasm_punkt_request: (inputLen: number) => number;
+  bunnltk_wasm_punkt_copy: (outPtr: number, outLen: number) => void;
   bunnltk_wasm_metrics_stream_new: (order: number, tokenBytes: number, tokens: number, grams: number) => number;
   bunnltk_wasm_metrics_stream_update: (handle: number, inputLen: number) => void;
   bunnltk_wasm_metrics_stream_finish: (handle: number, outPtr: number, outLen: number) => void;
@@ -410,6 +412,21 @@ export class WasmNltk {
     const handle = this.exports.bunnltk_wasm_punkt_load(length);
     this.assertNoError("punktLoad");
     return handle;
+  }
+
+  /** Stateless training/legacy control ABI; algorithms live in Rust. */
+  punktRequest(request: unknown): unknown {
+    this.assertActive();
+    if (typeof this.exports.bunnltk_wasm_punkt_request !== "function") throw new Error("incompatible Punkt WASM artifact: rebuild with bun run build:wasm");
+    const length = this.writeInput(JSON.stringify(request));
+    const size = this.exports.bunnltk_wasm_punkt_request(length);
+    this.assertNoError("punktRequest");
+    const out = this.ensureBlock("punkt_result", size);
+    this.exports.bunnltk_wasm_punkt_copy(out.ptr, size);
+    this.assertNoError("punktRequest.copy");
+    const result: unknown = JSON.parse(this.decoder.decode(new Uint8Array(this.exports.memory.buffer, out.ptr, size)));
+    if (result && typeof result === "object" && "error" in result) throw new Error(String(result.error));
+    return result;
   }
 
   punktSpans(handle: number, text: string, realignBoundaries = true): Uint32Array {

@@ -28,6 +28,8 @@ pub mod positive_categorical_nb;
 pub mod probability_contracts;
 pub mod punkt;
 pub mod punkt_unicode;
+pub mod punkt_training;
+pub mod punkt_legacy;
 pub mod stopwords;
 pub mod stream_freqdist;
 pub mod tagger;

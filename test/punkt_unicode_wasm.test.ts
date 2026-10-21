@@ -1,18 +1,20 @@
 import { expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
-import { defaultPunktModel, PunktSentenceTokenizer, sentenceTokenizePunkt, type PunktModelSerialized } from "../src/punkt";
+import { defaultPunktModel, PunktSentenceTokenizer, sentenceTokenizePunkt, type PunktModelSerialized, type PunktDebugDecision } from "../src/punkt";
 import { RustPunktTokenizer, encodePunktModel } from "../src/punkt_wasm";
 import { WasmNltk } from "../src/wasm";
 
 type OracleRow = {
   aligned: { sentences: string[]; bytes: [number, number][]; utf16: [number, number][] };
   raw: { sentences: string[]; bytes: [number, number][]; utf16: [number, number][] };
+  debug?: PunktDebugDecision[];
+  debug_error?: boolean;
 };
 
-function oracle(model: PunktModelSerialized, texts: string[]): OracleRow[] {
+function oracle(model: PunktModelSerialized, texts: string[], debug = false): OracleRow[] {
   const proc = Bun.spawnSync(["python3", "test/python_punkt_unicode.py"], {
     cwd: new URL("..", import.meta.url).pathname,
-    stdin: new TextEncoder().encode(JSON.stringify({ model, texts })),
+    stdin: new TextEncoder().encode(JSON.stringify({ model, texts, debug })),
     stdout: "pipe", stderr: "pipe",
   });
   if (proc.exitCode !== 0) throw new Error(new TextDecoder().decode(proc.stderr));
@@ -110,3 +112,36 @@ test("PunktSentenceTokenizer raw boundaries and UTF-16 spans use the Rust core",
   expect(tokenizer.spanTokenize(text)).toEqual(expected.aligned.utf16);
   expect(tokenizer.spanTokenize(text, false)).toEqual(expected.raw.utf16);
 });
+
+test("Punkt decision debug shares Rust inference and matches NLTK fields and failure boundaries", () => {
+  const model: PunktModelSerialized = { version: 2, abbreviations: ["dr", "etc"],
+    collocations: [["j", "smith"], ["##number##", "chapter"]], sentenceStarters: ["he"],
+    orthoContext: { next: 32, smith: 4, chapter: 32, lower: 16 } };
+  for (const params of [model, defaultPunktModel()]) {
+    const cases = [...texts, "Dr. Next. Dr. He. J. Smith. ٣. chapter. A. lower.", "Hello.)", "Word?!", "Word.\"", "... next."];
+    const expected = oracle(params, cases, true);
+    const tokenizer = new PunktSentenceTokenizer(params);
+    for (const [i, text] of cases.entries()) {
+      if (expected[i]!.debug_error) expect(() => tokenizer.debugDecisions(text)).toThrow("two tokens");
+      else {
+        const decisions = tokenizer.debug_decisions(text).map((d) => ({ ...d, type2_ortho_contexts: [...d.type2_ortho_contexts].sort() }));
+        expect(decisions, text).toEqual(expected[i]!.debug!);
+      }
+    }
+    expect(tokenizer.span_tokenize("Text.")).toEqual(tokenizer.spanTokenize("Text."));
+    expect(tokenizer.get_params()).toEqual(tokenizer.getParams());
+  }
+  expect(() => new PunktSentenceTokenizer({ ...model, version: 1 }).debug_decisions("Text. Next.")).toThrow("version 2");
+}, 30_000);
+
+test("custom Punkt all orthographic context bit combinations match NLTK", () => {
+  const model: PunktModelSerialized = { version: 2, abbreviations: ["dr"], collocations: [], sentenceStarters: ["starter"], orthoContext: {} };
+  const cases: string[] = [];
+  for (let bits = 0; bits < 128; bits++) {
+    model.orthoContext![`word${bits}`] = bits;
+    for (const before of ["Dr.", "A.", "٣.", "Done.", "Wait..."]) {
+      for (const first of ["Word", "word"]) cases.push(`${before} ${first}${bits}. Next.`);
+    }
+  }
+  compare(model, cases, false);
+}, 30_000);

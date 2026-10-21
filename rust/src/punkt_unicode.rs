@@ -1,5 +1,6 @@
 //! English Punkt inference from NLTK 3.10.3 (Apache-2.0).
 //! Offsets are UTF-8 bytes. The trained model is supplied by the caller.
+use serde::Serialize;
 use std::collections::{HashMap, HashSet};
 
 use crate::tokenizer_unicode as unicode;
@@ -33,11 +34,11 @@ fn word_start(c: char) -> bool {
     !"(\"`{[:;&#*@)}]-,".contains(c)
 }
 
-fn decimal(c: char) -> bool {
+pub(crate) fn decimal(c: char) -> bool {
     in_ranges(c, unicode::DECIMAL)
 }
 
-fn initial_char(c: char) -> bool {
+pub(crate) fn initial_char(c: char) -> bool {
     // Python alnum covers L* + N* (Nd, Nl, No); Punkt initials exclude Nd.
     c == '_' || (in_ranges(c, unicode::WORD) && !in_ranges(c, unicode::DECIMAL))
 }
@@ -89,13 +90,15 @@ fn word_end(chars: &[(usize, char)], i: usize) -> bool {
 }
 
 #[derive(Debug)]
-struct Token<'a> {
-    text: &'a str,
-    typ: String,
-    sentbreak: bool,
-    abbr: bool,
-    ellipsis: bool,
-    initial: bool,
+pub(crate) struct Token<'a> {
+    pub(crate) text: &'a str,
+    pub(crate) typ: String,
+    pub(crate) sentbreak: bool,
+    pub(crate) abbr: bool,
+    pub(crate) ellipsis: bool,
+    pub(crate) initial: bool,
+    pub(crate) parastart: bool,
+    pub(crate) linestart: bool,
 }
 
 impl<'a> Token<'a> {
@@ -140,10 +143,12 @@ impl<'a> Token<'a> {
             abbr,
             ellipsis,
             initial,
+            parastart: false,
+            linestart: false,
         }
     }
 
-    fn no_period(&self) -> &str {
+    pub(crate) fn no_period(&self) -> &str {
         if self.typ.len() > 1 && self.typ.ends_with('.') {
             &self.typ[..self.typ.len() - 1]
         } else {
@@ -151,7 +156,7 @@ impl<'a> Token<'a> {
         }
     }
 
-    fn no_sent_period(&self) -> &str {
+    pub(crate) fn no_sent_period(&self) -> &str {
         if self.sentbreak {
             self.no_period()
         } else {
@@ -159,18 +164,24 @@ impl<'a> Token<'a> {
         }
     }
 
-    fn upper(&self) -> bool {
+    pub(crate) fn upper(&self) -> bool {
         self.text.chars().next().unwrap().is_uppercase()
     }
-    fn lower(&self) -> bool {
+    pub(crate) fn lower(&self) -> bool {
         self.text.chars().next().unwrap().is_lowercase()
     }
 }
 
-fn tokenize<'a>(text: &'a str, model: &PunktModel) -> Vec<Token<'a>> {
+pub(crate) fn tokenize<'a>(text: &'a str, model: &PunktModel) -> Vec<Token<'a>> {
     let mut result = Vec::new();
+    let mut para = false;
     // NLTK tokenizes each line independently, including spaced ellipses.
     for line in text.split('\n') {
+        if line.trim_matches(is_space).is_empty() {
+            para = true;
+            continue;
+        }
+        let mut first = true;
         let chars: Vec<_> = line.char_indices().collect();
         let mut i = 0;
         while i < chars.len() {
@@ -194,7 +205,12 @@ fn tokenize<'a>(text: &'a str, model: &PunktModel) -> Vec<Token<'a>> {
             } else {
                 chars[i].0
             };
-            result.push(Token::new(&line[chars[start].0..stop], model));
+            let mut token = Token::new(&line[chars[start].0..stop], model);
+            token.linestart = first;
+            token.parastart = first && para;
+            first = false;
+            para = false;
+            result.push(token);
         }
     }
     result
@@ -225,41 +241,7 @@ impl PunktModel {
             let (left, right) = tokens.split_at_mut(i + 1);
             let t = &mut left[i];
             let next = &right[0];
-            if t.text.ends_with('.') {
-                if self
-                    .collocations
-                    .contains(&(t.no_period().to_owned(), next.no_sent_period().to_owned()))
-                {
-                    t.sentbreak = false;
-                    t.abbr = true;
-                } else {
-                    let h = self.heuristic(next);
-                    if (t.abbr || t.ellipsis)
-                        && !t.initial
-                        && (h == Some(true)
-                            || (next.upper()
-                                && self.sentence_starters.contains(next.no_sent_period())))
-                    {
-                        t.sentbreak = true;
-                    }
-                    if (t.initial || t.no_period() == "##number##")
-                        && (h == Some(false)
-                            || (h.is_none()
-                                && t.initial
-                                && next.upper()
-                                && self
-                                    .ortho_context
-                                    .get(next.no_sent_period())
-                                    .copied()
-                                    .unwrap_or(0)
-                                    & 112
-                                    == 0))
-                    {
-                        t.sentbreak = false;
-                        t.abbr = true;
-                    }
-                }
-            }
+            self.second_pass(t, next);
             if t.sentbreak {
                 return true;
             }
@@ -267,7 +249,55 @@ impl PunktModel {
         false
     }
 
-    pub fn spans(&self, text: &str, realign_boundaries: bool) -> Vec<(usize, usize)> {
+    fn second_pass(&self, t: &mut Token<'_>, next: &Token<'_>) -> Option<&'static str> {
+        if !t.text.ends_with('.') {
+            return None;
+        }
+        if self
+            .collocations
+            .contains(&(t.no_period().to_owned(), next.no_sent_period().to_owned()))
+        {
+            t.sentbreak = false;
+            t.abbr = true;
+            return Some("known collocation (both words)");
+        }
+        let h = self.heuristic(next);
+        if (t.abbr || t.ellipsis) && !t.initial {
+            if h == Some(true) {
+                t.sentbreak = true;
+                return Some("abbreviation + orthographic heuristic");
+            }
+            if next.upper() && self.sentence_starters.contains(next.no_sent_period()) {
+                t.sentbreak = true;
+                return Some("abbreviation + frequent sentence starter");
+            }
+        }
+        if t.initial || t.no_period() == "##number##" {
+            if h == Some(false) {
+                t.sentbreak = false;
+                t.abbr = true;
+                return Some("initial + orthographic heuristic");
+            }
+            if h.is_none()
+                && t.initial
+                && next.upper()
+                && self
+                    .ortho_context
+                    .get(next.no_sent_period())
+                    .copied()
+                    .unwrap_or(0)
+                    & 112
+                    == 0
+            {
+                t.sentbreak = false;
+                t.abbr = true;
+                return Some("initial + special orthographic heuristic");
+            }
+        }
+        None
+    }
+
+    fn contexts(&self, text: &str) -> Vec<(usize, usize, usize, Option<usize>)> {
         let chars: Vec<_> = text.char_indices().collect();
         // (preceding-word start, punctuation end, after-token end, next-token start)
         let mut contexts = Vec::new();
@@ -326,9 +356,72 @@ impl PunktModel {
         if let Some(context) = previous {
             contexts.push(context);
         }
+        contexts
+    }
+
+    pub fn debug_decisions(&self, text: &str) -> Result<Vec<DebugDecision>, String> {
+        let mut result = Vec::new();
+        for (start, end, after_end, _) in self.contexts(text) {
+            let context = &text[start..after_end];
+            let mut tokens = tokenize(context, self);
+            let first = tokens
+                .iter()
+                .position(|t| t.text.ends_with(['.', '?', '!']));
+            let Some(i) = first.filter(|&i| i + 1 < tokens.len()) else {
+                return Err(
+                    "Punkt debug context requires two tokens (NLTK raises IndexError here)".into(),
+                );
+            };
+            let (left, right) = tokens.split_at_mut(i + 1);
+            let (t, next) = (&mut left[i], &right[0]);
+            let bits = self
+                .ortho_context
+                .get(next.no_sent_period())
+                .copied()
+                .unwrap_or(0);
+            let mut decision = DebugDecision {
+                period_index: text[..end - 1].encode_utf16().count(),
+                text: context.into(),
+                type1: t.typ.clone(),
+                type2: next.typ.clone(),
+                type1_in_abbrs: t.abbr,
+                type1_is_initial: t.initial,
+                type2_is_sent_starter: self.sentence_starters.contains(next.no_sent_period()),
+                type2_ortho_heuristic: self
+                    .heuristic(next)
+                    .map(serde_json::Value::Bool)
+                    .unwrap_or_else(|| "unknown".into()),
+                type2_ortho_contexts: ["BEG-UC", "MID-UC", "UNK-UC", "BEG-LC", "MID-LC", "UNK-LC"]
+                    .into_iter()
+                    .enumerate()
+                    .filter(|(i, _)| bits & (2 << i) != 0)
+                    .map(|(_, name)| name)
+                    .collect(),
+                // NLTK debug uses no_sent_period here, not the inference key.
+                collocation: self
+                    .collocations
+                    .contains(&(t.no_sent_period().into(), next.no_sent_period().into())),
+                reason: "default decision",
+                break_decision: None,
+            };
+            let reason = self.second_pass(t, next);
+            decision.reason = reason.unwrap_or("default decision");
+            decision.break_decision = if t.sentbreak {
+                Some(true)
+            } else if reason.is_some() {
+                Some(false)
+            } else {
+                None
+            };
+            result.push(decision);
+        }
+        Ok(result)
+    }
+
+    pub fn spans(&self, text: &str, realign_boundaries: bool) -> Vec<(usize, usize)> {
         let mut slices = Vec::new();
         let mut last = 0;
-        for (start, end, after_end, next_start) in contexts {
+        for (start, end, after_end, next_start) in self.contexts(text) {
             if self.contains_break(&text[start..after_end]) {
                 slices.push((last, end));
                 last = next_start.unwrap_or(end);
@@ -360,6 +453,23 @@ impl PunktModel {
     }
 }
 
+/// NLTK field names; period_index is explicitly a JS UTF-16 index in this API.
+#[derive(Serialize)]
+pub struct DebugDecision {
+    period_index: usize,
+    text: String,
+    type1: String,
+    type2: String,
+    type1_in_abbrs: bool,
+    type1_is_initial: bool,
+    type2_is_sent_starter: bool,
+    type2_ortho_heuristic: serde_json::Value,
+    type2_ortho_contexts: Vec<&'static str>,
+    collocation: bool,
+    reason: &'static str,
+    break_decision: Option<bool>,
+}
+
 fn alignment(text: &str) -> Option<(usize, usize)> {
     let mut end = 0;
     for c in text.chars() {
@@ -379,7 +489,7 @@ fn alignment(text: &str) -> Option<(usize, usize)> {
     None
 }
 
-/// Versioned length-prefixed UTF-8 ABI; no delimiters or JSON parser in WASM.
+/// Versioned length-prefixed UTF-8 inference payload, without JSON delimiters.
 pub fn decode_model(bytes: &[u8]) -> Option<PunktModel> {
     struct Reader<'a> {
         data: &'a [u8],

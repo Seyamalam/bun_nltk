@@ -5,6 +5,7 @@ import nltk
 from nltk.tokenize.punkt import PunktParameters, PunktSentenceTokenizer
 
 assert nltk.__version__ == "3.10.3", nltk.__version__
+assert sys.version_info[:3] == (3, 14, 4), sys.version
 request = json.load(sys.stdin)
 model = request["model"]
 params = PunktParameters()
@@ -16,6 +17,15 @@ tokenizer = PunktSentenceTokenizer(params)
 rows = []
 for text in request["texts"]:
     row = {}
+    if request.get("debug"):
+        try:
+            decisions = list(tokenizer.debug_decisions(text))
+            for decision in decisions:
+                decision["period_index"] = len(text[:decision["period_index"]].encode("utf-16-le")) // 2
+                decision["type2_ortho_contexts"] = sorted(decision["type2_ortho_contexts"])
+            row["debug"] = decisions
+        except IndexError:
+            row["debug_error"] = True
     for realign in (True, False):
         spans = list(tokenizer.span_tokenize(text, realign))
         row["aligned" if realign else "raw"] = {
