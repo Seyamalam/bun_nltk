@@ -185,7 +185,7 @@ fn escape(chars: &[char], i: &mut usize, ascii: bool, in_class: bool) -> Result<
     Ok(Escape::Ranges(vec![(literal as u32, literal as u32)]))
 }
 
-fn translate(pattern: &str, flags: u32) -> Result<String, String> {
+pub(super) fn translate(pattern: &str, flags: u32) -> Result<String, String> {
     if flags & !SUPPORTED_FLAGS != 0 {
         return Err(unsupported(
             "flags (including re.ASCII=256 / regex.VERSION1); redos ASCII is 128",

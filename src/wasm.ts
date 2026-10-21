@@ -375,7 +375,7 @@ export class WasmNltk {
     }
   }
 
-  private tokenizerRequest(request: TokenizerRequest | import("./tokenizers_regexp.ts").RegexpTokenizerRequest): unknown {
+  private tokenizerRequest(request: TokenizerRequest | import("./tokenizers_regexp.ts").RegexpTokenizerRequest | import("./tokenizers_social.ts").SocialTokenizerRequest): unknown {
     this.assertActive();
     if (typeof this.exports.bunnltk_wasm_tokenizer_run !== "function" ||
         typeof this.exports.bunnltk_wasm_tokenizer_output_ptr !== "function" ||
@@ -404,6 +404,11 @@ export class WasmNltk {
   /** Dedicated regexp transport; pattern translation and matching stay in Rust. */
   regexpTokenizer(request: import("./tokenizers_regexp.ts").RegexpTokenizerRequest): unknown {
     return this.tokenizerRequest(request);
+  }
+
+  socialTokenizer(request: import("./tokenizers_social.ts").SocialTokenizerRequest): string[] | string {
+    if (request.kind !== "mwe" && typeof request.text !== "string") throw new TypeError("text must be a string");
+    return this.tokenizerRequest(request) as string[] | string;
   }
 
   /** Spans use Python code-point indices; Array.from(text).slice(start, end) extracts a token. */

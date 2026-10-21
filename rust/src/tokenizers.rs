@@ -1,12 +1,17 @@
 //! NLTK 3.10.3 Treebank and basic tokenizers. Spans count Unicode scalars,
 //! matching Python indices, not UTF-8 bytes or JavaScript UTF-16 code units.
 use regex_lite::Regex;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::sync::OnceLock;
 
 use crate::tokenizer_unicode as unicode;
 #[path = "regexp_tokenizer.rs"]
 mod regexp_tokenizer;
+#[path = "tokenizer_request.rs"]
+mod tokenizer_request;
+#[path = "tokenizers_social.rs"]
+mod social;
+pub use tokenizer_request::Request;
 
 const PY_SPACE: &str = r"[\x09-\x0d\x1c-\x20\x{85}\x{a0}\x{1680}\x{2000}-\x{200a}\x{2028}\x{2029}\x{202f}\x{205f}\x{3000}]";
 const REGEX_SPACE: &str =
@@ -504,40 +509,6 @@ fn line_tokens(text: &str, blanklines: &str) -> Result<Vec<String>, String> {
     Ok(lines)
 }
 
-#[derive(Deserialize)]
-pub struct Request {
-    pub kind: String,
-    #[serde(default)]
-    pub text: String,
-    #[serde(default)]
-    pub tokens: Vec<String>,
-    #[serde(default)]
-    pub spans: bool,
-    #[serde(default)]
-    pub convert_parentheses: bool,
-    #[serde(default = "default_blanklines")]
-    pub blanklines: String,
-    #[serde(default)]
-    pub pattern: Option<String>,
-    #[serde(default)]
-    pub gaps: bool,
-    #[serde(default = "default_discard_empty")]
-    pub discard_empty: bool,
-    #[serde(default = "default_regexp_flags")]
-    pub flags: u32,
-}
-
-fn default_discard_empty() -> bool {
-    true
-}
-fn default_regexp_flags() -> u32 {
-    regexp_tokenizer::DEFAULT_FLAGS
-}
-
-fn default_blanklines() -> String {
-    "discard".into()
-}
-
 #[derive(Serialize, Debug)]
 #[serde(untagged)]
 pub enum Response {
@@ -549,6 +520,9 @@ pub enum Response {
 }
 
 pub fn execute(request: Request) -> Result<Response, String> {
+    if matches!(request.kind.as_str(), "tweet" | "toktok" | "mwe") {
+        return social::execute(&request);
+    }
     if request.kind == "regexp" {
         return regexp_tokenizer::execute(&request);
     }

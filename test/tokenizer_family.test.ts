@@ -21,9 +21,9 @@ test("WordPunct tokenizer splits around punctuation groups", () => {
   expect(new WordPunctTokenizer().tokenize("can't")).toEqual(["can", "'", "t"]);
 });
 
-test("Toktok tokenizer keeps ellipsis and contractions", () => {
+test("Toktok tokenizer keeps ellipsis and splits quotes like NLTK", () => {
   const text = "Well... this isn't bad!";
-  expect(toktokTokenize(text)).toEqual(["Well", "...", "this", "isn't", "bad", "!"]);
+  expect(toktokTokenize(text)).toEqual(["Well", "...", "this", "isn", "'", "t", "bad", "!"]);
 });
 
 test("MWETokenizer merges longest matching multi-word expressions", () => {
@@ -40,7 +40,7 @@ test("TweetTokenizer supports preserveCase + emoticon casing rules", () => {
   expect(tokenizer.tokenize("I LOVE NLP :D #Fun")).toEqual(["i", "love", "nlp", ":D", "#fun"]);
 });
 
-test("tweetTokenize keeps existing subset behavior and supports extra options", () => {
+test("tweetTokenize supports NLTK lengthening and phone options", () => {
   expect(
     tweetTokenize("@myke wowwwww 601-984-4813", {
       stripHandles: true,
@@ -49,4 +49,3 @@ test("tweetTokenize keeps existing subset behavior and supports extra options", 
     }),
   ).toEqual(["wowww", "601-984-4813"]);
 });
-

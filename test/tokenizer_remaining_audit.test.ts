@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
-import { MWETokenizer, ToktokTokenizer, TweetTokenizer } from "../src/tokenizers.ts";
+import { LegacyMWETokenizer as MWETokenizer, LegacyToktokTokenizer as ToktokTokenizer, LegacyTweetTokenizer as TweetTokenizer } from "../src/tokenizers.ts";
 
-test("remaining Tweet/Toktok/MWE APIs retain measured subset behavior, not full NLTK parity", () => {
+test("explicit legacy Tweet/Toktok/MWE APIs retain their historical subsets", () => {
   const script = `
 import json, sys, nltk, regex
 from nltk.tokenize import TweetTokenizer, ToktokTokenizer, MWETokenizer
@@ -17,7 +17,7 @@ print(json.dumps({
   'longest': MWETokenizer([['a','b'],['a','b','c']]).tokenize(['a','b','c']),
 }))
 `;
-  const proc = Bun.spawnSync(["python3", "-c", script], { stdout: "pipe", stderr: "pipe" });
+  const proc = Bun.spawnSync([process.env.BUN_NLTK_PYTHON ?? "python3", "-c", script], { stdout: "pipe", stderr: "pipe" });
   if (proc.exitCode !== 0) throw new Error(new TextDecoder().decode(proc.stderr));
   const oracle = JSON.parse(new TextDecoder().decode(proc.stdout)) as { tweet: string[][]; toktok: string[][]; trim: string[]; collision: string[]; longest: string[] };
   const texts = ["café naïve 你好", "a &amp; b", "foo@example.com", "Hi!!! :D <3"];

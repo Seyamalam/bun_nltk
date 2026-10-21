@@ -72,6 +72,20 @@ export {
 export {
   mweTokenize,
   MWETokenizer,
+  RustMWETokenizer,
+  RustTweetTokenizer,
+  RustToktokTokenizer,
+  LegacyMWETokenizer,
+  LegacyTweetTokenizer,
+  LegacyToktokTokenizer,
+  legacyMweTokenize,
+  legacyTweetTokenize,
+  legacyToktokTokenize,
+  casualTokenize,
+  casual_tokenize,
+  tweet_tokenize,
+  toktok_tokenize,
+  mwe_tokenize,
   toktokTokenize,
   ToktokTokenizer,
   treebankWordTokenize,
@@ -93,6 +107,7 @@ export {
   WordPunctTokenizer,
   wordTokenizeSubset,
 } from "./src/tokenizers";
+export type { TweetTokenizerOptions } from "./src/tokenizers_social.ts";
 export type { BlanklineHandling, TokenSpan } from "./src/tokenizer_types.ts";
 export { sentenceTokenizeSubset } from "./src/sentence_tokenizer";
 export {
