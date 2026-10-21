@@ -18,13 +18,40 @@ function jsImports(source: string): string {
   });
 }
 
+const preciseValues = new Set([
+  "WasmNltk",
+  "RustNaiveBayesClassifier",
+  "RustPositiveNaiveBayesClassifier",
+  "RustDecisionTreeClassifier",
+  "RustMaxentClassifier",
+]);
+const preciseTypes = new Set([
+  "WasmNltkInit",
+  "FeatureSet",
+  "FeatureValue",
+  "LabeledFeatureset",
+  "PositiveFeatureOptions",
+  "FeatureTreeOptions",
+  "FeatureMaxentOptions",
+  "FeatureMaxentSerialized",
+]);
+
 function rootFacade(names: readonly string[], types: readonly string[]): string {
   const lines = [
     "// Generated runtime-compatible root declarations.",
-    "// Use the wasm/classifier subpaths for precise declarations.",
+    "// Portable classifiers and WASM options are precise; other root names are",
+    "// runtime facades. Use the wasm/classifier subpaths for precise types.",
   ];
-  for (const name of types) lines.push(`export type ${name} = any;`);
-  for (const name of names) lines.push(`export const ${name}: any;`);
+  lines.push('export { WasmNltk } from "./wasm.js";');
+  lines.push('export type { WasmNltkInit } from "./wasm.js";');
+  lines.push('export { RustNaiveBayesClassifier, RustPositiveNaiveBayesClassifier } from "./feature_nb.js";');
+  lines.push('export type { FeatureSet, FeatureValue, LabeledFeatureset, PositiveFeatureOptions } from "./feature_nb.js";');
+  lines.push('export { RustDecisionTreeClassifier } from "./feature_tree.js";');
+  lines.push('export type { FeatureTreeOptions } from "./feature_tree.js";');
+  lines.push('export { RustMaxentClassifier } from "./feature_maxent.js";');
+  lines.push('export type { FeatureMaxentOptions, FeatureMaxentSerialized } from "./feature_maxent.js";');
+  for (const name of types) if (!preciseTypes.has(name)) lines.push(`export type ${name} = any;`);
+  for (const name of names) if (!preciseValues.has(name)) lines.push(`export const ${name}: any;`);
   return `${lines.join("\n")}\n`;
 }
 

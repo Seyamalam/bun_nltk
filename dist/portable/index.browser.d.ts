@@ -1,18 +1,22 @@
 // Generated runtime-compatible root declarations.
-// Use the wasm/classifier subpaths for precise declarations.
+// Portable classifiers and WASM options are precise; other root names are
+// runtime facades. Use the wasm/classifier subpaths for precise types.
+export { WasmNltk } from "./wasm.js";
+export type { WasmNltkInit } from "./wasm.js";
+export { RustNaiveBayesClassifier, RustPositiveNaiveBayesClassifier } from "./feature_nb.js";
+export type { FeatureSet, FeatureValue, LabeledFeatureset, PositiveFeatureOptions } from "./feature_nb.js";
+export { RustDecisionTreeClassifier } from "./feature_tree.js";
+export type { FeatureTreeOptions } from "./feature_tree.js";
+export { RustMaxentClassifier } from "./feature_maxent.js";
+export type { FeatureMaxentOptions, FeatureMaxentSerialized } from "./feature_maxent.js";
 export const MWETokenizer: any;
 export const PunktSentenceTokenizer: any;
 export const PunktSentenceTokenizerSubset: any;
 export const PunktTrainer: any;
 export const PunktTrainerSubset: any;
-export const RustDecisionTreeClassifier: any;
-export const RustMaxentClassifier: any;
-export const RustNaiveBayesClassifier: any;
-export const RustPositiveNaiveBayesClassifier: any;
 export const ToktokTokenizer: any;
 export const TreebankWordTokenizer: any;
 export const TweetTokenizer: any;
-export const WasmNltk: any;
 export const WordPunctTokenizer: any;
 export const bigramWindowStatsAscii: any;
 export const bigramWindowStatsAsciiIds: any;

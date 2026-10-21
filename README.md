@@ -41,9 +41,10 @@ The root entry point resolves per runtime. Bun uses the Rust FFI library; Node.j
 24+ uses a bundled root where WASM-backed APIs work and native-only calls throw a
 descriptive error; browsers use a bundled WASM/tokenization root. The `wasm`,
 `classify-features`, `classify-tree`, and `classify-maxent` subpaths also ship
-plain JavaScript and TypeScript declarations for Node.js 24+ and browsers. The
-root Node/browser declarations are generated runtime facades so every exported
-name resolves; use those subpaths for precise TypeScript types.
+plain JavaScript and TypeScript declarations for Node.js 24+ and browsers. Root
+Node/browser declarations resolve every exported name; portable classifiers and
+WASM options are precisely typed, while other root names are runtime facades.
+Use the subpaths for the rest.
 
 ### Quick start (Bun)
 
@@ -343,7 +344,7 @@ bun run release:check
 bash scripts/loc-guard.sh 600
 ```
 
-The npm package currently contains 263 files / 12,229,658 unpacked bytes, below
+The npm package currently contains 263 files / 12,230,478 unpacked bytes, below
 the 400-file and 13 MB limits. The LOC guard rejects non-grandfathered `.ts` and
 `.rs` files above 600 lines.
 

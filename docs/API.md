@@ -30,9 +30,11 @@ Rust FFI library. Node.js 24+ imports `dist/portable/index.node.js`; WASM-backed
 APIs work there, while native-only calls throw
 `bun_nltk native APIs require Bun. Use bun_nltk/wasm for Node.js and browsers.`
 Browsers import `dist/portable/index.browser.js`, a curated WASM, tokenization,
-Punkt, and reference-metric subset. The generated root declarations are runtime
-facades; use `bun_nltk/wasm`, `bun_nltk/classify-features`,
-`bun_nltk/classify-tree`, and `bun_nltk/classify-maxent` for precise types.
+Punkt, and reference-metric subset. Root declarations resolve every exported
+name and precisely type the portable classifiers and WASM options; other root
+names are runtime facades. Use `bun_nltk/wasm`, `bun_nltk/classify-features`,
+`bun_nltk/classify-tree`, and `bun_nltk/classify-maxent` for precise subpath
+types.
 
 ## NLTK-style aliases and core helpers
 
