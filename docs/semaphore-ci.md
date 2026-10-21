@@ -26,7 +26,7 @@ size gates pass. No gate is suppressed to obtain green CI.
   snapshots) and the recovered Punkt training, regexp tokenizer, Tree/PCFG, and
   legacy text-classifier kernels exceed the old limit.
 - Fidelity: **43 passed, 0 failed, 0 skipped, 3 unsupported**.
-- Package: **316 files, 12,895,060 unpacked bytes** against 400 files /
+- Package: **316 files, 12,895,790 unpacked bytes** against 400 files /
   13,000,000 bytes. NE chunker models ship as deterministic Brotli.
 - Portable verification passes on **Chromium, Firefox, WebKit, and Node 24**
   after installing the Playwright WebKit system dependencies. The packaged
