@@ -1,0 +1,80 @@
+version: v1.0
+name: bun_nltk validation
+agent:
+  machine:
+    type: f1-standard-4
+    os_image: ubuntu2404
+execution_time_limit:
+  minutes: 60
+auto_cancel:
+  running:
+    when: "branch != 'main' and branch != 'master'"
+global_job_config:
+  prologue:
+    commands:
+      - checkout
+      - source scripts/ci/setup.sh
+blocks:
+  - name: Static checks
+    dependencies: []
+    task:
+      jobs:
+        - name: tsrs, Oxlint and CI configuration
+          commands:
+            - bash scripts/ci/validate.sh static
+  - name: Rust native and WASM
+    dependencies: []
+    task:
+      jobs:
+        - name: Format, Clippy and Rust unit tests
+          commands:
+            - bash scripts/ci/validate.sh rust
+  - name: Behavioral tests
+    dependencies: [Static checks, Rust native and WASM]
+    task:
+      jobs:
+        - name: Bun native and WASM with pinned oracle
+          commands:
+            - bash scripts/ci/validate.sh tests
+            - artifact push job artifacts/semaphore-tests --force
+            - artifact push job artifacts/semaphore-oracle --force
+      epilogue:
+        always:
+          commands:
+            - test-results publish artifacts/semaphore-tests/bun.xml
+  - name: Behavioral fidelity
+    dependencies: [Static checks, Rust native and WASM]
+    task:
+      jobs:
+        - name: Imported fixtures and strict scoped differential gate
+          commands:
+            - bash scripts/ci/validate.sh fidelity
+            - artifact push job artifacts/fidelity-report.json --force
+            - artifact push job artifacts/semaphore-oracle --force
+      epilogue:
+        always:
+          commands:
+            - if test -f artifacts/fidelity-report.json; then artifact push job artifacts/fidelity-report.json --force; fi
+  - name: Browser and installed package
+    dependencies: [Static checks, Rust native and WASM]
+    task:
+      jobs:
+        - name: Chromium, Firefox, WebKit, Node and Bun
+          commands:
+            - bash scripts/ci/validate.sh portable
+            - artifact push job artifacts/semaphore-package --force
+  - name: Examples
+    dependencies: [Static checks, Rust native and WASM]
+    task:
+      jobs:
+        - name: Document API and browser example build
+          commands:
+            - bash scripts/ci/validate.sh examples
+promotions:
+  # No auto_promote: paid hardware and privileged self-hosted agents are opt-in.
+  - name: Native macOS arm64
+    pipeline_file: native-macos.yml
+  - name: Native Windows x64 (owner-managed agent)
+    pipeline_file: native-windows.yml
+  - name: Native Linux x64
+    pipeline_file: native-linux.yml

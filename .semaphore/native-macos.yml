@@ -1,0 +1,25 @@
+version: v1.0
+name: bun_nltk native macOS arm64
+agent:
+  machine:
+    type: a2-standard-4
+    os_image: macos-xcode26
+execution_time_limit:
+  minutes: 45
+blocks:
+  - name: Real Apple Silicon build and host verification
+    task:
+      env_vars:
+        - name: BUN_NLTK_EXPECT_HOST
+          value: darwin-arm64
+      prologue:
+        commands:
+          - checkout
+          - source scripts/ci/setup.sh
+      jobs:
+        - name: Native arm64 library, WASM and installed tarball
+          commands:
+            - bash scripts/ci/validate.sh rust
+            - bash scripts/ci/validate.sh native-host
+            - artifact push workflow native/prebuilt/darwin-arm64/bun_nltk.dylib --force
+            - artifact push workflow artifacts/semaphore-native/darwin-arm64 --force

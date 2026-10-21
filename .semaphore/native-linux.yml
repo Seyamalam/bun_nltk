@@ -1,0 +1,25 @@
+version: v1.0
+name: bun_nltk native Linux x64
+agent:
+  machine:
+    type: f1-standard-4
+    os_image: ubuntu2404
+execution_time_limit:
+  minutes: 45
+blocks:
+  - name: Real Linux x64 build and host verification
+    task:
+      env_vars:
+        - name: BUN_NLTK_EXPECT_HOST
+          value: linux-x64
+      prologue:
+        commands:
+          - checkout
+          - source scripts/ci/setup.sh
+      jobs:
+        - name: Native x64 library, WASM and installed tarball
+          commands:
+            - bash scripts/ci/validate.sh rust
+            - bash scripts/ci/validate.sh native-host
+            - artifact push workflow native/prebuilt/linux-x64/bun_nltk.so --force
+            - artifact push workflow artifacts/semaphore-native/linux-x64 --force
