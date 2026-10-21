@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
 
 use crate::tokenizer_unicode as unicode;
+#[path = "regexp_tokenizer.rs"]
+mod regexp_tokenizer;
 
 const PY_SPACE: &str = r"[\x09-\x0d\x1c-\x20\x{85}\x{a0}\x{1680}\x{2000}-\x{200a}\x{2028}\x{2029}\x{202f}\x{205f}\x{3000}]";
 const REGEX_SPACE: &str =
@@ -515,6 +517,21 @@ pub struct Request {
     pub convert_parentheses: bool,
     #[serde(default = "default_blanklines")]
     pub blanklines: String,
+    #[serde(default)]
+    pub pattern: Option<String>,
+    #[serde(default)]
+    pub gaps: bool,
+    #[serde(default = "default_discard_empty")]
+    pub discard_empty: bool,
+    #[serde(default = "default_regexp_flags")]
+    pub flags: u32,
+}
+
+fn default_discard_empty() -> bool {
+    true
+}
+fn default_regexp_flags() -> u32 {
+    regexp_tokenizer::DEFAULT_FLAGS
 }
 
 fn default_blanklines() -> String {
@@ -525,11 +542,16 @@ fn default_blanklines() -> String {
 #[serde(untagged)]
 pub enum Response {
     Tokens(Vec<String>),
+    CaptureTokens(Vec<Vec<String>>),
+    SplitTokens(Vec<Option<String>>),
     Spans(Vec<(usize, usize)>),
     Text(String),
 }
 
 pub fn execute(request: Request) -> Result<Response, String> {
+    if request.kind == "regexp" {
+        return regexp_tokenizer::execute(&request);
+    }
     let text = &request.text;
     if request.kind == "treebank-detokenize" {
         if request.spans {

@@ -362,7 +362,7 @@ export class WasmNltk {
     }
   }
 
-  private tokenizerRequest(request: TokenizerRequest): unknown {
+  private tokenizerRequest(request: TokenizerRequest | import("./tokenizers_regexp.ts").RegexpTokenizerRequest): unknown {
     this.assertActive();
     if (typeof this.exports.bunnltk_wasm_tokenizer_run !== "function" ||
         typeof this.exports.bunnltk_wasm_tokenizer_output_ptr !== "function" ||
@@ -386,6 +386,11 @@ export class WasmNltk {
   tokenize(text: string, kind: TokenizerKind = "treebank", options: TokenizerOptions = {}): string[] {
     if (typeof text !== "string") throw new TypeError("text must be a string");
     return this.tokenizerRequest({ kind, text, convert_parentheses: options.convertParentheses, blanklines: options.blanklines }) as string[];
+  }
+
+  /** Dedicated regexp transport; pattern translation and matching stay in Rust. */
+  regexpTokenizer(request: import("./tokenizers_regexp.ts").RegexpTokenizerRequest): unknown {
+    return this.tokenizerRequest(request);
   }
 
   /** Spans use Python code-point indices; Array.from(text).slice(start, end) extracts a token. */
