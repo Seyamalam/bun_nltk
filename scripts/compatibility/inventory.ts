@@ -194,8 +194,13 @@ export function checkEvidenceFiles(manifest: Manifest): void {
   for (const evidence of manifest.evidence) {
     const files = evidence.files.map((file) => readFileSync(resolve(root, file), "utf8"));
     if (!files.some((text) => text.includes(evidence.anchor))) throw new Error(`stale test anchor: ${evidence.id}`);
-    if (evidence.kind === "differential" && !files.some((text) => text.includes("assert nltk.__version__ == '3.10.3'"))) throw new Error(`test no longer pins NLTK: ${evidence.id}`);
+    if (evidence.kind === "differential" && !files.some(hasPinnedNltkAssertion)) throw new Error(`test no longer pins NLTK: ${evidence.id}`);
   }
+}
+
+/** Source anchor check only, not proof that the oracle ran or was unmodified. */
+export function hasPinnedNltkAssertion(source: string): boolean {
+  return /^\s*assert\s+nltk\.__version__\s*==\s*(['"])3\.10\.3\1(?=\s*(?:,|$))/m.test(source);
 }
 
 export function sourceHashes(manifest: Manifest): Record<string, string> {
