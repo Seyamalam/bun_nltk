@@ -103,6 +103,10 @@ type SentenceTokenizerOptions = {
 };
 declare function sentenceTokenizeSubset(text: string, options?: SentenceTokenizerOptions): string[];
 
+/** Model marshaling and UTF-8/UTF-16 offset conversion; inference runs in Rust. */
+
+type PunktSpan = [start: number, end: number];
+
 type PunktModelSerialized = {
     version: number;
     abbreviations: string[];
@@ -134,7 +138,9 @@ declare class PunktTrainer extends PunktTrainerSubset {
 declare class PunktSentenceTokenizerSubset {
     protected model: PunktModelSerialized;
     constructor(model?: PunktModelSerialized);
-    tokenize(text: string): string[];
+    tokenize(text: string, realignBoundaries?: boolean): string[];
+    /** UTF-16 offsets for the Rust NLTK inference model (version 2). */
+    spanTokenize(text: string, realignBoundaries?: boolean): PunktSpan[];
     train(text: string, options?: PunktTrainingOptions): this;
     getParams(): PunktModelSerialized;
 }
@@ -142,7 +148,7 @@ declare class PunktSentenceTokenizer extends PunktSentenceTokenizerSubset {
     setParams(model: PunktModelSerialized): this;
 }
 declare function trainPunktModel(text: string, options?: PunktTrainingOptions): PunktModelSerialized;
-declare function sentenceTokenizePunkt(text: string, model?: PunktModelSerialized): string[];
+declare function sentenceTokenizePunkt(text: string, model?: PunktModelSerialized, realignBoundaries?: boolean): string[];
 declare function sentenceTokenizePunktCompat(text: string, model?: PunktModelSerialized): string[];
 declare function defaultPunktModel(): PunktModelSerialized;
 declare function serializePunktModel(model: PunktModelSerialized): string;

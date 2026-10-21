@@ -22,6 +22,7 @@ pub mod perceptron;
 pub mod porter;
 pub mod positive_categorical_nb;
 pub mod punkt;
+pub mod punkt_unicode;
 pub mod stopwords;
 pub mod stream_freqdist;
 pub mod tagger;
@@ -41,6 +42,7 @@ pub mod wasm_decision_tree;
 pub mod wasm_exports;
 pub mod wasm_metrics_stream;
 pub mod wasm_tokenizers;
+pub mod wasm_punkt;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CoreError {

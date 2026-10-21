@@ -6,7 +6,7 @@ import { dts } from "rollup-plugin-dts";
 const root = resolve(import.meta.dir, "..");
 const output = resolve(root, "dist/portable");
 const declarations = mkdtempSync("/tmp/opencode/bun-nltk-declarations-");
-const modules = ["wasm", "feature_nb", "feature_tree", "feature_maxent", "feature_encoding", "feature_types", "numeric_validation", "tokenizer_types", "tokenizer_runtime", "tokenizers_treebank", "tokenizers_basic"];
+const modules = ["wasm", "feature_nb", "feature_tree", "feature_maxent", "feature_encoding", "feature_types", "numeric_validation", "sync_wasm", "tokenizer_types", "tokenizer_runtime", "tokenizers_treebank", "tokenizers_basic"];
 const compiler = Bun.spawnSync(["npx", "--no-install", "tsrs", "-p", "tsconfig.portable.json", "--outDir", declarations], {
   cwd: root, stdout: "pipe", stderr: "pipe", timeout: 120_000,
 });

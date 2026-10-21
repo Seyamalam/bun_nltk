@@ -1,5 +1,5 @@
 /** Punkt training statistics from NLTK 3.10.3. */
-import { firstPass, punktWords } from "./punkt_engine";
+import { firstPass, punktWords } from "./punkt_training_tokens";
 import type { PunktModelSerialized, PunktTrainingOptions } from "./punkt";
 const increment = (m: Map<string, number>, key: string) => m.set(key, (m.get(key) ?? 0) + 1);
 function likelihood(a: number, b: number, ab: number, n: number): number {

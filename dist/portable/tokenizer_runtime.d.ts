@@ -1,6 +1,3 @@
-import { WasmNltk } from './wasm.js';
+export { syncWasm as tokenizerRuntime } from './sync_wasm.js';
+import './wasm.js';
 import './tokenizer_types.js';
-
-declare function tokenizerRuntime(): WasmNltk;
-
-export { tokenizerRuntime };

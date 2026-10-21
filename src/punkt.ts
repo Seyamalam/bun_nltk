@@ -1,6 +1,7 @@
 import { trainPunkt } from "./punkt_trainer";
 import englishModel from "./data/punkt-english.json";
-import { punktSentences } from "./punkt_engine";
+import { punktSentences, punktSpans } from "./punkt_engine";
+import type { PunktSpan } from "./punkt_wasm";
 
 const TITLE_ABBREVIATIONS = new Set(["dr", "prof"]);
 
@@ -70,8 +71,14 @@ export class PunktSentenceTokenizerSubset {
     this.model = model ? parsePunktModel(model) : defaultPunktModel();
   }
 
-  tokenize(text: string): string[] {
-    return sentenceTokenizePunkt(text, this.model);
+  tokenize(text: string, realignBoundaries = true): string[] {
+    return sentenceTokenizePunkt(text, this.model, realignBoundaries);
+  }
+
+  /** UTF-16 offsets for the Rust NLTK inference model (version 2). */
+  spanTokenize(text: string, realignBoundaries = true): PunktSpan[] {
+    if (this.model.version < 2) throw new RangeError("spanTokenize requires a version 2 Punkt model");
+    return punktSpans(text, this.model, realignBoundaries);
   }
 
   train(text: string, options: PunktTrainingOptions = {}): this {
@@ -236,8 +243,9 @@ export function trainPunktModel(
   return trainPunkt([text], options);
 }
 
-export function sentenceTokenizePunkt(text: string, model?: PunktModelSerialized): string[] {
-  if (!model || model.version >= 2) return punktSentences(text, model ?? defaultPunktModel());
+export function sentenceTokenizePunkt(text: string, model?: PunktModelSerialized, realignBoundaries = true): string[] {
+  if (!model || model.version >= 2) return punktSentences(text, model ?? defaultPunktModel(), realignBoundaries);
+  if (!realignBoundaries) throw new RangeError("raw Punkt boundaries require a version 2 model");
   const prepared = preparePunktModel(model);
   const out: string[] = [];
   let start = 0;

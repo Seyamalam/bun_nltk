@@ -67,6 +67,7 @@ export class WasmNltk {
     this.exports.bunnltk_wasm_categorical_nb_clear();
     this.exports.bunnltk_wasm_decision_tree_clear?.();
     this.exports.bunnltk_wasm_metrics_stream_clear();
+    this.exports.bunnltk_wasm_punkt_clear?.();
     this.exports.bunnltk_wasm_release_input();
     this.inputPtr = 0;
     this.disposed = true;
@@ -112,6 +113,33 @@ export class WasmNltk {
     if (!Array.isArray(tokens) || tokens.some((token) => typeof token !== "string"))
       throw new TypeError("tokens must be an array of strings");
     return this.tokenizerRequest({ kind: "treebank-detokenize", tokens, convert_parentheses: convertParentheses });
+  }
+  punktLoad(model) {
+    if (typeof this.exports.bunnltk_wasm_punkt_load !== "function")
+      throw new Error("incompatible Punkt WASM artifact: rebuild with bun run build:wasm");
+    const length = this.writeBytes(model);
+    const handle = this.exports.bunnltk_wasm_punkt_load(length);
+    this.assertNoError("punktLoad");
+    return handle;
+  }
+  punktSpans(handle, text, realignBoundaries = true) {
+    this.assertOrder(handle);
+    if (typeof realignBoundaries !== "boolean")
+      throw new TypeError("realignBoundaries must be boolean");
+    const length = this.writeInput(text);
+    const count = this.exports.bunnltk_wasm_punkt_spans(handle, length, Number(realignBoundaries), 0, 0);
+    this.assertNoError("punktSpans.count");
+    if (count === 0)
+      return new Uint32Array;
+    const out = this.ensureBlock("punkt_spans", count * 8);
+    this.exports.bunnltk_wasm_punkt_spans(handle, length, Number(realignBoundaries), out.ptr, count);
+    this.assertNoError("punktSpans.fill");
+    return Uint32Array.from(new Uint32Array(this.exports.memory.buffer, out.ptr, count * 2));
+  }
+  punktFree(handle) {
+    this.assertActive();
+    this.assertOrder(handle);
+    this.exports.bunnltk_wasm_punkt_free(handle);
   }
   categoricalNaiveBayesTrain(input) {
     this.assertOrder(input.labelCount);

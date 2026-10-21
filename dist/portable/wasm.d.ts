@@ -45,6 +45,9 @@ declare class WasmNltk {
     /** Spans use Python code-point indices; Array.from(text).slice(start, end) extracts a token. */
     tokenizerSpans(text: string, kind?: TokenizerKind, options?: TokenizerOptions): TokenSpan[];
     treebankDetokenize(tokens: readonly string[], convertParentheses?: boolean): string;
+    punktLoad(model: Uint8Array): number;
+    punktSpans(handle: number, text: string, realignBoundaries?: boolean): Uint32Array;
+    punktFree(handle: number): void;
     categoricalNaiveBayesTrain(input: {
         pairs: Uint32Array;
         offsets: Uint32Array;
