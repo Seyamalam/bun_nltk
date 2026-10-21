@@ -28,6 +28,7 @@ pub mod tagger;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod text_linear;
 pub mod token_ids;
+pub mod tokenizers;
 pub mod translation;
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -39,6 +40,7 @@ pub mod ffi;
 pub mod wasm_decision_tree;
 pub mod wasm_exports;
 pub mod wasm_metrics_stream;
+pub mod wasm_tokenizers;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CoreError {

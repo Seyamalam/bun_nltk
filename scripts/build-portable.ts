@@ -6,7 +6,7 @@ import { dts } from "rollup-plugin-dts";
 const root = resolve(import.meta.dir, "..");
 const output = resolve(root, "dist/portable");
 const declarations = mkdtempSync("/tmp/opencode/bun-nltk-declarations-");
-const modules = ["wasm", "feature_nb", "feature_tree", "feature_maxent", "feature_encoding", "feature_types", "numeric_validation"];
+const modules = ["wasm", "feature_nb", "feature_tree", "feature_maxent", "feature_encoding", "feature_types", "numeric_validation", "tokenizer_types", "tokenizer_runtime", "tokenizers_treebank", "tokenizers_basic"];
 const compiler = Bun.spawnSync(["npx", "--no-install", "tsrs", "-p", "tsconfig.portable.json", "--outDir", declarations], {
   cwd: root, stdout: "pipe", stderr: "pipe", timeout: 120_000,
 });
@@ -41,7 +41,7 @@ for (const [entrypoint, naming, target] of [
     outdir: output,
     naming,
     minify: true,
-    external: target === "node" ? ["bun:ffi"] : [],
+    external: target === "node" ? ["bun:ffi"] : ["node:fs", "node:fs/promises"],
   });
   if (!bundle.success) throw new Error(bundle.logs.map(String).join("\n"));
 }

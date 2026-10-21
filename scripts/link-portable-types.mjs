@@ -11,7 +11,7 @@ const [inputDirectory, outputDirectory] = process.argv.slice(2);
 const inputs = {
   "index.node": "src/portable_node.d.ts",
   "index.browser": "src/portable_browser.d.ts",
-  ...Object.fromEntries(["wasm", "feature_nb", "feature_tree", "feature_maxent", "feature_encoding", "feature_types", "numeric_validation"].map((name) => [name, `src/${name}.d.ts`])),
+  ...Object.fromEntries(["wasm", "feature_nb", "feature_tree", "feature_maxent", "feature_encoding", "feature_types", "numeric_validation", "tokenizer_types", "tokenizer_runtime", "tokenizers_treebank", "tokenizers_basic"].map((name) => [name, `src/${name}.d.ts`])),
 };
 const api = new API();
 try {

@@ -1,4 +1,4 @@
-// Browser root: Rust/WASM classifiers plus pure-tokenization fallbacks.
+// Browser root: Rust/WASM classifiers and Treebank/basic tokenizers, plus subsets.
 // Native-only Bun APIs are intentionally absent; use bun_nltk/wasm directly for
 // the full portable WASM surface.
 export { WasmNltk } from "./wasm.ts";

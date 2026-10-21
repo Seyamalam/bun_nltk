@@ -1,7 +1,12 @@
 import { assertOffsets, assertPerceptronBuffers, assertU32 } from "./numeric_validation.ts";
+import type { TokenizerKind, TokenizerOptions, TokenizerRequest, TokenSpan } from "./tokenizer_types.ts";
+export type { TokenizerKind, TokenizerOptions, TokenSpan, BlanklineHandling } from "./tokenizer_types.ts";
 
 type WasmExports = {
   memory: WebAssembly.Memory;
+  bunnltk_wasm_tokenizer_run: (inputPtr: number, inputLen: number) => number;
+  bunnltk_wasm_tokenizer_output_ptr: () => number;
+  bunnltk_wasm_tokenizer_release: () => void;
   bunnltk_wasm_last_error_code: () => number;
   bunnltk_wasm_input_ptr: () => number;
   bunnltk_wasm_input_capacity: () => number;
@@ -306,6 +311,43 @@ export class WasmNltk {
     if (!Number.isSafeInteger(n) || n < 1 || n > 0xffffffff) {
       throw new RangeError("n must be a positive uint32 integer");
     }
+  }
+
+  private tokenizerRequest(request: TokenizerRequest): unknown {
+    this.assertActive();
+    if (typeof this.exports.bunnltk_wasm_tokenizer_run !== "function" ||
+        typeof this.exports.bunnltk_wasm_tokenizer_output_ptr !== "function" ||
+        typeof this.exports.bunnltk_wasm_tokenizer_release !== "function") {
+      throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
+    }
+    const inputLen = this.writeInput(JSON.stringify(request));
+    const size = this.exports.bunnltk_wasm_tokenizer_run(this.inputPtr, inputLen);
+    try {
+      const ptr = this.exports.bunnltk_wasm_tokenizer_output_ptr();
+      const result: unknown = JSON.parse(this.decoder.decode(new Uint8Array(this.exports.memory.buffer, ptr, size)));
+      if (this.exports.bunnltk_wasm_last_error_code() !== 0) {
+        throw new Error(typeof result === "string" ? result : "Rust tokenizer error");
+      }
+      return result;
+    } finally {
+      this.exports.bunnltk_wasm_tokenizer_release();
+    }
+  }
+
+  tokenize(text: string, kind: TokenizerKind = "treebank", options: TokenizerOptions = {}): string[] {
+    if (typeof text !== "string") throw new TypeError("text must be a string");
+    return this.tokenizerRequest({ kind, text, convert_parentheses: options.convertParentheses, blanklines: options.blanklines }) as string[];
+  }
+
+  /** Spans use Python code-point indices; Array.from(text).slice(start, end) extracts a token. */
+  tokenizerSpans(text: string, kind: TokenizerKind = "treebank", options: TokenizerOptions = {}): TokenSpan[] {
+    if (typeof text !== "string") throw new TypeError("text must be a string");
+    return this.tokenizerRequest({ kind, text, spans: true, blanklines: options.blanklines }) as TokenSpan[];
+  }
+
+  treebankDetokenize(tokens: readonly string[], convertParentheses = false): string {
+    if (!Array.isArray(tokens) || tokens.some((token) => typeof token !== "string")) throw new TypeError("tokens must be an array of strings");
+    return this.tokenizerRequest({ kind: "treebank-detokenize", tokens, convert_parentheses: convertParentheses }) as string;
   }
 
   categoricalNaiveBayesTrain(input: {

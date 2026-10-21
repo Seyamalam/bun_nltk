@@ -2,7 +2,10 @@ export { WasmNltk, type WasmNltkInit } from './wasm.js';
 export { type PositiveFeatureOptions, RustNaiveBayesClassifier, RustPositiveNaiveBayesClassifier } from './feature_nb.js';
 export { type FeatureTreeOptions, RustDecisionTreeClassifier } from './feature_tree.js';
 export { type FeatureMaxentOptions, type FeatureMaxentSerialized, RustMaxentClassifier } from './feature_maxent.js';
+export { type BlanklineHandling, type TokenSpan } from './tokenizer_types.js';
+export { BlanklineTokenizer, LineTokenizer, SpaceTokenizer, TabTokenizer, WhitespaceTokenizer, blanklineTokenize, blanklineTokenize as blankline_tokenize, lineTokenize, lineTokenize as line_tokenize } from './tokenizers_basic.js';
 export { type FeatureSet, type FeatureValue, type LabeledFeatureset } from './feature_types.js';
+export { TreebankWordDetokenizer, TreebankWordTokenizer, WordPunctTokenizer, treebankWordTokenize, wordPunctTokenize } from './tokenizers_treebank.js';
 
 declare function tokenizeAscii(text: string): string[];
 declare function normalizeTokensAscii(text: string, removeStopwords?: boolean): string[];
@@ -66,12 +69,6 @@ declare function bigramWindowStatsAscii(text: string, windowSize?: number): Bigr
 declare function topPmiBigramsAscii(text: string, topK: number, windowSize?: number): PmiBigram[];
 
 declare function wordTokenizeSubset(text: string): string[];
-declare class TreebankWordTokenizer {
-    tokenize(text: string): string[];
-}
-declare class WordPunctTokenizer {
-    tokenize(text: string): string[];
-}
 declare class ToktokTokenizer {
     tokenize(text: string): string[];
 }
@@ -95,8 +92,6 @@ declare class TweetTokenizer {
     constructor(opts?: TweetTokenizerOptions);
     tokenize(text: string): string[];
 }
-declare function treebankWordTokenize(text: string): string[];
-declare function wordPunctTokenize(text: string): string[];
 declare function toktokTokenize(text: string): string[];
 declare function mweTokenize(tokens: string[], mwes: string[][], separator?: string): string[];
 declare function tweetTokenize(text: string, opts?: TweetTokenizerOptions): string[];
@@ -176,5 +171,5 @@ declare function bigrams<T, P>(sequence: Iterable<T>, options: NgramOptions<P>):
 declare function trigrams<T>(sequence: Iterable<T>): T[][];
 declare function trigrams<T, P>(sequence: Iterable<T>, options: NgramOptions<P>): Array<Array<T | P | null>>;
 
-export { MWETokenizer, PunktSentenceTokenizer, PunktSentenceTokenizerSubset, PunktTrainer, PunktTrainerSubset, ToktokTokenizer, TreebankWordTokenizer, TweetTokenizer, WordPunctTokenizer, bigramWindowStatsAscii, bigramWindowStatsAsciiIds, bigrams, computeAsciiMetrics, countNgramsAscii, countTokensAscii, countUniqueNgramsAscii, countUniqueTokensAscii, defaultPunktModel, everygramsAscii, hashNgram, hashTokenAscii, mweTokenize, ngramFreqDistHashAscii, ngrams, ngramsAscii, ngramsIterator as ngrams_iter, normalizeTokensAscii, normalizeTokensUnicode, parsePunktModel, posTagAscii, sent_tokenize, sentenceTokenizePunkt, sentenceTokenizePunktCompat, sentenceTokenizeSubset, serializePunktModel, skipgramsAscii, tokenFreqDistHashAscii, tokenFreqDistIdsAscii, tokenizeAscii, toktokTokenize, topPmiBigramsAscii, trainPunktModel, treebankWordTokenize, trigrams, tweetTokenize, tweetTokenizeSubset, wordPunctTokenize, wordTokenizeSubset, word_tokenize, wordpunct_tokenize };
+export { MWETokenizer, PunktSentenceTokenizer, PunktSentenceTokenizerSubset, PunktTrainer, PunktTrainerSubset, ToktokTokenizer, TweetTokenizer, bigramWindowStatsAscii, bigramWindowStatsAsciiIds, bigrams, computeAsciiMetrics, countNgramsAscii, countTokensAscii, countUniqueNgramsAscii, countUniqueTokensAscii, defaultPunktModel, everygramsAscii, hashNgram, hashTokenAscii, mweTokenize, ngramFreqDistHashAscii, ngrams, ngramsAscii, ngramsIterator as ngrams_iter, normalizeTokensAscii, normalizeTokensUnicode, parsePunktModel, posTagAscii, sent_tokenize, sentenceTokenizePunkt, sentenceTokenizePunktCompat, sentenceTokenizeSubset, serializePunktModel, skipgramsAscii, tokenFreqDistHashAscii, tokenFreqDistIdsAscii, tokenizeAscii, toktokTokenize, topPmiBigramsAscii, trainPunktModel, trigrams, tweetTokenize, tweetTokenizeSubset, wordTokenizeSubset, word_tokenize, wordpunct_tokenize };
 export type { AsciiMetrics, BigramWindowStatId, BigramWindowStatToken, NgramOptions, PmiBigram, PosTag, PosTagName, PunktModelSerialized, PunktTrainingOptions, SentenceTokenizerOptions, TokenFreqDistIds, TweetTokenizerOptions };

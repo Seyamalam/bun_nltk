@@ -1,6 +1,7 @@
 import { WasmNltk } from './wasm.js';
 import { LabeledFeatureset, FeatureSet } from './feature_types.js';
 export { type FeatureValue } from './feature_types.js';
+import './tokenizer_types.js';
 
 /** Rust categorical classifier shared by Bun, Node and browsers. Owns one model, not its runtime. */
 declare class RustNaiveBayesClassifier {

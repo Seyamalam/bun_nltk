@@ -76,6 +76,16 @@ export {
   ToktokTokenizer,
   treebankWordTokenize,
   TreebankWordTokenizer,
+  TreebankWordDetokenizer,
+  WhitespaceTokenizer,
+  BlanklineTokenizer,
+  SpaceTokenizer,
+  TabTokenizer,
+  LineTokenizer,
+  lineTokenize,
+  line_tokenize,
+  blanklineTokenize,
+  blankline_tokenize,
   tweetTokenize,
   TweetTokenizer,
   tweetTokenizeSubset,
@@ -83,6 +93,7 @@ export {
   WordPunctTokenizer,
   wordTokenizeSubset,
 } from "./src/tokenizers";
+export type { BlanklineHandling, TokenSpan } from "./src/tokenizer_types.ts";
 export { sentenceTokenizeSubset } from "./src/sentence_tokenizer";
 export {
   defaultPunktModel,

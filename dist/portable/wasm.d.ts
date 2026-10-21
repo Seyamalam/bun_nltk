@@ -1,3 +1,6 @@
+import { TokenizerKind, TokenizerOptions, TokenSpan } from './tokenizer_types.js';
+export { type BlanklineHandling } from './tokenizer_types.js';
+
 type AsciiMetrics = {
     tokens: number;
     uniqueTokens: number;
@@ -37,6 +40,11 @@ declare class WasmNltk {
     dispose(): void;
     private assertActive;
     private assertOrder;
+    private tokenizerRequest;
+    tokenize(text: string, kind?: TokenizerKind, options?: TokenizerOptions): string[];
+    /** Spans use Python code-point indices; Array.from(text).slice(start, end) extracts a token. */
+    tokenizerSpans(text: string, kind?: TokenizerKind, options?: TokenizerOptions): TokenSpan[];
+    treebankDetokenize(tokens: readonly string[], convertParentheses?: boolean): string;
     categoricalNaiveBayesTrain(input: {
         pairs: Uint32Array;
         offsets: Uint32Array;
@@ -220,5 +228,5 @@ declare class WasmNltk {
     };
 }
 
-export { WasmNltk };
+export { type TokenSpan, type TokenizerKind, type TokenizerOptions, WasmNltk };
 export type { AsciiMetrics, AsciiMetricsStream, AsciiMetricsStreamOptions, WasmLmModelType, WasmNltkInit };

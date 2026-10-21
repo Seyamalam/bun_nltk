@@ -80,6 +80,39 @@ export class WasmNltk {
       throw new RangeError("n must be a positive uint32 integer");
     }
   }
+  tokenizerRequest(request) {
+    this.assertActive();
+    if (typeof this.exports.bunnltk_wasm_tokenizer_run !== "function" || typeof this.exports.bunnltk_wasm_tokenizer_output_ptr !== "function" || typeof this.exports.bunnltk_wasm_tokenizer_release !== "function") {
+      throw new Error("incompatible WASM artifact: rebuild with bun run build:wasm");
+    }
+    const inputLen = this.writeInput(JSON.stringify(request));
+    const size = this.exports.bunnltk_wasm_tokenizer_run(this.inputPtr, inputLen);
+    try {
+      const ptr = this.exports.bunnltk_wasm_tokenizer_output_ptr();
+      const result = JSON.parse(this.decoder.decode(new Uint8Array(this.exports.memory.buffer, ptr, size)));
+      if (this.exports.bunnltk_wasm_last_error_code() !== 0) {
+        throw new Error(typeof result === "string" ? result : "Rust tokenizer error");
+      }
+      return result;
+    } finally {
+      this.exports.bunnltk_wasm_tokenizer_release();
+    }
+  }
+  tokenize(text, kind = "treebank", options = {}) {
+    if (typeof text !== "string")
+      throw new TypeError("text must be a string");
+    return this.tokenizerRequest({ kind, text, convert_parentheses: options.convertParentheses, blanklines: options.blanklines });
+  }
+  tokenizerSpans(text, kind = "treebank", options = {}) {
+    if (typeof text !== "string")
+      throw new TypeError("text must be a string");
+    return this.tokenizerRequest({ kind, text, spans: true, blanklines: options.blanklines });
+  }
+  treebankDetokenize(tokens, convertParentheses = false) {
+    if (!Array.isArray(tokens) || tokens.some((token) => typeof token !== "string"))
+      throw new TypeError("tokens must be an array of strings");
+    return this.tokenizerRequest({ kind: "treebank-detokenize", tokens, convert_parentheses: convertParentheses });
+  }
   categoricalNaiveBayesTrain(input) {
     this.assertOrder(input.labelCount);
     if (!Number.isFinite(input.smoothing) || input.smoothing <= 0)
