@@ -13,6 +13,7 @@ pub mod freqdist;
 pub mod hmm;
 pub mod linear;
 pub mod lm;
+pub mod metrics;
 pub mod morphy;
 pub mod naive_bayes;
 pub mod ngrams;
@@ -31,6 +32,7 @@ pub mod text_linear;
 pub mod token_ids;
 pub mod tokenizers;
 pub mod translation;
+pub mod translation_metrics;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub mod wordnet;
@@ -43,6 +45,7 @@ pub mod wasm_exports;
 pub mod wasm_metrics_stream;
 pub mod wasm_tokenizers;
 pub mod wasm_punkt;
+pub mod wasm_metrics;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CoreError {

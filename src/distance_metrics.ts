@@ -1,418 +1,135 @@
 import { readFileSync } from "node:fs";
 import { syncWasm } from "./sync_wasm.ts";
-
-/**
- * Pure-algorithm distance metrics ported from NLTK for parity with
- * `nltk.metrics.distance`, `nltk.metrics.scores`, `nltk.metrics.segmentation`
- * and `nltk.metrics.spearman` (NLTK 3.10.3 semantics).
- */
+import { internLabels } from "./metrics_wasm.ts";
 
 export type LabelSet<T> = Set<T>;
-
 export type Segmentation = string | ReadonlyArray<string | number | boolean>;
-
-export type Ranking =
-  | Record<string, number>
-  | ReadonlyArray<readonly [string | number, number]>;
-
+export type Ranking = Record<string, number> | ReadonlyArray<readonly [unknown, number]> | ReadonlyMap<unknown, number>;
 export type ProbabilityMap = Record<string, number>;
 
-function setSize<T>(set: Set<T>): number {
-  return set.size;
+function setScore<T>(op: number, a: LabelSet<T>, b: LabelSet<T>, alpha = 0.5, extra: T[] = []): number | null {
+  if (!(a instanceof Set) || !(b instanceof Set)) throw new TypeError("reference and test should be sets");
+  const input = internLabels(a, b, extra);
+  const result = syncWasm().evaluationMetrics().setScore(op, input.a, input.b, extra.length ? input.ids.get(extra[0]!)! : 0, typeof alpha === "number" ? alpha : NaN);
+  if (typeof alpha !== "number" && result !== null && result !== 0) throw new TypeError("alpha must be numeric");
+  return result;
 }
 
-function setIntersectionSize<T>(a: Set<T>, b: Set<T>): number {
-  let count = 0;
-  for (const item of a) if (b.has(item)) count += 1;
-  return count;
+/** NLTK Jaccard distance; two empty sets raise ZeroDivisionError. */
+export function jaccardDistance<T>(a: LabelSet<T>, b: LabelSet<T>): number { return setScore(0, a, b)!; }
+/** NLTK MASI distance; two empty sets raise ZeroDivisionError. */
+export function masiDistance<T>(a: LabelSet<T>, b: LabelSet<T>): number { return setScore(1, a, b)!; }
+/** JS strict label equality is preserved (objects are not stringified). */
+export function binaryDistance(a: unknown, b: unknown): number { return syncWasm().evaluationMetrics().binary(a === b); }
+/** Canonical Dice extension; not an NLTK 3.10.3 API. */
+export function sorensenDiceSimilarity<T>(a: LabelSet<T>, b: LabelSet<T>): number { return setScore(2, a, b)!; }
+export function sorensenDiceDistance<T>(a: LabelSet<T>, b: LabelSet<T>): number { return setScore(3, a, b)!; }
+export function intervalDistance(a: number, b: number): number {
+  if (typeof a !== "number" || typeof b !== "number") throw new TypeError("non-numeric labels not supported with interval distance");
+  return syncWasm().evaluationMetrics().interval(a, b);
 }
-
-function setUnionSize<T>(a: Set<T>, b: Set<T>): number {
-  let count = a.size;
-  for (const item of b) if (!a.has(item)) count += 1;
-  return count;
-}
-
-/**
- * Port of `nltk.metrics.distance.jaccard_distance`.
- *
- * Distance metric comparing set-similarity:
- * `(len(union) - len(intersection)) / len(union)`.
- *
- * Matches NLTK exactly: raises (like Python's ZeroDivisionError) when both
- * sets are empty, because NLTK performs an unguarded division by the union
- * size.
- */
-export function jaccardDistance<T>(label1: LabelSet<T>, label2: LabelSet<T>): number {
-  const unionLen = setUnionSize(label1, label2);
-  if (unionLen === 0) {
-    throw new RangeError("jaccard_distance is undefined for two empty sets (NLTK divides by zero)");
-  }
-  const intersectionLen = setIntersectionSize(label1, label2);
-  return (unionLen - intersectionLen) / unionLen;
-}
-
-/**
- * Port of `nltk.metrics.distance.masi_distance`.
- *
- * Measuring Agreement on Set-Valued Items (MASI) distance
- * (Passonneau 2006). Uses the NLTK 3.10.3 weights m ∈ {1, 2/3, 1/3, 0}.
- */
-export function masiDistance<T>(label1: LabelSet<T>, label2: LabelSet<T>): number {
-  const lenIntersection = setIntersectionSize(label1, label2);
-  const lenUnion = setUnionSize(label1, label2);
-  const lenLabel1 = setSize(label1);
-  const lenLabel2 = setSize(label2);
-
-  let m: number;
-  if (lenLabel1 === lenLabel2 && lenLabel1 === lenIntersection) {
-    m = 1;
-  } else if (lenIntersection === Math.min(lenLabel1, lenLabel2)) {
-    m = 2 / 3;
-  } else if (lenIntersection > 0) {
-    m = 1 / 3;
-  } else {
-    m = 0;
-  }
-
-  return 1 - (lenIntersection / lenUnion) * m;
-}
-
-/**
- * Port of `nltk.metrics.distance.binary_distance`.
- *
- * Simple equality test: 0.0 if the labels are identical, 1.0 otherwise.
- */
-export function binaryDistance(label1: unknown, label2: unknown): number {
-  return label1 === label2 ? 0.0 : 1.0;
-}
-
-/**
- * Sørensen–Dice similarity coefficient for sets:
- * `2 * |intersection| / (|label1| + |label2|)`.
- *
- * NOTE: this function does not exist in NLTK 3.10.3 (added upstream later),
- * so there is no python-parity coverage; semantics follow the canonical
- * NLTK definition.
- */
-export function sorensenDiceSimilarity<T>(label1: LabelSet<T>, label2: LabelSet<T>): number {
-  const denom = setSize(label1) + setSize(label2);
-  if (denom === 0) {
-    throw new RangeError("sorensen_dice_similarity is undefined for two empty sets");
-  }
-  return (2 * setIntersectionSize(label1, label2)) / denom;
-}
-
-/**
- * Distance form of {@link sorensenDiceSimilarity}: `1 - similarity`.
- */
-export function sorensenDiceDistance<T>(label1: LabelSet<T>, label2: LabelSet<T>): number {
-  return 1 - sorensenDiceSimilarity(label1, label2);
-}
-
-/**
- * Port of `nltk.metrics.distance.interval_distance`.
- *
- * Krippendorff's interval distance metric: `(label1 - label2) ** 2`.
- * Non-numeric labels raise (NLTK prints a message and effectively fails).
- */
-export function intervalDistance(label1: number, label2: number): number {
-  if (typeof label1 !== "number" || typeof label2 !== "number") {
-    throw new TypeError("non-numeric labels not supported with interval distance");
-  }
-  return (label1 - label2) ** 2;
-}
-
-/**
- * Port of `nltk.metrics.distance.presence`.
- *
- * Higher-order function returning a distance function that tests presence
- * of `label` in both argument sets: 1.0 when membership agrees, 0.0 otherwise.
- */
 export function presence<T>(label: T): (x: LabelSet<T>, y: LabelSet<T>) => number {
-  return (x, y) => (x.has(label) === y.has(label) ? 1.0 : 0.0);
+  return (x, y) => setScore(7, x, y, 0.5, [label])!;
+}
+export function fractionalPresence<T>(label: T): (x: LabelSet<T>, y: LabelSet<T>) => number {
+  return (x, y) => setScore(8, x, y, 0.5, [label])!;
 }
 
-/**
- * Port of `nltk.metrics.distance.fractional_presence`.
- *
- * Higher-order function returning a distance function weighted by the
- * fractional presence of `label` in each set, replicating NLTK's
- * short-circuiting `or` chain (first non-zero term wins, 0 fallback).
- */
-export function fractionalPresence<T>(
-  label: T,
-): (x: LabelSet<T>, y: LabelSet<T>) => number {
-  return (x, y) => {
-    const inX = x.has(label);
-    const inY = y.has(label);
-    const nx = x.size;
-    const ny = y.size;
-
-    const terms: number[] = [];
-    terms.push(inX && inY ? Math.abs(1 / nx - 1 / ny) : 0);
-    terms.push(!inX && !inY ? 0 : 0);
-    terms.push(inX && !inY ? Math.abs(1 / nx) : 0);
-    terms.push(!inX && inY ? 1 / ny : 0);
-
-    for (const term of terms) {
-      if (term !== 0) return term;
-    }
-    return 0;
-  };
-}
-
-/**
- * Port of `nltk.metrics.distance.custom_distance`.
- *
- * Builds a lookup distance function from a tab-separated file whose lines
- * have the form `labelA\tlabelB\tdistance`. The pair is treated as an
- * unordered key (mirroring NLTK's frozenset-of-frozensets key).
- */
+/** Existing string-label file adapter (NLTK itself takes singleton frozensets). */
 export function customDistance(file: string): (x: string, y: string) => number {
-  const data = new Map<string, number>();
-  const content = readFileSync(file, "utf8");
-  for (const line of content.split("\n")) {
+  const data = new Map<string, Map<string, number>>();
+  for (const line of readFileSync(file, "utf8").split("\n")) {
     const trimmed = line.trim();
     if (trimmed === "") continue;
-    const [labelA, labelB, dist] = trimmed.split("\t");
-    if (labelA === undefined || labelB === undefined || dist === undefined) {
-      throw new RangeError(`malformed custom distance line: ${trimmed}`);
-    }
-    const key = labelA < labelB ? `${labelA}\u0000${labelB}` : `${labelB}\u0000${labelA}`;
-    data.set(key, Number.parseFloat(dist));
+    const [a, b, dist] = trimmed.split("\t");
+    if (a === undefined || b === undefined || dist === undefined) throw new RangeError(`malformed custom distance line: ${trimmed}`);
+    const value = Number.parseFloat(dist);
+    const row = data.get(a) ?? new Map<string, number>(); row.set(b, value); data.set(a, row);
+    const reverse = data.get(b) ?? new Map<string, number>(); reverse.set(a, value); data.set(b, reverse);
   }
   return (x, y) => {
-    const key = x < y ? `${x}\u0000${y}` : `${y}\u0000${x}`;
-    const value = data.get(key);
-    if (value === undefined) {
-      throw new RangeError(`no custom distance defined for (${x}, ${y})`);
-    }
+    const value = data.get(x)?.get(y);
+    if (value === undefined) throw new RangeError(`no custom distance defined for (${x}, ${y})`);
     return value;
   };
 }
 
-/**
- * Port of `nltk.metrics.distance.edit_distance_align`.
- *
- * Minimum Levenshtein edit-distance based alignment mapping between two
- * strings, returned as a list of `[i, j]` index pairs starting from the
- * `(0, 0)` start state. Backtrace precedence on ties: substitute, skip s1,
- * skip s2 (carried out in reverse string order), exactly as NLTK documents.
- */
-export function editDistanceAlign(
-  s1: string,
-  s2: string,
-  substitutionCost = 1,
-): Array<[number, number]> {
+export function editDistanceAlign(s1: string, s2: string, substitutionCost = 1): Array<[number, number]> {
   return syncWasm().editDistanceAlign(s1, s2, substitutionCost);
 }
+/** Empty test maps to Python None, not numeric NaN. */
+export function precision<T>(reference: LabelSet<T>, test: LabelSet<T>): number | null { return setScore(4, reference, test); }
+export function recall<T>(reference: LabelSet<T>, test: LabelSet<T>): number | null { return setScore(5, reference, test); }
+export function fMeasure<T>(reference: LabelSet<T>, test: LabelSet<T>, alpha = 0.5): number | null { return setScore(6, reference, test, alpha); }
 
-/**
- * Port of `nltk.metrics.scores.precision`.
- *
- * Fraction of test values appearing in the reference set:
- * `|reference ∩ test| / |test|`. Returns `null` when `test` is empty,
- * matching NLTK's `None`.
- */
-export function precision<T>(reference: LabelSet<T>, test: LabelSet<T>): number | null {
-  if (test.size === 0) return null;
-  return setIntersectionSize(reference, test) / test.size;
-}
-
-/**
- * Port of `nltk.metrics.scores.recall`.
- *
- * Fraction of reference values appearing in the test set:
- * `|reference ∩ test| / |reference|`. Returns `null` when `reference`
- * is empty, matching NLTK's `None`.
- */
-export function recall<T>(reference: LabelSet<T>, test: LabelSet<T>): number | null {
-  if (reference.size === 0) return null;
-  return setIntersectionSize(reference, test) / reference.size;
-}
-
-/**
- * Port of `nltk.metrics.scores.f_measure`.
- *
- * Weighted harmonic mean of precision and recall:
- * `1 / (alpha / p + (1 - alpha) / r)`. Returns `null` when either input set
- * is empty and `0` when either p or r is zero, matching NLTK.
- */
-export function fMeasure<T>(
-  reference: LabelSet<T>,
-  test: LabelSet<T>,
-  alpha = 0.5,
-): number | null {
-  const p = precision(reference, test);
-  const r = recall(reference, test);
-  if (p === null || r === null) return null;
-  if (p === 0 || r === 0) return 0;
-  return 1.0 / (alpha / p + (1 - alpha) / r);
-}
-
-/**
- * Port of `nltk.metrics.scores.log_likelihood`.
- *
- * Average log likelihood of the reference values under the given
- * probability distributions (`dist.logprob(val)` averaged over positions,
- * log base 2 per NLTK's `ProbDistI.logprob`). Distributions are plain
- * probability maps keyed by label.
- */
-export function logLikelihood(
-  reference: ReadonlyArray<string>,
-  test: ReadonlyArray<ProbabilityMap>,
-): number {
-  if (reference.length !== test.length) {
-    throw new RangeError("Lists must have the same length.");
-  }
-  let total = 0;
-  for (let i = 0; i < reference.length; i += 1) {
-    const label = reference[i];
-    if (label === undefined) throw new RangeError("reference label missing");
+/** Probability-map adapter for NLTK ProbDistI.logprob (zero/missing -> -1e300). */
+export function logLikelihood(reference: ReadonlyArray<string>, test: ReadonlyArray<ProbabilityMap>): number {
+  if (reference.length !== test.length) throw new RangeError("Lists must have the same length.");
+  const probabilities = Float64Array.from(reference, (label, i) => {
     const dist = test[i];
-    if (dist === undefined) throw new RangeError(`distribution ${i} missing`);
-    const prob = dist[label];
-    if (prob === undefined) {
-      throw new RangeError(`No probability for label ${label} in distribution ${i}`);
-    }
-    total += Math.log2(prob);
-  }
-  return total / reference.length;
+    if (dist === undefined) throw new TypeError(`distribution ${i} missing`);
+    const value = Object.hasOwn(dist, label) ? dist[label]! : 0;
+    if (typeof value !== "number") throw new TypeError("probabilities must be numeric");
+    return value;
+  });
+  return syncWasm().evaluationMetrics().logLikelihood(probabilities);
 }
 
-function countBoundary(seq: Segmentation, boundary: string | number | boolean): number {
-  let count = 0;
-  for (const item of seq) if (item === boundary) count += 1;
-  return count;
+function segmentationInput(a: Segmentation, b: Segmentation, boundary: string | number | boolean): { a: Uint32Array; b: Uint32Array; ab: Uint32Array; bb: Uint32Array; flags: number } {
+  if ((typeof a !== "string" && !Array.isArray(a)) || (typeof b !== "string" && !Array.isArray(b))) throw new TypeError("segmentations must be strings or arrays");
+  const left = typeof a === "string" ? Array.from(a) : a;
+  const right = typeof b === "string" ? Array.from(b) : b;
+  if (left.length !== right.length) throw new RangeError("Segmentations have unequal length");
+  if ((typeof a === "string" || typeof b === "string") && typeof boundary !== "string") throw new TypeError("string boundary must be a string");
+  const ab = typeof a === "string" ? Array.from(boundary as string) : [boundary];
+  const bb = typeof b === "string" ? Array.from(boundary as string) : [boundary];
+  // Python's list boundary comparison considers True == 1 and False == 0.
+  const normalize = (v: string | number | boolean): string | number => typeof v === "boolean" ? Number(v) : v;
+  const labels = internLabels(left.map(normalize), right.map(normalize), [...ab, ...bb].map(normalize));
+  return { a: labels.a, b: labels.b,
+    ab: Uint32Array.from(ab, (v) => labels.ids.get(normalize(v))!), bb: Uint32Array.from(bb, (v) => labels.ids.get(normalize(v))!),
+    flags: Number(typeof a === "string") | (Number(typeof b === "string") << 1) };
+}
+export function windowdiff(seg1: Segmentation, seg2: Segmentation, k: number, boundary: string | number | boolean = "1", weighted = false): number {
+  const input = segmentationInput(seg1, seg2, boundary);
+  if (!Number.isSafeInteger(k)) throw new TypeError("window width must be an integer");
+  if (k < 0) throw new RangeError("Window width k should not be negative");
+  if (k > input.a.length) throw new RangeError("Window width k should be smaller or equal than segmentation lengths");
+  return syncWasm().evaluationMetrics().segmentation(input.a, input.b, input.ab, input.bb, input.flags | (weighted ? 16 : 0), k);
+}
+export function pk(ref: Segmentation, hyp: Segmentation, k: number | null = null, boundary: string | number | boolean = "1"): number {
+  const input = segmentationInput(ref, hyp, boundary);
+  if (k !== null && !Number.isSafeInteger(k)) throw new TypeError("window width must be an integer");
+  if (k !== null && k < 0) throw new RangeError("Window width k should not be negative");
+  return syncWasm().evaluationMetrics().segmentation(input.a, input.b, input.ab, input.bb, input.flags | 4 | (k === null ? 8 : 0), k ?? 0);
 }
 
-function sliceSegmentation(
-  seq: Segmentation,
-  start: number,
-  end: number,
-): Array<string | number | boolean> {
-  if (typeof seq === "string") {
-    return seq.slice(start, end).split("");
-  }
-  return seq.slice(start, end) as Array<string | number | boolean>;
+function rankingPairs(ranks: Ranking): Array<readonly [unknown, number]> {
+  if (ranks instanceof Map || Array.isArray(ranks)) return [...ranks];
+  if (typeof ranks === "object" && ranks !== null) return Object.entries(ranks);
+  throw new TypeError("rankings must be records, maps, or key/rank pairs");
 }
-
-/**
- * Port of `nltk.metrics.segmentation.windowdiff`.
- *
- * Windowdiff score for a pair of segmentations over a two-item vocabulary,
- * where `boundary` marks segment edges. `weighted` selects the variant that
- * accumulates raw boundary-count differences instead of capping them at 1.
- */
-export function windowdiff(
-  seg1: Segmentation,
-  seg2: Segmentation,
-  k: number,
-  boundary: string | number | boolean = "1",
-  weighted = false,
-): number {
-  const len1 = typeof seg1 === "string" ? seg1.length : seg1.length;
-  const len2 = typeof seg2 === "string" ? seg2.length : seg2.length;
-  if (len1 !== len2) {
-    throw new RangeError("Segmentations have unequal length");
-  }
-  if (k > len1) {
-    throw new RangeError("Window width k should be smaller or equal than segmentation lengths");
-  }
-
-  let wd = 0;
-  for (let i = 0; i <= len1 - k; i += 1) {
-    const ndiff = Math.abs(
-      countBoundary(sliceSegmentation(seg1, i, i + k), boundary) -
-        countBoundary(sliceSegmentation(seg2, i, i + k), boundary),
-    );
-    wd += weighted ? ndiff : Math.min(1, ndiff);
-  }
-  return wd / (len1 - k + 1.0);
+function rankValues(pairs: ReadonlyArray<readonly [unknown, number]>): Float64Array {
+  return Float64Array.from(pairs, (pair) => {
+    if (!Array.isArray(pair) || pair.length !== 2 || typeof pair[1] !== "number") throw new TypeError("rank pairs must contain a key and numeric rank");
+    return pair[1];
+  });
 }
-
-/**
- * Beeferman's Pk text segmentation evaluation metric
- * (port of `nltk.metrics.segmentation.pk`).
- *
- * When `k` is null it defaults to
- * `round(len(ref) / (boundaryCount(ref) * 2))` using Python's
- * round-half-to-even semantics.
- */
-export function pk(
-  ref: Segmentation,
-  hyp: Segmentation,
-  k: number | null = null,
-  boundary: string | number | boolean = "1",
-): number {
-  const refLen = typeof ref === "string" ? ref.length : ref.length;
-  const hypLen = typeof hyp === "string" ? hyp.length : hyp.length;
-  if (refLen !== hypLen) {
-    throw new RangeError("Segmentations have unequal length");
-  }
-
-  let window = k;
-  if (window === null) {
-    const boundaryCount = countBoundary(ref, boundary);
-    window = pythonRoundHalfEven(refLen / (boundaryCount * 2.0));
-  }
-
-  let err = 0;
-  for (let i = 0; i <= refLen - window; i += 1) {
-    const r = countBoundary(sliceSegmentation(ref, i, i + window), boundary) > 0;
-    const h = countBoundary(sliceSegmentation(hyp, i, i + window), boundary) > 0;
-    if (r !== h) err += 1;
-  }
-  return err / (refLen - window + 1.0);
-}
-
-function pythonRoundHalfEven(x: number): number {
-  const floor = Math.floor(x);
-  const diff = x - floor;
-  if (diff > 0.5) return floor + 1;
-  if (diff < 0.5) return floor;
-  return floor % 2 === 0 ? floor : floor + 1;
-}
-
-function rankingRecordToMap(ranks: Record<string, number>): Map<string, number> {
-  const map = new Map<string, number>();
-  for (const key of Object.keys(ranks)) map.set(key, ranks[key] ?? 0);
-  return map;
-}
-
-function rankingToMap(ranks: Ranking): Map<string, number> {
-  if (Array.isArray(ranks)) {
-    const record: Record<string, number> = {};
-    for (const [key, rank] of ranks) record[String(key)] = rank;
-    return rankingRecordToMap(record);
-  }
-  if (typeof ranks === "object" && ranks !== null && !Array.isArray(ranks)) return rankingRecordToMap({ ...(ranks as Readonly<Record<string, number>>) });
-  throw new RangeError("unexpected ranking shape");
-}
-
-/**
- * Port of `nltk.metrics.spearman.spearman_correlation`.
- *
- * Spearman rank correlation coefficient for two rankings given as maps or
- * sequences of `[key, rank]` pairs. Only keys present in both rankings are
- * considered; returns 0.0 when the coefficient is undefined (fewer than two
- * shared keys), matching NLTK's ZeroDivisionError fallback.
- */
 export function spearmanCorrelation(ranks1: Ranking, ranks2: Ranking): number {
-  const map1 = rankingToMap(ranks1);
-  const map2 = rankingToMap(ranks2);
-
-  let n = 0;
-  let res = 0;
-  for (const [key, rank1] of map1.entries()) {
-    if (!map2.has(key)) continue;
-    const d = rank1 - map2.get(key)!;
-    res += d * d;
-    n += 1;
-  }
-
-  const denominator = n * (n * n - 1);
-  if (denominator === 0) return 0.0;
-  return 1 - (6 * res) / denominator;
+  const a = rankingPairs(ranks1), b = rankingPairs(ranks2);
+  const ar = rankValues(a), br = rankValues(b);
+  const input = internLabels(a.map((v) => v[0]), b.map((v) => v[0]));
+  return syncWasm().evaluationMetrics().spearman(input.a, ar, input.b, br);
 }
+export function ranksFromSequence<T>(sequence: Iterable<T>): Array<[T, number]> {
+  // This is an enumeration adapter, not a scoring algorithm.
+  return Array.from(sequence, (value, i) => [value, i]);
+}
+/** Input order is preserved; scores are not sorted by NLTK. */
+export function ranksFromScores<T>(scores: Iterable<readonly [T, number]>, rankGap = 1e-15): Array<[T, number]> {
+  if (typeof rankGap !== "number") throw new TypeError("rankGap must be numeric");
+  const pairs = [...scores];
+  const ranks = syncWasm().evaluationMetrics().ranks(rankValues(pairs), rankGap);
+  return pairs.map(([key], i) => [key, ranks[i]!]);
+}
+export { ranksFromSequence as ranks_from_sequence, ranksFromScores as ranks_from_scores };

@@ -1,5 +1,6 @@
 import { WasmNltk } from './wasm.js';
 import { TokenSpan } from './tokenizer_types.js';
+import './metrics_wasm.js';
 
 declare class TreebankWordTokenizer {
     private readonly runtime?;

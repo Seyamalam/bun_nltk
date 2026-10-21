@@ -1,4 +1,6 @@
 import { syncWasm } from "./sync_wasm.ts";
+import { ConfusionMatrix } from "./confusion_metrics.ts";
+export { accuracy, ConfusionMatrix } from "./confusion_metrics.ts";
 
 export type BleuWeights = [number, number, number, number];
 
@@ -129,33 +131,18 @@ export function editDistance(left: string, right: string, options: EditDistanceO
   return syncWasm().editDistance(left, right, options);
 }
 
-export type ConfusionMatrixResult = {
-  labels: string[];
+export type ConfusionMatrixResult<T = string> = {
+  labels: T[];
   matrix: number[][];
   accuracy: number;
 };
 
-export function confusionMatrix(gold: string[], predicted: string[]): ConfusionMatrixResult {
-  if (gold.length !== predicted.length) throw new RangeError("Lists must have the same length.");
-  const n = gold.length;
-  const labels = [...new Set([...gold.slice(0, n), ...predicted.slice(0, n)])].sort((a, b) => a.localeCompare(b));
-  const index = new Map<string, number>(labels.map((label, i) => [label, i]));
-  const matrix = Array.from({ length: labels.length }, () => Array<number>(labels.length).fill(0));
-
-  let correct = 0;
-  for (let i = 0; i < n; i += 1) {
-    const g = gold[i]!;
-    const p = predicted[i]!;
-    const gi = index.get(g);
-    const pi = index.get(p);
-    if (gi === undefined || pi === undefined) continue;
-    matrix[gi]![pi]! += 1;
-    if (g === p) correct += 1;
-  }
-
+export function confusionMatrix<T>(gold: T[], predicted: T[]): ConfusionMatrixResult<T> {
+  const cm = new ConfusionMatrix(gold, predicted);
   return {
-    labels,
-    matrix,
-    accuracy: n > 0 ? correct / n : 0,
+    labels: cm.labels,
+    matrix: cm.toMatrix(),
+    // Preserve this convenience API's historical empty result (not NLTK accuracy).
+    accuracy: cm.accuracy,
   };
 }

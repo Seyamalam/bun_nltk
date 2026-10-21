@@ -1,6 +1,7 @@
 import { WasmNltk } from './wasm.js';
 import { LabeledFeatureset, FeatureSet } from './feature_types.js';
 import './tokenizer_types.js';
+import './metrics_wasm.js';
 
 type FeatureTreeOptions = {
     entropyCutoff?: number;

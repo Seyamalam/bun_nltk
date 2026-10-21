@@ -1,5 +1,6 @@
 import { WasmNltk } from './wasm.js';
 import { TokenizerKind, BlanklineHandling, TokenSpan } from './tokenizer_types.js';
+import './metrics_wasm.js';
 
 declare class RustTokenizer {
     private readonly kind;

@@ -1,8 +1,9 @@
 import { assertOffsets, assertPerceptronBuffers, assertU32 } from "./numeric_validation.ts";
 import type { TokenizerKind, TokenizerOptions, TokenizerRequest, TokenSpan } from "./tokenizer_types.ts";
 export type { TokenizerKind, TokenizerOptions, TokenSpan, BlanklineHandling } from "./tokenizer_types.ts";
+import { MetricsWasm, type MetricsExports } from "./metrics_wasm.ts";
 
-type WasmExports = {
+type WasmExports = MetricsExports & {
   memory: WebAssembly.Memory;
   bunnltk_wasm_tokenizer_run: (inputPtr: number, inputLen: number) => number;
   bunnltk_wasm_tokenizer_output_ptr: () => number;
@@ -231,6 +232,7 @@ export type AsciiMetricsStream = {
 };
 
 export class WasmNltk {
+  private evaluationRuntime?: MetricsWasm;
   private readonly exports: WasmExports;
   private inputPtr = 0;
   private readonly maxInputBytes: number;
@@ -558,6 +560,12 @@ export class WasmNltk {
     const block = this.ensureBlock(key, values.byteLength);
     new Float64Array(this.exports.memory.buffer, block.ptr, values.length).set(values);
     return block;
+  }
+
+  /** Stateless Rust evaluation kernels with identity-ID marshaling. */
+  evaluationMetrics(): MetricsWasm {
+    this.assertActive();
+    return this.evaluationRuntime ??= new MetricsWasm(this.exports, (key, bytes) => this.ensureBlock(key, bytes));
   }
 
   decisionTreeTrain(input: {

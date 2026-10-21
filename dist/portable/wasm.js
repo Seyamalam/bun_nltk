@@ -1,4 +1,5 @@
 import { assertOffsets, assertPerceptronBuffers, assertU32 } from "./numeric_validation.js";
+import { MetricsWasm } from "./metrics_wasm.js";
 function toNumber(v) {
   return typeof v === "bigint" ? Number(v) : v;
 }
@@ -8,6 +9,7 @@ function defaultWasmUrl() {
 }
 
 export class WasmNltk {
+  evaluationRuntime;
   exports;
   inputPtr = 0;
   maxInputBytes;
@@ -289,6 +291,10 @@ export class WasmNltk {
     const block = this.ensureBlock(key, values.byteLength);
     new Float64Array(this.exports.memory.buffer, block.ptr, values.length).set(values);
     return block;
+  }
+  evaluationMetrics() {
+    this.assertActive();
+    return this.evaluationRuntime ??= new MetricsWasm(this.exports, (key, bytes) => this.ensureBlock(key, bytes));
   }
   decisionTreeTrain(input) {
     this.assertActive();

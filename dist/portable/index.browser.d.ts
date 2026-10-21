@@ -6,6 +6,7 @@ export { type BlanklineHandling, type TokenSpan } from './tokenizer_types.js';
 export { BlanklineTokenizer, LineTokenizer, SpaceTokenizer, TabTokenizer, WhitespaceTokenizer, blanklineTokenize, blanklineTokenize as blankline_tokenize, lineTokenize, lineTokenize as line_tokenize } from './tokenizers_basic.js';
 export { type FeatureSet, type FeatureValue, type LabeledFeatureset } from './feature_types.js';
 export { TreebankWordDetokenizer, TreebankWordTokenizer, WordPunctTokenizer, treebankWordTokenize, wordPunctTokenize } from './tokenizers_treebank.js';
+import './metrics_wasm.js';
 
 declare function tokenizeAscii(text: string): string[];
 declare function normalizeTokensAscii(text: string, removeStopwords?: boolean): string[];

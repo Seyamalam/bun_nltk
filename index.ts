@@ -242,7 +242,7 @@ export type {
   WordNetSynset,
 } from "./src/wordnet";
 export { LancasterStemmer, RegexpStemmer, SnowballStemmer, WordNetLemmatizer } from "./src/stemmers";
-export { confusionMatrix, corpusBleu, editDistance, sentenceBleu } from "./src/metrics";
+export { accuracy, ConfusionMatrix, confusionMatrix, corpusBleu, editDistance, sentenceBleu } from "./src/metrics";
 export type { BleuWeights, ConfusionMatrixResult, EditDistanceOptions } from "./src/metrics";
 export { SentimentIntensityAnalyzer } from "./src/sentiment";
 export type { VaderOptions, VaderPolarity } from "./src/sentiment";
@@ -291,6 +291,10 @@ export {
   precision,
   presence,
   recall,
+  ranksFromSequence,
+  ranksFromScores,
+  ranks_from_sequence,
+  ranks_from_scores,
   sorensenDiceDistance,
   sorensenDiceSimilarity,
   spearmanCorrelation,

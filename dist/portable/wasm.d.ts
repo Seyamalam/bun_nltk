@@ -1,5 +1,6 @@
 import { TokenizerKind, TokenizerOptions, TokenSpan } from './tokenizer_types.js';
 export { type BlanklineHandling } from './tokenizer_types.js';
+import { MetricsWasm } from './metrics_wasm.js';
 
 type AsciiMetrics = {
     tokens: number;
@@ -25,6 +26,7 @@ type AsciiMetricsStream = {
     dispose(): void;
 };
 declare class WasmNltk {
+    private evaluationRuntime?;
     private readonly exports;
     private inputPtr;
     private readonly maxInputBytes;
@@ -94,6 +96,8 @@ declare class WasmNltk {
     categoricalMaxentFree(handle: number): void;
     private copyU32;
     private copyF64;
+    /** Stateless Rust evaluation kernels with identity-ID marshaling. */
+    evaluationMetrics(): MetricsWasm;
     decisionTreeTrain(input: {
         pairs: Uint32Array;
         offsets: Uint32Array;
