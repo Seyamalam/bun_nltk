@@ -9,7 +9,7 @@ Multiple declaration entrypoints preserve private/nominal class identity across
 the root, WASM, and classifier subpaths. Root declarations take their values from
 their respective source roots, not a hand-maintained export list or an `any`
 facade. Previously published classifier option types remain type-only exports;
-browser runtime exports are not expanded.
+browser runtime exports reflect its curated source root.
 
 The linker can lose a type-only alias to a value (currently `SnowballLanguages`).
 `scripts/link-portable-types.mjs` uses tsrs's original module namespace to restore
@@ -37,15 +37,17 @@ compile-time negative fixtures; an unsuppressed wrong-argument compilation that
 must fail; every runtime root/subpath declaration export; namespace members; and
 absence of root-level `any` values. Browser resolution is exercised through an
 actual package-root browser bundle, not Node's earlier `node` export condition.
-The existing packaged Node/Bun classifier/WASM runtime smoke assertions remain.
+The packaged Node/Bun checks cover classifier/WASM, tokenizer/Punkt helpers,
+metrics, standalone encodings, parsing, and bundled NE model path resolution.
 These are packaging/type contracts and runtime smoke checks, **not NLTK behavioral
 parity evidence**.
 
 The existing 400-file / 13,000,000-byte package limits are unchanged. Linking avoids
 publishing hundreds of extra per-source declarations. The full precise Node root
-adds about 248 KB over the former facades while retaining the same 263 packaged
-implementation/data files (264 including this document). `dist/portable` is
-build-owned and cleaned to prevent stale chunk leakage.
+adds declaration bytes over the former facades. Runtime roots and subpaths now
+use one split ESM build graph, avoiding duplicate implementations and preserving
+class identity on Node. `dist/portable` is build-owned and cleaned to prevent
+stale chunk leakage. Integrated WASM/package gates remain separate release checks.
 
 ## Boundaries
 

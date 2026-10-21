@@ -21,12 +21,14 @@ import { WasmNltk } from "bun_nltk/wasm";
 import { RustDecisionTreeClassifier } from "bun_nltk/classify-tree";
 import { RustNaiveBayesClassifier } from "bun_nltk/classify-features";
 import { RustMaxentClassifier } from "bun_nltk/classify-maxent";
+import { ParsingRuntime, Tree, CFG, RustEarleyParser } from "bun_nltk/parse";
 const resolved = realpathSync(fileURLToPath(import.meta.resolve("bun_nltk/classify-tree")));
 assert.ok(resolved.startsWith(process.cwd() + "/node_modules/"), resolved);
 const runtime = await WasmNltk.init();
 const tree = RustDecisionTreeClassifier.train(runtime, [[{"color 😀":"Red"},"upper"],[{"color 😀":"red"},"lower"]]);
 const nb = RustNaiveBayesClassifier.train(runtime, [[{x:1},"number"],[{x:"1"},"string"]]);
 const maxent = RustMaxentClassifier.train(runtime, [[{x:"a"},"A"],[{x:"b"},"B"]]);
+const parsing = await ParsingRuntime.load();
 try {
   assert.deepEqual(tree.classifyMany([{"color 😀":"Red"},{"color 😀":"red"},{}]), ["upper","lower","lower"]);
   assert.deepEqual(nb.classifyMany([{x:true},{x:"1"}]), ["number","string"]);
@@ -35,7 +37,22 @@ try {
   assert.deepEqual([...runtime.perceptronPredictBatch(Uint32Array.of(0,1), Uint32Array.of(0,1,2), Float32Array.of(1,0,0,1),2,2)], [0,1]);
   assert.throws(() => runtime.perceptronPredictBatch(Uint32Array.of(0),Uint32Array.of(0,1),Float32Array.of(1),1,2), RangeError);
   const root = await import("bun_nltk");
+  if (typeof Bun === "undefined") {
+    assert.equal(root.WasmNltk, WasmNltk);
+    assert.equal(root.RustDecisionTreeClassifier, RustDecisionTreeClassifier);
+    assert.equal(root.Tree, Tree);
+  }
   assert.deepEqual(root.word_tokenize("Hello."), ["Hello", "."]);
+  assert.deepEqual(Tree.fromstring(parsing, '(S (NP café) (VP 😀))').leaves(), ['café','😀']);
+  assert.equal(new RustEarleyParser(CFG.fromstring(parsing, "S -> S S | 'a'")).parse(['a','a','a','a']).length, 5);
+  assert.equal(root.Tree.fromstring(parsing, '(S root)').get(0), 'root');
+  assert.equal(root.accuracy(['a','b'], ['a','a']), 0.5);
+  assert.equal(root.jaccardDistance(new Set(['a']), new Set(['b'])), 1);
+  assert.equal(root.sentenceChrF('abcdef', 'abcdef'), 1);
+  const encoding = root.BinaryMaxentFeatureEncoding.train([[{x:'a'},'A'],[{x:'b'},'B']]);
+  try { assert.ok(encoding.encode({x:'a'},'A').length > 0); }
+  finally { encoding.dispose(); }
+  assert.doesNotThrow(() => root.neChunkIob([{token:'John',tag:'NNP'},{token:'runs',tag:'VBZ'}], {binary:true}));
   if (typeof Bun !== "undefined") {
     assert.equal(root.countTokensAscii("one two"), 2);
     const compat = root.DecisionTreeClassifier.train([[{x:"Red"},"upper"],[{x:"red"},"lower"]]);
@@ -46,7 +63,7 @@ try {
     assert.throws(() => root.countTokensAscii("one two"), /require Bun/);
   }
   console.log(JSON.stringify({ok:true,runtime:process.version,bunVersion:typeof Bun !== "undefined" ? Bun.version : undefined,resolved,linearMemoryBytes:runtime.memoryBytes}));
-} finally { tree.dispose(); nb.dispose(); maxent.dispose(); runtime.dispose(); }
+} finally { tree.dispose(); nb.dispose(); maxent.dispose(); parsing.dispose(); runtime.dispose(); }
 assert.throws(() => tree.classify({}), /disposed/);
 `;
 

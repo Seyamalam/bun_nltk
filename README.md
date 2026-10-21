@@ -1,8 +1,8 @@
 # bun_nltk
 
-Rust-first NLP for Bun, Node.js, and browsers. Algorithms live in Rust behind a
-shared native/WASM core; TypeScript provides the typed API, runtime loading, and
-marshaling. The compatibility target is Python NLTK 3.10.3.
+Rust-first NLP for Bun, Node.js, and browsers. Migrated algorithms live in Rust
+behind a shared native/WASM core; TypeScript provides the typed API, loading,
+marshaling, and remaining legacy algorithms. The target is Python NLTK 3.10.3.
 
 ![module surfaces 241/241](https://img.shields.io/badge/module_surfaces-241%2F241-blue)
 ![fidelity 43 passed](https://img.shields.io/badge/fidelity-43_passed-blue)
@@ -17,10 +17,16 @@ marshaling. The compatibility target is Python NLTK 3.10.3.
   behavioral-parity percentage. Regenerate with `bun run parity:checklist`.
 - The fidelity gate reports **43 passed, 0 failed, 0 skipped, and 3 unsupported**
   of 46 groups in the current Linux x64 run (Bun 1.4.2, Python 3.14.4,
-  NLTK 3.10.3, 2026-10-20). Missing required fixtures fail the gate; unsupported
+   NLTK 3.10.3, 2026-10-21). Missing required fixtures fail the gate; unsupported
   GUI, Java, and network integrations are reported separately and never counted
   as passed.
-- The Rust crate passes 62 unit tests; the TypeScript suite passes 507 tests.
+- The integrated Rust crate passes **98 tests**, plus **4 compatibility-crate
+  tests**. The Bun suite currently has **564 passes and 2 stale inventory
+  failures**; inventory signatures and export snapshots are being reviewed.
+- Combined WASM and package size gates currently fail; their unchanged limits
+  are 700,000 bytes and 13,000,000 unpacked bytes. This integration is not release-ready.
+- [Semaphore pipelines](docs/semaphore-ci.md) are prepared, not activated.
+  Account authorization and a genuine Windows self-hosted runner remain required.
 - Passing fixtures establishes agreement for those cases and tolerances, not
   complete NLTK equivalence. See [behavioral validation](docs/BEHAVIORAL_PARITY.md).
 
@@ -40,11 +46,10 @@ npm install bun_nltk
 The root entry point resolves per runtime. Bun uses the Rust FFI library; Node.js
 24+ uses a bundled root where WASM-backed APIs work and native-only calls throw a
 descriptive error; browsers use a bundled WASM/tokenization root. The `wasm`,
-`classify-features`, `classify-tree`, and `classify-maxent` subpaths also ship
+`classify-features`, `classify-tree`, `classify-maxent`, and `parse` subpaths also ship
 plain JavaScript and TypeScript declarations for Node.js 24+ and browsers. Root
-Node/browser declarations resolve every exported name; portable classifiers and
-WASM options are precisely typed, while other root names are runtime facades.
-Use the subpaths for the rest.
+Node/browser declarations are source-derived and precisely typed, not root-wide
+`any` facades. The curated browser surface is intentionally smaller than Node's.
 
 ### Quick start (Bun)
 

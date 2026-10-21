@@ -2,6 +2,7 @@ import {
   FreqDist, CFG, ChartParser, PorterStemmer, NaiveBayesClassifier,
   corpusBleu, computeAsciiMetrics, word_tokenize_subset, chat_util_ns,
   type CfgGrammar, type SnowballLanguages, type ProbDistFactory,
+  accuracy, jaccardDistance, BinaryMaxentFeatureEncoding, pythonFloat,
 } from "bun_nltk";
 const distribution = new FreqDist<string>(["word"]);
 const frequency: number = distribution.get("word");
@@ -15,6 +16,12 @@ const chat = new chat_util_ns.Chat([["hi", ["hello"]]], {});
 const reply: string = chat.respond("hi");
 const classifier = NaiveBayesClassifier.train([[{ x: true }, "A"]]);
 const label: string = classifier.classify({ x: true });
+const score: number = accuracy(["a"], ["a"]);
+const distance: number = jaccardDistance(new Set([1]), new Set([2]));
+const encoding = BinaryMaxentFeatureEncoding.train([[{ x: pythonFloat(1) }, "A"]]);
+// @ts-expect-error Generic set metric preserves element types.
+jaccardDistance(new Set([1]), new Set(["1"]));
+encoding.dispose();
 // @ts-expect-error Generic frequency distribution retains key types.
 distribution.get(42);
 // @ts-expect-error CFG factories require a string.

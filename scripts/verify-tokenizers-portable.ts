@@ -1,4 +1,4 @@
-import { chromium, firefox } from "playwright";
+import { chromium, firefox, webkit } from "playwright";
 import { resolve } from "node:path";
 import type { TokenizerKind, TokenizerOptions, TokenSpan } from "../src/tokenizer_types.ts";
 
@@ -33,8 +33,12 @@ const server = Bun.serve({
 });
 
 try {
-  for (const [name, launcher] of Object.entries({ chromium, firefox })) {
-    const browser = await launcher.launch({ headless: true });
+  for (const [name, launcher] of Object.entries({ chromium, firefox, webkit })) {
+    const browser = await launcher.launch({
+      headless: true,
+      ...(name === "webkit" && process.env.BUN_NLTK_WEBKIT_EXECUTABLE
+        ? { executablePath: process.env.BUN_NLTK_WEBKIT_EXECUTABLE } : {}),
+    });
     try {
       const page = await browser.newPage();
       await page.goto(server.url.href);

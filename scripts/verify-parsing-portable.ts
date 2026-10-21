@@ -15,7 +15,11 @@ try {
   const requested = process.env.BUN_NLTK_PARSING_BROWSERS?.split(",");
   for (const [name, launcher] of Object.entries({ chromium, firefox, webkit })) {
     if (requested && !requested.includes(name)) continue;
-    const browser = await launcher.launch({ headless: true });
+    const browser = await launcher.launch({
+      headless: true,
+      ...(name === "webkit" && process.env.BUN_NLTK_WEBKIT_EXECUTABLE
+        ? { executablePath: process.env.BUN_NLTK_WEBKIT_EXECUTABLE } : {}),
+    });
     try {
       const page = await browser.newPage();
       await page.goto(server.url.href);

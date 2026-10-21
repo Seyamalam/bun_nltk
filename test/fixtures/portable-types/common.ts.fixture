@@ -9,6 +9,8 @@ import { WasmNltk as SubpathWasm } from "bun_nltk/wasm";
 import { RustDecisionTreeClassifier as SubpathTree } from "bun_nltk/classify-tree";
 import { RustNaiveBayesClassifier as SubpathNb } from "bun_nltk/classify-features";
 import { RustMaxentClassifier as SubpathMaxent } from "bun_nltk/classify-maxent";
+import { ParsingRuntime, Tree, CFG, Nonterminal, Production, RustEarleyParser, type GrammarSymbol } from "bun_nltk/parse";
+import { Tree as RootTree, RustCFG } from "bun_nltk";
 type IsAny<T> = 0 extends (1 & T) ? true : false;
 type AssertFalse<T extends false> = T;
 type RootIsPrecise = AssertFalse<IsAny<typeof word_tokenize>>;
@@ -33,6 +35,17 @@ const tokens: string[] = word_tokenize("Hello.");
 const count: number = countTokensAscii("a b");
 const grouped: number[][] = ngrams([1, 2, 3], 2);
 const trainer = new PunktTrainer().train("Sentence.", { minAbbrevCount: 2 });
+const parsing = await ParsingRuntime.load();
+const parsedTree: Tree = RootTree.fromstring(parsing, "(S leaf)");
+const leaves: string[] = parsedTree.leaves();
+const grammar: CFG = RustCFG.fromstring(parsing, "S -> 'a'");
+const symbols: readonly GrammarSymbol[] = new Production(parsing, new Nonterminal("S"), ["a"]).rhs();
+const parsed: Tree[] = new RustEarleyParser(grammar).parse(["a"]);
+// @ts-expect-error Grammar start requires Nonterminal, not a terminal string.
+new CFG(parsing, "S", []);
+// @ts-expect-error Tree format options stay precise across root and subpath.
+parsedTree.pformat({ margin: "wide" });
+parsing.dispose();
 new TreebankWordTokenizer().tokenize("text");
 new MWETokenizer([["New", "York"]], "_").tokenize(tokens);
 new TweetTokenizer({ preserveCase: true }).tokenize("text");

@@ -20,7 +20,7 @@ function getModel(binary: boolean): Prepared {
       gunzipSync(
         readFileSync(
           new URL(
-            `../models/ne-chunker-${binary ? "binary" : "multiclass"}.json.gz`,
+            `${import.meta.url.includes("/dist/portable/") ? "../../" : "../"}models/ne-chunker-${binary ? "binary" : "multiclass"}.json.gz`,
             import.meta.url,
           ),
         ),

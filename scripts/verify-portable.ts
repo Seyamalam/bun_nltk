@@ -20,6 +20,7 @@ const server = Bun.serve({
     if (module) return new Response(module, { headers: { "content-type": "text/javascript" } });
     if (path === "/native/bun_nltk.wasm") return new Response(Bun.file(resolve(root, "native/bun_nltk.wasm")));
     if (path === "/index.browser.js") return new Response(Bun.file(resolve(root, "dist/portable/index.browser.js")), { headers: { "content-type": "text/javascript" } });
+    if (/^\/chunk-[\w-]+\.js$/.test(path)) return new Response(Bun.file(resolve(root, "dist/portable", path.slice(1))), { headers: { "content-type": "text/javascript" } });
     return new Response("<!doctype html><title>WASM verification</title>", { headers: { "content-type": "text/html" } });
   },
 });

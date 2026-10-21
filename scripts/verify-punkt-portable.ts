@@ -1,5 +1,5 @@
 /** Behavioral browser/Node checks for the real bundled-English WASM core. */
-import { chromium, firefox } from "playwright";
+import { chromium, firefox, webkit } from "playwright";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dir, "..");
@@ -7,15 +7,19 @@ const server = Bun.serve({
   hostname: "127.0.0.1", port: 0,
   fetch(request) {
     const path = new URL(request.url).pathname;
-    if (path === "/dist/portable/index.browser.js") return new Response(Bun.file(resolve(root, `.${path}`)), { headers: { "content-type": "text/javascript" } });
+    if (/^\/dist\/portable\/[\w.-]+\.js$/.test(path)) return new Response(Bun.file(resolve(root, `.${path}`)), { headers: { "content-type": "text/javascript" } });
     if (path === "/native/bun_nltk.wasm") return new Response(Bun.file(resolve(root, `.${path}`)));
     return new Response("<!doctype html><title>Punkt inference</title>", { headers: { "content-type": "text/html" } });
   },
 });
 
 try {
-  for (const [name, launcher] of Object.entries({ chromium, firefox })) {
-    const browser = await launcher.launch({ headless: true });
+  for (const [name, launcher] of Object.entries({ chromium, firefox, webkit })) {
+    const browser = await launcher.launch({
+      headless: true,
+      ...(name === "webkit" && process.env.BUN_NLTK_WEBKIT_EXECUTABLE
+        ? { executablePath: process.env.BUN_NLTK_WEBKIT_EXECUTABLE } : {}),
+    });
     try {
       const page = await browser.newPage();
       await page.goto(server.url.href);

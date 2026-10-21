@@ -1,4 +1,4 @@
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { rollup } from "rollup";
 import { dts } from "rollup-plugin-dts";
@@ -21,30 +21,27 @@ function jsImports(source: string): string {
     return `${prefix}${path.replace(/(?:\.d)?\.ts$/, "").replace(/\.js$/, "")}.js${quote}`;
   });
 }
-const transpiler = new Bun.Transpiler({ target: "browser" });
 // Only the build-owned output directory is replaced; stale declaration chunks
 // otherwise leak into the tarball and consume the existing package budgets.
 rmSync(output, { recursive: true, force: true });
 mkdirSync(output, { recursive: true });
-for (const name of modules) {
-  const source = readFileSync(resolve(root, `src/${name}.ts`), "utf8");
-  writeFileSync(resolve(output, `${name}.js`), jsImports(transpiler.transformSync(source, "ts")));
-}
-for (const [entrypoint, naming, target] of [
-  ["index.ts", "index.node.js", "node"],
-  ["src/index_browser.ts", "index.browser.js", "browser"],
-] as const) {
-  const bundle = await Bun.build({
-    entrypoints: [resolve(root, entrypoint)],
-    target,
-    format: "esm",
-    outdir: output,
-    naming,
-    minify: true,
-    external: target === "node" ? ["bun:ffi"] : ["node:fs", "node:fs/promises"],
-  });
-  if (!bundle.success) throw new Error(bundle.logs.map(String).join("\n"));
-}
+// One ESM graph shares implementations and class identity across both curated
+// roots and subpaths. The browser entry has no native imports; its transitive
+// graph is checked in real browsers and the installed-package verifier.
+const bundle = await Bun.build({
+  entrypoints: [resolve(root, "index.ts"), resolve(root, "src/index_browser.ts"),
+    ...modules.map((name) => resolve(root, `src/${name}.ts`))],
+  target: "node",
+  format: "esm",
+  splitting: true,
+  outdir: output,
+  naming: { entry: "[name].js", chunk: "chunk-[hash].js" },
+  minify: true,
+  external: ["bun:ffi"],
+});
+if (!bundle.success) throw new Error(bundle.logs.map(String).join("\n"));
+renameSync(resolve(output, "index.js"), resolve(output, "index.node.js"));
+renameSync(resolve(output, "index_browser.js"), resolve(output, "index.browser.js"));
 // Retain previously published type-only conveniences without adding runtime
 // exports. All values still come exclusively from the corresponding root.
 for (const [name, entry] of [["node", "../index"], ["browser", "./index_browser"]] as const) {
