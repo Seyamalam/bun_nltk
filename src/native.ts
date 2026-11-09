@@ -360,6 +360,22 @@ const nativeSymbols = {
     args: ["u64", "ptr", "usize"],
     returns: "u64",
   },
+  bunnltk_tokenizer_run: {
+    args: ["ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_tokenizer_result_len: {
+    args: ["u64"],
+    returns: "u64",
+  },
+  bunnltk_tokenizer_result_fill: {
+    args: ["u64", "ptr", "usize"],
+    returns: "u64",
+  },
+  bunnltk_tokenizer_result_free: {
+    args: ["u64"],
+    returns: "void",
+  },
 } as const;
 
 type NativeLibrary = import("bun:ffi").Library<typeof nativeSymbols>;
@@ -1841,4 +1857,47 @@ export class NativeFreqDistStream {
 
 export function nativeLibraryPath(): string {
   return nativeLibPath;
+}
+
+/** JSON transport for the Rust tokenizer kernels; mirrors the WASM tokenizer
+ * ABI, where a failed request still produces a JSON-encoded error string and
+ * the last-error code is nonzero. The code must be read before the follow-up
+ * calls, since every export resets it on entry. */
+export function tokenizerRequestNative(request: unknown): unknown {
+  const input = toBuffer(JSON.stringify(request));
+  const rawHandle = lib.symbols.bunnltk_tokenizer_run(ptr(input), input.length);
+  const code = lastError();
+  const handle = BigInt(rawHandle);
+  if (handle === 0n) throw new Error("native tokenizer request returned an empty handle");
+  let result: unknown;
+  try {
+    const byteCount = toNumber(lib.symbols.bunnltk_tokenizer_result_len(handle));
+    assertNoNativeError("tokenizerRequestNative.len");
+    const bytes = new Uint8Array(Math.max(1, byteCount));
+    const written = toNumber(lib.symbols.bunnltk_tokenizer_result_fill(handle, ptr(bytes), bytes.length));
+    assertNoNativeError("tokenizerRequestNative.fill");
+    result = JSON.parse(new TextDecoder().decode(bytes.subarray(0, written)));
+  } finally {
+    lib.symbols.bunnltk_tokenizer_result_free(handle);
+  }
+  if (code !== 0) throw new Error(typeof result === "string" ? result : "Rust tokenizer error");
+  return result;
+}
+
+export function socialTokenizerNative(request: import("./tokenizers_social.ts").SocialTokenizerRequest): string[] | string {
+  if (request.kind !== "mwe" && typeof request.text !== "string") throw new TypeError("text must be a string");
+  return tokenizerRequestNative(request) as string[] | string;
+}
+
+let nativeTokenizerAvailableCache: boolean | undefined;
+
+/** True only when Bun can dlopen a native library exporting the tokenizer ABI. */
+export function nativeTokenizerAvailable(): boolean {
+  if (nativeTokenizerAvailableCache !== undefined) return nativeTokenizerAvailableCache;
+  try {
+    nativeTokenizerAvailableCache = typeof lib.symbols.bunnltk_tokenizer_run === "function";
+  } catch {
+    nativeTokenizerAvailableCache = false;
+  }
+  return nativeTokenizerAvailableCache;
 }

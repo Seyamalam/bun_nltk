@@ -1,4 +1,4 @@
-import { tokenizerRuntime } from "./tokenizer_runtime.ts";
+import { socialTokenizerRuntime } from "./tokenizer_runtime.ts";
 import type { WasmNltk } from "./wasm.ts";
 import type { TokenSpan } from "./tokenizer_types.ts";
 
@@ -34,14 +34,14 @@ export class TweetTokenizer {
   get match_phone_numbers(): boolean { return this.matchPhoneNumbers; }
   set match_phone_numbers(value: boolean) { this.matchPhoneNumbers = value; }
   tokenize(text: string): string[] {
-    return (this.runtime ?? tokenizerRuntime()).socialTokenizer({ kind: "tweet", text,
+    return (this.runtime ?? socialTokenizerRuntime()).socialTokenizer({ kind: "tweet", text,
       preserve_case: this.preserveCase, strip_handles: this.stripHandles, reduce_len: this.reduceLen,
       match_phone_numbers: this.matchPhoneNumbers }) as string[];
   }
   tokenizeSents(texts: readonly string[]): string[][] { return texts.map((text) => this.tokenize(text)); }
   tokenize_sents(texts: readonly string[]): string[][] { return this.tokenizeSents(texts); }
   spanTokenize(text: string): TokenSpan[] {
-    (this.runtime ?? tokenizerRuntime()).socialTokenizer({ kind: "tweet", text, spans: true });
+    (this.runtime ?? socialTokenizerRuntime()).socialTokenizer({ kind: "tweet", text, spans: true });
     throw new Error("TweetTokenizer does not implement span_tokenize");
   }
   span_tokenize(text: string): TokenSpan[] { return this.spanTokenize(text); }
@@ -55,12 +55,12 @@ export class ToktokTokenizer {
   tokenize(text: string, returnStr: true): string;
   tokenize(text: string, returnStr: boolean): string[] | string;
   tokenize(text: string, returnStr = false): string[] | string {
-    return (this.runtime ?? tokenizerRuntime()).socialTokenizer({ kind: "toktok", text, return_str: returnStr });
+    return (this.runtime ?? socialTokenizerRuntime()).socialTokenizer({ kind: "toktok", text, return_str: returnStr });
   }
   tokenizeSents(texts: readonly string[]): string[][] { return texts.map((text) => this.tokenize(text)); }
   tokenize_sents(texts: readonly string[]): string[][] { return this.tokenizeSents(texts); }
   spanTokenize(text: string): TokenSpan[] {
-    (this.runtime ?? tokenizerRuntime()).socialTokenizer({ kind: "toktok", text, spans: true });
+    (this.runtime ?? socialTokenizerRuntime()).socialTokenizer({ kind: "toktok", text, spans: true });
     throw new Error("ToktokTokenizer does not implement span_tokenize");
   }
   span_tokenize(text: string): TokenSpan[] { return this.spanTokenize(text); }
@@ -84,13 +84,13 @@ export class MWETokenizer {
   remove_mwe(tokens: readonly string[]): void { this.removeMwe(tokens); }
   tokenize(tokens: readonly string[]): string[] {
     strings(tokens);
-    return (this.runtime ?? tokenizerRuntime()).socialTokenizer({ kind: "mwe", tokens, mwe_updates: this.updates, separator: this.separator }) as string[];
+    return (this.runtime ?? socialTokenizerRuntime()).socialTokenizer({ kind: "mwe", tokens, mwe_updates: this.updates, separator: this.separator }) as string[];
   }
   tokenizeSents(texts: readonly (readonly string[])[]): string[][] { return texts.map((text) => this.tokenize(text)); }
   tokenize_sents(texts: readonly (readonly string[])[]): string[][] { return this.tokenizeSents(texts); }
   spanTokenize(tokens: readonly string[]): TokenSpan[] {
     strings(tokens);
-    (this.runtime ?? tokenizerRuntime()).socialTokenizer({ kind: "mwe", tokens, spans: true });
+    (this.runtime ?? socialTokenizerRuntime()).socialTokenizer({ kind: "mwe", tokens, spans: true });
     throw new Error("MWETokenizer does not implement span_tokenize");
   }
   span_tokenize(tokens: readonly string[]): TokenSpan[] { return this.spanTokenize(tokens); }

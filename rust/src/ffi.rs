@@ -31,7 +31,9 @@ use crate::stream_freqdist::StreamFreqDistBuilder;
 use crate::tagger;
 use crate::text_linear::NativeLinearTextResult;
 use crate::token_ids;
+use crate::tokenizers;
 use crate::wordnet::NativeWordNet;
+use crate::{CoreError, CoreResult};
 
 /// Build a slice from a raw pointer, tolerating null / zero-length inputs
 /// (constructing a slice from a null pointer is UB even for len 0).
@@ -85,6 +87,34 @@ fn linear_text_ptr_from_handle(handle: u64) -> *mut NativeLinearTextResult {
         std::ptr::null_mut()
     } else {
         handle as *mut NativeLinearTextResult
+    }
+}
+
+/// Serialized tokenizer response retained until the caller copies and frees it,
+/// so a second algorithm pass is never needed to discover the output size.
+struct NativeTokenizerResult {
+    bytes: Vec<u8>,
+}
+
+impl NativeTokenizerResult {
+    fn len(&self) -> usize {
+        self.bytes.len()
+    }
+
+    fn copy_to(&self, out: &mut [u8]) -> CoreResult<usize> {
+        if out.len() < self.bytes.len() {
+            return Err(CoreError::InsufficientCapacity);
+        }
+        out[..self.bytes.len()].copy_from_slice(&self.bytes);
+        Ok(self.bytes.len())
+    }
+}
+
+fn tokenizer_result_ptr_from_handle(handle: u64) -> *mut NativeTokenizerResult {
+    if handle == 0 {
+        std::ptr::null_mut()
+    } else {
+        handle as *mut NativeTokenizerResult
     }
 }
 
@@ -1810,6 +1840,89 @@ pub unsafe extern "C" fn bunnltk_linear_text_result_fill(
 pub unsafe extern "C" fn bunnltk_linear_text_result_free(handle: u64) {
     error_state::reset_error();
     let result = linear_text_ptr_from_handle(handle);
+    if !result.is_null() {
+        unsafe { drop(Box::from_raw(result)) };
+    }
+}
+
+#[no_mangle]
+/// # Safety
+/// `input_ptr` must reference `input_len` initialized bytes holding one JSON
+/// tokenizer request, as defined by `tokenizers::Request`. A zero-length buffer
+/// may be null; the input must not be mutated concurrently. The returned handle
+/// must be released exactly once with `bunnltk_tokenizer_result_free`.
+pub unsafe extern "C" fn bunnltk_tokenizer_run(
+    input_ptr: *const u8,
+    input_len: usize,
+) -> u64 {
+    error_state::reset_error();
+    // The WASM ABI contract: a failed request still produces a result holding
+    // the JSON-encoded error string, with the code raised on the error cell.
+    let result = serde_json::from_slice::<tokenizers::Request>(const_slice(input_ptr, input_len))
+        .map_err(|error| error.to_string())
+        .and_then(tokenizers::execute);
+    let bytes = match result {
+        Ok(response) => serde_json::to_vec(&response),
+        Err(error) => {
+            error_state::set_error(error_state::INVALID_N);
+            serde_json::to_vec(&error)
+        }
+    };
+    match bytes {
+        Ok(bytes) => Box::into_raw(Box::new(NativeTokenizerResult { bytes })) as u64,
+        Err(_) => {
+            error_state::set_error(error_state::OUT_OF_MEMORY);
+            0
+        }
+    }
+}
+
+#[no_mangle]
+/// # Safety
+/// `handle` must be zero or a live result from `bunnltk_tokenizer_run`.
+/// Do not free it concurrently. Freed or fabricated handles are invalid.
+pub unsafe extern "C" fn bunnltk_tokenizer_result_len(handle: u64) -> u64 {
+    error_state::reset_error();
+    let result = tokenizer_result_ptr_from_handle(handle);
+    if result.is_null() {
+        error_state::set_error(error_state::INVALID_N);
+        return 0;
+    }
+    unsafe { (&*result).len() as u64 }
+}
+
+#[no_mangle]
+/// # Safety
+/// `handle` must be a live result handle; do not access or free it concurrently.
+/// `out_ptr` must reference `out_len` exclusively writable bytes, disjoint from
+/// result storage and live for this call. A zero-length output may be null.
+pub unsafe extern "C" fn bunnltk_tokenizer_result_fill(
+    handle: u64,
+    out_ptr: *mut u8,
+    out_len: usize,
+) -> u64 {
+    error_state::reset_error();
+    let result = tokenizer_result_ptr_from_handle(handle);
+    if result.is_null() {
+        error_state::set_error(error_state::INVALID_N);
+        return 0;
+    }
+    match unsafe { &*result }.copy_to(mut_slice(out_ptr, out_len)) {
+        Ok(written) => written as u64,
+        Err(err) => {
+            error_state::set_error(err.code());
+            0
+        }
+    }
+}
+
+#[no_mangle]
+/// # Safety
+/// `handle` must be zero or a live result from `bunnltk_tokenizer_run`.
+/// A nonzero handle must be freed exactly once, with no concurrent result access.
+pub unsafe extern "C" fn bunnltk_tokenizer_result_free(handle: u64) {
+    error_state::reset_error();
+    let result = tokenizer_result_ptr_from_handle(handle);
     if !result.is_null() {
         unsafe { drop(Box::from_raw(result)) };
     }
