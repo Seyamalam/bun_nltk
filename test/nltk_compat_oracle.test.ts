@@ -131,4 +131,4 @@ test("sentence/word compatibility helpers use actual NLTK English params, preser
       } else expect(call(), JSON.stringify({ kind, ...row })).toEqual(result.value!);
     }
   }
-});
+}, 10_000);

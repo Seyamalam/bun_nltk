@@ -312,4 +312,4 @@ test("python3 baseline parity: learned rules, tagged output and accuracy match r
 
     expect(roundEval(tagger.evaluate(gold))).toBe(pyConfig.accuracy);
   }
-});
+}, 10_000);

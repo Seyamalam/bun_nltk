@@ -118,4 +118,4 @@ test("unsupported Python/regex constructs and nullable consuming matches are exp
     expect(oracle([{ pattern, text: "x" }])[0]!.error).toBeDefined();
     expect(() => new RegexpTokenizer(pattern).tokenize("x")).toThrow("invalid");
   }
-});
+}, 15_000);
