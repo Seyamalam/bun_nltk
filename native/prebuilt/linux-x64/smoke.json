@@ -8,8 +8,8 @@
     "architecture": "x64",
     "os_release": "7.0.0-42-generic"
   },
-  "artifact_sha256": "c2ffb03eff444a6e256df680f01d65b70f02efa7a6d53f1febfca4155b8c6d09",
-  "artifact_bytes": 2244120,
+  "artifact_sha256": "93796475d0ab848b4be704b7493bce26e1374c8536e45cc4b52157110586120f",
+  "artifact_bytes": 2244648,
   "checks": {
     "native_loader_contract": true,
     "scalar_and_simd_tokens": true,
@@ -80,6 +80,10 @@
       "bunnltk_parsing_result_ptr",
       "bunnltk_perceptron_predict_batch",
       "bunnltk_porter_stem_ascii",
+      "bunnltk_tokenizer_result_fill",
+      "bunnltk_tokenizer_result_free",
+      "bunnltk_tokenizer_result_len",
+      "bunnltk_tokenizer_run",
       "bunnltk_wasm_accuracy_score",
       "bunnltk_wasm_alloc",
       "bunnltk_wasm_binary_score",
@@ -168,7 +172,7 @@
       "bunnltk_wordnet_query_count",
       "bunnltk_wordnet_query_fill"
     ],
-    "count": 147
+    "count": 151
   },
   "package_validation": "not_run",
   "foreign_host_validation": "not_run"

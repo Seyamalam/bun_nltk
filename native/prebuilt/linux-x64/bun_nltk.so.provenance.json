@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "target": "linux-x64",
-  "generated_at": "2026-11-09T14:41:51.385Z",
+  "generated_at": "2026-11-09T16:54:26.472Z",
   "source": {
-    "revision": "b6079e851367399b0f6a1195dc7e37c099edbbd0",
-    "sha256": "719076caf55a64ffcd1b8a82f794bb9cc09acac3b168d288c0c542272354ff47",
+    "revision": "e59d5b57d06f98e2a0e9ad732a82c0cfbd0628e7",
+    "sha256": "af92714c81d4313bf92bdcbec73cfe69d2bebcf213589c524a50d23d0a869115",
     "files": {
       "rust/Cargo.lock": "59800e22d3f2effeae965e190288209ac8c2611f70f44ace19cd506b9eb0cc26",
       "rust/Cargo.toml": "5eafe67453fc0034fa68e54241d16198966d410373caa6b9bda2d61177657cae",
@@ -24,7 +24,7 @@
       "rust/src/distance.rs": "bb785c95c81e59b9d039395ca1ddfa23e0510f8891792d6e9ce5a43f8c528968",
       "rust/src/error_state.rs": "990b7bed307a87c43996be69b7cd2d691b4cf02f4ab01cd25438447dd9d15d20",
       "rust/src/exact_metrics_stream.rs": "d8dc4c9d5dab56c87ecd1f635a66eccd02fdc9f84540464881f53cb0aa84d16d",
-      "rust/src/ffi.rs": "2d043ec88019b78aee604e47ba00cd26bcb012a92a4dd5ccee8cf2180aa89f19",
+      "rust/src/ffi.rs": "8341e139b522d5c14a844f0286a5e0a090b520d8704ab5bdd31a4cd66eb29a0f",
       "rust/src/freqdist.rs": "e1581f0dbdd76a87b3fab58a3bb8cd69c4bb40056243249b230ce57b11310100",
       "rust/src/hmm.rs": "59328b1e9732f3a6b6d30469db3a4cccccf045063657c29dcfce21ce9f5d085b",
       "rust/src/lib.rs": "50a38b2a2c7acf4953ac5a5edd6ddbf20dbed4bc813bdbad92bbe9e5ff15aa13",
@@ -99,8 +99,8 @@
     }
   },
   "artifact": {
-    "sha256": "c2ffb03eff444a6e256df680f01d65b70f02efa7a6d53f1febfca4155b8c6d09",
-    "bytes": 2244120
+    "sha256": "93796475d0ab848b4be704b7493bce26e1374c8536e45cc4b52157110586120f",
+    "bytes": 2244648
   },
   "build": {
     "command": [
@@ -111,9 +111,9 @@
       "--target",
       "x86_64-unknown-linux-gnu",
       "--manifest-path",
-      "/home/seyamalam/Desktp/bun_nltk/rust/Cargo.toml",
+      "/home/seyamalam/.t3/worktrees/bun_nltk/t3-7670b756-87919ac98da41a32/rust/Cargo.toml",
       "--target-dir",
-      "/home/seyamalam/Desktp/bun_nltk/rust/target/native-host"
+      "/home/seyamalam/.t3/worktrees/bun_nltk/t3-7670b756-87919ac98da41a32/rust/target/native-host"
     ],
     "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)\nbinary: rustc\ncommit-hash: 8bab26f4f68e0e26f0bb7960be334d5b520ea452\ncommit-date: 2026-07-14\nhost: x86_64-unknown-linux-gnu\nrelease: 1.97.1\nLLVM version: 22.1.6",
     "cargo": "cargo 1.97.1 (c980f4866 2026-06-30)",
@@ -128,6 +128,6 @@
   "validation": {
     "status": "passed",
     "kind": "source-native-smoke",
-    "report_sha256": "515b7a3a926343611147e0abf8fb56ff592cda35d8424b4b1dd368948b577f31"
+    "report_sha256": "16f26efc5eea54a6cad03915700955b14967377d59171f069d41c824ed343839"
   }
 }
