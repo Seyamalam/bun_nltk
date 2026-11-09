@@ -36,9 +36,9 @@ test("compatibility inventory pins schema, NLTK and an explicit module scope", (
 
 test("imports, wrappers and throwing external facades cannot become pinned behavioral evidence", () => {
   const broken = copy();
-  const wrapper = broken.mappings.find((mapping) => mapping.target === "nltk.tokenize.word_tokenize")!;
-  wrapper.status = "implemented-subset";
-  wrapper.fixtures.status = "pinned-differential";
+  const facade = broken.mappings.find((mapping) => mapping.target === "nltk.probability.FreqDist")!;
+  facade.status = "implemented-subset";
+  facade.fixtures.status = "pinned-differential";
   expect(() => validateManifest(broken)).toThrow("differential evidence");
   const external = copy();
   external.mappings.find((mapping) => mapping.category === "gap")!.category = "external-integration";
@@ -68,9 +68,12 @@ test("selected names and class members get explicit gaps rather than mechanical 
   expect(jaro.fixtureStatus).toBe("missing");
   expect(targets.some((target) => target.target === "nltk.tokenize.wordpunct_tokenize")).toBe(true);
   const treebank = targets.find((target) => target.target === "nltk.tokenize.treebank.TreebankWordTokenizer")!;
-  expect(treebank.missingMembers).toContain("span_tokenize");
-  expect(treebank.missingSignatureBindings).toContain("nltk.tokenize.treebank.TreebankWordTokenizer.span_tokenize");
+  expect(treebank.category).toBe("rust-wasm");
+  expect(treebank.mapping!.signatures.members).toEqual(["tokenize", "span_tokenize", "tokenize_sents", "span_tokenize_sents"]);
+  expect(treebank.missingMembers).toEqual([]);
+  expect(treebank.missingSignatureBindings).toEqual(["nltk.tokenize.treebank.TreebankWordTokenizer"]);
   expect(treebank.mapping!.signatures.status).toBe("partial");
+  expect(treebank.mapping!.signatures.gaps.length).toBeGreaterThan(0);
   const sklearn = targets.find((target) => target.target === "nltk.classify.scikitlearn.SklearnClassifier")!;
   expect(sklearn.category).toBe("gap");
   expect(sklearn.mapping!.status).toBe("unsupported");
@@ -148,7 +151,10 @@ test("all package Bun value exports are discovered with provenance; names are no
   expect(actual["."]!["src/classify_wrappers.ts"]).toContain("SklearnClassifier");
   const exports = resolveBunExports(manifest, snapshot);
   expect(exports.find((entry) => entry.name === "SklearnClassifier")!.categories).toEqual(["gap"]);
-  expect(exports.find((entry) => entry.name === "porterStemAscii")!.categories).toEqual(["rust-native"]);
+  const ascii = exports.find((entry) => entry.name === "porterStemAscii")!;
+  expect(ascii.categories).toEqual(["gap"]);
+  expect(ascii.review).toBe("unreviewed");
+  expect(exports.find((entry) => entry.name === "wordpunct_tokenize")!.targets).toEqual(["nltk.tokenize.regexp.wordpunct_tokenize"]);
   expect(exports.find((entry) => entry.name === "app_ns")!.review).toBe("unreviewed");
   expect(serializeSnapshot(snapshot)).not.toMatch(/ at 0x[0-9a-f]+/);
 });
@@ -165,27 +171,25 @@ test("NLTK assertion anchors recognize real quote/spacing variants, not mentions
   ]) expect(hasPinnedNltkAssertion(source)).toBe(false);
 });
 
-test("current-base correction proposals have real source/evidence/signatures without rewriting the shared baseline", () => {
+test("applied review is the shared baseline; re-applying the staged proposal is rejected", () => {
   const before = JSON.stringify(manifest);
-  const candidate = proposedNextReview(manifest);
-  expect(candidate.reviewBase).toBe(nextReviewBase);
-  expect(() => validateManifest(candidate)).not.toThrow();
-  expect(() => checkEvidenceFiles(candidate)).not.toThrow();
-  expect(() => validateDiscovery(candidate, snapshot)).not.toThrow();
-  expect(() => checkSignatureRegression(candidate.signatureBindings, snapshot.signatureBindings)).not.toThrow();
-  expect(candidate.mappings).toHaveLength(44);
-  expect(candidate.signatureBindings).toHaveLength(44);
+  expect(manifest.reviewBase).toBe(nextReviewBase);
+  expect(() => validateManifest(manifest)).not.toThrow();
+  expect(() => checkEvidenceFiles(manifest)).not.toThrow();
+  expect(() => validateDiscovery(manifest, snapshot)).not.toThrow();
+  expect(() => checkSignatureRegression(manifest.signatureBindings, snapshot.signatureBindings)).not.toThrow();
+  expect(manifest.mappings).toHaveLength(44);
+  expect(manifest.signatureBindings).toHaveLength(44);
+  // The staged proposal was consumed by this baseline: applying it again only
+  // duplicates the review evidence and the split wordpunct_tokenize mapping.
+  const reapplied = proposedNextReview(manifest);
+  expect(() => validateManifest(reapplied)).toThrow("duplicate evidence");
   expect(JSON.stringify(manifest)).toBe(before);
   expect(loadManifest()).toEqual(manifest);
-  // Correction requires an explicit parent policy decision, not weakened gates:
-  // the ASCII export is still present but no longer misbound to a Unicode class.
-  expect(() => checkRegression(candidate.mappings, snapshot.review)).toThrow("export binding lost wordpunct_tokenize");
-  expect(() => checkRouteRegression(candidate.reviewedRoutes, snapshot.reviewedRoutes)).toThrow("porterStemAscii");
 });
 
-test("candidate reviews isolate Unicode Porter and wordpunct helper routes from native/class conveniences", () => {
-  const candidate = proposedNextReview(manifest);
-  const targets = resolveTargets(candidate, snapshot);
+test("applied review isolates Unicode Porter and wordpunct helper routes from native/class conveniences", () => {
+  const targets = resolveTargets(manifest, snapshot);
   const porter = targets.find((row) => row.target === "nltk.stem.porter.PorterStemmer")!.mapping!;
   expect(porter.exports).toEqual(["PorterStemmer"]);
   expect(porter.category).toBe("rust-wasm");
@@ -197,29 +201,28 @@ test("candidate reviews isolate Unicode Porter and wordpunct helper routes from 
   expect(tokenizer.exports).not.toContain("wordpunct_tokenize");
   expect(helper.evidence).toEqual(["next-compat-wordpunct"]);
   expect(tokenizer.evidence).toEqual(["next-tokenizers"]);
-  const exports = resolveBunExports(candidate, snapshot);
+  const exports = resolveBunExports(manifest, snapshot);
   expect(exports.find((row) => row.entrypoint === "." && row.name === "porterStemAscii")!.review).toBe("unreviewed");
   expect(exports.find((row) => row.entrypoint === "./tokenize" && row.name === "WordPunctTokenizer")!.review).toBe("unreviewed");
 });
 
 test("mixed generic object APIs and unreviewed parser/integration names never inherit Rust kernel coverage", () => {
-  const candidate = proposedNextReview(manifest);
-  const targets = resolveTargets(candidate, snapshot);
+  const targets = resolveTargets(manifest, snapshot);
   for (const name of ["FreqDist", "MLEProbDist", "LidstoneProbDist"]) {
     expect(targets.find((row) => row.target === `nltk.probability.${name}`)!.category).toBe("ts-algorithm");
   }
   for (const name of ["MLEProbDist", "LidstoneProbDist"]) {
-    expect(candidate.mappings.find((mapping) => mapping.target === `nltk.probability.${name}`)!.status).toBe("partial");
+    expect(manifest.mappings.find((mapping) => mapping.target === `nltk.probability.${name}`)!.status).toBe("partial");
   }
-  const sentence = candidate.mappings.find((mapping) => mapping.target.endsWith("sentence_chrf"))!;
+  const sentence = manifest.mappings.find((mapping) => mapping.target.endsWith("sentence_chrf"))!;
   expect(sentence.status).toBe("partial");
-  expect(candidate.evidence.find((entry) => entry.id === sentence.evidence[0])!.scope).toContain("not independently called");
+  expect(manifest.evidence.find((entry) => entry.id === sentence.evidence[0])!.scope).toContain("not independently called");
   expect(targets.find((row) => row.target === "nltk.parse.chart.ChartParser")!.category).toBe("ts-algorithm");
   expect(targets.find((row) => row.target === "nltk.tree.tree.Tree")!.mapping).toBeNull();
   expect(targets.find((row) => row.target === "nltk.tokenize.regexp.RegexpTokenizer")!.mapping).toBeNull();
   expect(targets.find((row) => row.target === "nltk.stem.snowball.PorterStemmer")!.mapping).toBeNull();
-  expect(candidate.mappings.filter((mapping) => mapping.category === "external-integration")).toEqual([]);
-  expect(candidate.mappings.find((mapping) => mapping.target.endsWith("SklearnClassifier"))!.status).toBe("unsupported");
+  expect(manifest.mappings.filter((mapping) => mapping.category === "external-integration")).toEqual([]);
+  expect(manifest.mappings.find((mapping) => mapping.target.endsWith("SklearnClassifier"))!.status).toBe("unsupported");
 });
 
 test("built Node/browser export observations do not become package-wide behavioral evidence", () => {
