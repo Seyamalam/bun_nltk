@@ -48,6 +48,15 @@ Brown University; revised 1971 and 1979. Its distributed README states:
 Fixtures also contain synthetic text and NLTK-generated predictions. They do
 not contain Penn Treebank excerpts. These data retain their source terms.
 
+## Rust dependencies embedded in shipped binaries
+
+The Rust crate (native library and WASM artifact) links `serde`/`serde_json`
+and `regex-lite`, all MIT OR Apache-2.0 licensed; `serde_json`'s
+`float_roundtrip` feature preserves IEEE-754 model snapshots and `regex-lite`
+backs the bounded regexp tokenizer. Upstream: https://serde.rs,
+https://github.com/rust-lang/regex-lite (fork of the `regex` crate's API
+surface). No copyleft dependencies are linked.
+
 ## VADER MIT license
 
 The MIT License (MIT)

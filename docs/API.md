@@ -288,6 +288,10 @@ These functions are pure TypeScript reference implementations.
 - `MWETokenizer.tokenize(tokens: string[]): string[]`
 - `new TweetTokenizer(opts?: { preserveCase?: boolean; stripHandles?: boolean; reduceLen?: boolean; matchPhoneNumbers?: boolean })`
 - `TweetTokenizer.tokenize(text: string): string[]`
+- `casualTokenize(text: string, preserveCase?, reduceLen?, stripHandles?, matchPhoneNumbers?): string[]` (alias `casual_tokenize`)
+- `tweet_tokenize`, `toktok_tokenize`, `mwe_tokenize` — snake_case aliases of the helpers above
+- `RustTweetTokenizer` / `RustToktokTokenizer` / `RustMWETokenizer` — same classes with an explicit `WasmNltk` runtime argument
+- `LegacyTweetTokenizer` / `LegacyToktokTokenizer` / `LegacyMWETokenizer` and `legacyTweetTokenize` / `legacyToktokTokenize` / `legacyMweTokenize` — the pre-migration JS subsets, kept as a reviewed escape hatch
 - `sentenceTokenizeSubset(text: string, opts?: { abbreviations?: Iterable<string>; learnAbbreviations?: boolean; orthographicHeuristics?: boolean }): string[]`
 
 ## Punkt
