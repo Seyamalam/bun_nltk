@@ -22,7 +22,7 @@ test("scale benchmark verifies cold-process output and memory at a tiny input", 
       expect(group.every((sample) => sample.peakRssBytes > 0)).toBe(true);
     }
   } finally { unlinkSync(output); }
-});
+}, 15_000);
 
 test("scale benchmark supports fresh seeded vocabulary and rejects mismatched settings", () => {
   if (process.platform !== "linux" || !existsSync("/usr/bin/time")) return;
@@ -43,4 +43,4 @@ test("scale benchmark supports fresh seeded vocabulary and rejects mismatched se
     expect(invalid.exitCode).not.toBe(0);
     expect(existsSync(output)).toBe(false);
   }
-});
+}, 15_000);

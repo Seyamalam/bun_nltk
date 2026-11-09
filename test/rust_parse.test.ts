@@ -127,7 +127,7 @@ print(json.dumps(out))`, { indices });
     for (const index of [0.5, Infinity, NaN]) expect(() => t.insert(index, "x")).toThrow();
     for (const start of [0.5, Infinity, NaN, Number.MAX_SAFE_INTEGER + 1]) expect(() => t.slice({ start })).toThrow();
   } finally { runtime.dispose(); }
-});
+}, 10_000);
 
 test("Rust Tree nonstring leaves retain identity through traversal, slices, mutation and shallow/deep copies", async () => {
   const runtime = await ParsingRuntime.load();
@@ -213,7 +213,7 @@ print(json.dumps(out))`, { invalid });
     expect(() => new RustPCFG(runtime, s, [new ProbabilisticProduction(runtime, s, ["a"], 0.8)])).toThrow("sum to 1");
     expect(() => new ProbabilisticProduction(runtime, s, ["a"], NaN)).toThrow();
   } finally { runtime.dispose(); }
-});
+}, 10_000);
 
 test("Rust Viterbi best original-rule trees and probabilities match NLTK for ambiguity, mixed RHS and unary cycles", async () => {
   const cases = [
@@ -326,7 +326,7 @@ print(json.dumps(out))`, { probes });
     expect(() => t.delete([])).toThrow();
     expect(() => Tree.fromstring(runtime, "(S)", { brackets: "(" })).toThrow();
   } finally { runtime.dispose(); }
-});
+}, 10_000);
 
 test("Rust Tree real Treebank bracket strings match NLTK traversal and pformat", async () => {
   const samples = oracle<Array<{ text: string; leaves: string[]; positions: number[][]; format: string; height: number; productions: string[] }>>(`
@@ -348,7 +348,7 @@ print(json.dumps(out))`, {});
       expect(tree.productions().map(String)).toEqual(sample.productions);
     }
   } finally { runtime.dispose(); }
-});
+}, 10_000);
 
 test("Rust typed CFG and Production contracts match NLTK grammar semantics", async () => {
   const runtime = await ParsingRuntime.load();

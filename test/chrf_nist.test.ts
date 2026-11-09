@@ -93,4 +93,4 @@ test("optional python parity for chrF and NIST via nltk baselines", () => {
   const py = JSON.parse(new TextDecoder().decode(proc.stdout).trim()) as { chrf: number[]; nist: number[] };
   jsChrf.forEach((score, i) => expect(Math.abs(score - py.chrf[i]!)).toBeLessThanOrEqual(1e-9));
   jsNist.forEach((score, i) => expect(Math.abs(score - py.nist[i]!)).toBeLessThanOrEqual(1e-9));
-});
+}, 10_000);

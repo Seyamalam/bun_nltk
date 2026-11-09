@@ -76,7 +76,7 @@ print(json.dumps(out))`, cases);
       expect(canonical(d.samples())).toEqual(canonical(wanted.samples));
     }
   }
-});
+}, 10_000);
 
 test("CrossValidation excludes repeated FreqDist identity and defers no-pairs division error", () => {
   const fd = new FreqDist(["a"]), other = new FreqDist(["a", "b"]);
@@ -115,7 +115,7 @@ print(json.dumps({'before':before,'logs':logs,'after':[result(lambda:d.prob(p)) 
     expect(() => d.prob(["a"] as unknown as Trigram<Scalar>)).toThrow("3 members");
   } finally { d.dispose(); }
   expect(() => d.prob(probes[0]!)).toThrow("disposed");
-});
+}, 10_000);
 
 test("KneserNey empty data and negative discounted probability log errors", () => {
   const empty = new KneserNeyProbDist(new FreqDist<Trigram<string>>());

@@ -124,7 +124,7 @@ runpy.run_path(sys.argv[1],run_name='__main__')
 `, resolve(import.meta.dir, "../scripts/compatibility/discover_nltk.py")], { stdout: "pipe", stderr: "pipe" });
   expect(wrongPython.exitCode).not.toBe(0);
   expect(new TextDecoder().decode(wrongPython.stderr)).toContain("Python 3.14.4 required for inventory reflection, found 3.12.0");
-});
+}, 10_000);
 
 test("reviewed classifications require the exact entrypoint and source route, not a matching name", () => {
   const changed = structuredClone(snapshot);

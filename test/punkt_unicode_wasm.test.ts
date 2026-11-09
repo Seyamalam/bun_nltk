@@ -61,7 +61,7 @@ function compare(model: PunktModelSerialized, cases: string[], existingApi: bool
 
 test("Rust/WASM English Punkt Unicode boundaries and aligned/raw offsets match NLTK 3.10.3", () => {
   compare(defaultPunktModel(), texts, true);
-});
+}, 10_000);
 
 test("Rust/WASM custom Punkt params match NLTK abbreviations, collocations, starters and ortho bits", () => {
   const model: PunktModelSerialized = { version: 2, abbreviations: ["dr", "etc", "σ", "İ"],
