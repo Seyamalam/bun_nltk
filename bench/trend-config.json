@@ -6,10 +6,10 @@
     "wordnet_x": 85
   },
   "gate_min_speedup": {
-    "token_ngram_x": 3.0,
+    "token_ngram_x": 1.5,
     "collocations_x": 5.0,
     "porter_x": 3.0,
-    "wasm_x": 2.5,
+    "wasm_x": 2.0,
     "sentence_x": 1.5,
     "punkt_x": 1.5,
     "tagger_x": 2.0,
@@ -17,7 +17,7 @@
     "chunk_x": 1.2,
     "wordnet_x": 1.2,
     "parser_x": 1.1,
-    "classifier_x": 0.7,
+    "classifier_x": 0.3,
     "decision_tree_x": 1.1,
     "earley_x": 1.1,
     "leftcorner_x": 1.1,

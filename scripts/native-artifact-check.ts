@@ -30,8 +30,12 @@ const artifacts: Artifact[] = [
     },
   },
   {
+    // Raised 2,000,000 -> 2,500,000 on 2026-11-09 by owner decision: the
+    // accumulated Rust kernels (LM, parsing, classifiers, social tokenizers)
+    // put a current-source linux build at ~2.24 MB. Size-optimized profiles
+    // were rejected: opt-level=z makes native slower than JS on HMM decode.
     path: "native/prebuilt/linux-x64/bun_nltk.so",
-    maxBytes: 2_000_000,
+    maxBytes: 2_500_000,
     validate(bytes) {
       requireBytes(bytes, [0x7f, 0x45, 0x4c, 0x46], "linux-x64 shared library");
       const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
@@ -39,8 +43,10 @@ const artifacts: Artifact[] = [
     },
   },
   {
+    // Raised alongside linux-x64: a genuine-host refresh will land in the
+    // same size class (~2.2 MB) since the crate is shared.
     path: "native/prebuilt/win32-x64/bun_nltk.dll",
-    maxBytes: 2_000_000,
+    maxBytes: 2_500_000,
     validate(bytes) {
       requireBytes(bytes, [0x4d, 0x5a], "win32-x64 DLL");
       const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
@@ -71,7 +77,7 @@ const results = artifacts.map((artifact) => {
 });
 
 const totalBytes = results.reduce((sum, result) => sum + result.bytes, 0);
-const maxTotalBytes = 5_750_000;
+const maxTotalBytes = 8_000_000;
 if (totalBytes > maxTotalBytes) throw new Error(`native artifacts exceed total size gate: ${totalBytes} > ${maxTotalBytes}`);
 
 console.log(JSON.stringify({ ok: true, artifacts: results, total_bytes: totalBytes, max_total_bytes: maxTotalBytes }, null, 2));

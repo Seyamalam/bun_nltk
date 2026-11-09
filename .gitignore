@@ -29,8 +29,14 @@ native/prebuilt/darwin-arm64/*
 native/prebuilt/linux-x64/*
 native/prebuilt/win32-x64/*
 !native/prebuilt/darwin-arm64/bun_nltk.dylib
+!native/prebuilt/darwin-arm64/bun_nltk.dylib.provenance.json
+!native/prebuilt/darwin-arm64/smoke.json
 !native/prebuilt/linux-x64/bun_nltk.so
+!native/prebuilt/linux-x64/bun_nltk.so.provenance.json
+!native/prebuilt/linux-x64/smoke.json
 !native/prebuilt/win32-x64/bun_nltk.dll
+!native/prebuilt/win32-x64/bun_nltk.dll.provenance.json
+!native/prebuilt/win32-x64/smoke.json
 
 # code coverage
 coverage

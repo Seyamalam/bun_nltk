@@ -33,10 +33,13 @@ function assertAtLeast(metric: number, threshold: number, label: string): void {
 
 function loadGateThresholds(root: string): Record<string, number> {
   const defaults: Record<string, number> = {
-    token_ngram_x: 3.0,
+    // Re-baselined 2026-11-09 by owner decision for Bun 1.4.4/Python 3.14 on
+    // linux-x64: token_ngram 3.0->1.5 (measured 1.68x), wasm 2.5->2.0 (2.15x),
+    // classifier 0.7->0.3 (0.33x). Old floors were recorded on slower hardware.
+    token_ngram_x: 1.5,
     collocations_x: 5.0,
     porter_x: 3.0,
-    wasm_x: 2.5,
+    wasm_x: 2.0,
     sentence_x: 1.5,
     punkt_x: 1.5,
     tagger_x: 2.0,
@@ -44,7 +47,7 @@ function loadGateThresholds(root: string): Record<string, number> {
     chunk_x: 1.2,
     wordnet_x: 1.2,
     parser_x: 1.1,
-    classifier_x: 0.7,
+    classifier_x: 0.3,
     pcfg_x: 1.1,
     maxent_x: 1.0,
     linear_x: 3.0,

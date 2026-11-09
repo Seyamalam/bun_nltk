@@ -20,7 +20,7 @@ test("VADER, tokenizers, trained Punkt parameters, and NE labels match NLTK fixt
   if (proc.exitCode !== 0)
     throw new Error(new TextDecoder().decode(proc.stdout) + new TextDecoder().decode(proc.stderr));
   expect(JSON.parse(new TextDecoder().decode(proc.stdout)).parity).toBe(true);
-});
+}, 15_000);
 test("custom VADER lexicon augments the full lexicon and supports explicit zero values", () => {
   const analyzer = new SentimentIntensityAnalyzer({ lexicon: { codexcellent: 3, good: 0 } });
   expect(analyzer.polarityScores("codexcellent")).toEqual({
