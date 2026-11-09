@@ -65,7 +65,7 @@ function invert(matrix: number[][]): number[][] | null {
 function outer(a: Vector, b: Vector): number[][] {
   const m = a.length;
   const n = b.length;
-  const out: number[][] = Array.from({ length: m }, () => new Array(n).fill(0));
+  const out: number[][] = Array.from({ length: m }, () => Array.from({ length: n }, () => 0));
   for (let i = 0; i < m; i++) for (let j = 0; j < n; j++) out[i]![j] = (a[i] ?? 0) * (b[j] ?? 0);
   return out;
 }
@@ -148,7 +148,7 @@ export class EMClusterer extends VectorSpaceClusterer {
     const means = this._means;
     let priors = this._priors;
     if (!priors) {
-      priors = this._priors = new Array(this._numClusters).fill(1 / this._numClusters);
+      priors = this._priors = Array.from({ length: this._numClusters }, () => 1 / this._numClusters);
     }
     let covs = this._covariances;
     if (!covs) {
@@ -168,7 +168,7 @@ export class EMClusterer extends VectorSpaceClusterer {
       if (trace) console.log(`iteration; loglikelihood ${lastL}`);
 
       // E-step: h[i][j]
-      const h: number[][] = Array.from({ length: vectors.length }, () => new Array(this._numClusters).fill(0));
+      const h: number[][] = Array.from({ length: vectors.length }, () => Array.from({ length: this._numClusters }, () => 0));
       for (let i = 0; i < vectors.length; i++) {
         let rowSum = 0;
         for (let j = 0; j < this._numClusters; j++) {
@@ -187,8 +187,8 @@ export class EMClusterer extends VectorSpaceClusterer {
       // M-step
       for (let j = 0; j < this._numClusters; j++) {
         let sumHj = 0;
-        const newMean = new Array(dim).fill(0);
-        const newCov: number[][] = Array.from({ length: dim }, () => new Array(dim).fill(0));
+        const newMean = Array.from({ length: dim }, () => 0);
+        const newCov: number[][] = Array.from({ length: dim }, () => Array.from({ length: dim }, () => 0));
         for (let i = 0; i < vectors.length; i++) {
           const hij = h[i]![j]!;
           sumHj += hij;

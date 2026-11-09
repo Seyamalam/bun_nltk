@@ -120,7 +120,7 @@ export abstract class SamplingModel extends IBMModelBase implements Scorer {
     const l = srcSentence.length - 1;
     const m = trgSentence.length - 1;
 
-    const alignment = new Array<number>(m + 1).fill(0);
+    const alignment = Array.from({ length: m + 1 }, () => 0);
     const cepts: number[][] = Array.from({ length: l + 1 }, () => []);
 
     for (let j = 1; j <= m; j += 1) {

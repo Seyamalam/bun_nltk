@@ -64,11 +64,15 @@ export class Hypothesis {
   score(): number { return this.rawScore + this.futureScore; }
   translatedPositions(): number[] {
     const out: number[] = [];
-    let cur: Hypothesis | null = this;
-    while (cur !== null && cur.previous !== null) {
-      const span = cur.srcPhraseSpan as readonly [number, number] | readonly [];
+    const pushSpan = (h: Hypothesis): void => {
+      const span = h.srcPhraseSpan as readonly [number, number] | readonly [];
       if (span.length === 2) for (let i = span[0]!; i < span[1]!; i++) out.push(i);
-      cur = cur.previous;
+    };
+    if (this.previous !== null) {
+      pushSpan(this);
+      for (let cur: Hypothesis | null = this.previous; cur !== null && cur.previous !== null; cur = cur.previous) {
+        pushSpan(cur);
+      }
     }
     return out;
   }

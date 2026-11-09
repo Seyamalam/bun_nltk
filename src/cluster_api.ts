@@ -23,14 +23,14 @@ export function vectorNorm(v: Vector): number {
 
 export function vectorAdd(a: Vector, b: Vector): Vector {
   const n = Math.max(a.length, b.length);
-  const out: Vector = new Array(n);
+  const out: Vector = Array.from<number>({ length: n });
   for (let i = 0; i < n; i++) out[i] = (a[i] ?? 0) + (b[i] ?? 0);
   return out;
 }
 
 export function vectorSub(a: Vector, b: Vector): Vector {
   const n = Math.max(a.length, b.length);
-  const out: Vector = new Array(n);
+  const out: Vector = Array.from<number>({ length: n });
   for (let i = 0; i < n; i++) out[i] = (a[i] ?? 0) - (b[i] ?? 0);
   return out;
 }
@@ -44,7 +44,7 @@ export function vectorDiv(v: Vector, s: number): Vector {
 }
 
 export function zeroVector(dim: number): Vector {
-  return new Array(dim).fill(0);
+  return Array.from({ length: dim }, () => 0);
 }
 
 export function copyVector(v: Vector): Vector {

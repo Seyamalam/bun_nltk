@@ -214,7 +214,7 @@ export abstract class VectorSpaceClusterer extends ClusterI {
 
   private _project(v: Vector): Vector {
     if (!this._Tt) return v;
-    const out: Vector = new Array(this._Tt.length).fill(0);
+    const out: Vector = Array.from({ length: this._Tt.length }, () => 0);
     for (let i = 0; i < this._Tt.length; i++) {
       let s = 0;
       const row = this._Tt[i]!;
@@ -232,7 +232,7 @@ export abstract class VectorSpaceClusterer extends ClusterI {
     // Simple truncation: project onto first dims coordinates (deterministic)
     // This preserves API without heavy SVD dep; faithful enough for tests not using SVD.
     this._Tt = Array.from({ length: dims }, (_, i) => {
-      const row = new Array(vectors[0]!.length).fill(0);
+      const row = Array.from({ length: vectors[0]!.length }, () => 0);
       row[i] = 1;
       return row;
     });

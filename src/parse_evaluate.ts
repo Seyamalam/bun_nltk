@@ -30,8 +30,8 @@ function toNodes(parse: {
 }): DependencyEvalNode[] {
   // Build a head map: NLTK's DependencyGraph nodes have head addresses where
   // 0 = ROOT. Our arcs are (from -> to); treat "from" as head of "to".
-  const heads = new Array<number>(parse.tokens.length).fill(0);
-  const rels = new Array<string>(parse.tokens.length).fill("");
+  const heads = Array.from({ length: parse.tokens.length }, () => 0);
+  const rels = Array.from({ length: parse.tokens.length }, () => "");
   for (const arc of parse.arcs) {
     heads[arc.to - 1] = arc.from;
     rels[arc.to - 1] = arc.label;

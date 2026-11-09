@@ -8,7 +8,7 @@
 import { pupNumber, pupPunct, pupSymbol, pupNumberEscaped, pupPunctEscaped, pupSymbolEscaped } from "./perluniprops_data";
 
 function escClass(s: string): string {
-  return s.replace(/[]^\\-]/g, (m) => "\\" + m);
+  return s.replace(/[\]\\^-]/g, (m) => "\\" + m);
 }
 
 const pupNumberClass = pupNumberEscaped || escClass(pupNumber);

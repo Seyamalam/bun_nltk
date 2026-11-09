@@ -101,7 +101,7 @@ export class BindingDict {
       const varObj = new Variable(k);
       try {
         combined.set(varObj, v);
-      } catch (_e) {
+      } catch {
         throw new BindingException(`Attempting to add two contradicting BindingDicts: '${this}' and '${other}'`);
       }
     }

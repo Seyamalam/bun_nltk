@@ -112,7 +112,7 @@ export function align(str1: string, str2: string, epsilon = 0): Alignment[] {
   const NEG_INF = Number.NEGATIVE_INFINITY;
 
   // Row 0 and column 0 initialized to 0 (Kondrak's initialization).
-  const S: number[][] = Array.from({ length: m + 1 }, () => new Array<number>(n + 1).fill(0));
+  const S: number[][] = Array.from({ length: m + 1 }, () => Array.from({ length: n + 1 }, () => 0));
 
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {

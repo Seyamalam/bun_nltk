@@ -916,7 +916,7 @@ export class WasmNltk {
 
   tokenizeAscii(text: string): string[] {
     const { total, offsets, lengths, input } = this.tokenOffsetsAscii(text);
-    const out = new Array<string>(total);
+    const out = Array.from<string>({ length: total });
     for (let i = 0; i < total; i += 1) {
       const start = offsets[i]!;
       const len = lengths[i]!;
@@ -946,7 +946,7 @@ export class WasmNltk {
     const offsets = new Uint32Array(this.exports.memory.buffer, offsetsBlock.ptr, written);
     const lengths = new Uint32Array(this.exports.memory.buffer, lengthsBlock.ptr, written);
     const input = new Uint8Array(this.exports.memory.buffer, this.inputPtr, inputLen);
-    const out = new Array<string>(written);
+    const out = Array.from<string>({ length: written });
     for (let i = 0; i < written; i += 1) {
       const start = offsets[i]!;
       const len = lengths[i]!;
@@ -957,7 +957,7 @@ export class WasmNltk {
 
   normalizeTokensAscii(text: string, removeStopwords = true): string[] {
     const { total, offsets, lengths, input } = this.normalizedTokenOffsetsAscii(text, removeStopwords);
-    const out = new Array<string>(total);
+    const out = Array.from<string>({ length: total });
     for (let i = 0; i < total; i += 1) {
       const start = offsets[i]!;
       const len = lengths[i]!;

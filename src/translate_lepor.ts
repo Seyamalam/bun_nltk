@@ -44,7 +44,7 @@ export function alignment(refTokens: string[], hypTokens: string[]): number[] {
     } else if (refIndexes.length === 1) {
       aligns.push(refIndexes[0]!);
     } else {
-      const isMatched: boolean[] = new Array(refIndexes.length).fill(false);
+      const isMatched: boolean[] = Array.from({ length: refIndexes.length }, () => false);
       for (let ind = 0; ind < refIndexes.length; ind++) {
         const refIndex = refIndexes[ind]!;
         if (

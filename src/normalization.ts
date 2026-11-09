@@ -8,7 +8,10 @@ export type NormalizeOptions = {
 };
 
 function isAscii(text: string): boolean {
-  return /^[\x00-\x7F]*$/.test(text);
+  for (let i = 0; i < text.length; i += 1) {
+    if (text.charCodeAt(i) > 0x7f) return false;
+  }
+  return true;
 }
 
 export function normalizeTokens(text: string, options: NormalizeOptions = {}): string[] {

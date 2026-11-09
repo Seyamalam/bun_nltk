@@ -42,7 +42,7 @@ export function growDiagFinalAnd(
     let prev = alignment.size - 1;
     while (prev < alignment.size) {
       let added = false;
-      for (const k of [...alignment]) {
+      for (const k of Array.from(alignment)) {
         const [e, f] = k.split(",").map(Number) as [number, number];
         if (!(0 <= e && e < srclen && 0 <= f && f < trglen)) continue;
         for (const [de, df] of neighbors) {
