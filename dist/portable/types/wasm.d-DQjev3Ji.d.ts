@@ -1,0 +1,365 @@
+import { TokenSpan, TokenizerKind, TokenizerOptions } from '../tokenizer_types.js';
+import { MetricsWasm } from '../metrics_wasm.js';
+
+type TweetTokenizerOptions = {
+    preserveCase?: boolean;
+    stripHandles?: boolean;
+    reduceLen?: boolean;
+    matchPhoneNumbers?: boolean;
+    preserve_case?: boolean;
+    strip_handles?: boolean;
+    reduce_len?: boolean;
+    match_phone_numbers?: boolean;
+};
+type SocialTokenizerRequest = {
+    kind: "tweet" | "toktok" | "mwe";
+    text?: string;
+    tokens?: readonly string[];
+    mwes?: readonly (readonly string[])[];
+    separator?: string;
+    mwe_updates?: readonly {
+        tokens: readonly string[];
+        remove?: boolean;
+    }[];
+    preserve_case?: boolean;
+    strip_handles?: boolean;
+    reduce_len?: boolean;
+    match_phone_numbers?: boolean;
+    return_str?: boolean;
+    spans?: boolean;
+};
+declare class TweetTokenizer {
+    private readonly runtime?;
+    preserveCase: boolean;
+    stripHandles: boolean;
+    reduceLen: boolean;
+    matchPhoneNumbers: boolean;
+    constructor(opts?: TweetTokenizerOptions, runtime?: WasmNltk | undefined);
+    get preserve_case(): boolean;
+    set preserve_case(value: boolean);
+    get strip_handles(): boolean;
+    set strip_handles(value: boolean);
+    get reduce_len(): boolean;
+    set reduce_len(value: boolean);
+    get match_phone_numbers(): boolean;
+    set match_phone_numbers(value: boolean);
+    tokenize(text: string): string[];
+    tokenizeSents(texts: readonly string[]): string[][];
+    tokenize_sents(texts: readonly string[]): string[][];
+    spanTokenize(text: string): TokenSpan[];
+    span_tokenize(text: string): TokenSpan[];
+    spanTokenizeSents(texts: readonly string[]): TokenSpan[][];
+    span_tokenize_sents(texts: readonly string[]): TokenSpan[][];
+}
+declare class ToktokTokenizer {
+    private readonly runtime?;
+    constructor(runtime?: WasmNltk | undefined);
+    tokenize(text: string, returnStr?: false): string[];
+    tokenize(text: string, returnStr: true): string;
+    tokenize(text: string, returnStr: boolean): string[] | string;
+    tokenizeSents(texts: readonly string[]): string[][];
+    tokenize_sents(texts: readonly string[]): string[][];
+    spanTokenize(text: string): TokenSpan[];
+    span_tokenize(text: string): TokenSpan[];
+    spanTokenizeSents(texts: readonly string[]): TokenSpan[][];
+    span_tokenize_sents(texts: readonly string[]): TokenSpan[][];
+}
+declare class MWETokenizer {
+    private readonly separator;
+    private readonly runtime?;
+    private readonly updates;
+    constructor(mwes?: readonly (readonly string[])[], separator?: string, runtime?: WasmNltk | undefined);
+    addMwe(tokens: readonly string[]): void;
+    add_mwe(tokens: readonly string[]): void;
+    /** Extension: remove exact token sequences (NLTK 3.10.3 has no remove_mwe). */
+    removeMwe(tokens: readonly string[]): void;
+    remove_mwe(tokens: readonly string[]): void;
+    tokenize(tokens: readonly string[]): string[];
+    tokenizeSents(texts: readonly (readonly string[])[]): string[][];
+    tokenize_sents(texts: readonly (readonly string[])[]): string[][];
+    spanTokenize(tokens: readonly string[]): TokenSpan[];
+    span_tokenize(tokens: readonly string[]): TokenSpan[];
+    spanTokenizeSents(texts: readonly (readonly string[])[]): TokenSpan[][];
+    span_tokenize_sents(texts: readonly (readonly string[])[]): TokenSpan[][];
+}
+
+declare function tweetTokenize(text: string, opts?: TweetTokenizerOptions): string[];
+declare function toktokTokenize(text: string): string[];
+declare function mweTokenize(tokens: readonly string[], mwes: readonly (readonly string[])[], separator?: string): string[];
+declare function casualTokenize(text: string, preserveCase?: boolean, reduceLen?: boolean, stripHandles?: boolean, matchPhoneNumbers?: boolean): string[];
+
+type RegexpTokenizerRequest = {
+    kind: "regexp";
+    pattern: string;
+    text: string;
+    gaps: boolean;
+    discard_empty: boolean;
+    flags: number;
+    spans: boolean;
+};
+
+type ContractExports = {
+    memory: WebAssembly.Memory;
+    bunnltk_wasm_alloc(size: number): number;
+    bunnltk_wasm_free(ptr: number, size: number): void;
+    bunnltk_wasm_probability_contract(op: number, input: number, inputLength: number, output: number, outputLength: number): number;
+};
+
+type LmExports = {
+    memory: WebAssembly.Memory;
+    bunnltk_wasm_alloc(size: number): number;
+    bunnltk_wasm_free(ptr: number, size: number): void;
+    bunnltk_wasm_last_error_code(): number;
+    bunnltk_wasm_lm_train(tokens: number, tokenCount: number, offsets: number, offsetCount: number, config: number, params: number): number;
+    bunnltk_wasm_lm_vocabulary(handle: number, out: number, capacity: number): number;
+    bunnltk_wasm_lm_evaluate(handle: number, flat: number, flatLen: number, lens: number, words: number, count: number, scores: number, tokens: number, tokenCount: number, perplexity: number): number;
+    bunnltk_wasm_lm_free(handle: number): void;
+    bunnltk_wasm_lm_clear(): void;
+};
+
+type AsciiMetrics = {
+    tokens: number;
+    uniqueTokens: number;
+    ngrams: number;
+    uniqueNgrams: number;
+};
+type WasmNltkInit = {
+    wasmBytes?: Uint8Array;
+    wasmPath?: string;
+    wasmUrl?: string | URL;
+    maxInputBytes?: number;
+};
+type WasmLmModelType = "mle" | "lidstone" | "kneser_ney_interpolated";
+type AsciiMetricsStreamOptions = {
+    maxTokenBytes?: number;
+    maxUniqueTokens?: number;
+    maxUniqueNgrams?: number;
+};
+type AsciiMetricsStream = {
+    update(chunk: Uint8Array): void;
+    finish(): AsciiMetrics;
+    dispose(): void;
+};
+declare class WasmNltk {
+    private evaluationRuntime?;
+    private readonly exports;
+    private inputPtr;
+    private readonly maxInputBytes;
+    private disposed;
+    private readonly encoder;
+    private readonly decoder;
+    private readonly blocks;
+    private constructor();
+    static initSync(wasmBytes: Uint8Array, maxInputBytes?: number): WasmNltk;
+    private static fromInstance;
+    static init(init?: WasmNltkInit): Promise<WasmNltk>;
+    get memoryBytes(): number;
+    dispose(): void;
+    private assertActive;
+    probabilityContractExports(): ContractExports;
+    languageModelExports(): LmExports;
+    /** JSON transport for legacy text NB; all training and scoring happen in Rust. */
+    textNaiveBayes(request: string): string;
+    /** Typed callers marshal only versioned legacy text models, never feature dictionaries. */
+    textClassifiers(request: string): string;
+    private assertOrder;
+    private tokenizerRequest;
+    tokenize(text: string, kind?: TokenizerKind, options?: TokenizerOptions): string[];
+    /** Dedicated regexp transport; pattern translation and matching stay in Rust. */
+    regexpTokenizer(request: RegexpTokenizerRequest): unknown;
+    socialTokenizer(request: SocialTokenizerRequest): string[] | string;
+    /** Spans use Python code-point indices; Array.from(text).slice(start, end) extracts a token. */
+    tokenizerSpans(text: string, kind?: TokenizerKind, options?: TokenizerOptions): TokenSpan[];
+    treebankDetokenize(tokens: readonly string[], convertParentheses?: boolean): string;
+    punktLoad(model: Uint8Array): number;
+    /** Stateless training/legacy control ABI; algorithms live in Rust. */
+    punktRequest(request: unknown): unknown;
+    punktSpans(handle: number, text: string, realignBoundaries?: boolean): Uint32Array;
+    punktFree(handle: number): void;
+    categoricalNaiveBayesTrain(input: {
+        pairs: Uint32Array;
+        offsets: Uint32Array;
+        labels: Uint32Array;
+        labelCount: number;
+        smoothing: number;
+    }): number;
+    categoricalNaiveBayesPredict(handle: number, pairs: Uint32Array, labelCount: number): Float64Array;
+    positiveCategoricalNaiveBayesTrain(input: {
+        positivePairs: Uint32Array;
+        positiveOffsets: Uint32Array;
+        unlabeledPairs: Uint32Array;
+        unlabeledOffsets: Uint32Array;
+        positivePrior: number;
+        smoothing: number;
+    }): number;
+    categoricalNaiveBayesFree(handle: number): void;
+    categoricalMaxentTrain(input: {
+        pairs: Uint32Array;
+        offsets: Uint32Array;
+        labels: Uint32Array;
+        labelCount: number;
+        algorithm: "iis" | "gis";
+        maxIter: number;
+        countCutoff: number;
+        minLl?: number;
+        minLldelta?: number;
+        maxAcc?: number;
+        minAccdelta?: number;
+    }): number;
+    categoricalMaxentLoad(input: {
+        features: Uint32Array;
+        weights: Float64Array;
+        labelCount: number;
+        algorithm: "iis" | "gis";
+        correction?: number;
+    }): number;
+    categoricalMaxentPredict(handle: number, pairs: Uint32Array, labelCount: number): Float64Array;
+    categoricalMaxentFeatureCount(handle: number): number;
+    categoricalMaxentWeightCount(handle: number): number;
+    categoricalMaxentCorrection(handle: number): number;
+    categoricalMaxentFeatures(handle: number): Uint32Array;
+    categoricalMaxentWeights(handle: number): Float64Array;
+    categoricalMaxentFree(handle: number): void;
+    private copyU32;
+    private copyF64;
+    /** Stateless Rust evaluation kernels with identity-ID marshaling. */
+    evaluationMetrics(): MetricsWasm;
+    decisionTreeTrain(input: {
+        pairs: Uint32Array;
+        offsets: Uint32Array;
+        labels: Uint32Array;
+        labelCount: number;
+        entropyCutoff: number;
+        depthCutoff: number;
+        supportCutoff: number;
+        binary: boolean;
+    }): number;
+    decisionTreeClassify(handle: number, pairs: Uint32Array): number;
+    decisionTreeLabels(handle: number, labelCount: number): Uint32Array;
+    decisionTreeFree(handle: number): void;
+    private distanceInputs;
+    editDistance(left: string, right: string, options?: {
+        substitutionCost?: number;
+        transpositions?: boolean;
+    }): number;
+    editDistanceAlign(left: string, right: string, substitutionCost?: number): Array<[number, number]>;
+    private assertNoError;
+    private ensureBlock;
+    private writeInput;
+    private writeBytes;
+    /** Exact streaming aggregates; memory scales with distinct keys, not input size. */
+    createAsciiMetricsStream(n: number, options?: AsciiMetricsStreamOptions): AsciiMetricsStream;
+    countTokensAscii(text: string): number;
+    countNgramsAscii(text: string, n: number): number;
+    computeAsciiMetrics(text: string, n: number): AsciiMetrics;
+    tokenOffsetsAscii(text: string): {
+        total: number;
+        offsets: Uint32Array;
+        lengths: Uint32Array;
+        input: Uint8Array;
+    };
+    normalizedTokenOffsetsAscii(text: string, removeStopwords?: boolean): {
+        total: number;
+        offsets: Uint32Array;
+        lengths: Uint32Array;
+        input: Uint8Array;
+    };
+    tokenizeAscii(text: string): string[];
+    sentenceTokenizePunktAscii(text: string): string[];
+    normalizeTokensAscii(text: string, removeStopwords?: boolean): string[];
+    perceptronPredictBatch(featureIds: Uint32Array, tokenOffsets: Uint32Array, weights: Float32Array, modelFeatureCount: number, tagCount: number): Uint16Array;
+    wordnetMorphyAscii(word: string, pos?: "n" | "v" | "a" | "r"): string;
+    evaluateLanguageModelIds(input: {
+        tokenIds: Uint32Array;
+        sentenceOffsets: Uint32Array;
+        order: number;
+        model: WasmLmModelType;
+        gamma: number;
+        discount: number;
+        vocabSize: number;
+        probeContextFlat: Uint32Array;
+        probeContextLens: Uint32Array;
+        probeWordIds: Uint32Array;
+        perplexityTokenIds: Uint32Array;
+        prefixTokenIds: Uint32Array;
+    }): {
+        scores: Float64Array;
+        perplexity: number;
+    };
+    chunkIobIds(input: {
+        tokenTagIds: Uint16Array;
+        atomAllowedOffsets: Uint32Array;
+        atomAllowedLengths: Uint32Array;
+        atomAllowedFlat: Uint16Array;
+        atomMins: Uint8Array;
+        atomMaxs: Uint8Array;
+        ruleAtomOffsets: Uint32Array;
+        ruleAtomCounts: Uint32Array;
+        ruleLabelIds: Uint16Array;
+    }): {
+        labelIds: Uint16Array;
+        begins: Uint8Array;
+    };
+    cykRecognizeIds(input: {
+        tokenBits: BigUint64Array;
+        binaryLeft: Uint16Array;
+        binaryRight: Uint16Array;
+        binaryParent: Uint16Array;
+        unaryChild: Uint16Array;
+        unaryParent: Uint16Array;
+        startSymbol: number;
+    }): boolean;
+    naiveBayesLogScoresIds(input: {
+        docTokenIds: Uint32Array;
+        vocabSize: number;
+        tokenCountsMatrix: Uint32Array;
+        labelDocCounts: Uint32Array;
+        labelTokenTotals: Uint32Array;
+        totalDocs: number;
+        smoothing: number;
+    }): Float64Array;
+    /**
+     * Batched BLEU sufficient statistics over token-ID streams.
+     *
+     * Input mirrors the corpus shape of `nltk.translate.bleu_score.corpus_bleu`:
+     * one hypothesis per group of 1+ references. Returns per-order
+     * [clipped_1..5, total_1..5, refLen, hypLen] so the JS caller can apply any
+     * NLTK smoothing/brevity-penalty variant exactly.
+     */
+    bleuStatsIds(input: {
+        refsFlat: Uint32Array;
+        refsOffsets: Uint32Array;
+        hypRefGroupStarts: Uint32Array;
+        hypRefCounts: Uint32Array;
+        hypsFlat: Uint32Array;
+        hypsOffsets: Uint32Array;
+        maxOrder: number;
+    }): {
+        clipped: BigUint64Array;
+        totals: BigUint64Array;
+        refLen: bigint;
+        hypLen: bigint;
+    };
+    /**
+     * Batched NIST sufficient statistics over token-ID streams.
+     * Returns flat [numerator_1..5, denominator_1..5, lRef, lSys]; JS combines
+     * them with `nistLengthPenalty` to reproduce `nltk.translate.nist_score`.
+     */
+    nistStatsIds(input: {
+        refsFlat: Uint32Array;
+        refsOffsets: Uint32Array;
+        hypRefGroupStarts: Uint32Array;
+        hypRefCounts: Uint32Array;
+        hypsFlat: Uint32Array;
+        hypsOffsets: Uint32Array;
+        n: number;
+    }): {
+        numerators: Float64Array;
+        denominators: Float64Array;
+        lRef: number;
+        lSys: number;
+    };
+}
+
+export { MWETokenizer as M, ToktokTokenizer as T, WasmNltk as W, TweetTokenizer as a, casualTokenize as d, tweetTokenize as e, mweTokenize as m, toktokTokenize as t };
+export type { AsciiMetrics as A, SocialTokenizerRequest as S, TweetTokenizerOptions as b, WasmNltkInit as c, AsciiMetricsStream as f, AsciiMetricsStreamOptions as g, WasmLmModelType as h };

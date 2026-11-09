@@ -1,7 +1,7 @@
 # NLTK API Parity Checklist
 
 > Auto-generated from the [NLTK API index](https://www.nltk.org/api/nltk.html) (241 public modules) diffed against `src/`.
-> Last regenerated: 2026-08-24
+> Last regenerated: 2026-11-09
 
 **Coverage: 241/241 modules (100.0%)** — 46 of 46 families touched.
 

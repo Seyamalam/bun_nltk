@@ -13,7 +13,8 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Changed
 
-- The browser WASM budget is 1,100,000 bytes (raised from 700,000 by explicit owner decision on 2026-10-21). The single portable artifact is 1,055,547 bytes and keeps every integrated API; the 400-file / 13,000,000-byte package budget is unchanged and passes at 316 files / 12,895,790 bytes.
+- `TweetTokenizer`, `ToktokTokenizer`, `MWETokenizer` and their `tweetTokenize`/`toktokTokenize`/`mweTokenize`/`casualTokenize` helpers now marshal to shared Rust WASM kernels verified against NLTK 3.10.3 (2,628 pinned differential cases on Bun, Node, Chromium, Firefox and WebKit). `Rust*Tokenizer` aliases take an explicit `WasmNltk`; `Legacy*Tokenizer` and `legacy*Tokenize` retain the prior JS subsets as a reviewed escape hatch.
+- The browser WASM budget is 1,100,000 bytes (raised from 700,000 by explicit owner decision on 2026-10-21). The single portable artifact is 1,088,530 bytes and keeps every integrated API; the 400-file / 13,000,000-byte package budget is unchanged and passes at 321 files / 11,742,008 bytes.
 
 - Generated Python NLTK-style snake_case aliases for 259 camelCase root exports, plus runtime-specific package roots: Bun FFI, bundled Node, and a browser WASM/tokenization subset.
 - Added NLTK helper names `sent_tokenize`, `word_tokenize`, `wordpunct_tokenize`, `ngrams`, `bigrams`, `trigrams`, and `PorterStemmer`; the root Node/browser declaration facades resolve every exported name.

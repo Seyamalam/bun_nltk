@@ -69,6 +69,7 @@ artifacts/*
 !artifacts/vocabulary-scale-matrix.json
 !artifacts/feature-tree-benchmark.json
 models/wordnet_full.bin
+models/wordnet_full.sha256.json
 paper/bench/data/prose_10000kb.txt
 
 # generated paper files and downloaded templates
@@ -85,3 +86,4 @@ paper/springer-template/
 # Finder (MacOS) folder config
 .DS_Store
 rust/target/
+rust/compat/target/

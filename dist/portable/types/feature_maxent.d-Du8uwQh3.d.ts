@@ -1,4 +1,4 @@
-import { WasmNltk } from '../wasm.js';
+import { W as WasmNltk } from './wasm.d-DQjev3Ji.js';
 import { FeatureValue } from '../feature_types.js';
 
 /** Preserve Python float-vs-int identity, including integral floats (1.0). */

@@ -173,8 +173,8 @@ test("current-base correction proposals have real source/evidence/signatures wit
   expect(() => checkEvidenceFiles(candidate)).not.toThrow();
   expect(() => validateDiscovery(candidate, snapshot)).not.toThrow();
   expect(() => checkSignatureRegression(candidate.signatureBindings, snapshot.signatureBindings)).not.toThrow();
-  expect(candidate.mappings).toHaveLength(43);
-  expect(candidate.signatureBindings).toHaveLength(43);
+  expect(candidate.mappings).toHaveLength(44);
+  expect(candidate.signatureBindings).toHaveLength(44);
   expect(JSON.stringify(manifest)).toBe(before);
   expect(loadManifest()).toEqual(manifest);
   // Correction requires an explicit parent policy decision, not weakened gates:

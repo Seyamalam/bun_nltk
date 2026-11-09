@@ -1,4 +1,4 @@
-import { WasmNltk } from './wasm.js';
+import { WasmNltk } from './index.browser.js';
 import { TokenizerKind, BlanklineHandling, TokenSpan } from './tokenizer_types.js';
 import './metrics_wasm.js';
 

@@ -16,20 +16,22 @@ marshaling, and remaining legacy algorithms. The target is Python NLTK 3.10.3.
   Importable surfaces include partial implementations and shims; this is not a
   behavioral-parity percentage. Regenerate with `bun run parity:checklist`.
 - The fidelity gate reports **43 passed, 0 failed, 0 skipped, and 3 unsupported**
-  of 46 groups in the current Linux x64 run (Bun 1.4.2, Python 3.14.4,
-   NLTK 3.10.3, 2026-10-21). Missing required fixtures fail the gate; unsupported
+  of 46 groups in the current Linux x64 run (Bun 1.4.4, Python 3.14.4,
+   NLTK 3.10.3, 2026-11-09). Missing required fixtures fail the gate; unsupported
   GUI, Java, and network integrations are reported separately and never counted
   as passed.
-- The integrated Rust crate passes **112 tests**, plus **4 compatibility-crate
-  tests**. The Bun suite has **601 passes and 1 failure**: the shipped WASM is
-  **1,055,547 bytes** against the unchanged 700,000-byte gate.
-- The package gate passes at **12,895,790 unpacked bytes** across **316 files**
+- The integrated Rust crate passes **117 tests** plus **2 seeded adversarial**
+  and **4 compatibility-crate tests**. The Bun suite has **639 passes and 0
+  failures** on Linux x64 (Bun 1.4.4, Node v26.13.0): the shipped WASM is
+  **1,088,530 bytes** against the 1,100,000-byte gate.
+- The package gate passes at **11,742,008 unpacked bytes** across **321 files**
   (limits: 13,000,000 bytes / 400 files). NE chunker models ship as Brotli.
 - The browser WASM budget was raised from 700,000 to **1,100,000 bytes** on
   2026-10-21 by explicit owner decision. Exact float round-tripping (required
   for model snapshots) and the recovered Punkt training, regexp tokenizer,
-  Tree/PCFG, and legacy text-classifier kernels exceed the old limit; the new
-  budget keeps every portable API instead of silently dropping algorithms.
+  Tree/PCFG, legacy text-classifier and Tweet/Toktok/MWE kernels exceed the old
+  limit; the new budget keeps every portable API instead of silently dropping
+  algorithms.
 - [Semaphore pipelines](docs/semaphore-ci.md) are prepared, not activated.
   Account authorization and a genuine Windows self-hosted runner remain required.
 - Passing fixtures establishes agreement for those cases and tolerances, not
