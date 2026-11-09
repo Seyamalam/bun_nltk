@@ -1,0 +1,12 @@
+# Pinned dev/oracle Python environment (`.venv`).
+# Python 3.14.4 required; recreate with:
+#   python3.14 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
+nltk==3.10.3
+regex==2026.9.29
+numpy==2.5.4
+scipy==1.18.1
+click==8.5.0
+cloudpickle==3.1.2
+defusedxml==0.7.1
+joblib==1.6.0
+tqdm==4.70.1
