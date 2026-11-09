@@ -1,6 +1,6 @@
 {
   "name": "bun_nltk",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "High-performance NLP primitives for Bun/Node with Rust native and WASM backends.",
   "module": "index.ts",
   "type": "module",

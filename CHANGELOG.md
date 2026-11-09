@@ -8,6 +8,14 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [1.1.0] - 2026-11-09
+
+### Added
+
 - Recovered and integrated the Punkt training/legacy migration, bounded regexp tokenizer (regex-lite), identity-safe Tree list edits with PCFG Viterbi, and the legacy text vectorizer/tree/MaxEnt SGD/IIS kernels. Exact `serde_json` float round-tripping is restored for model snapshots.
 - NE chunker models now ship as deterministic Brotli (about 4.3 MB instead of 5.5 MB); only `docs/API.md` is included in the npm package.
 
