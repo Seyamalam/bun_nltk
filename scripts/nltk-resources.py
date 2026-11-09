@@ -14,8 +14,8 @@ import xml.etree.ElementTree as ET
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-LOCK = json.loads((ROOT / "scripts/ci/nltk-data-lock.json").read_text())
-VERSIONS = json.loads((ROOT / "scripts/ci/versions.json").read_text())
+LOCK = json.loads((ROOT / "scripts/nltk-data-lock.json").read_text())
+VERSIONS = json.loads((ROOT / "scripts/versions.json").read_text())
 DEFAULT_RESOURCES = ("wordnet", "averaged_perceptron_tagger_eng", "vader_lexicon")
 MAX_DOWNLOAD_BYTES = 80_000_000
 MAX_EXTRACTED_BYTES = 512_000_000

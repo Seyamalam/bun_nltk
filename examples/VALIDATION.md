@@ -33,8 +33,6 @@ The checks exercised DOM event handlers and inspected rendered output and export
 
 The public site is https://bun-nltk-playground.seyamalam41.workers.dev. Its deployed page renders, loads WASM, and reports JS/WASM parity. Deployment uses Cloudflare Workers static assets and the example's `bun run deploy` command.
 
-## Native-host and CI limits
+## Native-host limits
 
-Linux and Windows native reports were not produced in this session. GitHub Actions reports an account billing lock; snadbox-ci's health/controller checks return HTTP 400; the installed Daytona CLI rejects its stored credentials. The manual `native-host.yml` workflow is ready to run both operating systems with 15 rounds and retain the JSON reports as artifacts once runner access is restored.
-
-The GitHub and snadbox workflows now install and validate the standalone examples. Remote CI success remains unverified until those services can run jobs.
+Linux and Windows native reports were not produced in this session. Remote CI has since been removed from the repository; native host validation runs locally via `scripts/verify-linux.sh` and `scripts/verify-windows.cmd` as documented in [docs/NATIVE_HOST_VALIDATION.md](../docs/NATIVE_HOST_VALIDATION.md).

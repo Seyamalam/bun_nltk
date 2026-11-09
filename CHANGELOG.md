@@ -14,6 +14,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ### Changed
 
 - `TweetTokenizer`, `ToktokTokenizer`, `MWETokenizer` and their `tweetTokenize`/`toktokTokenize`/`mweTokenize`/`casualTokenize` helpers now marshal to shared Rust WASM kernels verified against NLTK 3.10.3 (2,628 pinned differential cases on Bun, Node, Chromium, Firefox and WebKit). `Rust*Tokenizer` aliases take an explicit `WasmNltk`; `Legacy*Tokenizer` and `legacy*Tokenize` retain the prior JS subsets as a reviewed escape hatch.
+- Removed GitHub Actions and Semaphore CI configuration. Validation is local: `bun test`, `bun run fidelity:gate`, `bun run verify:packaged-portable`, and the genuine-host scripts `scripts/verify-linux.sh` / `scripts/verify-windows.cmd`. The checksum-locked NLTK data pin files moved from `scripts/ci/` to `scripts/` alongside `scripts/nltk-resources.py`.
 - The browser WASM budget is 1,100,000 bytes (raised from 700,000 by explicit owner decision on 2026-10-21). The single portable artifact is 1,088,530 bytes and keeps every integrated API; the 400-file / 13,000,000-byte package budget is unchanged and passes at 321 files / 11,742,008 bytes.
 
 - Generated Python NLTK-style snake_case aliases for 259 camelCase root exports, plus runtime-specific package roots: Bun FFI, bundled Node, and a browser WASM/tokenization subset.

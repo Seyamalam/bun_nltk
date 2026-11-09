@@ -1,8 +1,8 @@
-# Official NLTK resources, independently of CI activation
+# Official NLTK resources
 
 Resource provisioning is explicit and separate from library imports. Nothing
-activates Semaphore, publishes artifacts, or silently calls `nltk.download`.
-The existing `scripts/ci/nltk-data-lock.json` pins an upstream commit, index hash,
+publishes artifacts or silently calls `nltk.download`.
+The existing `scripts/nltk-data-lock.json` pins an upstream commit, index hash,
 and individual archive SHA-256 hashes. The default selection is WordNet, the
 English perceptron tagger, and VADER; other locked IDs can be selected explicitly.
 

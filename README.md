@@ -32,8 +32,6 @@ marshaling, and remaining legacy algorithms. The target is Python NLTK 3.10.3.
   Tree/PCFG, legacy text-classifier and Tweet/Toktok/MWE kernels exceed the old
   limit; the new budget keeps every portable API instead of silently dropping
   algorithms.
-- [Semaphore pipelines](docs/semaphore-ci.md) are prepared, not activated.
-  Account authorization and a genuine Windows self-hosted runner remain required.
 - Passing fixtures establishes agreement for those cases and tolerances, not
   complete NLTK equivalence. See [behavioral validation](docs/BEHAVIORAL_PARITY.md).
 
