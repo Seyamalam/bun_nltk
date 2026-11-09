@@ -548,7 +548,7 @@ export function tokenizeAsciiNative(text: string): string[] {
   assertNoNativeError("tokenizeAsciiNative");
 
   const decoder = new TextDecoder();
-  const out = new Array<string>(total);
+  const out = Array.from<string>({ length: total });
   for (let i = 0; i < total; i += 1) {
     const start = offsets[i]!;
     const len = lengths[i]!;
@@ -578,7 +578,7 @@ export function sentenceTokenizePunktAsciiNative(text: string): string[] {
   assertNoNativeError("sentenceTokenizePunktAsciiNative.fill");
 
   const decoder = new TextDecoder();
-  const out = new Array<string>(total);
+  const out = Array.from<string>({ length: total });
   for (let i = 0; i < total; i += 1) {
     const start = offsets[i]!;
     const len = lengths[i]!;
@@ -626,7 +626,7 @@ export function normalizeTokensAsciiNative(text: string, removeStopwords = true)
   assertNoNativeError("normalizeTokensAsciiNative");
 
   const decoder = new TextDecoder();
-  const out = new Array<string>(total);
+  const out = Array.from<string>({ length: total });
   for (let i = 0; i < total; i += 1) {
     const start = offsets[i]!;
     const len = lengths[i]!;
@@ -1102,7 +1102,7 @@ class NativeWordNetResponseReader {
 
   strings(): string[] {
     const count = this.u32();
-    const values = new Array<string>(count);
+    const values = Array.from<string>({ length: count });
     for (let i = 0; i < count; i += 1) values[i] = this.string();
     return values;
   }
@@ -1125,7 +1125,7 @@ class NativeWordNetResponseReader {
 
   synsets(): NativeWordNetSynset[] {
     const count = this.u32();
-    const values = new Array<NativeWordNetSynset>(count);
+    const values = Array.from<NativeWordNetSynset>({ length: count });
     for (let i = 0; i < count; i += 1) values[i] = this.synset();
     return values;
   }
@@ -1187,7 +1187,7 @@ function decodeNativeWordNetResponse(bytes: Uint8Array): unknown {
     result = values;
   } else if (tag === 6) {
     const count = reader.u32();
-    const paths = new Array<NativeWordNetSynset[]>(count);
+    const paths = Array.from<NativeWordNetSynset[]>({ length: count });
     for (let i = 0; i < count; i += 1) paths[i] = reader.synsets();
     result = paths;
   } else if (tag === 7) {
@@ -1523,7 +1523,7 @@ function decodeNativeLinearTextModel(bytes: Uint8Array): NativeLinearTextModel {
   const classCount = view.getUint32(cursor, true);
   cursor += 4;
   const decoder = new TextDecoder();
-  const vocabulary = new Array<string>(featureCount);
+  const vocabulary = Array.from<string>({ length: featureCount });
   for (let index = 0; index < featureCount; index += 1) {
     const length = view.getUint32(cursor, true);
     cursor += 4;

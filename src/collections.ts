@@ -72,7 +72,9 @@ export class LazyIteratorList<T> extends AbstractLazySequence<T> {
 
 export class Trie extends Map<string, unknown> {
   insert(word: string, value: unknown = true): void {
-    let node: Map<string, unknown> = this;
+    Trie.insertInto(this, word, value);
+  }
+  private static insertInto(node: Map<string, unknown>, word: string, value: unknown): void {
     for (const ch of word) {
       if (!node.has(ch)) node.set(ch, new Map());
       node = node.get(ch) as Map<string, unknown>;
@@ -80,7 +82,9 @@ export class Trie extends Map<string, unknown> {
     node.set("__value__", value);
   }
   hasWord(word: string): boolean {
-    let node: Map<string, unknown> = this;
+    return Trie.hasPath(this, word);
+  }
+  private static hasPath(node: Map<string, unknown>, word: string): boolean {
     for (const ch of word) {
       if (!node.has(ch)) return false;
       node = node.get(ch) as Map<string, unknown>;

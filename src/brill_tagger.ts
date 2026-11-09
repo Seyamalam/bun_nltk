@@ -376,8 +376,6 @@ export class BrillTaggerTrainer {
   readonly #trace: number;
   readonly #deterministic: boolean;
 
-  #state: TrainerState | null = null;
-
   constructor(initialTagger: InitialTaggerLike, templates: readonly Template[], options: BrillTrainerOptions = {}) {
     this.#initialTagger = initialTagger;
     this.#templates = templates;
@@ -401,7 +399,6 @@ export class BrillTaggerTrainer {
       ruleScores: new Map(),
       firstUnknownPosition: new Map(),
     };
-    this.#state = state;
 
     let tokencount = 0;
     let initialerrors = 0;
@@ -458,7 +455,6 @@ export class BrillTaggerTrainer {
       finalacc: 1 - finalerrors / tokencount,
     };
 
-    this.#state = null;
     return new BrillTagger(this.#initialTagger, rules, stats);
   }
 

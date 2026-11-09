@@ -7,7 +7,7 @@ export function decorator(caller: (fn: unknown, ...args: unknown[])=> unknown) {
   };
 }
 
-export function decoratorFactory<T>(cls: new (...a: unknown[])=> T): (fn: unknown)=> unknown {
+export function decoratorFactory<T>(_cls: new (...a: unknown[])=> T): (fn: unknown)=> unknown {
   return (fn: unknown) => fn;
 }
 

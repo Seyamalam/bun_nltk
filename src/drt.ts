@@ -253,8 +253,7 @@ export class DRS extends DrtExpression {
       return new DRS(newRefs, newConds, newConsequent);
     } else {
       // alpha convert any bound var that appears free in expression
-      let self: DRS = this;
-      if (alphaConvert) {
+      const alphaConvertRefs = (self: DRS): DRS => {
         for (const ref of self.refs) {
           if (Array.from(expression.free()).some((v) => v.equals(ref))) {
             const newvar = uniqueVariable(ref);
@@ -266,7 +265,9 @@ export class DRS extends DrtExpression {
             self = new DRS(newRefs, newConds, newConsequent);
           }
         }
-      }
+        return self;
+      };
+      const self = alphaConvert ? alphaConvertRefs(this) : this;
       const newConsequent = self.consequent ? (self.consequent as Expression & { replace(a: Variable, b: Expression, c: boolean, d: boolean): Expression }).replace(variable, expression, replaceBound, alphaConvert) : null;
       const newConds = self.conds.map((c) => (c as Expression & { replace(a: Variable, b: Expression, c: boolean, d: boolean): Expression }).replace(variable, expression, replaceBound, alphaConvert));
       return new DRS(self.refs, newConds, newConsequent);
@@ -373,11 +374,11 @@ export class DrtLambdaExpression extends DrtExpression {
       const newVar = (expression as AbstractVariableExpression).variable;
       return new DrtLambdaExpression(newVar, (this.term as Expression & { replace(a: Variable, b: Expression, c: boolean, d: boolean): Expression }).replace(variable, expression, true, alphaConvert));
     }
-    let self: DrtLambdaExpression = this;
-    if (alphaConvert && Array.from(expression.free()).some((v) => v.equals(this.variable))) {
+    const alphaConverted = (): DrtLambdaExpression => {
       const nv = uniqueVariable(this.variable);
-      self = new DrtLambdaExpression(nv, (self.term as Expression & { replace(a: Variable, b: Expression, c: boolean, d: boolean): Expression }).replace(self.variable, DrtVariableExpression(nv), true));
-    }
+      return new DrtLambdaExpression(nv, (this.term as Expression & { replace(a: Variable, b: Expression, c: boolean, d: boolean): Expression }).replace(this.variable, DrtVariableExpression(nv), true));
+    };
+    const self = alphaConvert && Array.from(expression.free()).some((v) => v.equals(this.variable)) ? alphaConverted() : this;
     return new DrtLambdaExpression(self.variable, (self.term as Expression & { replace(a: Variable, b: Expression, c: boolean, d: boolean): Expression }).replace(variable, expression, replaceBound, alphaConvert));
   }
   getRefs(recursive = false): Variable[] {
@@ -556,11 +557,7 @@ export abstract class DrtBinaryExpression extends DrtExpression {
   str(): string {
     const a = this.first.str(); const b = this.second.str();
     // strip outer parens for same-op (like NLTK)
-    const strip = (s: string, op: string) => {
-      // if subex is same type, NLTK strips
-      return s;
-    };
-    void strip;
+    // if subex is same type, NLTK strips
     return `(${a} ${this.getOp()} ${b})`;
   }
   // pretty helpers
@@ -930,7 +927,7 @@ export class DrtParser {
     return conds;
   }
 
-  handleProp(tok: string, context: string | null): DrtExpression {
+  handleProp(tok: string, _context: string | null): DrtExpression {
     const variable = new Variable(tok);
     this.assertNextToken(":");
     const drs = this.processNextExpression(":");

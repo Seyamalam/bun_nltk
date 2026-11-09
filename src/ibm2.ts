@@ -28,7 +28,7 @@ class Model2Counts {
     this.any_t_given_s.set(s, (this.any_t_given_s.get(s) ?? 0) + normalizedCount);
   }
 
-  private ensureAlignment(i: number, j: number, l: number, m: number) {
+  private ensureAlignment(i: number, j: number, l: number, _m: number) {
     let iRow = this.alignment.get(i);
     if (!iRow) {
       iRow = new Map();

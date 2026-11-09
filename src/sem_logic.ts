@@ -210,31 +210,27 @@ export abstract class Expression {
   normalize(): Expression {
     const indivVars = new Map<string, IndividualVariableExpression>();
     collectIndivVars(this, indivVars);
-    let result: Expression = this;
     const names = Array.from(indivVars.keys()).sort();
-    for (let i = 0; i < names.length; i++) {
-      const e = indivVars.get(names[i]!)!;
+    return names.reduce<Expression>((result, name, i) => {
+      const e = indivVars.get(name)!;
       const newVar =
         e instanceof EventVariableExpression
           ? new Variable(`e0${i + 1}`)
           : new Variable(`z${i + 1}`);
-      result = result.replace(e.variable, makeVariableExpression(newVar.name), true);
-    }
-    return result;
+      return result.replace(e.variable, makeVariableExpression(newVar.name), true);
+    }, this);
   }
 
   substituteBindings(bindings: Map<string, Variable | Expression>): Expression {
-    let expr: Expression = this;
-    for (const v of Array.from(expr.free())) {
-      if (bindings.has(v.name)) {
-        let val = bindings.get(v.name)!;
-        if (val instanceof Variable) {
-          val = makeVariableExpression(val.name);
-        }
-        val = val.substituteBindings(bindings);
-        expr = expr.replace(v, val);
+    const expr = Array.from(this.free()).reduce<Expression>((acc, v) => {
+      if (!bindings.has(v.name)) return acc;
+      let val = bindings.get(v.name)!;
+      if (val instanceof Variable) {
+        val = makeVariableExpression(val.name);
       }
-    }
+      val = val.substituteBindings(bindings);
+      return acc.replace(v, val);
+    }, this);
     return expr.simplify();
   }
 
@@ -475,10 +471,9 @@ export abstract class VariableBinderExpression extends Expression {
       }
       return this;
     }
-    let self: VariableBinderExpression = this;
-    if (alphaConvert && setHasVar(expression.free(), this.variable)) {
-      self = self.alphaConvert(uniqueVariable(this.variable));
-    }
+    const self = alphaConvert && setHasVar(expression.free(), this.variable)
+      ? this.alphaConvert(uniqueVariable(this.variable))
+      : this;
     return self.rebuild(
       self.variable,
       self.term.replace(variable, expression, replaceBound, alphaConvert),

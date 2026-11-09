@@ -54,7 +54,7 @@ export function wordRankAlignment(reference: string[], hypothesis: string[]): nu
     const m = ngram.length;
     let count = 0;
     if (m > 0 && m <= sequence.length) {
-      const prefix = new Array<number>(m).fill(0);
+      const prefix = Array.from({ length: m }, () => 0);
       let k = 0;
       for (let j = 1; j < m; j++) {
         while (k > 0 && ngram[j] !== ngram[k]) k = prefix[k - 1]!;

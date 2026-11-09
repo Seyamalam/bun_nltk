@@ -58,7 +58,7 @@ function findNextToken(text: string, idx: number): NextToken | null {
 
 function findPrevToken(text: string, idx: number): string {
   let end = idx;
-  while (end >= 0 && /[\s"'()\[\]{}]/.test(text[end]!)) end -= 1;
+  while (end >= 0 && /[\s"'()[\]{}]/.test(text[end]!)) end -= 1;
   if (end < 0) return "";
 
   let start = end;

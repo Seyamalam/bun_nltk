@@ -68,7 +68,6 @@ function parsePrimitiveCategory(
   if (families.has(name)) {
     const [cat, cvar] = families.get(name)!;
     if (v === null) v = cvar;
-    else if (cvar) cat.substitute; // family var substitution
     // Apply substitution if needed
     let result: AbstractCCGCategory = cat;
     if (cvar && v) result = cat.substitute([[cvar, v]]);

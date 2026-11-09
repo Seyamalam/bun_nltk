@@ -254,7 +254,7 @@ export class HiddenMarkovModelTagger {
     for (let i = 1; i < N; i += 1) {
       if (V[T - 1]![i]! > V[T - 1]![current]!) current = i;
     }
-    const indices = new Array<number>(T);
+    const indices = Array.from<number>({ length: T });
     indices[T - 1] = current;
     for (let t = T - 1; t > 0; t -= 1) {
       current = B[t]![current]!;
@@ -289,7 +289,7 @@ export class HiddenMarkovModelTagger {
   forwardProbability(unlabeledSequence: UntaggedSentence): number[][] {
     const T = unlabeledSequence.length;
     const N = this.states.length;
-    const alpha: number[][] = Array.from({ length: T }, () => new Array<number>(N).fill(Number.NEGATIVE_INFINITY));
+    const alpha: number[][] = Array.from({ length: T }, () => Array.from({ length: N }, () => Number.NEGATIVE_INFINITY));
     if (T === 0) return alpha;
 
     for (let i = 0; i < N; i += 1) {
@@ -297,7 +297,7 @@ export class HiddenMarkovModelTagger {
     }
     for (let t = 1; t < T; t += 1) {
       for (let i = 0; i < N; i += 1) {
-        const incoming: number[] = new Array<number>(N);
+        const incoming: number[] = Array.from<number>({ length: N });
         for (let h = 0; h < N; h += 1) {
           incoming[h] = alpha[t - 1]![h]! + this.transitionLogProb(this.states[h]!, this.states[i]!);
         }

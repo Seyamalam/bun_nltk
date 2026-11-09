@@ -47,9 +47,9 @@ export class ParentedTree {
   }
 
   root(): ParentedTree {
-    let node: ParentedTree = this;
-    while (node._parent !== null) node = node._parent;
-    return node;
+    let node = this._parent;
+    while (node !== null && node._parent !== null) node = node._parent;
+    return node ?? this;
   }
 
   leftSibling(): ParentedTree | string | null {

@@ -27,12 +27,12 @@ export class GAAClusterer extends VectorSpaceClusterer {
 
   override clusterVectorspace(vectors: Vector[], trace = false): void {
     const N = vectors.length;
-    const clusterLen = new Array(N).fill(1);
+    const clusterLen = Array.from({ length: N }, () => 1);
     let clusterCount = N;
     const indexMap = Array.from({ length: N }, (_, i) => i);
 
     // distance matrix upper-triangle, rest Inf
-    const dist: number[][] = Array.from({ length: N }, () => new Array(N).fill(Infinity));
+    const dist: number[][] = Array.from({ length: N }, () => Array.from({ length: N }, () => Infinity));
     for (let i = 0; i < N; i++) {
       for (let j = i + 1; j < N; j++) dist[i]![j] = cosineDistance(vectors[i]!, vectors[j]!);
     }

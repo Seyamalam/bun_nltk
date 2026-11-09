@@ -15,7 +15,7 @@ class Slots {
   private readonly slots: boolean[];
 
   constructor(targetSentenceLength: number) {
-    this.slots = new Array<boolean>(targetSentenceLength + 1).fill(false);
+    this.slots = Array.from({ length: targetSentenceLength + 1 }, () => false);
   }
 
   get length(): number {

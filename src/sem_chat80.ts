@@ -89,7 +89,7 @@ export class Concept {
 
   private transclose(g: Record<string,string[]>): Record<string,string[]> {
     for (const x of Object.keys(g)) {
-      for (const adjacent of [...g[x]!]) {
+      for (const adjacent of Array.from(g[x]!)) {
         if (adjacent in g) {
           for (const y of g[adjacent]!) if (!g[x]!.includes(y)) g[x]!.push(y);
         }

@@ -25,7 +25,7 @@ export function extractFields(tweet: Record<string, unknown>, fields: string[]):
   const out: unknown[] = [];
   for (const field of fields) {
     try { addFieldToOut(tweet, field, out); }
-    catch (_e) { throw new Error(`Fatal error when extracting fields. Cannot find field ${field}`); }
+    catch { throw new Error(`Fatal error when extracting fields. Cannot find field ${field}`); }
   }
   return out;
 }

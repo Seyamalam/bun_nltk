@@ -61,7 +61,7 @@ export function smooth(x: number[], windowLen = 11): number[] {
   const w = windowLen;
   const half = Math.floor(w / 2);
   const outLen = s.length; // 'same' keeps s length
-  const same: number[] = new Array(outLen);
+  const same: number[] = Array.from<number>({ length: outLen });
   for (let i = 0; i < outLen; i++) {
     let acc = 0;
     for (let j = 0; j < w; j++) {
@@ -284,7 +284,7 @@ export class TextTilingTokenizer {
       for (const t of tokseqSets[i]!) seenLeft.add(t);
     }
 
-    const newRight = new Array<number>(n).fill(0);
+    const newRight = Array.from({ length: n }, () => 0);
     const seenRight = new Set<string>();
     for (let i = n - 1; i >= 0; i--) {
       let newCount = 0;
@@ -305,7 +305,7 @@ export class TextTilingTokenizer {
   }
 
   private depthScores(scores: number[]): number[] {
-    const depthScores = new Array<number>(scores.length).fill(0);
+    const depthScores = Array.from({ length: scores.length }, () => 0);
     const clip = Math.min(Math.max(Math.floor(scores.length / 10), 2), 5);
     let index = clip;
 
@@ -328,7 +328,7 @@ export class TextTilingTokenizer {
   }
 
   private identifyBoundaries(depthScores: number[]): number[] {
-    const boundaries = new Array<number>(depthScores.length).fill(0);
+    const boundaries = Array.from({ length: depthScores.length }, () => 0);
     const avg = depthScores.reduce((a, b) => a + b, 0) / depthScores.length;
     const variance = depthScores.reduce((a, b) => a + (b - avg) ** 2, 0) / depthScores.length;
     const stdev = Math.sqrt(variance);
