@@ -619,6 +619,17 @@
    "scope": "NLTK 3.10.3-pinned: accuracy/precision/recall/f_measure/evaluate_per_tag tables, size, _context_to_tag, _check_params both/neither, DefaultTagger backoff, encode/decode_json_obj."
   },
   {
+   "id": "perceptron-differential",
+   "kind": "differential",
+   "files": [
+    "test/perceptron_tagger.test.ts",
+    "test/perceptron_oracle.py"
+   ],
+   "anchor": "NLTK 3.10.3 doctest pins — trained-tagger surface",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: doctest train→tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
+  },
+  {
    "id": "bleu-differential",
    "kind": "differential",
    "files": [
@@ -2448,7 +2459,7 @@
     "posTagPerceptronAscii"
    ],
    "category": "rust-native",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/parser_tagger_compat.ts",
@@ -2460,25 +2471,47 @@
     }
    ],
    "signatures": {
-    "status": "unreviewed",
-    "members": [],
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "decode_json_obj",
+     "decode_json_params",
+     "encode_json_obj",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "load_from_json",
+     "normalize",
+     "param_files",
+     "precision",
+     "recall",
+     "save_to_json",
+     "tag",
+     "tag_sents",
+     "train"
+    ],
     "gaps": [
-     "Train/load/save/language/return_conf and ASCII normalization contracts need audit."
+     "camelCase adaptations: paramFiles/getFeatures/makeTagdict/tagSents/evaluatePerTag/saveToJson/loadFromJson/encodeJsonObj/decodeJsonParams/fMeasure; options-object and legacy (model|path) ctor forms alongside NLTK (load,lang,loc).",
+     "START/END are static readonly (NLTK class attrs); decode_json_obj is decodeJsonParams+ctor; json_tag is the readonly instance field jsonTag.",
+     "random.shuffle replaced by seeded deterministic shuffle; saveToJson is async; save_dir/TRAINED_TAGGER_PATH filesystem semantics adapted to saveDir string."
     ]
    },
    "evidence": [
-    "parser-unit"
+    "parser-unit",
+    "perceptron-differential"
    ],
    "fixtures": {
-    "status": "blocked-data",
+    "status": "pinned-differential",
     "resources": [
      "taggers/averaged_perceptron_tagger_eng/"
     ],
     "gaps": [
-     "Official English model unavailable; project model parity is separate."
+     "Pretrained english model is packed-form inference (Rust); trained-model path is the NLTK-faithful TS port.",
+     "return_conf scores are null for packed inference; softmax conf only on trained path is not yet computed."
     ]
    },
-   "notes": "Rust native batch scoring with TS feature/model handling; not full NLTK trained tagger parity."
+   "notes": "AveragedPerceptron (dict-of-dicts weights, _totals/_tstamps, 3-decimal averaging) + full tagger surface ported faithfully; packed Rust model still used for pretrained inference."
   },
   {
    "target": "nltk.text.ConcordanceIndex",
