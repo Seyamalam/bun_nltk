@@ -82,6 +82,8 @@
    "ConcordanceIndex": "src/text.ts",
    "BigramCollocationFinder": "src/collocations.ts",
    "SentimentIntensityAnalyzer": "src/sentiment.ts",
+   "SentiText": "src/sentiment.ts",
+   "VaderConstants": "src/sentiment.ts",
    "regexpChunkParse": "src/chunk.ts",
    "ngrams": "src/nltk_compat.ts",
    "ngrams_iter": "src/nltk_compat.ts",
@@ -672,6 +674,17 @@
    "anchor": "NLTK 3.10.3 oracle pins \u2014 BigramCollocationFinder contract",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: N/word_fd/window_size, pmi/raw_freq scores, score_ngrams ordering, nbest, above_score, ws=3 non-contiguous bigrams, freq filter."
+  },
+  {
+   "id": "vader-differential",
+   "kind": "differential",
+   "files": [
+    "test/sentiment.test.ts",
+    "test/vader_oracle.py"
+   ],
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 full SentimentIntensityAnalyzer member surface",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: 5 doctest polarity_scores dicts, SentiText words/cap_diff, VaderConstants negated/normalize/scalar_inc_dec, score_valence + empty, sentiment_valence, make_lex_dict, 7502-entry lexicon."
   }
  ],
  "signatureBindings": [
@@ -2624,7 +2637,7 @@
     "SentimentIntensityAnalyzer"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/sentiment.ts",
@@ -2632,25 +2645,29 @@
     }
    ],
    "signatures": {
-    "status": "unreviewed",
-    "members": [],
+    "status": "adapted",
+    "members": [
+     "make_lex_dict",
+     "polarity_scores",
+     "score_valence",
+     "sentiment_valence"
+    ],
     "gaps": [
-     "Lexicon resource loading and polarity_scores/member mapping require audit."
+     "camelCase adaptations: polarityScores/sentimentValence/scoreValence/makeLexDict alongside snake_case aliases.",
+     "lexicon_file accepts a path or raw file content (nltk.data.load adapted); {lexicon} option merges over defaults (project extension, NLTK replaces).",
+     "lexicon/constants/lexicon_file are public readonly fields."
     ]
    },
    "evidence": [
-    "sentiment-unit"
+    "vader-differential"
    ],
    "fixtures": {
-    "status": "blocked-data",
-    "resources": [
-     "sentiment/vader_lexicon.zip/vader_lexicon/vader_lexicon.txt"
-    ],
+    "status": "pinned-differential",
     "gaps": [
-     "Official VADER lexicon unavailable; bundled subset evidence not full model parity."
+     "No remaining tracked gaps in this fixture."
     ]
    },
-   "notes": "TS sentiment rules and bundled resources."
+   "notes": "SentiText, VaderConstants, make_lex_dict, sentiment_valence, score_valence, polarity_scores \u2014 full discovered member surface, byte-pinned on doctest corpus."
   },
   {
    "target": "nltk.chunk.regexp.RegexpParser",
@@ -2757,6 +2774,74 @@
     ]
    },
    "notes": "Canonical bound helper differs from WordPunctTokenizer's JSON kernel route; do not merge by spelling or copy the helper evidence to the class."
+  },
+  {
+   "target": "nltk.sentiment.vader.SentiText",
+   "exports": [
+    "SentiText"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sentiment.ts",
+     "anchor": "export class SentiText"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "allcap_differential"
+    ],
+    "gaps": [
+     "ctor params defaulted (punc_list/regex from embedded data); words_and_emoticons/is_cap_diff exposed as readonly fields."
+    ]
+   },
+   "evidence": [
+    "vader-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "NLTK SentiText ported with pinned values."
+  },
+  {
+   "target": "nltk.sentiment.vader.VaderConstants",
+   "exports": [
+    "VaderConstants"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sentiment.ts",
+     "anchor": "export class VaderConstants"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "negated",
+     "normalize",
+     "scalar_inc_dec"
+    ],
+    "gaps": [
+     "ctor params defaulted (punc_list/regex from embedded data); words_and_emoticons/is_cap_diff exposed as readonly fields."
+    ]
+   },
+   "evidence": [
+    "vader-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "NLTK VaderConstants ported with pinned values."
   }
  ]
 }

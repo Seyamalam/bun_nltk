@@ -283,7 +283,7 @@ export { accuracy, ConfusionMatrix, confusionMatrix, corpusBleu, editDistance, s
 export { brevityPenalty, closestRefLength, modifiedPrecision, SmoothingFunction } from "./src/metrics";
 export type { BleuPrecision, BleuSmoothingContext, BleuSmoothingFn, BleuSmoothingResult, BleuWeights } from "./src/metrics";
 export type { ConfusionMatrixResult, EditDistanceOptions } from "./src/metrics";
-export { SentimentIntensityAnalyzer } from "./src/sentiment";
+export { SentimentIntensityAnalyzer, SentiText, VaderConstants } from "./src/sentiment";
 export type { VaderOptions, VaderPolarity } from "./src/sentiment";
 export { WasmNltk } from "./src/wasm";
 export {
