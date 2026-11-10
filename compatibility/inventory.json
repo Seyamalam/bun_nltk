@@ -5226,6 +5226,1808 @@
     ]
    },
    "notes": "Lemma objects with synset-delegated relations; sense key uses lexfile number with lex_id 00."
+  },
+  {
+   "target": "nltk.classify.decisiontree.FreqDist",
+   "exports": [
+    "FreqDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class FreqDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "B",
+     "N",
+     "Nr",
+     "clear",
+     "copy",
+     "elements",
+     "freq",
+     "fromkeys",
+     "get",
+     "hapaxes",
+     "items",
+     "keys",
+     "max",
+     "most_common",
+     "pformat",
+     "plot",
+     "pop",
+     "popitem",
+     "pprint",
+     "r_Nr",
+     "setdefault",
+     "subtract",
+     "tabulate",
+     "total",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.probability.FreqDist; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "frequency-unit",
+    "freqdist-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Iterator/subscript dunder surface cannot be expressed on a plain JS class."
+    ]
+   },
+   "notes": "Re-export of nltk.probability.FreqDist through the nltk.classify.decisiontree module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.classify.decisiontree.MLEProbDist",
+   "exports": [
+    "MLEProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class MLEProbDist"
+    },
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class FreqDist"
+    },
+    {
+     "file": "rust/src/wasm_probability_contracts.rs",
+     "anchor": "6 =>"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "freqdist",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.probability.MLEProbDist; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "next-probability-numeric"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Rust numerical prob/logprob; TS FreqDist max/samples/count storage. Generic equality/order/zero counts and inherited methods remain incomplete; no wholesale Rust object claim."
+    ]
+   },
+   "notes": "Re-export of nltk.probability.MLEProbDist through the nltk.classify.decisiontree module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.classify.naivebayes.FreqDist",
+   "exports": [
+    "FreqDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class FreqDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "B",
+     "N",
+     "Nr",
+     "clear",
+     "copy",
+     "elements",
+     "freq",
+     "fromkeys",
+     "get",
+     "hapaxes",
+     "items",
+     "keys",
+     "max",
+     "most_common",
+     "pformat",
+     "plot",
+     "pop",
+     "popitem",
+     "pprint",
+     "r_Nr",
+     "setdefault",
+     "subtract",
+     "tabulate",
+     "total",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.probability.FreqDist; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "frequency-unit",
+    "freqdist-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Iterator/subscript dunder surface cannot be expressed on a plain JS class."
+    ]
+   },
+   "notes": "Re-export of nltk.probability.FreqDist through the nltk.classify.naivebayes module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.classify.positivenaivebayes.FreqDist",
+   "exports": [
+    "FreqDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class FreqDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "B",
+     "N",
+     "Nr",
+     "clear",
+     "copy",
+     "elements",
+     "freq",
+     "fromkeys",
+     "get",
+     "hapaxes",
+     "items",
+     "keys",
+     "max",
+     "most_common",
+     "pformat",
+     "plot",
+     "pop",
+     "popitem",
+     "pprint",
+     "r_Nr",
+     "setdefault",
+     "subtract",
+     "tabulate",
+     "total",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.probability.FreqDist; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "frequency-unit",
+    "freqdist-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Iterator/subscript dunder surface cannot be expressed on a plain JS class."
+    ]
+   },
+   "notes": "Re-export of nltk.probability.FreqDist through the nltk.classify.positivenaivebayes module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.classify.positivenaivebayes.NaiveBayesClassifier",
+   "exports": [
+    "NaiveBayesClassifier"
+   ],
+   "category": "rust-wasm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/classifier_compat.ts",
+     "anchor": "export class NaiveBayesClassifier"
+    },
+    {
+     "file": "src/feature_nb.ts",
+     "anchor": "export class RustNaiveBayesClassifier"
+    },
+    {
+     "file": "rust/src/categorical_nb.rs",
+     "anchor": "pub fn"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classify",
+     "classify_many",
+     "labels",
+     "most_informative_features",
+     "prob_classify",
+     "prob_classify_many",
+     "show_most_informative_features",
+     "train"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.classify.naivebayes.NaiveBayesClassifier; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "nb-features",
+    "classifier-wrapper"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Direct oracle covers Rust feature class, not every root wrapper member/constructor."
+    ]
+   },
+   "notes": "Re-export of nltk.classify.naivebayes.NaiveBayesClassifier through the nltk.classify.positivenaivebayes module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.FreqDist",
+   "exports": [
+    "FreqDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class FreqDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "B",
+     "N",
+     "Nr",
+     "clear",
+     "copy",
+     "elements",
+     "freq",
+     "fromkeys",
+     "get",
+     "hapaxes",
+     "items",
+     "keys",
+     "max",
+     "most_common",
+     "pformat",
+     "plot",
+     "pop",
+     "popitem",
+     "pprint",
+     "r_Nr",
+     "setdefault",
+     "subtract",
+     "tabulate",
+     "total",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.probability.FreqDist; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "frequency-unit",
+    "freqdist-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Iterator/subscript dunder surface cannot be expressed on a plain JS class."
+    ]
+   },
+   "notes": "Re-export of nltk.probability.FreqDist through the nltk.corpus.reader.wordnet module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.probability.ConditionalFreqDist",
+   "exports": [
+    "ConditionalFreqDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class ConditionalFreqDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "N",
+     "clear",
+     "conditions",
+     "copy",
+     "deepcopy",
+     "fromkeys",
+     "get",
+     "items",
+     "keys",
+     "plot",
+     "pop",
+     "popitem",
+     "setdefault",
+     "tabulate",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.lm.counter.ConditionalFreqDist; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Member-level differential fixtures for ConditionalFreqDist dict protocols missing."
+    ]
+   },
+   "notes": "Re-export of nltk.lm.counter.ConditionalFreqDist through the nltk.probability module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.ArabicStemmer",
+   "exports": [
+    "ArabicStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.DanishStemmer",
+   "exports": [
+    "DanishStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.DutchStemmer",
+   "exports": [
+    "DutchStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.EnglishStemmer",
+   "exports": [
+    "EnglishStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.FinnishStemmer",
+   "exports": [
+    "FinnishStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.FrenchStemmer",
+   "exports": [
+    "FrenchStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.GermanStemmer",
+   "exports": [
+    "GermanStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.HungarianStemmer",
+   "exports": [
+    "HungarianStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.ItalianStemmer",
+   "exports": [
+    "ItalianStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.NorwegianStemmer",
+   "exports": [
+    "NorwegianStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.PorterStemmer",
+   "exports": [
+    "PorterStemmer"
+   ],
+   "category": "rust-wasm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/porter_stemmer.ts",
+     "anchor": "stem(token: string, to_lowercase = true)"
+    },
+    {
+     "file": "src/nltk_compat_runtime.ts",
+     "anchor": "export function porterNltk"
+    },
+    {
+     "file": "rust/src/porter_nltk.rs",
+     "anchor": "pub fn stem"
+    },
+    {
+     "file": "rust/compat/src/lib.rs",
+     "anchor": "compat_porter"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.porter.PorterStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "next-compat-porter"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Three modes and to_lowercase supported; extra legacy algorithm=PORTER option is an adaptation; errors use JS types. porterStemAscii remains separate native ASCII convenience and is NOT covered by this differential."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.porter.PorterStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.PortugueseStemmer",
+   "exports": [
+    "PortugueseStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.RomanianStemmer",
+   "exports": [
+    "RomanianStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.RussianStemmer",
+   "exports": [
+    "RussianStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.SpanishStemmer",
+   "exports": [
+    "SpanishStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.stem.snowball.SwedishStemmer",
+   "exports": [
+    "SwedishStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stemmers.ts",
+     "anchor": "export class SnowballStemmer"
+    },
+    {
+     "file": "src/snowball.ts",
+     "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.stem.snowball.SnowballStemmer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "snowball-unit",
+    "snowball-differential",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
+    ]
+   },
+   "notes": "Re-export of nltk.stem.snowball.SnowballStemmer through the nltk.stem.snowball module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.tag.sequential.ConditionalFreqDist",
+   "exports": [
+    "ConditionalFreqDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class ConditionalFreqDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "N",
+     "clear",
+     "conditions",
+     "copy",
+     "deepcopy",
+     "fromkeys",
+     "get",
+     "items",
+     "keys",
+     "plot",
+     "pop",
+     "popitem",
+     "setdefault",
+     "tabulate",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.lm.counter.ConditionalFreqDist; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Member-level differential fixtures for ConditionalFreqDist dict protocols missing."
+    ]
+   },
+   "notes": "Re-export of nltk.lm.counter.ConditionalFreqDist through the nltk.tag.sequential module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.tag.sequential.NaiveBayesClassifier",
+   "exports": [
+    "NaiveBayesClassifier"
+   ],
+   "category": "rust-wasm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/classifier_compat.ts",
+     "anchor": "export class NaiveBayesClassifier"
+    },
+    {
+     "file": "src/feature_nb.ts",
+     "anchor": "export class RustNaiveBayesClassifier"
+    },
+    {
+     "file": "rust/src/categorical_nb.rs",
+     "anchor": "pub fn"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classify",
+     "classify_many",
+     "labels",
+     "most_informative_features",
+     "prob_classify",
+     "prob_classify_many",
+     "show_most_informative_features",
+     "train"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.classify.naivebayes.NaiveBayesClassifier; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "nb-features",
+    "classifier-wrapper"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Direct oracle covers Rust feature class, not every root wrapper member/constructor."
+    ]
+   },
+   "notes": "Re-export of nltk.classify.naivebayes.NaiveBayesClassifier through the nltk.tag.sequential module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.tokenize.MWETokenizer",
+   "exports": [
+    "MWETokenizer"
+   ],
+   "category": "rust-wasm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_social.ts",
+     "anchor": "export class MWETokenizer"
+    },
+    {
+     "file": "rust/src/tokenizers_social.rs",
+     "anchor": "\"mwe\" =>"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "add_mwe",
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.tokenize.mwe.MWETokenizer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "social-tokenizer",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Removal ordering and single-token edge cases are verified project extensions, not NLTK behavior."
+    ]
+   },
+   "notes": "Re-export of nltk.tokenize.mwe.MWETokenizer through the nltk.tokenize module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.tokenize.ToktokTokenizer",
+   "exports": [
+    "ToktokTokenizer"
+   ],
+   "category": "rust-wasm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_social.ts",
+     "anchor": "export class ToktokTokenizer"
+    },
+    {
+     "file": "rust/src/tokenizers_toktok.rs",
+     "anchor": "pub(super) fn tokenize"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.tokenize.toktok.ToktokTokenizer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "social-tokenizer",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned corpus covers the 24 ordered rules incl. Unicode/whitespace; unbounded input space excluded."
+    ]
+   },
+   "notes": "Re-export of nltk.tokenize.toktok.ToktokTokenizer through the nltk.tokenize module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.tokenize.TreebankWordTokenizer",
+   "exports": [
+    "TreebankWordTokenizer"
+   ],
+   "category": "rust-wasm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_treebank.ts",
+     "anchor": "export class TreebankWordTokenizer"
+    },
+    {
+     "file": "rust/src/tokenizers.rs",
+     "anchor": "pub fn"
+    },
+    {
+     "file": "rust/src/wasm_tokenizers.rs",
+     "anchor": "bunnltk_wasm_tokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.tokenize.treebank.TreebankWordTokenizer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Optional runtime constructor is an extension; convertParentheses is camelCase; deprecated return_str still returns arrays without Python warnings. Spans are code-point indices; scalar strings only."
+    ]
+   },
+   "notes": "Re-export of nltk.tokenize.treebank.TreebankWordTokenizer through the nltk.tokenize module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.tokenize.TweetTokenizer",
+   "exports": [
+    "TweetTokenizer"
+   ],
+   "category": "rust-wasm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_social.ts",
+     "anchor": "export class TweetTokenizer"
+    },
+    {
+     "file": "rust/src/tokenizers_tweet.rs",
+     "anchor": "pub(super) fn tokenize"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.tokenize.casual.TweetTokenizer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "social-tokenizer",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned corpus covers options/entities/handles/lengthening; unbounded NLTK input space excluded."
+    ]
+   },
+   "notes": "Re-export of nltk.tokenize.casual.TweetTokenizer through the nltk.tokenize module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.tokenize.WordPunctTokenizer",
+   "exports": [
+    "WordPunctTokenizer"
+   ],
+   "category": "rust-wasm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_treebank.ts",
+     "anchor": "export class WordPunctTokenizer"
+    },
+    {
+     "file": "rust/src/tokenizers.rs",
+     "anchor": "pub fn"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.tokenize.regexp.WordPunctTokenizer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Optional runtime constructor is an extension; scalar strings only through JSON. wordpunct_tokenize is a different ABI route and reviewed separately."
+    ]
+   },
+   "notes": "Re-export of nltk.tokenize.regexp.WordPunctTokenizer through the nltk.tokenize module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.tokenize.casual_tokenize",
+   "exports": [
+    "casual_tokenize"
+   ],
+   "category": "rust-wasm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_social.ts",
+     "anchor": "export function casualTokenize"
+    },
+    {
+     "file": "rust/src/tokenizers_tweet.rs",
+     "anchor": "pub(super) fn tokenize"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK re-exports this name from nltk.tokenize.casual.casual_tokenize; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "social-tokenizer"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Covered through the TweetTokenizer option matrix; unbounded input space excluded."
+    ]
+   },
+   "notes": "Re-export of nltk.tokenize.casual.casual_tokenize through the nltk.tokenize module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.tokenize.wordpunct_tokenize",
+   "exports": [
+    "wordpunct_tokenize"
+   ],
+   "category": "rust-wasm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_compat_runtime.ts",
+     "anchor": "export function wordpunctNltk"
+    },
+    {
+     "file": "rust/compat/src/lib.rs",
+     "anchor": "compat_wordpunct"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK re-exports this name from nltk.tokenize.regexp.wordpunct_tokenize; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "next-compat-wordpunct"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Error-class hierarchy and arbitrary Python sequences excluded."
+    ]
+   },
+   "notes": "Re-export of nltk.tokenize.regexp.wordpunct_tokenize through the nltk.tokenize module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.tokenize.punkt.FreqDist",
+   "exports": [
+    "FreqDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class FreqDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "B",
+     "N",
+     "Nr",
+     "clear",
+     "copy",
+     "elements",
+     "freq",
+     "fromkeys",
+     "get",
+     "hapaxes",
+     "items",
+     "keys",
+     "max",
+     "most_common",
+     "pformat",
+     "plot",
+     "pop",
+     "popitem",
+     "pprint",
+     "r_Nr",
+     "setdefault",
+     "subtract",
+     "tabulate",
+     "total",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "NLTK re-exports this name from nltk.probability.FreqDist; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "frequency-unit",
+    "freqdist-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Iterator/subscript dunder surface cannot be expressed on a plain JS class."
+    ]
+   },
+   "notes": "Re-export of nltk.probability.FreqDist through the nltk.tokenize.punkt module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.translate.bleu_score.ngrams",
+   "exports": [
+    "ngrams"
+   ],
+   "category": "rust-wasm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_compat.ts",
+     "anchor": "export function ngrams"
+    },
+    {
+     "file": "src/nltk_compat_runtime.ts",
+     "anchor": "export function* ngramsIterator"
+    },
+    {
+     "file": "rust/src/compat_ngrams.rs",
+     "anchor": "compat_ngram_next"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK re-exports this name from nltk.util.ngrams; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "next-compat-ngrams"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Legacy ngrams returns eager arrays; ngrams_iter is additive. n=0 supported; RangeError for invalid n; max order 2147483647/max source items 4294967294. JS identity marshaling; caller must return abandoned iterator."
+    ]
+   },
+   "notes": "Re-export of nltk.util.ngrams through the nltk.translate.bleu_score module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.translate.chrf_score.ngrams",
+   "exports": [
+    "ngrams"
+   ],
+   "category": "rust-wasm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_compat.ts",
+     "anchor": "export function ngrams"
+    },
+    {
+     "file": "src/nltk_compat_runtime.ts",
+     "anchor": "export function* ngramsIterator"
+    },
+    {
+     "file": "rust/src/compat_ngrams.rs",
+     "anchor": "compat_ngram_next"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK re-exports this name from nltk.util.ngrams; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "next-compat-ngrams"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Legacy ngrams returns eager arrays; ngrams_iter is additive. n=0 supported; RangeError for invalid n; max order 2147483647/max source items 4294967294. JS identity marshaling; caller must return abandoned iterator."
+    ]
+   },
+   "notes": "Re-export of nltk.util.ngrams through the nltk.translate.chrf_score module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.translate.nist_score.ngrams",
+   "exports": [
+    "ngrams"
+   ],
+   "category": "rust-wasm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_compat.ts",
+     "anchor": "export function ngrams"
+    },
+    {
+     "file": "src/nltk_compat_runtime.ts",
+     "anchor": "export function* ngramsIterator"
+    },
+    {
+     "file": "rust/src/compat_ngrams.rs",
+     "anchor": "compat_ngram_next"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK re-exports this name from nltk.util.ngrams; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "next-compat-ngrams"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Legacy ngrams returns eager arrays; ngrams_iter is additive. n=0 supported; RangeError for invalid n; max order 2147483647/max source items 4294967294. JS identity marshaling; caller must return abandoned iterator."
+    ]
+   },
+   "notes": "Re-export of nltk.util.ngrams through the nltk.translate.nist_score module namespace; same implementation object."
   }
  ]
 }
