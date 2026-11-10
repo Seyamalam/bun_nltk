@@ -65,3 +65,29 @@ export function regexpTokenize(text: string, pattern: string | { pattern: string
   return new RegexpTokenizer(pattern, gaps, discardEmpty, flags).tokenize(text);
 }
 export { regexpTokenize as regexp_tokenize };
+
+export function* regexp_span_tokenize(s: string, regexp: string | RegExp): Generator<TokenSpan> {
+  const re = typeof regexp === "string" ? new RegExp(regexp, "g") : regexp;
+  let left = 0;
+  for (const m of s.matchAll(re as RegExp & { [Symbol.matchAll](s: string): IterableIterator<RegExpMatchArray> })) {
+    const right = m.index!;
+    const next = right + m[0].length;
+    if (right !== left) yield [left, right];
+    left = next;
+  }
+  yield [left, s.length];
+}
+
+export function* string_span_tokenize(s: string, sep: string): Generator<TokenSpan> {
+  if (sep.length === 0) throw new Error("Token delimiter must not be empty");
+  let left = 0;
+  while (true) {
+    const right = s.indexOf(sep, left);
+    if (right === -1) {
+      if (left !== s.length) yield [left, s.length];
+      break;
+    }
+    if (right !== 0) yield [left, right];
+    left = right + sep.length;
+  }
+}

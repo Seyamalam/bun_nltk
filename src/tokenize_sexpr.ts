@@ -64,3 +64,5 @@ export class SExprTokenizer {
 export function sexprTokenize(text: string, parens = "()", strict = true): string[] {
   return new SExprTokenizer(parens, strict).tokenize(text);
 }
+
+export { sexprTokenize as sexpr_tokenize };

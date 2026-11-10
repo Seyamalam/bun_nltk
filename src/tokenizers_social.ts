@@ -106,3 +106,13 @@ export function casualTokenize(text: string, preserveCase = true, reduceLen = fa
   return tweetTokenize(text, { preserveCase, reduceLen, stripHandles, matchPhoneNumbers });
 }
 export { tweetTokenize as tweet_tokenize, toktokTokenize as toktok_tokenize, mweTokenize as mwe_tokenize, casualTokenize as casual_tokenize };
+
+const HANDLES_RE = /(?<![A-Za-z0-9_!@#$%&*])@(([A-Za-z0-9_]){15}(?!@)|([A-Za-z0-9_]){1,14}(?![A-Za-z0-9_]*@))/g;
+
+export function reduce_lengthening(text: string): string {
+  return text.replace(/(.)\1{2,}/g, "$1$1$1");
+}
+
+export function remove_handles(text: string): string {
+  return text.replace(HANDLES_RE, " ");
+}

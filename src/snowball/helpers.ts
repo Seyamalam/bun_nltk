@@ -89,3 +89,8 @@ export function r1Scandinavian(word: string, vowels: string): string {
   return r1;
 }
 
+
+export function prefix_replace(original: string, old: string, neu: string): string {
+  return original.startsWith(old) ? neu + original.slice(old.length) : original;
+}
+export { suffixReplace as suffix_replace };

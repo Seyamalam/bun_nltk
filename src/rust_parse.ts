@@ -274,6 +274,219 @@ export class Tree<L = string> implements Iterable<Tree<L> | L> {
     } });
   }
   toString(): string { return this.pformat(); }
+
+  // ---- NLTK nltk.tree.tree.Tree surface --------------------------------------
+
+  private childEquals(slot: TreeSlot<L>, value: Tree<L> | L): boolean {
+    if (slot.kind === "tree") return value instanceof Tree && this.plainNode(slot.node) === (value as Tree<L>).plainNode((value as Tree<L>).node);
+    return Object.is(slot.value, value);
+  }
+  private plainNode(node: TreeNode<L>): string {
+    return JSON.stringify(node, (_k, v) => v instanceof Tree ? undefined : v);
+  }
+  /** Python list.index — first child equal (by structure/leaf value) to `value`. */
+  index(value: Tree<L> | L, start = 0, stop?: number): number {
+    const n = this.length;
+    const lo = Math.max(0, start < 0 ? n + start : start);
+    const hi = Math.min(n, stop === undefined ? n : stop < 0 ? n + stop : stop);
+    for (let i = lo; i < hi; i++) if (this.childEquals(this.node.children[i]!, value)) return i;
+    throw new Error(`${JSON.stringify(value)} is not in list`);
+  }
+  /** Python list.count — number of children equal to `value`. */
+  count(value: Tree<L> | L): number {
+    let n = 0;
+    for (const child of this.node.children) if (this.childEquals(child, value)) n += 1;
+    return n;
+  }
+  /** Python list.remove — deletes the first child equal to `value`. */
+  remove(value: Tree<L> | L): void { this.delete(this.index(value)); }
+  /**
+   * Python list.sort. With no key, sorts by node label then structure —
+   * matching NLTK's homogeneous-children ordering (`Tree.__lt__` compares
+   * label then children).
+   */
+  sort(key?: (child: Tree<L> | L) => string | number, reverse = false): void {
+    const keyFn = key ?? ((c: Tree<L> | L) => (c instanceof Tree ? "" + c.label() : String(c)));
+    const order = new Map<TreeSlot<L>, string | number>();
+    for (const child of this.node.children) order.set(child, keyFn(this.value(child)));
+    this.node.children.sort((a, b) => {
+      const ka = order.get(a)!, kb = order.get(b)!;
+      const cmp = ka < kb ? -1 : ka > kb ? 1 : 0;
+      return reverse ? -cmp : cmp;
+    });
+  }
+  /** NLTK `Tree.freeze` — returns an immutable deep copy (leaves optionally mapped). */
+  freeze(leafFreezer?: (leaf: L) => L): Tree<L> {
+    const copy = this.copy(true);
+    if (leafFreezer) {
+      for (const pos of copy.treepositions("leaves")) {
+        const path = pos as number[];
+        let node = copy.node;
+        for (let i = 0; i < path.length - 1; i++) node = (node.children[path[i]!] as { node: TreeNode<L> }).node;
+        const last = path[path.length - 1]!;
+        node.children[last] = { kind: "leaf", value: leafFreezer((node.children[last] as { value: L }).value) };
+      }
+    }
+    Object.freeze(copy.node);
+    return copy;
+  }
+  /** NLTK `Tree.convert` classmethod — builds a `cls` tree from any tree. */
+  static convert<L>(runtime: ParsingRuntime, tree: Tree<L> | L, cls?: new (label: string, children: Array<Tree<L> | L>) => Tree<L>): Tree<L> | L {
+    if (!(tree instanceof Tree)) return tree;
+    const children = [...tree].map((c) => Tree.convert(runtime, c, cls));
+    if (cls) return new cls(tree.label(), children);
+    return new Tree(runtime, tree.label(), children);
+  }
+  /** NLTK `Tree.fromlist` — converts nested lists to a Tree (repr'd first element labels). */
+  static fromlist(runtime: ParsingRuntime, l: unknown): Tree | string {
+    const pyRepr = (v: unknown): string => {
+      if (Array.isArray(v)) return `[${v.map(pyRepr).join(", ")}]`;
+      if (typeof v === "string") return `'${v.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`;
+      return String(v);
+    };
+    if (Array.isArray(l) && l.length > 0) {
+      const label = pyRepr(l[0]);
+      if (l.length > 1) return new Tree(runtime, label, l.slice(1).map((c) => Tree.fromlist(runtime, c) as Tree | string));
+      return label;
+    }
+    // NLTK falls through and returns None for non-list children.
+    return null as unknown as string;
+  }
+  /** NLTK `Tree.pprint` — prints pformat; returns the printed text. */
+  pprint(options: TreeFormatOptions = {}): string {
+    const text = this.pformat(options);
+    console.log(text);
+    return text;
+  }
+  /** NLTK `Tree.pformat_latex_qtree`. */
+  pformat_latex_qtree(): string {
+    const pformat = this.pformat({ indent: 6, nodesep: "", parens: ["[.", " ]"] });
+    return "\\Tree " + pformat.replace(/([#$%&~_{}])/g, "\\$1");
+  }
+  pformatLatexQtree(): string { return this.pformat_latex_qtree(); }
+  /** NLTK `Tree.pformat_latex_forest`. */
+  pformat_latex_forest(): string {
+    const pformat = this.pformat({ indent: 2, parens: ["[", " ]"], quotes: ["[", "]"] })
+      .replace(/([#$%&~_{}])/g, "\\$1");
+    return "\\begin{forest}\n  " + pformat + "\n\\end{forest}";
+  }
+  pformatLatexForest(): string { return this.pformat_latex_forest(); }
+  /** NLTK `Tree.pretty_print` — ASCII-art rendering requires the full
+   *  nltk.tree.prettyprinter port; gap for now. */
+  pretty_print(): string { throw new Error("pretty_print requires nltk.tree.prettyprinter (not yet ported)"); }
+  /** NLTK `Tree.draw` — tkinter-backed in Python; unsupported here. */
+  draw(): never { throw new Error("Tree.draw requires tkinter (unsupported)"); }
+
+  /** NLTK nltk.tree.transforms.chomsky_normal_form — mutates this tree. */
+  chomsky_normal_form(factor: "right" | "left" = "right", horzMarkov?: number, vertMarkov = 0, childChar = "|", parentChar = "^"): void {
+    const horz = horzMarkov ?? 999;
+    type Entry = { node: Tree<L> | L; parent: string[] };
+    const nodeList: Entry[] = [{ node: this, parent: [this.label()] }];
+    while (nodeList.length) {
+      const { node, parent: parentChain } = nodeList.pop()!;
+      let parent = parentChain;
+      if (!(node instanceof Tree)) continue;
+      let parentString = "";
+      const originalNode = node.label();
+      const firstChild = node.get(0);
+      if (vertMarkov !== 0 && node !== (this as Tree<L>) && firstChild instanceof Tree) {
+        parentString = `${parentChar}<${parent.join("-")}>`;
+        node.set_label(node.label() + parentString);
+        parent = [originalNode, ...parent.slice(0, vertMarkov - 1)];
+      }
+      for (const child of node) nodeList.push({ node: child, parent });
+      if (node.length > 2) {
+        const childNodes = [...node].map((c) => (c instanceof Tree ? c.label() : String(c)));
+        const nodeCopy = node.copy();
+        node.deleteSlice({});
+        let curNode = node;
+        const numChildren = nodeCopy.length;
+        for (let i = 1; i < numChildren - 1; i++) {
+          if (factor === "right") {
+            const newHead = `${originalNode}${childChar}<${childNodes.slice(i, Math.min(i + horz, numChildren)).join("-")}>${parentString}`;
+            const newNode = new Tree(this.runtime, newHead, []);
+            const popped = nodeCopy.pop(0)!;
+            curNode.setSlice({}, [popped, newNode]);
+            curNode = newNode;
+          } else {
+            const newHead = `${originalNode}${childChar}<${childNodes.slice(Math.max(numChildren - i - horz, 0), numChildren - i).join("-")}>${parentString}`;
+            const newNode = new Tree(this.runtime, newHead, []);
+            const popped = nodeCopy.pop()!;
+            curNode.setSlice({}, [newNode, popped]);
+            curNode = newNode;
+          }
+        }
+        curNode.setSlice({}, [...nodeCopy]);
+      }
+    }
+  }
+  chomskyNormalForm(factor: "right" | "left" = "right", horzMarkov?: number, vertMarkov = 0, childChar = "|", parentChar = "^"): void {
+    this.chomsky_normal_form(factor, horzMarkov, vertMarkov, childChar, parentChar);
+  }
+
+  /** NLTK nltk.tree.transforms.un_chomsky_normal_form — mutates this tree. */
+  un_chomsky_normal_form(expandUnary = true, childChar = "|", parentChar = "^", unaryChar = "+"): void {
+    const nodeList: Array<Tree<L> | L> = [this];
+    while (nodeList.length) {
+      const node = nodeList.pop()!;
+      if (!(node instanceof Tree)) continue;
+      const children = [...node];
+      if (children.some((c) => c instanceof Tree && c.label().includes(childChar))) {
+        const newChildren: Array<Tree<L> | L> = [];
+        const stack = [...children].reverse();
+        while (stack.length) {
+          const child = stack.pop()!;
+          if (child instanceof Tree && child.label().includes(childChar)) {
+            stack.push(...[...child].reverse());
+          } else {
+            newChildren.push(child);
+          }
+        }
+        node.setSlice({}, newChildren);
+      }
+      const parentIndex = node.label().indexOf(parentChar);
+      if (parentIndex !== -1) node.set_label(node.label().slice(0, parentIndex));
+      if (expandUnary) {
+        const unaryIndex = node.label().indexOf(unaryChar);
+        if (unaryIndex !== -1) {
+          const newNode = new Tree(this.runtime, node.label().slice(unaryIndex + 1), [...node]);
+          node.set_label(node.label().slice(0, unaryIndex));
+          node.setSlice({}, [newNode]);
+        }
+      }
+      for (const child of node) nodeList.push(child);
+    }
+  }
+  unChomskyNormalForm(expandUnary = true, childChar = "|", parentChar = "^", unaryChar = "+"): void {
+    this.un_chomsky_normal_form(expandUnary, childChar, parentChar, unaryChar);
+  }
+
+  /** NLTK nltk.tree.transforms.collapse_unary — mutates this tree. */
+  collapse_unary(collapsePOS = false, collapseRoot = false, joinChar = "+"): void {
+    let nodeList: Array<Tree<L> | L>;
+    const rootFirst = this.get(0);
+    if (!collapseRoot && this.length === 1) {
+      nodeList = [rootFirst];
+    } else {
+      nodeList = [this];
+    }
+    while (nodeList.length) {
+      const node = nodeList.pop()!;
+      if (!(node instanceof Tree)) continue;
+      const first = node.get(0);
+      const grandchild = first instanceof Tree ? first.get(0) : undefined;
+      if (node.length === 1 && first instanceof Tree && (collapsePOS || grandchild instanceof Tree)) {
+        node.set_label(node.label() + joinChar + first.label());
+        node.setSlice({}, [...first]);
+        nodeList.push(node);
+      } else {
+        for (const child of node) nodeList.push(child);
+      }
+    }
+  }
+  collapseUnary(collapsePOS = false, collapseRoot = false, joinChar = "+"): void {
+    this.collapse_unary(collapsePOS, collapseRoot, joinChar);
+  }
 }
 
 export type RustParseOptions = { maxTrees?: number; maxStates?: number; max_trees?: number; max_states?: number };

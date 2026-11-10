@@ -696,3 +696,43 @@ export {
   WordNetReader,
   wordnetReader,
 } from "./src/wordnet_objects";
+export {
+  TokenizerI,
+  StemmerI,
+  TaggerI,
+  FeaturesetTaggerI,
+  ParserI,
+  ClassifierI,
+  ProbabilisticMixIn,
+  ImmutableProbabilisticMixIn,
+} from "./src/api_interfaces";
+export { RegexpTokenizer, regexp_span_tokenize, string_span_tokenize } from "./src/tokenizers_regexp";
+export { sexpr_tokenize } from "./src/tokenize_sexpr";
+export { reduce_lengthening, remove_handles } from "./src/tokenizers_social";
+export { MacIntyreContractions, align_tokens } from "./src/tokenizers_treebank";
+export { prefix_replace, suffix_replace } from "./src/snowball/helpers";
+export { AveragedPerceptron } from "./src/perceptron_nltk";
+export { AbstractChartRule as ChartRuleI } from "./src/chart";
+export {
+  Index, usage, in_idle, pr, print_string, tokenwrap, cut_string, re_show,
+  filestring, breadth_first, edge_closure, edges2dot,
+  unweighted_minimum_spanning_digraph, unweighted_minimum_spanning_dict,
+  unweighted_minimum_spanning_tree, acyclic_breadth_first, acyclic_depth_first,
+  acyclic_branches_depth_first, acyclic_dic2tree, guess_encoding, unique_list,
+  invert_dict, clean_html, clean_url, flatten, pad_sequence,
+  everygrams, skipgrams, binary_search_file, set_proxy, elementtree_indent,
+  choose, raise_unorderable_types, deprecated, parallelize_preprocess, slice_bounds,
+  MAX_EVERYGRAMS_DEFAULT_LEN,
+} from "./src/util_nltk";
+export {
+  demo, open_datafile, call_megam, call_tadm, train_maxent_classifier_with_megam,
+  write_megam_file, write_tadm_file, parse_megam_weights, parse_tadm_weights,
+  load_maxent_params, save_maxent_params, allowlisted_pickle_load, punkt_pickle_load,
+  load_punkt_params, save_punkt_params, demo_grammar, demo_eval, gzip_open_unicode,
+} from "./src/platform_helpers";
+export {
+  AbstractLazySequence, LazyConcatenation, LazyEnumerate, LazyIteratorList,
+  LazyMap, LazySubsequence, LazyZip, Trie, OrderedDict,
+} from "./src/collections";
+export { FileSystemPathPointer, find, load } from "./src/data";
+export { regexpTokenize as regexp_tokenize } from "./src/tokenizers_regexp";

@@ -162,7 +162,163 @@
    "wordnetReader": "src/wordnet_objects.ts",
    "ArabicStemmer": "src/stemmers.ts",
    "FinnishStemmer": "src/stemmers.ts",
-   "HungarianStemmer": "src/stemmers.ts"
+   "HungarianStemmer": "src/stemmers.ts",
+   "Tree": "src/rust_parse.ts",
+   "ClassifierI": "src/api_interfaces.ts",
+   "entropy": "src/probability.ts",
+   "BinaryMaxentFeatureEncoding": "src/maxent_feature_encoding.ts",
+   "DictionaryProbDist": "src/probability.ts",
+   "OrderedDict": "src/collections.ts",
+   "TadmMaxentClassifier": "src/classify_wrappers.ts",
+   "TypedMaxentFeatureEncoding": "src/maxent_feature_encoding.ts",
+   "accuracy": "src/metrics.ts",
+   "log_likelihood": "src/probability.ts",
+   "ELEProbDist": "src/probability.ts",
+   "sum_logs": "src/probability.ts",
+   "QuadgramCollocationFinder": "src/collocations.ts",
+   "TrigramCollocationFinder": "src/collocations.ts",
+   "CorpusReader": "src/corpus.ts",
+   "map_tag": "src/tag_mapping.ts",
+   "PCFG": "src/parser_tagger_compat.ts",
+   "binary_distance": "src/distance_metrics.ts",
+   "custom_distance": "src/distance_metrics.ts",
+   "fractional_presence": "src/distance_metrics.ts",
+   "interval_distance": "src/distance_metrics.ts",
+   "masi_distance": "src/distance_metrics.ts",
+   "presence": "src/distance_metrics.ts",
+   "LazyConcatenation": "src/collections.ts",
+   "LazyMap": "src/collections.ts",
+   "f_measure": "src/distance_metrics.ts",
+   "recall": "src/distance_metrics.ts",
+   "pk": "src/distance_metrics.ts",
+   "AbstractChartRule": "src/chart.ts",
+   "LeftCornerChartParser": "src/parser_tagger_compat.ts",
+   "ParserI": "src/api_interfaces.ts",
+   "is_nonterminal": "src/grammar.ts",
+   "is_terminal": "src/grammar.ts",
+   "ConditionalProbDist": "src/probability.ts",
+   "ConditionalProbDistI": "src/probability.ts",
+   "CrossValidationProbDist": "src/probability.ts",
+   "DictionaryConditionalProbDist": "src/probability.ts",
+   "HeldoutProbDist": "src/probability.ts",
+   "ImmutableProbabilisticMixIn": "src/api_interfaces.ts",
+   "KneserNeyProbDist": "src/probability.ts",
+   "LaplaceProbDist": "src/probability.ts",
+   "MutableProbDist": "src/probability.ts",
+   "ProbDistI": "src/probability.ts",
+   "ProbabilisticMixIn": "src/api_interfaces.ts",
+   "SimpleGoodTuringProbDist": "src/probability.ts",
+   "UniformProbDist": "src/probability.ts",
+   "WittenBellProbDist": "src/probability.ts",
+   "add_logs": "src/probability.ts",
+   "pairwise": "src/util.ts",
+   "StemmerI": "src/api_interfaces.ts",
+   "AveragedPerceptron": "src/perceptron_nltk.ts",
+   "FileSystemPathPointer": "src/data.ts",
+   "TaggerI": "src/api_interfaces.ts",
+   "BigramTagger": "src/sequential_taggers.ts",
+   "ContextTagger": "src/sequential_taggers.ts",
+   "DefaultTagger": "src/sequential_taggers.ts",
+   "FeaturesetTaggerI": "src/api_interfaces.ts",
+   "NgramTagger": "src/sequential_taggers.ts",
+   "RegexpTagger": "src/sequential_taggers.ts",
+   "SequentialBackoffTagger": "src/sequential_taggers.ts",
+   "TrigramTagger": "src/sequential_taggers.ts",
+   "ContextIndex": "src/text.ts",
+   "Text": "src/text.ts",
+   "BlanklineTokenizer": "src/tokenizers.ts",
+   "LegalitySyllableTokenizer": "src/tokenize_legality.ts",
+   "LineTokenizer": "src/tokenizers.ts",
+   "PunktSentenceTokenizer": "src/punkt.ts",
+   "RegexpTokenizer": "src/tokenizers_regexp.ts",
+   "ReppTokenizer": "src/tokenize_wrappers.ts",
+   "SExprTokenizer": "src/tokenize_sexpr.ts",
+   "SpaceTokenizer": "src/tokenizers.ts",
+   "StanfordSegmenter": "src/tokenize_wrappers.ts",
+   "SyllableTokenizer": "src/tokenize_sonority.ts",
+   "TabTokenizer": "src/tokenizers.ts",
+   "TextTilingTokenizer": "src/tokenize_texttiling.ts",
+   "TreebankWordDetokenizer": "src/tokenizers.ts",
+   "WhitespaceTokenizer": "src/tokenizers.ts",
+   "blanklineTokenize": "src/tokenizers.ts",
+   "lineTokenize": "src/tokenizers.ts",
+   "load": "src/data.ts",
+   "regexp_tokenize": "src/tokenizers_regexp.ts",
+   "sexpr_tokenize": "src/tokenize_sexpr.ts",
+   "TokenizerI": "src/api_interfaces.ts",
+   "reduce_lengthening": "src/tokenizers.ts",
+   "remove_handles": "src/tokenizers.ts",
+   "Trie": "src/collections.ts",
+   "MacIntyreContractions": "src/tokenizers_treebank.ts",
+   "SmoothingFunction": "src/metrics.ts",
+   "brevityPenalty": "src/metrics.ts",
+   "closestRefLength": "src/metrics.ts",
+   "modifiedPrecision": "src/metrics.ts",
+   "nist_length_penalty": "src/translation_metrics_extra.ts",
+   "sentence_nist": "src/translation_metrics_extra.ts",
+   "AbstractLazySequence": "src/collections.ts",
+   "LazyEnumerate": "src/collections.ts",
+   "LazyIteratorList": "src/collections.ts",
+   "LazySubsequence": "src/collections.ts",
+   "LazyZip": "src/collections.ts",
+   "bigrams": "src/nltk_compat.ts",
+   "invert_dict": "src/util_nltk.ts",
+   "slice_bounds": "src/util_nltk.ts",
+   "trigrams": "src/nltk_compat.ts",
+   "acyclic_branches_depth_first": "src/util_nltk.ts",
+   "acyclic_breadth_first": "src/util_nltk.ts",
+   "acyclic_depth_first": "src/util_nltk.ts",
+   "acyclic_dic2tree": "src/util_nltk.ts",
+   "binary_search_file": "src/util_nltk.ts",
+   "breadth_first": "src/util_nltk.ts",
+   "choose": "src/util_nltk.ts",
+   "clean_html": "src/util_nltk.ts",
+   "clean_url": "src/util_nltk.ts",
+   "cut_string": "src/util_nltk.ts",
+   "deprecated": "src/util_nltk.ts",
+   "edge_closure": "src/util_nltk.ts",
+   "edges2dot": "src/util_nltk.ts",
+   "elementtree_indent": "src/util_nltk.ts",
+   "everygrams": "src/util_nltk.ts",
+   "filestring": "src/util_nltk.ts",
+   "flatten": "src/util_nltk.ts",
+   "guess_encoding": "src/util_nltk.ts",
+   "in_idle": "src/util_nltk.ts",
+   "pad_sequence": "src/util_nltk.ts",
+   "parallelize_preprocess": "src/util_nltk.ts",
+   "pr": "src/util_nltk.ts",
+   "print_string": "src/util_nltk.ts",
+   "raise_unorderable_types": "src/util_nltk.ts",
+   "re_show": "src/util_nltk.ts",
+   "set_proxy": "src/util_nltk.ts",
+   "skipgrams": "src/util_nltk.ts",
+   "tokenwrap": "src/util_nltk.ts",
+   "unique_list": "src/util_nltk.ts",
+   "unweighted_minimum_spanning_dict": "src/util_nltk.ts",
+   "unweighted_minimum_spanning_digraph": "src/util_nltk.ts",
+   "unweighted_minimum_spanning_tree": "src/util_nltk.ts",
+   "usage": "src/util_nltk.ts",
+   "Index": "src/util_nltk.ts",
+   "MAX_EVERYGRAMS_DEFAULT_LEN": "index.ts",
+   "demo": "src/platform_helpers.ts",
+   "demo_eval": "src/platform_helpers.ts",
+   "call_megam": "src/platform_helpers.ts",
+   "call_tadm": "src/platform_helpers.ts",
+   "gzip_open_unicode": "src/data.ts",
+   "load_maxent_params": "src/platform_helpers.ts",
+   "parse_megam_weights": "src/platform_helpers.ts",
+   "parse_tadm_weights": "src/platform_helpers.ts",
+   "save_maxent_params": "src/platform_helpers.ts",
+   "train_maxent_classifier_with_megam": "src/platform_helpers.ts",
+   "write_megam_file": "src/platform_helpers.ts",
+   "write_tadm_file": "src/platform_helpers.ts",
+   "demo_grammar": "src/platform_helpers.ts",
+   "find": "src/data.ts",
+   "open_datafile": "src/platform_helpers.ts",
+   "allowlisted_pickle_load": "src/platform_helpers.ts",
+   "load_punkt_params": "src/platform_helpers.ts",
+   "punkt_pickle_load": "src/platform_helpers.ts",
+   "save_punkt_params": "src/platform_helpers.ts"
   }
  },
  "modules": [
@@ -826,6 +982,28 @@
    "anchor": "Values pinned from Python NLTK 3.10.3 (see test/snowball_arfihu_oracle.py)",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: 45 Arabic + 40 Finnish + 43 Hungarian stems including diacritic normalization, string-vs-tuple suffix iteration quirks (noun step2b '\u0627\u062a'), Hungarian digraph R1, Finnish vowel-harmony step checks, ignore_stopwords post-normalization check for Arabic."
+  },
+  {
+   "id": "tree-differential",
+   "kind": "differential",
+   "files": [
+    "test/tree.test.ts",
+    "test/tree_oracle.py"
+   ],
+   "anchor": "tree oracle ok",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: chomsky_normal_form (left/right factor, horz/vertMarkov), un_chomsky_normal_form, collapse_unary (POS/root flags), pformat_latex_qtree/forest, list protocol index/count/remove/sort, fromlist repr/None quirk, convert/freeze."
+  },
+  {
+   "id": "util-differential",
+   "kind": "differential",
+   "oracleVersion": "3.10.3",
+   "files": [
+    "test/util_nltk.test.ts",
+    "test/util_nltk_oracle.py"
+   ],
+   "anchor": "util-differential",
+   "scope": "nltk.util ngram iterators, graph traversals, and helpers pinned against NLTK 3.10.3"
   }
  ],
  "signatureBindings": [
@@ -2919,7 +3097,8 @@
     ]
    },
    "evidence": [
-    "next-compat-ngrams"
+    "next-compat-ngrams",
+    "util-differential"
    ],
    "fixtures": {
     "status": "pinned-differential",
@@ -7028,6 +7207,7216 @@
     ]
    },
    "notes": "Re-export of nltk.util.ngrams through the nltk.translate.nist_score module namespace; same implementation object."
+  },
+  {
+   "target": "nltk.tree.tree.Tree",
+   "exports": [
+    "Tree"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/rust_parse.ts",
+     "anchor": "export class Tree"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "append",
+     "chomsky_normal_form",
+     "clear",
+     "collapse_unary",
+     "convert",
+     "copy",
+     "count",
+     "draw",
+     "extend",
+     "flatten",
+     "freeze",
+     "fromlist",
+     "fromstring",
+     "height",
+     "index",
+     "insert",
+     "label",
+     "leaf_treeposition",
+     "leaves",
+     "pformat",
+     "pformat_latex_forest",
+     "pformat_latex_qtree",
+     "pop",
+     "pos",
+     "pprint",
+     "pretty_print",
+     "productions",
+     "remove",
+     "reverse",
+     "set_label",
+     "sort",
+     "subtrees",
+     "treeposition_spanning_leaves",
+     "treepositions",
+     "un_chomsky_normal_form"
+    ],
+    "gaps": [
+     "runtime-first static signatures (fromstring/fromlist/convert take ParsingRuntime); leaf values are opaque slots so non-string leaves cannot pformat; pretty_print ASCII-art and draw (tkinter) not ported; sort key order for mixed Tree/leaf children is a documented adaptation (Python raises TypeError).",
+     "chomsky_normal_form uses object identity rather than Python structural == for the root check."
+    ]
+   },
+   "evidence": [
+    "tree-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "pretty_print/draw excluded; non-string-leaf formatting excluded."
+    ]
+   },
+   "notes": "NLTK Tree surface layered on the runtime-backed Tree; CNF transforms ported from nltk.tree.transforms."
+  },
+  {
+   "target": "nltk.chunk.regexp.Tree",
+   "exports": [
+    "Tree"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/rust_parse.ts",
+     "anchor": "export class Tree"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "append",
+     "chomsky_normal_form",
+     "clear",
+     "collapse_unary",
+     "convert",
+     "copy",
+     "count",
+     "draw",
+     "extend",
+     "flatten",
+     "freeze",
+     "fromlist",
+     "fromstring",
+     "height",
+     "index",
+     "insert",
+     "label",
+     "leaf_treeposition",
+     "leaves",
+     "pformat",
+     "pformat_latex_forest",
+     "pformat_latex_qtree",
+     "pop",
+     "pos",
+     "pprint",
+     "pretty_print",
+     "productions",
+     "remove",
+     "reverse",
+     "set_label",
+     "sort",
+     "subtrees",
+     "treeposition_spanning_leaves",
+     "treepositions",
+     "un_chomsky_normal_form"
+    ],
+    "gaps": [
+     "NLTK re-exports Tree from nltk.tree.tree; mapped to the shared implementation.",
+     "chomsky_normal_form uses object identity rather than Python structural == for the root check."
+    ]
+   },
+   "evidence": [
+    "tree-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "pretty_print/draw excluded; non-string-leaf formatting excluded."
+    ]
+   },
+   "notes": "Re-export of nltk.tree.tree.Tree through this module namespace."
+  },
+  {
+   "target": "nltk.parse.chart.Tree",
+   "exports": [
+    "Tree"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/rust_parse.ts",
+     "anchor": "export class Tree"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "append",
+     "chomsky_normal_form",
+     "clear",
+     "collapse_unary",
+     "convert",
+     "copy",
+     "count",
+     "draw",
+     "extend",
+     "flatten",
+     "freeze",
+     "fromlist",
+     "fromstring",
+     "height",
+     "index",
+     "insert",
+     "label",
+     "leaf_treeposition",
+     "leaves",
+     "pformat",
+     "pformat_latex_forest",
+     "pformat_latex_qtree",
+     "pop",
+     "pos",
+     "pprint",
+     "pretty_print",
+     "productions",
+     "remove",
+     "reverse",
+     "set_label",
+     "sort",
+     "subtrees",
+     "treeposition_spanning_leaves",
+     "treepositions",
+     "un_chomsky_normal_form"
+    ],
+    "gaps": [
+     "NLTK re-exports Tree from nltk.tree.tree; mapped to the shared implementation.",
+     "chomsky_normal_form uses object identity rather than Python structural == for the root check."
+    ]
+   },
+   "evidence": [
+    "tree-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "pretty_print/draw excluded; non-string-leaf formatting excluded."
+    ]
+   },
+   "notes": "Re-export of nltk.tree.tree.Tree through this module namespace."
+  },
+  {
+   "target": "nltk.chunk.regexp.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.chunk.regexp.demo_eval",
+   "exports": [
+    "demo_eval"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo_eval"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo_eval is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.decisiontree.ClassifierI",
+   "exports": [
+    "ClassifierI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class ClassifierI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classify",
+     "classify_many",
+     "labels",
+     "prob_classify",
+     "prob_classify_many"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.classify.decisiontree.ClassifierI to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.decisiontree.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.decisiontree.entropy",
+   "exports": [
+    "entropy"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export function entropy"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.classify.decisiontree.entropy to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.maxent.BinaryMaxentFeatureEncoding",
+   "exports": [
+    "BinaryMaxentFeatureEncoding"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_feature_encoding.ts",
+     "anchor": "export class BinaryMaxentFeatureEncoding"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "describe",
+     "encode",
+     "labels",
+     "length",
+     "train"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.classify.maxent.BinaryMaxentFeatureEncoding to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.maxent.ClassifierI",
+   "exports": [
+    "ClassifierI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class ClassifierI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classify",
+     "classify_many",
+     "labels",
+     "prob_classify",
+     "prob_classify_many"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.classify.maxent.ClassifierI to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.maxent.DictionaryProbDist",
+   "exports": [
+    "DictionaryProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class DictionaryProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.classify.maxent.DictionaryProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.maxent.OrderedDict",
+   "exports": [
+    "OrderedDict"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class OrderedDict"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "clear",
+     "copy",
+     "fromkeys",
+     "get",
+     "items",
+     "keys",
+     "pop",
+     "popitem",
+     "setdefault",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.classify.maxent.OrderedDict to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.maxent.TadmMaxentClassifier",
+   "exports": [
+    "TadmMaxentClassifier"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/classify_wrappers.ts",
+     "anchor": "export class TadmMaxentClassifier"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classify",
+     "classify_many",
+     "explain",
+     "labels",
+     "most_informative_features",
+     "prob_classify",
+     "prob_classify_many",
+     "set_weights",
+     "show_most_informative_features",
+     "train",
+     "weights"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.classify.maxent.TadmMaxentClassifier to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.maxent.TypedMaxentFeatureEncoding",
+   "exports": [
+    "TypedMaxentFeatureEncoding"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_feature_encoding.ts",
+     "anchor": "export class TypedMaxentFeatureEncoding"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "describe",
+     "encode",
+     "labels",
+     "length",
+     "train"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.classify.maxent.TypedMaxentFeatureEncoding to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.maxent.accuracy",
+   "exports": [
+    "accuracy"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/confusion_metrics.ts",
+     "anchor": "export function accuracy"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.classify.maxent.accuracy to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.maxent.call_megam",
+   "exports": [
+    "call_megam"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function call_megam"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK call_megam is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.maxent.call_tadm",
+   "exports": [
+    "call_tadm"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function call_tadm"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK call_tadm is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.maxent.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.maxent.gzip_open_unicode",
+   "exports": [
+    "gzip_open_unicode"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/data.ts",
+     "anchor": "gzip_open_unicode"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK gzip_open_unicode is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.maxent.load_maxent_params",
+   "exports": [
+    "load_maxent_params"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function load_maxent_params"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK load_maxent_params is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.maxent.log_likelihood",
+   "exports": [
+    "log_likelihood"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export const log_likelihood"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.classify.maxent.log_likelihood to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.maxent.parse_megam_weights",
+   "exports": [
+    "parse_megam_weights"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function parse_megam_weights"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK parse_megam_weights is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.maxent.parse_tadm_weights",
+   "exports": [
+    "parse_tadm_weights"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function parse_tadm_weights"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK parse_tadm_weights is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.maxent.save_maxent_params",
+   "exports": [
+    "save_maxent_params"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function save_maxent_params"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK save_maxent_params is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.maxent.train_maxent_classifier_with_megam",
+   "exports": [
+    "train_maxent_classifier_with_megam"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function train_maxent_classifier_with_megam"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK train_maxent_classifier_with_megam is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.maxent.write_megam_file",
+   "exports": [
+    "write_megam_file"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function write_megam_file"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK write_megam_file is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.maxent.write_tadm_file",
+   "exports": [
+    "write_tadm_file"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function write_tadm_file"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK write_tadm_file is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.naivebayes.ClassifierI",
+   "exports": [
+    "ClassifierI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class ClassifierI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classify",
+     "classify_many",
+     "labels",
+     "prob_classify",
+     "prob_classify_many"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.classify.naivebayes.ClassifierI to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.naivebayes.DictionaryProbDist",
+   "exports": [
+    "DictionaryProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class DictionaryProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.classify.naivebayes.DictionaryProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.naivebayes.ELEProbDist",
+   "exports": [
+    "ELEProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class ELEProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "freqdist",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.classify.naivebayes.ELEProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.naivebayes.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.classify.naivebayes.sum_logs",
+   "exports": [
+    "sum_logs"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export const sum_logs"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.classify.naivebayes.sum_logs to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.positivenaivebayes.DictionaryProbDist",
+   "exports": [
+    "DictionaryProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class DictionaryProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.classify.positivenaivebayes.DictionaryProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.positivenaivebayes.ELEProbDist",
+   "exports": [
+    "ELEProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class ELEProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "freqdist",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "classifier-wrapper",
+    "maxent-features",
+    "nb-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.classify.positivenaivebayes.ELEProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.positivenaivebayes.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.collocations.QuadgramCollocationFinder",
+   "exports": [
+    "QuadgramCollocationFinder"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collocations.ts",
+     "anchor": "export class QuadgramCollocationFinder"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "above_score",
+     "apply_freq_filter",
+     "apply_ngram_filter",
+     "apply_word_filter",
+     "from_documents",
+     "from_words",
+     "nbest",
+     "score_ngram",
+     "score_ngrams"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "collocations-differential",
+    "collocation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.collocations.QuadgramCollocationFinder to the existing implementation."
+  },
+  {
+   "target": "nltk.collocations.TrigramCollocationFinder",
+   "exports": [
+    "TrigramCollocationFinder"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collocations.ts",
+     "anchor": "export class TrigramCollocationFinder"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "above_score",
+     "apply_freq_filter",
+     "apply_ngram_filter",
+     "apply_word_filter",
+     "bigram_finder",
+     "from_documents",
+     "from_words",
+     "nbest",
+     "score_ngram",
+     "score_ngrams"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "collocations-differential",
+    "collocation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.collocations.TrigramCollocationFinder to the existing implementation."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.CorpusReader",
+   "exports": [
+    "CorpusReader"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/corpus.ts",
+     "anchor": "export class CorpusReader"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "abspath",
+     "abspaths",
+     "citation",
+     "encoding",
+     "ensure_loaded",
+     "fileids",
+     "license",
+     "open",
+     "raw",
+     "readme"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "wordnet-objects-differential",
+    "wordnet-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.corpus.reader.wordnet.CorpusReader to the existing implementation."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.deprecated",
+   "exports": [
+    "deprecated"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function deprecated"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK deprecated is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.map_tag",
+   "exports": [
+    "map_tag"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_aliases.ts",
+     "anchor": "export { mapTag as map_tag }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "wordnet-objects-differential",
+    "wordnet-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.corpus.reader.wordnet.map_tag to the existing implementation."
+  },
+  {
+   "target": "nltk.grammar.PCFG",
+   "exports": [
+    "PCFG"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/rust_parse.ts",
+     "anchor": "export { RustPCFG as PCFG }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "binarize",
+     "check_coverage",
+     "chomsky_normal_form",
+     "eliminate_start",
+     "fromstring",
+     "is_binarised",
+     "is_chomsky_normal_form",
+     "is_flexible_chomsky_normal_form",
+     "is_leftcorner",
+     "is_lexical",
+     "is_nonempty",
+     "is_nonlexical",
+     "leftcorner_parents",
+     "leftcorners",
+     "max_len",
+     "min_len",
+     "productions",
+     "remove_mixed_rules",
+     "remove_unitary_rules",
+     "start"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "grammar-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.grammar.PCFG to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.distance.binary_distance",
+   "exports": [
+    "binary_distance"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_aliases.ts",
+     "anchor": "export { binaryDistance as binary_distance }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "rust-distance",
+    "distance-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.metrics.distance.binary_distance to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.distance.custom_distance",
+   "exports": [
+    "custom_distance"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_aliases.ts",
+     "anchor": "export { customDistance as custom_distance }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "rust-distance",
+    "distance-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.metrics.distance.custom_distance to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.distance.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.metrics.distance.fractional_presence",
+   "exports": [
+    "fractional_presence"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_aliases.ts",
+     "anchor": "export { fractionalPresence as fractional_presence }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "rust-distance",
+    "distance-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.metrics.distance.fractional_presence to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.distance.interval_distance",
+   "exports": [
+    "interval_distance"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_aliases.ts",
+     "anchor": "export { intervalDistance as interval_distance }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "rust-distance",
+    "distance-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.metrics.distance.interval_distance to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.distance.masi_distance",
+   "exports": [
+    "masi_distance"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_aliases.ts",
+     "anchor": "export { masiDistance as masi_distance }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "rust-distance",
+    "distance-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.metrics.distance.masi_distance to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.distance.presence",
+   "exports": [
+    "presence"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/distance_metrics.ts",
+     "anchor": "export function presence"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "rust-distance",
+    "distance-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.metrics.distance.presence to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.scores.LazyConcatenation",
+   "exports": [
+    "LazyConcatenation"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class LazyConcatenation"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "count",
+     "index",
+     "iterate_from"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "metrics-unit",
+    "next-evaluation"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.metrics.scores.LazyConcatenation to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.scores.LazyMap",
+   "exports": [
+    "LazyMap"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class LazyMap"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "count",
+     "index",
+     "iterate_from"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "metrics-unit",
+    "next-evaluation"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.metrics.scores.LazyMap to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.scores.accuracy",
+   "exports": [
+    "accuracy"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/confusion_metrics.ts",
+     "anchor": "export function accuracy"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "metrics-unit",
+    "next-evaluation"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.metrics.scores.accuracy to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.scores.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.metrics.scores.f_measure",
+   "exports": [
+    "f_measure"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_aliases.ts",
+     "anchor": "export { fMeasure as f_measure }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "metrics-unit",
+    "next-evaluation"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.metrics.scores.f_measure to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.scores.log_likelihood",
+   "exports": [
+    "log_likelihood"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export const log_likelihood"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "metrics-unit",
+    "next-evaluation"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.metrics.scores.log_likelihood to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.scores.recall",
+   "exports": [
+    "recall"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/distance_metrics.ts",
+     "anchor": "export function recall"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "metrics-unit",
+    "next-evaluation"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.metrics.scores.recall to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.segmentation.pk",
+   "exports": [
+    "pk"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/distance_metrics.ts",
+     "anchor": "export function pk"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "metrics-unit"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Unit-tested via the implementing module suite; no dedicated differential pin for this re-exported name."
+    ]
+   },
+   "notes": "Maps discovered function nltk.metrics.segmentation.pk to the existing implementation."
+  },
+  {
+   "target": "nltk.parse.chart.AbstractChartRule",
+   "exports": [
+    "AbstractChartRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export abstract class AbstractChartRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "chart-differential",
+    "parser-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.parse.chart.AbstractChartRule to the existing implementation."
+  },
+  {
+   "target": "nltk.parse.chart.LeftCornerChartParser",
+   "exports": [
+    "LeftCornerChartParser"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/parser_tagger_compat.ts",
+     "anchor": "export class LeftCornerChartParser"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "chart-differential",
+    "parser-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.parse.chart.LeftCornerChartParser to the existing implementation."
+  },
+  {
+   "target": "nltk.parse.chart.OrderedDict",
+   "exports": [
+    "OrderedDict"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class OrderedDict"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "clear",
+     "copy",
+     "fromkeys",
+     "get",
+     "items",
+     "keys",
+     "pop",
+     "popitem",
+     "setdefault",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "chart-differential",
+    "parser-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.parse.chart.OrderedDict to the existing implementation."
+  },
+  {
+   "target": "nltk.parse.chart.PCFG",
+   "exports": [
+    "PCFG"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/rust_parse.ts",
+     "anchor": "export { RustPCFG as PCFG }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "binarize",
+     "check_coverage",
+     "chomsky_normal_form",
+     "eliminate_start",
+     "fromstring",
+     "is_binarised",
+     "is_chomsky_normal_form",
+     "is_flexible_chomsky_normal_form",
+     "is_leftcorner",
+     "is_lexical",
+     "is_nonempty",
+     "is_nonlexical",
+     "leftcorner_parents",
+     "leftcorners",
+     "max_len",
+     "min_len",
+     "productions",
+     "remove_mixed_rules",
+     "remove_unitary_rules",
+     "start"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "chart-differential",
+    "parser-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.parse.chart.PCFG to the existing implementation."
+  },
+  {
+   "target": "nltk.parse.chart.ParserI",
+   "exports": [
+    "ParserI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class ParserI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "chart-differential",
+    "parser-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.parse.chart.ParserI to the existing implementation."
+  },
+  {
+   "target": "nltk.parse.chart.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.parse.chart.demo_grammar",
+   "exports": [
+    "demo_grammar"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo_grammar"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo_grammar is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.parse.chart.is_nonterminal",
+   "exports": [
+    "is_nonterminal"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/grammar.ts",
+     "anchor": "export function is_nonterminal"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "chart-differential",
+    "parser-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.parse.chart.is_nonterminal to the existing implementation."
+  },
+  {
+   "target": "nltk.parse.chart.is_terminal",
+   "exports": [
+    "is_terminal"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/grammar.ts",
+     "anchor": "export function is_terminal"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "chart-differential",
+    "parser-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.parse.chart.is_terminal to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.ConditionalProbDist",
+   "exports": [
+    "ConditionalProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class ConditionalProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "clear",
+     "conditions",
+     "copy",
+     "fromkeys",
+     "get",
+     "items",
+     "keys",
+     "pop",
+     "popitem",
+     "setdefault",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.ConditionalProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.ConditionalProbDistI",
+   "exports": [
+    "ConditionalProbDistI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export abstract class ConditionalProbDistI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "clear",
+     "conditions",
+     "copy",
+     "fromkeys",
+     "get",
+     "items",
+     "keys",
+     "pop",
+     "popitem",
+     "setdefault",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.ConditionalProbDistI to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.CrossValidationProbDist",
+   "exports": [
+    "CrossValidationProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability_missing.ts",
+     "anchor": "export abstract class CrossValidationProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "freqdists",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.CrossValidationProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.DictionaryConditionalProbDist",
+   "exports": [
+    "DictionaryConditionalProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class DictionaryConditionalProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "clear",
+     "conditions",
+     "copy",
+     "fromkeys",
+     "get",
+     "items",
+     "keys",
+     "pop",
+     "popitem",
+     "setdefault",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.DictionaryConditionalProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.DictionaryProbDist",
+   "exports": [
+    "DictionaryProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class DictionaryProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.DictionaryProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.ELEProbDist",
+   "exports": [
+    "ELEProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class ELEProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "freqdist",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.ELEProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.HeldoutProbDist",
+   "exports": [
+    "HeldoutProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability_missing.ts",
+     "anchor": "export class HeldoutProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "base_fdist",
+     "discount",
+     "generate",
+     "heldout_fdist",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.HeldoutProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.ImmutableProbabilisticMixIn",
+   "exports": [
+    "ImmutableProbabilisticMixIn"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export class ImmutableProbabilisticMixIn"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "logprob",
+     "prob",
+     "set_logprob",
+     "set_prob"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.ImmutableProbabilisticMixIn to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.KneserNeyProbDist",
+   "exports": [
+    "KneserNeyProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability_missing.ts",
+     "anchor": "export class KneserNeyProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples",
+     "set_discount"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.KneserNeyProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.LaplaceProbDist",
+   "exports": [
+    "LaplaceProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class LaplaceProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "freqdist",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.LaplaceProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.MutableProbDist",
+   "exports": [
+    "MutableProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class MutableProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples",
+     "update"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.MutableProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.ProbDistI",
+   "exports": [
+    "ProbDistI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export abstract class ProbDistI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.ProbDistI to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.ProbabilisticMixIn",
+   "exports": [
+    "ProbabilisticMixIn"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export class ProbabilisticMixIn"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "logprob",
+     "prob",
+     "set_logprob",
+     "set_prob"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.ProbabilisticMixIn to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.SimpleGoodTuringProbDist",
+   "exports": [
+    "SimpleGoodTuringProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class SimpleGoodTuringProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "check",
+     "discount",
+     "find_best_fit",
+     "freqdist",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples",
+     "smoothedNr"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.SimpleGoodTuringProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.UniformProbDist",
+   "exports": [
+    "UniformProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class UniformProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.UniformProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.WittenBellProbDist",
+   "exports": [
+    "WittenBellProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class WittenBellProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "freqdist",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.probability.WittenBellProbDist to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.add_logs",
+   "exports": [
+    "add_logs"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export const add_logs"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.probability.add_logs to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.entropy",
+   "exports": [
+    "entropy"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export function entropy"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.probability.entropy to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.log_likelihood",
+   "exports": [
+    "log_likelihood"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export const log_likelihood"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.probability.log_likelihood to the existing implementation."
+  },
+  {
+   "target": "nltk.probability.sum_logs",
+   "exports": [
+    "sum_logs"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export const sum_logs"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.probability.sum_logs to the existing implementation."
+  },
+  {
+   "target": "nltk.sentiment.vader.pairwise",
+   "exports": [
+    "pairwise"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util.ts",
+     "anchor": "export function pairwise"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "vader-differential",
+    "sentiment-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.sentiment.vader.pairwise to the existing implementation."
+  },
+  {
+   "target": "nltk.stem.lancaster.StemmerI",
+   "exports": [
+    "StemmerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class StemmerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "lancaster-differential",
+    "stemmer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.stem.lancaster.StemmerI to the existing implementation."
+  },
+  {
+   "target": "nltk.stem.porter.StemmerI",
+   "exports": [
+    "StemmerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class StemmerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "porter-unit",
+    "stemmer-unit"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Unit-tested via the implementing module suite; no dedicated differential pin for this re-exported name."
+    ]
+   },
+   "notes": "Maps discovered class nltk.stem.porter.StemmerI to the existing implementation."
+  },
+  {
+   "target": "nltk.stem.porter.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.stem.regexp.StemmerI",
+   "exports": [
+    "StemmerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class StemmerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "regexp-differential",
+    "stemmer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.stem.regexp.StemmerI to the existing implementation."
+  },
+  {
+   "target": "nltk.stem.snowball.StemmerI",
+   "exports": [
+    "StemmerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class StemmerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "snowball-differential",
+    "snowball-unit",
+    "snowball-arfihu-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.stem.snowball.StemmerI to the existing implementation."
+  },
+  {
+   "target": "nltk.stem.snowball.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.tag.perceptron.AveragedPerceptron",
+   "exports": [
+    "AveragedPerceptron"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/perceptron_nltk.ts",
+     "anchor": "export class AveragedPerceptron"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "average_weights",
+     "decode_json_obj",
+     "encode_json_obj",
+     "load",
+     "predict",
+     "save",
+     "update"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "perceptron-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tag.perceptron.AveragedPerceptron to the existing implementation."
+  },
+  {
+   "target": "nltk.tag.perceptron.FileSystemPathPointer",
+   "exports": [
+    "FileSystemPathPointer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/data.ts",
+     "anchor": "export class FileSystemPathPointer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "capitalize",
+     "casefold",
+     "center",
+     "count",
+     "encode",
+     "endswith",
+     "expandtabs",
+     "file_size",
+     "find",
+     "format",
+     "format_map",
+     "index",
+     "isalnum",
+     "isalpha",
+     "isascii",
+     "isdecimal",
+     "isdigit",
+     "isidentifier",
+     "islower",
+     "isnumeric",
+     "isprintable",
+     "isspace",
+     "istitle",
+     "isupper",
+     "join",
+     "ljust",
+     "lower",
+     "lstrip",
+     "maketrans",
+     "open",
+     "partition",
+     "removeprefix",
+     "removesuffix",
+     "replace",
+     "rfind",
+     "rindex",
+     "rjust",
+     "rpartition",
+     "rsplit",
+     "rstrip",
+     "split",
+     "splitlines",
+     "startswith",
+     "strip",
+     "swapcase",
+     "title",
+     "translate",
+     "upper",
+     "zfill"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "perceptron-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tag.perceptron.FileSystemPathPointer to the existing implementation."
+  },
+  {
+   "target": "nltk.tag.perceptron.TaggerI",
+   "exports": [
+    "TaggerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TaggerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "perceptron-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tag.perceptron.TaggerI to the existing implementation."
+  },
+  {
+   "target": "nltk.tag.perceptron.find",
+   "exports": [
+    "find"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/data.ts",
+     "anchor": "export function find"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK find is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.tag.perceptron.open_datafile",
+   "exports": [
+    "open_datafile"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function open_datafile"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK open_datafile is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.tag.sequential.BigramTagger",
+   "exports": [
+    "BigramTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class BigramTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "choose_tag",
+     "confusion",
+     "context",
+     "decode_json_obj",
+     "encode_json_obj",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "size",
+     "tag",
+     "tag_one",
+     "tag_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential",
+    "sequence-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tag.sequential.BigramTagger to the existing implementation."
+  },
+  {
+   "target": "nltk.tag.sequential.ContextTagger",
+   "exports": [
+    "ContextTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export abstract class ContextTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "choose_tag",
+     "confusion",
+     "context",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "size",
+     "tag",
+     "tag_one",
+     "tag_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential",
+    "sequence-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tag.sequential.ContextTagger to the existing implementation."
+  },
+  {
+   "target": "nltk.tag.sequential.DefaultTagger",
+   "exports": [
+    "DefaultTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class DefaultTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "choose_tag",
+     "confusion",
+     "decode_json_obj",
+     "encode_json_obj",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_one",
+     "tag_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential",
+    "sequence-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tag.sequential.DefaultTagger to the existing implementation."
+  },
+  {
+   "target": "nltk.tag.sequential.FeaturesetTaggerI",
+   "exports": [
+    "FeaturesetTaggerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class FeaturesetTaggerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential",
+    "sequence-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tag.sequential.FeaturesetTaggerI to the existing implementation."
+  },
+  {
+   "target": "nltk.tag.sequential.NgramTagger",
+   "exports": [
+    "NgramTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class NgramTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "choose_tag",
+     "confusion",
+     "context",
+     "decode_json_obj",
+     "encode_json_obj",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "size",
+     "tag",
+     "tag_one",
+     "tag_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential",
+    "sequence-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tag.sequential.NgramTagger to the existing implementation."
+  },
+  {
+   "target": "nltk.tag.sequential.RegexpTagger",
+   "exports": [
+    "RegexpTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class RegexpTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "choose_tag",
+     "confusion",
+     "decode_json_obj",
+     "encode_json_obj",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_one",
+     "tag_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential",
+    "sequence-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tag.sequential.RegexpTagger to the existing implementation."
+  },
+  {
+   "target": "nltk.tag.sequential.SequentialBackoffTagger",
+   "exports": [
+    "SequentialBackoffTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export abstract class SequentialBackoffTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "choose_tag",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_one",
+     "tag_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential",
+    "sequence-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tag.sequential.SequentialBackoffTagger to the existing implementation."
+  },
+  {
+   "target": "nltk.tag.sequential.TaggerI",
+   "exports": [
+    "TaggerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TaggerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential",
+    "sequence-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tag.sequential.TaggerI to the existing implementation."
+  },
+  {
+   "target": "nltk.tag.sequential.TrigramTagger",
+   "exports": [
+    "TrigramTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class TrigramTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "choose_tag",
+     "confusion",
+     "context",
+     "decode_json_obj",
+     "encode_json_obj",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "size",
+     "tag",
+     "tag_one",
+     "tag_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential",
+    "sequence-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tag.sequential.TrigramTagger to the existing implementation."
+  },
+  {
+   "target": "nltk.text.ContextIndex",
+   "exports": [
+    "ContextIndex"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/text.ts",
+     "anchor": "export class ContextIndex"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "common_contexts",
+     "similar_words",
+     "tokens",
+     "word_similarity_dict"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "concordance-differential",
+    "text-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.text.ContextIndex to the existing implementation."
+  },
+  {
+   "target": "nltk.text.Text",
+   "exports": [
+    "Text"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/text.ts",
+     "anchor": "export class Text"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "collocation_list",
+     "collocations",
+     "common_contexts",
+     "concordance",
+     "concordance_list",
+     "count",
+     "dispersion_plot",
+     "findall",
+     "generate",
+     "index",
+     "plot",
+     "readability",
+     "similar",
+     "vocab"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "concordance-differential",
+    "text-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.text.Text to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.BlanklineTokenizer",
+   "exports": [
+    "BlanklineTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_basic.ts",
+     "anchor": "export class BlanklineTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.BlanklineTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.LegalitySyllableTokenizer",
+   "exports": [
+    "LegalitySyllableTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenize_legality.ts",
+     "anchor": "export class LegalitySyllableTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "find_legal_onsets",
+     "onset",
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.LegalitySyllableTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.LineTokenizer",
+   "exports": [
+    "LineTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_basic.ts",
+     "anchor": "export class LineTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.LineTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.PunktSentenceTokenizer",
+   "exports": [
+    "PunktSentenceTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/punkt.ts",
+     "anchor": "export class PunktSentenceTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "debug_decisions",
+     "dump",
+     "sentences_from_text",
+     "sentences_from_text_legacy",
+     "sentences_from_tokens",
+     "span_tokenize",
+     "span_tokenize_sents",
+     "text_contains_sentbreak",
+     "tokenize",
+     "tokenize_sents",
+     "train"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.PunktSentenceTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.RegexpTokenizer",
+   "exports": [
+    "RegexpTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_regexp.ts",
+     "anchor": "export class RegexpTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.RegexpTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.ReppTokenizer",
+   "exports": [
+    "ReppTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenize_wrappers.ts",
+     "anchor": "export class ReppTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "find_repptokenizer",
+     "generate_repp_command",
+     "parse_repp_outputs",
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.ReppTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.SExprTokenizer",
+   "exports": [
+    "SExprTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenize_sexpr.ts",
+     "anchor": "export class SExprTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.SExprTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.SpaceTokenizer",
+   "exports": [
+    "SpaceTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_basic.ts",
+     "anchor": "export class SpaceTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.SpaceTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.StanfordSegmenter",
+   "exports": [
+    "StanfordSegmenter"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenize_wrappers.ts",
+     "anchor": "export class StanfordSegmenter"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "default_config",
+     "segment",
+     "segment_file",
+     "segment_sents",
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.StanfordSegmenter to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.SyllableTokenizer",
+   "exports": [
+    "SyllableTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenize_sonority.ts",
+     "anchor": "export class SyllableTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "assign_values",
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents",
+     "validate_syllables"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.SyllableTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.TabTokenizer",
+   "exports": [
+    "TabTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_basic.ts",
+     "anchor": "export class TabTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.TabTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.TextTilingTokenizer",
+   "exports": [
+    "TextTilingTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenize_texttiling.ts",
+     "anchor": "export class TextTilingTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.TextTilingTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.TreebankWordDetokenizer",
+   "exports": [
+    "TreebankWordDetokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_treebank.ts",
+     "anchor": "export class TreebankWordDetokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "detokenize",
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.TreebankWordDetokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.WhitespaceTokenizer",
+   "exports": [
+    "WhitespaceTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_basic.ts",
+     "anchor": "export class WhitespaceTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.WhitespaceTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.blankline_tokenize",
+   "exports": [
+    "blanklineTokenize"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_basic.ts",
+     "anchor": "export function blanklineTokenize"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.tokenize.blankline_tokenize to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.line_tokenize",
+   "exports": [
+    "lineTokenize"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_basic.ts",
+     "anchor": "export function lineTokenize"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.tokenize.line_tokenize to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.load",
+   "exports": [
+    "load"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/data.ts",
+     "anchor": "export function load"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.tokenize.load to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.regexp_tokenize",
+   "exports": [
+    "regexp_tokenize"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_regexp.ts",
+     "anchor": "export { regexpTokenize as regexp_tokenize }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.tokenize.regexp_tokenize to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.sexpr_tokenize",
+   "exports": [
+    "sexpr_tokenize"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenize_sexpr.ts",
+     "anchor": "export { sexprTokenize as sexpr_tokenize }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.tokenize.sexpr_tokenize to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.casual.TokenizerI",
+   "exports": [
+    "TokenizerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TokenizerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.casual.TokenizerI to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.casual.reduce_lengthening",
+   "exports": [
+    "reduce_lengthening"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_social.ts",
+     "anchor": "export function reduce_lengthening"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.tokenize.casual.reduce_lengthening to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.casual.remove_handles",
+   "exports": [
+    "remove_handles"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_social.ts",
+     "anchor": "export function remove_handles"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.tokenize.casual.remove_handles to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.mwe.TokenizerI",
+   "exports": [
+    "TokenizerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TokenizerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.mwe.TokenizerI to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.mwe.Trie",
+   "exports": [
+    "Trie"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class Trie"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "clear",
+     "copy",
+     "fromkeys",
+     "get",
+     "insert",
+     "items",
+     "keys",
+     "pop",
+     "popitem",
+     "setdefault",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.mwe.Trie to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.punkt.PunktSentenceTokenizer",
+   "exports": [
+    "PunktSentenceTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/punkt.ts",
+     "anchor": "export class PunktSentenceTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "debug_decisions",
+     "dump",
+     "sentences_from_text",
+     "sentences_from_text_legacy",
+     "sentences_from_tokens",
+     "span_tokenize",
+     "span_tokenize_sents",
+     "text_contains_sentbreak",
+     "tokenize",
+     "tokenize_sents",
+     "train"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.punkt.PunktSentenceTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.punkt.TokenizerI",
+   "exports": [
+    "TokenizerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TokenizerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.punkt.TokenizerI to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.punkt.allowlisted_pickle_load",
+   "exports": [
+    "allowlisted_pickle_load"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function allowlisted_pickle_load"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK allowlisted_pickle_load is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.tokenize.punkt.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.tokenize.punkt.load_punkt_params",
+   "exports": [
+    "load_punkt_params"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function load_punkt_params"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK load_punkt_params is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.tokenize.punkt.punkt_pickle_load",
+   "exports": [
+    "punkt_pickle_load"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function punkt_pickle_load"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK punkt_pickle_load is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.tokenize.punkt.save_punkt_params",
+   "exports": [
+    "save_punkt_params"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function save_punkt_params"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK save_punkt_params is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+  },
+  {
+   "target": "nltk.tokenize.regexp.BlanklineTokenizer",
+   "exports": [
+    "BlanklineTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_basic.ts",
+     "anchor": "export class BlanklineTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.regexp.BlanklineTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.regexp.RegexpTokenizer",
+   "exports": [
+    "RegexpTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_regexp.ts",
+     "anchor": "export class RegexpTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.regexp.RegexpTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.regexp.TokenizerI",
+   "exports": [
+    "TokenizerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TokenizerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.regexp.TokenizerI to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.regexp.WhitespaceTokenizer",
+   "exports": [
+    "WhitespaceTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_basic.ts",
+     "anchor": "export class WhitespaceTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.regexp.WhitespaceTokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.regexp.blankline_tokenize",
+   "exports": [
+    "blanklineTokenize"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_basic.ts",
+     "anchor": "export function blanklineTokenize"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.tokenize.regexp.blankline_tokenize to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.regexp.regexp_tokenize",
+   "exports": [
+    "regexp_tokenize"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_regexp.ts",
+     "anchor": "export { regexpTokenize as regexp_tokenize }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.tokenize.regexp.regexp_tokenize to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.toktok.TokenizerI",
+   "exports": [
+    "TokenizerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TokenizerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.toktok.TokenizerI to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.treebank.MacIntyreContractions",
+   "exports": [
+    "MacIntyreContractions"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_treebank.ts",
+     "anchor": "export class MacIntyreContractions"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.treebank.MacIntyreContractions to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.treebank.TokenizerI",
+   "exports": [
+    "TokenizerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TokenizerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.treebank.TokenizerI to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.treebank.TreebankWordDetokenizer",
+   "exports": [
+    "TreebankWordDetokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_treebank.ts",
+     "anchor": "export class TreebankWordDetokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "detokenize",
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers",
+    "tokenizer-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.tokenize.treebank.TreebankWordDetokenizer to the existing implementation."
+  },
+  {
+   "target": "nltk.translate.bleu_score.SmoothingFunction",
+   "exports": [
+    "SmoothingFunction"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/metrics.ts",
+     "anchor": "export class SmoothingFunction"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "method0",
+     "method1",
+     "method2",
+     "method3",
+     "method4",
+     "method5",
+     "method6",
+     "method7"
+    ],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "bleu-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered class nltk.translate.bleu_score.SmoothingFunction to the existing implementation."
+  },
+  {
+   "target": "nltk.translate.bleu_score.brevity_penalty",
+   "exports": [
+    "brevityPenalty"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/metrics.ts",
+     "anchor": "export function brevityPenalty"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "bleu-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.translate.bleu_score.brevity_penalty to the existing implementation."
+  },
+  {
+   "target": "nltk.translate.bleu_score.closest_ref_length",
+   "exports": [
+    "closestRefLength"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/metrics.ts",
+     "anchor": "export function closestRefLength"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "bleu-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.translate.bleu_score.closest_ref_length to the existing implementation."
+  },
+  {
+   "target": "nltk.translate.bleu_score.modified_precision",
+   "exports": [
+    "modifiedPrecision"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/metrics.ts",
+     "anchor": "export function modifiedPrecision"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "bleu-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.translate.bleu_score.modified_precision to the existing implementation."
+  },
+  {
+   "target": "nltk.translate.nist_score.nist_length_penalty",
+   "exports": [
+    "nist_length_penalty"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_aliases.ts",
+     "anchor": "export { nistLengthPenalty as nist_length_penalty }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "bleu-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.translate.nist_score.nist_length_penalty to the existing implementation."
+  },
+  {
+   "target": "nltk.translate.nist_score.sentence_nist",
+   "exports": [
+    "sentence_nist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_aliases.ts",
+     "anchor": "export { sentenceNist as sentence_nist }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+    ]
+   },
+   "evidence": [
+    "bleu-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Coverage shared with the implementing module mapping."
+    ]
+   },
+   "notes": "Maps discovered function nltk.translate.nist_score.sentence_nist to the existing implementation."
+  },
+  {
+   "target": "nltk.util.AbstractLazySequence",
+   "exports": [
+    "AbstractLazySequence"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export abstract class AbstractLazySequence"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.AbstractLazySequence to the TS port."
+  },
+  {
+   "target": "nltk.util.LazyConcatenation",
+   "exports": [
+    "LazyConcatenation"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class LazyConcatenation"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.LazyConcatenation to the TS port."
+  },
+  {
+   "target": "nltk.util.LazyEnumerate",
+   "exports": [
+    "LazyEnumerate"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class LazyEnumerate"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.LazyEnumerate to the TS port."
+  },
+  {
+   "target": "nltk.util.LazyIteratorList",
+   "exports": [
+    "LazyIteratorList"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class LazyIteratorList"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.LazyIteratorList to the TS port."
+  },
+  {
+   "target": "nltk.util.LazyMap",
+   "exports": [
+    "LazyMap"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class LazyMap"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.LazyMap to the TS port."
+  },
+  {
+   "target": "nltk.util.LazySubsequence",
+   "exports": [
+    "LazySubsequence"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class LazySubsequence"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.LazySubsequence to the TS port."
+  },
+  {
+   "target": "nltk.util.LazyZip",
+   "exports": [
+    "LazyZip"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class LazyZip"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.LazyZip to the TS port."
+  },
+  {
+   "target": "nltk.util.OrderedDict",
+   "exports": [
+    "OrderedDict"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class OrderedDict"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.OrderedDict to the TS port."
+  },
+  {
+   "target": "nltk.util.Trie",
+   "exports": [
+    "Trie"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class Trie"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.Trie to the TS port."
+  },
+  {
+   "target": "nltk.util.bigrams",
+   "exports": [
+    "bigrams"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_compat.ts",
+     "anchor": "export function bigrams"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.bigrams to the TS port."
+  },
+  {
+   "target": "nltk.util.binary_search_file",
+   "exports": [
+    "binary_search_file"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function binary_search_file"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.binary_search_file to the TS port."
+  },
+  {
+   "target": "nltk.util.clean_html",
+   "exports": [
+    "clean_html"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function clean_html"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK raises NotImplementedError unconditionally; TS throws Error with the same message."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.clean_html to the TS port."
+  },
+  {
+   "target": "nltk.util.clean_url",
+   "exports": [
+    "clean_url"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function clean_url"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK raises NotImplementedError unconditionally; TS throws Error with the same message."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.clean_url to the TS port."
+  },
+  {
+   "target": "nltk.util.deprecated",
+   "exports": [
+    "deprecated"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function deprecated"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.deprecated to the TS port."
+  },
+  {
+   "target": "nltk.util.edges2dot",
+   "exports": [
+    "edges2dot"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function edges2dot"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.edges2dot to the TS port."
+  },
+  {
+   "target": "nltk.util.elementtree_indent",
+   "exports": [
+    "elementtree_indent"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function elementtree_indent"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.elementtree_indent to the TS port."
+  },
+  {
+   "target": "nltk.util.filestring",
+   "exports": [
+    "filestring"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function filestring"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.filestring to the TS port."
+  },
+  {
+   "target": "nltk.util.guess_encoding",
+   "exports": [
+    "guess_encoding"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function guess_encoding"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.guess_encoding to the TS port."
+  },
+  {
+   "target": "nltk.util.in_idle",
+   "exports": [
+    "in_idle"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function in_idle"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.in_idle to the TS port."
+  },
+  {
+   "target": "nltk.util.invert_dict",
+   "exports": [
+    "invert_dict"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function invert_dict"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.invert_dict to the TS port."
+  },
+  {
+   "target": "nltk.util.pairwise",
+   "exports": [
+    "pairwise"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function* pairwise"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.pairwise to the TS port."
+  },
+  {
+   "target": "nltk.util.parallelize_preprocess",
+   "exports": [
+    "parallelize_preprocess"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function* parallelize_preprocess"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.parallelize_preprocess to the TS port."
+  },
+  {
+   "target": "nltk.util.re_show",
+   "exports": [
+    "re_show"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function re_show"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.re_show to the TS port."
+  },
+  {
+   "target": "nltk.util.set_proxy",
+   "exports": [
+    "set_proxy"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function set_proxy"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.set_proxy to the TS port."
+  },
+  {
+   "target": "nltk.util.slice_bounds",
+   "exports": [
+    "slice_bounds"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function slice_bounds"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.slice_bounds to the TS port."
+  },
+  {
+   "target": "nltk.util.trigrams",
+   "exports": [
+    "trigrams"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_compat.ts",
+     "anchor": "export function trigrams"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.trigrams to the TS port."
+  },
+  {
+   "target": "nltk.util.usage",
+   "exports": [
+    "usage"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function usage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.usage to the TS port."
+  },
+  {
+   "target": "nltk.util.acyclic_branches_depth_first",
+   "exports": [
+    "acyclic_branches_depth_first"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function acyclic_branches_depth_first"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.acyclic_branches_depth_first to the TS port."
+  },
+  {
+   "target": "nltk.util.acyclic_breadth_first",
+   "exports": [
+    "acyclic_breadth_first"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function* acyclic_breadth_first"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.acyclic_breadth_first to the TS port."
+  },
+  {
+   "target": "nltk.util.acyclic_depth_first",
+   "exports": [
+    "acyclic_depth_first"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function acyclic_depth_first"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.acyclic_depth_first to the TS port."
+  },
+  {
+   "target": "nltk.util.acyclic_dic2tree",
+   "exports": [
+    "acyclic_dic2tree"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function acyclic_dic2tree"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.acyclic_dic2tree to the TS port."
+  },
+  {
+   "target": "nltk.util.breadth_first",
+   "exports": [
+    "breadth_first"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function* breadth_first"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.breadth_first to the TS port."
+  },
+  {
+   "target": "nltk.util.choose",
+   "exports": [
+    "choose"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function choose"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.choose to the TS port."
+  },
+  {
+   "target": "nltk.util.cut_string",
+   "exports": [
+    "cut_string"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function cut_string"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.cut_string to the TS port."
+  },
+  {
+   "target": "nltk.util.edge_closure",
+   "exports": [
+    "edge_closure"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function* edge_closure"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.edge_closure to the TS port."
+  },
+  {
+   "target": "nltk.util.everygrams",
+   "exports": [
+    "everygrams",
+    "MAX_EVERYGRAMS_DEFAULT_LEN"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function* everygrams"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.everygrams to the TS port."
+  },
+  {
+   "target": "nltk.util.flatten",
+   "exports": [
+    "flatten"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function flatten"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.flatten to the TS port."
+  },
+  {
+   "target": "nltk.util.pad_sequence",
+   "exports": [
+    "pad_sequence"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function* pad_sequence"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.pad_sequence to the TS port."
+  },
+  {
+   "target": "nltk.util.pr",
+   "exports": [
+    "pr"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function pr"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.pr to the TS port."
+  },
+  {
+   "target": "nltk.util.print_string",
+   "exports": [
+    "print_string"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function print_string"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.print_string to the TS port."
+  },
+  {
+   "target": "nltk.util.raise_unorderable_types",
+   "exports": [
+    "raise_unorderable_types"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function raise_unorderable_types"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.raise_unorderable_types to the TS port."
+  },
+  {
+   "target": "nltk.util.skipgrams",
+   "exports": [
+    "skipgrams"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function* skipgrams"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.skipgrams to the TS port."
+  },
+  {
+   "target": "nltk.util.tokenwrap",
+   "exports": [
+    "tokenwrap"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function tokenwrap"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.tokenwrap to the TS port."
+  },
+  {
+   "target": "nltk.util.unique_list",
+   "exports": [
+    "unique_list"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function unique_list"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.unique_list to the TS port."
+  },
+  {
+   "target": "nltk.util.unweighted_minimum_spanning_dict",
+   "exports": [
+    "unweighted_minimum_spanning_dict"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function unweighted_minimum_spanning_dict"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.unweighted_minimum_spanning_dict to the TS port."
+  },
+  {
+   "target": "nltk.util.unweighted_minimum_spanning_digraph",
+   "exports": [
+    "unweighted_minimum_spanning_digraph"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function unweighted_minimum_spanning_digraph"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.unweighted_minimum_spanning_digraph to the TS port."
+  },
+  {
+   "target": "nltk.util.unweighted_minimum_spanning_tree",
+   "exports": [
+    "unweighted_minimum_spanning_tree"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function unweighted_minimum_spanning_tree"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.unweighted_minimum_spanning_tree to the TS port."
+  },
+  {
+   "target": "nltk.util.Index",
+   "exports": [
+    "Index"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export class Index"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python generator/print/iterator semantics adapted to TS generators; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/util_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Maps nltk.util.Index to the TS port."
   }
  ]
 }
