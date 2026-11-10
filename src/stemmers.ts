@@ -1,4 +1,6 @@
 import { SNOWBALL_LANGUAGES, snowballStem } from "./snowball";
+import { SNOWBALL_STOPWORDS } from "./snowball/stopwords";
+import { PorterStemmer } from "./porter_stemmer";
 import { loadWordNet, type WordNetPos } from "./wordnet";
 
 function normalize(word: string): string {
@@ -74,21 +76,68 @@ export class LancasterStemmer {
  * implementations in ./snowball. Unsupported languages throw an Error
  * (mirroring NLTK's ValueError), both at construction time and via
  * {@link snowballStem}.
+ *
+ * `ignoreStopwords` mirrors NLTK's `ignore_stopwords`: the language's NLTK
+ * stopwords list is loaded at construction (a language without a list raises
+ * the same `'<X>Stemmer> has no list of stopwords' error NLTK raises), and
+ * `stem` returns a stopword unchanged (lowercased, except Russian which is
+ * checked un-normalized). The `porter` language delegates to the classic
+ * {@link PorterStemmer} exactly like NLTK's snowball.PorterStemmer.
  */
 export class SnowballStemmer {
-  readonly language: string;
+  static readonly languages: readonly string[] = [...SNOWBALL_LANGUAGES, "porter"];
 
-  constructor(language = "english") {
+  readonly language: string;
+  readonly stopwords: Set<string>;
+  readonly stemmer: { stem(word: string): string };
+
+  constructor(language = "english", ignoreStopwords = false) {
     this.language = language.toLowerCase();
-    if (!SNOWBALL_LANGUAGES.includes(this.language as never)) {
+    if (!SnowballStemmer.languages.includes(this.language)) {
       throw new Error(`The language '${language}' is not supported.`);
     }
+    this.stopwords = new Set();
+    if (ignoreStopwords) {
+      const words = SNOWBALL_STOPWORDS[this.language];
+      if (!words) {
+        const cls = `${this.language[0]!.toUpperCase()}${this.language.slice(1)}Stemmer`;
+        throw new Error(`<${cls}> has no list of stopwords. Please set 'ignore_stopwords' to 'False'.`);
+      }
+      for (const word of words) this.stopwords.add(word);
+    }
+    this.stemmer =
+      this.language === "porter"
+        ? new PorterStemmer()
+        : { stem: (word: string) => snowballStem(word, this.language) };
   }
 
   stem(word: string): string {
-    return snowballStem(word, this.language);
+    const normalized = this.language === "russian" ? word : word.toLowerCase();
+    if (this.stopwords.has(normalized)) return normalized;
+    return this.stemmer.stem(word);
   }
 }
+
+function languageStemmer(language: string) {
+  return class extends SnowballStemmer {
+    constructor(ignoreStopwords = false) {
+      super(language, ignoreStopwords);
+    }
+  };
+}
+
+export const DanishStemmer = languageStemmer("danish");
+export const DutchStemmer = languageStemmer("dutch");
+export const EnglishStemmer = languageStemmer("english");
+export const FrenchStemmer = languageStemmer("french");
+export const GermanStemmer = languageStemmer("german");
+export const ItalianStemmer = languageStemmer("italian");
+export const NorwegianStemmer = languageStemmer("norwegian");
+export const PortugueseStemmer = languageStemmer("portuguese");
+export const RomanianStemmer = languageStemmer("romanian");
+export const RussianStemmer = languageStemmer("russian");
+export const SpanishStemmer = languageStemmer("spanish");
+export const SwedishStemmer = languageStemmer("swedish");
 
 function normalizePos(pos?: string): WordNetPos | undefined {
   if (!pos) return undefined;

@@ -84,7 +84,19 @@
    "SentimentIntensityAnalyzer": "src/sentiment.ts",
    "regexpChunkParse": "src/chunk.ts",
    "ngrams": "src/nltk_compat.ts",
-   "ngrams_iter": "src/nltk_compat.ts"
+   "ngrams_iter": "src/nltk_compat.ts",
+   "EnglishStemmer": "src/stemmers.ts",
+   "FrenchStemmer": "src/stemmers.ts",
+   "GermanStemmer": "src/stemmers.ts",
+   "ItalianStemmer": "src/stemmers.ts",
+   "SpanishStemmer": "src/stemmers.ts",
+   "PortugueseStemmer": "src/stemmers.ts",
+   "DutchStemmer": "src/stemmers.ts",
+   "DanishStemmer": "src/stemmers.ts",
+   "NorwegianStemmer": "src/stemmers.ts",
+   "SwedishStemmer": "src/stemmers.ts",
+   "RomanianStemmer": "src/stemmers.ts",
+   "RussianStemmer": "src/stemmers.ts"
   }
  },
  "modules": [
@@ -561,6 +573,17 @@
    "anchor": "Oracle values below are pinned against Python NLTK 3.10.3.",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned values: all 8 SmoothingFunction methods, multi-weight list returns, auto_reweigh (default-tuple-only), max-1 denominator, zero-unigram early return, method6 bigram assert."
+  },
+  {
+   "id": "snowball-differential",
+   "kind": "differential",
+   "files": [
+    "test/stemmers.test.ts",
+    "test/snowball_oracle.py"
+   ],
+   "anchor": "Oracle values below are pinned against Python NLTK 3.10.3.",
+   "oracleVersion": "3.10.3",
+   "scope": "ignore_stopwords return/passthrough, corpus list sizes, porter delegation + ValueError, per-language classes, Russian un-normalized check."
   }
  ],
  "signatureBindings": [
@@ -1380,10 +1403,22 @@
    "target": "nltk.stem.snowball.SnowballStemmer",
    "exports": [
     "SnowballStemmer",
-    "snowballStem"
+    "snowballStem",
+    "EnglishStemmer",
+    "FrenchStemmer",
+    "GermanStemmer",
+    "ItalianStemmer",
+    "SpanishStemmer",
+    "PortugueseStemmer",
+    "DutchStemmer",
+    "DanishStemmer",
+    "NorwegianStemmer",
+    "SwedishStemmer",
+    "RomanianStemmer",
+    "RussianStemmer"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/stemmers.ts",
@@ -1392,27 +1427,32 @@
     {
      "file": "src/snowball.ts",
      "anchor": "export function snowballStem"
+    },
+    {
+     "file": "src/snowball/stopwords.ts",
+     "anchor": "export const SNOWBALL_STOPWORDS"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [
      "stem"
     ],
     "gaps": [
-     "ignore_stopwords missing; language-specific classes are not this facade."
+     "stopwords/stemmer/languages instance attrs exposed like NLTK; ignore_stopwords implemented incl. NLTK corpus lists and porter ValueError; language-specific classes exported. Missing languages: arabic, finnish, hungarian. JS Error types not ValueError."
     ]
    },
    "evidence": [
-    "snowball-unit"
+    "snowball-unit",
+    "snowball-differential"
    ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Pinned corpus per language and stopword fixtures not audited."
+     "ignore_stopwords values pinned in test/stemmers.test.ts; arabic/finnish/hungarian stemmers absent."
     ]
    },
-   "notes": "Real TS language implementations exist; not Rust."
+   "notes": "SnowballStemmer facade + per-language classes + porter delegation now mirror NLTK; arabic/finnish/hungarian algorithms not yet ported."
   },
   {
    "target": "nltk.stem.wordnet.WordNetLemmatizer",

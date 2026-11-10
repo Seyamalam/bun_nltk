@@ -265,6 +265,20 @@ export type {
   WordNetSynset,
 } from "./src/wordnet";
 export { LancasterStemmer, RegexpStemmer, SnowballStemmer, WordNetLemmatizer } from "./src/stemmers";
+export {
+  DanishStemmer,
+  DutchStemmer,
+  EnglishStemmer,
+  FrenchStemmer,
+  GermanStemmer,
+  ItalianStemmer,
+  NorwegianStemmer,
+  PortugueseStemmer,
+  RomanianStemmer,
+  RussianStemmer,
+  SpanishStemmer,
+  SwedishStemmer,
+} from "./src/stemmers";
 export { accuracy, ConfusionMatrix, confusionMatrix, corpusBleu, editDistance, sentenceBleu } from "./src/metrics";
 export { brevityPenalty, closestRefLength, modifiedPrecision, SmoothingFunction } from "./src/metrics";
 export type { BleuPrecision, BleuSmoothingContext, BleuSmoothingFn, BleuSmoothingResult, BleuWeights } from "./src/metrics";
