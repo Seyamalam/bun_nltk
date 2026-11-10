@@ -104,16 +104,17 @@ export function quick<T>(a: T[]): number {
 }
 
 export function demo(): void {
+  const shuffle = <T>(arr: T[]) => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j]!, arr[i]!]; } };
   for (const size of [10, 20, 50, 100, 200, 500, 1000]) {
-    const base = Array.from({ length: size }, (_, i) => i);
-    const shuffle = <T>(arr: T[]) => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j]!, arr[i]!]; } };
-    const a = [...base]; shuffle(a); const c1 = selection([...a].sort(() => 0) as unknown as number[]); // placeholder to keep structure; real counts from fresh shuffles below
-    void c1;
-    // simple demo: run each on shuffled copy and log counts
-    const a1 = [...base]; shuffle(a1); const cs = selection(a1);
-    const a2 = [...base]; shuffle(a2); const cb = bubble(a2);
-    const a3 = [...base]; shuffle(a3); const cm = merge(a3);
-    const a4 = [...base]; shuffle(a4); const cq = quick(a4);
+    const a = Array.from({ length: size }, (_, i) => i);
+    shuffle(a);
+    const cs = selection(a);
+    shuffle(a);
+    const cb = bubble(a);
+    shuffle(a);
+    const cm = merge(a);
+    shuffle(a);
+    const cq = quick(a);
     console.log(`size=${String(size).padStart(5)}:  selection=${String(cs).padStart(8)},  bubble=${String(cb).padStart(8)},  merge=${String(cm).padStart(6)},  quick=${String(cq).padStart(6)}`);
   }
 }

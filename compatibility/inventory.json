@@ -476,7 +476,21 @@
    "Word": "src/brill_tagger.ts",
    "errorList": "src/tbl_demo.ts",
    "error_list": "src/tbl_demo.ts",
-   "tblDemo": "src/tbl_demo.ts"
+   "tblDemo": "src/tbl_demo.ts",
+   "MinimalSet": "src/misc_minimalset.ts",
+   "babelizeShell": "src/misc_babelfish.ts",
+   "babelize_shell": "src/misc_babelfish.ts",
+   "bubble": "src/misc_sort.ts",
+   "check": "src/misc_wordfinder.ts",
+   "generateChomsky": "src/misc_chomsky.ts",
+   "generate_chomsky": "src/misc_chomsky.ts",
+   "merge": "src/misc_sort.ts",
+   "quick": "src/misc_sort.ts",
+   "revword": "src/misc_wordfinder.ts",
+   "selection": "src/misc_sort.ts",
+   "step": "src/misc_wordfinder.ts",
+   "word_finder": "src/misc_wordfinder.ts",
+   "wordfinder": "src/misc_wordfinder.ts"
   }
  },
  "modules": [
@@ -500,6 +514,12 @@
   "nltk.metrics.distance",
   "nltk.metrics.scores",
   "nltk.metrics.segmentation",
+  "nltk.misc",
+  "nltk.misc.babelfish",
+  "nltk.misc.chomsky",
+  "nltk.misc.minimalset",
+  "nltk.misc.sort",
+  "nltk.misc.wordfinder",
   "nltk.parse.chart",
   "nltk.probability",
   "nltk.sentiment.vader",
@@ -1348,6 +1368,17 @@
    "anchor": "Pinned against NLTK 3.10.3",
    "oracleVersion": "3.10.3",
    "scope": "Feature/Rule/Template/TagRule/BrillTemplateI member surfaces, expand/issuperset/intersects/ordering quirks, repr/str/verbose formats, error_list layout, corpus_size, postag end-to-end on inline corpus"
+  },
+  {
+   "id": "misc-differential",
+   "kind": "differential",
+   "files": [
+    "test/misc.test.ts",
+    "test/misc_oracle.py"
+   ],
+   "anchor": "Pinned against NLTK 3.10.3",
+   "oracleVersion": "3.10.3",
+   "scope": "Instrumented sort counts, MinimalSet contexts/displays, wordfinder check/step placements, chomsky textwrap pin, babelize_shell notice"
   }
  ],
  "signatureBindings": [
@@ -21510,6 +21541,413 @@
     ]
    },
    "notes": "NLTK demo_learning_curve is a demo driver over postag requiring the treebank corpus; unsupported without tagged_data."
+  },
+  {
+   "target": "nltk.misc.babelfish.babelize_shell",
+   "exports": [
+    "babelize_shell",
+    "babelizeShell"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/misc_babelfish.ts",
+     "anchor": "export function babelizeShell"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Prints the discontinued-service notice verbatim like nltk (NLTK itself no longer calls any service)."
+    ]
+   },
+   "evidence": [
+    "misc-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; RNG-bound outputs verified structurally."
+    ]
+   },
+   "notes": "Port of nltk.misc.babelfish.babelize_shell."
+  },
+  {
+   "target": "nltk.misc.chomsky.generate_chomsky",
+   "exports": [
+    "generate_chomsky",
+    "generateChomsky"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/misc_chomsky.ts",
+     "anchor": "export function generateChomsky"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "nltk prints via textwrap.fill and returns None; the port returns the filled string (adaptation). Phrase order is shuffle-random like nltk; textwrap filling pinned."
+    ]
+   },
+   "evidence": [
+    "misc-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; RNG-bound outputs verified structurally."
+    ]
+   },
+   "notes": "Port of nltk.misc.chomsky.generate_chomsky; shuffle order differs from Python's MT19937."
+  },
+  {
+   "target": "nltk.misc.minimalset.MinimalSet",
+   "exports": [
+    "MinimalSet"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/misc_minimalset.ts",
+     "anchor": "export class MinimalSet"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "add",
+     "contexts",
+     "display",
+     "display_all",
+     "targets"
+    ],
+    "gaps": [
+     "camelCase displayAll with display_all alias; _targets/_contexts/_seen/_displays are private fields; iteration order follows JS insertion-ordered Set (Python set order differs) \u2014 contents are equal."
+    ]
+   },
+   "evidence": [
+    "misc-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; RNG-bound outputs verified structurally."
+    ]
+   },
+   "notes": "Port of nltk.misc.minimalset.MinimalSet."
+  },
+  {
+   "target": "nltk.misc.sort.bubble",
+   "exports": [
+    "bubble"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/misc_sort.ts",
+     "anchor": "export function bubble"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Generic <T> in-place sort returning the comparison count; counts pinned on representative inputs."
+    ]
+   },
+   "evidence": [
+    "misc-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; RNG-bound outputs verified structurally."
+    ]
+   },
+   "notes": "Port of nltk.misc.sort.bubble."
+  },
+  {
+   "target": "nltk.misc.sort.merge",
+   "exports": [
+    "merge"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/misc_sort.ts",
+     "anchor": "export function merge"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Generic <T> in-place sort returning the comparison count; counts pinned on representative inputs."
+    ]
+   },
+   "evidence": [
+    "misc-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; RNG-bound outputs verified structurally."
+    ]
+   },
+   "notes": "Port of nltk.misc.sort.merge."
+  },
+  {
+   "target": "nltk.misc.sort.quick",
+   "exports": [
+    "quick"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/misc_sort.ts",
+     "anchor": "export function quick"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Generic <T> in-place sort returning the comparison count; counts pinned on representative inputs."
+    ]
+   },
+   "evidence": [
+    "misc-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; RNG-bound outputs verified structurally."
+    ]
+   },
+   "notes": "Port of nltk.misc.sort.quick."
+  },
+  {
+   "target": "nltk.misc.sort.selection",
+   "exports": [
+    "selection"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/misc_sort.ts",
+     "anchor": "export function selection"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Generic <T> in-place sort returning the comparison count; counts pinned on representative inputs."
+    ]
+   },
+   "evidence": [
+    "misc-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; RNG-bound outputs verified structurally."
+    ]
+   },
+   "notes": "Port of nltk.misc.sort.selection."
+  },
+  {
+   "target": "nltk.misc.sort.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo printing RNG-dependent comparison counts; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo with non-deterministic output."
+    ]
+   },
+   "notes": "nltk.misc.sort.demo is an interactive randomized demo; platform stub."
+  },
+  {
+   "target": "nltk.misc.wordfinder.revword",
+   "exports": [
+    "revword"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/misc_wordfinder.ts",
+     "anchor": "export function revword"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Random 50/50 reversal like nltk's random.randint(1,2)==1; JS RNG differs from MT19937."
+    ]
+   },
+   "evidence": [
+    "misc-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; RNG-bound outputs verified structurally."
+    ]
+   },
+   "notes": "Port of nltk.misc.wordfinder.revword."
+  },
+  {
+   "target": "nltk.misc.wordfinder.step",
+   "exports": [
+    "step"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/misc_wordfinder.ts",
+     "anchor": "export function step"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Signature keeps the unused x,y params verbatim; writes word via xf/yf coordinate lambdas."
+    ]
+   },
+   "evidence": [
+    "misc-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; RNG-bound outputs verified structurally."
+    ]
+   },
+   "notes": "Port of nltk.misc.wordfinder.step."
+  },
+  {
+   "target": "nltk.misc.wordfinder.check",
+   "exports": [
+    "check"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/misc_wordfinder.ts",
+     "anchor": "export function check"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "dir 1-4 placement; returns undefined for unknown dir mirroring nltk's implicit None."
+    ]
+   },
+   "evidence": [
+    "misc-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; RNG-bound outputs verified structurally."
+    ]
+   },
+   "notes": "Port of nltk.misc.wordfinder.check."
+  },
+  {
+   "target": "nltk.misc.wordfinder.wordfinder",
+   "exports": [
+    "wordfinder"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/misc_wordfinder.ts",
+     "anchor": "export function wordfinder"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Returns {grid, used} object rather than a tuple; RNG placement differs from Python's MT19937; grid/used semantics and alphabet fill pinned."
+    ]
+   },
+   "evidence": [
+    "misc-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; RNG-bound outputs verified structurally."
+    ]
+   },
+   "notes": "Port of nltk.misc.wordfinder.wordfinder."
+  },
+  {
+   "target": "nltk.misc.wordfinder.word_finder",
+   "exports": [
+    "word_finder"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_wordfinder.ts",
+     "anchor": "export function word_finder"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Requires nltk.corpus.words which is not bundled; throws a descriptive error pointing at wordfinder(words)."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Corpus resource nltk.corpus.words is not packaged; the demo path cannot run."
+    ]
+   },
+   "notes": "nltk.misc.wordfinder.word_finder needs the words corpus; wordfinder() itself is ported."
   }
  ]
 }

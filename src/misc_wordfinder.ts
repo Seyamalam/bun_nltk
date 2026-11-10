@@ -6,33 +6,53 @@ export function revword(word: string): string {
   return Math.floor(Math.random() * 2) === 0 ? word.split("").reverse().join("") : word;
 }
 
-function step(word: string, xf: (i: number) => number, yf: (i: number) => number, grid: string[][]): boolean {
+/** nltk.misc.wordfinder.step — signature keeps the unused x,y params verbatim. */
+export function step(
+  word: string,
+  x: number,
+  xf: (i: number) => number,
+  y: number,
+  yf: (i: number) => number,
+  grid: string[][],
+): boolean {
+  void x;
+  void y;
   for (let i = 0; i < word.length; i++) {
-    const x = xf(i), y = yf(i);
-    if (grid[x]![y] !== "" && grid[x]![y] !== word[i]) return false;
+    const xi = xf(i), yi = yf(i);
+    if (grid[xi]![yi] !== "" && grid[xi]![yi] !== word[i]) return false;
   }
   for (let i = 0; i < word.length; i++) {
-    const x = xf(i), y = yf(i);
-    grid[x]![y] = word[i]!;
+    const xi = xf(i), yi = yf(i);
+    grid[xi]![yi] = word[i]!;
   }
   return true;
 }
 
-function check(word: string, dir: number, x: number, y: number, grid: string[][], rows: number, cols: number): boolean {
+/** nltk.misc.wordfinder.check — direction 1-4 placement test; returns undefined (not false) for unknown dirs like nltk returns None. */
+export function check(
+  word: string,
+  dir: number,
+  x: number,
+  y: number,
+  grid: string[][],
+  rows: number,
+  cols: number,
+): boolean | undefined {
+  void rows;
   if (dir === 1) {
     if (x - word.length < 0 || y - word.length < 0) return false;
-    return step(word, (i) => x - i, (i) => y - i, grid);
+    return step(word, x, (i) => x - i, y, (i) => y - i, grid);
   } else if (dir === 2) {
     if (x - word.length < 0) return false;
-    return step(word, (i) => x - i, (_i) => y, grid);
+    return step(word, x, (i) => x - i, y, (_i) => y, grid);
   } else if (dir === 3) {
     if (x - word.length < 0 || y + (word.length - 1) >= cols) return false;
-    return step(word, (i) => x - i, (i) => y + i, grid);
+    return step(word, x, (i) => x - i, y, (i) => y + i, grid);
   } else if (dir === 4) {
     if (y - word.length < 0) return false;
-    return step(word, (_i) => x, (i) => y - i, grid);
+    return step(word, x, (_i) => x, y, (i) => y - i, grid);
   }
-  return false;
+  return undefined;
 }
 
 export interface WordFinderResult {
