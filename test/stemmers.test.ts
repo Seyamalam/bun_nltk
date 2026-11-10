@@ -15,6 +15,27 @@ test("RegexpStemmer strips matching suffix", () => {
   expect(stemmer.stem("go")).toBe("go");
 });
 
+// Values below are pinned to Python NLTK 3.10.3 RegexpStemmer doctest + edge cases.
+test("RegexpStemmer matches NLTK regex/min-boundary/sub-all semantics", () => {
+  const st = new RegexpStemmer("ing$|s$|e$|able$", 4);
+  const cases: Array<[string, string]> = [
+    ["cars", "car"],
+    ["mass", "mas"],
+    ["was", "was"],
+    ["bee", "bee"],
+    ["compute", "comput"],
+    ["advisable", "advis"],
+    ["CARS", "CARS"],
+  ];
+  for (const [word, expected] of cases) {
+    expect(st.stem(word)).toBe(expected);
+  }
+  expect(new RegexpStemmer("s").stem("ses")).toBe("e");
+  expect(new RegexpStemmer(/s/i).stem("CARS")).toBe("CAR");
+  expect(new RegexpStemmer("s", 3).stem("yes")).toBe("ye");
+  expect(st.toString()).toBe("<RegexpStemmer: 'ing$|s$|e$|able$'>");
+});
+
 // Values below are pinned to Python NLTK 3.10.3 LancasterStemmer (doctest + extras).
 test("LancasterStemmer reproduces the NLTK Paice/Husk rule engine", () => {
   const stemmer = new LancasterStemmer();

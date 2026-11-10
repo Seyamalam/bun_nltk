@@ -5,17 +5,25 @@ import { loadWordNet, type WordNetMorphPos } from "./wordnet";
 
 
 export class RegexpStemmer {
-  private readonly pattern: RegExp;
+  private readonly regexp: RegExp;
+  private readonly globalRegexp: RegExp;
   private readonly min: number;
 
-  constructor(pattern: RegExp | string, min = 0) {
-    this.pattern = typeof pattern === "string" ? new RegExp(pattern, "i") : pattern;
-    this.min = Math.max(0, Math.floor(min));
+  constructor(regexp: RegExp | string, min = 0) {
+    this.regexp = typeof regexp === "string" ? new RegExp(regexp) : regexp;
+    const flags = this.regexp.flags.includes("g") ? this.regexp.flags : `${this.regexp.flags}g`;
+    this.globalRegexp = new RegExp(this.regexp.source, flags);
+    this.min = Math.floor(min);
   }
 
   stem(word: string): string {
-    if (word.length <= this.min) return word;
-    return word.replace(this.pattern, "");
+    if (word.length < this.min) return word;
+    this.globalRegexp.lastIndex = 0;
+    return word.replace(this.globalRegexp, "");
+  }
+
+  toString(): string {
+    return `<RegexpStemmer: '${this.regexp.source}'>`;
   }
 }
 

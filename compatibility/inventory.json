@@ -564,6 +564,16 @@
    "scope": "corpusChrF/corpusNist and NIST penalty, Unicode whitespace and orders 0..7; sentenceChrF is a one-pair adapter, not independently called in this differential block."
   },
   {
+   "id": "regexp-differential",
+   "kind": "differential",
+   "files": [
+    "test/stemmers.test.ts"
+   ],
+   "anchor": "Values below are pinned to Python NLTK 3.10.3 RegexpStemmer",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: doctest stems, case sensitivity, global sub, min==len boundary, compiled-pattern passthrough, repr."
+  },
+  {
    "id": "lancaster-differential",
    "kind": "differential",
    "files": [
@@ -1396,7 +1406,7 @@
     "RegexpStemmer"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/stemmers.ts",
@@ -1404,24 +1414,25 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [
      "stem"
     ],
     "gaps": [
-     "JS regex flags/replacement and min boundary differ from Python contract."
+     "Python re syntax is not JS RegExp syntax for exotic constructs; repr pattern shown without Python str repr quoting differences."
     ]
    },
    "evidence": [
-    "stemmer-unit"
+    "stemmer-unit",
+    "regexp-differential"
    ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Regex/global substitutions and min equality oracle fixtures missing."
+     "Python-only regex constructs (lookbehind syntax, named groups) are outside JS RegExp."
     ]
    },
-   "notes": "Constructor compiles strings case-insensitively; not automatic Python re compatibility."
+   "notes": "Case-sensitive matching, len < min boundary, global substitution semantics, compiled-RegExp passthrough, NLTK repr."
   },
   {
    "target": "nltk.stem.snowball.SnowballStemmer",
