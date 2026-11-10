@@ -10,16 +10,16 @@ export type Restriction = "." | "," | "_" | "";
 // AbstractCCGCategory
 // ---------------------------------------------------------------------------
 
-export interface AbstractCCGCategory {
-  isPrimitive(): boolean;
-  isFunction(): boolean;
-  isVar(): boolean;
-  substitute(subs: Array<[AbstractCCGCategory, AbstractCCGCategory]>): AbstractCCGCategory;
+export abstract class AbstractCCGCategory {
+  abstract isPrimitive(): boolean;
+  abstract isFunction(): boolean;
+  abstract isVar(): boolean;
+  abstract substitute(subs: Array<[AbstractCCGCategory, AbstractCCGCategory]>): AbstractCCGCategory;
   /** null = cannot unify, [] = no subs needed */
-  canUnify(other: AbstractCCGCategory): Array<[AbstractCCGCategory, AbstractCCGCategory]> | null;
-  toString(): string;
-  equals(other: unknown): boolean;
-  comparisonKey(): unknown;
+  abstract canUnify(other: AbstractCCGCategory): Array<[AbstractCCGCategory, AbstractCCGCategory]> | null;
+  abstract toString(): string;
+  abstract equals(other: unknown): boolean;
+  abstract comparisonKey(): unknown;
 }
 
 // ---------------------------------------------------------------------------
@@ -144,7 +144,8 @@ export class PrimitiveCategory implements AbstractCCGCategory {
   }
   toString(): string {
     if (this.restrs.length === 0) return this.categ;
-    return `${this.categ}[${this.restrs.join(",")}]`;
+    // NLTK: restrictions = "[%s]" % ",".join(repr(r) for r in self._restrs)
+    return `${this.categ}[${this.restrs.map((r) => `'${r}'`).join(",")}]`;
   }
 }
 

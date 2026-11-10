@@ -4,33 +4,34 @@
  */
 import { FunctionalCategory } from "./ccg_api.ts";
 import type { AbstractCCGCategory } from "./ccg_api.ts";
+import { pyError } from "./internals.ts";
 
 // ---------------------------------------------------------------------------
 // Interfaces
 // ---------------------------------------------------------------------------
 
-export interface UndirectedBinaryCombinator {
-  canCombine(func: AbstractCCGCategory, arg: AbstractCCGCategory): boolean;
-  combine(func: AbstractCCGCategory, arg: AbstractCCGCategory): Iterable<AbstractCCGCategory>;
-  toString(): string;
+export abstract class UndirectedBinaryCombinator {
+  abstract canCombine(func: AbstractCCGCategory, arg: AbstractCCGCategory): boolean;
+  abstract combine(func: AbstractCCGCategory, arg: AbstractCCGCategory): Iterable<AbstractCCGCategory>;
+  abstract toString(): string;
 }
 
-export interface DirectedBinaryCombinator {
-  canCombine(left: AbstractCCGCategory, right: AbstractCCGCategory): boolean;
-  combine(left: AbstractCCGCategory, right: AbstractCCGCategory): Iterable<AbstractCCGCategory>;
-  toString(): string;
+export abstract class DirectedBinaryCombinator {
+  abstract canCombine(left: AbstractCCGCategory, right: AbstractCCGCategory): boolean;
+  abstract combine(left: AbstractCCGCategory, right: AbstractCCGCategory): Iterable<AbstractCCGCategory>;
+  abstract toString(): string;
 }
 
 // ---------------------------------------------------------------------------
 // Forward / Backward wrappers
 // ---------------------------------------------------------------------------
 
-export class ForwardCombinator implements DirectedBinaryCombinator {
+export class ForwardCombinator extends DirectedBinaryCombinator {
   constructor(
-    private readonly comb: UndirectedBinaryCombinator,
+    readonly comb: UndirectedBinaryCombinator,
     private readonly pred: (l: AbstractCCGCategory, r: AbstractCCGCategory) => boolean,
     private readonly suffix = "",
-  ) {}
+  ) { super(); }
   canCombine(l: AbstractCCGCategory, r: AbstractCCGCategory): boolean {
     return this.comb.canCombine(l, r) && this.pred(l, r);
   }
@@ -40,12 +41,12 @@ export class ForwardCombinator implements DirectedBinaryCombinator {
   toString(): string { return `>${this.comb}${this.suffix}`; }
 }
 
-export class BackwardCombinator implements DirectedBinaryCombinator {
+export class BackwardCombinator extends DirectedBinaryCombinator {
   constructor(
-    private readonly comb: UndirectedBinaryCombinator,
+    readonly comb: UndirectedBinaryCombinator,
     private readonly pred: (l: AbstractCCGCategory, r: AbstractCCGCategory) => boolean,
     private readonly suffix = "",
-  ) {}
+  ) { super(); }
   canCombine(l: AbstractCCGCategory, r: AbstractCCGCategory): boolean {
     return this.comb.canCombine(r, l) && this.pred(l, r);
   }
@@ -73,21 +74,45 @@ export class UndirectedFunctionApplication implements UndirectedBinaryCombinator
   toString(): string { return ""; }
 }
 
-// Predicates
+// Predicates — NLTK accesses dir()/arg()/res() unguarded; on primitives this
+// raises AttributeError, so .dir/.arg/.res access is funnelled through helpers
+// that reproduce that failure name/message.
+function dirOf(cat: AbstractCCGCategory) {
+  const d = (cat as FunctionalCategory).dir;
+  if (d === undefined) {
+    throw pyError("AttributeError", `'${cat.constructor.name}' object has no attribute 'dir'`);
+  }
+  return d;
+}
+function resOf(cat: AbstractCCGCategory): AbstractCCGCategory {
+  const r = (cat as FunctionalCategory).res;
+  if (r === undefined) {
+    throw pyError("AttributeError", `'${cat.constructor.name}' object has no attribute 'res'`);
+  }
+  return r;
+}
+function argOf(cat: AbstractCCGCategory): AbstractCCGCategory {
+  const a = (cat as FunctionalCategory).arg;
+  if (a === undefined) {
+    throw pyError("AttributeError", `'${cat.constructor.name}' object has no attribute 'arg'`);
+  }
+  return a;
+}
+
 function forwardOnly(left: AbstractCCGCategory): boolean {
-  return left.isFunction() && (left as FunctionalCategory).dir.isForward();
+  return dirOf(left).isForward();
 }
 function backwardOnly(_left: AbstractCCGCategory, right: AbstractCCGCategory): boolean {
-  return right.isFunction() && (right as FunctionalCategory).dir.isBackward();
+  return dirOf(right).isBackward();
 }
 function bothForward(l: AbstractCCGCategory, r: AbstractCCGCategory): boolean {
-  return l.isFunction() && r.isFunction() && (l as FunctionalCategory).dir.isForward() && (r as FunctionalCategory).dir.isForward();
+  return forwardOnly(l) && forwardOnly(r);
 }
 function bothBackward(l: AbstractCCGCategory, r: AbstractCCGCategory): boolean {
-  return l.isFunction() && r.isFunction() && (l as FunctionalCategory).dir.isBackward() && (r as FunctionalCategory).dir.isBackward();
+  return backwardOnly(l, r) && backwardOnly(r, l);
 }
 function crossedDirs(l: AbstractCCGCategory, r: AbstractCCGCategory): boolean {
-  return l.isFunction() && r.isFunction() && (l as FunctionalCategory).dir.isForward() && (r as FunctionalCategory).dir.isBackward();
+  return forwardOnly(l) && backwardOnly(l, r);
 }
 
 export const ForwardApplication = new ForwardCombinator(new UndirectedFunctionApplication(), (l, _r) => forwardOnly(l));
@@ -119,7 +144,7 @@ function backwardBxConstraint(l: AbstractCCGCategory, r: AbstractCCGCategory): b
   if (!crossedDirs(l, r)) return false;
   const lf = l as FunctionalCategory, rf = r as FunctionalCategory;
   if (!lf.dir.canCross() && rf.dir.canCross()) return false;
-  return lf.arg.isPrimitive();
+  return argOf(lf).isPrimitive();
 }
 
 export const ForwardComposition = new ForwardCombinator(new UndirectedComposition(), (l, _r) => forwardOnly(l));
@@ -151,14 +176,12 @@ export class UndirectedSubstitution implements UndirectedBinaryCombinator {
 
 function forwardSConstraint(l: AbstractCCGCategory, r: AbstractCCGCategory): boolean {
   if (!bothForward(l, r)) return false;
-  const lf = l as FunctionalCategory;
-  return (lf.res as FunctionalCategory).dir.isForward() && lf.arg.isPrimitive();
+  return dirOf(resOf(l)).isForward() && argOf(l).isPrimitive();
 }
 function backwardSxConstraint(l: AbstractCCGCategory, r: AbstractCCGCategory): boolean {
-  const lf = l as FunctionalCategory, rf = r as FunctionalCategory;
-  if (!lf.dir.canCross() && rf.dir.canCross()) return false;
+  if (!dirOf(l).canCross() && dirOf(r).canCross()) return false;
   if (!bothForward(l, r)) return false;
-  return (rf.res as FunctionalCategory).dir.isBackward() && rf.arg.isPrimitive();
+  return dirOf(resOf(r)).isBackward() && argOf(r).isPrimitive();
 }
 
 export const ForwardSubstitution = new ForwardCombinator(new UndirectedSubstitution(), forwardSConstraint);
@@ -168,22 +191,25 @@ export const BackwardSx = new BackwardCombinator(new UndirectedSubstitution(), b
 // Type raising
 // ---------------------------------------------------------------------------
 
+// Retrieves the left-most functional category (ie, (N\N)/(S/NP) => N\N).
+// Unguarded like NLTK: primitives raise AttributeError on .res().
 function innermostFunction(cat: AbstractCCGCategory): FunctionalCategory {
   let c = cat as FunctionalCategory;
-  while ((c.res as AbstractCCGCategory).isFunction()) c = c.res as FunctionalCategory;
+  while (resOf(c).isFunction()) c = c.res as FunctionalCategory;
   return c;
 }
 
 export class UndirectedTypeRaise implements UndirectedBinaryCombinator {
   canCombine(func: AbstractCCGCategory, arg: AbstractCCGCategory): boolean {
-    if (!(arg.isFunction() && (arg as FunctionalCategory).res.isFunction())) return false;
-    // The python can_combine has a bug referencing undefined left/arg_categ; mirror combine logic
-    if (!func.isPrimitive()) return false;
-    const a = innermostFunction(arg);
-    return func.canUnify(a.arg) !== null;
+    if (!(arg.isFunction() && resOf(arg).isFunction())) return false;
+    innermostFunction(arg);
+    // NLTK's can_combine references undefined names `left`/`arg_categ` here,
+    // so reaching this point raises NameError in Python.
+    void func;
+    throw pyError("NameError", "name 'left' is not defined");
   }
   *combine(func: AbstractCCGCategory, arg: AbstractCCGCategory): Iterable<AbstractCCGCategory> {
-    if (!(func.isPrimitive() && arg.isFunction() && (arg as FunctionalCategory).res.isFunction())) return;
+    if (!(func.isPrimitive() && arg.isFunction() && resOf(arg).isFunction())) return;
     const a = innermostFunction(arg);
     const subs = func.canUnify(a.arg);
     if (subs === null) return;
@@ -194,12 +220,10 @@ export class UndirectedTypeRaise implements UndirectedBinaryCombinator {
 }
 
 function forwardTConstraint(_l: AbstractCCGCategory, r: AbstractCCGCategory): boolean {
-  if (!r.isFunction()) return false;
   const a = innermostFunction(r);
   return a.dir.isBackward() && a.res.isPrimitive();
 }
 function backwardTConstraint(l: AbstractCCGCategory, _r: AbstractCCGCategory): boolean {
-  if (!l.isFunction()) return false;
   const a = innermostFunction(l);
   return a.dir.isForward() && a.res.isPrimitive();
 }
@@ -208,4 +232,16 @@ export const ForwardT = new ForwardCombinator(new UndirectedTypeRaise(), forward
 export const BackwardT = new BackwardCombinator(new UndirectedTypeRaise(), backwardTConstraint);
 
 // Export helpers for testing
-export { innermostFunction, forwardOnly, backwardOnly, bothForward, bothBackward };
+export {
+  innermostFunction,
+  forwardOnly,
+  backwardOnly,
+  bothForward,
+  bothBackward,
+  crossedDirs,
+  backwardBxConstraint,
+  forwardSConstraint,
+  backwardSxConstraint,
+  forwardTConstraint,
+  backwardTConstraint,
+};

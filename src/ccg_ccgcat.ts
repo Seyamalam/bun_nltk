@@ -3,6 +3,7 @@
  * Provides slash-type helpers, feature parsing, and string→category parsing.
  */
 import { CCGVar, Direction, FunctionalCategory, PrimitiveCategory } from "./ccg_api.ts";
+import { pyError } from "./internals.ts";
 import type { AbstractCCGCategory } from "./ccg_api.ts";
 
 // ---------------------------------------------------------------------------
@@ -27,7 +28,7 @@ const PRIM_RE = /^([A-Za-z]+)(\[[A-Za-z,]+])?/;
 const NEXTPRIM_RE = /^([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)/s;
 const APP_RE = /^([\\/])([.,_]?)([.,]?)(.*)/s;
 
-function matchBrackets(s: string): [string, string] {
+export function matchBrackets(s: string): [string, string] {
   let rest = s.slice(1);
   let inside = "(";
   while (rest !== "" && !rest.startsWith(")")) {
@@ -41,17 +42,17 @@ function matchBrackets(s: string): [string, string] {
     }
   }
   if (rest.startsWith(")")) return [inside + ")", rest.slice(1)];
-  throw new Error(`Unmatched bracket in string '${s}'`);
+  throw pyError("AssertionError", `Unmatched bracket in string '${s}'`);
 }
 
-function nextCategory(s: string): [string, string] {
+export function nextCategory(s: string): [string, string] {
   if (s.startsWith("(")) return matchBrackets(s);
   const m = NEXTPRIM_RE.exec(s);
-  if (!m) throw new Error(`Cannot parse category chunk: ${s}`);
+  if (!m) throw pyError("AttributeError", "'NoneType' object has no attribute 'groups'");
   return [m[1]!, m[2]!];
 }
 
-function parsePrimitiveCategory(
+export function parsePrimitiveCategory(
   chunks: RegExpMatchArray | (string | null | undefined)[],
   primitives: Set<string>,
   families: Map<string, [AbstractCCGCategory, CCGVar | null]>,
@@ -76,7 +77,7 @@ function parsePrimitiveCategory(
   if (primitives.has(name)) {
     return [new PrimitiveCategory(name, parseSubscripts(subscr)), v];
   }
-  throw new Error(`String '${name}' is neither a family nor primitive category.`);
+  throw pyError("AssertionError", `String '${name}' is neither a family nor primitive category.`);
 }
 
 export function augParseCategory(
@@ -94,14 +95,14 @@ export function augParseCategory(
     res = r[0]; v = r[1];
   } else {
     const m = PRIM_RE.exec(catString);
-    if (!m) throw new Error(`Cannot parse primitive: ${catString}`);
+    if (!m) throw pyError("AttributeError", "'NoneType' object has no attribute 'groups'");
     const r = parsePrimitiveCategory([m[1], m[2]], primitives, families, v);
     res = r[0]; v = r[1];
   }
 
   while (rest !== "") {
     const m = APP_RE.exec(rest);
-    if (!m) throw new Error(`Cannot parse application: ${rest}`);
+    if (!m) throw pyError("AttributeError", "'NoneType' object has no attribute 'groups'");
     const dir = parseApplication([m[1]!, m[2]!, m[3]!]);
     rest = m[4]!;
     const [cs, r2] = nextCategory(rest);
@@ -112,7 +113,7 @@ export function augParseCategory(
       arg = r[0]; v = r[1];
     } else {
       const pm = PRIM_RE.exec(cs);
-      if (!pm) throw new Error(`Cannot parse primitive: ${cs}`);
+      if (!pm) throw pyError("AttributeError", "'NoneType' object has no attribute 'groups'");
       const r = parsePrimitiveCategory([pm[1], pm[2]], primitives, families, v);
       arg = r[0]; v = r[1];
     }

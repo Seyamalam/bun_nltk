@@ -25,7 +25,30 @@ export const read_int = readInt;
 export function readNumber(..._a: unknown[]): never { return unavailable("internals.read_number"); }
 export const read_number = readNumber;
 export function overridden(_method: unknown): boolean { return false; }
-export function deprecated(_message: string) { return (_t: unknown, _k: string, d: PropertyDescriptor) => d; }
+export function deprecated<F extends (...args: any[]) => any>(message: string) {
+  return (func: F): F => {
+    const wrapped = function (this: unknown, ...args: unknown[]) {
+      const msg = `Function ${func.name}() has been deprecated.  ${message}`;
+      const chunks = msg.split(/(\s+)/).filter((c) => c !== "");
+      const lines: string[] = [];
+      let cur = "";
+      for (const chunk of chunks) {
+        if (("  " + cur + chunk).length <= 70 || cur.trim() === "") {
+          if (cur === "" && /^\s+$/.test(chunk)) continue;
+          cur += chunk;
+        } else {
+          lines.push(cur.replace(/\s+$/, ""));
+          cur = /^\s+$/.test(chunk) ? "" : chunk;
+        }
+      }
+      if (cur.trim() !== "") lines.push(cur.replace(/\s+$/, ""));
+      console.warn("\n" + lines.map((l) => "  " + l).join("\n"));
+      return func.apply(this, args);
+    } as unknown as F & { __deprecated__?: boolean };
+    wrapped.__deprecated__ = true;
+    return wrapped as F;
+  };
+}
 export class Deprecated { constructor(public message: string) {} }
 export class Counter {
   private value: number;

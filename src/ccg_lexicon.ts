@@ -6,6 +6,7 @@ import type { AbstractCCGCategory } from "./ccg_api.ts";
 import { augParseCategory } from "./ccg_ccgcat.ts";
 import { fromstring as logicFromString } from "./sem_logic.ts";
 import type { Expression } from "./sem_logic.ts";
+import { deprecated, pyError } from "./internals.ts";
 
 // Regex mirrors
 const LEX_RE = /^([\S_]*?[^\s=-])\s*(::|[-=]+>)\s*(.+)/;
@@ -71,22 +72,21 @@ export function fromString(lexStr: string, includeSemantics = false): CCGLexicon
       primitives = primitives.concat(stripped.slice(2).split(",").map((s) => s.trim()).filter(Boolean));
     } else {
       const m = LEX_RE.exec(stripped);
-      if (!m) throw new Error(`Cannot parse lexicon line: ${stripped}`);
+      if (!m) throw pyError("AttributeError", "'NoneType' object has no attribute 'groups'");
       const ident = m[1]!, sep = m[2]!, rhs = m[3]!;
       const rhsM = RHS_RE.exec(rhs);
-      if (!rhsM) throw new Error(`Cannot parse RHS: ${rhs}`);
+      if (!rhsM) throw pyError("AttributeError", "'NoneType' object has no attribute 'groups'");
       const catStr = rhsM[1]!, semanticsStr = rhsM[2];
       const primSet = new Set(primitives);
-      const [cat] = augParseCategory(catStr.trim(), primSet, families);
+      const [cat, v] = augParseCategory(catStr.trim(), primSet, families);
 
       if (sep === "::") {
         // family definition: need var if present
-        const [, v] = augParseCategory(catStr.trim(), primSet, families);
         families.set(ident, [cat, v]);
       } else {
         let semantics: Expression | null = null;
         if (includeSemantics) {
-          if (!semanticsStr) throw new Error(`${stripped} must contain semantics because includeSemantics is true`);
+          if (!semanticsStr) throw pyError("AssertionError", `${stripped} must contain semantics because include_semantics is set to True`);
           const sm = SEM_RE.exec(semanticsStr);
           semantics = logicFromString(sm![1]!);
         }
@@ -96,12 +96,17 @@ export function fromString(lexStr: string, includeSemantics = false): CCGLexicon
       }
     }
   }
-  if (primitives.length === 0) throw new Error("No primitives defined (missing :- line)");
+  if (primitives.length === 0) throw pyError("IndexError", "list index out of range");
   return new CCGLexicon(primitives[0]!, primitives, families, entries);
 }
 
-/** @deprecated use fromString */
-export function parseLexicon(lexStr: string): CCGLexicon { return fromString(lexStr); }
+export const fromstring = fromString;
+
+export const parseLexicon = deprecated("Use fromstring() instead.")(function parseLexicon(
+  lexStr: string,
+): CCGLexicon {
+  return fromString(lexStr);
+});
 
 export const openccgTinytiny: CCGLexicon = fromString(`
     :- S,NP,N

@@ -637,6 +637,11 @@ export * from "./src/ccg_combinator";
 export * from "./src/ccg_lexicon";
 export * from "./src/ccg_chart";
 export * from "./src/ccg_logic";
+// `fromstring` resolves to the sem.logic parser at root (nltk.sem.logic);
+// the ccg lexicon parser stays reachable as `from_string` / `ccgFromstring`.
+export { fromstring } from "./src/sem_logic";
+export { fromString as ccgFromstring, fromstring as ccg_fromstring } from "./src/ccg_lexicon";
+export { demo as ccgDemo } from "./src/ccg_chart";
 // inference family (explicit to avoid ProverParseError star collision)
 export * from "./src/inference_api";
 export { BindingException, BindingDict, mostGeneralUnification, Clause, clausify, ResolutionProver, ResolutionProverCommand, ProverParseError as ResolutionProverParseError, UnificationException, DebugObject, resolution_test, resolutionTest, testResolutionProver, test_clausify, testClausify, resolutionDemo } from "./src/inference_resolution";
