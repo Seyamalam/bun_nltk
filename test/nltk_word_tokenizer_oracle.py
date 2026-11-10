@@ -1,3 +1,6 @@
+import nltk
+assert nltk.__version__ == "3.10.3"
+
 """Oracle for NLTKWordTokenizer (NLTK 3.10.3)."""
 from nltk.tokenize import NLTKWordTokenizer
 t = NLTKWordTokenizer()

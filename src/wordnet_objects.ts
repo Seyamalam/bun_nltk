@@ -1,4 +1,16 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import type { WordNet, WordNetSynset, WordNetPos } from "./wordnet.ts";
+
+export class WordNetError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "WordNetError";
+  }
+}
+
+/** `{n|v: {0: rootCount, offset: count}}` as returned by `WordNetICCorpusReader.ic`. */
+export type WordNetIcDict = Record<string, Record<number, number>>;
 
 /** NLTK `Lemma` — a specific morphological sense of a word inside a synset. */
 export class Lemma {
@@ -91,7 +103,7 @@ export class Lemma {
 }
 
 export class Synset {
-  private _name: string | null = null;
+  protected _name: string | null = null;
 
   constructor(
     private readonly reader: WordNetReader,
@@ -201,37 +213,14 @@ export class Synset {
   }
 
   lowest_common_hypernyms(other: Synset, simulateRoot = false, useMinDepth = false): Synset[] {
-    const needFakeRoot = this.pos() !== other.pos();
-    let fakeRoot: Synset | null = null;
-    if (needFakeRoot) {
-      if (!simulateRoot) {
-        throw new Error("Unable to find the lowest common hypernym: no common taxonomic structure exists");
-      }
-      fakeRoot = this.reader.fakeRoot(this, other);
-    }
-    const selfDist = new Map<string, [Synset, number]>();
-    for (const [s, d] of this.hypernymDistances()) selfDist.set(s.name(), [s, d]);
-    const otherDist = new Map<string, [Synset, number]>();
-    for (const [s, d] of other.hypernymDistances()) otherDist.set(s.name(), [s, d]);
-    if (fakeRoot) {
-      selfDist.set(fakeRoot.name(), [fakeRoot, this.max_depth() + 1]);
-      otherDist.set(fakeRoot.name(), [fakeRoot, other.max_depth() + 1]);
-    }
+    const synsets = this.common_hypernyms(other);
+    if (simulateRoot) synsets.push(new FakeRootSynset(this.reader));
+    if (synsets.length === 0) return [];
     const depthOf = (s: Synset) => (useMinDepth ? s.min_depth() : s.max_depth());
-    let best = useMinDepth ? Number.POSITIVE_INFINITY : -1;
-    const lchs: Synset[] = [];
-    for (const [name, [s]] of selfDist) {
-      if (!otherDist.has(name)) continue;
-      const depth = depthOf(s);
-      if (depth === null || depth === undefined) continue;
-      if (useMinDepth ? depth < best : depth > best) {
-        lchs.length = 0;
-        best = depth;
-      }
-      if (depth === best) lchs.push(s);
-    }
-    lchs.sort((a, b) => (selfDist.get(a.name())![1] + otherDist.get(a.name())![1]) - (selfDist.get(b.name())![1] + otherDist.get(b.name())![1]));
-    return lchs;
+    const maxDepth = Math.max(...synsets.map(depthOf));
+    return synsets
+      .filter((s) => depthOf(s) === maxDepth)
+      .sort((a, b) => (a.name() < b.name() ? -1 : a.name() > b.name() ? 1 : 0));
   }
 
   hypernymDistances(distance = 0): Array<[Synset, number]> {
@@ -252,8 +241,20 @@ export class Synset {
     return out;
   }
 
-  hypernym_distances(distance = 0): Set<[Synset, number]> {
-    return new Set(this.hypernymDistances(distance));
+  hypernym_distances(distance = 0, simulateRoot = false): Set<[Synset, number]> {
+    const seen = new Map<string, [Synset, number]>();
+    const visit = (s: Synset, d: number): void => {
+      const key = `${s.name()}|${d}`;
+      if (seen.has(key)) return;
+      seen.set(key, [s, d]);
+      for (const hypernym of s.hypernyms()) visit(hypernym, d + 1);
+    };
+    visit(this, distance);
+    if (simulateRoot) {
+      const fakeDist = Math.max(...[...seen.values()].map(([, d]) => d)) + 1;
+      seen.set(`*ROOT*|${fakeDist}`, [new FakeRootSynset(this.reader), fakeDist]);
+    }
+    return new Set(seen.values());
   }
 
   max_depth(): number {
@@ -264,16 +265,26 @@ export class Synset {
     return this.reader.depthOf(this, "min");
   }
 
-  shortest_path_distance(other: Synset): number | null {
-    if (this.pos() !== other.pos()) return null;
-    if (this.equals(other)) return this._shortestHypernymPath(other).size - 1;
-    const distToCommon = new Map<string, number>();
-    for (const [s, d] of this.hypernymDistances()) distToCommon.set(s.name(), d);
+  shortest_path_distance(other: Synset, simulateRoot = false): number | null {
+    if (this.pos() !== other.pos() && !simulateRoot) return null;
+    if (this.equals(other)) return 0;
+    const selfDist = this._distanceMap(simulateRoot);
+    const otherDist = other._distanceMap(simulateRoot);
     let best = Number.POSITIVE_INFINITY;
-    for (const [s, d] of other.hypernymDistances()) {
-      if (distToCommon.has(s.name())) best = Math.min(best, distToCommon.get(s.name())! + d);
+    for (const [name, d1] of selfDist) {
+      const d2 = otherDist.get(name);
+      if (d2 !== undefined) best = Math.min(best, d1 + d2);
     }
     return best === Number.POSITIVE_INFINITY ? null : best;
+  }
+
+  private _distanceMap(simulateRoot: boolean): Map<string, number> {
+    const distances = new Map<string, number>();
+    for (const [s, d] of this.hypernymDistances()) distances.set(s.name(), d);
+    if (simulateRoot && this.name() !== "*ROOT*") {
+      distances.set("*ROOT*", Math.max(...distances.values()) + 1);
+    }
+    return distances;
   }
 
   private _shortestHypernymPath(other: Synset): Set<Synset> {
@@ -303,57 +314,54 @@ export class Synset {
     return path;
   }
 
-  path_similarity(other: Synset): number | null {
-    const dist = this.shortest_path_distance(other);
+  path_similarity(other: Synset, _verbose = false, simulateRoot = true): number | null {
+    const dist = this.shortest_path_distance(other, simulateRoot);
     if (dist === null || dist < 0) return null;
     return 1 / (dist + 1);
   }
 
-  lch_similarity(other: Synset, simulateRoot = true): number | null {
-    const needRoot = this.pos() !== other.pos();
-    if (needRoot && !simulateRoot) {
-      throw new Error("Computing the lch similarity requires a taxonomy spanning all synsets");
+  lch_similarity(other: Synset, _verbose = false, simulateRoot = true): number | null {
+    if (this.pos() !== other.pos()) {
+      throw new WordNetError(`Computing the lch similarity requires ${this} and ${other} to have the same part of speech.`);
     }
-    let depth = this.reader.maxDepth(this.pos() as WordNetPos);
-    let dist = this.shortest_path_distance(other);
-    if (needRoot) {
-      depth += 1;
-      dist = this.max_depth() + other.max_depth() + 2;
-    }
-    if (dist === null) return null;
-    return -Math.log((dist + 1) / (2 * depth));
+    const needRoot = this.needsRoot();
+    const depth = this.reader.maxDepth(this.pos() as WordNetPos) + (needRoot ? 1 : 0);
+    const distance = this.shortest_path_distance(other, simulateRoot && needRoot);
+    if (distance === null || distance < 0 || depth === 0) return null;
+    return -Math.log((distance + 1) / (2.0 * depth));
   }
 
-  wup_similarity(other: Synset, simulateRoot = true): number | null {
-    const needRoot = this.pos() !== other.pos();
-    if (needRoot && !simulateRoot) {
-      throw new Error("Computing the wup similarity requires a taxonomy spanning all synsets");
-    }
-    let subsumer: Synset | undefined;
-    let len1: number;
-    let len2: number;
-    if (needRoot) {
-      subsumer = this.reader.fakeRoot(this, other);
-      len1 = this.max_depth() + 1;
-      len2 = other.max_depth() + 1;
-    } else {
-      subsumer = this.lowest_common_hypernyms(other, simulateRoot)[0];
-      if (!subsumer) return null;
-      len1 = new Map(this.hypernymDistances().map(([s, d]) => [s.name(), d])).get(subsumer.name())!;
-      len2 = new Map(other.hypernymDistances().map(([s, d]) => [s.name(), d])).get(subsumer.name())!;
-    }
+  wup_similarity(other: Synset, _verbose = false, simulateRoot = true): number | null {
+    const needRoot = this.needsRoot() || other.needsRoot();
+    const subsumers = this.lowest_common_hypernyms(other, simulateRoot && needRoot, true);
+    if (subsumers.length === 0) return null;
+    const subsumer = subsumers.some((s) => s.equals(this)) ? this : subsumers[0]!;
     const depth = subsumer.max_depth() + 1;
-    return (2.0 * depth) / (len1 + len2 + 2 * depth);
+    let len1 = this.shortest_path_distance(subsumer, simulateRoot && needRoot);
+    let len2 = other.shortest_path_distance(subsumer, simulateRoot && needRoot);
+    if (len1 === null || len2 === null) return null;
+    len1 += depth;
+    len2 += depth;
+    return (2.0 * depth) / (len1 + len2);
   }
 
-  res_similarity(_other: Synset, _ic: unknown): number {
-    throw new Error("res_similarity requires an information content mapping (nltk.corpus.wordnet_ic)");
+  private needsRoot(): boolean {
+    return this.pos() !== "n";
   }
-  jcn_similarity(_other: Synset, _ic: unknown): number {
-    throw new Error("jcn_similarity requires an information content mapping (nltk.corpus.wordnet_ic)");
+
+  res_similarity(other: Synset, ic: WordNetIcDict, verbose = false): number {
+    return lcsIc(this, other, ic, verbose)[2];
   }
-  lin_similarity(_other: Synset, _ic: unknown): number {
-    throw new Error("lin_similarity requires an information content mapping (nltk.corpus.wordnet_ic)");
+  jcn_similarity(other: Synset, ic: WordNetIcDict, verbose = false): number {
+    if (this.equals(other)) return IC_INF;
+    const [ic1, ic2, lcs] = lcsIc(this, other, ic, verbose);
+    if (ic1 === 0 || ic2 === 0) return 0;
+    const icDifference = ic1 + ic2 - 2 * lcs;
+    return icDifference === 0 ? IC_INF : 1 / icDifference;
+  }
+  lin_similarity(other: Synset, ic: WordNetIcDict, verbose = false): number {
+    const [ic1, ic2, lcs] = lcsIc(this, other, ic, verbose);
+    return (2.0 * lcs) / (ic1 + ic2);
   }
 
   tree(rel: (s: Synset) => Synset[] = (s) => s.hyponyms(), cutmark?: number): unknown {
@@ -573,21 +581,6 @@ export class WordNetReader {
     return [...new Set(this.all_synsets(pos).flatMap((s) => s.lemma_names()))].sort();
   }
 
-  fakeRoot(a: Synset, b: Synset): Synset {
-    const row: WordNetSynset = {
-      id: "*ROOT*",
-      pos: a.row.pos,
-      lemmas: ["*ROOT*"],
-      gloss: "",
-      examples: [],
-      hypernyms: [],
-      hyponyms: [...new Set([a, b].flatMap((s) => s.root_hypernyms()).map((s) => s.row.id))],
-      similarTo: [],
-      antonyms: [],
-    };
-    return new Synset(this, row);
-  }
-
   maxDepth(pos: WordNetPos): number {
     let d = this._maxDepth.get(pos);
     if (d === undefined) {
@@ -600,4 +593,104 @@ export class WordNetReader {
 
 export function wordnetReader(wn: WordNet): WordNetReader {
   return new WordNetReader(wn);
+}
+
+/** Simulated `*ROOT*` synset used by `simulate_root` code paths (NLTK `Synset(None)`). */
+class FakeRootSynset extends Synset {
+  constructor(reader: WordNetReader) {
+    super(reader, {
+      id: "*ROOT*",
+      pos: "n",
+      lemmas: ["*ROOT*"],
+      gloss: "",
+      examples: [],
+      hypernyms: [],
+      hyponyms: [],
+      similarTo: [],
+      antonyms: [],
+    });
+    this._name = "*ROOT*";
+  }
+}
+
+const IC_INF = 1e300;
+
+export function information_content(synset: Synset, ic: WordNetIcDict): number {
+  let pos: string = synset.pos();
+  if (pos === "s") pos = "a";
+  const icpos = ic[pos];
+  if (icpos === undefined) {
+    throw new WordNetError(`Information content file has no entries for part-of-speech: ${pos}`);
+  }
+  const counts = icpos[synset.offset()] ?? 0;
+  return counts === 0 ? IC_INF : -Math.log(counts / (icpos[0] ?? 0));
+}
+
+function lcsIc(synset1: Synset, synset2: Synset, ic: WordNetIcDict, verbose = false): [number, number, number] {
+  if (synset1.pos() !== synset2.pos()) {
+    throw new WordNetError(
+      `Computing the least common subsumer requires ${synset1} and ${synset2} to have the same part of speech.`,
+    );
+  }
+  const ic1 = information_content(synset1, ic);
+  const ic2 = information_content(synset2, ic);
+  const subsumers = synset1.common_hypernyms(synset2);
+  const subsumerIc = subsumers.length === 0 ? 0 : Math.max(...subsumers.map((s) => information_content(s, ic)));
+  if (verbose) console.log("> LCS Subsumer by content:", subsumerIc);
+  return [ic1, ic2, subsumerIc];
+}
+
+/** `nltk.corpus.reader.wordnet` module-level similarity delegators. */
+export function jcn_similarity(synset1: Synset, synset2: Synset, ic: WordNetIcDict, verbose = false): number {
+  return synset1.jcn_similarity(synset2, ic, verbose);
+}
+
+export function lin_similarity(synset1: Synset, synset2: Synset, ic: WordNetIcDict, verbose = false): number {
+  return synset1.lin_similarity(synset2, ic, verbose);
+}
+
+export function path_similarity(synset1: Synset, synset2: Synset, verbose = false, simulateRoot = true): number | null {
+  return synset1.path_similarity(synset2, verbose, simulateRoot);
+}
+
+export function lch_similarity(synset1: Synset, synset2: Synset, verbose = false, simulateRoot = true): number | null {
+  return synset1.lch_similarity(synset2, verbose, simulateRoot);
+}
+
+export function wup_similarity(synset1: Synset, synset2: Synset, verbose = false, simulateRoot = true): number | null {
+  return synset1.wup_similarity(synset2, verbose, simulateRoot);
+}
+
+export function res_similarity(synset1: Synset, synset2: Synset, ic: WordNetIcDict, verbose = false): number {
+  return synset1.res_similarity(synset2, ic, verbose);
+}
+
+/** `WordNetICCorpusReader` — loads `ic-*.dat` information-content files. */
+export class WordNetICCorpusReader {
+  constructor(
+    private readonly root: string,
+    readonly fileids: string | readonly string[] = "*",
+  ) {}
+
+  ic(icfile: string): WordNetIcDict {
+    const ic: WordNetIcDict = { n: {}, v: {} };
+    const text = readFileSync(join(this.root, icfile), "utf8");
+    const lines = text.split("\n");
+    for (let num = 0; num < lines.length; num++) {
+      if (num === 0) continue;
+      const line = lines[num]!.trim();
+      if (line === "") continue;
+      const fields = line.split(/\s+/);
+      const offset = Number.parseInt(fields[0]!.slice(0, -1), 10);
+      const value = Number.parseFloat(fields[1]!);
+      const last = fields[0]![fields[0]!.length - 1];
+      const pos = last === "n" ? "n" : last === "v" ? "v" : null;
+      if (pos === null) {
+        throw new Error(`Unidentified part of speech in WordNet Information Content file for field ${fields[0]}`);
+      }
+      if (fields.length === 3 && fields[2] === "ROOT") ic[pos]![0] = (ic[pos]![0] ?? 0) + value;
+      if (value !== 0) ic[pos]![offset] = value;
+    }
+    return ic;
+  }
 }

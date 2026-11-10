@@ -354,7 +354,27 @@
    "wordnetReader": "src/wordnet_objects.ts",
    "wordpunct_tokenize": "src/nltk_compat.ts",
    "write_megam_file": "src/maxent_nltk.ts",
-   "write_tadm_file": "src/maxent_nltk.ts"
+   "write_tadm_file": "src/maxent_nltk.ts",
+   "WordNetError": "src/wordnet_objects.ts",
+   "WordNetICCorpusReader": "src/wordnet_objects.ts",
+   "information_content": "src/wordnet_objects.ts",
+   "jcn_similarity": "src/wordnet_objects.ts",
+   "lin_similarity": "src/wordnet_objects.ts",
+   "path_similarity": "src/wordnet_objects.ts",
+   "res_similarity": "src/wordnet_objects.ts",
+   "lch_similarity": "src/wordnet_objects.ts",
+   "wup_similarity": "src/wordnet_objects.ts",
+   "AffixTagger": "src/sequential_taggers.ts",
+   "ClassifierBasedTagger": "src/sequential_taggers.ts",
+   "ClassifierBasedPOSTagger": "src/sequential_taggers.ts",
+   "TokenSearcher": "src/text.ts",
+   "TextCollection": "src/text.ts",
+   "NLTKWordTokenizer": "src/tokenizers_nltk.ts",
+   "DependencyGrammar": "src/grammar.ts",
+   "ProbabilisticDependencyGrammar": "src/grammar.ts",
+   "induce_pcfg": "src/grammar.ts",
+   "SteppingChartParser": "src/chart.ts",
+   "f": "src/classifier_compat.ts"
   }
  },
  "modules": [
@@ -1073,6 +1093,39 @@
    ],
    "anchor": "punkt-differential",
    "scope": "Punkt object model (language vars, parameters, tokens, trainer, sentence tokenizer, debug decisions) pinned against NLTK 3.10.3"
+  },
+  {
+   "id": "sequential-extra-differential",
+   "kind": "differential",
+   "files": [
+    "test/sequential_extra.test.ts",
+    "test/sequential_extra_oracle.py"
+   ],
+   "anchor": "sequential-extra-differential",
+   "oracleVersion": "3.10.3",
+   "scope": "AffixTagger choose_tag/context/None-None repr, ClassifierBasedTagger/POSTagger feature_detector defaults; PYTHONHASHSEED-independent."
+  },
+  {
+   "id": "text-objects-differential",
+   "kind": "differential",
+   "files": [
+    "test/text_objects.test.ts",
+    "test/text_objects_oracle.py"
+   ],
+   "anchor": "text-objects-differential",
+   "oracleVersion": "3.10.3",
+   "scope": "TokenSearcher.findall group semantics and TextCollection tf/idf/tf_idf; generate() vocab-order divergence is an explicit gap."
+  },
+  {
+   "id": "nltk-word-tokenizer-differential",
+   "kind": "differential",
+   "files": [
+    "test/nltk_word_tokenizer.test.ts",
+    "test/nltk_word_tokenizer_oracle.py"
+   ],
+   "anchor": "nltk-word-tokenizer-differential",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK docstring token/span/convert_parentheses matrix against the ported regex tables."
   }
  ],
  "signatureBindings": [
@@ -5401,7 +5454,7 @@
     ],
     "gaps": [
      "Meronym/holonym/domain/entailment/verb_group/attribute/frame/instance relations return empty — not carried in the packed payload.",
-     "res/jcn/lin_similarity raise pending IC data.",
+     "res/jcn/lin_similarity are implemented; they need a caller-supplied IC mapping (WordNetICCorpusReader.ic).",
      "common_hypernyms ordering is BFS rather than Python set order."
     ]
    },
@@ -15571,6 +15624,718 @@
     ]
    },
    "notes": "Formats trainer/tokenizer decisions as 'text type (abbr-with-ortho-context): decision (reason)'."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.WordNetError",
+   "exports": [
+    "WordNetError"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/wordnet_objects.ts",
+     "anchor": "export class WordNetError"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "JS Error subclass; Python add_note/with_traceback are inherited builtins."
+    ]
+   },
+   "evidence": [
+    "wordnet-objects-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Exception shape only; covered via WordNetError raises in the IC/lch pins."
+    ]
+   },
+   "notes": "Error subclass mirroring the NLTK WordNetError exception."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.WordNetICCorpusReader",
+   "exports": [
+    "WordNetICCorpusReader"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/wordnet_objects.ts",
+     "anchor": "export class WordNetICCorpusReader"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "ic"
+    ],
+    "gaps": [
+     "CorpusReader machinery (abspath/open/raw/readme/license/citation/ensure_loaded) is not ported; root is a filesystem path, fileids informational.",
+     "ic() parses ic-*.dat files identically to NLTK (skip header, ROOT flag accumulates key 0, zero values dropped)."
+    ]
+   },
+   "evidence": [
+    "wordnet-objects-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "ic() verified through downstream information_content/res/jcn/lin pins on ic-brown.dat."
+    ]
+   },
+   "notes": "TS ic-file parser; CorpusReader machinery not ported."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.information_content",
+   "exports": [
+    "information_content"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/wordnet_objects.ts",
+     "anchor": "export function information_content"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Delegates to the Synset method of the same name."
+    ]
+   },
+   "evidence": [
+    "wordnet-objects-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned on ic-brown.dat; missing-pos and missing-offset (1e300) paths covered."
+    ]
+   },
+   "notes": "Module-level IC lookup with s->a pos normalization and WordNetError on missing pos."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.jcn_similarity",
+   "exports": [
+    "jcn_similarity"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/wordnet_objects.ts",
+     "anchor": "export function jcn_similarity"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Delegates to the Synset method of the same name."
+    ]
+   },
+   "evidence": [
+    "wordnet-objects-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned incl. self-similarity 1e300 and zero-IC 0 cases."
+    ]
+   },
+   "notes": "Delegates to Synset.jcn_similarity."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.lin_similarity",
+   "exports": [
+    "lin_similarity"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/wordnet_objects.ts",
+     "anchor": "export function lin_similarity"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Delegates to the Synset method of the same name."
+    ]
+   },
+   "evidence": [
+    "wordnet-objects-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned on dog/cat/self pairs from ic-brown.dat."
+    ]
+   },
+   "notes": "Delegates to Synset.lin_similarity."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.path_similarity",
+   "exports": [
+    "path_similarity"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/wordnet_objects.ts",
+     "anchor": "export function path_similarity"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Delegates to the Synset method of the same name."
+    ]
+   },
+   "evidence": [
+    "wordnet-objects-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Covered through the same Synset pins; verbose flag accepted but prints nothing like NLTK."
+    ]
+   },
+   "notes": "Delegates to Synset.path_similarity."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.res_similarity",
+   "exports": [
+    "res_similarity"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/wordnet_objects.ts",
+     "anchor": "export function res_similarity"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Delegates to the Synset method of the same name."
+    ]
+   },
+   "evidence": [
+    "wordnet-objects-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned on ic-brown.dat; cross-pos WordNetError covered."
+    ]
+   },
+   "notes": "Delegates to Synset.res_similarity."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.lch_similarity",
+   "exports": [
+    "lch_similarity"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/wordnet_objects.ts",
+     "anchor": "export function lch_similarity"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Delegates to the Synset method of the same name."
+    ]
+   },
+   "evidence": [
+    "wordnet-objects-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned incl. cross-pos WordNetError and fake-root verb path."
+    ]
+   },
+   "notes": "Delegates to Synset.lch_similarity."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.wup_similarity",
+   "exports": [
+    "wup_similarity"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/wordnet_objects.ts",
+     "anchor": "export function wup_similarity"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Delegates to the Synset method of the same name."
+    ]
+   },
+   "evidence": [
+    "wordnet-objects-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned incl. cross-pos fake-root 0.125 / 1/6 cases."
+    ]
+   },
+   "notes": "Delegates to Synset.wup_similarity."
+  },
+  {
+   "target": "nltk.tag.sequential.AffixTagger",
+   "exports": [
+    "AffixTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class AffixTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "choose_tag",
+     "confusion",
+     "context",
+     "encode_json_obj",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "size",
+     "tag",
+     "tag_one",
+     "tag_sents"
+    ],
+    "gaps": [
+     "camelCase adaptations: chooseTag/tagOne/tagSents/fMeasure/evaluatePerTag/encodeJsonObj; decode_json_obj not implemented."
+    ]
+   },
+   "evidence": [
+    "sequential-extra-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned for affix tables and None-tag context reprs."
+    ]
+   },
+   "notes": "TS port; affix tables with min_stem_length/cutoff semantics."
+  },
+  {
+   "target": "nltk.tag.sequential.ClassifierBasedTagger",
+   "exports": [
+    "ClassifierBasedTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class ClassifierBasedTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "choose_tag",
+     "classifier",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "feature_detector",
+     "precision",
+     "recall",
+     "tag",
+     "tag_one",
+     "tag_sents"
+    ],
+    "gaps": [
+     "camelCase adaptations: chooseTag/tagOne/tagSents/fMeasure/evaluatePerTag."
+    ]
+   },
+   "evidence": [
+    "sequential-extra-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned for default feature_detector + classifier delegation."
+    ]
+   },
+   "notes": "TS port; trains a FeaturesetClassifier over feature_detector output."
+  },
+  {
+   "target": "nltk.tag.sequential.ClassifierBasedPOSTagger",
+   "exports": [
+    "ClassifierBasedPOSTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class ClassifierBasedPOSTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "choose_tag",
+     "classifier",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "feature_detector",
+     "precision",
+     "recall",
+     "tag",
+     "tag_one",
+     "tag_sents"
+    ],
+    "gaps": [
+     "camelCase adaptations: chooseTag/tagOne/tagSents/fMeasure/evaluatePerTag; feature_detector is the NLTK default word/shape/prefix/suffix detector."
+    ]
+   },
+   "evidence": [
+    "sequential-extra-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned for the NLTK default feature detector."
+    ]
+   },
+   "notes": "TS port; NLTK default word/shape/affix feature detector."
+  },
+  {
+   "target": "nltk.text.TokenSearcher",
+   "exports": [
+    "TokenSearcher"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/text.ts",
+     "anchor": "TokenSearcher"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "findall"
+    ],
+    "gaps": [
+     "findall returns capture-group lists like NLTK when the pattern has groups."
+    ]
+   },
+   "evidence": [
+    "text-objects-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "findall group/whole-match semantics pinned."
+    ]
+   },
+   "notes": "findall with NLTK capture-group semantics."
+  },
+  {
+   "target": "nltk.text.TextCollection",
+   "exports": [
+    "TextCollection"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/text.ts",
+     "anchor": "TextCollection"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "collocation_list",
+     "collocations",
+     "common_contexts",
+     "concordance",
+     "concordance_list",
+     "count",
+     "dispersion_plot",
+     "findall",
+     "generate",
+     "idf",
+     "index",
+     "plot",
+     "readability",
+     "similar",
+     "tf",
+     "tf_idf",
+     "vocab"
+    ],
+    "gaps": [
+     "generate() vocabulary iteration order diverges (insertion vs Python set order); tf returns count/len like NLTK."
+    ]
+   },
+   "evidence": [
+    "text-objects-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "tf/idf/tf_idf pins; generate() order divergence documented."
+    ]
+   },
+   "notes": "Text subclass adding tf/idf/tf_idf."
+  },
+  {
+   "target": "nltk.tokenize.NLTKWordTokenizer",
+   "exports": [
+    "NLTKWordTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_nltk.ts",
+     "anchor": "NLTKWordTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "span_tokenize",
+     "span_tokenize_sents",
+     "tokenize",
+     "tokenize_sents"
+    ],
+    "gaps": [
+     "Constructor takes no args like NLTK; regex tables ported verbatim."
+    ]
+   },
+   "evidence": [
+    "nltk-word-tokenizer-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Docstring token/span matrix pinned."
+    ]
+   },
+   "notes": "Ported NLTKWordTokenizer regex tables."
+  },
+  {
+   "target": "nltk.grammar.DependencyGrammar",
+   "exports": [
+    "DependencyGrammar"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/grammar.ts",
+     "anchor": "class DependencyGrammar"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "contains",
+     "fromstring"
+    ],
+    "gaps": [
+     "contains() uses cycle-tolerance pumping like NLTK."
+    ]
+   },
+   "evidence": [
+    "grammar-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "contains() cycle-pumping pinned on the grammar oracle matrix."
+    ]
+   },
+   "notes": "Ported contains()/fromstring() with cycle-tolerance pumping."
+  },
+  {
+   "target": "nltk.grammar.ProbabilisticDependencyGrammar",
+   "exports": [
+    "ProbabilisticDependencyGrammar"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/grammar.ts",
+     "anchor": "class ProbabilisticDependencyGrammar"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "contains"
+    ],
+    "gaps": [
+     "Derives its grammar from event/tag statistics like NLTK."
+    ]
+   },
+   "evidence": [
+    "grammar-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "contains() covered through the dependency-grammar oracle pins."
+    ]
+   },
+   "notes": "Derives grammar from event/tag statistics like NLTK."
+  },
+  {
+   "target": "nltk.grammar.induce_pcfg",
+   "exports": [
+    "induce_pcfg"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/grammar.ts",
+     "anchor": "export function induce_pcfg"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Returns grammar.PCFG like NLTK."
+    ]
+   },
+   "evidence": [
+    "grammar-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Induced probabilities pinned."
+    ]
+   },
+   "notes": "Counts productions to induced probabilities; returns grammar.PCFG."
+  },
+  {
+   "target": "nltk.parse.chart.SteppingChartParser",
+   "exports": [
+    "SteppingChartParser"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "SteppingChartParser"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "chart",
+     "chart_parse",
+     "current_chartrule",
+     "grammar",
+     "initialize",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents",
+     "parses",
+     "set_chart",
+     "set_grammar",
+     "set_strategy",
+     "step",
+     "strategy"
+    ],
+    "gaps": [
+     "step() is a JS generator (NLTK returns edge-or-None per call); strategy=[] default like NLTK."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Edge sequence and parse output pinned against the chart oracle."
+    ]
+   },
+   "notes": "ChartParser subclass with set_strategy/step/parses stepping API."
+  },
+  {
+   "target": "nltk.classify.decisiontree.f",
+   "exports": [
+    "f"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/classifier_compat.ts",
+     "anchor": "export function f"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK verbose=True print output is not surfaced; binary=True forwarded to FeatureTreeOptions."
+    ]
+   },
+   "evidence": [
+    "tree-features"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Covered through DecisionTreeClassifier.train delegation; verbose output is not NLTK-pinned."
+    ]
+   },
+   "notes": "Debug helper: DecisionTreeClassifier.train(x, binary=True)."
   }
  ]
 }

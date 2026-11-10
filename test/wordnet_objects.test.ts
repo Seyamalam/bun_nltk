@@ -1,6 +1,17 @@
 import { describe, expect, test } from "bun:test";
+import { existsSync } from "node:fs";
 import { loadWordNet } from "../src/wordnet";
-import { WordNetReader } from "../src/wordnet_objects";
+import {
+  WordNetReader,
+  WordNetICCorpusReader,
+  information_content,
+  path_similarity,
+  lch_similarity,
+  wup_similarity,
+  res_similarity,
+  jcn_similarity,
+  lin_similarity,
+} from "../src/wordnet_objects";
 
 // NLTK 3.10.3 oracle pins — nltk.corpus.wordnet Synset/Lemma object model
 // (requires the packed wordnet data; skipped when unavailable)
@@ -69,10 +80,50 @@ describe("similarity", () => {
     expect(Math.round(dog.lch_similarity(cat)! * 1e6) / 1e6).toBe(2.028148);
   });
 
-  test.skipIf(!ok)("ic-based similarities require an IC mapping", () => {
-    expect(() => dog.res_similarity(cat, {})).toThrow(/information content/);
-    expect(() => dog.jcn_similarity(cat, {})).toThrow(/information content/);
-    expect(() => dog.lin_similarity(cat, {})).toThrow(/information content/);
+  test.skipIf(!ok)("simulate_root fake root paths", () => {
+    const bark = reader.synset("bark.v.01")!;
+    const hungry = reader.synset("hungry.a.01")!;
+    const walk = reader.synset("walk.v.01")!;
+    const run = reader.synset("run.v.02")!;
+    expect(dog.lowest_common_hypernyms(bark).map((s) => s.name())).toEqual([]);
+    expect(dog.lowest_common_hypernyms(bark, true).map((s) => s.name())).toEqual(["*ROOT*"]);
+    expect(dog.shortest_path_distance(bark)).toBeNull();
+    expect(dog.shortest_path_distance(bark, true)).toBe(14);
+    expect([...dog.hypernym_distances(0, true)].filter(([s]) => s.name() === "*ROOT*").map(([, d]) => d)).toEqual([14]);
+    expect([...dog.hypernym_distances()].filter(([s]) => s.name() === "entity.n.01").map(([, d]) => d).sort((a, b) => a - b)).toEqual([8, 13]);
+    expect(dog.wup_similarity(bark)).toBe(0.125);
+    expect(dog.wup_similarity(hungry)).toBeCloseTo(1 / 6, 12);
+    expect(Math.round(walk.lch_similarity(run)! * 1e6) / 1e6).toBe(1.648659);
+    expect(dog.lch_similarity(dog)).toBeCloseTo(3.6375861597263857, 12);
+    expect(() => dog.lch_similarity(bark)).toThrowError(/requires Synset\('dog\.n\.01'\) and Synset\('bark\.v\.01'\) to have the same part of speech/);
+  });
+
+  test.skipIf(!ok)("ic-based similarities match ic-brown.dat oracle", () => {
+    const icFile = ".cache/nltk-data/corpora/wordnet_ic/ic-brown.dat";
+    let ic: ReturnType<WordNetICCorpusReader["ic"]> | null = null;
+    try {
+      ic = new WordNetICCorpusReader(".cache/nltk-data/corpora/wordnet_ic").ic("ic-brown.dat");
+    } catch {
+      ic = null;
+    }
+    if (ic === null || !existsSync(icFile)) return;
+    expect(information_content(dog, ic)).toBe(9.006014398918229);
+    expect(information_content(cat, ic)).toBe(9.040649895580986);
+    expect(dog.res_similarity(cat, ic)).toBe(7.911666509036577);
+    expect(dog.jcn_similarity(cat, ic)).toBe(0.4497755285516739);
+    expect(dog.lin_similarity(cat, ic)).toBe(0.8768009843733973);
+    expect(dog.lin_similarity(dog, ic)).toBe(1);
+    expect(dog.jcn_similarity(dog, ic)).toBe(1e300);
+    expect(path_similarity(dog, cat)).toBe(0.2);
+    expect(lch_similarity(dog, cat)).toBeCloseTo(2.0281482472922856, 12);
+    expect(wup_similarity(dog, cat)).toBe(0.8571428571428571);
+    expect(res_similarity(dog, cat, ic)).toBe(7.911666509036577);
+    expect(jcn_similarity(dog, cat, ic)).toBe(0.4497755285516739);
+    expect(lin_similarity(dog, cat, ic)).toBe(0.8768009843733973);
+    expect(() => information_content(dog, { v: ic.v })).toThrowError(
+      /Information content file has no entries for part-of-speech: n/,
+    );
+    expect(() => dog.res_similarity(reader.synset("bark.v.01")!, ic)).toThrowError(/least common subsumer/);
   });
 });
 

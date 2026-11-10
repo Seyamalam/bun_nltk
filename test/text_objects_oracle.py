@@ -1,3 +1,6 @@
+import nltk
+assert nltk.__version__ == "3.10.3"
+
 """Oracle for TokenSearcher/TextCollection (NLTK 3.10.3)."""
 from nltk.text import TokenSearcher, TextCollection
 t = TokenSearcher(["the","quick","brown","fox","jumps","over","the","lazy","dog"])

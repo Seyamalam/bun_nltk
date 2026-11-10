@@ -280,3 +280,8 @@ export class PositiveNaiveBayesClassifier extends FeatureClassifierBase {
     return [payload.positiveLabel, payload.negativeLabel];
   }
 }
+
+/** `nltk.classify.decisiontree.f` — debug helper: train(x, binary=True, verbose=True). */
+export function f(x: Iterable<LabeledFeatureset>): DecisionTreeClassifier {
+  return DecisionTreeClassifier.train(x, { binary: true });
+}

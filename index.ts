@@ -236,6 +236,7 @@ export {
   MaxentClassifier,
   NaiveBayesClassifier,
   PositiveNaiveBayesClassifier,
+  f,
 } from "./src/classifier_compat";
 export type { FeatureSet, FeatureValue, LabeledFeatureset } from "./src/classifier_compat";
 export { flattenSparseBatch, TextFeatureVectorizer } from "./src/features";
@@ -726,7 +727,17 @@ export {
   Lemma,
   WordNetReader,
   wordnetReader,
+  WordNetError,
+  WordNetICCorpusReader,
+  information_content,
+  path_similarity,
+  lch_similarity,
+  wup_similarity,
+  res_similarity,
+  jcn_similarity,
+  lin_similarity,
 } from "./src/wordnet_objects";
+export type { WordNetIcDict } from "./src/wordnet_objects";
 export {
   TokenizerI,
   StemmerI,
