@@ -100,7 +100,7 @@ export function validateManifest(value: unknown): asserts value is Manifest {
   if (typeof manifest.reviewBase !== "string" || !/^[a-f0-9]{7,40}$/.test(manifest.reviewBase)) throw new Error("inventory: reviewBase must be a commit ID");
   for (const key of ["publicNames", "classMembers", "bunExports", "behavior"]) text(object(manifest.policy, "policy")[key], `policy.${key}`);
   strings(manifest.modules, "modules");
-  if (manifest.modules.some((name) => !/^nltk\.[a-z_]+(?:\.[a-z_]+)*$/.test(name))) throw new Error("modules: invalid NLTK module");
+  if (manifest.modules.some((name) => !/^nltk\.[a-z0-9_]+(?:\.[a-z0-9_]+)*$/.test(name))) throw new Error("modules: invalid NLTK module");
   strings(manifest.dataResources, "dataResources");
   const exclusions = array(manifest.excludedModules, "excludedModules");
   for (const item of exclusions) {

@@ -374,7 +374,14 @@
    "ProbabilisticDependencyGrammar": "src/grammar.ts",
    "induce_pcfg": "src/grammar.ts",
    "SteppingChartParser": "src/chart.ts",
-   "f": "src/classifier_compat.ts"
+   "f": "src/classifier_compat.ts",
+   "ARLSTem": "src/stem_arlstem.ts",
+   "ARLSTem2": "src/stem_arlstem2.ts",
+   "ISRIStemmer": "src/stem_isri.ts",
+   "ISRI_STOP_WORDS": "src/stem_isri.ts",
+   "RSLPStemmer": "src/stem_rslp.ts",
+   "Cistem": "src/stem_cistem.ts",
+   "CistemStemmer": "src/stem_cistem.ts"
   }
  },
  "modules": [
@@ -416,7 +423,30 @@
   "nltk.translate.nist_score",
   "nltk.tree.tree",
   "nltk.util",
-  "nltk.wsd"
+  "nltk.wsd",
+  "nltk.stem.arlstem",
+  "nltk.stem.arlstem2",
+  "nltk.stem.isri",
+  "nltk.stem.rslp",
+  "nltk.stem.cistem",
+  "nltk.stem.api",
+  "nltk.stem.util",
+  "nltk.translate.api",
+  "nltk.translate.gale_church",
+  "nltk.translate.gdfa",
+  "nltk.translate.gleu_score",
+  "nltk.translate.ibm1",
+  "nltk.translate.ibm2",
+  "nltk.translate.ibm3",
+  "nltk.translate.ibm4",
+  "nltk.translate.ibm5",
+  "nltk.translate.ibm_model",
+  "nltk.translate.lepor",
+  "nltk.translate.meteor_score",
+  "nltk.translate.metrics",
+  "nltk.translate.phrase_based",
+  "nltk.translate.ribes_score",
+  "nltk.translate.stack_decoder"
  ],
  "excludedModules": [
   {
@@ -1126,6 +1156,17 @@
    "anchor": "nltk-word-tokenizer-differential",
    "oracleVersion": "3.10.3",
    "scope": "NLTK docstring token/span/convert_parentheses matrix against the ported regex tables."
+  },
+  {
+   "id": "stem-extra-differential",
+   "kind": "differential",
+   "files": [
+    "test/stem_extra.test.ts",
+    "test/stem_extra_oracle.py"
+   ],
+   "anchor": "stem-extra-differential",
+   "oracleVersion": "3.10.3",
+   "scope": "153 stems: arlstem/arlstem2/isri on 30 Arabic words, rslp on 25 Portuguese words, cistem/case_insensitive on 19 German words."
   }
  ],
  "signatureBindings": [
@@ -16336,6 +16377,516 @@
     ]
    },
    "notes": "Debug helper: DecisionTreeClassifier.train(x, binary=True)."
+  },
+  {
+   "target": "nltk.stem.arlstem.ARLSTem",
+   "exports": [
+    "ARLSTem"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stem_arlstem.ts",
+     "anchor": "export class ARLSTem"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fem2masc",
+     "norm",
+     "plur2sing",
+     "pref",
+     "stem",
+     "suff",
+     "verb",
+     "verb_t1",
+     "verb_t2",
+     "verb_t3",
+     "verb_t4",
+     "verb_t5",
+     "verb_t6"
+    ],
+    "gaps": [
+     "Rule-table methods are public like NLTK; stop-word list differs from ISRI's."
+    ]
+   },
+   "evidence": [
+    "stem-extra-differential"
+   ],
+   "notes": "TS port of the ARLSTem light Arabic stemmer.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned sample corpus; unbounded input space excluded."
+    ]
+   }
+  },
+  {
+   "target": "nltk.stem.arlstem2.ARLSTem2",
+   "exports": [
+    "ARLSTem2"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stem_arlstem2.ts",
+     "anchor": "export class ARLSTem2"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "adjective",
+     "fem2masc",
+     "norm",
+     "plur2sing",
+     "pref",
+     "stem",
+     "stem1",
+     "suff",
+     "verb",
+     "verb_t1",
+     "verb_t2",
+     "verb_t3",
+     "verb_t4",
+     "verb_t5",
+     "verb_t6"
+    ],
+    "gaps": [
+     "Rule-table methods are public like NLTK."
+    ]
+   },
+   "evidence": [
+    "stem-extra-differential"
+   ],
+   "notes": "TS port of the two-round ARLSTem2.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned sample corpus; unbounded input space excluded."
+    ]
+   }
+  },
+  {
+   "target": "nltk.stem.isri.ISRIStemmer",
+   "exports": [
+    "ISRIStemmer",
+    "ISRI_STOP_WORDS"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stem_isri.ts",
+     "anchor": "export class ISRIStemmer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "end_w5",
+     "end_w6",
+     "norm",
+     "pre1",
+     "pre32",
+     "pro_w4",
+     "pro_w53",
+     "pro_w54",
+     "pro_w6",
+     "pro_w64",
+     "stem",
+     "suf1",
+     "suf32",
+     "waw"
+    ],
+    "gaps": [
+     "Constructor accepts a custom stopWords list like NLTK's _stop_words attribute."
+    ]
+   },
+   "evidence": [
+    "stem-extra-differential"
+   ],
+   "notes": "TS port of the ISRI Arabic stemmer.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned sample corpus; unbounded input space excluded."
+    ]
+   }
+  },
+  {
+   "target": "nltk.stem.rslp.RSLPStemmer",
+   "exports": [
+    "RSLPStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stem_rslp.ts",
+     "anchor": "export class RSLPStemmer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply_rule",
+     "read_rule",
+     "stem"
+    ],
+    "gaps": [
+     "step*.pt rules are bundled in src/stem_rslp_data.ts rather than loaded via nltk.data."
+    ]
+   },
+   "evidence": [
+    "stem-extra-differential"
+   ],
+   "notes": "TS port of the RSLP Portuguese stemmer.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned sample corpus; unbounded input space excluded."
+    ]
+   }
+  },
+  {
+   "target": "nltk.stem.cistem.Cistem",
+   "exports": [
+    "Cistem",
+    "CistemStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/stem_cistem.ts",
+     "anchor": "export class CistemStemmer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "replace_back",
+     "replace_to",
+     "segment",
+     "stem"
+    ],
+    "gaps": [
+     "case_insensitive constructor flag matches NLTK's case_insensitive option."
+    ]
+   },
+   "evidence": [
+    "stem-extra-differential"
+   ],
+   "notes": "TS port of the Cistem German stemmer.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned sample corpus; unbounded input space excluded."
+    ]
+   }
+  },
+  {
+   "target": "nltk.stem.api.StemmerI",
+   "exports": [
+    "StemmerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "StemmerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "Abstract base; stem() contract only."
+    ]
+   },
+   "evidence": [
+    "stem-extra-differential",
+    "snowball-differential",
+    "stemmer-unit"
+   ],
+   "notes": "NLTK StemmerI abstract interface.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned sample corpus; unbounded input space excluded."
+    ]
+   }
+  },
+  {
+   "target": "nltk.stem.arlstem.StemmerI",
+   "exports": [
+    "StemmerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "StemmerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "Abstract base; stem() contract only."
+    ]
+   },
+   "evidence": [
+    "stem-extra-differential",
+    "stemmer-unit"
+   ],
+   "notes": "NLTK StemmerI abstract interface.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned sample corpus; unbounded input space excluded."
+    ]
+   }
+  },
+  {
+   "target": "nltk.stem.arlstem2.StemmerI",
+   "exports": [
+    "StemmerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "StemmerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "Abstract base; stem() contract only."
+    ]
+   },
+   "evidence": [
+    "stem-extra-differential",
+    "stemmer-unit"
+   ],
+   "notes": "NLTK StemmerI abstract interface.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned sample corpus; unbounded input space excluded."
+    ]
+   }
+  },
+  {
+   "target": "nltk.stem.isri.StemmerI",
+   "exports": [
+    "StemmerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "StemmerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "Abstract base; stem() contract only."
+    ]
+   },
+   "evidence": [
+    "stem-extra-differential",
+    "stemmer-unit"
+   ],
+   "notes": "NLTK StemmerI abstract interface.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned sample corpus; unbounded input space excluded."
+    ]
+   }
+  },
+  {
+   "target": "nltk.stem.rslp.StemmerI",
+   "exports": [
+    "StemmerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "StemmerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "Abstract base; stem() contract only."
+    ]
+   },
+   "evidence": [
+    "stem-extra-differential",
+    "stemmer-unit"
+   ],
+   "notes": "NLTK StemmerI abstract interface.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned sample corpus; unbounded input space excluded."
+    ]
+   }
+  },
+  {
+   "target": "nltk.stem.cistem.StemmerI",
+   "exports": [
+    "StemmerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "StemmerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "Abstract base; stem() contract only."
+    ]
+   },
+   "evidence": [
+    "stem-extra-differential",
+    "stemmer-unit"
+   ],
+   "notes": "NLTK StemmerI abstract interface.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned sample corpus; unbounded input space excluded."
+    ]
+   }
+  },
+  {
+   "target": "nltk.stem.rslp.load",
+   "exports": [
+    "load"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/data.ts",
+     "anchor": "export function load"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "nltk.data.load re-export; resource loading is platform-bound (no zip registry)."
+    ]
+   },
+   "evidence": [
+    "stem-extra-differential",
+    "stemmer-unit"
+   ],
+   "notes": "nltk.data.load re-exported by the rslp module.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No resource-format parity fixtures; see the nltk.data.load mapping for evidence."
+    ]
+   }
+  },
+  {
+   "target": "nltk.stem.util.prefix_replace",
+   "exports": [
+    "prefix_replace"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/snowball/helpers.ts",
+     "anchor": "prefix_replace"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Returns the replaced string like NLTK's one-line helper."
+    ]
+   },
+   "evidence": [
+    "snowball-differential"
+   ],
+   "notes": "String replace helper used by Snowball ports.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned sample corpus; unbounded input space excluded."
+    ]
+   }
+  },
+  {
+   "target": "nltk.stem.util.suffix_replace",
+   "exports": [
+    "suffix_replace"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/snowball/helpers.ts",
+     "anchor": "suffix_replace"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Returns the replaced string like NLTK's one-line helper."
+    ]
+   },
+   "evidence": [
+    "snowball-differential"
+   ],
+   "notes": "String replace helper used by Snowball ports.",
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned sample corpus; unbounded input space excluded."
+    ]
+   }
   }
  ]
 }
