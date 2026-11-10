@@ -1,30 +1,16 @@
 import { ParsingRuntime } from "./parsing_runtime";
+import { Nonterminal, Production as BaseProduction, type GrammarSymbol } from "./grammar";
 
 export { ParsingRuntime } from "./parsing_runtime";
 export { RustCFG as CFG };
 export type PlainRustTree<L = string> = { label: string; children: Array<PlainRustTree<L> | L> };
 export type StringTree = PlainRustTree<string>;
-export type GrammarSymbol = Nonterminal | string;
+export { Nonterminal, nonterminals, type GrammarSymbol } from "./grammar";
 export type RustTreePosition = readonly number[];
 export type RustTreeOrder = "preorder" | "postorder" | "bothorder" | "leaves";
 type WireSymbol = { kind: "nonterminal" | "terminal"; value: string };
 type WireProduction = { lhs: string; rhs: WireSymbol[] };
 type WireGrammar = { start: string; productions: WireProduction[] };
-
-/** String-valued nonterminal, deliberately distinct from terminal strings. */
-export class Nonterminal {
-  constructor(private readonly name: string) {
-    if (typeof name !== "string") throw new TypeError("nonterminal symbols must be strings");
-  }
-  symbol(): string { return this.name; }
-  toString(): string { return this.name; }
-  equals(other: unknown): boolean { return other instanceof Nonterminal && this.name === other.name; }
-  slash(other: Nonterminal): Nonterminal { return new Nonterminal(`${this.name}/${other.name}`); }
-}
-
-export function nonterminals(symbols: string): Nonterminal[] {
-  return symbols.split(/[\s,]+/).filter(Boolean).map((name) => new Nonterminal(name));
-}
 
 function symbolToWire(symbol: GrammarSymbol): WireSymbol {
   if (symbol instanceof Nonterminal) return { kind: "nonterminal", value: symbol.symbol() };
@@ -35,26 +21,20 @@ function symbolFromWire(symbol: WireSymbol): GrammarSymbol {
   return symbol.kind === "nonterminal" ? new Nonterminal(symbol.value) : symbol.value;
 }
 
-export class Production {
-  private readonly right: GrammarSymbol[];
-  constructor(private readonly runtime: ParsingRuntime, private readonly left: Nonterminal, rhs: Iterable<GrammarSymbol>) {
-    if (!(left instanceof Nonterminal)) throw new TypeError("production lhs must be a Nonterminal");
-    this.right = [...rhs];
-    for (const symbol of this.right) symbolToWire(symbol);
+export class Production extends BaseProduction {
+  constructor(private readonly runtime: ParsingRuntime, lhs: Nonterminal, rhs: Iterable<GrammarSymbol>) {
+    super(lhs, rhs);
+    if (!(lhs instanceof Nonterminal)) throw new TypeError("production lhs must be a Nonterminal");
+    for (const symbol of this.rhs()) symbolToWire(symbol);
   }
   static fromWire(runtime: ParsingRuntime, wire: WireProduction): Production {
     return new Production(runtime, new Nonterminal(wire.lhs), wire.rhs.map(symbolFromWire));
   }
-  toWire(): WireProduction { return { lhs: this.left.symbol(), rhs: this.right.map(symbolToWire) }; }
-  lhs(): Nonterminal { return this.left; }
-  rhs(): readonly GrammarSymbol[] { return [...this.right]; }
-  get length(): number { return this.right.length; }
-  is_lexical(): boolean { return this.runtime.request({ op: "production_lexical", production: this.toWire() }); }
-  is_nonlexical(): boolean { return !this.is_lexical(); }
-  isLexical(): boolean { return this.is_lexical(); }
-  isNonlexical(): boolean { return this.is_nonlexical(); }
-  toString(): string { return this.runtime.request({ op: "production_format", production: this.toWire() }); }
-  equals(other: unknown): boolean {
+  toWire(): WireProduction { return { lhs: this.lhs().symbol(), rhs: this.rhs().map(symbolToWire) }; }
+  override is_lexical(): boolean { return this.runtime.request({ op: "production_lexical", production: this.toWire() }); }
+  override is_nonlexical(): boolean { return !this.is_lexical(); }
+  override toString(): string { return this.runtime.request({ op: "production_format", production: this.toWire() }); }
+  override equals(other: unknown): boolean {
     return other instanceof Production && JSON.stringify(this.toWire()) === JSON.stringify(other.toWire());
   }
 }

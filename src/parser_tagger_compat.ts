@@ -31,13 +31,8 @@ function joinTokens(tokens: string[]): string {
   return tokens.join(" ");
 }
 
-export class CFG {
-  constructor(public readonly grammar: CfgGrammar) {}
-
-  static fromstring(grammarText: string, options?: { startSymbol?: string }): CFG {
-    return new CFG(parseCfgGrammar(grammarText, options));
-  }
-}
+export { CFG } from "./grammar";
+import { CFG } from "./grammar";
 
 export class PCFG {
   constructor(public readonly grammar: PcfgGrammar) {}

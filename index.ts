@@ -605,5 +605,20 @@ export { PorterStemmer } from "./src/porter_stemmer";
 
 // Python NLTK-style snake_case aliases (generated).
 export * from "./src/nltk_aliases";
-export { ParsingRuntime, Tree, Nonterminal, Production, nonterminals, RustCFG, RustEarleyParser } from "./src/rust_parse";
+export { ParsingRuntime, Tree, Nonterminal, nonterminals, RustCFG, RustEarleyParser } from "./src/rust_parse";
+export {
+  Production,
+  ProbabilisticProduction,
+  DependencyProduction,
+  readGrammar,
+  read_grammar,
+  standardNontermParser,
+  standard_nonterm_parser,
+  isNonterminal,
+  is_nonterminal,
+  isTerminal,
+  is_terminal,
+  transitiveClosure,
+  invertGraph,
+} from "./src/grammar";
 export type { StringTree, GrammarSymbol, RustTreePosition, RustTreeOrder, TreeFormatOptions, RustParseOptions, RustParseResult } from "./src/rust_parse";

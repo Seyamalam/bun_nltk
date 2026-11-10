@@ -67,7 +67,7 @@
    "corpusBleu": "src/metrics.ts",
    "sentenceChrF": "src/translation_metrics_extra.ts",
    "corpusNist": "src/translation_metrics_extra.ts",
-   "CFG": "src/parser_tagger_compat.ts",
+   "CFG": "src/grammar.ts",
    "parseCfgGrammar": "src/parse.ts",
    "ChartParser": "src/parser_tagger_compat.ts",
    "chartParse": "src/parse.ts",
@@ -98,7 +98,16 @@
    "NorwegianStemmer": "src/stemmers.ts",
    "SwedishStemmer": "src/stemmers.ts",
    "RomanianStemmer": "src/stemmers.ts",
-   "RussianStemmer": "src/stemmers.ts"
+   "RussianStemmer": "src/stemmers.ts",
+   "Production": "src/grammar.ts",
+   "ProbabilisticProduction": "src/grammar.ts",
+   "DependencyProduction": "src/grammar.ts",
+   "readGrammar": "src/grammar.ts",
+   "read_grammar": "src/grammar.ts",
+   "transitiveClosure": "src/grammar.ts",
+   "invertGraph": "src/grammar.ts",
+   "nonterminals": "src/grammar.ts",
+   "Nonterminal": "src/grammar.ts"
   }
  },
  "modules": [
@@ -696,6 +705,17 @@
    "anchor": "NLTK 3.10.3 oracle pins \u2014 ProbDistI inherited surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: SUM_TO_ONE per class, discount (base 0.0 vs Lidstone formula), logprob -1e300 unseen, prob unseen/empty=0, generate weighted sampling, repr, bins>=B() error wording."
+  },
+  {
+   "id": "grammar-differential",
+   "kind": "differential",
+   "files": [
+    "test/grammar.test.ts",
+    "test/grammar_oracle.py"
+   ],
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.grammar CFG/Production/Nonterminal",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: CFG init/indexes/leftcorner closure, productions(lhs/rhs/empty) filters, grammar-form predicates, chomsky_normal_form pipeline (eliminate_start, binarize, remove_mixed_rules, remove_unitary_rules with cycle guard), check_coverage quoting, read_grammar errors, Production/ProbabilisticProduction/DependencyProduction/Nonterminal/nonterminals."
   }
  ],
  "signatureBindings": [
@@ -898,9 +918,9 @@
   {
    "target": "nltk.grammar.CFG.fromstring",
    "callable": "CFG.fromstring",
-   "signature": "(grammarText: string, options?: { startSymbol?: string }) => CFG",
-   "file": "src/parser_tagger_compat.ts",
-   "anchor": "static fromstring(grammarText: string, options?: { startSymbol?: string }): CFG"
+   "signature": "(input: string | readonly string[], _options?: { encoding?: string }) => CFG",
+   "file": "src/grammar.ts",
+   "anchor": "static fromstring(input: string | readonly string[]"
   },
   {
    "target": "nltk.parse.chart.ChartParser.parse",
@@ -2280,10 +2300,10 @@
     "parseCfgGrammar"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parser_tagger_compat.ts",
+     "file": "src/grammar.ts",
      "anchor": "export class CFG"
     },
     {
@@ -2292,21 +2312,42 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [
-     "fromstring"
+     "binarize",
+     "check_coverage",
+     "chomsky_normal_form",
+     "eliminate_start",
+     "fromstring",
+     "is_binarised",
+     "is_chomsky_normal_form",
+     "is_flexible_chomsky_normal_form",
+     "is_leftcorner",
+     "is_lexical",
+     "is_nonempty",
+     "is_nonlexical",
+     "leftcorner_parents",
+     "leftcorners",
+     "max_len",
+     "min_len",
+     "productions",
+     "remove_mixed_rules",
+     "remove_unitary_rules",
+     "start"
     ],
     "gaps": [
-     "Constructor takes project CfgGrammar; NLTK productions/start/leftcorner and grammar API absent."
+     "productions() takes an options object {lhs,rhs,empty}; chomsky_normal_form(newTokenPadding, flexible) positional; leftcorners/leftcorner_parents return arrays not sets.",
+     "Transforms (binarize/eliminate_start/remove_mixed_rules/remove_unitary_rules) are static classmethods as in NLTK; chomsky_normal_form dedupes in insertion order (NLTK set() order is unspecified)."
     ]
    },
    "evidence": [
+    "grammar-differential",
     "parser-unit"
    ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Adapter grammar examples, not full pinned grammar object fixtures."
+     "FeatureGrammar/DependencyGrammar/PCFG transformations not yet ported."
     ]
    },
    "notes": "TS grammar parser and very small CFG facade."
@@ -2863,6 +2904,281 @@
     ]
    },
    "notes": "NLTK VaderConstants ported with pinned values."
+  },
+  {
+   "target": "nltk.grammar.Nonterminal",
+   "facade": "Nonterminal",
+   "status": "implemented-subset",
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "symbol"
+    ],
+    "gaps": [
+     "camelCase aliases provided alongside snake_case; JS Error in place of ValueError."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Hashing/ordering semantics adapted to JS."
+    ]
+   },
+   "evidence": [
+    "grammar-differential"
+   ],
+   "exports": [
+    "Nonterminal"
+   ],
+   "category": "ts-algorithm",
+   "source": [
+    {
+     "file": "src/grammar.ts",
+     "anchor": "export class Nonterminal"
+    }
+   ],
+   "notes": "Pure-TS port of nltk.grammar (src/grammar.ts); camelCase aliases alongside snake_case; JS Error for ValueError."
+  },
+  {
+   "target": "nltk.grammar.Production",
+   "facade": "Production",
+   "status": "implemented-subset",
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "is_lexical",
+     "is_nonlexical",
+     "lhs",
+     "rhs"
+    ],
+    "gaps": [
+     "camelCase aliases provided alongside snake_case; JS Error in place of ValueError."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Hashing/ordering semantics adapted to JS."
+    ]
+   },
+   "evidence": [
+    "grammar-differential"
+   ],
+   "exports": [
+    "Production"
+   ],
+   "category": "ts-algorithm",
+   "source": [
+    {
+     "file": "src/grammar.ts",
+     "anchor": "export class Production"
+    }
+   ],
+   "notes": "Pure-TS port of nltk.grammar (src/grammar.ts); camelCase aliases alongside snake_case; JS Error for ValueError."
+  },
+  {
+   "target": "nltk.grammar.ProbabilisticProduction",
+   "facade": "ProbabilisticProduction",
+   "status": "implemented-subset",
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "is_lexical",
+     "is_nonlexical",
+     "lhs",
+     "logprob",
+     "prob",
+     "rhs",
+     "set_logprob",
+     "set_prob"
+    ],
+    "gaps": [
+     "camelCase aliases provided alongside snake_case; JS Error in place of ValueError."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Hashing/ordering semantics adapted to JS."
+    ]
+   },
+   "evidence": [
+    "grammar-differential"
+   ],
+   "exports": [
+    "ProbabilisticProduction"
+   ],
+   "category": "ts-algorithm",
+   "source": [
+    {
+     "file": "src/grammar.ts",
+     "anchor": "export class ProbabilisticProduction"
+    }
+   ],
+   "notes": "Pure-TS port of nltk.grammar (src/grammar.ts); camelCase aliases alongside snake_case; JS Error for ValueError."
+  },
+  {
+   "target": "nltk.grammar.nonterminals",
+   "facade": "nonterminals",
+   "status": "implemented-subset",
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "camelCase aliases provided alongside snake_case; JS Error in place of ValueError."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Hashing/ordering semantics adapted to JS."
+    ]
+   },
+   "evidence": [
+    "grammar-differential"
+   ],
+   "exports": [
+    "nonterminals"
+   ],
+   "category": "ts-algorithm",
+   "source": [
+    {
+     "file": "src/grammar.ts",
+     "anchor": "export function nonterminals"
+    }
+   ],
+   "notes": "Pure-TS port of nltk.grammar (src/grammar.ts); camelCase aliases alongside snake_case; JS Error for ValueError."
+  },
+  {
+   "target": "nltk.grammar.read_grammar",
+   "facade": "read_grammar",
+   "status": "implemented-subset",
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "camelCase aliases provided alongside snake_case; JS Error in place of ValueError."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Hashing/ordering semantics adapted to JS."
+    ]
+   },
+   "evidence": [
+    "grammar-differential"
+   ],
+   "exports": [
+    "read_grammar",
+    "readGrammar"
+   ],
+   "category": "ts-algorithm",
+   "source": [
+    {
+     "file": "src/grammar.ts",
+     "anchor": "export function readGrammar"
+    }
+   ],
+   "notes": "Pure-TS port of nltk.grammar (src/grammar.ts); camelCase aliases alongside snake_case; JS Error for ValueError."
+  },
+  {
+   "target": "nltk.grammar.DependencyProduction",
+   "exports": [
+    "DependencyProduction"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/grammar.ts",
+     "anchor": "export class DependencyProduction"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "is_lexical",
+     "is_nonlexical",
+     "lhs",
+     "rhs"
+    ],
+    "gaps": [
+     "camelCase name; Maps/Sets adapted to JS Map/Set of canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "grammar-differential"
+   ],
+   "notes": "Pure-TS port; camelCase export name adaptation."
+  },
+  {
+   "target": "nltk.util.transitive_closure",
+   "exports": [
+    "transitiveClosure"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/grammar.ts",
+     "anchor": "export function transitiveClosure"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "camelCase name; Maps/Sets adapted to JS Map/Set of canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "grammar-differential"
+   ],
+   "notes": "Pure-TS port; camelCase export name adaptation."
+  },
+  {
+   "target": "nltk.util.invert_graph",
+   "exports": [
+    "invertGraph"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/grammar.ts",
+     "anchor": "export function invertGraph"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "camelCase name; Maps/Sets adapted to JS Map/Set of canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "grammar-differential"
+   ],
+   "notes": "Pure-TS port; camelCase export name adaptation."
   }
  ]
 }
