@@ -308,6 +308,33 @@ export class FreqDist<S> implements Iterable<S> {
     return out;
   }
 
+  setdefault(sample: S, count: number): void {
+    if (!this.has(sample)) this.set(sample, count);
+  }
+
+  pop(sample: S, defaultValue?: number): number | undefined {
+    if (this.has(sample)) {
+      const count = this.get(sample);
+      this.delete(sample);
+      return count;
+    }
+    if (arguments.length > 1) return defaultValue;
+    throw new Error(JSON.stringify(sample));
+  }
+
+  popitem(): [S, number] | undefined {
+    const last = this.#insertionEntries().at(-1);
+    if (!last) throw new Error("popitem(): dictionary is empty");
+    this.delete(last.sample);
+    return [last.sample, last.count];
+  }
+
+  *elements(): IterableIterator<S> {
+    for (const entry of this.#insertionEntries()) {
+      for (let i = 0; i < entry.count; i += 1) yield entry.sample;
+    }
+  }
+
   isSubsetOf(other: FreqDist<S>): boolean {
     for (const [sample, count] of this.entries()) {
       if (count > other.get(sample)) return false;
@@ -317,6 +344,40 @@ export class FreqDist<S> implements Iterable<S> {
 
   isSupersetOf(other: FreqDist<S>): boolean {
     return other.isSubsetOf(this);
+  }
+
+  lt(other: FreqDist<S>): boolean {
+    return this.isSubsetOf(other) && !this.equals(other);
+  }
+
+  gt(other: FreqDist<S>): boolean {
+    return this.isSupersetOf(other) && !this.equals(other);
+  }
+
+  *cumulativeFrequencies(samples: Iterable<S>): Generator<number> {
+    let cumulative = 0;
+    for (const sample of samples) {
+      cumulative += this.get(sample);
+      yield cumulative;
+    }
+  }
+
+  tabulate(
+    count?: number,
+    options: { samples?: S[]; cumulative?: boolean; writer?: (line: string) => void } = {},
+  ): void {
+    const writer = options.writer ?? console.log;
+    const samples = options.samples ?? this.mostCommon(count ?? this.B()).map(([sample]) => sample);
+    const freqs = options.cumulative
+      ? [...this.cumulativeFrequencies(samples)]
+      : samples.map((sample) => this.get(sample));
+    if (samples.length === 0) throw new Error("max() arg is an empty sequence");
+    let width = 0;
+    for (const sample of samples) width = Math.max(width, String(sample).length);
+    for (const freq of freqs) width = Math.max(width, String(freq).length);
+    const cell = (value: string) => value.padStart(width);
+    writer(`${samples.map((sample) => cell(String(sample))).join(" ")} `);
+    writer(`${freqs.map((freq) => cell(String(freq))).join(" ")} `);
   }
 
   equals(other: FreqDist<S>): boolean {

@@ -564,6 +564,17 @@
    "scope": "corpusChrF/corpusNist and NIST penalty, Unicode whitespace and orders 0..7; sentenceChrF is a one-pair adapter, not independently called in this differential block."
   },
   {
+   "id": "freqdist-differential",
+   "kind": "differential",
+   "files": [
+    "test/freqdist.test.ts",
+    "test/freqdist_oracle.py"
+   ],
+   "anchor": "Values below are pinned to Python NLTK 3.10.3 FreqDist/Counter protocols.",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: setdefault/pop/popitem/elements, tabulate bytes (width/cumulative/limit/empty), cumulativeFrequencies, strict lt/gt, +/-,|,& operators."
+  },
+  {
    "id": "regexp-differential",
    "kind": "differential",
    "files": [
@@ -1538,7 +1549,7 @@
     "FreqDist"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/freqdist.ts",
@@ -1546,29 +1557,39 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [
      "N",
      "B",
      "hapaxes",
      "max",
      "freq",
-     "update"
+     "update",
+     "setdefault",
+     "pop",
+     "popitem",
+     "tabulate",
+     "elements",
+     "most_common",
+     "copy",
+     "pformat",
+     "pprint"
     ],
     "gaps": [
-     "Python Counter/indexing/operators and plot/tabulate protocols not fully mapped."
+     "Bracket indexing and operator dunders are adapted to get/add/subtract/union/intersection/lt/gt methods; plot requires matplotlib (unsupported integration); mostCommon is camelCase; delete returns boolean instead of raising KeyError."
     ]
    },
    "evidence": [
-    "frequency-unit"
+    "frequency-unit",
+    "freqdist-differential"
    ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Pinned object-key/order/zero-count and arithmetic differential cases missing."
+     "Iterator/subscript dunder surface cannot be expressed on a plain JS class."
     ]
    },
-   "notes": "Generic counts live in TS; optional fromTextAscii native acceleration is a distinct path."
+   "notes": "Full Counter protocol surface: setdefault/pop/popitem/elements, byte-exact tabulate, cumulativeFrequencies, strict lt/gt order methods."
   },
   {
    "target": "nltk.probability.MLEProbDist",

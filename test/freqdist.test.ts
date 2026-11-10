@@ -54,6 +54,50 @@ test("FreqDist arithmetic matches NLTK Counter-style behavior", () => {
   expect(new FreqDist("aabc").isSupersetOf(new FreqDist("abc"))).toBeTrue();
 });
 
+// Values below are pinned to Python NLTK 3.10.3 FreqDist/Counter protocols.
+test("FreqDist Counter protocols match NLTK 3.10.3", () => {
+  const fd = new FreqDist("abbbc");
+
+  // setdefault returns nothing (NLTK override returns None) and preserves existing
+  expect(fd.setdefault("a", 9)).toBeUndefined();
+  expect(fd.get("a")).toBe(1);
+  fd.setdefault("z", 7);
+  expect(fd.get("z")).toBe(7);
+
+  // pop / popitem dict semantics
+  expect(fd.pop("a")).toBe(1);
+  expect(fd.pop("q", -1)).toBe(-1);
+  expect(() => fd.pop("q")).toThrow();
+  expect(fd.popitem()).toEqual(["z", 7]);
+  expect(new FreqDist("abbb").lt(new FreqDist("abbbc"))).toBeTrue();
+  expect(new FreqDist("abbb").lt(new FreqDist("abbb"))).toBeFalse();
+  expect(new FreqDist("abbbc").gt(new FreqDist("abbb"))).toBeTrue();
+
+  // elements repeats each sample count times
+  expect([...new FreqDist("abbbc").elements()].sort()).toEqual(["a", "b", "b", "b", "c"]);
+
+  // cumulativeFrequencies matches _cumulative_frequencies
+  expect([...new FreqDist("abbbc").cumulativeFrequencies(["b", "a", "c"])]).toEqual([3, 4, 5]);
+});
+
+test("FreqDist tabulate matches NLTK output format", () => {
+  const lines: string[] = [];
+  const writer = (line: string) => lines.push(line);
+
+  new FreqDist("a".repeat(10) + "bc").tabulate(undefined, { writer });
+  expect(lines).toEqual([" a  b  c ", "10  1  1 "]);
+
+  lines.length = 0;
+  new FreqDist("abbbc").tabulate(undefined, { cumulative: true, writer });
+  expect(lines).toEqual(["b a c ", "3 4 5 "]);
+
+  lines.length = 0;
+  new FreqDist("abbbc").tabulate(2, { writer });
+  expect(lines).toEqual(["b a ", "3 1 "]);
+
+  expect(() => new FreqDist<string>().tabulate(undefined, { writer })).toThrow();
+});
+
 test("FreqDist native-backed ASCII builder matches tokenizer expectations", () => {
   const dist = FreqDist.fromTextAscii("Apple apple APPLE banana BANANA");
   expect(dist.mostCommon()).toEqual([
