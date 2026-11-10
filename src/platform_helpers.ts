@@ -32,35 +32,15 @@ export function train_maxent_classifier_with_megam(): never {
   throw new Error("train_maxent_classifier_with_megam() requires the external megam binary, which is not bundled");
 }
 
-/** nltk.classify.maxent.write_megam_file — implemented with the maxent encoding batch. */
-export function write_megam_file(_trainToks: unknown, _encoding: unknown, _outfile: unknown, _options?: unknown): never {
-  throw new Error("write_megam_file() requires a MaxentFeatureEncoding; see MaxentFeatureEncodingI");
-}
-
-/** nltk.classify.maxent.write_tadm_file — implemented with the maxent encoding batch. */
-export function write_tadm_file(_trainToks: unknown, _encoding: unknown, _outfile: unknown, _options?: unknown): never {
-  throw new Error("write_tadm_file() requires a MaxentFeatureEncoding; see MaxentFeatureEncodingI");
-}
-
-/** nltk.classify.maxent.parse_megam_weights — implemented with the maxent encoding batch. */
-export function parse_megam_weights(_file: unknown, _features?: unknown): never {
-  throw new Error("parse_megam_weights() requires megam weight output; not yet implemented");
-}
-
-/** nltk.classify.maxent.parse_tadm_weights — implemented with the maxent encoding batch. */
-export function parse_tadm_weights(_file: unknown): never {
-  throw new Error("parse_tadm_weights() requires tadm weight output; not yet implemented");
-}
-
-/** nltk.classify.maxent.load_maxent_params — implemented with the maxent encoding batch. */
-export function load_maxent_params(_file: unknown): never {
-  throw new Error("load_maxent_params() requires a saved params file; not yet implemented");
-}
-
-/** nltk.classify.maxent.save_maxent_params — implemented with the maxent encoding batch. */
-export function save_maxent_params(_params: unknown, _file: unknown): never {
-  throw new Error("save_maxent_params() requires a classifier params object; not yet implemented");
-}
+/** nltk.classify.maxent file/param IO — real implementations in maxent_nltk. */
+export {
+  write_megam_file,
+  write_tadm_file,
+  parse_megam_weights,
+  parse_tadm_weights,
+  load_maxent_params,
+  save_maxent_params,
+} from "./maxent_nltk.ts";
 
 /** nltk.tokenize.punkt.allowlisted_pickle_load — JSON-adapted params loader lands with the punkt object model. */
 export function allowlisted_pickle_load(_path: string): never {
@@ -72,15 +52,6 @@ export function punkt_pickle_load(_path: string): never {
   throw new Error("punkt_pickle_load() loads CPython pickle; use load_punkt_params() JSON params instead");
 }
 
-/** nltk.tokenize.punkt.load_punkt_params — lands with the punkt object model. */
-export function load_punkt_params(_path: string): never {
-  throw new Error("load_punkt_params() lands with the PunktParameters object model");
-}
-
-/** nltk.tokenize.punkt.save_punkt_params — lands with the punkt object model. */
-export function save_punkt_params(_params: unknown, _path: string): never {
-  throw new Error("save_punkt_params() lands with the PunktParameters object model");
-}
 
 /** nltk.parse.chart.demo_grammar — lands with the chart demo batch. */
 export function demo_grammar(): never {

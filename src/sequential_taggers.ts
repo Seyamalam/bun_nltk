@@ -374,3 +374,164 @@ export class RegexpTagger extends SequentialBackoffTagger {
     return `<Regexp Tagger: size=${this.size()}>`;
   }
 }
+
+export type FeatureDetector = (tokens: UntaggedSentence, index: number, history: readonly (string | null)[]) => Record<string, unknown>;
+
+/** nltk.tag.sequential.AffixTagger — context = leading/trailing substring of the token. */
+export class AffixTagger extends ContextTagger {
+  readonly affixLength: number;
+  readonly minStemLength: number;
+  private readonly minWordLength: number;
+
+  constructor(
+    train?: ReadonlyArray<GoldSentence> | null,
+    model?: TaggerModel | null,
+    affixLength = -3,
+    minStemLength = 2,
+    backoff?: SequentialBackoffTagger | null,
+    cutoff = 0,
+    verbose = false,
+  ) {
+    // NLTK __init__ accepts positional (train, model, affix_length, min_stem_length, backoff, cutoff, verbose).
+    super(backoff ?? null);
+    this.affixLength = affixLength;
+    this.minStemLength = minStemLength;
+    this.minWordLength = minStemLength + Math.abs(affixLength);
+    if (model) this.loadModel(model);
+    if (train) this.train(train, cutoff, verbose);
+  }
+
+  context(tokens: UntaggedSentence, index: number, _history?: readonly (string | null)[]): TagContext | null {
+    const token = tokens[index]!;
+    if (token.length < this.minWordLength) return null;
+    return this.affixLength > 0 ? token.slice(0, this.affixLength) : token.slice(this.affixLength);
+  }
+
+  encodeJsonObj(): [number, number, Map<TagContext, string>, SequentialBackoffTagger | null] {
+    return [this.affixLength, this.minWordLength, this.contextToTag, this.backoff];
+  }
+
+  static decodeJsonObj(obj: [number, number, Map<TagContext, string>, SequentialBackoffTagger | null]): AffixTagger {
+    const [affixLength, minWordLength, contextToTag, backoff] = obj;
+    return new AffixTagger(null, contextToTag, affixLength, minWordLength - Math.abs(affixLength), backoff);
+  }
+
+  override toString(): string {
+    return `<AffixTagger: size=${this.size()}>`;
+  }
+}
+
+export interface FeaturesetClassifier {
+  classify(featureset: Record<string, unknown>): string;
+  prob_classify?(featureset: Record<string, unknown>): { max(): string; prob(x: string): number };
+  probClassify?(featureset: Record<string, unknown>): { max(): string; prob(x: string): number };
+}
+
+/** nltk.tag.sequential.ClassifierBasedTagger — tagger driven by a classifier + feature detector. */
+export class ClassifierBasedTagger extends SequentialBackoffTagger {
+  protected featureDetectorFn?: FeatureDetector;
+  protected classifierObj?: FeaturesetClassifier;
+  readonly cutoffProb?: number;
+
+  constructor(options: {
+    feature_detector?: FeatureDetector;
+    train?: ReadonlyArray<GoldSentence> | null;
+    classifier_builder?: (labeled: ReadonlyArray<readonly [Record<string, unknown>, string]>) => FeaturesetClassifier;
+    classifier?: FeaturesetClassifier | null;
+    backoff?: SequentialBackoffTagger | null;
+    cutoff_prob?: number;
+    verbose?: boolean;
+  } = {}) {
+    const { train = null, classifier = null } = options;
+    if (!train && !classifier) {
+      throw new Error("Must specify either training data or trained model.");
+    }
+    if (train && classifier) {
+      throw new Error("Must specify either training data or trained classifier.");
+    }
+    super(options.backoff ?? null);
+    if (options.feature_detector) this.featureDetectorFn = options.feature_detector;
+    this.cutoffProb = options.cutoff_prob;
+    this.classifierObj = classifier ?? undefined;
+    if (train) this.trainClassifier(train, options.classifier_builder, options.verbose ?? false);
+  }
+
+  size(): number { return 0; }
+
+  feature_detector(tokens: UntaggedSentence, index: number, history: readonly (string | null)[]): Record<string, unknown> {
+    if (!this.featureDetectorFn) throw new Error("feature_detector is not defined for this tagger");
+    return this.featureDetectorFn(tokens, index, history);
+  }
+
+  classifier(): FeaturesetClassifier | undefined { return this.classifierObj; }
+
+  chooseTag(tokens: UntaggedSentence, index: number, history: readonly (string | null)[]): string | null {
+    const featureset = this.feature_detector(tokens, index, history);
+    const clf = this.classifierObj;
+    if (!clf) return null;
+    if (this.cutoffProb == null) return clf.classify(featureset);
+    const pdist = (clf.prob_classify ?? clf.probClassify)!.call(clf, featureset);
+    const tag = pdist.max();
+    return pdist.prob(tag) >= this.cutoffProb ? tag : null;
+  }
+
+  private trainClassifier(
+    taggedCorpus: ReadonlyArray<GoldSentence>,
+    classifierBuilder: ((labeled: ReadonlyArray<readonly [Record<string, unknown>, string]>) => FeaturesetClassifier) | undefined,
+    verbose: boolean,
+  ): void {
+    const classifierCorpus: Array<readonly [Record<string, unknown>, string]> = [];
+    if (verbose) console.log("Constructing training corpus for classifier.");
+    for (const sentence of taggedCorpus) {
+      const history: string[] = [];
+      const untagged = sentence.map(([word]) => word);
+      const tags = sentence.map(([, tag]) => tag);
+      for (let index = 0; index < sentence.length; index += 1) {
+        classifierCorpus.push([this.feature_detector(untagged, index, history), tags[index]!]);
+        history.push(tags[index]!);
+      }
+    }
+    if (verbose) console.log(`Training classifier (${classifierCorpus.length} instances)`);
+    if (!classifierBuilder) throw new Error("classifier_builder is required when training");
+    this.classifierObj = classifierBuilder(classifierCorpus);
+  }
+
+  override toString(): string {
+    return `<ClassifierBasedTagger: ${String(this.classifierObj)}>`;
+  }
+}
+
+/** nltk.tag.sequential.ClassifierBasedPOSTagger — POS-specific feature detector. */
+export class ClassifierBasedPOSTagger extends ClassifierBasedTagger {
+  override feature_detector(tokens: UntaggedSentence, index: number, history: readonly (string | null)[]): Record<string, unknown> {
+    const word = tokens[index]!;
+    let prevword: string | null, prevprevword: string | null, prevtag: string | null, prevprevtag: string | null;
+    if (index === 0) {
+      prevword = prevprevword = prevtag = prevprevtag = null;
+    } else if (index === 1) {
+      prevword = tokens[index - 1]!.toLowerCase(); prevprevword = null;
+      prevtag = history[index - 1]!; prevprevtag = null;
+    } else {
+      prevword = tokens[index - 1]!.toLowerCase();
+      prevprevword = tokens[index - 2]!.toLowerCase();
+      prevtag = history[index - 1]!; prevprevtag = history[index - 2]!;
+    }
+    let shape: string;
+    if (/^[0-9]+(\.[0-9]*)?|^[0-9]*\.[0-9]+$/.test(word)) shape = "number";
+    else if (/^\W+$/.test(word)) shape = "punct";
+    else if (/^[A-Z][a-z]+$/.test(word)) shape = "upcase";
+    else if (/^[a-z]+$/.test(word)) shape = "downcase";
+    else if (/^\w+$/.test(word)) shape = "mixedcase";
+    else shape = "other";
+    const lower = word.toLowerCase();
+    return {
+      prevtag, prevprevtag, word, "word.lower": lower,
+      suffix3: lower.slice(-3), suffix2: lower.slice(-2), suffix1: lower.slice(-1),
+      prevprevword, prevword,
+      "prevtag+word": `${prevtag ?? "None"}+${lower}`,
+      "prevprevtag+word": `${prevprevtag ?? "None"}+${lower}`,
+      "prevword+word": `${prevword ?? "None"}+${lower}`,
+      shape,
+    };
+  }
+}

@@ -596,9 +596,9 @@ export interface ChartParserOptions {
 }
 
 export class NltkChartParser {
-  protected readonly _grammar: CFG;
-  private readonly _strategy: readonly AbstractChartRule[];
-  private readonly _trace: number;
+  protected _grammar: CFG;
+  protected _strategy: readonly AbstractChartRule[];
+  protected _trace: number;
   private readonly _traceChartWidth: number;
   private _useAgenda: boolean;
   private readonly _chartClass: new (tokens: Iterable<string>) => Chart;
@@ -735,5 +735,112 @@ export class NltkLeftCornerChartParser extends NltkChartParser {
       throw new Error("LeftCornerParser only works for grammars without empty productions.");
     }
     super(grammar, { ...options, strategy: LC_STRATEGY });
+  }
+}
+
+/** nltk.parse.chart.SteppingChartParser — step through parsing one edge at a time. */
+export class SteppingChartParser extends NltkChartParser {
+  private _chart: Chart | null = null;
+  private _current_chartrule: AbstractChartRule | null = null;
+  private _restart = false;
+
+  constructor(grammar: CFG, options: ChartParserOptions = {}) {
+    super(grammar, { ...options, strategy: options.strategy ?? [] });
+  }
+
+  initialize(tokens: Iterable<string>): void {
+    this._chart = new Chart(tokens);
+    this._restart = true;
+  }
+
+  *step(): Generator<EdgeI | null> {
+    if (this._chart === null) throw new Error("Parser must be initialized first");
+    while (true) {
+      this._restart = false;
+      const w = Math.floor(50 / (this._chart.num_leaves() + 1));
+      let completed = true;
+      for (const e of this._parse()) {
+        if (this._trace > 1 && this._current_chartrule) console.log(`${this._current_chartrule}`);
+        if (this._trace > 0) console.log(this._chart.pretty_format_edge(e, w));
+        yield e;
+        if (this._restart) {
+          completed = false;
+          break;
+        }
+      }
+      if (completed) yield null;
+    }
+  }
+
+  private *_parse(): Generator<EdgeI> {
+    const chart = this._chart!;
+    const grammar = this._grammar;
+    let edges_added = 1;
+    while (edges_added > 0) {
+      edges_added = 0;
+      for (const rule of this._strategy) {
+        this._current_chartrule = rule;
+        for (const e of rule.apply_everywhere(chart, grammar)) {
+          edges_added += 1;
+          yield e;
+        }
+      }
+    }
+  }
+
+  strategy(): readonly AbstractChartRule[] {
+    return this._strategy;
+  }
+
+  chart(): Chart | null {
+    return this._chart;
+  }
+
+  current_chartrule(): AbstractChartRule | null {
+    return this._current_chartrule;
+  }
+
+  *parses<T = ParseTree>(treeClass?: TreeFactory<T>): Generator<T> {
+    yield* this._chart!.parses(this._grammar.start(), treeClass);
+  }
+
+  set_strategy(strategy: readonly AbstractChartRule[]): void {
+    if (strategy === this._strategy) return;
+    this._strategy = [...strategy];
+    this._restart = true;
+  }
+
+  setStrategy(strategy: readonly AbstractChartRule[]): void {
+    this.set_strategy(strategy);
+  }
+
+  set_grammar(grammar: CFG): void {
+    if (grammar === this._grammar) return;
+    this._grammar = grammar;
+    this._restart = true;
+  }
+
+  setGrammar(grammar: CFG): void {
+    this.set_grammar(grammar);
+  }
+
+  set_chart(chart: Chart): void {
+    if (chart === this._chart) return;
+    this._chart = chart;
+    this._restart = true;
+  }
+
+  setChart(chart: Chart): void {
+    this.set_chart(chart);
+  }
+
+  override parse<T = ParseTree>(tokens: Iterable<string>, treeClass?: TreeFactory<T>): T[] {
+    const toks = [...tokens];
+    this._grammar.check_coverage(toks);
+    this.initialize(toks);
+    for (const e of this.step()) {
+      if (e === null) break;
+    }
+    return [...this.parses(treeClass)];
   }
 }

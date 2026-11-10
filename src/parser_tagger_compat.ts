@@ -34,12 +34,19 @@ export { CFG } from "./grammar";
 import { CFG, Nonterminal, Production } from "./grammar";
 import { NltkChartParser, type ChartParserOptions } from "./chart";
 
-export class PCFG {
-  constructor(public readonly grammar: PcfgGrammar) {}
+// nltk.grammar.PCFG is the canonical probabilistic CFG; this alias accepts it.
+export { PCFG } from "./grammar";
+import { PCFG, ProbabilisticProduction } from "./grammar";
 
-  static fromstring(grammarText: string, options?: { startSymbol?: string }): PCFG {
-    return new PCFG(parsePcfgGrammar(grammarText, options));
-  }
+function pcfgFromGrammar(grammar: PCFG): PcfgGrammar {
+  return {
+    startSymbol: grammar.start().symbol(),
+    productions: grammar.productions().map((p) => ({
+      lhs: p.lhs().symbol(),
+      rhs: p.rhs().map((s) => (typeof s === "string" ? s : s.symbol())),
+      prob: p instanceof ProbabilisticProduction ? p.prob() : 0,
+    })),
+  };
 }
 
 export class FeatureCFG {
@@ -52,7 +59,7 @@ export class FeatureCFG {
 
 function asPcfgGrammar(grammar: PCFG | PcfgGrammar | string): PcfgGrammar {
   if (typeof grammar === "string") return parsePcfgGrammar(grammar);
-  return grammar instanceof PCFG ? grammar.grammar : grammar;
+  return grammar instanceof PCFG ? pcfgFromGrammar(grammar) : grammar;
 }
 
 function asFeatureGrammar(grammar: FeatureCFG | FeatureCfgGrammar | string): FeatureCfgGrammar {

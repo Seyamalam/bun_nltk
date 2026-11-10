@@ -1,6 +1,6 @@
 import nltk
 assert nltk.__version__ == "3.10.3"
-from nltk.grammar import CFG, Nonterminal, Production, nonterminals
+from nltk.grammar import CFG, DependencyGrammar, Nonterminal, PCFG, ProbabilisticProduction, Production, induce_pcfg, nonterminals
 
 g = CFG.fromstring("S -> NP VP | 'a' \nNP -> 'det' 'n' \nVP -> V \nV -> 'x'")
 assert repr(g) == "<Grammar with 5 productions>"
@@ -29,3 +29,24 @@ except ValueError as e:
 assert [n.symbol() for n in nonterminals("S, NP, VP")] == ["S", "NP", "VP"]
 p = Production(Nonterminal("S"), [Nonterminal("NP"), "a"])
 assert str(p) == "S -> NP 'a'" and p.is_lexical() and len(p) == 2
+
+dg = DependencyGrammar.fromstring("'fell' -> 'price' | 'stock'\n'slump' -> 'of' | 'the'")
+assert repr(dg) == "Dependency grammar with 4 productions"
+assert str(dg) == "Dependency grammar with 4 productions\n  'fell' -> 'price'\n  'fell' -> 'stock'\n  'slump' -> 'of'\n  'slump' -> 'the'"
+assert dg.contains("fell", "price") and not dg.contains("fell", "the") and ("price", "of") not in dg
+try:
+    DependencyGrammar.fromstring("# only comments")
+    raise SystemExit("should fail")
+except ValueError:
+    pass
+try:
+    PCFG(Nonterminal("S"), [ProbabilisticProduction(Nonterminal("S"), ["x"], prob=0.5)])
+    raise SystemExit("should fail")
+except ValueError as e:
+    assert str(e) == "Productions for S do not sum to 1"
+pg = PCFG.fromstring("S -> NP VP [1.0]\nNP -> Det N [0.5]\nNP -> 'dog' [0.5]\nVP -> V [1.0]\nDet -> 'the' [1.0]\nN -> 'cat' [1.0]\nV -> 'saw' [1.0]")
+assert repr(pg) == "<Grammar with 7 productions>"
+S, NP, VP = Nonterminal("S"), Nonterminal("NP"), Nonterminal("VP")
+ind = induce_pcfg(S, [Production(S, [NP, VP]), Production(S, [NP]), Production(S, [NP, VP]), Production(NP, ["dog"])])
+assert str(ind) == "Grammar with 3 productions (start state = S)\n    S -> NP VP [0.666667]\n    S -> NP [0.333333]\n    NP -> 'dog' [1.0]"
+assert str(ProbabilisticProduction(S, [NP], prob=1e-7)) == "S -> NP [1e-07]"

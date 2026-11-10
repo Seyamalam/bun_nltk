@@ -64,8 +64,8 @@ test("selected names and class members get explicit gaps rather than mechanical 
   const targets = resolveTargets(manifest, snapshot);
   expect(targets.length).toBeGreaterThan(300);
   const jaro = targets.find((target) => target.target === "nltk.metrics.distance.jaro_similarity")!;
-  expect(jaro.category).toBe("gap");
-  expect(jaro.fixtureStatus).toBe("missing");
+  expect(jaro.category).toBe("ts-algorithm");
+  expect(jaro.fixtureStatus).toBe("pinned-differential");
   expect(targets.some((target) => target.target === "nltk.tokenize.wordpunct_tokenize")).toBe(true);
   const treebank = targets.find((target) => target.target === "nltk.tokenize.treebank.TreebankWordTokenizer")!;
   expect(treebank.category).toBe("rust-wasm");
@@ -178,7 +178,7 @@ test("applied review is the shared baseline; re-applying the staged proposal is 
   expect(() => checkEvidenceFiles(manifest)).not.toThrow();
   expect(() => validateDiscovery(manifest, snapshot)).not.toThrow();
   expect(() => checkSignatureRegression(manifest.signatureBindings, snapshot.signatureBindings)).not.toThrow();
-  expect(manifest.mappings).toHaveLength(342);
+  expect(manifest.mappings).toHaveLength(376);
   expect(manifest.signatureBindings).toHaveLength(44);
   // The staged proposal was consumed by this baseline: applying it again only
   // duplicates the review evidence and the split wordpunct_tokenize mapping.

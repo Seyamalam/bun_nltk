@@ -1,19 +1,19 @@
 import { expect, test } from "bun:test";
 import {
   defaultPunktModel,
-  PunktSentenceTokenizer,
-  PunktTrainer,
+  WasmPunktSentenceTokenizer,
+  WasmPunktTrainer,
   sentenceTokenizePunkt,
   sentenceTokenizePunktCompat,
 } from "../index";
 
 test("Punkt compatibility wrappers expose trainer/tokenizer API", () => {
-  const trainer = new PunktTrainer();
+  const trainer = new WasmPunktTrainer();
   trainer.loadTrainText("Dr. Smith arrived. Dr. Adams left at 5 p.m.");
   const model = trainer.finalize();
   expect(model.abbreviations.length).toBeGreaterThan(0);
 
-  const tokenizer = new PunktSentenceTokenizer(model);
+  const tokenizer = new WasmPunktSentenceTokenizer(model);
   const rows = tokenizer.tokenize("Dr. Smith arrived. He left.");
   expect(rows.length).toBe(2);
 });

@@ -1,7 +1,7 @@
 import {
   WasmNltk, RustNaiveBayesClassifier, RustPositiveNaiveBayesClassifier,
   RustDecisionTreeClassifier, RustMaxentClassifier, TreebankWordTokenizer,
-  MWETokenizer, TweetTokenizer, PunktTrainer, word_tokenize, countTokensAscii,
+  MWETokenizer, TweetTokenizer, WasmPunktTrainer, word_tokenize, countTokensAscii,
   ngrams, type FeatureSet, type FeatureTreeOptions, type FeatureMaxentOptions,
   type FeatureMaxentSerialized, type PositiveFeatureOptions, type WasmNltkInit,
 } from "bun_nltk";
@@ -34,7 +34,7 @@ const label: string = subTree.classify({ x: 1 });
 const tokens: string[] = word_tokenize("Hello.");
 const count: number = countTokensAscii("a b");
 const grouped: number[][] = ngrams([1, 2, 3], 2);
-const trainer = new PunktTrainer().train("Sentence.", { minAbbrevCount: 2 });
+const trainer = new WasmPunktTrainer().train("Sentence.", { minAbbrevCount: 2 });
 const parsing = await ParsingRuntime.load();
 const parsedTree: Tree = RootTree.fromstring(parsing, "(S leaf)");
 const leaves: string[] = parsedTree.leaves();

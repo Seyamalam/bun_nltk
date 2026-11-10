@@ -1,4 +1,4 @@
-import type { CfgGrammar, CfgProduction } from "./parse";
+import type { CfgGrammar, CfgProduction, PcfgGrammar, PcfgProduction } from "./parse";
 
 export type GrammarSymbol = Nonterminal | string;
 
@@ -20,8 +20,20 @@ function symbolKey(symbol: GrammarSymbol): string {
   return symbol instanceof Nonterminal ? `nt:${symbol.symbol()}` : `t:${symbol}`;
 }
 
-function pyFormatFloat(value: number): string {
-  return Number.isInteger(value) ? `${value}.0` : String(value);
+// C/Python "%g": 6 significant digits, %e when exponent < -4 or >= 6,
+// trailing zeros stripped.
+function pyGFormat(value: number, precision = 6): string {
+  if (value === 0) return "0";
+  const exp = Math.floor(Math.log10(Math.abs(value)));
+  if (exp < -4 || exp >= precision) {
+    const s = value.toExponential(precision - 1);
+    const [mant, e] = s.split("e");
+    const expNum = parseInt(e!, 10);
+    return `${mant!.replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "")}e${expNum < 0 ? "-" : "+"}${String(Math.abs(expNum)).padStart(2, "0")}`;
+  }
+  const decimals = Math.max(0, precision - 1 - exp);
+  const s = value.toFixed(decimals);
+  return s.includes(".") ? s.replace(/0+$/, "").replace(/\.$/, "") : s;
 }
 
 export class Nonterminal {
@@ -172,7 +184,7 @@ export class ProbabilisticProduction extends Production {
 
   override toString(): string {
     const inner = `${this.lhs()} -> ${this.rhs().map((el) => (el instanceof Nonterminal ? `${el}` : pyRepr(el))).join(" ")}`;
-    return `${inner} [${pyFormatFloat(this.probability)}]`;
+    return `${inner} ${this.probability === 1.0 ? "[1.0]" : `[${pyGFormat(this.probability)}]`}`;
   }
 }
 
@@ -732,3 +744,172 @@ export class CFG {
 }
 
 export { CFG as Grammar };
+
+const READ_DG_RE = /^\s*('[^']+')\s*[-=]+>\s*(?:(?:"[^"]+"|'[^']+'|\|)\s*)*$/;
+const SPLIT_DG_RE = /('[^']'|[-=]+>|"[^"]+"|'[^']+'|\|)/g;
+
+function readDependencyProduction(s: string): DependencyProduction[] {
+  if (!READ_DG_RE.test(s)) throw new Error("Bad production string");
+  const pieces: string[] = [];
+  for (const m of s.matchAll(SPLIT_DG_RE)) pieces.push(m[0]);
+  const strip = (p: string) => p.replace(/^['"]+|['"]+$/g, "");
+  const lhside = strip(pieces[0]!);
+  const rhsides: string[][] = [[]];
+  for (const piece of pieces.slice(2)) {
+    if (piece === "|") rhsides.push([]);
+    else rhsides[rhsides.length - 1]!.push(strip(piece));
+  }
+  return rhsides.map((rhs) => new DependencyProduction(new Nonterminal(lhside), rhs));
+}
+
+export class DependencyGrammar {
+  private readonly _productions: DependencyProduction[];
+
+  constructor(productions: DependencyProduction[]) {
+    this._productions = productions;
+  }
+
+  static fromstring(input: string): DependencyGrammar {
+    const productions: DependencyProduction[] = [];
+    const lines = input.split("\n");
+    for (let linenum = 0; linenum < lines.length; linenum++) {
+      const line = lines[linenum]!.trim();
+      if (line.startsWith("#") || line === "") continue;
+      try {
+        productions.push(...readDependencyProduction(line));
+      } catch (e) {
+        throw new Error(`Unable to parse line ${linenum}: ${line}`, { cause: e });
+      }
+    }
+    if (productions.length === 0) throw new Error("No productions found!");
+    return new DependencyGrammar(productions);
+  }
+
+  static fromString(input: string): DependencyGrammar {
+    return DependencyGrammar.fromstring(input);
+  }
+
+  contains(head: string, mod: string): boolean {
+    for (const production of this._productions) {
+      for (const possibleMod of production.rhs()) {
+        if (production.lhs().symbol() === head && possibleMod === mod) return true;
+      }
+    }
+    return false;
+  }
+
+  has(headMod: [string, string]): boolean {
+    let head: string, mod: string;
+    try {
+      [head, mod] = headMod;
+    } catch (e) {
+      throw new Error("Must use a tuple of strings, e.g. `('price', 'of') in grammar`", { cause: e as Error });
+    }
+    return this.contains(head, mod);
+  }
+
+  toString(): string {
+    let str = `Dependency grammar with ${this._productions.length} productions`;
+    for (const production of this._productions) str += `\n  ${production}`;
+    return str;
+  }
+
+  repr(): string {
+    return `Dependency grammar with ${this._productions.length} productions`;
+  }
+}
+
+export class ProbabilisticDependencyGrammar {
+  private readonly _productions: ProbabilisticProduction[];
+  private readonly _events: Map<string, number>;
+  private readonly _tags: Map<string, unknown>;
+
+  constructor(productions: ProbabilisticProduction[], events: Map<string, number>, tags: Map<string, unknown>) {
+    this._productions = productions;
+    this._events = events;
+    this._tags = tags;
+  }
+
+  contains(head: string, mod: string): boolean {
+    for (const production of this._productions) {
+      for (const possibleMod of production.rhs()) {
+        if (production.lhs().symbol() === head && possibleMod === mod) return true;
+      }
+    }
+    return false;
+  }
+
+  toString(): string {
+    let str = `Statistical dependency grammar with ${this._productions.length} productions`;
+    for (const production of this._productions) str += `\n  ${production}`;
+    str += "\nEvents:";
+    for (const [event, count] of this._events) str += `\n  ${count}:${event}`;
+    str += "\nTags:";
+    for (const [tagWord, tag] of this._tags) str += `\n ${tagWord}:\t(${tag})`;
+    return str;
+  }
+
+  repr(): string {
+    return `Statistical Dependency grammar with ${this._productions.length} productions`;
+  }
+}
+
+export class PCFG extends CFG {
+  static readonly EPSILON = 0.01;
+
+  constructor(start: Nonterminal, productions: Iterable<Production>, calculateLeftcorners = true) {
+    const prods = [...productions];
+    super(start, prods, calculateLeftcorners);
+    const probs = new Map<string, number>();
+    for (const production of prods) {
+      const lhs = production.lhs().symbol();
+      probs.set(lhs, (probs.get(lhs) ?? 0) + (production as ProbabilisticProduction).prob());
+    }
+    for (const [lhs, p] of probs) {
+      if (!(1 - PCFG.EPSILON < p && p < 1 + PCFG.EPSILON)) {
+        throw new Error(`Productions for ${lhs} do not sum to 1`);
+      }
+    }
+  }
+
+  static override fromstring(input: string | readonly string[], _options: { encoding?: string } = {}): PCFG {
+    const [start, productions] = readGrammar(input, standardNontermParser, { probabilistic: true });
+    return new PCFG(start, productions);
+  }
+
+  override get grammar(): PcfgGrammar {
+    const productions: PcfgProduction[] = this.productions().map((p) => ({
+      lhs: p.lhs().symbol(),
+      rhs: p.rhs().map((sym) => (sym instanceof Nonterminal ? sym.symbol() : sym)),
+      prob: p instanceof ProbabilisticProduction ? p.prob() : 0,
+    }));
+    return { startSymbol: this.start().symbol(), productions };
+  }
+
+  static override fromString(input: string | readonly string[]): PCFG {
+    return PCFG.fromstring(input);
+  }
+}
+
+export function induce_pcfg(start: Nonterminal, productions: Iterable<Production>): PCFG {
+  const pcount = new Map<string, number>();
+  const lcount = new Map<string, number>();
+  const order: Production[] = [];
+
+  for (const prod of productions) {
+    const key = `${prod.lhs().symbol()}|${prod.rhs().map(symbolKey).join(",")}`;
+    if (!pcount.has(key)) order.push(prod);
+    lcount.set(prod.lhs().symbol(), (lcount.get(prod.lhs().symbol()) ?? 0) + 1);
+    pcount.set(key, (pcount.get(key) ?? 0) + 1);
+  }
+
+  const prods = order.map((p) => {
+    const key = `${p.lhs().symbol()}|${p.rhs().map(symbolKey).join(",")}`;
+    return new ProbabilisticProduction(p.lhs(), p.rhs(), { prob: pcount.get(key)! / lcount.get(p.lhs().symbol())! });
+  });
+  return new PCFG(start, prods);
+}
+
+export function inducePcfg(start: Nonterminal, productions: Iterable<Production>): PCFG {
+  return induce_pcfg(start, productions);
+}

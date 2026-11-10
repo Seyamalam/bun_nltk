@@ -11,314 +11,350 @@
  },
  "reviewedRoutes": {
   ".": {
-   "word_tokenize": "src/nltk_compat.ts",
-   "sent_tokenize": "src/nltk_compat.ts",
-   "TreebankWordTokenizer": "src/tokenizers.ts",
-   "treebankWordTokenize": "src/tokenizers.ts",
-   "WordPunctTokenizer": "src/tokenizers.ts",
-   "wordPunctTokenize": "src/tokenizers.ts",
-   "wordpunct_tokenize": "src/nltk_compat.ts",
-   "MWETokenizer": "src/tokenizers.ts",
-   "mweTokenize": "src/tokenizers.ts",
-   "mwe_tokenize": "src/tokenizers.ts",
-   "RustMWETokenizer": "src/tokenizers.ts",
-   "LegacyMWETokenizer": "src/tokenizers.ts",
-   "legacyMweTokenize": "src/tokenizers.ts",
-   "TweetTokenizer": "src/tokenizers.ts",
-   "tweetTokenize": "src/tokenizers.ts",
-   "tweet_tokenize": "src/tokenizers.ts",
-   "casualTokenize": "src/tokenizers.ts",
-   "casual_tokenize": "src/tokenizers.ts",
-   "RustTweetTokenizer": "src/tokenizers.ts",
-   "LegacyTweetTokenizer": "src/tokenizers.ts",
-   "legacyTweetTokenize": "src/tokenizers.ts",
-   "ToktokTokenizer": "src/tokenizers.ts",
-   "toktokTokenize": "src/tokenizers.ts",
-   "toktok_tokenize": "src/tokenizers.ts",
-   "RustToktokTokenizer": "src/tokenizers.ts",
-   "LegacyToktokTokenizer": "src/tokenizers.ts",
-   "legacyToktokTokenize": "src/tokenizers.ts",
-   "PunktTrainer": "src/punkt.ts",
-   "PunktTrainerSubset": "src/punkt.ts",
-   "PorterStemmer": "src/porter_stemmer.ts",
-   "LancasterStemmer": "src/stemmers.ts",
-   "RegexpStemmer": "src/stemmers.ts",
-   "SnowballStemmer": "src/stemmers.ts",
-   "snowballStem": "src/snowball.ts",
-   "WordNetLemmatizer": "src/stemmers.ts",
-   "FreqDist": "src/freqdist.ts",
-   "MLEProbDist": "src/probability.ts",
-   "LidstoneProbDist": "src/probability.ts",
-   "editDistance": "src/metrics.ts",
-   "editDistanceAlign": "src/distance_metrics.ts",
-   "jaccardDistance": "src/distance_metrics.ts",
-   "precision": "src/distance_metrics.ts",
-   "windowdiff": "src/distance_metrics.ts",
-   "NaiveBayesClassifier": "src/classifier_compat.ts",
-   "RustNaiveBayesClassifier": "src/feature_nb.ts",
-   "PositiveNaiveBayesClassifier": "src/classifier_compat.ts",
-   "RustPositiveNaiveBayesClassifier": "src/feature_nb.ts",
-   "MaxentClassifier": "src/classifier_compat.ts",
-   "RustMaxentClassifier": "src/feature_maxent.ts",
-   "DecisionTreeClassifier": "src/classifier_compat.ts",
-   "RustDecisionTreeClassifier": "src/feature_tree.ts",
-   "SklearnClassifier": "src/classify_wrappers.ts",
-   "sentenceBleu": "src/metrics.ts",
-   "corpusBleu": "src/metrics.ts",
-   "sentenceChrF": "src/translation_metrics_extra.ts",
-   "corpusNist": "src/translation_metrics_extra.ts",
-   "CFG": "src/grammar.ts",
-   "parseCfgGrammar": "src/parse.ts",
-   "ChartParser": "src/parser_tagger_compat.ts",
-   "chartParse": "src/parse.ts",
-   "NgramLanguageModel": "src/lm.ts",
-   "trainNgramLanguageModel": "src/lm.ts",
-   "WordNet": "src/wordnet.ts",
-   "loadWordNet": "src/wordnet.ts",
-   "lesk": "src/wsd.ts",
-   "UnigramTagger": "src/sequential_taggers.ts",
-   "PerceptronTagger": "src/parser_tagger_compat.ts",
-   "posTagPerceptronAscii": "src/perceptron_tagger.ts",
-   "ConcordanceIndex": "src/text.ts",
+   "AbsoluteDiscounting": "src/lm_nltk.ts",
+   "AbsoluteDiscountingInterpolated": "src/lm_nltk.ts",
+   "AbstractChartRule": "src/chart.ts",
+   "AbstractLazySequence": "src/collections.ts",
+   "ArabicStemmer": "src/stemmers.ts",
+   "AveragedPerceptron": "src/perceptron_nltk.ts",
    "BigramCollocationFinder": "src/collocations.ts",
-   "SentimentIntensityAnalyzer": "src/sentiment.ts",
-   "SentiText": "src/sentiment.ts",
-   "VaderConstants": "src/sentiment.ts",
-   "regexpChunkParse": "src/chunk.ts",
-   "ngrams": "src/nltk_compat.ts",
-   "ngrams_iter": "src/nltk_compat.ts",
-   "EnglishStemmer": "src/stemmers.ts",
-   "FrenchStemmer": "src/stemmers.ts",
-   "GermanStemmer": "src/stemmers.ts",
-   "ItalianStemmer": "src/stemmers.ts",
-   "SpanishStemmer": "src/stemmers.ts",
-   "PortugueseStemmer": "src/stemmers.ts",
-   "DutchStemmer": "src/stemmers.ts",
-   "DanishStemmer": "src/stemmers.ts",
-   "NorwegianStemmer": "src/stemmers.ts",
-   "SwedishStemmer": "src/stemmers.ts",
-   "RomanianStemmer": "src/stemmers.ts",
-   "RussianStemmer": "src/stemmers.ts",
-   "Production": "src/grammar.ts",
-   "ProbabilisticProduction": "src/grammar.ts",
-   "DependencyProduction": "src/grammar.ts",
-   "readGrammar": "src/grammar.ts",
-   "read_grammar": "src/grammar.ts",
-   "transitiveClosure": "src/grammar.ts",
-   "invertGraph": "src/grammar.ts",
-   "nonterminals": "src/grammar.ts",
-   "Nonterminal": "src/grammar.ts",
-   "TopDownChartParser": "src/chart.ts",
-   "EdgeI": "src/chart.ts",
-   "TopDownPredictRule": "src/chart.ts",
-   "LeafInitRule": "src/chart.ts",
-   "CachedTopDownPredictRule": "src/chart.ts",
-   "SingleEdgeFundamentalRule": "src/chart.ts",
-   "LeafEdge": "src/chart.ts",
-   "FilteredSingleEdgeFundamentalRule": "src/chart.ts",
-   "FilteredBottomUpPredictCombineRule": "src/chart.ts",
-   "FundamentalRule": "src/chart.ts",
-   "BottomUpPredictRule": "src/chart.ts",
-   "Chart": "src/chart.ts",
-   "TopDownInitRule": "src/chart.ts",
-   "EmptyPredictRule": "src/chart.ts",
+   "BigramTagger": "src/sequential_taggers.ts",
+   "BinaryMaxentFeatureEncoding": "src/maxent_feature_encoding.ts",
+   "BlanklineTokenizer": "src/tokenizers.ts",
    "BottomUpChartParser": "src/chart.ts",
    "BottomUpLeftCornerChartParser": "src/chart.ts",
-   "TreeEdge": "src/chart.ts",
    "BottomUpPredictCombineRule": "src/chart.ts",
-   "RegexpParser": "src/chunk_nltk.ts",
-   "RegexpChunkParser": "src/chunk_nltk.ts",
-   "ChunkString": "src/chunk_nltk.ts",
-   "RegexpChunkRule": "src/chunk_nltk.ts",
+   "BottomUpPredictRule": "src/chart.ts",
+   "CFG": "src/grammar.ts",
+   "CachedTopDownPredictRule": "src/chart.ts",
+   "Chart": "src/chart.ts",
+   "ChartParser": "src/parser_tagger_compat.ts",
+   "ChartRuleI": "src/chart.ts",
    "ChunkRule": "src/chunk_nltk.ts",
-   "StripRule": "src/chunk_nltk.ts",
-   "UnChunkRule": "src/chunk_nltk.ts",
-   "MergeRule": "src/chunk_nltk.ts",
-   "SplitRule": "src/chunk_nltk.ts",
-   "ExpandLeftRule": "src/chunk_nltk.ts",
-   "ExpandRightRule": "src/chunk_nltk.ts",
    "ChunkRuleWithContext": "src/chunk_nltk.ts",
-   "tag_pattern2re_pattern": "src/chunk_nltk.ts",
-   "tagPattern2rePattern": "src/chunk_nltk.ts",
-   "LanguageModel": "src/lm_nltk.ts",
-   "MLE": "src/lm_nltk.ts",
-   "Lidstone": "src/lm_nltk.ts",
-   "Laplace": "src/lm_nltk.ts",
-   "StupidBackoff": "src/lm_nltk.ts",
-   "InterpolatedLanguageModel": "src/lm_nltk.ts",
-   "WittenBellInterpolated": "src/lm_nltk.ts",
-   "AbsoluteDiscountingInterpolated": "src/lm_nltk.ts",
-   "KneserNeyInterpolated": "src/lm_nltk.ts",
-   "Smoothing": "src/lm_nltk.ts",
-   "WittenBell": "src/lm_nltk.ts",
-   "AbsoluteDiscounting": "src/lm_nltk.ts",
-   "KneserNey": "src/lm_nltk.ts",
-   "Vocabulary": "src/lm_nltk.ts",
-   "NgramCounter": "src/lm_nltk.ts",
-   "ConditionalFreqDist": "src/freqdist.ts",
-   "Synset": "src/wordnet_objects.ts",
-   "Lemma": "src/wordnet_objects.ts",
-   "WordNetReader": "src/wordnet_objects.ts",
-   "wordnetReader": "src/wordnet_objects.ts",
-   "ArabicStemmer": "src/stemmers.ts",
-   "FinnishStemmer": "src/stemmers.ts",
-   "HungarianStemmer": "src/stemmers.ts",
-   "Tree": "src/rust_parse.ts",
+   "ChunkString": "src/chunk_nltk.ts",
    "ClassifierI": "src/api_interfaces.ts",
-   "entropy": "src/probability.ts",
-   "BinaryMaxentFeatureEncoding": "src/maxent_feature_encoding.ts",
-   "DictionaryProbDist": "src/probability.ts",
-   "OrderedDict": "src/collections.ts",
-   "TadmMaxentClassifier": "src/classify_wrappers.ts",
-   "TypedMaxentFeatureEncoding": "src/maxent_feature_encoding.ts",
-   "accuracy": "src/metrics.ts",
-   "log_likelihood": "src/probability.ts",
-   "ELEProbDist": "src/probability.ts",
-   "sum_logs": "src/probability.ts",
-   "QuadgramCollocationFinder": "src/collocations.ts",
-   "TrigramCollocationFinder": "src/collocations.ts",
-   "CorpusReader": "src/corpus.ts",
-   "map_tag": "src/tag_mapping.ts",
-   "PCFG": "src/parser_tagger_compat.ts",
-   "binary_distance": "src/distance_metrics.ts",
-   "custom_distance": "src/distance_metrics.ts",
-   "fractional_presence": "src/distance_metrics.ts",
-   "interval_distance": "src/distance_metrics.ts",
-   "masi_distance": "src/distance_metrics.ts",
-   "presence": "src/distance_metrics.ts",
-   "LazyConcatenation": "src/collections.ts",
-   "LazyMap": "src/collections.ts",
-   "f_measure": "src/distance_metrics.ts",
-   "recall": "src/distance_metrics.ts",
-   "pk": "src/distance_metrics.ts",
-   "AbstractChartRule": "src/chart.ts",
-   "LeftCornerChartParser": "src/parser_tagger_compat.ts",
-   "ParserI": "src/api_interfaces.ts",
-   "is_nonterminal": "src/grammar.ts",
-   "is_terminal": "src/grammar.ts",
+   "ConcordanceIndex": "src/text.ts",
+   "ConditionalExponentialClassifier": "src/maxent_nltk.ts",
+   "ConditionalFreqDist": "src/freqdist.ts",
    "ConditionalProbDist": "src/probability.ts",
    "ConditionalProbDistI": "src/probability.ts",
-   "CrossValidationProbDist": "src/probability.ts",
-   "DictionaryConditionalProbDist": "src/probability.ts",
-   "HeldoutProbDist": "src/probability.ts",
-   "ImmutableProbabilisticMixIn": "src/api_interfaces.ts",
-   "KneserNeyProbDist": "src/probability.ts",
-   "LaplaceProbDist": "src/probability.ts",
-   "MutableProbDist": "src/probability.ts",
-   "ProbDistI": "src/probability.ts",
-   "ProbabilisticMixIn": "src/api_interfaces.ts",
-   "SimpleGoodTuringProbDist": "src/probability.ts",
-   "UniformProbDist": "src/probability.ts",
-   "WittenBellProbDist": "src/probability.ts",
-   "add_logs": "src/probability.ts",
-   "pairwise": "src/util.ts",
-   "StemmerI": "src/api_interfaces.ts",
-   "AveragedPerceptron": "src/perceptron_nltk.ts",
-   "FileSystemPathPointer": "src/data.ts",
-   "TaggerI": "src/api_interfaces.ts",
-   "BigramTagger": "src/sequential_taggers.ts",
-   "ContextTagger": "src/sequential_taggers.ts",
-   "DefaultTagger": "src/sequential_taggers.ts",
-   "FeaturesetTaggerI": "src/api_interfaces.ts",
-   "NgramTagger": "src/sequential_taggers.ts",
-   "RegexpTagger": "src/sequential_taggers.ts",
-   "SequentialBackoffTagger": "src/sequential_taggers.ts",
-   "TrigramTagger": "src/sequential_taggers.ts",
    "ContextIndex": "src/text.ts",
-   "Text": "src/text.ts",
-   "BlanklineTokenizer": "src/tokenizers.ts",
-   "LegalitySyllableTokenizer": "src/tokenize_legality.ts",
-   "LineTokenizer": "src/tokenizers.ts",
-   "PunktSentenceTokenizer": "src/punkt.ts",
-   "RegexpTokenizer": "src/tokenizers_regexp.ts",
-   "ReppTokenizer": "src/tokenize_wrappers.ts",
-   "SExprTokenizer": "src/tokenize_sexpr.ts",
-   "SpaceTokenizer": "src/tokenizers.ts",
-   "StanfordSegmenter": "src/tokenize_wrappers.ts",
-   "SyllableTokenizer": "src/tokenize_sonority.ts",
-   "TabTokenizer": "src/tokenizers.ts",
-   "TextTilingTokenizer": "src/tokenize_texttiling.ts",
-   "TreebankWordDetokenizer": "src/tokenizers.ts",
-   "WhitespaceTokenizer": "src/tokenizers.ts",
-   "blanklineTokenize": "src/tokenizers.ts",
-   "lineTokenize": "src/tokenizers.ts",
-   "load": "src/data.ts",
-   "regexp_tokenize": "src/tokenizers_regexp.ts",
-   "sexpr_tokenize": "src/tokenize_sexpr.ts",
-   "TokenizerI": "src/api_interfaces.ts",
-   "reduce_lengthening": "src/tokenizers.ts",
-   "remove_handles": "src/tokenizers.ts",
-   "Trie": "src/collections.ts",
-   "MacIntyreContractions": "src/tokenizers_treebank.ts",
-   "SmoothingFunction": "src/metrics.ts",
-   "brevityPenalty": "src/metrics.ts",
-   "closestRefLength": "src/metrics.ts",
-   "modifiedPrecision": "src/metrics.ts",
-   "nist_length_penalty": "src/translation_metrics_extra.ts",
-   "sentence_nist": "src/translation_metrics_extra.ts",
-   "AbstractLazySequence": "src/collections.ts",
+   "ContextTagger": "src/sequential_taggers.ts",
+   "CorpusReader": "src/corpus.ts",
+   "CrossValidationProbDist": "src/probability.ts",
+   "CutoffChecker": "src/maxent_nltk.ts",
+   "DanishStemmer": "src/stemmers.ts",
+   "DecisionTreeClassifier": "src/classifier_compat.ts",
+   "DefaultTagger": "src/sequential_taggers.ts",
+   "DependencyProduction": "src/grammar.ts",
+   "DictionaryConditionalProbDist": "src/probability.ts",
+   "DictionaryProbDist": "src/probability.ts",
+   "DutchStemmer": "src/stemmers.ts",
+   "ELEProbDist": "src/probability.ts",
+   "EdgeI": "src/chart.ts",
+   "EmptyPredictRule": "src/chart.ts",
+   "EnglishStemmer": "src/stemmers.ts",
+   "ExpandLeftRule": "src/chunk_nltk.ts",
+   "ExpandRightRule": "src/chunk_nltk.ts",
+   "FeaturesetTaggerI": "src/api_interfaces.ts",
+   "FileSystemPathPointer": "src/data.ts",
+   "FilteredBottomUpPredictCombineRule": "src/chart.ts",
+   "FilteredSingleEdgeFundamentalRule": "src/chart.ts",
+   "FinnishStemmer": "src/stemmers.ts",
+   "Fraction": "src/fraction.ts",
+   "FrenchStemmer": "src/stemmers.ts",
+   "FreqDist": "src/freqdist.ts",
+   "FunctionBackedMaxentFeatureEncoding": "src/maxent_nltk.ts",
+   "FundamentalRule": "src/chart.ts",
+   "GISEncoding": "src/maxent_nltk.ts",
+   "GermanStemmer": "src/stemmers.ts",
+   "HeldoutProbDist": "src/probability.ts",
+   "HungarianStemmer": "src/stemmers.ts",
+   "ImmutableProbabilisticMixIn": "src/api_interfaces.ts",
+   "Index": "src/util_nltk.ts",
+   "InterpolatedLanguageModel": "src/lm_nltk.ts",
+   "ItalianStemmer": "src/stemmers.ts",
+   "KneserNey": "src/lm_nltk.ts",
+   "KneserNeyInterpolated": "src/lm_nltk.ts",
+   "KneserNeyProbDist": "src/probability.ts",
+   "LancasterStemmer": "src/stemmers.ts",
+   "LanguageModel": "src/lm_nltk.ts",
+   "Laplace": "src/lm_nltk.ts",
+   "LaplaceProbDist": "src/probability.ts",
+   "LazyConcatenation": "src/collections.ts",
    "LazyEnumerate": "src/collections.ts",
    "LazyIteratorList": "src/collections.ts",
+   "LazyMap": "src/collections.ts",
    "LazySubsequence": "src/collections.ts",
    "LazyZip": "src/collections.ts",
-   "bigrams": "src/nltk_compat.ts",
-   "invert_dict": "src/util_nltk.ts",
-   "slice_bounds": "src/util_nltk.ts",
-   "trigrams": "src/nltk_compat.ts",
+   "LeafEdge": "src/chart.ts",
+   "LeafInitRule": "src/chart.ts",
+   "LeftCornerChartParser": "src/parser_tagger_compat.ts",
+   "LegacyMWETokenizer": "src/tokenizers.ts",
+   "LegacyToktokTokenizer": "src/tokenizers.ts",
+   "LegacyTweetTokenizer": "src/tokenizers.ts",
+   "LegalitySyllableTokenizer": "src/tokenize_legality.ts",
+   "Lemma": "src/wordnet_objects.ts",
+   "Lidstone": "src/lm_nltk.ts",
+   "LidstoneProbDist": "src/probability.ts",
+   "LineTokenizer": "src/tokenizers.ts",
+   "MAX_EVERYGRAMS_DEFAULT_LEN": "index.ts",
+   "MLE": "src/lm_nltk.ts",
+   "MLEProbDist": "src/probability.ts",
+   "MWETokenizer": "src/tokenizers.ts",
+   "MacIntyreContractions": "src/tokenizers_treebank.ts",
+   "MaxentClassifier": "src/classifier_compat.ts",
+   "MaxentFeatureEncodingI": "src/maxent_nltk.ts",
+   "MergeRule": "src/chunk_nltk.ts",
+   "MutableProbDist": "src/probability.ts",
+   "NaiveBayesClassifier": "src/classifier_compat.ts",
+   "NgramCounter": "src/lm_nltk.ts",
+   "NgramLanguageModel": "src/lm.ts",
+   "NgramTagger": "src/sequential_taggers.ts",
+   "Nonterminal": "src/grammar.ts",
+   "NorwegianStemmer": "src/stemmers.ts",
+   "OrderedDict": "src/collections.ts",
+   "PCFG": "src/grammar.ts",
+   "ParserI": "src/api_interfaces.ts",
+   "PerceptronTagger": "src/parser_tagger_compat.ts",
+   "PorterStemmer": "src/porter_stemmer.ts",
+   "PortugueseStemmer": "src/stemmers.ts",
+   "PositiveNaiveBayesClassifier": "src/classifier_compat.ts",
+   "ProbDistI": "src/probability.ts",
+   "ProbabilisticMixIn": "src/api_interfaces.ts",
+   "ProbabilisticProduction": "src/grammar.ts",
+   "Production": "src/grammar.ts",
+   "PunktBaseClass": "src/punkt_nltk.ts",
+   "PunktLanguageVars": "src/punkt_nltk.ts",
+   "PunktParameters": "src/punkt_nltk.ts",
+   "PunktSentenceTokenizer": "src/punkt_nltk.ts",
+   "PunktToken": "src/punkt_nltk.ts",
+   "PunktTokenizer": "src/punkt_nltk.ts",
+   "PunktTrainer": "src/punkt_nltk.ts",
+   "PunktTrainerSubset": "src/punkt.ts",
+   "QuadgramCollocationFinder": "src/collocations.ts",
+   "RegexpChunkParser": "src/chunk_nltk.ts",
+   "RegexpChunkRule": "src/chunk_nltk.ts",
+   "RegexpParser": "src/chunk_nltk.ts",
+   "RegexpStemmer": "src/stemmers.ts",
+   "RegexpTagger": "src/sequential_taggers.ts",
+   "RegexpTokenizer": "src/tokenizers_regexp.ts",
+   "ReppTokenizer": "src/tokenize_wrappers.ts",
+   "RomanianStemmer": "src/stemmers.ts",
+   "RussianStemmer": "src/stemmers.ts",
+   "RustDecisionTreeClassifier": "src/feature_tree.ts",
+   "RustMWETokenizer": "src/tokenizers.ts",
+   "RustMaxentClassifier": "src/feature_maxent.ts",
+   "RustNaiveBayesClassifier": "src/feature_nb.ts",
+   "RustPositiveNaiveBayesClassifier": "src/feature_nb.ts",
+   "RustToktokTokenizer": "src/tokenizers.ts",
+   "RustTweetTokenizer": "src/tokenizers.ts",
+   "SExprTokenizer": "src/tokenize_sexpr.ts",
+   "SentiText": "src/sentiment.ts",
+   "SentimentIntensityAnalyzer": "src/sentiment.ts",
+   "SequentialBackoffTagger": "src/sequential_taggers.ts",
+   "SimpleGoodTuringProbDist": "src/probability.ts",
+   "SingleEdgeFundamentalRule": "src/chart.ts",
+   "SklearnClassifier": "src/classify_wrappers.ts",
+   "Smoothing": "src/lm_nltk.ts",
+   "SmoothingFunction": "src/metrics.ts",
+   "SnowballStemmer": "src/stemmers.ts",
+   "SpaceTokenizer": "src/tokenizers.ts",
+   "SpanishStemmer": "src/stemmers.ts",
+   "SplitRule": "src/chunk_nltk.ts",
+   "StanfordSegmenter": "src/tokenize_wrappers.ts",
+   "StemmerI": "src/api_interfaces.ts",
+   "StripRule": "src/chunk_nltk.ts",
+   "StupidBackoff": "src/lm_nltk.ts",
+   "SwedishStemmer": "src/stemmers.ts",
+   "SyllableTokenizer": "src/tokenize_sonority.ts",
+   "Synset": "src/wordnet_objects.ts",
+   "TabTokenizer": "src/tokenizers.ts",
+   "TadmEventMaxentFeatureEncoding": "src/maxent_nltk.ts",
+   "TadmMaxentClassifier": "src/classify_wrappers.ts",
+   "TaggerI": "src/api_interfaces.ts",
+   "Text": "src/text.ts",
+   "TextTilingTokenizer": "src/tokenize_texttiling.ts",
+   "TokenizerI": "src/api_interfaces.ts",
+   "ToktokTokenizer": "src/tokenizers.ts",
+   "TopDownChartParser": "src/chart.ts",
+   "TopDownInitRule": "src/chart.ts",
+   "TopDownPredictRule": "src/chart.ts",
+   "Tree": "src/rust_parse.ts",
+   "TreeEdge": "src/chart.ts",
+   "TreebankWordDetokenizer": "src/tokenizers.ts",
+   "TreebankWordTokenizer": "src/tokenizers.ts",
+   "Trie": "src/collections.ts",
+   "TrigramCollocationFinder": "src/collocations.ts",
+   "TrigramTagger": "src/sequential_taggers.ts",
+   "TweetTokenizer": "src/tokenizers.ts",
+   "TypedMaxentFeatureEncoding": "src/maxent_feature_encoding.ts",
+   "UnChunkRule": "src/chunk_nltk.ts",
+   "UniformProbDist": "src/probability.ts",
+   "UnigramTagger": "src/sequential_taggers.ts",
+   "VaderConstants": "src/sentiment.ts",
+   "Vocabulary": "src/lm_nltk.ts",
+   "WhitespaceTokenizer": "src/tokenizers.ts",
+   "WittenBell": "src/lm_nltk.ts",
+   "WittenBellInterpolated": "src/lm_nltk.ts",
+   "WittenBellProbDist": "src/probability.ts",
+   "WordNet": "src/wordnet.ts",
+   "WordNetLemmatizer": "src/stemmers.ts",
+   "WordNetReader": "src/wordnet_objects.ts",
+   "WordPunctTokenizer": "src/tokenizers.ts",
+   "accuracy": "src/metrics.ts",
    "acyclic_branches_depth_first": "src/util_nltk.ts",
    "acyclic_breadth_first": "src/util_nltk.ts",
    "acyclic_depth_first": "src/util_nltk.ts",
    "acyclic_dic2tree": "src/util_nltk.ts",
+   "add_logs": "src/probability.ts",
+   "align_tokens": "src/tokenizers_treebank.ts",
+   "allowlisted_pickle_load": "src/platform_helpers.ts",
+   "approxrand": "src/distance_metrics.ts",
+   "bigrams": "src/nltk_compat.ts",
+   "binary_distance": "src/distance_metrics.ts",
    "binary_search_file": "src/util_nltk.ts",
+   "blanklineTokenize": "src/tokenizers.ts",
    "breadth_first": "src/util_nltk.ts",
+   "brevityPenalty": "src/metrics.ts",
+   "calculate_deltas": "src/maxent_nltk.ts",
+   "calculate_empirical_fcount": "src/maxent_nltk.ts",
+   "calculate_estimated_fcount": "src/maxent_nltk.ts",
+   "calculate_nfmap": "src/maxent_nltk.ts",
+   "call_megam": "src/platform_helpers.ts",
+   "call_tadm": "src/platform_helpers.ts",
+   "casualTokenize": "src/tokenizers.ts",
+   "casual_tokenize": "src/tokenizers.ts",
+   "chartParse": "src/parse.ts",
    "choose": "src/util_nltk.ts",
+   "chrf_precision_recall_fscore_support": "src/translation_metrics_extra.ts",
+   "classify_accuracy": "src/maxent_nltk.ts",
+   "classify_log_likelihood": "src/maxent_nltk.ts",
    "clean_html": "src/util_nltk.ts",
    "clean_url": "src/util_nltk.ts",
+   "closestRefLength": "src/metrics.ts",
+   "corpusBleu": "src/metrics.ts",
+   "corpusNist": "src/translation_metrics_extra.ts",
+   "corpus_chrf": "src/translation_metrics_extra.ts",
+   "custom_distance": "src/distance_metrics.ts",
    "cut_string": "src/util_nltk.ts",
+   "demo": "src/platform_helpers.ts",
+   "demo_eval": "src/platform_helpers.ts",
+   "demo_grammar": "src/platform_helpers.ts",
    "deprecated": "src/util_nltk.ts",
    "edge_closure": "src/util_nltk.ts",
    "edges2dot": "src/util_nltk.ts",
+   "editDistance": "src/metrics.ts",
+   "editDistanceAlign": "src/distance_metrics.ts",
    "elementtree_indent": "src/util_nltk.ts",
+   "entropy": "src/probability.ts",
    "everygrams": "src/util_nltk.ts",
+   "f_measure": "src/distance_metrics.ts",
    "filestring": "src/util_nltk.ts",
+   "find": "src/data.ts",
    "flatten": "src/util_nltk.ts",
+   "format_debug_decision": "src/punkt_nltk.ts",
+   "fractional_presence": "src/distance_metrics.ts",
+   "ghd": "src/distance_metrics.ts",
    "guess_encoding": "src/util_nltk.ts",
+   "gzip_open_unicode": "src/data.ts",
    "in_idle": "src/util_nltk.ts",
+   "interval_distance": "src/distance_metrics.ts",
+   "invertGraph": "src/grammar.ts",
+   "invert_dict": "src/util_nltk.ts",
+   "is_nonterminal": "src/grammar.ts",
+   "is_terminal": "src/grammar.ts",
+   "jaccardDistance": "src/distance_metrics.ts",
+   "jaro_similarity": "src/distance_metrics.ts",
+   "jaro_winkler_similarity": "src/distance_metrics.ts",
+   "legacyMweTokenize": "src/tokenizers.ts",
+   "legacyToktokTokenize": "src/tokenizers.ts",
+   "legacyTweetTokenize": "src/tokenizers.ts",
+   "lesk": "src/wsd.ts",
+   "lineTokenize": "src/tokenizers.ts",
+   "load": "src/data.ts",
+   "loadPunktParams": "src/punkt_nltk.ts",
+   "loadWordNet": "src/wordnet.ts",
+   "load_maxent_params": "src/maxent_nltk.ts",
+   "load_punkt_params": "src/punkt_nltk.ts",
+   "log_likelihood": "src/probability.ts",
+   "map_tag": "src/tag_mapping.ts",
+   "masi_distance": "src/distance_metrics.ts",
+   "maxent_pos_tagger": "src/maxent_nltk.ts",
+   "modifiedPrecision": "src/metrics.ts",
+   "mweTokenize": "src/tokenizers.ts",
+   "mwe_tokenize": "src/tokenizers.ts",
+   "ngrams": "src/nltk_compat.ts",
+   "ngrams_iter": "src/nltk_compat.ts",
+   "nist_length_penalty": "src/translation_metrics_extra.ts",
+   "nonterminals": "src/grammar.ts",
+   "open_datafile": "src/platform_helpers.ts",
    "pad_sequence": "src/util_nltk.ts",
+   "pairwise": "src/util.ts",
    "parallelize_preprocess": "src/util_nltk.ts",
+   "parseCfgGrammar": "src/parse.ts",
+   "parse_megam_weights": "src/maxent_nltk.ts",
+   "parse_tadm_weights": "src/maxent_nltk.ts",
+   "pk": "src/distance_metrics.ts",
+   "posTagPerceptronAscii": "src/perceptron_tagger.ts",
    "pr": "src/util_nltk.ts",
+   "precision": "src/distance_metrics.ts",
+   "prefix_replace": "src/snowball/helpers.ts",
+   "presence": "src/distance_metrics.ts",
    "print_string": "src/util_nltk.ts",
+   "punkt_pickle_load": "src/platform_helpers.ts",
    "raise_unorderable_types": "src/util_nltk.ts",
    "re_show": "src/util_nltk.ts",
+   "readGrammar": "src/grammar.ts",
+   "read_grammar": "src/grammar.ts",
+   "recall": "src/distance_metrics.ts",
+   "reduce_lengthening": "src/tokenizers.ts",
+   "regexpChunkParse": "src/chunk.ts",
+   "regexp_span_tokenize": "src/tokenizers_regexp.ts",
+   "regexp_tokenize": "src/tokenizers_regexp.ts",
+   "remove_handles": "src/tokenizers.ts",
+   "savePunktParams": "src/punkt_nltk.ts",
+   "save_maxent_params": "src/maxent_nltk.ts",
+   "save_punkt_params": "src/punkt_nltk.ts",
+   "sent_tokenize": "src/nltk_compat.ts",
+   "sentenceBleu": "src/metrics.ts",
+   "sentenceChrF": "src/translation_metrics_extra.ts",
+   "sentence_nist": "src/translation_metrics_extra.ts",
    "set_proxy": "src/util_nltk.ts",
+   "sexpr_tokenize": "src/tokenize_sexpr.ts",
    "skipgrams": "src/util_nltk.ts",
+   "slice_bounds": "src/util_nltk.ts",
+   "snowballStem": "src/snowball.ts",
+   "string_span_tokenize": "src/tokenizers_regexp.ts",
+   "suffix_replace": "src/snowball/helpers.ts",
+   "sum_logs": "src/probability.ts",
+   "tagPattern2rePattern": "src/chunk_nltk.ts",
+   "tag_pattern2re_pattern": "src/chunk_nltk.ts",
    "tokenwrap": "src/util_nltk.ts",
+   "toktokTokenize": "src/tokenizers.ts",
+   "toktok_tokenize": "src/tokenizers.ts",
+   "trainNgramLanguageModel": "src/lm.ts",
+   "train_maxent_classifier_with_gis": "src/maxent_nltk.ts",
+   "train_maxent_classifier_with_iis": "src/maxent_nltk.ts",
+   "train_maxent_classifier_with_megam": "src/platform_helpers.ts",
+   "transitiveClosure": "src/grammar.ts",
+   "treebankWordTokenize": "src/tokenizers.ts",
+   "trigrams": "src/nltk_compat.ts",
+   "tweetTokenize": "src/tokenizers.ts",
+   "tweet_tokenize": "src/tokenizers.ts",
    "unique_list": "src/util_nltk.ts",
    "unweighted_minimum_spanning_dict": "src/util_nltk.ts",
    "unweighted_minimum_spanning_digraph": "src/util_nltk.ts",
    "unweighted_minimum_spanning_tree": "src/util_nltk.ts",
    "usage": "src/util_nltk.ts",
-   "Index": "src/util_nltk.ts",
-   "MAX_EVERYGRAMS_DEFAULT_LEN": "index.ts",
-   "demo": "src/platform_helpers.ts",
-   "demo_eval": "src/platform_helpers.ts",
-   "call_megam": "src/platform_helpers.ts",
-   "call_tadm": "src/platform_helpers.ts",
-   "gzip_open_unicode": "src/data.ts",
-   "load_maxent_params": "src/platform_helpers.ts",
-   "parse_megam_weights": "src/platform_helpers.ts",
-   "parse_tadm_weights": "src/platform_helpers.ts",
-   "save_maxent_params": "src/platform_helpers.ts",
-   "train_maxent_classifier_with_megam": "src/platform_helpers.ts",
-   "write_megam_file": "src/platform_helpers.ts",
-   "write_tadm_file": "src/platform_helpers.ts",
-   "demo_grammar": "src/platform_helpers.ts",
-   "find": "src/data.ts",
-   "open_datafile": "src/platform_helpers.ts",
-   "allowlisted_pickle_load": "src/platform_helpers.ts",
-   "load_punkt_params": "src/platform_helpers.ts",
-   "punkt_pickle_load": "src/platform_helpers.ts",
-   "save_punkt_params": "src/platform_helpers.ts"
+   "windowdiff": "src/distance_metrics.ts",
+   "wordPunctTokenize": "src/tokenizers.ts",
+   "word_tokenize": "src/nltk_compat.ts",
+   "wordnetReader": "src/wordnet_objects.ts",
+   "wordpunct_tokenize": "src/nltk_compat.ts",
+   "write_megam_file": "src/maxent_nltk.ts",
+   "write_tadm_file": "src/maxent_nltk.ts"
   }
  },
  "modules": [
@@ -836,7 +872,7 @@
     "test/sequential_taggers.test.ts",
     "test/sequential_tagger_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 TaggerI member surface",
+   "anchor": "NLTK 3.10.3 oracle pins — TaggerI member surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: accuracy/precision/recall/f_measure/evaluate_per_tag tables, size, _context_to_tag, _check_params both/neither, DefaultTagger backoff, encode/decode_json_obj."
   },
@@ -847,9 +883,9 @@
     "test/perceptron_tagger.test.ts",
     "test/perceptron_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 doctest pins \u2014 trained-tagger surface",
+   "anchor": "NLTK 3.10.3 doctest pins — trained-tagger surface",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: doctest train\u2192tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
+   "scope": "NLTK 3.10.3-pinned: doctest train→tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
   },
   {
    "id": "concordance-differential",
@@ -858,7 +894,7 @@
     "test/text.test.ts",
     "test/concordance_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 ConcordanceIndex contract",
+   "anchor": "NLTK 3.10.3 oracle pins — ConcordanceIndex contract",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: offsets/defaultdict types count, find_concordance line bytes (left rjust, i+context right slice, trailing space), phrase matching, print_concordance Displaying/no-matches format, repr."
   },
@@ -891,7 +927,7 @@
     "test/collocations.test.ts",
     "test/collocations_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 BigramCollocationFinder contract",
+   "anchor": "NLTK 3.10.3 oracle pins — BigramCollocationFinder contract",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: N/word_fd/window_size, pmi/raw_freq scores, score_ngrams ordering, nbest, above_score, ws=3 non-contiguous bigrams, freq filter."
   },
@@ -902,7 +938,7 @@
     "test/sentiment.test.ts",
     "test/vader_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 full SentimentIntensityAnalyzer member surface",
+   "anchor": "NLTK 3.10.3 oracle pins — full SentimentIntensityAnalyzer member surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: 5 doctest polarity_scores dicts, SentiText words/cap_diff, VaderConstants negated/normalize/scalar_inc_dec, score_valence + empty, sentiment_valence, make_lex_dict, 7502-entry lexicon."
   },
@@ -913,7 +949,7 @@
     "test/probability.test.ts",
     "test/probdist_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 ProbDistI inherited surface",
+   "anchor": "NLTK 3.10.3 oracle pins — ProbDistI inherited surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: SUM_TO_ONE per class, discount (base 0.0 vs Lidstone formula), logprob -1e300 unseen, prob unseen/empty=0, generate weighted sampling, repr, bins>=B() error wording."
   },
@@ -924,7 +960,7 @@
     "test/grammar.test.ts",
     "test/grammar_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.grammar CFG/Production/Nonterminal",
+   "anchor": "NLTK 3.10.3 oracle pins — nltk.grammar CFG/Production/Nonterminal",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: CFG init/indexes/leftcorner closure, productions(lhs/rhs/empty) filters, grammar-form predicates, chomsky_normal_form pipeline (eliminate_start, binarize, remove_mixed_rules, remove_unitary_rules with cycle guard), check_coverage quoting, read_grammar errors, Production/ProbabilisticProduction/DependencyProduction/Nonterminal/nonterminals."
   },
@@ -935,7 +971,7 @@
     "test/chart_parser.test.ts",
     "test/chart_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.parse.chart",
+   "anchor": "NLTK 3.10.3 oracle pins — nltk.parse.chart",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: ChartParser.chart_parse agenda/non-agenda loops, BU_LC/TD/LC strategies, edge set/count equality, shared-edge ambiguity via child_pointer_lists, select restrictions, pretty_format_edge/leaves, parse trees and ParserI surface."
   },
@@ -946,7 +982,7 @@
     "test/chunk_parser.test.ts",
     "test/chunk_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.chunk RegexpParser/RegexpChunkParser/ChunkScore",
+   "anchor": "NLTK 3.10.3 oracle pins — nltk.chunk RegexpParser/RegexpChunkParser/ChunkScore",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: RegexpParser staged grammars/chinks/loop, all 8 RegexpChunkRule subclasses via fromstring, ChunkString brace validation, tag_pattern2re_pattern translations and errors, ChunkScore metrics/str/repr, ParserI parse_one/parse_all/parse_sents surface."
   },
@@ -957,7 +993,7 @@
     "test/lm_nltk.test.ts",
     "test/lm_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.lm LanguageModel/Vocabulary/NgramCounter",
+   "anchor": "NLTK 3.10.3 oracle pins — nltk.lm LanguageModel/Vocabulary/NgramCounter",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: MLE/Lidstone/Laplace/StupidBackoff/WittenBellInterpolated/AbsoluteDiscountingInterpolated/KneserNeyInterpolated score+perplexity matrix, generate via Python-compatible MT19937 (seed=3), context backoff/trimming, math domain error, Vocabulary cutoff/membership/lookup/update/str, NgramCounter orders/N/indexing/tuple validation."
   },
@@ -968,7 +1004,7 @@
     "test/wordnet_objects.test.ts",
     "test/wordnet_objects_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.corpus.wordnet Synset/Lemma object model",
+   "anchor": "NLTK 3.10.3 oracle pins — nltk.corpus.wordnet Synset/Lemma object model",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: Synset name/pos/offset/lexname/definition/examples/lemma_names, Lemma name/key/repr/antonyms/lang, hypernym/hyponym relations, index.<pos> sense numbering, hypernym_paths, root_hypernyms, lowest_common_hypernyms, common_hypernyms membership, hypernym_distances, max/min_depth, shortest_path_distance, path/wup/lch similarity. Requires the packed wordnet artifact (senseNums + original lemma/pointer order)."
   },
@@ -981,7 +1017,7 @@
    ],
    "anchor": "Values pinned from Python NLTK 3.10.3 (see test/snowball_arfihu_oracle.py)",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: 45 Arabic + 40 Finnish + 43 Hungarian stems including diacritic normalization, string-vs-tuple suffix iteration quirks (noun step2b '\u0627\u062a'), Hungarian digraph R1, Finnish vowel-harmony step checks, ignore_stopwords post-normalization check for Arabic."
+   "scope": "NLTK 3.10.3-pinned: 45 Arabic + 40 Finnish + 43 Hungarian stems including diacritic normalization, string-vs-tuple suffix iteration quirks (noun step2b 'ات'), Hungarian digraph R1, Finnish vowel-harmony step checks, ignore_stopwords post-normalization check for Arabic."
   },
   {
    "id": "tree-differential",
@@ -1004,6 +1040,39 @@
    ],
    "anchor": "util-differential",
    "scope": "nltk.util ngram iterators, graph traversals, and helpers pinned against NLTK 3.10.3"
+  },
+  {
+   "id": "metrics-extra-differential",
+   "kind": "differential",
+   "oracleVersion": "3.10.3",
+   "files": [
+    "test/metrics_extra.test.ts",
+    "test/metrics_extra_oracle.py"
+   ],
+   "anchor": "metrics-extra-differential",
+   "scope": "jaro/jaro-winkler similarity, ghd, approxrand, chrf support, and Fraction pinned against NLTK 3.10.3"
+  },
+  {
+   "id": "maxent-differential",
+   "kind": "differential",
+   "oracleVersion": "3.10.3",
+   "files": [
+    "test/maxent_nltk.test.ts",
+    "test/maxent_nltk_oracle.py"
+   ],
+   "anchor": "maxent-differential",
+   "scope": "GIS/IIS trainers, encodings, deltas, cutoff checker, megam/tadm file IO pinned against NLTK 3.10.3"
+  },
+  {
+   "id": "punkt-differential",
+   "kind": "differential",
+   "oracleVersion": "3.10.3",
+   "files": [
+    "test/punkt_nltk.test.ts",
+    "test/punkt_nltk_oracle.py"
+   ],
+   "anchor": "punkt-differential",
+   "scope": "Punkt object model (language vars, parameters, tokens, trainer, sentence tokenizer, debug decisions) pinned against NLTK 3.10.3"
   }
  ],
  "signatureBindings": [
@@ -1675,6 +1744,10 @@
    "status": "implemented-subset",
    "source": [
     {
+     "file": "src/punkt_nltk.ts",
+     "anchor": "export class PunktTrainer"
+    },
+    {
      "file": "src/punkt.ts",
      "anchor": "export class PunktTrainer"
     },
@@ -1698,7 +1771,8 @@
     ]
    },
    "evidence": [
-    "next-punkt-training"
+    "next-punkt-training",
+    "punkt-differential"
    ],
    "fixtures": {
     "status": "pinned-differential",
@@ -1706,7 +1780,7 @@
      "TS retains/replays chunks and options; not bounded-memory incremental Rust state. train returns this; options object is package-specific. Custom languages/tokens, train_tokens, pruning and full trainer tuning absent. Zero orthographic entries omitted; scores tolerance 1e-10, not bitwise roundtrips."
     ]
    },
-   "notes": "Rust training core already present at base. This does not certify Python constructor/finalize_training or every inherited member; official model comparison is resource-dependent."
+   "notes": "Rust training core already present at base. This does not certify Python constructor/finalize_training or every inherited member; official model comparison is resource-dependent. Faithful object model lands in src/punkt_nltk.ts."
   },
   {
    "target": "nltk.stem.porter.PorterStemmer",
@@ -2354,7 +2428,8 @@
    "target": "nltk.classify.maxent.MaxentClassifier",
    "exports": [
     "MaxentClassifier",
-    "RustMaxentClassifier"
+    "RustMaxentClassifier",
+    "ConditionalExponentialClassifier"
    ],
    "category": "rust-wasm",
    "status": "implemented-subset",
@@ -2391,7 +2466,7 @@
      "Near-tie prediction assertions omitted; wrapper constructor/legacy SGD not NLTK IIS/GIS parity."
     ]
    },
-   "notes": "Default IIS/GIS uses Rust. No claim that legacy SGD or all encodings match NLTK."
+   "notes": "Rust IIS/GIS default wrapper plus the pure-TS ConditionalExponentialClassifier (the class NLTK's MaxentClassifier aliases)."
   },
   {
    "target": "nltk.classify.decisiontree.DecisionTreeClassifier",
@@ -2840,7 +2915,7 @@
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "confusion crashes on None tags in both implementations (sorted str+NoneType) \u2014 adapted."
+     "confusion crashes on None tags in both implementations (sorted str+NoneType) — adapted."
     ]
    },
    "notes": "TS sequential tagger, not the Rust perceptron/HMM primitives. TaggerI metric surface + ContextTagger._context_to_tag + _check_params both/neither + public context/chooseTag/train + encode/decode_json_obj."
@@ -2942,7 +3017,7 @@
      "Combining-character cut_string paths pinned by construction, not by oracle fixture."
     ]
    },
-   "notes": "Defaultdict offsets (miss registers key), i+context right-slice, untrimmed line join, cut_string combining-aware width, Displaying/no-matches print format \u2014 all pinned."
+   "notes": "Defaultdict offsets (miss registers key), i+context right-slice, untrimmed line join, cut_string combining-aware width, Displaying/no-matches print format — all pinned."
   },
   {
    "target": "nltk.collocations.BigramCollocationFinder",
@@ -3025,7 +3100,7 @@
      "No remaining tracked gaps in this fixture."
     ]
    },
-   "notes": "SentiText, VaderConstants, make_lex_dict, sentiment_valence, score_valence, polarity_scores \u2014 full discovered member surface, byte-pinned on doctest corpus."
+   "notes": "SentiText, VaderConstants, make_lex_dict, sentiment_valence, score_valence, polarity_scores — full discovered member surface, byte-pinned on doctest corpus."
   },
   {
    "target": "nltk.chunk.regexp.RegexpParser",
@@ -5325,7 +5400,7 @@
      "acyclic_tree"
     ],
     "gaps": [
-     "Meronym/holonym/domain/entailment/verb_group/attribute/frame/instance relations return empty \u2014 not carried in the packed payload.",
+     "Meronym/holonym/domain/entailment/verb_group/attribute/frame/instance relations return empty — not carried in the packed payload.",
      "res/jcn/lin_similarity raise pending IC data.",
      "common_hypernyms ordering is BFS rather than Python set order."
     ]
@@ -7821,35 +7896,33 @@
   {
    "target": "nltk.classify.maxent.accuracy",
    "exports": [
-    "accuracy"
+    "classify_accuracy"
    ],
    "category": "ts-algorithm",
    "status": "implemented-subset",
    "source": [
     {
-     "file": "src/confusion_metrics.ts",
-     "anchor": "export function accuracy"
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export function classify_accuracy"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
     ]
    },
    "evidence": [
-    "classifier-wrapper",
-    "maxent-features",
-    "nb-features"
+    "maxent-differential"
    ],
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "Coverage shared with the implementing module mapping."
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "Maps discovered function nltk.classify.maxent.accuracy to the existing implementation."
+   "notes": "classify.util accuracy(classifier, gold) — distinct from nltk.metrics accuracy."
   },
   {
    "target": "nltk.classify.maxent.call_megam",
@@ -7972,149 +8045,155 @@
    "exports": [
     "load_maxent_params"
    ],
-   "category": "gap",
-   "status": "unsupported",
-   "source": [
-    {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function load_maxent_params"
-    }
-   ],
-   "signatures": {
-    "status": "partial",
-    "members": [],
-    "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
-    ]
-   },
-   "evidence": [],
-   "fixtures": {
-    "status": "missing",
-    "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
-    ]
-   },
-   "notes": "NLTK load_maxent_params is an interactive demo / external-tool / pickle helper without a TS-parity surface."
-  },
-  {
-   "target": "nltk.classify.maxent.log_likelihood",
-   "exports": [
-    "log_likelihood"
-   ],
    "category": "ts-algorithm",
    "status": "implemented-subset",
    "source": [
     {
-     "file": "src/probability.ts",
-     "anchor": "export const log_likelihood"
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export function load_maxent_params"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Member set reflects the discovered NLTK surface; JS types/generator/Error adaptations apply where noted on the implementing mapping."
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
     ]
    },
    "evidence": [
-    "classifier-wrapper",
-    "maxent-features",
-    "nb-features"
+    "maxent-differential"
    ],
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "Coverage shared with the implementing module mapping."
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "Maps discovered function nltk.classify.maxent.log_likelihood to the existing implementation."
+   "notes": "load_maxent_params reads weights.txt/mapping.tab/labels.txt/alwayson.tab via the ported tabdata decoder."
+  },
+  {
+   "target": "nltk.classify.maxent.log_likelihood",
+   "exports": [
+    "classify_log_likelihood"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export function classify_log_likelihood"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "classify.util log_likelihood(classifier, gold) — distinct from the probdist log_likelihood."
   },
   {
    "target": "nltk.classify.maxent.parse_megam_weights",
    "exports": [
     "parse_megam_weights"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
+     "file": "src/maxent_nltk.ts",
      "anchor": "export function parse_megam_weights"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "maxent-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "NLTK parse_megam_weights is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "parse_megam_weights parses megam stdout into a weight vector."
   },
   {
    "target": "nltk.classify.maxent.parse_tadm_weights",
    "exports": [
     "parse_tadm_weights"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
+     "file": "src/maxent_nltk.ts",
      "anchor": "export function parse_tadm_weights"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "maxent-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "NLTK parse_tadm_weights is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "parse_tadm_weights parses tadm param output into a weight vector."
   },
   {
    "target": "nltk.classify.maxent.save_maxent_params",
    "exports": [
     "save_maxent_params"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
+     "file": "src/maxent_nltk.ts",
      "anchor": "export function save_maxent_params"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "maxent-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "NLTK save_maxent_params is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "save_maxent_params writes the four-file tab layout via the ported tabdata encoder."
   },
   {
    "target": "nltk.classify.maxent.train_maxent_classifier_with_megam",
@@ -8150,58 +8229,62 @@
    "exports": [
     "write_megam_file"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
+     "file": "src/maxent_nltk.ts",
      "anchor": "export function write_megam_file"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "maxent-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "NLTK write_megam_file is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "write_megam_file implemented in maxent_nltk; megam binary itself remains external."
   },
   {
    "target": "nltk.classify.maxent.write_tadm_file",
    "exports": [
     "write_tadm_file"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
+     "file": "src/maxent_nltk.ts",
      "anchor": "export function write_tadm_file"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "maxent-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "NLTK write_tadm_file is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "write_tadm_file implemented in maxent_nltk; tadm binary itself remains external."
   },
   {
    "target": "nltk.classify.naivebayes.ClassifierI",
@@ -12155,6 +12238,10 @@
    "status": "implemented-subset",
    "source": [
     {
+     "file": "src/punkt_nltk.ts",
+     "anchor": "export class PunktSentenceTokenizer"
+    },
+    {
      "file": "src/punkt.ts",
      "anchor": "export class PunktSentenceTokenizer"
     }
@@ -12180,7 +12267,8 @@
    },
    "evidence": [
     "next-tokenizers",
-    "tokenizer-unit"
+    "tokenizer-unit",
+    "punkt-differential"
    ],
    "fixtures": {
     "status": "pinned-differential",
@@ -12188,7 +12276,7 @@
      "Coverage shared with the implementing module mapping."
     ]
    },
-   "notes": "Maps discovered class nltk.tokenize.punkt.PunktSentenceTokenizer to the existing implementation."
+   "notes": "Maps discovered class nltk.tokenize.punkt.PunktSentenceTokenizer to the existing implementation. Faithful object model lands in src/punkt_nltk.ts."
   },
   {
    "target": "nltk.tokenize.punkt.TokenizerI",
@@ -12288,31 +12376,34 @@
   {
    "target": "nltk.tokenize.punkt.load_punkt_params",
    "exports": [
-    "load_punkt_params"
+    "load_punkt_params",
+    "loadPunktParams"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
+     "file": "src/punkt_nltk.ts",
      "anchor": "export function load_punkt_params"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Python kwargs/set-order semantics adapted to TS; errors are JS Error/TypeError."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "punkt-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Pinned in test/punkt_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "NLTK load_punkt_params is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Loads serialized PunktParameters from a punkt_tab-style directory (JSON adaptation of the NLTK pickle loader)."
   },
   {
    "target": "nltk.tokenize.punkt.punkt_pickle_load",
@@ -12346,31 +12437,34 @@
   {
    "target": "nltk.tokenize.punkt.save_punkt_params",
    "exports": [
-    "save_punkt_params"
+    "save_punkt_params",
+    "savePunktParams"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
+     "file": "src/punkt_nltk.ts",
      "anchor": "export function save_punkt_params"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Python kwargs/set-order semantics adapted to TS; errors are JS Error/TypeError."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "punkt-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Pinned in test/punkt_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "NLTK save_punkt_params is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Serializes PunktParameters to a punkt_tab-style directory (JSON adaptation)."
   },
   {
    "target": "nltk.tokenize.regexp.BlanklineTokenizer",
@@ -14417,6 +14511,1066 @@
     ]
    },
    "notes": "Maps nltk.util.Index to the TS port."
+  },
+  {
+   "target": "nltk.stem.snowball.prefix_replace",
+   "exports": [
+    "prefix_replace"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/snowball/helpers.ts",
+     "anchor": "export function prefix_replace"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Generator semantics adapted; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "snowball-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Shared evidence with implementing module."
+    ]
+   },
+   "notes": "Maps nltk.stem.snowball.prefix_replace to the existing implementation."
+  },
+  {
+   "target": "nltk.stem.snowball.suffix_replace",
+   "exports": [
+    "suffix_replace"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/snowball/helpers.ts",
+     "anchor": "export { suffixReplace as suffix_replace }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Generator semantics adapted; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "snowball-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Shared evidence with implementing module."
+    ]
+   },
+   "notes": "Maps nltk.stem.snowball.suffix_replace to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.regexp.regexp_span_tokenize",
+   "exports": [
+    "regexp_span_tokenize"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_regexp.ts",
+     "anchor": "export function* regexp_span_tokenize"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Generator semantics adapted; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Shared evidence with implementing module."
+    ]
+   },
+   "notes": "Maps nltk.tokenize.regexp.regexp_span_tokenize to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.regexp_span_tokenize",
+   "exports": [
+    "regexp_span_tokenize"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_regexp.ts",
+     "anchor": "export function* regexp_span_tokenize"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Generator semantics adapted; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Shared evidence with implementing module."
+    ]
+   },
+   "notes": "Maps nltk.tokenize.regexp_span_tokenize to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.string_span_tokenize",
+   "exports": [
+    "string_span_tokenize"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_regexp.ts",
+     "anchor": "export function* string_span_tokenize"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Generator semantics adapted; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Shared evidence with implementing module."
+    ]
+   },
+   "notes": "Maps nltk.tokenize.string_span_tokenize to the existing implementation."
+  },
+  {
+   "target": "nltk.tokenize.treebank.align_tokens",
+   "exports": [
+    "align_tokens"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tokenizers_treebank.ts",
+     "anchor": "export function* align_tokens"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Generator semantics adapted; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "next-tokenizers"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Shared evidence with implementing module."
+    ]
+   },
+   "notes": "Maps nltk.tokenize.treebank.align_tokens to the existing implementation."
+  },
+  {
+   "target": "nltk.parse.chart.ChartRuleI",
+   "exports": [
+    "ChartRuleI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export abstract class AbstractChartRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Generator semantics adapted; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Shared evidence with implementing module."
+    ]
+   },
+   "notes": "Maps nltk.parse.chart.ChartRuleI to the existing implementation."
+  },
+  {
+   "target": "nltk.parse.chart.raise_unorderable_types",
+   "exports": [
+    "raise_unorderable_types"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function raise_unorderable_types"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Generator semantics adapted; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Shared evidence with implementing module."
+    ]
+   },
+   "notes": "Maps nltk.parse.chart.raise_unorderable_types to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.distance.jaro_similarity",
+   "exports": [
+    "jaro_similarity"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/distance_metrics.ts",
+     "anchor": "export function jaro_similarity"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Options-object kwargs and JS Error adaptations where the implementing mapping documents them."
+    ]
+   },
+   "evidence": [
+    "metrics-extra-differential",
+    "rust-distance"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/metrics_extra.test.ts or shared module evidence."
+    ]
+   },
+   "notes": "Maps nltk.metrics.distance.jaro_similarity to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.distance.jaro_winkler_similarity",
+   "exports": [
+    "jaro_winkler_similarity"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/distance_metrics.ts",
+     "anchor": "export function jaro_winkler_similarity"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Options-object kwargs and JS Error adaptations where the implementing mapping documents them."
+    ]
+   },
+   "evidence": [
+    "metrics-extra-differential",
+    "rust-distance"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/metrics_extra.test.ts or shared module evidence."
+    ]
+   },
+   "notes": "Maps nltk.metrics.distance.jaro_winkler_similarity to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.scores.approxrand",
+   "exports": [
+    "approxrand"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/distance_metrics.ts",
+     "anchor": "export function approxrand"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Options-object kwargs and JS Error adaptations where the implementing mapping documents them."
+    ]
+   },
+   "evidence": [
+    "metrics-extra-differential",
+    "metrics-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/metrics_extra.test.ts or shared module evidence."
+    ]
+   },
+   "notes": "Maps nltk.metrics.scores.approxrand to the existing implementation."
+  },
+  {
+   "target": "nltk.metrics.segmentation.ghd",
+   "exports": [
+    "ghd"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/distance_metrics.ts",
+     "anchor": "export function ghd"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Options-object kwargs and JS Error adaptations where the implementing mapping documents them."
+    ]
+   },
+   "evidence": [
+    "metrics-extra-differential",
+    "metrics-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/metrics_extra.test.ts or shared module evidence."
+    ]
+   },
+   "notes": "Maps nltk.metrics.segmentation.ghd to the existing implementation."
+  },
+  {
+   "target": "nltk.translate.chrf_score.chrf_precision_recall_fscore_support",
+   "exports": [
+    "chrf_precision_recall_fscore_support"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translation_metrics_extra.ts",
+     "anchor": "export function chrf_precision_recall_fscore_support"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Options-object kwargs and JS Error adaptations where the implementing mapping documents them."
+    ]
+   },
+   "evidence": [
+    "metrics-extra-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/metrics_extra.test.ts or shared module evidence."
+    ]
+   },
+   "notes": "Maps nltk.translate.chrf_score.chrf_precision_recall_fscore_support to the existing implementation."
+  },
+  {
+   "target": "nltk.translate.chrf_score.corpus_chrf",
+   "exports": [
+    "corpus_chrf"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translation_metrics_extra.ts",
+     "anchor": "export function corpusChrF"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Options-object kwargs and JS Error adaptations where the implementing mapping documents them."
+    ]
+   },
+   "evidence": [
+    "metrics-extra-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/metrics_extra.test.ts or shared module evidence."
+    ]
+   },
+   "notes": "Maps nltk.translate.chrf_score.corpus_chrf to the existing implementation."
+  },
+  {
+   "target": "nltk.translate.bleu_score.Fraction",
+   "exports": [
+    "Fraction"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/fraction.ts",
+     "anchor": "export class Fraction"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Options-object kwargs and JS Error adaptations where the implementing mapping documents them."
+    ]
+   },
+   "evidence": [
+    "metrics-extra-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/metrics_extra.test.ts or shared module evidence."
+    ]
+   },
+   "notes": "Maps nltk.translate.bleu_score.Fraction to the existing implementation."
+  },
+  {
+   "target": "nltk.classify.maxent.ConditionalExponentialClassifier",
+   "exports": [
+    "ConditionalExponentialClassifier"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export class ConditionalExponentialClassifier"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Pure-TS ConditionalExponentialClassifier (= NLTK MaxentClassifier class): weights+encoding model, prob_classify, explain, most_informative_features, train dispatch (iis/gis; megam throws external-binary error)."
+  },
+  {
+   "target": "nltk.classify.maxent.CutoffChecker",
+   "exports": [
+    "CutoffChecker"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export class CutoffChecker"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "CutoffChecker with iteration/ll/acc cutoffs; preserves NLTK behavior including None return when only max_iter is set."
+  },
+  {
+   "target": "nltk.classify.maxent.FunctionBackedMaxentFeatureEncoding",
+   "exports": [
+    "FunctionBackedMaxentFeatureEncoding"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export class FunctionBackedMaxentFeatureEncoding"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "User-function-backed encoding: encode delegates, describe returns 'no description available'."
+  },
+  {
+   "target": "nltk.classify.maxent.GISEncoding",
+   "exports": [
+    "GISEncoding"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export class GISEncoding"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "GISEncoding: correction feature, C constant, length/describe overrides; C recomputed post-train."
+  },
+  {
+   "target": "nltk.classify.maxent.MaxentFeatureEncodingI",
+   "exports": [
+    "MaxentFeatureEncodingI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export class MaxentFeatureEncodingI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Encoding ABC contract (encode/length/labels/describe raise NotImplementedError-style)."
+  },
+  {
+   "target": "nltk.classify.maxent.TadmEventMaxentFeatureEncoding",
+   "exports": [
+    "TadmEventMaxentFeatureEncoding"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export class TadmEventMaxentFeatureEncoding"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "TADM event encoding with dynamic (feature,label)/value mappings."
+  },
+  {
+   "target": "nltk.classify.maxent.calculate_deltas",
+   "exports": [
+    "calculate_deltas"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export function calculate_deltas"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Newton delta solver for IIS, faithful matrix math."
+  },
+  {
+   "target": "nltk.classify.maxent.calculate_empirical_fcount",
+   "exports": [
+    "calculate_empirical_fcount"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export function calculate_empirical_fcount"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Empirical joint-feature counts."
+  },
+  {
+   "target": "nltk.classify.maxent.calculate_estimated_fcount",
+   "exports": [
+    "calculate_estimated_fcount"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export function calculate_estimated_fcount"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Model-estimated joint-feature counts."
+  },
+  {
+   "target": "nltk.classify.maxent.calculate_nfmap",
+   "exports": [
+    "calculate_nfmap"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export function calculate_nfmap"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "nf-value to dense-index map."
+  },
+  {
+   "target": "nltk.classify.maxent.maxent_pos_tagger",
+   "exports": [
+    "maxent_pos_tagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export function maxent_pos_tagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Builds ConditionalExponentialClassifier + ClassifierBasedPOSTagger from taggers/maxent_treebank_pos_tagger_tab; requires the NLTK data resource (find())."
+  },
+  {
+   "target": "nltk.classify.maxent.train_maxent_classifier_with_gis",
+   "exports": [
+    "train_maxent_classifier_with_gis"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export function train_maxent_classifier_with_gis"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "GIS trainer with trace output and cutoff checks."
+  },
+  {
+   "target": "nltk.classify.maxent.train_maxent_classifier_with_iis",
+   "exports": [
+    "train_maxent_classifier_with_iis"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/maxent_nltk.ts",
+     "anchor": "export function train_maxent_classifier_with_iis"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/numpy/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "maxent-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/maxent_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "IIS trainer using calculate_deltas Newton updates."
+  },
+  {
+   "target": "nltk.tokenize.punkt.PunktBaseClass",
+   "exports": [
+    "PunktBaseClass"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/punkt_nltk.ts",
+     "anchor": "export class PunktBaseClass"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "punkt-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/punkt_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Abstract Punkt base: tokenization dispatch to _second_pass/annotate."
+  },
+  {
+   "target": "nltk.tokenize.punkt.PunktLanguageVars",
+   "exports": [
+    "PunktLanguageVars"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/punkt_nltk.ts",
+     "anchor": "export class PunktLanguageVars"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "punkt-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/punkt_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Language-variable regexes + sent_end_chars + internal punctuation + orthographic context heuristics."
+  },
+  {
+   "target": "nltk.tokenize.punkt.PunktParameters",
+   "exports": [
+    "PunktParameters"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/punkt_nltk.ts",
+     "anchor": "export class PunktParameters"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "punkt-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/punkt_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Mutable parameter store: abbrev_types, collocations, sent_starters, ortho_context, clear/join/save/load."
+  },
+  {
+   "target": "nltk.tokenize.punkt.PunktToken",
+   "exports": [
+    "PunktToken"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/punkt_nltk.ts",
+     "anchor": "export class PunktToken"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "punkt-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/punkt_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Token wrapper: type/periodless variants, first_case, ellipsis/number/initial predicates, sentbreak/parastart/linestart markers."
+  },
+  {
+   "target": "nltk.tokenize.punkt.PunktTokenizer",
+   "exports": [
+    "PunktTokenizer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/punkt_nltk.ts",
+     "anchor": "export class PunktTokenizer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "punkt-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/punkt_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Pretrained PunktTokenizer: loads language params via load_punkt_params; sentence segmentation + word tokenization + spans."
+  },
+  {
+   "target": "nltk.tokenize.punkt.format_debug_decision",
+   "exports": [
+    "format_debug_decision"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/punkt_nltk.ts",
+     "anchor": "export function format_debug_decision"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Python kwargs/set-order semantics adapted to TS; errors are JS Error/TypeError."
+    ]
+   },
+   "evidence": [
+    "punkt-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned in test/punkt_nltk.test.ts for the documented members."
+    ]
+   },
+   "notes": "Formats trainer/tokenizer decisions as 'text type (abbr-with-ortho-context): decision (reason)'."
   }
  ]
 }

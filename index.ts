@@ -116,15 +116,30 @@ export { sentenceTokenizeSubset } from "./src/sentence_tokenizer";
 export {
   defaultPunktModel,
   parsePunktModel,
-  PunktSentenceTokenizer,
+  PunktSentenceTokenizer as WasmPunktSentenceTokenizer,
   PunktSentenceTokenizerSubset,
-  PunktTrainer,
+  PunktTrainer as WasmPunktTrainer,
   PunktTrainerSubset,
   sentenceTokenizePunktCompat,
   sentenceTokenizePunkt,
   serializePunktModel,
   trainPunktModel,
 } from "./src/punkt";
+// NLTK nltk.tokenize.punkt object model (faithful port).
+export {
+  PunktBaseClass,
+  PunktLanguageVars,
+  PunktParameters,
+  PunktSentenceTokenizer,
+  PunktToken,
+  PunktTokenizer,
+  PunktTrainer,
+  format_debug_decision,
+  load_punkt_params,
+  loadPunktParams,
+  save_punkt_params,
+  savePunktParams,
+} from "./src/punkt_nltk";
 export type { PunktModelSerialized, PunktTrainingOptions } from "./src/punkt";
 export { normalizeTokens } from "./src/normalization";
 export { chunkTreeToIob, regexpChunkParse } from "./src/chunk";
@@ -170,6 +185,14 @@ export {
 } from "./src/probability";
 export type { ProbDistFactory, ProbDistLike } from "./src/probability";
 export { BinaryMaxentFeatureEncoding, TypedMaxentFeatureEncoding, pythonFloat, PYTHON_INT, PYTHON_FLOAT, PYTHON_BOOL } from "./src/maxent_feature_encoding.ts";
+export {
+  MaxentFeatureEncodingI, FunctionBackedMaxentFeatureEncoding, GISEncoding,
+  TadmEventMaxentFeatureEncoding, CutoffChecker, ConditionalExponentialClassifier,
+  calculate_deltas, calculate_empirical_fcount, calculate_estimated_fcount, calculate_nfmap,
+  train_maxent_classifier_with_gis, train_maxent_classifier_with_iis,
+  classify_accuracy, classify_log_likelihood, maxent_pos_tagger,
+} from "./src/maxent_nltk.ts";
+export type { MaxentEncodedVector, MaxentEncodingLike, MaxentParams, MaxentStreamLike, MaxentTrainOptions, TadmMapping } from "./src/maxent_nltk.ts";
 export { ConcordanceIndex, ContextIndex, Text } from "./src/text";
 export type { ConcordanceLine } from "./src/text";
 export {
@@ -302,7 +325,6 @@ export {
   FeatureChartParser,
   FeatureEarleyChartParser,
   LeftCornerChartParser,
-  PCFG,
   PerceptronTagger,
   pos_tag,
   posTag,
@@ -344,7 +366,10 @@ export {
 } from "./src/distance_metrics";
 export type { LabelSet, ProbabilityMap, Ranking, Segmentation } from "./src/distance_metrics";
 export {
+  AffixTagger,
   BigramTagger,
+  ClassifierBasedPOSTagger,
+  ClassifierBasedTagger,
   DefaultTagger,
   NgramTagger,
   RegexpTagger,
@@ -613,6 +638,11 @@ export {
   Production,
   ProbabilisticProduction,
   DependencyProduction,
+  DependencyGrammar,
+  ProbabilisticDependencyGrammar,
+  PCFG,
+  induce_pcfg,
+  inducePcfg,
   readGrammar,
   read_grammar,
   standardNontermParser,
@@ -650,6 +680,7 @@ export {
   TopDownChartParser,
   BottomUpChartParser,
   BottomUpLeftCornerChartParser,
+  SteppingChartParser,
   type ChartParserOptions,
 } from "./src/chart";
 export {
@@ -728,7 +759,7 @@ export {
   demo, open_datafile, call_megam, call_tadm, train_maxent_classifier_with_megam,
   write_megam_file, write_tadm_file, parse_megam_weights, parse_tadm_weights,
   load_maxent_params, save_maxent_params, allowlisted_pickle_load, punkt_pickle_load,
-  load_punkt_params, save_punkt_params, demo_grammar, demo_eval, gzip_open_unicode,
+  demo_grammar, demo_eval, gzip_open_unicode,
 } from "./src/platform_helpers";
 export {
   AbstractLazySequence, LazyConcatenation, LazyEnumerate, LazyIteratorList,
@@ -736,3 +767,11 @@ export {
 } from "./src/collections";
 export { FileSystemPathPointer, find, load } from "./src/data";
 export { regexpTokenize as regexp_tokenize } from "./src/tokenizers_regexp";
+export { Fraction } from "./src/fraction";
+export {
+  chrf_precision_recall_fscore_support, corpus_chrf, sentence_chrf,
+  corpus_nist, sentence_nist, nist_length_penalty,
+} from "./src/translation_metrics_extra";
+export { jaro_similarity, jaro_winkler_similarity, ghd, approxrand, MAX_DISTANCE_INPUT_LEN } from "./src/distance_metrics";
+export { TokenSearcher, TextCollection } from "./src/text";
+export { NLTKWordTokenizer } from "./src/tokenizers_nltk";

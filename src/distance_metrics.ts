@@ -133,3 +133,112 @@ export function ranksFromScores<T>(scores: Iterable<readonly [T, number]>, rankG
   return pairs.map(([key], i) => [key, ranks[i]!]);
 }
 export { ranksFromSequence as ranks_from_sequence, ranksFromScores as ranks_from_scores };
+
+export const MAX_DISTANCE_INPUT_LEN = 2000;
+
+function checkDistanceInputLen(s1: string, s2: string, funcName: string): void {
+  const longest = Math.max(s1.length, s2.length);
+  if (longest > MAX_DISTANCE_INPUT_LEN) {
+    throw new Error(`${funcName}: input length ${longest} exceeds MAX_DISTANCE_INPUT_LEN (${MAX_DISTANCE_INPUT_LEN}). This function is super-linear in the input length over two untrusted strings (CWE-407/CWE-400); a long input is a CPU/memory DoS. Raise nltk.metrics.distance.MAX_DISTANCE_INPUT_LEN if you need to compare longer trusted strings.`);
+  }
+}
+
+export function jaro_similarity(s1: string, s2: string): number {
+  if (s1 === s2) return 1.0;
+  checkDistanceInputLen(s1, s2, "jaro_similarity");
+  const lenS1 = s1.length, lenS2 = s2.length;
+  const matchBound = Math.floor(Math.max(lenS1, lenS2) / 2) - 1;
+  let matches = 0;
+  let transpositions = 0;
+  const flagged1: number[] = [];
+  const matched2 = new Set<number>();
+  for (let i = 0; i < lenS1; i++) {
+    const upperbound = Math.min(i + matchBound, lenS2 - 1);
+    const lowerbound = Math.max(0, i - matchBound);
+    for (let j = lowerbound; j <= upperbound; j++) {
+      if (s1[i] === s2[j] && !matched2.has(j)) {
+        matches += 1;
+        flagged1.push(i);
+        matched2.add(j);
+        break;
+      }
+    }
+  }
+  const flagged2 = [...matched2].sort((a, b) => a - b);
+  for (let k = 0; k < flagged1.length; k++) {
+    if (s1[flagged1[k]!] !== s2[flagged2[k]!]) transpositions += 1;
+  }
+  if (matches === 0) return 0.0;
+  return (1 / 3) * (matches / lenS1 + matches / lenS2 + (matches - Math.floor(transpositions / 2)) / matches);
+}
+
+export function jaro_winkler_similarity(s1: string, s2: string, p = 0.1, maxL = 4): number {
+  if (!(0 <= maxL * p && maxL * p <= 1)) {
+    console.warn("The product  `max_l * p` might not fall between [0,1].Jaro-Winkler similarity might not be between 0 and 1.");
+  }
+  const jaroSim = jaro_similarity(s1, s2);
+  let l = 0;
+  const n = Math.min(s1.length, s2.length);
+  for (let i = 0; i < n; i++) {
+    if (s1[i] === s2[i]) l += 1;
+    else break;
+    if (l === maxL) break;
+  }
+  return jaroSim + l * p * (1 - jaroSim);
+}
+export { jaro_similarity as jaroSimilarity, jaro_winkler_similarity as jaroWinklerSimilarity };
+
+export function ghd(ref: string | readonly (string | number | boolean)[], hyp: string | readonly (string | number | boolean)[], insCost = 2.0, delCost = 2.0, shiftCostCoeff = 1.0, boundary: string | number | boolean = "1"): number {
+  const refArr = typeof ref === "string" ? [...ref] : [...ref];
+  const hypArr = typeof hyp === "string" ? [...hyp] : [...hyp];
+  const refIdx = refArr.flatMap((v, i) => (v === boundary ? [i] : []));
+  const hypIdx = hypArr.flatMap((v, i) => (v === boundary ? [i] : []));
+  const nref = refIdx.length, nhyp = hypIdx.length;
+  if (nref === 0 && nhyp === 0) return 0.0;
+  if (nref > 0 && nhyp === 0) return nref * insCost;
+  if (nref === 0 && nhyp > 0) return nhyp * delCost;
+  const mat: number[][] = Array.from({ length: nhyp + 1 }, (_, i) =>
+    Array.from({ length: nref + 1 }, (_, j) => (i === 0 ? insCost * j : j === 0 ? delCost * i : 0)));
+  for (let i = 0; i < hypIdx.length; i++) {
+    for (let j = 0; j < refIdx.length; j++) {
+      const rowi = hypIdx[i]!, colj = refIdx[j]!;
+      const shiftCost = shiftCostCoeff * Math.abs(rowi - colj) + mat[i]![j]!;
+      let tcost: number;
+      if (rowi === colj) tcost = mat[i]![j]!;
+      else if (rowi > colj) tcost = delCost + mat[i]![j + 1]!;
+      else tcost = insCost + mat[i + 1]![j]!;
+      mat[i + 1]![j + 1] = Math.min(tcost, shiftCost);
+    }
+  }
+  return mat[nhyp]![nref]!;
+}
+
+export function approxrand<T>(a: readonly T[], b: readonly T[], kwargs: {
+  shuffles?: number; statistic?: (lst: readonly T[]) => number; verbose?: boolean; rng?: () => number;
+} = {}): [number, number, number] {
+  const factorial = (n: number) => { let r = 1; for (let i = 2; i <= n; i++) r *= i; return r; };
+  const shuffles = Math.min(kwargs.shuffles ?? 999, factorial(a.length + b.length));
+  const stat = kwargs.statistic ?? ((lst: readonly T[]) => (lst as unknown as number[]).reduce((x, y) => x + y, 0) / lst.length);
+  const verbose = kwargs.verbose ?? false;
+  const rng = kwargs.rng ?? Math.random;
+  const actualStat = Math.abs(stat(a) - stat(b));
+  if (verbose) { console.log(`shuffles: ${shuffles}`); console.log(`actual statistic: ${actualStat}`); }
+  let c = 1e-100;
+  const lst = [...a, ...b];
+  const indices = lst.map((_, i) => i);
+  for (let i = 0; i < shuffles; i++) {
+    if (verbose && i % 10 === 0) console.log(`shuffle: ${i}`);
+    for (let j = indices.length - 1; j > 0; j--) {
+      const k = Math.floor(rng() * (j + 1));
+      [indices[j], indices[k]] = [indices[k]!, indices[j]!];
+    }
+    const pseudoA = stat(indices.slice(0, a.length).map((x) => lst[x]!));
+    const pseudoB = stat(indices.slice(a.length).map((x) => lst[x]!));
+    const pseudoStat = Math.abs(pseudoA - pseudoB);
+    if (pseudoStat >= actualStat) c += 1;
+    if (verbose && i % 10 === 0) { console.log(`pseudo-statistic: ${pseudoStat}`); console.log(`significance: ${(c + 1) / (i + 1)}`); }
+  }
+  const significance = (c + 1) / (shuffles + 1);
+  if (verbose) console.log(`significance: ${significance}`);
+  return [significance, c, shuffles];
+}

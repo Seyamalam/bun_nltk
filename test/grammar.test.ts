@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { CFG, DependencyProduction, Nonterminal, ProbabilisticProduction, Production, nonterminals, readGrammar, standardNontermParser } from "../src/grammar";
+import { CFG, DependencyGrammar, DependencyProduction, Nonterminal, PCFG, ProbabilisticProduction, Production, induce_pcfg, nonterminals, readGrammar, standardNontermParser } from "../src/grammar";
 
 // NLTK 3.10.3 oracle pins — nltk.grammar CFG/Production/Nonterminal
 const GRAMMAR = "S -> NP VP | 'a' \nNP -> 'det' 'n' \nVP -> V \nV -> 'x'";
@@ -134,5 +134,43 @@ describe("nltk.grammar.Production/Nonterminal oracle parity", () => {
 
   test("DependencyProduction str matches NLTK", () => {
     expect(String(new DependencyProduction(new Nonterminal("head"), ["dep"]))).toBe("'head' -> 'dep'");
+  });
+});
+
+describe("nltk.grammar.DependencyGrammar/PCFG/induce_pcfg", () => {
+  test("DependencyGrammar fromstring/contains/str", () => {
+    const dg = DependencyGrammar.fromstring("'fell' -> 'price' | 'stock'\n'slump' -> 'of' | 'the'");
+    expect(dg.repr()).toBe("Dependency grammar with 4 productions");
+    expect(String(dg)).toBe(
+      "Dependency grammar with 4 productions\n" +
+      "  'fell' -> 'price'\n  'fell' -> 'stock'\n  'slump' -> 'of'\n  'slump' -> 'the'",
+    );
+    expect(dg.contains("fell", "price")).toBe(true);
+    expect(dg.contains("fell", "the")).toBe(false);
+    expect(dg.has(["price", "of"])).toBe(false);
+    expect(() => DependencyGrammar.fromstring("# only comments")).toThrow("No productions found!");
+  });
+
+  test("PCFG enforces probability sums", () => {
+    expect(
+      () => new PCFG(new Nonterminal("S"), [new ProbabilisticProduction(new Nonterminal("S"), ["x"], { prob: 0.5 })]),
+    ).toThrow("Productions for S do not sum to 1");
+    const pg = PCFG.fromstring(
+      "S -> NP VP [1.0]\nNP -> Det N [0.5]\nNP -> 'dog' [0.5]\nVP -> V [1.0]\nDet -> 'the' [1.0]\nN -> 'cat' [1.0]\nV -> 'saw' [1.0]",
+    );
+    expect(pg.repr()).toBe("<Grammar with 7 productions>");
+  });
+
+  test("induce_pcfg probabilities + %g formatting", () => {
+    const S = new Nonterminal("S"), NP = new Nonterminal("NP"), VP = new Nonterminal("VP");
+    const prods = [
+      new Production(S, [NP, VP]), new Production(S, [NP]),
+      new Production(S, [NP, VP]), new Production(NP, ["dog"]),
+    ];
+    expect(String(induce_pcfg(S, prods))).toBe(
+      "Grammar with 3 productions (start state = S)\n" +
+      "    S -> NP VP [0.666667]\n    S -> NP [0.333333]\n    NP -> 'dog' [1.0]",
+    );
+    expect(String(new ProbabilisticProduction(S, [NP], { prob: 1e-7 }))).toBe("S -> NP [1e-07]");
   });
 });

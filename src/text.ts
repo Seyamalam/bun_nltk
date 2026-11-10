@@ -1,5 +1,8 @@
 import { BigramAssocMeasures, BigramCollocationFinder, type BigramScoreFn } from "./collocations";
 import { ConditionalFreqDist, FreqDist } from "./freqdist";
+import { MLE } from "./lm_nltk";
+import { sent_tokenize } from "./nltk_compat";
+import { everygrams, pad_sequence, tokenwrap } from "./util_nltk";
 
 const DEFAULT_STOPWORDS = new Set([
   "a",
@@ -347,7 +350,162 @@ export class Text {
     return this.#contextIndex.commonContexts(words, true).mostCommon(num).map(([context]) => context);
   }
 
+  common_contexts(words: string[], num = 20): Context[] {
+    return this.commonContexts(words, num);
+  }
+
+  concordance_list(word: string | string[], width = 79, lines = 25): ConcordanceLine[] {
+    return this.concordanceList(word, width, lines);
+  }
+
+  collocation_list(
+    num = 20,
+    window_size = 2,
+    options?: {
+      minFreq?: number;
+      scoreFn?: BigramScoreFn<string>;
+      stopwords?: Iterable<string>;
+    },
+  ): Array<[string, string]> {
+    return this.collocationList(num, window_size, options);
+  }
+
+  findall(regexp: string, timeout?: number): string {
+    this.#tokenSearcher ??= new TokenSearcher(this.tokens);
+    const hits = this.#tokenSearcher.findall(regexp, timeout).map((h) => h.join(" "));
+    return tokenwrap(hits, "; ");
+  }
+
+  generate(length = 100, text_seed?: readonly string[], random_seed = 42): string {
+    const tokenized_sents = sent_tokenize(this.tokens.join(" ")).map((sent) => sent.split(" "));
+    if (!this.#trigramModel) {
+      const n = 3;
+      const trainData = tokenized_sents.map((sent) =>
+        [...everygrams([...pad_sequence(sent, n, { pad_left: true, left_pad_symbol: "<s>", pad_right: true, right_pad_symbol: "</s>" })], 1, n)],
+      );
+      const vocabText = tokenized_sents.flatMap((sent) =>
+        [...pad_sequence(sent, n, { pad_left: true, left_pad_symbol: "<s>", pad_right: true, right_pad_symbol: "</s>" })],
+      );
+      const model = new MLE(n);
+      model.fit(trainData, vocabText);
+      this.#trigramModel = model;
+    }
+
+    const generated_tokens: string[] = [];
+    if (length <= 0) throw new Error("The `length` must be more than 0.");
+    let seed = random_seed;
+    while (generated_tokens.length < length) {
+      for (const token of this.#trigramModel.generate(length, text_seed as string[] | undefined, seed) as string[]) {
+        if (token === "<s>") continue;
+        if (token === "</s>") break;
+        generated_tokens.push(token);
+      }
+      seed += 1;
+    }
+
+    const prefix = text_seed ? text_seed.join(" ") + " " : "";
+    const output_str = prefix + tokenwrap(generated_tokens.slice(0, length));
+    return output_str;
+  }
+
+  readability(_method: string): never {
+    throw new Error("NotImplementedError");
+  }
+
+  dispersion_plot(words: readonly string[]): number[][] {
+    // Adapted: NLTK draws with matplotlib (nltk.draw.dispersion_plot); we
+    // return the per-word token offsets that the plot would render.
+    return words.map((word) => {
+      const offsets: number[] = [];
+      this.tokens.forEach((token, i) => {
+        if (token === word) offsets.push(i);
+      });
+      return offsets;
+    });
+  }
+
+  dispersionPlot(words: readonly string[]): number[][] {
+    return this.dispersion_plot(words);
+  }
+
+  plot(...args: unknown[]): unknown {
+    const vocab = this.vocab() as FreqDist<string> & { plot?: (...a: unknown[]) => unknown };
+    if (typeof vocab.plot !== "function") throw new Error("FreqDist.plot requires a plotting backend (matplotlib)");
+    return vocab.plot(...args);
+  }
+
+  #tokenSearcher?: TokenSearcher;
+  #trigramModel?: MLE;
+
   toString(): string {
     return `<Text: ${this.name}>`;
+  }
+}
+
+/** nltk.text.TokenSearcher — regex search over a token stream using <token> markup. */
+export class TokenSearcher {
+  private readonly raw: string;
+
+  constructor(tokens: Iterable<string>) {
+    this.raw = [...tokens].map((w) => `<${w}>`).join("");
+  }
+
+  findall(regexp: string, _timeout?: number): string[][] {
+    let pattern = regexp.replace(/\s/g, "");
+    pattern = pattern.replace(/</g, "(?:<(?:");
+    pattern = pattern.replace(/>/g, ")>)");
+    pattern = pattern.replace(/(?<!\\)\./g, "[^>]");
+    const re = new RegExp(pattern, "g");
+    // Python findall(): 0 groups → whole match; 1 group → group text
+    // (empty string for non-participating); ≥2 groups → tuples that then
+    // crash in the sanity check (replicated as a throw below).
+    const hits: Array<string | string[]> = [];
+    for (const m of this.raw.matchAll(re)) {
+      if (m.length - 1 === 0) hits.push(m[0]);
+      else if (m.length - 1 === 1) hits.push(m[1] ?? "");
+      else hits.push(m.slice(1));
+    }
+    for (const h of hits) {
+      if (Array.isArray(h)) throw new TypeError("'tuple' object has no attribute 'startswith'");
+      if (!h.startsWith("<") && h.endsWith(">")) throw new Error("Bad regexp for TokenSearcher.findall");
+    }
+    return hits.map((h) => (h as string).slice(1, -1).split("><"));
+  }
+}
+
+/** nltk.text.TextCollection — Text over a collection of texts with tf/idf helpers. */
+export class TextCollection extends Text {
+  private readonly texts: string[][];
+  private readonly idfCache = new Map<string, number>();
+
+  constructor(source: Iterable<Iterable<string>> | { words(fileid?: string): Iterable<string>; fileids(): string[] }) {
+    let texts: string[][];
+    if (typeof (source as { fileids?: unknown }).fileids === "function" && typeof (source as { words?: unknown }).words === "function") {
+      const corpus = source as { words(fileid?: string): Iterable<string>; fileids(): string[] };
+      texts = corpus.fileids().map((f) => [...corpus.words(f)]);
+    } else {
+      texts = [...(source as Iterable<Iterable<string>>)].map((t) => [...t]);
+    }
+    super(texts.flat());
+    this.texts = texts;
+  }
+
+  tf(term: string, text: readonly string[]): number {
+    return text.filter((t) => t === term).length / text.length;
+  }
+
+  idf(term: string): number {
+    let idf = this.idfCache.get(term);
+    if (idf === undefined) {
+      const matches = this.texts.filter((text) => text.includes(term)).length;
+      if (this.texts.length === 0) throw new Error("IDF undefined for empty document collection");
+      idf = matches ? Math.log(this.texts.length / matches) : 0.0;
+      this.idfCache.set(term, idf);
+    }
+    return idf;
+  }
+
+  tf_idf(term: string, text: readonly string[]): number {
+    return this.tf(term, text) * this.idf(term);
   }
 }

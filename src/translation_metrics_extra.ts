@@ -81,3 +81,40 @@ export function sentenceNist(references: string[][], hypothesis: string[], optio
   const options: NistOptions = typeof optionsOrN === "number" ? { n: optionsOrN } : optionsOrN;
   return corpusNist([references], [hypothesis], options);
 }
+
+/** nltk.translate.chrf_score.chrf_precision_recall_fscore_support — per-order ngram P/R/F + tp. */
+export function chrf_precision_recall_fscore_support<T>(reference: readonly T[], hypothesis: readonly T[], n: number, beta = 3.0, epsilon = 1e-16): [number, number, number, number] {
+  const countNgrams = (seq: readonly T[]): Map<string, number> => {
+    const counts = new Map<string, number>();
+    for (let i = 0; i + n <= seq.length; i++) {
+      const key = JSON.stringify(seq.slice(i, i + n));
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    return counts;
+  };
+  const refNgrams = countNgrams(reference);
+  const hypNgrams = countNgrams(hypothesis);
+  let tp = 0, tpfp = 0, tpfn = 0;
+  for (const [key, rc] of refNgrams) {
+    const hc = hypNgrams.get(key) ?? 0;
+    tp += Math.min(rc, hc);
+    tpfn += rc;
+  }
+  for (const hc of hypNgrams.values()) tpfp += hc;
+  try {
+    const prec = tp / tpfp;
+    const rec = tp / tpfn;
+    const factor = beta ** 2;
+    const fscore = (1 + factor) * (prec * rec) / (factor * prec + rec);
+    if (Number.isNaN(fscore)) throw new Error("zero");
+    return [prec, rec, fscore, tp];
+  } catch {
+    return [epsilon, epsilon, epsilon, tp];
+  }
+}
+export { chrf_precision_recall_fscore_support as chrfPrecisionRecallFscoreSupport };
+export { corpusChrF as corpus_chrf };
+export { sentenceChrF as sentence_chrf };
+export { corpusNist as corpus_nist };
+export { sentenceNist as sentence_nist };
+export { nistLengthPenalty as nist_length_penalty };
