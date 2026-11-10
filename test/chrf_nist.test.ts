@@ -57,6 +57,19 @@ test("sentenceNist applies no penalty when hypothesis length matches references"
   expect(score).toBeGreaterThan(0);
 });
 
+// Values below are pinned to Python NLTK 3.10.3 sentence_chrf.
+test("sentenceChrF positional signature and values match NLTK", () => {
+  const ref = "It is a guide to action that ensures that the military will forever heed Party commands".split(" ");
+  const hyp = "It is a guide to action which ensures that the military always obeys the commands of the party".split(" ");
+  expect(sentenceChrF(ref, hyp)).toBeCloseTo(0.6349903001842704, 9);
+  expect(sentenceChrF("the cat", "the cat")).toBe(1.0);
+  expect(sentenceChrF([], [])).toBeCloseTo(1e-16, 20);
+  expect(sentenceChrF("a b c", "a b c", 1, 6, 3.0, false)).toBeCloseTo(0.8333333333333334, 9);
+  expect(sentenceChrF("cat", "cats", 1, 6, 2.0)).toBeCloseTo(0.44665404040404044, 9);
+  expect(sentenceChrF("abcdef", "abcxef", 2, 3)).toBeCloseTo(0.425, 9);
+  expect(sentenceChrF(ref, hyp, { minLen: 1, maxLen: 6 })).toBeCloseTo(0.6349903001842704, 9);
+});
+
 test("sentenceNist throws when hypotheses are shorter than the n-gram order (python ZeroDivisionError)", () => {
   expect(() => sentenceNist([["one", "two", "three"]], ["one", "two"])).toThrow();
   expect(() => sentenceNist([["some", "words", "here"]], [])).toThrow();

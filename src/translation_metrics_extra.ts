@@ -31,7 +31,19 @@ export function corpusChrF(references: Array<string | string[]>, hypotheses: Arr
   }
   return syncWasm().evaluationMetrics().translation(0, Uint32Array.from(packet), min, max, beta, options.ignoreWhitespace ?? true);
 }
-export function sentenceChrF(reference: string | string[], hypothesis: string | string[], options: ChrFOptions = {}): number {
+export function sentenceChrF(reference: string | string[], hypothesis: string | string[], options?: ChrFOptions): number;
+export function sentenceChrF(reference: string | string[], hypothesis: string | string[], minLen?: number, maxLen?: number, beta?: number, ignoreWhitespace?: boolean): number;
+export function sentenceChrF(
+  reference: string | string[],
+  hypothesis: string | string[],
+  optionsOrMinLen: ChrFOptions | number = {},
+  maxLen?: number,
+  beta?: number,
+  ignoreWhitespace?: boolean,
+): number {
+  const options: ChrFOptions = typeof optionsOrMinLen === "number"
+    ? { minLen: optionsOrMinLen, maxLen, beta, ignoreWhitespace }
+    : optionsOrMinLen;
   return corpusChrF([reference], [hypothesis], options);
 }
 
@@ -63,6 +75,9 @@ export function corpusNist(listOfReferences: string[][][], hypotheses: string[][
   }
   return syncWasm().evaluationMetrics().translation(1, Uint32Array.from(packet), 1, n, 0, false);
 }
-export function sentenceNist(references: string[][], hypothesis: string[], options: NistOptions = {}): number {
+export function sentenceNist(references: string[][], hypothesis: string[], options?: NistOptions): number;
+export function sentenceNist(references: string[][], hypothesis: string[], n?: number): number;
+export function sentenceNist(references: string[][], hypothesis: string[], optionsOrN: NistOptions | number = {}): number {
+  const options: NistOptions = typeof optionsOrN === "number" ? { n: optionsOrN } : optionsOrN;
   return corpusNist([references], [hypothesis], options);
 }

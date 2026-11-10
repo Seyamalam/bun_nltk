@@ -2131,7 +2131,7 @@
     "sentenceChrF"
    ],
    "category": "rust-wasm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/translation_metrics_extra.ts",
@@ -2143,10 +2143,10 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Sentence path wraps corpusChrF with one pair; existing pinned block calls corpusChrF, not sentence helper independently. Options object, string-array joining and 1024-order bound are adaptations."
+     "Positional (minLen,maxLen,beta,ignoreWhitespace) supported alongside options object; string-array joining and 1024-order bound remain adaptations."
     ]
    },
    "evidence": [
@@ -2155,10 +2155,10 @@
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "Sentence path wraps corpusChrF with one pair; existing pinned block calls corpusChrF, not sentence helper independently. Options object, string-array joining and 1024-order bound are adaptations."
+     "Options object is an additional accepted form beyond NLTK positionals; 1024-order bound is a resource adaptation."
     ]
    },
-   "notes": "Rust character-ngram kernel with scoped corpus evidence; do not claim an independently exercised sentence differential."
+   "notes": "Rust character-ngram kernel; sentence helper exercised independently with pinned NLTK 3.10.3 values including positional signature."
   },
   {
    "target": "nltk.translate.nist_score.corpus_nist",
