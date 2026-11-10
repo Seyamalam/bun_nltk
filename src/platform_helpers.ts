@@ -4,6 +4,10 @@
 // interpreter, or an external binary throws a descriptive error (mirroring the
 // error NLTK itself raises when the dependency is unavailable).
 
+import { openDatafile } from "./data";
+import type { PathPointer } from "./data";
+import type { SeekableUnicodeStreamReader } from "./corpus_stream";
+
 /** Shared interactive-demo stub — NLTK demos are interactive scripts. */
 export function demo(): never {
   throw new Error("demo() is an interactive NLTK demo script and is not supported in the JS runtime");
@@ -13,8 +17,8 @@ export function demo(): never {
 export { find, gzipOpenUnicode as gzip_open_unicode } from "./data";
 
 /** nltk.tag.perceptron.open_datafile — opens a file inside an nltk_data resource. */
-export function open_datafile(_path: string): never {
-  throw new Error("open_datafile() requires the nltk_data filesystem layout, which is packed-based in this runtime");
+export function open_datafile(path: PathPointer, fileName = "", encoding: string | null = "utf-8"): SeekableUnicodeStreamReader {
+  return openDatafile(path, fileName, encoding);
 }
 
 /** nltk.classify.maxent.call_megam — requires the external megam binary. */

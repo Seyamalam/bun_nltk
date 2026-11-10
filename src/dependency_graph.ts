@@ -45,6 +45,18 @@ function defaultCellExtractor(cells: string[]) {
   };
 }
 
+// NLTK DependencyGraph._parse extractors, keyed by cell count. `index` is the
+// 1-based line ordinal used when the row lacks a numeric id column.
+const CELL_EXTRACTORS: Record<number, CellExtractor> = {
+  3: (cells) => ({ number: 0, word: cells[0]!, lemma: cells[0]!, ctag: cells[1]!, tag: cells[1]!, feats: "", head: parseInt(cells[2]!, 10), rel: "" }),
+  4: (cells) => ({ number: 0, word: cells[0]!, lemma: cells[0]!, ctag: cells[1]!, tag: cells[1]!, feats: "", head: parseInt(cells[2]!, 10), rel: cells[3]! }),
+  7: (cells) => {
+    const n = parseInt(cells[0]!, 10);
+    return { number: n, word: cells[1]!, lemma: cells[2]!, ctag: cells[3]!, tag: cells[3]!, feats: "", head: parseInt(cells[5]!, 10), rel: cells[6]! };
+  },
+  10: defaultCellExtractor,
+};
+
 export class DependencyGraph {
   nodes: DependencyNode[] = [];
   root: DependencyNode | null = null;
@@ -69,10 +81,11 @@ export class DependencyGraph {
   }
 
   /** Port of DependencyGraph.load. */
-  load(data: string | string[], options?: { cellExtractor?: CellExtractor; zeroBased?: boolean }): void {
+  load(data: string | string[], options?: { cellExtractor?: CellExtractor; cellSeparator?: string; zeroBased?: boolean }): void {
     const lines = Array.isArray(data) ? data : data.split(/\r?\n/);
     this.nodes = [this.makeRootNode()];
-    this.root = this.nodes[0]!;
+    this.root = null;
+    let lineIndex = 0;
     for (const line of lines) {
       if (line.startsWith("#")) {
         this.stream.push(line);
@@ -80,13 +93,26 @@ export class DependencyGraph {
       }
       const trimmed = line.trim();
       if (trimmed === "") continue;
+      lineIndex += 1;
       const cells = trimmed.split(options?.cellSeparator ?? this.cellSeparator);
-      if (cells.length < 4) {
-        throw new DependencyGraphError(`Incorrect number of cells in line '${trimmed}'`);
+      let extractor = options?.cellExtractor;
+      if (!extractor) {
+        // NLTK _parse: extractor is chosen by column count (Malt-TAB/CoNLL).
+        extractor = CELL_EXTRACTORS[cells.length];
+        if (!extractor) {
+          throw new DependencyGraphError(
+            `Number of tab-delimited fields (${cells.length}) not supported by CoNLL(10) or Malt-Tab(4) format`,
+          );
+        }
       }
-      const extractor = options?.cellExtractor ?? defaultCellExtractor;
+      // A "_" head cell marks the row unparsed (NLTK skips it).
+      const headCell = cells.length === 3 ? cells[2] : cells.length === 4 ? cells[2] : cells.length === 7 ? cells[5] : cells.length === 10 ? cells[6] : undefined;
+      if (headCell === "_") continue;
       const newNode = extractor(cells);
-      if (!Number.isFinite(newNode.number)) {
+      if (!Number.isFinite(newNode.number) || newNode.number <= 0) {
+        newNode.number = lineIndex;
+      }
+      if (newNode.head !== null && !Number.isFinite(newNode.head)) {
         throw new DependencyGraphError(`Non-number cell in line '${trimmed}'`);
       }
       const address = options?.zeroBased ? newNode.number + 1 : newNode.number;
@@ -102,19 +128,21 @@ export class DependencyGraph {
         deps: {},
       };
     }
-    // Build deps links from head pointers.
+    // NLTK: root is the node whose head is 0; TOP node keeps deps links.
+    const top = this.nodes[0]!;
     for (let i = 1; i < this.nodes.length; i++) {
       const node = this.nodes[i];
       if (!node) continue;
+      if (node.head === 0) this.root = node;
       if (node.head === 0 || node.head === null || node.head === undefined) {
         if (node.rel !== this.topRelationLabel && (node.head === 0)) {
-          this.root!.deps[node.rel] = this.root!.deps[node.rel] ?? [];
-          this.root!.deps[node.rel]!.push(node.address);
+          top.deps[node.rel] = top.deps[node.rel] ?? [];
+          top.deps[node.rel]!.push(node.address);
           continue;
         }
         if (node.head === 0) {
-          this.root!.deps[this.topRelationLabel] = this.root!.deps[this.topRelationLabel] ?? [];
-          this.root!.deps[this.topRelationLabel]!.push(node.address);
+          top.deps[this.topRelationLabel] = top.deps[this.topRelationLabel] ?? [];
+          top.deps[this.topRelationLabel]!.push(node.address);
           continue;
         }
         continue;

@@ -822,7 +822,7 @@ export function save_maxent_params(
 }
 
 export function maxent_pos_tagger(): ClassifierBasedPOSTagger {
-  const tab_dir = find("taggers/maxent_treebank_pos_tagger_tab/english/") as string;
+  const tab_dir = String(find("taggers/maxent_treebank_pos_tagger_tab/english/"));
   const [wgt, mpg, lab, aon] = load_maxent_params(tab_dir);
   const mc = new ConditionalExponentialClassifier(
     new BinaryMaxentFeatureEncoding(lab, mpg, false, Object.keys(aon).length > 0),

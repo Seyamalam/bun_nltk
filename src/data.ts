@@ -1,30 +1,206 @@
-// NLTK data — shim (requires NLTK data paths / file I/O)
+// NLTK data — path pointers, streams, resource lookup and URL helpers.
 // Original: nltk/data.py
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { gunzipSync } from "node:zlib";
-import { isAbsolute, resolve as pathResolve } from "node:path";
+import { isAbsolute, normalize, resolve as pathResolve, sep } from "node:path";
 import { pyError } from "./internals";
+import { SeekableUnicodeStreamReader as SeekableUnicodeStreamReaderImpl } from "./corpus_stream";
+import { OpenOnDemandZipFile as OpenOnDemandZipFileImpl } from "./zipfile";
 
 function unavailable(name: string): never {
   throw new Error(`${name} requires NLTK data package — not available in JS (use bundled corpora or fetch() directly)`);
 }
 
-export class PathPointer { toString(): string { return ""; } }
-export class FileSystemPathPointer extends PathPointer { constructor(public path: string) { super(); } }
-export class BufferedGzipFile { constructor(..._a: unknown[]) { unavailable("data.BufferedGzipFile"); } }
-export class GzipFileSystemPathPointer extends FileSystemPathPointer {}
-export class ZipFilePathPointer extends PathPointer { constructor(public zipfile: string, public entry: string) { super(); } }
-export class LazyLoader { constructor(..._a: unknown[]) { unavailable("data.LazyLoader"); } }
-export class OpenOnDemandZipFile { constructor(..._a: unknown[]) { unavailable("data.OpenOnDemandZipFile"); } }
-export class SeekableUnicodeStreamReader { constructor(..._a: unknown[]) { unavailable("data.SeekableUnicodeStreamReader"); } }
+export abstract class PathPointer {
+  /** Return a readable stream for this pointer. encoding null -> latin-1 text view. */
+  abstract open(encoding?: string | null): SeekableUnicodeStreamReaderImpl;
+  /** Size of the pointed-to file in bytes. */
+  abstract file_size(): number;
+  /** Path pointer to a path relative to this one. */
+  abstract join(fileid: string): PathPointer;
+  fileSize(): number { return this.file_size(); }
+  toString(): string { return ""; }
+}
 
-export function find(..._a: unknown[]): never { return unavailable("data.find"); }
+export class FileSystemPathPointer extends PathPointer {
+  constructor(readonly path: string) {
+    super();
+    const abs = pathResolve(path);
+    if (!existsSync(abs)) throw pyError("OSError", `No such file or directory: '${abs}'`);
+    this.path = abs;
+  }
+
+  override open(encoding: string | null = null): SeekableUnicodeStreamReaderImpl {
+    return new SeekableUnicodeStreamReaderImpl(new Uint8Array(readFileSync(this.path)), encoding);
+  }
+
+  override file_size(): number {
+    return statSync(this.path).size;
+  }
+
+  override join(fileid: string): FileSystemPathPointer {
+    const fid = String(fileid).replace(/\\/g, "/");
+    if (fid.split("/").includes("..")) throw pyError("ValueError", `Traversal blocked: ${fid}`);
+    const joined = normalize(pathResolve(this.path, fid));
+    const root = normalize(this.path);
+    if (!(joined === root || joined.startsWith(root + sep))) {
+      throw pyError("ValueError", `Escape outside root blocked: ${joined}`);
+    }
+    return new FileSystemPathPointer(joined);
+  }
+
+  repr(): string { return `FileSystemPathPointer('${this.path}')`; }
+  override toString(): string { return this.path; }
+}
+
+export class BufferedGzipFile { constructor(..._a: unknown[]) { unavailable("data.BufferedGzipFile"); } }
+
+export class GzipFileSystemPathPointer extends FileSystemPathPointer {
+  override open(encoding: string | null = null): SeekableUnicodeStreamReaderImpl {
+    return new SeekableUnicodeStreamReaderImpl(new Uint8Array(gunzipSync(readFileSync(this.path))), encoding);
+  }
+}
+
+export class ZipFilePathPointer extends PathPointer {
+  readonly entry: string;
+  readonly zipfile: OpenOnDemandZipFileImpl;
+
+  constructor(zipfile: string | OpenOnDemandZipFileImpl, entry = "") {
+    super();
+    this.zipfile = typeof zipfile === "string" ? new OpenOnDemandZipFileImpl(pathResolve(zipfile)) : zipfile;
+    this.entry = entry ? normalizeResourceName(entry, true, "/").replace(/^\/+/, "") : "";
+    if (this.entry) {
+      try {
+        this.zipfile.getinfo(this.entry);
+      } catch {
+        if (!(this.entry.endsWith("/") && this.zipfile.namelist().some((n) => n.startsWith(this.entry)))) {
+          throw pyError("OSError", `Zipfile '${this.zipfile.filename}' does not contain '${this.entry}'`);
+        }
+      }
+    }
+  }
+
+  override open(encoding: string | null = null): SeekableUnicodeStreamReaderImpl {
+    let data = this.zipfile.read(this.entry);
+    if (this.entry.endsWith(".gz")) data = new Uint8Array(gunzipSync(Buffer.from(data)));
+    return new SeekableUnicodeStreamReaderImpl(data, encoding);
+  }
+
+  override file_size(): number {
+    return this.zipfile.getinfo(this.entry).file_size;
+  }
+
+  override join(fileid: string): ZipFilePathPointer {
+    return new ZipFilePathPointer(this.zipfile, `${this.entry}/${fileid}`);
+  }
+
+  repr(): string { return `ZipFilePathPointer('${this.zipfile.filename}', '${this.entry}')`; }
+  override toString(): string { return normalize(`${this.zipfile.filename}/${this.entry}`); }
+}
+
+export { OpenOnDemandZipFileImpl as OpenOnDemandZipFile, SeekableUnicodeStreamReaderImpl as SeekableUnicodeStreamReader };
+
+/** nltk.data.LazyLoader — defers a load until first access (adapted: thunk-based). */
+export class LazyLoader<T = unknown> {
+  private loaded: T | null = null;
+  private didLoad = false;
+  constructor(private readonly loader: () => T) {}
+  load(): T {
+    if (!this.didLoad) { this.loaded = this.loader(); this.didLoad = true; }
+    return this.loaded as T;
+  }
+}
+
+/** Default NLTK data search path (mirrors nltk.data.path ordering). */
+export const dataPath: string[] = [
+  ...(process.env.NLTK_DATA ? [process.env.NLTK_DATA] : []),
+  `${process.env.HOME ?? ""}/nltk_data`,
+  "/usr/share/nltk_data",
+  "/usr/lib/nltk_data",
+  "/usr/local/share/nltk_data",
+  "/usr/local/lib/nltk_data",
+];
+
+/** nltk.data.find — locate a resource under the data path, dir or zip variant. */
+export function find(resourceName: string, paths?: string[]): PathPointer {
+  const resource = normalizeResourceName(resourceName, true, "/");
+  if (UNSAFE_NO_PROTOCOL_RE.test(resource)) {
+    throw pyError("ValueError", `Unsafe resource path: '${resource}'`);
+  }
+  assertNoEncodedBypass(resource);
+  const search = paths ?? dataPath;
+  const zm = /^(.*?\.zip)\/?(.*)$/.exec(resource);
+  const zipfile = zm ? zm[1] : null;
+  const zipentry = zm ? zm[2] : null;
+
+  for (const pathItem of search) {
+    // Path item itself is a zipfile.
+    if (pathItem && pathItem.endsWith(".zip") && existsSync(pathItem) && statSync(pathItem).isFile()) {
+      try {
+        return new ZipFilePathPointer(pathItem, resource);
+      } catch {
+        continue;
+      }
+    }
+    if (!pathItem || statSafeIsDir(pathItem)) {
+      if (zipfile === null) {
+        const p = pathResolve(pathItem, resource);
+        if (existsSync(p)) {
+          return p.endsWith(".gz") ? new GzipFileSystemPathPointer(p) : new FileSystemPathPointer(p);
+        }
+      } else {
+        const p = pathResolve(pathItem, zipfile as string);
+        if (existsSync(p)) {
+          try {
+            return new ZipFilePathPointer(p, zipentry as string);
+          } catch {
+            continue;
+          }
+        }
+      }
+    }
+  }
+
+  // Fallback: retry with each path component replaced by <comp>.zip/<comp>.
+  if (zipfile === null) {
+    const pieces = resource.split("/");
+    for (let i = 0; i < pieces.length; i++) {
+      const modified = [...pieces.slice(0, i), `${pieces[i]}.zip`, ...pieces.slice(i)].join("/");
+      try {
+        return find(modified, search);
+      } catch (e) {
+        if ((e as Error).name !== "LookupError") throw e;
+      }
+    }
+  }
+
+  const parts = resource.split("/");
+  let resourceZipname = (parts.length > 1 ? parts[1] : parts[0])!;
+  if (resourceZipname.endsWith(".zip")) resourceZipname = resourceZipname.replace(/\.zip$/, "");
+  const sep70 = "*".repeat(70);
+  throw pyError("LookupError",
+    `\n${sep70}\n  Resource '${resourceZipname}' not found.\n` +
+    "  Please use the NLTK Downloader to obtain the resource:\n\n" +
+    "  >>> import nltk\n" +
+    `  >>> nltk.download('${resourceZipname}')\n\n` +
+    "  For more information see: https://www.nltk.org/data.html\n" +
+    `  Attempted to load '${resource}'\n` +
+    `  Searched in:${search.map((p) => `\n    - '${p}'`).join("")}\n${sep70}\n`);
+}
+
+function statSafeIsDir(p: string): boolean {
+  try { return statSync(p).isDirectory(); } catch { return false; }
+}
 export function retrieve(..._a: unknown[]): never { return unavailable("data.retrieve"); }
 export function load(..._a: unknown[]): never { return unavailable("data.load"); }
 export function showCfg(..._a: unknown[]): never { return unavailable("data.show_cfg"); }
 export function clearCache(): void { /* no-op */ }
 export const clear_cache = clearCache;
-export function openDatafile(..._a: unknown[]): never { return unavailable("data.open_datafile"); }
+/** nltk.data.open_datafile — path.join(file_name).open(encoding). */
+export function openDatafile(path: PathPointer, fileName = "", encoding: string | null = "utf-8"): SeekableUnicodeStreamReaderImpl {
+  const pointer = fileName ? path.join(fileName) : path;
+  return pointer.open(encoding);
+}
 export const open_datafile = openDatafile;
 const UNSAFE_NO_PROTOCOL_RE = /(?:\.\.\/|\.\.$|^\/|\\|[A-Za-z]:[/\\])/;
 

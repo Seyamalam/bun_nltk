@@ -91,7 +91,10 @@ const EXT_WHY = "requires an external binary/server (CoreNLP, MaltParser), unava
 export class CoreNLPServer { constructor() { unsupported("CoreNLPServer", EXT_WHY); } }
 export class CoreNLPDependencyParser { constructor() { unsupported("CoreNLPDependencyParser", EXT_WHY); } }
 export class GenericCoreNLPParser { constructor() { unsupported("GenericCoreNLPParser", EXT_WHY); } }
-export class ZipFilePathPointer { constructor() { unsupported("ZipFilePathPointer", EXT_WHY); } }
+export { ZipFilePathPointer as ZipFilePathPointerImpl } from "./data";
+import { ZipFilePathPointer as DataZipFilePathPointer } from "./data";
+/** Real nltk.data.ZipFilePathPointer (re-exported to keep reviewed provenance). */
+export class ZipFilePathPointer extends DataZipFilePathPointer {}
 export function find_jar_iter(): never { return unsupported("find_jar_iter", EXT_WHY); }
 export function try_port(): never { return unsupported("try_port", EXT_WHY); }
 export function transform(): never { return unsupported("transform", EXT_WHY); }
