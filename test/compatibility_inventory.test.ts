@@ -178,7 +178,7 @@ test("applied review is the shared baseline; re-applying the staged proposal is 
   expect(() => checkEvidenceFiles(manifest)).not.toThrow();
   expect(() => validateDiscovery(manifest, snapshot)).not.toThrow();
   expect(() => checkSignatureRegression(manifest.signatureBindings, snapshot.signatureBindings)).not.toThrow();
-  expect(manifest.mappings).toHaveLength(759);
+  expect(manifest.mappings).toHaveLength(867);
   expect(manifest.signatureBindings).toHaveLength(44);
   // The staged proposal was consumed by this baseline: applying it again only
   // duplicates the review evidence and the split wordpunct_tokenize mapping.

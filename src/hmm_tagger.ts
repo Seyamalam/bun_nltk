@@ -1,4 +1,5 @@
 import { ConditionalFreqDist, FreqDist } from "./freqdist";
+import { ConfusionMatrix } from "./confusion_metrics";
 import { hmmViterbiIdsNative } from "./native";
 import { ConditionalProbDist, LidstoneProbDist, type ProbDistLike } from "./probability";
 import type { GoldSentence, TaggedToken, UntaggedSentence } from "./sequential_taggers";
@@ -93,6 +94,24 @@ export class HiddenMarkovModelTrainer {
     return new HiddenMarkovModelTagger(this.symbols, this.states, transitionDist, outputDist, priors, {
       useNativeDecoding: options?.useNativeDecoding,
     });
+  }
+
+  /** NLTK `train_supervised` snake_case member. */
+  train_supervised(
+    labeledSequences: ReadonlyArray<GoldSentence>,
+    options?: HiddenMarkovModelTrainerOptions,
+  ): HiddenMarkovModelTagger {
+    return this.trainSupervised(labeledSequences, options);
+  }
+
+  /** NLTK `train` — alias of `train_supervised` in this port. */
+  train(labeledSequences: ReadonlyArray<GoldSentence>, options?: HiddenMarkovModelTrainerOptions): HiddenMarkovModelTagger {
+    return this.trainSupervised(labeledSequences, options);
+  }
+
+  /** NLTK `train_unsupervised` (Baum-Welch) — not implemented. */
+  train_unsupervised(_unlabeledSequences: unknown, _options?: unknown): never {
+    throw new Error("HiddenMarkovModelTrainer.train_unsupervised (Baum-Welch) is not implemented in this port");
   }
 }
 
@@ -311,6 +330,50 @@ export class HiddenMarkovModelTagger {
     return `<HiddenMarkovModelTagger ${this.states.length} states and ${this.symbols.length} output symbols>`;
   }
 
+  // ---- nltk.tag.api.TaggerI contract (snake_case members) ----
+
+  tag_sents(sentences: ReadonlyArray<UntaggedSentence>): Array<Array<[string, string]>> {
+    return this.tagSents(sentences);
+  }
+  best_path(unlabeledSequence: UntaggedSentence): string[] {
+    return this.bestPath(unlabeledSequence);
+  }
+  log_probability(sequence: UntaggedSentence | GoldSentence): number {
+    return this.logProbability(sequence);
+  }
+  /** Score accuracy against the gold standard (NLTK `TaggerI.accuracy`). */
+  accuracy(gold: ReadonlyArray<GoldSentence>): number {
+    return this.evaluate(gold);
+  }
+  /** ConfusionMatrix: gold tags as reference, predictions as test. */
+  confusion(gold: ReadonlyArray<GoldSentence>): ConfusionMatrix {
+    const taggedSents = this.tagSents(gold.map((sentence) => sentence.map(([word]) => word)));
+    const goldTokens = gold.flat().map(([, t]) => t);
+    const testTokens = taggedSents.flat().map(([, t]) => t);
+    return new ConfusionMatrix(goldTokens, testTokens);
+  }
+  precision(gold: ReadonlyArray<GoldSentence>): Map<string, number> {
+    const cm = this.confusion(gold);
+    return new Map(cm.labels.map((tag) => [tag, cm.precision(tag)]));
+  }
+  recall(gold: ReadonlyArray<GoldSentence>): Map<string, number> {
+    const cm = this.confusion(gold);
+    return new Map(cm.labels.map((tag) => [tag, cm.recall(tag)]));
+  }
+  f_measure(gold: ReadonlyArray<GoldSentence>, alpha = 0.5): Map<string, number> {
+    const cm = this.confusion(gold);
+    return new Map(cm.labels.map((tag) => [tag, cm.f_measure(tag, alpha)]));
+  }
+  fMeasure(gold: ReadonlyArray<GoldSentence>, alpha = 0.5): Map<string, number> {
+    return this.f_measure(gold, alpha);
+  }
+  evaluate_per_tag(gold: ReadonlyArray<GoldSentence>): string {
+    return this.confusion(gold).evaluate();
+  }
+  evaluatePerTag(gold: ReadonlyArray<GoldSentence>): string {
+    return this.evaluate_per_tag(gold);
+  }
+
   #ensureSymbolCache(unlabeledSequence: UntaggedSentence): void {
     let added = false;
     for (const token of unlabeledSequence) {
@@ -401,3 +464,28 @@ function logSumExp2(values: number[]): number {
   for (const value of values) sum += 2 ** (value - max);
   return Math.log2(sum) + max;
 }
+
+/**
+ * Port of nltk.tag.hmm.logsumexp2 — `log2(sum(2**arr))` computed
+ * stably via the max-trick (`arr.max()` on an empty array raises in
+ * NLTK/numpy; here it returns -inf like numpy's `max` would not — NLTK
+ * always calls it on non-empty arrays).
+ */
+export function logsumexp2(arr: readonly number[]): number {
+  return logSumExp2([...arr]);
+}
+
+function corpusError(name: string): never {
+  throw new Error(`${name} requires the NLTK treebank/brown corpus (nltk_data) which is not bundled.`);
+}
+
+/** nltk.tag.hmm.load_pos — corpus-bound helper; unsupported without nltk_data. */
+export function load_pos(_numSents?: number): never { return corpusError("nltk.tag.hmm.load_pos"); }
+/** nltk.tag.hmm.demo — corpus-bound demo; unsupported without nltk_data. */
+export function demo(): never { return corpusError("nltk.tag.hmm.demo"); }
+/** nltk.tag.hmm.demo_pos — corpus-bound demo; unsupported without nltk_data. */
+export function demo_pos(): never { return corpusError("nltk.tag.hmm.demo_pos"); }
+/** nltk.tag.hmm.demo_bw — corpus-bound Baum-Welch demo; unsupported without nltk_data. */
+export function demo_bw(): never { return corpusError("nltk.tag.hmm.demo_bw"); }
+/** nltk.tag.hmm.demo_pos_bw — corpus-bound demo; unsupported without nltk_data. */
+export function demo_pos_bw(): never { return corpusError("nltk.tag.hmm.demo_pos_bw"); }

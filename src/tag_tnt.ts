@@ -7,6 +7,8 @@
  * Viterbi decoding over (prev1, current) state pairs.
  */
 
+import { accuracy, ConfusionMatrix } from "./confusion_metrics";
+
 const _BOS_TAG = "<s>";
 const _EOS_TAG = "</s>";
 type State = [tag: string, cap: boolean];
@@ -569,6 +571,55 @@ export class TnT {
     }
     return [newStates, bestLogp];
   }
+
+  // ---- nltk.tag.api.TaggerI contract (snake_case members) ----
+
+  /** Apply `tag()` to each element of `sentences` (NLTK `TaggerI.tag_sents`). */
+  tag_sents(sentences: Iterable<string[]>): Array<Array<[string, string]>> {
+    return [...sentences].map((s) => this.tag(s));
+  }
+  tagSents(sentences: Iterable<string[]>): Array<Array<[string, string]>> {
+    return this.tag_sents(sentences);
+  }
+  /** Deprecated alias of `accuracy` (NLTK `evaluate`). */
+  evaluate(gold: ReadonlyArray<Array<[string, string]>>): number {
+    return this.accuracy(gold);
+  }
+  /** Score accuracy against the gold standard. */
+  accuracy(gold: ReadonlyArray<Array<[string, string]>>): number {
+    const taggedSents = this.tag_sents(gold.map((s) => s.map(([w]) => w)));
+    const goldTokens = gold.flat().map(([, t]) => t);
+    const testTokens = taggedSents.flat().map(([, t]) => t);
+    return accuracy(goldTokens, testTokens);
+  }
+  /** ConfusionMatrix: gold tags as reference, predictions as test. */
+  confusion(gold: ReadonlyArray<Array<[string, string]>>): ConfusionMatrix {
+    const taggedSents = this.tag_sents(gold.map((s) => s.map(([w]) => w)));
+    const goldTokens = gold.flat().map(([, t]) => t);
+    const testTokens = taggedSents.flat().map(([, t]) => t);
+    return new ConfusionMatrix(goldTokens, testTokens);
+  }
+  precision(gold: ReadonlyArray<Array<[string, string]>>): Map<string, number> {
+    const cm = this.confusion(gold);
+    return new Map(cm.labels.map((tag) => [tag, cm.precision(tag)]));
+  }
+  recall(gold: ReadonlyArray<Array<[string, string]>>): Map<string, number> {
+    const cm = this.confusion(gold);
+    return new Map(cm.labels.map((tag) => [tag, cm.recall(tag)]));
+  }
+  f_measure(gold: ReadonlyArray<Array<[string, string]>>, alpha = 0.5): Map<string, number> {
+    const cm = this.confusion(gold);
+    return new Map(cm.labels.map((tag) => [tag, cm.f_measure(tag, alpha)]));
+  }
+  fMeasure(gold: ReadonlyArray<Array<[string, string]>>, alpha = 0.5): Map<string, number> {
+    return this.f_measure(gold, alpha);
+  }
+  evaluate_per_tag(gold: ReadonlyArray<Array<[string, string]>>): string {
+    return this.confusion(gold).evaluate();
+  }
+  evaluatePerTag(gold: ReadonlyArray<Array<[string, string]>>): string {
+    return this.evaluate_per_tag(gold);
+  }
 }
 
 function unwrapState(key: string): State {
@@ -577,3 +628,41 @@ function unwrapState(key: string): State {
   const tab = last.lastIndexOf("\x1f");
   return [last.slice(0, tab), last.slice(tab + 1) === "1"] as State;
 }
+
+const _SENT_MARKS = [".", "!", "?", ";"];
+
+/**
+ * Port of nltk.tag.tnt.basic_sent_chop — split a flat token sequence into
+ * sentence-like segments, cutting after tokens in `sentMarks`. Works for
+ * raw tokens (`raw=true`, compare the token itself) and tagged
+ * `[word, tag]` pairs (`raw=false`, compare `word`).
+ */
+export function basic_sent_chop<T extends string | readonly [string, string]>(
+  data: readonly T[],
+  raw = true,
+  sentMarks: readonly string[] = _SENT_MARKS,
+): T[][] {
+  const marks = new Set(sentMarks);
+  const sentences: T[][] = [];
+  let sentence: T[] = [];
+  for (const token of data) {
+    sentence.push(token);
+    const word = raw ? token : (token as readonly [string, string])[0];
+    if (marks.has(word as string)) {
+      sentences.push(sentence);
+      sentence = [];
+    }
+  }
+  if (sentence.length) sentences.push(sentence);
+  return sentences;
+}
+export const basicSentChop = basic_sent_chop;
+
+function corpusError(name: string): never {
+  throw new Error(`${name} requires the NLTK treebank corpus (nltk_data) which is not bundled.`);
+}
+
+/** nltk.tag.tnt.demo — corpus-bound demo; unsupported without nltk_data. */
+export function demo(_testSize = 1000): never { return corpusError("nltk.tag.tnt.demo"); }
+/** nltk.tag.tnt.demo_errors — corpus-bound demo; unsupported without nltk_data. */
+export function demo_errors(_limit = 25, _testSize = 1000): never { return corpusError("nltk.tag.tnt.demo_errors"); }

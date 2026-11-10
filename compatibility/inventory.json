@@ -735,7 +735,47 @@
    "wordpunct_tokenize": "src/nltk_compat.ts",
    "write_megam_file": "src/maxent_nltk.ts",
    "write_tadm_file": "src/maxent_nltk.ts",
-   "wup_similarity": "src/wordnet_objects.ts"
+   "wup_similarity": "src/wordnet_objects.ts",
+   "BrillTagger": "src/brill_tagger.ts",
+   "CRFTagger": "src/tag_crf.ts",
+   "ConfusionMatrix": "src/metrics.ts",
+   "HiddenMarkovModelTagger": "src/hmm_tagger.ts",
+   "HiddenMarkovModelTrainer": "src/hmm_tagger.ts",
+   "HunposTagger": "src/tag_wrappers.ts",
+   "RandomProbDist": "src/probability.ts",
+   "Senna": "src/tag_wrappers.ts",
+   "SennaChunkTagger": "src/tag_wrappers.ts",
+   "SennaNERTagger": "src/tag_wrappers.ts",
+   "SennaTagger": "src/tag_wrappers.ts",
+   "StanfordNERTagger": "src/tag_wrappers.ts",
+   "StanfordPOSTagger": "src/tag_wrappers.ts",
+   "StanfordTagger": "src/tag_wrappers.ts",
+   "TnT": "src/tag_tnt.ts",
+   "basic_sent_chop": "src/tag_tnt.ts",
+   "brill24": "src/tag_brill_templates.ts",
+   "demo_bw": "src/hmm_tagger.ts",
+   "demo_errors": "src/tag_tnt.ts",
+   "demo_pos": "src/hmm_tagger.ts",
+   "demo_pos_bw": "src/hmm_tagger.ts",
+   "describe_template_sets": "src/tag_brill_templates.ts",
+   "find_file": "src/internals.ts",
+   "find_jar": "src/internals.ts",
+   "fntbl37": "src/tag_brill_templates.ts",
+   "hmmDemo": "src/hmm_tagger.ts",
+   "java": "src/internals.ts",
+   "load_pos": "src/hmm_tagger.ts",
+   "logsumexp2": "src/hmm_tagger.ts",
+   "nltkdemo18": "src/tag_brill_templates.ts",
+   "nltkdemo18plus": "src/tag_brill_templates.ts",
+   "normalize_resource_url": "src/data.ts",
+   "overridden": "src/internals.ts",
+   "pos_tag": "src/parser_tagger_compat.ts",
+   "pos_tag_sents": "src/tag_util.ts",
+   "str2tuple": "src/tag_util.ts",
+   "tagset_mapping": "src/tag_mapping.ts",
+   "tntDemo": "src/tag_tnt.ts",
+   "tuple2str": "src/tag_util.ts",
+   "untag": "src/hmm_tagger.ts"
   }
  },
  "modules": [
@@ -795,8 +835,20 @@
   "nltk.stem.snowball",
   "nltk.stem.util",
   "nltk.stem.wordnet",
+  "nltk.tag",
+  "nltk.tag.api",
+  "nltk.tag.brill",
+  "nltk.tag.brill_trainer",
+  "nltk.tag.crf",
+  "nltk.tag.hmm",
+  "nltk.tag.hunpos",
+  "nltk.tag.mapping",
   "nltk.tag.perceptron",
+  "nltk.tag.senna",
   "nltk.tag.sequential",
+  "nltk.tag.stanford",
+  "nltk.tag.tnt",
+  "nltk.tag.util",
   "nltk.tbl",
   "nltk.tbl.demo",
   "nltk.tbl.erroranalysis",
@@ -1308,7 +1360,7 @@
     "test/sequential_taggers.test.ts",
     "test/sequential_tagger_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — TaggerI member surface",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 TaggerI member surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: accuracy/precision/recall/f_measure/evaluate_per_tag tables, size, _context_to_tag, _check_params both/neither, DefaultTagger backoff, encode/decode_json_obj."
   },
@@ -1319,9 +1371,9 @@
     "test/perceptron_tagger.test.ts",
     "test/perceptron_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 doctest pins — trained-tagger surface",
+   "anchor": "NLTK 3.10.3 doctest pins \u2014 trained-tagger surface",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: doctest train→tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
+   "scope": "NLTK 3.10.3-pinned: doctest train\u2192tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
   },
   {
    "id": "concordance-differential",
@@ -1330,7 +1382,7 @@
     "test/text.test.ts",
     "test/concordance_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — ConcordanceIndex contract",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 ConcordanceIndex contract",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: offsets/defaultdict types count, find_concordance line bytes (left rjust, i+context right slice, trailing space), phrase matching, print_concordance Displaying/no-matches format, repr."
   },
@@ -1363,7 +1415,7 @@
     "test/collocations.test.ts",
     "test/collocations_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — BigramCollocationFinder contract",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 BigramCollocationFinder contract",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: N/word_fd/window_size, pmi/raw_freq scores, score_ngrams ordering, nbest, above_score, ws=3 non-contiguous bigrams, freq filter."
   },
@@ -1374,7 +1426,7 @@
     "test/sentiment.test.ts",
     "test/vader_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — full SentimentIntensityAnalyzer member surface",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 full SentimentIntensityAnalyzer member surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: 5 doctest polarity_scores dicts, SentiText words/cap_diff, VaderConstants negated/normalize/scalar_inc_dec, score_valence + empty, sentiment_valence, make_lex_dict, 7502-entry lexicon."
   },
@@ -1385,7 +1437,7 @@
     "test/probability.test.ts",
     "test/probdist_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — ProbDistI inherited surface",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 ProbDistI inherited surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: SUM_TO_ONE per class, discount (base 0.0 vs Lidstone formula), logprob -1e300 unseen, prob unseen/empty=0, generate weighted sampling, repr, bins>=B() error wording."
   },
@@ -1396,7 +1448,7 @@
     "test/grammar.test.ts",
     "test/grammar_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.grammar CFG/Production/Nonterminal",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.grammar CFG/Production/Nonterminal",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: CFG init/indexes/leftcorner closure, productions(lhs/rhs/empty) filters, grammar-form predicates, chomsky_normal_form pipeline (eliminate_start, binarize, remove_mixed_rules, remove_unitary_rules with cycle guard), check_coverage quoting, read_grammar errors, Production/ProbabilisticProduction/DependencyProduction/Nonterminal/nonterminals."
   },
@@ -1407,7 +1459,7 @@
     "test/chart_parser.test.ts",
     "test/chart_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.parse.chart",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.parse.chart",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: ChartParser.chart_parse agenda/non-agenda loops, BU_LC/TD/LC strategies, edge set/count equality, shared-edge ambiguity via child_pointer_lists, select restrictions, pretty_format_edge/leaves, parse trees and ParserI surface."
   },
@@ -1418,7 +1470,7 @@
     "test/chunk_parser.test.ts",
     "test/chunk_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.chunk RegexpParser/RegexpChunkParser/ChunkScore",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.chunk RegexpParser/RegexpChunkParser/ChunkScore",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: RegexpParser staged grammars/chinks/loop, all 8 RegexpChunkRule subclasses via fromstring, ChunkString brace validation, tag_pattern2re_pattern translations and errors, ChunkScore metrics/str/repr, ParserI parse_one/parse_all/parse_sents surface."
   },
@@ -1429,7 +1481,7 @@
     "test/lm_nltk.test.ts",
     "test/lm_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.lm LanguageModel/Vocabulary/NgramCounter",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.lm LanguageModel/Vocabulary/NgramCounter",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: MLE/Lidstone/Laplace/StupidBackoff/WittenBellInterpolated/AbsoluteDiscountingInterpolated/KneserNeyInterpolated score+perplexity matrix, generate via Python-compatible MT19937 (seed=3), context backoff/trimming, math domain error, Vocabulary cutoff/membership/lookup/update/str, NgramCounter orders/N/indexing/tuple validation."
   },
@@ -1440,7 +1492,7 @@
     "test/wordnet_objects.test.ts",
     "test/wordnet_objects_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.corpus.wordnet Synset/Lemma object model",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.corpus.wordnet Synset/Lemma object model",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: Synset name/pos/offset/lexname/definition/examples/lemma_names, Lemma name/key/repr/antonyms/lang, hypernym/hyponym relations, index.<pos> sense numbering, hypernym_paths, root_hypernyms, lowest_common_hypernyms, common_hypernyms membership, hypernym_distances, max/min_depth, shortest_path_distance, path/wup/lch similarity. Requires the packed wordnet artifact (senseNums + original lemma/pointer order)."
   },
@@ -1453,7 +1505,7 @@
    ],
    "anchor": "Values pinned from Python NLTK 3.10.3 (see test/snowball_arfihu_oracle.py)",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: 45 Arabic + 40 Finnish + 43 Hungarian stems including diacritic normalization, string-vs-tuple suffix iteration quirks (noun step2b 'ات'), Hungarian digraph R1, Finnish vowel-harmony step checks, ignore_stopwords post-normalization check for Arabic."
+   "scope": "NLTK 3.10.3-pinned: 45 Arabic + 40 Finnish + 43 Hungarian stems including diacritic normalization, string-vs-tuple suffix iteration quirks (noun step2b '\u0627\u062a'), Hungarian digraph R1, Finnish vowel-harmony step checks, ignore_stopwords post-normalization check for Arabic."
   },
   {
    "id": "tree-differential",
@@ -1672,6 +1724,17 @@
    "anchor": "NLTK 3.10.3",
    "oracleVersion": "3.10.3",
    "scope": "demo() byte-identical output (398 lines) incl. lazy chart.select CPL accumulation, semantic derivations (S {cook(I)}, S {eat(mushrooms,I)}), combinator application/composition/substitution/type-raise results, constraint truth table incl. unguarded AttributeError quirks, UndirectedTypeRaise NameError bug, lexicon parse helpers, error-name parity (AssertionError/AttributeError/IndexError), parseLexicon DeprecationWarning text, member surfaces of api/chart classes"
+  },
+  {
+   "id": "tag-differential",
+   "kind": "differential",
+   "files": [
+    "test/tag.test.ts",
+    "test/tag_oracle.py"
+   ],
+   "anchor": "Oracle: test/tag_oracle.py (NLTK 3.10.3, Python 3.14.4)",
+   "scope": "str2tuple/tuple2str/untag, brill template sets + describe_template_sets stdout, logsumexp2, basic_sent_chop, supervised HMM train/tag/accuracy/best_path, TnT train/tag/evaluate.",
+   "oracleVersion": "3.10.3"
   }
  ],
  "signatureBindings": [
@@ -3514,7 +3577,7 @@
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "confusion crashes on None tags in both implementations (sorted str+NoneType) — adapted."
+     "confusion crashes on None tags in both implementations (sorted str+NoneType) \u2014 adapted."
     ]
    },
    "notes": "TS sequential tagger, not the Rust perceptron/HMM primitives. TaggerI metric surface + ContextTagger._context_to_tag + _check_params both/neither + public context/chooseTag/train + encode/decode_json_obj."
@@ -3616,7 +3679,7 @@
      "Combining-character cut_string paths pinned by construction, not by oracle fixture."
     ]
    },
-   "notes": "Defaultdict offsets (miss registers key), i+context right-slice, untrimmed line join, cut_string combining-aware width, Displaying/no-matches print format — all pinned."
+   "notes": "Defaultdict offsets (miss registers key), i+context right-slice, untrimmed line join, cut_string combining-aware width, Displaying/no-matches print format \u2014 all pinned."
   },
   {
    "target": "nltk.collocations.BigramCollocationFinder",
@@ -3699,7 +3762,7 @@
      "No remaining tracked gaps in this fixture."
     ]
    },
-   "notes": "SentiText, VaderConstants, make_lex_dict, sentiment_valence, score_valence, polarity_scores — full discovered member surface, byte-pinned on doctest corpus."
+   "notes": "SentiText, VaderConstants, make_lex_dict, sentiment_valence, score_valence, polarity_scores \u2014 full discovered member surface, byte-pinned on doctest corpus."
   },
   {
    "target": "nltk.chunk.regexp.RegexpParser",
@@ -5999,7 +6062,7 @@
      "acyclic_tree"
     ],
     "gaps": [
-     "Meronym/holonym/domain/entailment/verb_group/attribute/frame/instance relations return empty — not carried in the packed payload.",
+     "Meronym/holonym/domain/entailment/verb_group/attribute/frame/instance relations return empty \u2014 not carried in the packed payload.",
      "res/jcn/lin_similarity are implemented; they need a caller-supplied IC mapping (WordNetICCorpusReader.ic).",
      "common_hypernyms ordering is BFS rather than Python set order."
     ]
@@ -8521,7 +8584,7 @@
      "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "classify.util accuracy(classifier, gold) — distinct from nltk.metrics accuracy."
+   "notes": "classify.util accuracy(classifier, gold) \u2014 distinct from nltk.metrics accuracy."
   },
   {
    "target": "nltk.classify.maxent.call_megam",
@@ -8699,7 +8762,7 @@
      "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "classify.util log_likelihood(classifier, gold) — distinct from the probdist log_likelihood."
+   "notes": "classify.util log_likelihood(classifier, gold) \u2014 distinct from the probdist log_likelihood."
   },
   {
    "target": "nltk.classify.maxent.parse_megam_weights",
@@ -17530,7 +17593,7 @@
      "namedtuple surface covered via PhraseTable.add/translationsFor in stack-decoder tests."
     ]
    },
-   "notes": "NamedTuple entry {trgPhrase, logProb} — exported as TS type only."
+   "notes": "NamedTuple entry {trgPhrase, logProb} \u2014 exported as TS type only."
   },
   {
    "target": "nltk.translate.api.find_binary",
@@ -17559,7 +17622,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "Throwing stub — subprocess binary discovery is platform-excluded."
+   "notes": "Throwing stub \u2014 subprocess binary discovery is platform-excluded."
   },
   {
    "target": "nltk.translate.gale_church.LanguageIndependent",
@@ -17807,7 +17870,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "nltk.translate.gale_church.parse_token_stream: implements documented contract — Python 3 NLTK impl always raises (py2 .next() + PEP479)"
+   "notes": "nltk.translate.gale_church.parse_token_stream: implements documented contract \u2014 Python 3 NLTK impl always raises (py2 .next() + PEP479)"
   },
   {
    "target": "nltk.translate.gale_church.split_at",
@@ -17838,7 +17901,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "nltk.translate.gale_church.split_at: implements documented contract — Python 3 NLTK impl always raises (py2 .next() + PEP479)"
+   "notes": "nltk.translate.gale_church.split_at: implements documented contract \u2014 Python 3 NLTK impl always raises (py2 .next() + PEP479)"
   },
   {
    "target": "nltk.translate.gale_church.trace",
@@ -18500,7 +18563,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "WordNetCorpusReader → WordNetReader alias."
+   "notes": "WordNetCorpusReader \u2192 WordNetReader alias."
   },
   {
    "target": "nltk.translate.metrics.alignment_error_rate",
@@ -18531,7 +18594,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "AER = 1 - (|H∩S|+|H∩P|)/(|H|+|S|)."
+   "notes": "AER = 1 - (|H\u2229S|+|H\u2229P|)/(|H|+|S|)."
   },
   {
    "target": "nltk.translate.phrase_based.extract",
@@ -20569,7 +20632,7 @@
     "status": "missing",
     "members": [],
     "gaps": [
-     "Interactive demo function — no non-interactive equivalent is provided."
+     "Interactive demo function \u2014 no non-interactive equivalent is provided."
     ]
    },
    "evidence": [],
@@ -20625,7 +20688,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "Group-average agglomerative clusterer — deterministic, oracle-pinned."
+   "notes": "Group-average agglomerative clusterer \u2014 deterministic, oracle-pinned."
   },
   {
    "target": "nltk.cluster.gaac.Dendrogram",
@@ -20757,7 +20820,7 @@
     "status": "missing",
     "members": [],
     "gaps": [
-     "Interactive demo function — no non-interactive equivalent is provided."
+     "Interactive demo function \u2014 no non-interactive equivalent is provided."
     ]
    },
    "evidence": [],
@@ -20875,7 +20938,7 @@
     "status": "missing",
     "members": [],
     "gaps": [
-     "Interactive demo function — no non-interactive equivalent is provided."
+     "Interactive demo function \u2014 no non-interactive equivalent is provided."
     ]
    },
    "evidence": [],
@@ -21334,7 +21397,7 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Returns a PostagResult {tagger, baselineAccuracy, brillAccuracy, taggedTest} — nltk returns None and only prints; tagged_data=None requires the treebank corpus reader and throws; randomize=True shuffles with a deterministic mulberry32 PRNG (Python's MT19937 seed ordering is not reproduced); cache_baseline_tagger/serialize_output (CPython pickle), learning_curve_output (matplotlib), incremental_stats/template_stats (batch_tag_incremental) throw unsupported errors; options object uses camelCase names.",
+     "Returns a PostagResult {tagger, baselineAccuracy, brillAccuracy, taggedTest} \u2014 nltk returns None and only prints; tagged_data=None requires the treebank corpus reader and throws; randomize=True shuffles with a deterministic mulberry32 PRNG (Python's MT19937 seed ordering is not reproduced); cache_baseline_tagger/serialize_output (CPython pickle), learning_curve_output (matplotlib), incremental_stats/template_stats (batch_tag_incremental) throw unsupported errors; options object uses camelCase names.",
      "error_output writes the error_list file on Node/Bun."
     ]
    },
@@ -21922,7 +21985,7 @@
      "targets"
     ],
     "gaps": [
-     "camelCase displayAll with display_all alias; _targets/_contexts/_seen/_displays are private fields; iteration order follows JS insertion-ordered Set (Python set order differs) — contents are equal."
+     "camelCase displayAll with display_all alias; _targets/_contexts/_seen/_displays are private fields; iteration order follows JS insertion-ordered Set (Python set order differs) \u2014 contents are equal."
     ]
    },
    "evidence": [
@@ -26064,7 +26127,7 @@
      "retract_assumptions"
     ],
     "gaps": [
-     "assumptions() itself calls Prover9.prove for equality checks — propagates the external-binary error when the domain has 2+ elements, matching NLTK without the binary."
+     "assumptions() itself calls Prover9.prove for equality checks \u2014 propagates the external-binary error when the domain has 2+ elements, matching NLTK without the binary."
     ]
    },
    "evidence": [
@@ -26073,7 +26136,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "assumptions() itself calls Prover9.prove for equality checks — propagates the external-binary error when the domain has 2+ elements, matching NLTK without the binary."
+     "assumptions() itself calls Prover9.prove for equality checks \u2014 propagates the external-binary error when the domain has 2+ elements, matching NLTK without the binary."
     ]
    },
    "notes": "Port of nltk.inference.nonmonotonic.UniqueNamesProver."
@@ -27144,7 +27207,7 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Defined but never raised in NLTK (dead exception class) — ported identically."
+     "Defined but never raised in NLTK (dead exception class) \u2014 ported identically."
     ]
    },
    "evidence": [
@@ -27153,7 +27216,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Defined but never raised in NLTK (dead exception class) — ported identically."
+     "Defined but never raised in NLTK (dead exception class) \u2014 ported identically."
     ]
    },
    "notes": "Port of nltk.inference.resolution.UnificationException."
@@ -27704,7 +27767,7 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Both NLTK and the port crash identically on 'believe(j, -lie(b) & -cheat(b))' — the expression is not parseable (LogicalExpressionException preserved)."
+     "Both NLTK and the port crash identically on 'believe(j, -lie(b) & -cheat(b))' \u2014 the expression is not parseable (LogicalExpressionException preserved)."
     ]
    },
    "evidence": [
@@ -27713,7 +27776,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Both NLTK and the port crash identically on 'believe(j, -lie(b) & -cheat(b))' — the expression is not parseable (LogicalExpressionException preserved)."
+     "Both NLTK and the port crash identically on 'believe(j, -lie(b) & -cheat(b))' \u2014 the expression is not parseable (LogicalExpressionException preserved)."
     ]
    },
    "notes": "Port of nltk.inference.tableau.testHigherOrderTableauProver."
@@ -29174,7 +29237,7 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "include_semantics flag as includeSemantics; root `fromstring` stays bound to nltk.sem.logic's parser — the lexicon parser is exported as from_string/ccg_fromstring/ccgFromstring."
+     "include_semantics flag as includeSemantics; root `fromstring` stays bound to nltk.sem.logic's parser \u2014 the lexicon parser is exported as from_string/ccg_fromstring/ccgFromstring."
     ]
    },
    "evidence": [
@@ -29663,6 +29726,3632 @@
     ]
    },
    "notes": "Port of nltk.ccg.logic.Trie."
+  },
+  {
+   "target": "nltk.tag.AffixTagger",
+   "exports": [
+    "AffixTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class AffixTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "choose_tag",
+     "context",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports AffixTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports AffixTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports AffixTagger from nltk.tag.sequential; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.BigramTagger",
+   "exports": [
+    "BigramTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class BigramTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "choose_tag",
+     "context",
+     "encode_json_obj",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports BigramTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports BigramTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports BigramTagger from nltk.tag.sequential; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.BrillTagger",
+   "exports": [
+    "BrillTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export class BrillTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "precision",
+     "recall",
+     "rules",
+     "tag",
+     "train_stats"
+    ],
+    "gaps": [
+     "NLTK re-exports BrillTagger from nltk.tag.brill; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Member-level differential fixtures for the re-exported name not separately enumerated."
+    ]
+   },
+   "notes": "NLTK re-exports BrillTagger from nltk.tag.brill; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.BrillTaggerTrainer",
+   "exports": [
+    "BrillTaggerTrainer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export class BrillTaggerTrainer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "train"
+    ],
+    "gaps": [
+     "NLTK re-exports BrillTaggerTrainer from nltk.tag.brill_trainer; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Member-level differential fixtures for the re-exported name not separately enumerated."
+    ]
+   },
+   "notes": "NLTK re-exports BrillTaggerTrainer from nltk.tag.brill_trainer; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.CRFTagger",
+   "exports": [
+    "CRFTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_crf.ts",
+     "anchor": "export class CRFTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing shim: CRFTagger requires python-crfsuite; constructor raises before any tagging."
+  },
+  {
+   "target": "nltk.tag.ClassifierBasedPOSTagger",
+   "exports": [
+    "ClassifierBasedPOSTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class ClassifierBasedPOSTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classifier",
+     "feature_detector",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports ClassifierBasedPOSTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports ClassifierBasedPOSTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports ClassifierBasedPOSTagger from nltk.tag.sequential; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.ClassifierBasedTagger",
+   "exports": [
+    "ClassifierBasedTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class ClassifierBasedTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classifier",
+     "feature_detector",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports ClassifierBasedTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports ClassifierBasedTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports ClassifierBasedTagger from nltk.tag.sequential; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.ContextTagger",
+   "exports": [
+    "ContextTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export abstract class ContextTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "choose_tag",
+     "context",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports ContextTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports ContextTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports ContextTagger from nltk.tag.sequential; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.DefaultTagger",
+   "exports": [
+    "DefaultTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class DefaultTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "choose_tag",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports DefaultTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports DefaultTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports DefaultTagger from nltk.tag.sequential; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.HiddenMarkovModelTagger",
+   "exports": [
+    "HiddenMarkovModelTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export class HiddenMarkovModelTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "best_path",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "log_probability",
+     "precision",
+     "probability",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "entropy/point_entropy/random_sample/test/train/reset_cache/best_path_simple are numpy-driven surfaces not ported; Viterbi tie-break selects a different equal-probability path than NLTK on some inputs."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Supervised train/tag/accuracy/best_path pinned; entropy/random_sample/Baum-Welch test surfaces unpinned."
+    ]
+   },
+   "notes": "Re-export through nltk.tag namespace of the nltk.tag.hmm implementation."
+  },
+  {
+   "target": "nltk.tag.HiddenMarkovModelTrainer",
+   "exports": [
+    "HiddenMarkovModelTrainer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export class HiddenMarkovModelTrainer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "train",
+     "train_supervised",
+     "train_unsupervised"
+    ],
+    "gaps": [
+     "train_unsupervised (Baum-Welch) raises; supervised Lidstone estimation pinned."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "train_supervised pinned; train_unsupervised throws."
+    ]
+   },
+   "notes": "Re-export through nltk.tag namespace of the nltk.tag.hmm implementation."
+  },
+  {
+   "target": "nltk.tag.HunposTagger",
+   "exports": [
+    "HunposTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class HunposTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: hunpos-tag binary required; not an external-integration."
+  },
+  {
+   "target": "nltk.tag.NgramTagger",
+   "exports": [
+    "NgramTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class NgramTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "choose_tag",
+     "context",
+     "encode_json_obj",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports NgramTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports NgramTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports NgramTagger from nltk.tag.sequential; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.PerceptronTagger",
+   "exports": [
+    "PerceptronTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/parser_tagger_compat.ts",
+     "anchor": "export class PerceptronTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "decode_json_params",
+     "encode_json_obj",
+     "load_from_json",
+     "normalize",
+     "param_files",
+     "tag",
+     "tag_sents",
+     "train"
+    ],
+    "gaps": [
+     "NLTK re-exports PerceptronTagger from nltk.tag.perceptron; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "perceptron-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports PerceptronTagger from nltk.tag.perceptron; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports PerceptronTagger from nltk.tag.perceptron; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.RegexpTagger",
+   "exports": [
+    "RegexpTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class RegexpTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "choose_tag",
+     "encode_json_obj",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports RegexpTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports RegexpTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports RegexpTagger from nltk.tag.sequential; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.SennaChunkTagger",
+   "exports": [
+    "SennaChunkTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class SennaChunkTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: SENNA executable required."
+  },
+  {
+   "target": "nltk.tag.SennaNERTagger",
+   "exports": [
+    "SennaNERTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class SennaNERTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: SENNA executable required."
+  },
+  {
+   "target": "nltk.tag.SennaTagger",
+   "exports": [
+    "SennaTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class SennaTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: SENNA executable required."
+  },
+  {
+   "target": "nltk.tag.SequentialBackoffTagger",
+   "exports": [
+    "SequentialBackoffTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export abstract class SequentialBackoffTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "choose_tag",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports SequentialBackoffTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports SequentialBackoffTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports SequentialBackoffTagger from nltk.tag.sequential; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.StanfordNERTagger",
+   "exports": [
+    "StanfordNERTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class StanfordNERTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: Stanford NER jar required."
+  },
+  {
+   "target": "nltk.tag.StanfordPOSTagger",
+   "exports": [
+    "StanfordPOSTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class StanfordPOSTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: Stanford POS tagger jar required."
+  },
+  {
+   "target": "nltk.tag.StanfordTagger",
+   "exports": [
+    "StanfordTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class StanfordTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: Stanford tagger jar required."
+  },
+  {
+   "target": "nltk.tag.TaggerI",
+   "exports": [
+    "TaggerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TaggerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.TnT",
+   "exports": [
+    "TnT"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tag_tnt.ts",
+     "anchor": "export class TnT"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents",
+     "tagdata",
+     "train"
+    ],
+    "gaps": [
+     "evaluate() does not emit NLTK's DeprecationWarning; C/N/kwargs are exposed via the options-object constructor."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Train+tag+accuracy pinned on the oracle corpus; unknown-word suffix model paths exercised by unit tests only."
+    ]
+   },
+   "notes": "Re-export through nltk.tag namespace of the nltk.tag.tnt implementation."
+  },
+  {
+   "target": "nltk.tag.TrigramTagger",
+   "exports": [
+    "TrigramTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class TrigramTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "choose_tag",
+     "context",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports TrigramTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports TrigramTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports TrigramTagger from nltk.tag.sequential; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.UnigramTagger",
+   "exports": [
+    "UnigramTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sequential_taggers.ts",
+     "anchor": "export class UnigramTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "choose_tag",
+     "context",
+     "encode_json_obj",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports UnigramTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports UnigramTagger from nltk.tag.sequential; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports UnigramTagger from nltk.tag.sequential; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.find",
+   "exports": [
+    "find"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/data.ts",
+     "anchor": "export function find"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "nltk.data.find resource lookup is an unavailable stub in the JS runtime."
+  },
+  {
+   "target": "nltk.tag.load",
+   "exports": [
+    "load"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/data.ts",
+     "anchor": "export function load"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "nltk.data.load resource/pickle loading is an unavailable stub."
+  },
+  {
+   "target": "nltk.tag.map_tag",
+   "exports": [
+    "map_tag"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/tag_mapping.ts",
+     "anchor": "export function mapTag"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Only en-ptb/ru-rnc-new/en-brown/ru-rnc source maps are bundled; other tagsets fall back to the identity/universal-X heuristic instead of loading nltk_data tagset files."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Bundled-map paths exercised; nltk_data tagset corpus files unavailable."
+    ]
+   },
+   "notes": "Partial port: bundled registry covers NLTK's documented en-ptb/ru-rnc tagsets; remaining sources use the documented fallback."
+  },
+  {
+   "target": "nltk.tag.pos_tag",
+   "exports": [
+    "pos_tag"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/parser_tagger_compat.ts",
+     "anchor": "export function posTag"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Uses the bundled heuristic perceptron model, not NLTK's averaged_perceptron_tagger_eng weights; tagset/lang kwargs accepted but ignored."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Differential pinning against averaged_perceptron_tagger_eng impossible (resource unavailable in oracle env)."
+    ]
+   },
+   "notes": "pos_tag tags via the bundled ASCII perceptron path; weights differ from NLTK's distributed model."
+  },
+  {
+   "target": "nltk.tag.pos_tag_sents",
+   "exports": [
+    "pos_tag_sents"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/tag_util.ts",
+     "anchor": "export const posTagSents"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Same bundled-model caveat as pos_tag; tagset/lang kwargs ignored."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Sentence-iteration contract unit-tested; model outputs not oracle-pinnable."
+    ]
+   },
+   "notes": "Maps the bundled pos_tag over each sentence (NLTK pos_tag_sents)."
+  },
+  {
+   "target": "nltk.tag.str2tuple",
+   "exports": [
+    "str2tuple"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tag_util.ts",
+     "anchor": "export function str2tuple"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Rightmost-sep split and tag upper-casing pinned; returns [word,null] not (word,None)."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Edge cases (empty string, missing sep, custom sep) pinned."
+    ]
+   },
+   "notes": "Full port of nltk.tag.util.str2tuple."
+  },
+  {
+   "target": "nltk.tag.tuple2str",
+   "exports": [
+    "tuple2str"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tag_util.ts",
+     "anchor": "export function tuple2str"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "AssertionError raised as a named pyError; null tag -> bare word."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Sep-in-tag assertion and None-tag paths pinned."
+    ]
+   },
+   "notes": "Full port of nltk.tag.util.tuple2str."
+  },
+  {
+   "target": "nltk.tag.tagset_mapping",
+   "exports": [
+    "tagset_mapping"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/tag_mapping.ts",
+     "anchor": "export function tagsetMapping"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Only en-ptb/ru-rnc-new/en-brown/ru-rnc maps bundled; wsj alias resolves to en-ptb; other sources use documented fallback, not nltk_data files."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Bundled-map lookup unit-tested."
+    ]
+   },
+   "notes": "Partial port of nltk.tag.mapping.tagset_mapping."
+  },
+  {
+   "target": "nltk.tag.untag",
+   "exports": [
+    "untag"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export function untag"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK re-exports untag from nltk.tag.util; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports untag from nltk.tag.util; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports untag from nltk.tag.util; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.api.ConfusionMatrix",
+   "exports": [
+    "ConfusionMatrix"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/metrics.ts",
+     "anchor": "export { accuracy, ConfusionMatrix }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "evaluate",
+     "f_measure",
+     "key",
+     "precision",
+     "recall"
+    ],
+    "gaps": [
+     "NLTK re-exports ConfusionMatrix from nltk.metrics.confusionmatrix; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "metrics-unit",
+    "next-evaluation"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports ConfusionMatrix from nltk.metrics.confusionmatrix; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports ConfusionMatrix from nltk.metrics.confusionmatrix; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.api.FeaturesetTaggerI",
+   "exports": [
+    "FeaturesetTaggerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class FeaturesetTaggerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports FeaturesetTaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports FeaturesetTaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports FeaturesetTaggerI from nltk.tag.api; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.api.TaggerI",
+   "exports": [
+    "TaggerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TaggerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "evaluate() does not emit NLTK's DeprecationWarning; precision/recall/f_measure return Map not dict."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Delegation + metrics contract pinned via sequential tagger differential."
+    ]
+   },
+   "notes": "Full port of nltk.tag.api.TaggerI including the overridden-sibling delegation contract."
+  },
+  {
+   "target": "nltk.tag.api.accuracy",
+   "exports": [
+    "accuracy"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/metrics.ts",
+     "anchor": "export { accuracy, ConfusionMatrix }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK re-exports accuracy from nltk.metrics.scores; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "metrics-unit",
+    "next-evaluation"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports accuracy from nltk.metrics.scores; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports accuracy from nltk.metrics.scores; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.api.deprecated",
+   "exports": [
+    "deprecated"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function deprecated"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Decorator emits console.warn rather than warnings.warn; functools.wraps metadata (__name__/__doc__) partially preserved."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Warning text pinned via parseLexicon-style call sites; decorator protocol adapted."
+    ]
+   },
+   "notes": "Port of nltk.internals.deprecated decorator."
+  },
+  {
+   "target": "nltk.tag.api.overridden",
+   "exports": [
+    "overridden"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/internals.ts",
+     "anchor": "export function overridden"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "nltk.internals.overridden MRO check is a stub returning false in the JS runtime."
+  },
+  {
+   "target": "nltk.tag.api.untag",
+   "exports": [
+    "untag"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export function untag"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK re-exports untag from nltk.tag.util; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports untag from nltk.tag.util; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports untag from nltk.tag.util; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.brill.BrillTagger",
+   "exports": [
+    "BrillTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export class BrillTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "print_template_statistics",
+     "recall",
+     "rules",
+     "tag",
+     "tag_sents",
+     "train_stats"
+    ],
+    "gaps": [
+     "encode_json_obj/decode_json_obj registry present but jsontags round-trip not oracle-pinned; batch_tag_incremental missing."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Unit-tested via test/brill_tagger.test.ts; no oracle differential."
+    ]
+   },
+   "notes": "Real Brill tagger over TBL rules; json_tags registry adapted."
+  },
+  {
+   "target": "nltk.tag.brill.Feature",
+   "exports": [
+    "Feature"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export abstract class TblFeature"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "decode_json_obj",
+     "encode_json_obj",
+     "expand",
+     "extract_property",
+     "intersects",
+     "issuperset"
+    ],
+    "gaps": [
+     "NLTK re-exports Feature from nltk.tbl.feature; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports Feature from nltk.tbl.feature; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports Feature from nltk.tbl.feature; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.brill.Pos",
+   "exports": [
+    "Pos"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export class Pos"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "decode_json_obj",
+     "encode_json_obj",
+     "expand",
+     "extract_property",
+     "intersects",
+     "issuperset"
+    ],
+    "gaps": [
+     "NLTK re-exports Pos from nltk.tag.brill; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports Pos from nltk.tag.brill; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports Pos from nltk.tag.brill; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.brill.TaggerI",
+   "exports": [
+    "TaggerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TaggerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.brill.Template",
+   "exports": [
+    "Template"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export class Template"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applicable_rules",
+     "expand",
+     "get_neighborhood"
+    ],
+    "gaps": [
+     "NLTK re-exports Template from nltk.tbl.template; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports Template from nltk.tbl.template; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports Template from nltk.tbl.template; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.brill.Word",
+   "exports": [
+    "Word"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export class Word"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "decode_json_obj",
+     "encode_json_obj",
+     "expand",
+     "extract_property",
+     "intersects",
+     "issuperset"
+    ],
+    "gaps": [
+     "NLTK re-exports Word from nltk.tag.brill; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports Word from nltk.tag.brill; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports Word from nltk.tag.brill; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.brill.brill24",
+   "exports": [
+    "brill24"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tag_brill_templates.ts",
+     "anchor": "export function brill24"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Template registry ids assigned at construction (ALLTEMPLATES) as in NLTK."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Count 24 and boundary reprs pinned."
+    ]
+   },
+   "notes": "Exact port of the Brill (1995) 24-template set."
+  },
+  {
+   "target": "nltk.tag.brill.describe_template_sets",
+   "exports": [
+    "describe_template_sets"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tag_brill_templates.ts",
+     "anchor": "export const describeTemplateSets"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "inspect.getmembers enumeration replaced by the pinned 4-entry alphabetical table; docstrings stored in Python-3.14 dedented form."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Full stdout pinned verbatim."
+    ]
+   },
+   "notes": "Deterministic port of the introspection-based printer."
+  },
+  {
+   "target": "nltk.tag.brill.fntbl37",
+   "exports": [
+    "fntbl37"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tag_brill_templates.ts",
+     "anchor": "export function fntbl37"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Template registry ids assigned at construction as in NLTK."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Count 37 and boundary reprs pinned."
+    ]
+   },
+   "notes": "Exact port of the fntbl 37-template set."
+  },
+  {
+   "target": "nltk.tag.brill.nltkdemo18",
+   "exports": [
+    "nltkdemo18"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tag_brill_templates.ts",
+     "anchor": "export function nltkdemo18"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Template registry ids assigned at construction as in NLTK."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Count 18 pinned."
+    ]
+   },
+   "notes": "Exact port of the original demo 18-template set."
+  },
+  {
+   "target": "nltk.tag.brill.nltkdemo18plus",
+   "exports": [
+    "nltkdemo18plus"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tag_brill_templates.ts",
+     "anchor": "export function nltkdemo18plus"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Template registry ids assigned at construction as in NLTK."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Count 23 pinned."
+    ]
+   },
+   "notes": "Exact port of nltkdemo18 plus 5 multi-feature templates."
+  },
+  {
+   "target": "nltk.tag.brill_trainer.BrillTagger",
+   "exports": [
+    "BrillTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export class BrillTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "precision",
+     "recall",
+     "rules",
+     "tag",
+     "train_stats"
+    ],
+    "gaps": [
+     "NLTK re-exports BrillTagger from nltk.tag.brill; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Member-level differential fixtures for the re-exported name not separately enumerated."
+    ]
+   },
+   "notes": "NLTK re-exports BrillTagger from nltk.tag.brill; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.brill_trainer.BrillTaggerTrainer",
+   "exports": [
+    "BrillTaggerTrainer"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export class BrillTaggerTrainer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "train"
+    ],
+    "gaps": [
+     "train uses the (template, initial_tagger, stats-kwargs) options object; trace output shape adapted."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Trained on unit corpora; score/trace surfaces not oracle-pinned."
+    ]
+   },
+   "notes": "Real Brill trainer (TBL error-driven learning) over Template/Word/Pos."
+  },
+  {
+   "target": "nltk.tag.brill_trainer.untag",
+   "exports": [
+    "untag"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export function untag"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK re-exports untag from nltk.tag.util; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports untag from nltk.tag.util; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports untag from nltk.tag.util; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.crf.CRFTagger",
+   "exports": [
+    "CRFTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_crf.ts",
+     "anchor": "export class CRFTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing shim: requires python-crfsuite (external binary); no behavioral surface."
+  },
+  {
+   "target": "nltk.tag.crf.TaggerI",
+   "exports": [
+    "TaggerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TaggerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hmm.ConditionalFreqDist",
+   "exports": [
+    "ConditionalFreqDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class ConditionalFreqDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "N",
+     "clear",
+     "conditions",
+     "copy",
+     "deepcopy",
+     "fromkeys",
+     "get",
+     "items",
+     "keys",
+     "plot",
+     "pop",
+     "popitem",
+     "setdefault",
+     "tabulate",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "NLTK re-exports ConditionalFreqDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Member-level differential fixtures for the re-exported name not separately enumerated."
+    ]
+   },
+   "notes": "NLTK re-exports ConditionalFreqDist from nltk.probability; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hmm.ConditionalProbDist",
+   "exports": [
+    "ConditionalProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class ConditionalProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "conditions",
+     "get"
+    ],
+    "gaps": [
+     "NLTK re-exports ConditionalProbDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports ConditionalProbDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports ConditionalProbDist from nltk.probability; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hmm.DictionaryConditionalProbDist",
+   "exports": [
+    "DictionaryConditionalProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class DictionaryConditionalProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "conditions",
+     "get"
+    ],
+    "gaps": [
+     "NLTK re-exports DictionaryConditionalProbDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports DictionaryConditionalProbDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports DictionaryConditionalProbDist from nltk.probability; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hmm.DictionaryProbDist",
+   "exports": [
+    "DictionaryProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class DictionaryProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "NLTK re-exports DictionaryProbDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports DictionaryProbDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports DictionaryProbDist from nltk.probability; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hmm.FreqDist",
+   "exports": [
+    "FreqDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class FreqDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "B",
+     "N",
+     "Nr",
+     "copy",
+     "elements",
+     "freq",
+     "hapaxes",
+     "max",
+     "most_common",
+     "pformat",
+     "plot",
+     "pop",
+     "setdefault",
+     "subtract",
+     "tabulate",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "NLTK re-exports FreqDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "frequency-unit",
+    "freqdist-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports FreqDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports FreqDist from nltk.probability; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hmm.HiddenMarkovModelTagger",
+   "exports": [
+    "HiddenMarkovModelTagger"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export class HiddenMarkovModelTagger"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "best_path",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "log_probability",
+     "precision",
+     "probability",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "entropy/point_entropy/random_sample/test/train/reset_cache/best_path_simple unported (numpy-heavy); Viterbi tie-break can select a different equal-probability state than NLTK (e.g. '.' -> '.' vs 'DT')."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Supervised train/tag/accuracy/best_path pinned; probabilistic introspection surfaces unit-only."
+    ]
+   },
+   "notes": "Real log-space Viterbi HMM tagger with Lidstone estimation; entropy/sampling APIs unported."
+  },
+  {
+   "target": "nltk.tag.hmm.HiddenMarkovModelTrainer",
+   "exports": [
+    "HiddenMarkovModelTrainer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export class HiddenMarkovModelTrainer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "train",
+     "train_supervised",
+     "train_unsupervised"
+    ],
+    "gaps": [
+     "train_unsupervised (Baum-Welch) raises; train is an alias of train_supervised here (NLTK dispatches on kwargs)."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "train_supervised pinned; unsupervised path throws."
+    ]
+   },
+   "notes": "Supervised HMM estimation port; Baum-Welch not implemented."
+  },
+  {
+   "target": "nltk.tag.hmm.LazyMap",
+   "exports": [
+    "LazyMap"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class LazyMap"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "iterate_from"
+    ],
+    "gaps": [
+     "NLTK re-exports LazyMap from nltk.collections; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Member-level differential fixtures for the re-exported name not separately enumerated."
+    ]
+   },
+   "notes": "NLTK re-exports LazyMap from nltk.collections; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hmm.LidstoneProbDist",
+   "exports": [
+    "LidstoneProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class LidstoneProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "freqdist",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "NLTK re-exports LidstoneProbDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "next-probability-numeric"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports LidstoneProbDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports LidstoneProbDist from nltk.probability; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hmm.MLEProbDist",
+   "exports": [
+    "MLEProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class MLEProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "freqdist",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "NLTK re-exports MLEProbDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "next-probability-numeric"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports MLEProbDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports MLEProbDist from nltk.probability; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hmm.MutableProbDist",
+   "exports": [
+    "MutableProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class MutableProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "max",
+     "prob",
+     "samples",
+     "update"
+    ],
+    "gaps": [
+     "NLTK re-exports MutableProbDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "probability-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports MutableProbDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports MutableProbDist from nltk.probability; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hmm.RandomProbDist",
+   "exports": [
+    "RandomProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class RandomProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "max",
+     "prob",
+     "samples",
+     "unirand"
+    ],
+    "gaps": [
+     "Randomness is Math.random by default (seeded source injectable); numpy dict ordering replaced by insertion-ordered Map."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Normalization/dedup invariants unit-tested; draws are nondeterministic by design."
+    ]
+   },
+   "notes": "Full port of nltk.probability.RandomProbDist including the unirand total-fixup quirk."
+  },
+  {
+   "target": "nltk.tag.hmm.TaggerI",
+   "exports": [
+    "TaggerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TaggerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hmm.accuracy",
+   "exports": [
+    "accuracy"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/metrics.ts",
+     "anchor": "export { accuracy, ConfusionMatrix }"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK re-exports accuracy from nltk.metrics.scores; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "metrics-unit",
+    "next-evaluation"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports accuracy from nltk.metrics.scores; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports accuracy from nltk.metrics.scores; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hmm.demo",
+   "exports": [
+    "hmmDemo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Corpus-bound demo (treebank); unsupported without nltk_data."
+  },
+  {
+   "target": "nltk.tag.hmm.demo_bw",
+   "exports": [
+    "demo_bw"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export function demo_bw"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Corpus-bound Baum-Welch demo; unsupported without nltk_data."
+  },
+  {
+   "target": "nltk.tag.hmm.demo_pos",
+   "exports": [
+    "demo_pos"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export function demo_pos"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Corpus-bound demo; unsupported without nltk_data."
+  },
+  {
+   "target": "nltk.tag.hmm.demo_pos_bw",
+   "exports": [
+    "demo_pos_bw"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export function demo_pos_bw"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Corpus-bound demo; unsupported without nltk_data."
+  },
+  {
+   "target": "nltk.tag.hmm.load_pos",
+   "exports": [
+    "load_pos"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export function load_pos"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Corpus loader (treebank POS); unsupported without nltk_data."
+  },
+  {
+   "target": "nltk.tag.hmm.logsumexp2",
+   "exports": [
+    "logsumexp2"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export function logsumexp2"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Accepts number[] (numpy ndarray equivalent); empty input returns -inf rather than raising."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned on representative arrays incl. singleton and negative plateaus."
+    ]
+   },
+   "notes": "Exact port of nltk.tag.hmm.logsumexp2 (max-trick log2 sum)."
+  },
+  {
+   "target": "nltk.tag.hmm.unique_list",
+   "exports": [
+    "unique_list"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function unique_list"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK re-exports unique_list from nltk.util; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "util-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports unique_list from nltk.util; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports unique_list from nltk.util; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hunpos.HunposTagger",
+   "exports": [
+    "HunposTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class HunposTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: hunpos-tag binary required; close()/executable paths absent."
+  },
+  {
+   "target": "nltk.tag.hunpos.TaggerI",
+   "exports": [
+    "TaggerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TaggerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.hunpos.find_binary",
+   "exports": [
+    "find_binary"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/internals.ts",
+     "anchor": "export function findBinary"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Binary lookup stub throws (internals.find_binary unavailable)."
+  },
+  {
+   "target": "nltk.tag.hunpos.find_file",
+   "exports": [
+    "find_file"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/internals.ts",
+     "anchor": "export function findFile"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "File lookup stub throws (internals.find_file unavailable)."
+  },
+  {
+   "target": "nltk.tag.mapping.load",
+   "exports": [
+    "load"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/data.ts",
+     "anchor": "export function load"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "nltk.data.load is an unavailable stub."
+  },
+  {
+   "target": "nltk.tag.mapping.map_tag",
+   "exports": [
+    "map_tag"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/tag_mapping.ts",
+     "anchor": "export function mapTag"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Bundled source maps only; falls back to universal-X/UNK heuristic otherwise."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Bundled-map paths unit-tested."
+    ]
+   },
+   "notes": "Partial port of nltk.tag.mapping.map_tag."
+  },
+  {
+   "target": "nltk.tag.mapping.normalize_resource_url",
+   "exports": [
+    "normalize_resource_url"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/data.ts",
+     "anchor": "export function normalizeResourceUrl"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "URL normalization stub throws (data.normalize_resource_url unavailable)."
+  },
+  {
+   "target": "nltk.tag.mapping.tagset_mapping",
+   "exports": [
+    "tagset_mapping"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/tag_mapping.ts",
+     "anchor": "export function tagsetMapping"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Bundled maps only; no nltk_data tagset files."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Bundled-map lookup unit-tested."
+    ]
+   },
+   "notes": "Partial port of nltk.tag.mapping.tagset_mapping."
+  },
+  {
+   "target": "nltk.tag.senna.Senna",
+   "exports": [
+    "Senna"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class Senna"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: SENNA executable required."
+  },
+  {
+   "target": "nltk.tag.senna.SennaChunkTagger",
+   "exports": [
+    "SennaChunkTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class SennaChunkTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: SENNA executable required; bio_to_chunks absent."
+  },
+  {
+   "target": "nltk.tag.senna.SennaNERTagger",
+   "exports": [
+    "SennaNERTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class SennaNERTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: SENNA executable required."
+  },
+  {
+   "target": "nltk.tag.senna.SennaTagger",
+   "exports": [
+    "SennaTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class SennaTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: SENNA executable required."
+  },
+  {
+   "target": "nltk.tag.stanford.StanfordNERTagger",
+   "exports": [
+    "StanfordNERTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class StanfordNERTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: Stanford NER jar required."
+  },
+  {
+   "target": "nltk.tag.stanford.StanfordPOSTagger",
+   "exports": [
+    "StanfordPOSTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class StanfordPOSTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: Stanford POS jar required."
+  },
+  {
+   "target": "nltk.tag.stanford.StanfordTagger",
+   "exports": [
+    "StanfordTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_wrappers.ts",
+     "anchor": "export class StanfordTagger"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Throwing wrapper: Stanford tagger jar required; parse_output absent."
+  },
+  {
+   "target": "nltk.tag.stanford.TaggerI",
+   "exports": [
+    "TaggerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TaggerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.stanford.find_file",
+   "exports": [
+    "find_file"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/internals.ts",
+     "anchor": "export function findFile"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "File lookup stub throws."
+  },
+  {
+   "target": "nltk.tag.stanford.find_jar",
+   "exports": [
+    "find_jar"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/internals.ts",
+     "anchor": "export function findJar"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Jar lookup stub throws (config_java/untrusted-jar paths not applicable)."
+  },
+  {
+   "target": "nltk.tag.stanford.java",
+   "exports": [
+    "java"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/internals.ts",
+     "anchor": "export function java"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Java subprocess stub throws; no JVM in the JS runtime."
+  },
+  {
+   "target": "nltk.tag.tnt.ConditionalFreqDist",
+   "exports": [
+    "ConditionalFreqDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class ConditionalFreqDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "N",
+     "conditions",
+     "tabulate"
+    ],
+    "gaps": [
+     "NLTK re-exports ConditionalFreqDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Member-level differential fixtures for the re-exported name not separately enumerated."
+    ]
+   },
+   "notes": "NLTK re-exports ConditionalFreqDist from nltk.probability; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.tnt.FreqDist",
+   "exports": [
+    "FreqDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class FreqDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "N",
+     "freq",
+     "max",
+     "most_common"
+    ],
+    "gaps": [
+     "NLTK re-exports FreqDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "frequency-unit",
+    "freqdist-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports FreqDist from nltk.probability; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports FreqDist from nltk.probability; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.tnt.TaggerI",
+   "exports": [
+    "TaggerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class TaggerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents"
+    ],
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "sequential-tagger-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports TaggerI from nltk.tag.api; mapped to the shared implementation."
+  },
+  {
+   "target": "nltk.tag.tnt.TnT",
+   "exports": [
+    "TnT"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tag_tnt.ts",
+     "anchor": "export class TnT"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "confusion",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "tag",
+     "tag_sents",
+     "tagdata",
+     "train"
+    ],
+    "gaps": [
+     "evaluate() does not emit NLTK's DeprecationWarning; C/N/kwargs via options object; unk tagger hook typed differently."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Train+tag+accuracy pinned; suffix-model unknown-word paths unit-tested."
+    ]
+   },
+   "notes": "Full TnT port (deleted-interpolation trigram HMM + beam Viterbi)."
+  },
+  {
+   "target": "nltk.tag.tnt.basic_sent_chop",
+   "exports": [
+    "basic_sent_chop"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tag_tnt.ts",
+     "anchor": "export const basicSentChop"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "sent_marks default pinned to NLTK's tuple ['.','!','?',';']."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "raw=True/False paths pinned."
+    ]
+   },
+   "notes": "Exact port of nltk.tag.tnt.basic_sent_chop."
+  },
+  {
+   "target": "nltk.tag.tnt.demo",
+   "exports": [
+    "tntDemo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_tnt.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Corpus-bound demo (treebank); unsupported without nltk_data."
+  },
+  {
+   "target": "nltk.tag.tnt.demo_errors",
+   "exports": [
+    "demo_errors"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tag_tnt.ts",
+     "anchor": "export function demo_errors"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [],
+    "gaps": [
+     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "Corpus-bound demo; unsupported without nltk_data."
+  },
+  {
+   "target": "nltk.tag.util.str2tuple",
+   "exports": [
+    "str2tuple"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tag_util.ts",
+     "anchor": "export function str2tuple"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Returns [word,null] for the None case."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Edge matrix pinned."
+    ]
+   },
+   "notes": "Full port of nltk.tag.util.str2tuple."
+  },
+  {
+   "target": "nltk.tag.util.tuple2str",
+   "exports": [
+    "tuple2str"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tag_util.ts",
+     "anchor": "export function tuple2str"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "AssertionError raised as named pyError."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Assertion path pinned."
+    ]
+   },
+   "notes": "Full port of nltk.tag.util.tuple2str."
+  },
+  {
+   "target": "nltk.tag.util.untag",
+   "exports": [
+    "untag"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/hmm_tagger.ts",
+     "anchor": "export function untag"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK re-exports untag from nltk.tag.util; mapped to the shared implementation."
+    ]
+   },
+   "evidence": [
+    "tag-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "NLTK re-exports untag from nltk.tag.util; mapped to the shared implementation."
+    ]
+   },
+   "notes": "NLTK re-exports untag from nltk.tag.util; mapped to the shared implementation."
   }
  ]
 }

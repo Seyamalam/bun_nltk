@@ -470,6 +470,69 @@ export class MutableProbDist<T> extends ProbDistI<T> {
   }
 }
 
+export class RandomProbDist<T> extends ProbDistI<T> {
+  readonly #probMap = new Map<string, { sample: T; value: number }>();
+  readonly #samples: T[];
+  #maxSample?: T;
+
+  /**
+   * Generates a random probability distribution whereby each sample
+   * will be between 0 and 1 with equal probability (uniform random
+   * distribution — also called a continuous uniform distribution).
+   * `random` is an injectable U(0,1) source (NLTK uses `random.random()`).
+   */
+  constructor(samples: Iterable<T>, random: () => number = Math.random) {
+    super();
+    const probs = RandomProbDist.unirand(samples, random);
+    this.#probMap = probs;
+    if (this.#probMap.size === 0) {
+      throw new Error("A probability distribution must have at least one sample.");
+    }
+    this.#samples = [...this.#probMap.values()].map((e) => e.sample);
+  }
+
+  /**
+   * The key function that creates a randomized initial distribution
+   * that still sums to 1.  Returned as a Map so it can be passed to
+   * MutableProbDist with identical syntax to UniformProbDist.
+   * NLTK quirk: `samples` is de-duplicated via `set()` before drawing.
+   */
+  static unirand<T>(samples: Iterable<T>, random: () => number = Math.random): Map<string, { sample: T; value: number }> {
+    const unique = new Map<string, T>();
+    for (const sample of samples) if (!unique.has(conditionKey(sample))) unique.set(conditionKey(sample), sample);
+    const randrow = [...unique.values()].map(() => random());
+    const total = randrow.reduce((a, b) => a + b, 0);
+    for (let i = 0; i < randrow.length; i++) randrow[i] = randrow[i]! / total;
+    const newTotal = randrow.reduce((a, b) => a + b, 0);
+    if (newTotal !== 1 && randrow.length > 0) {
+      // this difference, if present, is so small (near NINF) that it
+      // can be subtracted from any element without risking probs not (0 1)
+      randrow[randrow.length - 1] = randrow[randrow.length - 1]! - (newTotal - 1);
+    }
+    const out = new Map<string, { sample: T; value: number }>();
+    let i = 0;
+    for (const [key, sample] of unique) out.set(key, { sample, value: randrow[i++]! });
+    return out;
+  }
+
+  max(): T {
+    if (this.#maxSample === undefined) {
+      let best: { sample: T; value: number } | undefined;
+      for (const entry of this.#probMap.values()) if (!best || entry.value > best.value) best = entry;
+      this.#maxSample = best!.sample;
+    }
+    return this.#maxSample;
+  }
+
+  prob(sample: T): number {
+    return this.#probMap.get(conditionKey(sample))?.value ?? 0;
+  }
+
+  samples(): Iterable<T> {
+    return this.#samples;
+  }
+}
+
 export abstract class ConditionalProbDistI<C, T> {
   abstract get(condition: C): ProbDistLike<T>;
   abstract conditions(): C[];
