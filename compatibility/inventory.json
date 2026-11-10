@@ -438,7 +438,17 @@
    "Model4Counts": "src/ibm4.ts",
    "IBMModel5": "src/ibm5.ts",
    "Model5Counts": "src/ibm5.ts",
-   "Slots": "src/ibm5.ts"
+   "Slots": "src/ibm5.ts",
+   "ClusterI": "src/cluster_api.ts",
+   "EMClusterer": "src/cluster_em.ts",
+   "VectorSpaceClusterer": "src/cluster_util.ts",
+   "GAAClusterer": "src/cluster_gaac.ts",
+   "Dendrogram": "src/cluster_util.ts",
+   "cosineDistance": "src/cluster_api.ts",
+   "cosine_distance": "src/cluster_api.ts",
+   "KMeansClusterer": "src/cluster_kmeans.ts",
+   "euclideanDistance": "src/cluster_api.ts",
+   "euclidean_distance": "src/cluster_api.ts"
   }
  },
  "modules": [
@@ -448,6 +458,11 @@
   "nltk.classify.naivebayes",
   "nltk.classify.positivenaivebayes",
   "nltk.classify.scikitlearn",
+  "nltk.cluster.api",
+  "nltk.cluster.em",
+  "nltk.cluster.gaac",
+  "nltk.cluster.kmeans",
+  "nltk.cluster.util",
   "nltk.collocations",
   "nltk.corpus.reader.wordnet",
   "nltk.grammar",
@@ -460,10 +475,17 @@
   "nltk.parse.chart",
   "nltk.probability",
   "nltk.sentiment.vader",
+  "nltk.stem.api",
+  "nltk.stem.arlstem",
+  "nltk.stem.arlstem2",
+  "nltk.stem.cistem",
+  "nltk.stem.isri",
   "nltk.stem.lancaster",
   "nltk.stem.porter",
   "nltk.stem.regexp",
+  "nltk.stem.rslp",
   "nltk.stem.snowball",
+  "nltk.stem.util",
   "nltk.stem.wordnet",
   "nltk.tag.perceptron",
   "nltk.tag.sequential",
@@ -475,20 +497,9 @@
   "nltk.tokenize.regexp",
   "nltk.tokenize.toktok",
   "nltk.tokenize.treebank",
+  "nltk.translate.api",
   "nltk.translate.bleu_score",
   "nltk.translate.chrf_score",
-  "nltk.translate.nist_score",
-  "nltk.tree.tree",
-  "nltk.util",
-  "nltk.wsd",
-  "nltk.stem.arlstem",
-  "nltk.stem.arlstem2",
-  "nltk.stem.isri",
-  "nltk.stem.rslp",
-  "nltk.stem.cistem",
-  "nltk.stem.api",
-  "nltk.stem.util",
-  "nltk.translate.api",
   "nltk.translate.gale_church",
   "nltk.translate.gdfa",
   "nltk.translate.gleu_score",
@@ -501,9 +512,13 @@
   "nltk.translate.lepor",
   "nltk.translate.meteor_score",
   "nltk.translate.metrics",
+  "nltk.translate.nist_score",
   "nltk.translate.phrase_based",
   "nltk.translate.ribes_score",
-  "nltk.translate.stack_decoder"
+  "nltk.translate.stack_decoder",
+  "nltk.tree.tree",
+  "nltk.util",
+  "nltk.wsd"
  ],
  "excludedModules": [
   {
@@ -1268,6 +1283,26 @@
    "anchor": "sentence_ribes single reference matches python baseline",
    "oracleVersion": "3.10.3",
    "scope": "RIBES sentence scores vs python baseline; meteor/texttiling/tnt python baselines."
+  },
+  {
+   "id": "cluster-differential",
+   "kind": "differential",
+   "files": [
+    "test/cluster.test.ts",
+    "test/cluster_oracle.py"
+   ],
+   "anchor": "nltk.cluster oracle parity",
+   "oracleVersion": "3.10.3",
+   "scope": "GAAClusterer cluster/classify/dendrogram + euclidean/cosine distances; KMeans/EM randomized fitting pinned at unit level."
+  },
+  {
+   "id": "cluster-unit",
+   "kind": "unit",
+   "files": [
+    "test/cluster_native.test.ts"
+   ],
+   "anchor": "native.cluster",
+   "scope": "Rust-vs-JS kmeans means parity."
   }
  ],
  "signatureBindings": [
@@ -19983,6 +20018,688 @@
     ]
    },
    "notes": "nltk.translate.ibm5.longest_target_sentence_length re-export."
+  },
+  {
+   "target": "nltk.cluster.api.ClusterI",
+   "exports": [
+    "ClusterI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_api.ts",
+     "anchor": "export abstract class ClusterI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classification_probdist",
+     "cluster_name",
+     "cluster_names",
+     "likelihood"
+    ],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "ClusterI ABC."
+  },
+  {
+   "target": "nltk.cluster.api.DictionaryProbDist",
+   "exports": [
+    "DictionaryProbDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/probability.ts",
+     "anchor": "export class DictionaryProbDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "discount",
+     "generate",
+     "logprob",
+     "max",
+     "prob",
+     "samples"
+    ],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "probdist-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Re-exported DictionaryProbDist."
+  },
+  {
+   "target": "nltk.cluster.em.EMClusterer",
+   "exports": [
+    "EMClusterer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_em.ts",
+     "anchor": "export class EMClusterer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classification_probdist",
+     "classify",
+     "classify_vectorspace",
+     "cluster",
+     "cluster_name",
+     "cluster_names",
+     "cluster_vectorspace",
+     "likelihood",
+     "likelihood_vectorspace",
+     "num_clusters",
+     "vector"
+    ],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "EM clusterer (gaussian mixture)."
+  },
+  {
+   "target": "nltk.cluster.em.VectorSpaceClusterer",
+   "exports": [
+    "VectorSpaceClusterer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_util.ts",
+     "anchor": "export abstract class VectorSpaceClusterer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classification_probdist",
+     "classify",
+     "classify_vectorspace",
+     "cluster",
+     "cluster_name",
+     "cluster_names",
+     "cluster_vectorspace",
+     "likelihood",
+     "likelihood_vectorspace",
+     "num_clusters",
+     "vector"
+    ],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Re-exported base."
+  },
+  {
+   "target": "nltk.cluster.em.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/cluster_em.ts",
+     "anchor": "EMClusterer"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo function — no non-interactive equivalent is provided."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Demo output is interactive/terminal-bound; no oracle pins."
+    ]
+   },
+   "notes": "NLTK demo() prints an interactive walkthrough; recorded as an explicit gap."
+  },
+  {
+   "target": "nltk.cluster.gaac.GAAClusterer",
+   "exports": [
+    "GAAClusterer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_gaac.ts",
+     "anchor": "export class GAAClusterer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classification_probdist",
+     "classify",
+     "classify_vectorspace",
+     "cluster",
+     "cluster_name",
+     "cluster_names",
+     "cluster_vectorspace",
+     "likelihood",
+     "likelihood_vectorspace",
+     "num_clusters",
+     "vector",
+     "dendrogram",
+     "update_clusters"
+    ],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Group-average agglomerative clusterer — deterministic, oracle-pinned."
+  },
+  {
+   "target": "nltk.cluster.gaac.Dendrogram",
+   "exports": [
+    "Dendrogram"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_util.ts",
+     "anchor": "export class Dendrogram"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "groups",
+     "merge",
+     "show"
+    ],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Dendrogram with merge/groups/show."
+  },
+  {
+   "target": "nltk.cluster.gaac.VectorSpaceClusterer",
+   "exports": [
+    "VectorSpaceClusterer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_util.ts",
+     "anchor": "export abstract class VectorSpaceClusterer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classification_probdist",
+     "classify",
+     "classify_vectorspace",
+     "cluster",
+     "cluster_name",
+     "cluster_names",
+     "cluster_vectorspace",
+     "likelihood",
+     "likelihood_vectorspace",
+     "num_clusters",
+     "vector"
+    ],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Re-exported base."
+  },
+  {
+   "target": "nltk.cluster.gaac.cosine_distance",
+   "exports": [
+    "cosineDistance",
+    "cosine_distance"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_api.ts",
+     "anchor": "export function cosineDistance"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "cosine_distance."
+  },
+  {
+   "target": "nltk.cluster.gaac.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/cluster_gaac.ts",
+     "anchor": "GAAClusterer"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo function — no non-interactive equivalent is provided."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Demo output is interactive/terminal-bound; no oracle pins."
+    ]
+   },
+   "notes": "NLTK demo() prints an interactive walkthrough; recorded as an explicit gap."
+  },
+  {
+   "target": "nltk.cluster.kmeans.KMeansClusterer",
+   "exports": [
+    "KMeansClusterer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_kmeans.ts",
+     "anchor": "export class KMeansClusterer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classification_probdist",
+     "classify",
+     "classify_vectorspace",
+     "cluster",
+     "cluster_name",
+     "cluster_names",
+     "cluster_vectorspace",
+     "likelihood",
+     "likelihood_vectorspace",
+     "num_clusters",
+     "vector",
+     "means"
+    ],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "K-means clusterer (setRng deterministic seeding)."
+  },
+  {
+   "target": "nltk.cluster.kmeans.VectorSpaceClusterer",
+   "exports": [
+    "VectorSpaceClusterer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_util.ts",
+     "anchor": "export abstract class VectorSpaceClusterer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classification_probdist",
+     "classify",
+     "classify_vectorspace",
+     "cluster",
+     "cluster_name",
+     "cluster_names",
+     "cluster_vectorspace",
+     "likelihood",
+     "likelihood_vectorspace",
+     "num_clusters",
+     "vector"
+    ],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Re-exported base."
+  },
+  {
+   "target": "nltk.cluster.kmeans.demo",
+   "exports": [
+    "demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/cluster_kmeans.ts",
+     "anchor": "KMeansClusterer"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo function — no non-interactive equivalent is provided."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Demo output is interactive/terminal-bound; no oracle pins."
+    ]
+   },
+   "notes": "NLTK demo() prints an interactive walkthrough; recorded as an explicit gap."
+  },
+  {
+   "target": "nltk.cluster.util.ClusterI",
+   "exports": [
+    "ClusterI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_api.ts",
+     "anchor": "export abstract class ClusterI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classification_probdist",
+     "cluster_name",
+     "cluster_names",
+     "likelihood"
+    ],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Re-exported ClusterI."
+  },
+  {
+   "target": "nltk.cluster.util.Dendrogram",
+   "exports": [
+    "Dendrogram"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_util.ts",
+     "anchor": "export class Dendrogram"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "groups",
+     "merge",
+     "show"
+    ],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Re-exported Dendrogram."
+  },
+  {
+   "target": "nltk.cluster.util.VectorSpaceClusterer",
+   "exports": [
+    "VectorSpaceClusterer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_util.ts",
+     "anchor": "export abstract class VectorSpaceClusterer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "classification_probdist",
+     "classify",
+     "classify_vectorspace",
+     "cluster",
+     "cluster_name",
+     "cluster_names",
+     "cluster_vectorspace",
+     "likelihood",
+     "likelihood_vectorspace",
+     "num_clusters",
+     "vector"
+    ],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "VectorSpaceClusterer base."
+  },
+  {
+   "target": "nltk.cluster.util.cosine_distance",
+   "exports": [
+    "cosineDistance",
+    "cosine_distance"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_api.ts",
+     "anchor": "export function cosineDistance"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "cosine_distance."
+  },
+  {
+   "target": "nltk.cluster.util.euclidean_distance",
+   "exports": [
+    "euclideanDistance",
+    "euclidean_distance"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/cluster_api.ts",
+     "anchor": "export function euclideanDistance"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "camelCase bindings; numpy-array inputs are plain number[] vectors."
+    ]
+   },
+   "evidence": [
+    "cluster-differential",
+    "cluster-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "euclidean_distance."
   }
  ]
 }
