@@ -1140,3 +1140,74 @@ export {
   validate_network_url,
   xpath,
 } from "./src/corpus_gaps";
+
+// nltk.chat — portable chatbots (Chat + bot pair tables; *_chat drivers take an
+// injectable input source).
+export {
+  Chat,
+  reflections,
+  eliza_pairs,
+  iesha_pairs,
+  rude_pairs,
+  suntsu_pairs,
+  zen_pairs,
+  eliza_chat,
+  iesha_chat,
+  rude_chat,
+  suntsu_chat,
+  zen_chat,
+} from "./src/chat";
+export { chatbots, chat_demo } from "./src/misc_gaps";
+
+// nltk.toolbox — StandardFormat/ToolboxData/ToolboxSettings + helpers are
+// exported above (pre-wired block); add the element type + demo stub.
+export { ToolboxElement } from "./src/toolbox";
+export { toolbox_demo } from "./src/misc_gaps";
+
+// nltk.downloader — offline value layer (Package/Collection/messages,
+// checksums, unzip); network client entry points are unsupported stubs.
+export {
+  Package,
+  Collection,
+  DownloaderMessage,
+  StartCollectionMessage,
+  FinishCollectionMessage,
+  StartPackageMessage,
+  FinishPackageMessage,
+  StartDownloadMessage,
+  FinishDownloadMessage,
+  StartUnzipMessage,
+  FinishUnzipMessage,
+  UpToDateMessage,
+  StaleMessage,
+  ErrorMessage as DownloaderErrorMessage,
+  ProgressMessage as DownloaderProgressMessage,
+  SelectDownloadDirMessage,
+  md5_hexdigest,
+  sha256_hexdigest,
+  unzip as downloader_unzip,
+  Downloader,
+  DownloaderGUI,
+  DownloaderShell,
+  download as downloader_download,
+  download_gui,
+  download_shell,
+  update as downloader_update,
+  build_index,
+} from "./src/downloader";
+
+// nltk.twitter.common — tweet JSON → CSV helpers.
+export {
+  extract_fields,
+  get_header_field_list,
+  json2csv,
+  json2csv_entities,
+} from "./src/twitter_common";
+
+// nltk.compat — py3 path helpers.
+export { add_py3_data, py3_data } from "./src/compat_port";
+
+// nltk.decorators + nltk.huggingface honest gaps.
+export { getinfo, new_wrapper } from "./src/misc_gaps";
+export { HFDatasetPathPointer, hf_download, hf_load_data } from "./src/misc_gaps";
+export { outf_writer_compat, TweetHandlerI, BasicTweetHandler, LocalTimezoneOffsetWithUTC } from "./src/misc_gaps";

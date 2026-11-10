@@ -1176,7 +1176,66 @@
    "Image": "src/corpus_gaps.ts",
    "MTETagConverter": "src/corpus_gaps.ts",
    "RTEPair": "src/corpus_gaps.ts",
-   "ConllSRLInstance": "src/corpus_gaps.ts"
+   "ConllSRLInstance": "src/corpus_gaps.ts",
+   "Chat": "src/chat.ts",
+   "eliza_chat": "src/chat.ts",
+   "iesha_chat": "src/chat.ts",
+   "rude_chat": "src/chat.ts",
+   "suntsu_chat": "src/chat.ts",
+   "zen_chat": "src/chat.ts",
+   "chatbots": "src/misc_gaps.ts",
+   "chat_demo": "src/misc_gaps.ts",
+   "toolbox_demo": "src/misc_gaps.ts",
+   "StandardFormat": "src/toolbox.ts",
+   "ToolboxSettings": "src/toolbox.ts",
+   "add_blank_lines": "src/toolbox.ts",
+   "add_default_fields": "src/toolbox.ts",
+   "remove_blanks": "src/toolbox.ts",
+   "sort_fields": "src/toolbox.ts",
+   "to_settings_string": "src/toolbox.ts",
+   "to_sfm_string": "src/toolbox.ts",
+   "Package": "src/downloader.ts",
+   "Collection": "src/downloader.ts",
+   "DownloaderMessage": "src/downloader.ts",
+   "StartCollectionMessage": "src/downloader.ts",
+   "FinishCollectionMessage": "src/downloader.ts",
+   "StartPackageMessage": "src/downloader.ts",
+   "FinishPackageMessage": "src/downloader.ts",
+   "StartDownloadMessage": "src/downloader.ts",
+   "FinishDownloadMessage": "src/downloader.ts",
+   "StartUnzipMessage": "src/downloader.ts",
+   "FinishUnzipMessage": "src/downloader.ts",
+   "UpToDateMessage": "src/downloader.ts",
+   "StaleMessage": "src/downloader.ts",
+   "DownloaderErrorMessage": "src/downloader.ts",
+   "DownloaderProgressMessage": "src/downloader.ts",
+   "SelectDownloadDirMessage": "src/downloader.ts",
+   "Downloader": "src/downloader.ts",
+   "DownloaderGUI": "src/downloader.ts",
+   "DownloaderShell": "src/downloader.ts",
+   "build_index": "src/downloader.ts",
+   "downloader_download": "src/downloader.ts",
+   "download_gui": "src/downloader.ts",
+   "download_shell": "src/downloader.ts",
+   "downloader_update": "src/downloader.ts",
+   "md5_hexdigest": "src/downloader.ts",
+   "sha256_hexdigest": "src/downloader.ts",
+   "downloader_unzip": "src/downloader.ts",
+   "extract_fields": "src/twitter_common.ts",
+   "get_header_field_list": "src/twitter_common.ts",
+   "json2csv": "src/twitter_common.ts",
+   "json2csv_entities": "src/twitter_common.ts",
+   "outf_writer_compat": "src/misc_gaps.ts",
+   "TweetHandlerI": "src/misc_gaps.ts",
+   "BasicTweetHandler": "src/misc_gaps.ts",
+   "LocalTimezoneOffsetWithUTC": "src/misc_gaps.ts",
+   "add_py3_data": "src/compat_port.ts",
+   "py3_data": "src/compat_port.ts",
+   "getinfo": "src/misc_gaps.ts",
+   "new_wrapper": "src/misc_gaps.ts",
+   "HFDatasetPathPointer": "src/misc_gaps.ts",
+   "hf_download": "src/misc_gaps.ts",
+   "hf_load_data": "src/misc_gaps.ts"
   }
  },
  "modules": [
@@ -1186,20 +1245,87 @@
   "nltk.ccg.combinator",
   "nltk.ccg.lexicon",
   "nltk.ccg.logic",
+  "nltk.chat",
+  "nltk.chat.eliza",
+  "nltk.chat.iesha",
+  "nltk.chat.rude",
+  "nltk.chat.suntsu",
+  "nltk.chat.util",
+  "nltk.chat.zen",
   "nltk.chunk.regexp",
   "nltk.classify.decisiontree",
   "nltk.classify.maxent",
   "nltk.classify.naivebayes",
   "nltk.classify.positivenaivebayes",
   "nltk.classify.scikitlearn",
+  "nltk.cli",
   "nltk.cluster.api",
   "nltk.cluster.em",
   "nltk.cluster.gaac",
   "nltk.cluster.kmeans",
   "nltk.cluster.util",
   "nltk.collocations",
+  "nltk.compat",
+  "nltk.corpus",
+  "nltk.corpus.europarl_raw",
+  "nltk.corpus.reader",
+  "nltk.corpus.reader.aligned",
+  "nltk.corpus.reader.api",
+  "nltk.corpus.reader.bcp47",
+  "nltk.corpus.reader.bnc",
+  "nltk.corpus.reader.bracket_parse",
+  "nltk.corpus.reader.categorized_sents",
+  "nltk.corpus.reader.childes",
+  "nltk.corpus.reader.chunked",
+  "nltk.corpus.reader.cmudict",
+  "nltk.corpus.reader.comparative_sents",
+  "nltk.corpus.reader.conll",
+  "nltk.corpus.reader.crubadan",
+  "nltk.corpus.reader.dependency",
+  "nltk.corpus.reader.framenet",
+  "nltk.corpus.reader.ieer",
+  "nltk.corpus.reader.indian",
+  "nltk.corpus.reader.ipipan",
+  "nltk.corpus.reader.knbc",
+  "nltk.corpus.reader.lin",
+  "nltk.corpus.reader.markdown",
+  "nltk.corpus.reader.mte",
+  "nltk.corpus.reader.nkjp",
+  "nltk.corpus.reader.nombank",
+  "nltk.corpus.reader.nps_chat",
+  "nltk.corpus.reader.opinion_lexicon",
+  "nltk.corpus.reader.panlex_lite",
+  "nltk.corpus.reader.pl196x",
+  "nltk.corpus.reader.plaintext",
+  "nltk.corpus.reader.ppattach",
+  "nltk.corpus.reader.propbank",
+  "nltk.corpus.reader.pros_cons",
+  "nltk.corpus.reader.reviews",
+  "nltk.corpus.reader.rte",
+  "nltk.corpus.reader.semcor",
+  "nltk.corpus.reader.senseval",
+  "nltk.corpus.reader.sentiwordnet",
+  "nltk.corpus.reader.sinica_treebank",
+  "nltk.corpus.reader.string_category",
+  "nltk.corpus.reader.switchboard",
+  "nltk.corpus.reader.tagged",
+  "nltk.corpus.reader.timit",
+  "nltk.corpus.reader.toolbox",
+  "nltk.corpus.reader.twitter",
+  "nltk.corpus.reader.udhr",
+  "nltk.corpus.reader.util",
+  "nltk.corpus.reader.verbnet",
+  "nltk.corpus.reader.wordlist",
   "nltk.corpus.reader.wordnet",
+  "nltk.corpus.reader.xmldocs",
+  "nltk.corpus.reader.ycoe",
+  "nltk.corpus.util",
+  "nltk.data",
+  "nltk.decorators",
+  "nltk.downloader",
   "nltk.grammar",
+  "nltk.huggingface",
+  "nltk.huggingface.dataset",
   "nltk.inference",
   "nltk.inference.api",
   "nltk.inference.discourse",
@@ -1208,6 +1334,7 @@
   "nltk.inference.prover9",
   "nltk.inference.resolution",
   "nltk.inference.tableau",
+  "nltk.internals",
   "nltk.lm.counter",
   "nltk.lm.models",
   "nltk.lm.vocabulary",
@@ -1239,6 +1366,7 @@
   "nltk.parse.transitionparser",
   "nltk.parse.util",
   "nltk.parse.viterbi",
+  "nltk.pathsec",
   "nltk.probability",
   "nltk.sem",
   "nltk.sem.boxer",
@@ -1296,6 +1424,7 @@
   "nltk.tokenize.regexp",
   "nltk.tokenize.toktok",
   "nltk.tokenize.treebank",
+  "nltk.toolbox",
   "nltk.translate.api",
   "nltk.translate.bleu_score",
   "nltk.translate.chrf_score",
@@ -1316,129 +1445,40 @@
   "nltk.translate.ribes_score",
   "nltk.translate.stack_decoder",
   "nltk.tree.tree",
+  "nltk.twitter",
+  "nltk.twitter.api",
+  "nltk.twitter.common",
   "nltk.util",
-  "nltk.wsd",
-  "nltk.corpus",
-  "nltk.corpus.europarl_raw",
-  "nltk.corpus.reader",
-  "nltk.corpus.reader.aligned",
-  "nltk.corpus.reader.api",
-  "nltk.corpus.reader.bcp47",
-  "nltk.corpus.reader.bnc",
-  "nltk.corpus.reader.bracket_parse",
-  "nltk.corpus.reader.categorized_sents",
-  "nltk.corpus.reader.childes",
-  "nltk.corpus.reader.chunked",
-  "nltk.corpus.reader.cmudict",
-  "nltk.corpus.reader.comparative_sents",
-  "nltk.corpus.reader.conll",
-  "nltk.corpus.reader.crubadan",
-  "nltk.corpus.reader.dependency",
-  "nltk.corpus.reader.framenet",
-  "nltk.corpus.reader.ieer",
-  "nltk.corpus.reader.indian",
-  "nltk.corpus.reader.ipipan",
-  "nltk.corpus.reader.knbc",
-  "nltk.corpus.reader.lin",
-  "nltk.corpus.reader.markdown",
-  "nltk.corpus.reader.mte",
-  "nltk.corpus.reader.nkjp",
-  "nltk.corpus.reader.nombank",
-  "nltk.corpus.reader.nps_chat",
-  "nltk.corpus.reader.opinion_lexicon",
-  "nltk.corpus.reader.panlex_lite",
-  "nltk.corpus.reader.pl196x",
-  "nltk.corpus.reader.plaintext",
-  "nltk.corpus.reader.ppattach",
-  "nltk.corpus.reader.propbank",
-  "nltk.corpus.reader.pros_cons",
-  "nltk.corpus.reader.reviews",
-  "nltk.corpus.reader.rte",
-  "nltk.corpus.reader.semcor",
-  "nltk.corpus.reader.senseval",
-  "nltk.corpus.reader.sentiwordnet",
-  "nltk.corpus.reader.sinica_treebank",
-  "nltk.corpus.reader.string_category",
-  "nltk.corpus.reader.switchboard",
-  "nltk.corpus.reader.tagged",
-  "nltk.corpus.reader.timit",
-  "nltk.corpus.reader.toolbox",
-  "nltk.corpus.reader.twitter",
-  "nltk.corpus.reader.udhr",
-  "nltk.corpus.reader.util",
-  "nltk.corpus.reader.verbnet",
-  "nltk.corpus.reader.wordlist",
-  "nltk.corpus.reader.xmldocs",
-  "nltk.corpus.reader.ycoe",
-  "nltk.corpus.util",
-  "nltk.pathsec",
-  "nltk.data",
-  "nltk.internals"
+  "nltk.wsd"
  ],
  "excludedModules": [
   {
    "prefix": "nltk.app",
-   "reason": "Desktop GUI and demos are not supported algorithms; exported throwing shims do not change this."
+   "reason": "Tk/GUI demo applications (chartparser, chunkparser, concordance, nemo, wordnet, etc.) are interactive desktop surfaces outside the headless compatibility scope."
   },
   {
    "prefix": "nltk.draw",
-   "reason": "Tk drawing/UI is outside the selected headless compatibility scope."
+   "reason": "Tk drawing widgets and plotting helpers (TreeWidget, dispersion_plot, draw_trees) are GUI-bound and excluded."
   },
   {
-   "prefix": "nltk.chat",
-   "reason": "Conversation demos and namespace members have not received a behavioral review."
+   "prefix": "nltk.test",
+   "reason": "NLTK's own doctest/unit harness is a test-runner scope, not an algorithm surface."
   },
   {
-   "prefix": "nltk.twitter",
-   "reason": "Network integrations and demos have not received an integration review."
+   "prefix": "nltk.twitter.util",
+   "reason": "Requires the twython client library, which is not installed even in the pinned oracle environment."
   },
   {
-   "prefix": "nltk.corpus",
-   "reason": "Except the explicitly selected WordNet reader: data lazy loaders and other reader formats need per-reader/data inventory."
+   "prefix": "nltk.twitter.twitter_demo",
+   "reason": "Interactive Twitter demo requiring twython + live credentials."
   },
   {
-   "prefix": "nltk.parse",
-   "reason": "Except chart: Earley, feature/dependency, external parsers and generation require separate member/signature review."
-  },
-  {
-   "prefix": "nltk.tag",
-   "reason": "Except sequential/perceptron: Brill, HMM, TnT, CRF and external taggers require separate review."
-  },
-  {
-   "prefix": "nltk.stem",
-   "reason": "Except selected common stemmers: language-specific standalone stemmers need rule and fixture review."
-  },
-  {
-   "prefix": "nltk.translate",
-   "reason": "Except BLEU/ChrF/NIST: IBM1-5, alignment, METEOR, RIBES, LEPOR and decoder members need separate review."
-  },
-  {
-   "prefix": "nltk.sem",
-   "reason": "Logic/DRT/glue/semantic integrations require their own signatures and differential evidence audit."
-  },
-  {
-   "prefix": "nltk.inference",
-   "reason": "Provers and external prover integrations need per-engine evidence audit."
-  },
-  {
-   "prefix": "nltk.ccg",
-   "reason": "CCG types, combinators and chart parser need per-member audit."
-  },
-  {
-   "prefix": "nltk.cluster",
-   "reason": "KMeans/EM/GAAC need algorithm and numerical fixture audit."
-  },
-  {
-   "prefix": "nltk.tbl",
-   "reason": "Brill rule/template training needs per-member audit."
-  },
-  {
-   "prefix": "nltk.misc",
-   "reason": "Misc demos/algorithms are not in the selected compatibility contract."
+   "prefix": "nltk.twitter.twitterclient",
+   "reason": "Live Twitter streaming client (twython-bound)."
   },
   {
    "prefix": "*",
-   "reason": "All other modules, NLTK root reexports, constants/imported third-party helpers, type-only Bun exports, nested Bun namespaces and Python dunder protocols are explicitly outside this release inventory. Selected module public names still list attribute exclusions. No whole-NLTK coverage percentage is computed."
+   "reason": "Catch-all for NLTK surfaces not in the reviewed modules list: remaining GUI, external-dependency (twython/matplotlib), interactive, or unreviewed submodules are excluded by default."
   }
  ],
  "dataResources": [
@@ -2278,6 +2318,17 @@
    "anchor": "assert nltk.__version__ == \"3.10.3\"",
    "scope": "Corpus data layer: SeekableUnicodeStreamReader offsets, plaintext/tagged/dependency/wordlist/cmudict/bracket/chunked readers on synthetic corpora, aligned IndexError quirk, pathsec ENFORCE.",
    "oracleVersion": "3.10.3"
+  },
+  {
+   "id": "excluded-modules-closure",
+   "kind": "differential",
+   "files": [
+    "test/excluded_modules.test.ts",
+    "test/excluded_modules_oracle.py"
+   ],
+   "anchor": "excluded modules vs NLTK 3.10.3 oracle",
+   "oracleVersion": "3.10.3",
+   "scope": "Chat.respond/converse substitution, ToolboxData/Settings parse+serialize, toolbox tree helpers, twitter json2csv(_entities), downloader Package/Collection fromxml + md5/sha256, compat py3_data passthrough."
   }
  ],
  "signatureBindings": [
@@ -93484,6 +93535,2043 @@
     ]
    },
    "notes": "Port of nltk.internals.validate_path (nltk.data/pathsec layer)."
+  },
+  {
+   "target": "nltk.chat.util.Chat",
+   "exports": [
+    "Chat"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/chat.ts",
+     "anchor": "export class Chat"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "converse",
+     "respond"
+    ],
+    "gaps": [
+     "converse() takes an injectable input source instead of reading stdin via input(); a Python EOF is modelled by returning undefined."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Random response selection is pinned only where single-response patterns make it deterministic."
+    ]
+   },
+   "notes": "Real port of nltk.chat.util.Chat incl. reflections substitution, %N wildcards and ?. punctuation fix."
+  },
+  {
+   "target": "nltk.chat.chatbots",
+   "exports": [
+    "chatbots"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export function chatbots"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Interactive bot-selection menu; the Chat engine itself is ported."
+  },
+  {
+   "target": "nltk.chat.eliza.eliza_chat",
+   "exports": [
+    "eliza_chat"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/chat.ts",
+     "anchor": "export function eliza_chat"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Prints the same banner then calls Chat.converse with an injectable input source (adapted signature)."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Banner text is approximated; converse loop behaviour pinned via Chat tests."
+    ]
+   },
+   "notes": "Port of nltk.chat.eliza.eliza_chat: banner + Chat(eliza_pairs, reflections).converse()."
+  },
+  {
+   "target": "nltk.chat.eliza.demo",
+   "exports": [
+    "chat_demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export function chat_demo"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Module __main__ demo wrapper around the interactive chat function."
+  },
+  {
+   "target": "nltk.chat.iesha.iesha_chat",
+   "exports": [
+    "iesha_chat"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/chat.ts",
+     "anchor": "export function iesha_chat"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Prints the same banner then calls Chat.converse with an injectable input source (adapted signature)."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Banner text is approximated; converse loop behaviour pinned via Chat tests."
+    ]
+   },
+   "notes": "Port of nltk.chat.iesha.iesha_chat: banner + Chat(iesha_pairs, reflections).converse()."
+  },
+  {
+   "target": "nltk.chat.iesha.demo",
+   "exports": [
+    "chat_demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export function chat_demo"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Module __main__ demo wrapper around the interactive chat function."
+  },
+  {
+   "target": "nltk.chat.rude.rude_chat",
+   "exports": [
+    "rude_chat"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/chat.ts",
+     "anchor": "export function rude_chat"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Prints the same banner then calls Chat.converse with an injectable input source (adapted signature)."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Banner text is approximated; converse loop behaviour pinned via Chat tests."
+    ]
+   },
+   "notes": "Port of nltk.chat.rude.rude_chat: banner + Chat(rude_pairs, reflections).converse()."
+  },
+  {
+   "target": "nltk.chat.rude.demo",
+   "exports": [
+    "chat_demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export function chat_demo"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Module __main__ demo wrapper around the interactive chat function."
+  },
+  {
+   "target": "nltk.chat.suntsu.suntsu_chat",
+   "exports": [
+    "suntsu_chat"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/chat.ts",
+     "anchor": "export function suntsu_chat"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Prints the same banner then calls Chat.converse with an injectable input source (adapted signature)."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Banner text is approximated; converse loop behaviour pinned via Chat tests."
+    ]
+   },
+   "notes": "Port of nltk.chat.suntsu.suntsu_chat: banner + Chat(suntsu_pairs, reflections).converse()."
+  },
+  {
+   "target": "nltk.chat.suntsu.demo",
+   "exports": [
+    "chat_demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export function chat_demo"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Module __main__ demo wrapper around the interactive chat function."
+  },
+  {
+   "target": "nltk.chat.zen.zen_chat",
+   "exports": [
+    "zen_chat"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/chat.ts",
+     "anchor": "export function zen_chat"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Prints the same banner then calls Chat.converse with an injectable input source (adapted signature)."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Banner text is approximated; converse loop behaviour pinned via Chat tests."
+    ]
+   },
+   "notes": "Port of nltk.chat.zen.zen_chat: banner + Chat(zen_pairs, reflections).converse()."
+  },
+  {
+   "target": "nltk.chat.zen.demo",
+   "exports": [
+    "chat_demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export function chat_demo"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Module __main__ demo wrapper around the interactive chat function."
+  },
+  {
+   "target": "nltk.toolbox.StandardFormat",
+   "exports": [
+    "StandardFormat"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/toolbox.ts",
+     "anchor": "export class StandardFormat"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "close",
+     "fields",
+     "open",
+     "open_string",
+     "raw_fields"
+    ],
+    "gaps": [
+     "open() resolves through PathPointer/pathsec instead of arbitrary paths; fields()/raw_fields() are generators."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "BOM/marker splitting pinned through ToolboxData.parse round-trip."
+    ]
+   },
+   "notes": "Sequential SFM reader with NLTK's marker/value state machine."
+  },
+  {
+   "target": "nltk.toolbox.ToolboxData",
+   "exports": [
+    "ToolboxData"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/toolbox.ts",
+     "anchor": "export class ToolboxData"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "close",
+     "fields",
+     "open",
+     "open_string",
+     "parse",
+     "raw_fields"
+    ],
+    "gaps": [
+     "Returns ToolboxElement (ordered tag/text/children) instead of ElementTree; _chunk_parse delegates to regexpChunkParse."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Record parse, key detection and to_sfm_string pinned."
+    ]
+   },
+   "notes": "Flat-record toolbox database parser."
+  },
+  {
+   "target": "nltk.toolbox.ToolboxSettings",
+   "exports": [
+    "ToolboxSettings"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/toolbox.ts",
+     "anchor": "export class ToolboxSettings"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "close",
+     "fields",
+     "open",
+     "open_string",
+     "parse",
+     "raw_fields"
+    ],
+    "gaps": [
+     "Returns ToolboxElement instead of ElementTree."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Nested +/- block parsing and to_settings_string pinned."
+    ]
+   },
+   "notes": "Nested settings-file parser."
+  },
+  {
+   "target": "nltk.toolbox.add_blank_lines",
+   "exports": [
+    "add_blank_lines"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/toolbox.ts",
+     "anchor": "export function add_blank_lines"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Operates on ToolboxElement trees instead of ElementTree."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "getiterator ordering pinned indirectly via sibling helpers."
+    ]
+   },
+   "notes": "Port of nltk.toolbox.add_blank_lines."
+  },
+  {
+   "target": "nltk.toolbox.add_default_fields",
+   "exports": [
+    "add_default_fields"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/toolbox.ts",
+     "anchor": "export function add_default_fields"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Operates on ToolboxElement trees instead of ElementTree."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Encoding/unicode_fields byte-path is collapsed to text since JS strings are already decoded."
+    ]
+   },
+   "notes": "Port of nltk.toolbox.add_default_fields."
+  },
+  {
+   "target": "nltk.toolbox.remove_blanks",
+   "exports": [
+    "remove_blanks"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/toolbox.ts",
+     "anchor": "export function remove_blanks"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Operates on ToolboxElement trees instead of ElementTree."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Encoding/unicode_fields byte-path is collapsed to text since JS strings are already decoded."
+    ]
+   },
+   "notes": "Port of nltk.toolbox.remove_blanks."
+  },
+  {
+   "target": "nltk.toolbox.sort_fields",
+   "exports": [
+    "sort_fields"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/toolbox.ts",
+     "anchor": "export function sort_fields"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Operates on ToolboxElement trees instead of ElementTree."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Encoding/unicode_fields byte-path is collapsed to text since JS strings are already decoded."
+    ]
+   },
+   "notes": "Port of nltk.toolbox.sort_fields."
+  },
+  {
+   "target": "nltk.toolbox.to_settings_string",
+   "exports": [
+    "to_settings_string"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/toolbox.ts",
+     "anchor": "export function to_settings_string"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Operates on ToolboxElement trees instead of ElementTree."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Encoding/unicode_fields byte-path is collapsed to text since JS strings are already decoded."
+    ]
+   },
+   "notes": "Port of nltk.toolbox.to_settings_string."
+  },
+  {
+   "target": "nltk.toolbox.to_sfm_string",
+   "exports": [
+    "to_sfm_string"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/toolbox.ts",
+     "anchor": "export function to_sfm_string"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Operates on ToolboxElement trees instead of ElementTree."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Encoding/unicode_fields byte-path is collapsed to text since JS strings are already decoded."
+    ]
+   },
+   "notes": "Port of nltk.toolbox.to_sfm_string."
+  },
+  {
+   "target": "nltk.toolbox.demo",
+   "exports": [
+    "toolbox_demo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export function toolbox_demo"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Interactive demo over the rotokas.dic corpus resource."
+  },
+  {
+   "target": "nltk.toolbox.pathsec_open",
+   "exports": [
+    "pathsec_open"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/pathsec.ts",
+     "anchor": "export function pathsec_open"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Returns raw bytes instead of a text-mode file object; callers decode."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Secured open shared with nltk.pathsec.open coverage."
+    ]
+   },
+   "notes": "Re-export of nltk.pathsec.open used by toolbox readers."
+  },
+  {
+   "target": "nltk.downloader.Package",
+   "exports": [
+    "Package"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class Package"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromxml"
+    ],
+    "gaps": [
+     "Keyword constructor object instead of **kw positional form."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "fromxml attrs, filename derivation and id/subdir validation pinned."
+    ]
+   },
+   "notes": "Index-entry value object."
+  },
+  {
+   "target": "nltk.downloader.Collection",
+   "exports": [
+    "Collection"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class Collection"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromxml"
+    ],
+    "gaps": [
+     "Keyword constructor object instead of **kw positional form."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "fromxml item refs pinned."
+    ]
+   },
+   "notes": "Collection index-entry value object."
+  },
+  {
+   "target": "nltk.downloader.DownloaderMessage",
+   "exports": [
+    "DownloaderMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class DownloaderMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.DownloaderMessage message object."
+  },
+  {
+   "target": "nltk.downloader.StartCollectionMessage",
+   "exports": [
+    "StartCollectionMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class StartCollectionMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.StartCollectionMessage message object."
+  },
+  {
+   "target": "nltk.downloader.FinishCollectionMessage",
+   "exports": [
+    "FinishCollectionMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class FinishCollectionMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.FinishCollectionMessage message object."
+  },
+  {
+   "target": "nltk.downloader.StartPackageMessage",
+   "exports": [
+    "StartPackageMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class StartPackageMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.StartPackageMessage message object."
+  },
+  {
+   "target": "nltk.downloader.FinishPackageMessage",
+   "exports": [
+    "FinishPackageMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class FinishPackageMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.FinishPackageMessage message object."
+  },
+  {
+   "target": "nltk.downloader.StartDownloadMessage",
+   "exports": [
+    "StartDownloadMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class StartDownloadMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.StartDownloadMessage message object."
+  },
+  {
+   "target": "nltk.downloader.FinishDownloadMessage",
+   "exports": [
+    "FinishDownloadMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class FinishDownloadMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.FinishDownloadMessage message object."
+  },
+  {
+   "target": "nltk.downloader.StartUnzipMessage",
+   "exports": [
+    "StartUnzipMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class StartUnzipMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.StartUnzipMessage message object."
+  },
+  {
+   "target": "nltk.downloader.FinishUnzipMessage",
+   "exports": [
+    "FinishUnzipMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class FinishUnzipMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.FinishUnzipMessage message object."
+  },
+  {
+   "target": "nltk.downloader.UpToDateMessage",
+   "exports": [
+    "UpToDateMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class UpToDateMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.UpToDateMessage message object."
+  },
+  {
+   "target": "nltk.downloader.StaleMessage",
+   "exports": [
+    "StaleMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class StaleMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.StaleMessage message object."
+  },
+  {
+   "target": "nltk.downloader.ErrorMessage",
+   "exports": [
+    "DownloaderErrorMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class ErrorMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.ErrorMessage message object."
+  },
+  {
+   "target": "nltk.downloader.ProgressMessage",
+   "exports": [
+    "DownloaderProgressMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class ProgressMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.ProgressMessage message object."
+  },
+  {
+   "target": "nltk.downloader.SelectDownloadDirMessage",
+   "exports": [
+    "SelectDownloadDirMessage"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class SelectDownloadDirMessage"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Plain attribute-holder; the incr_download producer side is unsupported."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Attribute shapes mirror the NLTK messages."
+    ]
+   },
+   "notes": "Port of nltk.downloader.SelectDownloadDirMessage message object."
+  },
+  {
+   "target": "nltk.downloader.Downloader",
+   "exports": [
+    "Downloader"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class Downloader"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Requires the NLTK data server over the network / interactive UI."
+  },
+  {
+   "target": "nltk.downloader.DownloaderGUI",
+   "exports": [
+    "DownloaderGUI"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class DownloaderGUI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Requires the NLTK data server over the network / interactive UI."
+  },
+  {
+   "target": "nltk.downloader.DownloaderShell",
+   "exports": [
+    "DownloaderShell"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export class DownloaderShell"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Requires the NLTK data server over the network / interactive UI."
+  },
+  {
+   "target": "nltk.downloader.download",
+   "exports": [
+    "downloader_download"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export function download"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Network/interactive entry point."
+  },
+  {
+   "target": "nltk.downloader.download_gui",
+   "exports": [
+    "download_gui"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export function download_gui"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Network/interactive entry point."
+  },
+  {
+   "target": "nltk.downloader.download_shell",
+   "exports": [
+    "download_shell"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export function download_shell"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Network/interactive entry point."
+  },
+  {
+   "target": "nltk.downloader.update",
+   "exports": [
+    "downloader_update"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export function update"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Network/interactive entry point."
+  },
+  {
+   "target": "nltk.downloader.build_index",
+   "exports": [
+    "build_index"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export function build_index"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Network/interactive entry point."
+  },
+  {
+   "target": "nltk.downloader.md5_hexdigest",
+   "exports": [
+    "md5_hexdigest"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export function md5_hexdigest"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Accepts path/Uint8Array instead of an open file object."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Digest pinned against oracle file."
+    ]
+   },
+   "notes": "MD5 over file bytes."
+  },
+  {
+   "target": "nltk.downloader.sha256_hexdigest",
+   "exports": [
+    "sha256_hexdigest"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export function sha256_hexdigest"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Accepts path/Uint8Array instead of an open file object."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Digest pinned against oracle file."
+    ]
+   },
+   "notes": "SHA-256 over file bytes."
+  },
+  {
+   "target": "nltk.downloader.unzip",
+   "exports": [
+    "downloader_unzip"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/downloader.ts",
+     "anchor": "export function unzip"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Uses the bundled central-directory zip reader; exported as downloader_unzip to avoid clashing with the generic helper."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Extraction semantics mirror zipfile.extractall for regular members."
+    ]
+   },
+   "notes": "Port of nltk.downloader.unzip."
+  },
+  {
+   "target": "nltk.downloader.pathsec_open",
+   "exports": [
+    "pathsec_open"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/pathsec.ts",
+     "anchor": "export function pathsec_open"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Returns raw bytes instead of a text-mode file object."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Shared with nltk.pathsec.open coverage."
+    ]
+   },
+   "notes": "Re-export of nltk.pathsec.open."
+  },
+  {
+   "target": "nltk.downloader.safe_parse",
+   "exports": [
+    "safe_parse"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/corpus_gaps.ts",
+     "anchor": "export class safe_parse"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "defusedxml-backed XML parser; the downloader uses it for index.xml parsing."
+  },
+  {
+   "target": "nltk.twitter.common.extract_fields",
+   "exports": [
+    "extract_fields"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/twitter_common.ts",
+     "anchor": "export function extract_fields"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Operates on parsed JS objects rather than raw JSON text."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned vs oracle incl. csv quoting, entity recursion and composed keys."
+    ]
+   },
+   "notes": "Port of nltk.twitter.common.extract_fields."
+  },
+  {
+   "target": "nltk.twitter.common.get_header_field_list",
+   "exports": [
+    "get_header_field_list"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/twitter_common.ts",
+     "anchor": "export function get_header_field_list"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Operates on parsed JS objects rather than raw JSON text."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned vs oracle incl. csv quoting, entity recursion and composed keys."
+    ]
+   },
+   "notes": "Port of nltk.twitter.common.get_header_field_list."
+  },
+  {
+   "target": "nltk.twitter.common.json2csv",
+   "exports": [
+    "json2csv"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/twitter_common.ts",
+     "anchor": "export function json2csv"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Outfile path only; file-like objects and encoding-error policies beyond utf-8 are not modelled."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned vs oracle incl. csv quoting, entity recursion and composed keys."
+    ]
+   },
+   "notes": "Port of nltk.twitter.common.json2csv."
+  },
+  {
+   "target": "nltk.twitter.common.json2csv_entities",
+   "exports": [
+    "json2csv_entities"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/twitter_common.ts",
+     "anchor": "export function json2csv_entities"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Outfile path only; file-like objects and encoding-error policies beyond utf-8 are not modelled."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Pinned vs oracle incl. csv quoting, entity recursion and composed keys."
+    ]
+   },
+   "notes": "Port of nltk.twitter.common.json2csv_entities."
+  },
+  {
+   "target": "nltk.twitter.common.outf_writer_compat",
+   "exports": [
+    "outf_writer_compat"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export function outf_writer_compat"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Deprecated open()+csv.writer compatibility shim."
+  },
+  {
+   "target": "nltk.twitter.api.TweetHandlerI",
+   "exports": [
+    "TweetHandlerI"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export class TweetHandlerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Twisted/reactor line receiver; network-bound."
+  },
+  {
+   "target": "nltk.twitter.api.BasicTweetHandler",
+   "exports": [
+    "BasicTweetHandler"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export class BasicTweetHandler"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Twisted/reactor line receiver; network-bound."
+  },
+  {
+   "target": "nltk.twitter.api.LocalTimezoneOffsetWithUTC",
+   "exports": [
+    "LocalTimezoneOffsetWithUTC"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export class LocalTimezoneOffsetWithUTC"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Twisted/reactor line receiver; network-bound."
+  },
+  {
+   "target": "nltk.compat.add_py3_data",
+   "exports": [
+    "add_py3_data"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/compat_port.ts",
+     "anchor": "export function add_py3_data"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "_PY3_DATA_UPDATES is empty in NLTK 3.10.3, so this is an identity function upstream too."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Passthrough pinned."
+    ]
+   },
+   "notes": "Port of nltk.compat.add_py3_data."
+  },
+  {
+   "target": "nltk.compat.py3_data",
+   "exports": [
+    "py3_data"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/compat_port.ts",
+     "anchor": "export function py3_data"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "JS decorator wraps the second positional arg through add_py3_data like the Python original."
+    ]
+   },
+   "evidence": [
+    "excluded-modules-closure"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Passthrough pinned."
+    ]
+   },
+   "notes": "Port of nltk.compat.py3_data."
+  },
+  {
+   "target": "nltk.decorators.decorator",
+   "exports": [
+    "decorator"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/sem_gaps.ts",
+     "anchor": "export function decorator"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Signature-preserving decorator machinery is Python-introspection bound."
+  },
+  {
+   "target": "nltk.decorators.getinfo",
+   "exports": [
+    "getinfo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export function getinfo"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Signature-preserving decorator machinery is Python-introspection bound."
+  },
+  {
+   "target": "nltk.decorators.new_wrapper",
+   "exports": [
+    "new_wrapper"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export function new_wrapper"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Signature-preserving decorator machinery is Python-introspection bound."
+  },
+  {
+   "target": "nltk.huggingface.dataset.HFDatasetPathPointer",
+   "exports": [
+    "HFDatasetPathPointer"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export class HFDatasetPathPointer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Reads from the huggingface_hub datasets cache; requires the hub client + network."
+  },
+  {
+   "target": "nltk.huggingface.dataset.download",
+   "exports": [
+    "hf_download"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export function hf_download"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Populates the HF datasets cache over the network."
+  },
+  {
+   "target": "nltk.huggingface.dataset.load_data",
+   "exports": [
+    "hf_load_data"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/misc_gaps.ts",
+     "anchor": "export function hf_load_data"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope for this runtime."
+    ]
+   },
+   "notes": "Loads rows from a HF dataset; requires huggingface_hub."
   }
  ]
 }
