@@ -155,7 +155,11 @@
    "KneserNey": "src/lm_nltk.ts",
    "Vocabulary": "src/lm_nltk.ts",
    "NgramCounter": "src/lm_nltk.ts",
-   "ConditionalFreqDist": "src/freqdist.ts"
+   "ConditionalFreqDist": "src/freqdist.ts",
+   "Synset": "src/wordnet_objects.ts",
+   "Lemma": "src/wordnet_objects.ts",
+   "WordNetReader": "src/wordnet_objects.ts",
+   "wordnetReader": "src/wordnet_objects.ts"
   }
  },
  "modules": [
@@ -797,6 +801,17 @@
    "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.lm LanguageModel/Vocabulary/NgramCounter",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: MLE/Lidstone/Laplace/StupidBackoff/WittenBellInterpolated/AbsoluteDiscountingInterpolated/KneserNeyInterpolated score+perplexity matrix, generate via Python-compatible MT19937 (seed=3), context backoff/trimming, math domain error, Vocabulary cutoff/membership/lookup/update/str, NgramCounter orders/N/indexing/tuple validation."
+  },
+  {
+   "id": "wordnet-objects-differential",
+   "kind": "differential",
+   "files": [
+    "test/wordnet_objects.test.ts",
+    "test/wordnet_objects_oracle.py"
+   ],
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.corpus.wordnet Synset/Lemma object model",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: Synset name/pos/offset/lexname/definition/examples/lemma_names, Lemma name/key/repr/antonyms/lang, hypernym/hyponym relations, index.<pos> sense numbering, hypernym_paths, root_hypernyms, lowest_common_hypernyms, common_hypernyms membership, hypernym_distances, max/min_depth, shortest_path_distance, path/wup/lch similarity. Requires the packed wordnet artifact (senseNums + original lemma/pointer order)."
   }
  ],
  "signatureBindings": [
@@ -2482,11 +2497,19 @@
    "target": "nltk.corpus.reader.wordnet.WordNetCorpusReader",
    "exports": [
     "WordNet",
-    "loadWordNet"
+    "loadWordNet",
+    "WordNetReader",
+    "wordnetReader",
+    "Synset",
+    "Lemma"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
+    {
+     "file": "src/wordnet_objects.ts",
+     "anchor": "export class WordNetReader"
+    },
     {
      "file": "src/wordnet.ts",
      "anchor": "export class WordNet"
@@ -2497,25 +2520,38 @@
     }
    ],
    "signatures": {
-    "status": "missing",
-    "members": [],
+    "status": "adapted",
+    "members": [
+     "synset",
+     "synsets",
+     "lemmas",
+     "all_synsets",
+     "all_lemma_names",
+     "morphy"
+    ],
     "gaps": [
-     "Project payload constructor/loaders and synset records are not NLTK reader/Synset/Lemma objects."
+     "Reader surface is a subset: lemma_from_key resolves via key matching without full sense-key lex_id; ic()/custom lazy loaders absent.",
+     "Synset covers hypernym/hyponym/similar_tos/antonym relations from the packed payload; meronym/holonym/entailment/domain/verb_group/attribute/frame pointers are not packed (data-blocked; methods return empty).",
+     "common_hypernyms ordering is BFS distance order rather than Python set iteration order.",
+     "IC-based res/jcn/lin similarities raise (wordnet_ic corpus not provisioned)."
     ]
    },
    "evidence": [
+    "wordnet-objects-differential",
+    "wordnet-morphy-differential",
     "wordnet-unit"
    ],
    "fixtures": {
-    "status": "blocked-data",
+    "status": "pinned-differential",
     "resources": [
      "corpora/wordnet"
     ],
     "gaps": [
-     "Official corpus unavailable; same-project-payload Python baseline is not NLTK behavioral parity."
+     "Meronym/holonym/domain/entailment/verb-group pointers are absent from the packed payload; repack needed to exercise those methods.",
+     "IC similarity requires nltk.corpus.wordnet_ic which is not provisioned."
     ]
    },
-   "notes": "TS/native hybrid; full native pack dispatch exists but data/schema/API differ."
+   "notes": "Object-model layer (WordNetReader/Synset/Lemma) over the packed artifact; index.<pos> sense numbers and original lemma order are packed for name/repr/order parity."
   },
   {
    "target": "nltk.wsd.lesk",
@@ -5012,6 +5048,154 @@
     ]
    },
    "notes": "defaultdict(ConditionalFreqDist) per order; unigrams alias; CVE-2026-12928 bound."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.Synset",
+   "exports": [
+    "Synset"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/wordnet_objects.ts",
+     "anchor": "export class Synset"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "name",
+     "pos",
+     "offset",
+     "lexname",
+     "definition",
+     "examples",
+     "lemma_names",
+     "lemmas",
+     "hypernyms",
+     "hyponyms",
+     "similar_tos",
+     "closure",
+     "hypernym_paths",
+     "root_hypernyms",
+     "common_hypernyms",
+     "lowest_common_hypernyms",
+     "hypernym_distances",
+     "max_depth",
+     "min_depth",
+     "shortest_path_distance",
+     "tree",
+     "path_similarity",
+     "lch_similarity",
+     "wup_similarity",
+     "res_similarity",
+     "jcn_similarity",
+     "lin_similarity",
+     "member_holonyms",
+     "member_meronyms",
+     "part_holonyms",
+     "part_meronyms",
+     "substance_holonyms",
+     "substance_meronyms",
+     "topic_domains",
+     "usage_domains",
+     "region_domains",
+     "in_topic_domains",
+     "in_usage_domains",
+     "in_region_domains",
+     "also_sees",
+     "verb_groups",
+     "attributes",
+     "entailments",
+     "causes",
+     "frame_ids",
+     "instance_hypernyms",
+     "instance_hyponyms",
+     "mst",
+     "acyclic_tree"
+    ],
+    "gaps": [
+     "Meronym/holonym/domain/entailment/verb_group/attribute/frame/instance relations return empty \u2014 not carried in the packed payload.",
+     "res/jcn/lin_similarity raise pending IC data.",
+     "common_hypernyms ordering is BFS rather than Python set order."
+    ]
+   },
+   "evidence": [
+    "wordnet-objects-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Packed-pointer relations only; unprovisioned pointer sets need a repack."
+    ]
+   },
+   "notes": "NLTK method surface over packed rows; identity/hash/order by synset name."
+  },
+  {
+   "target": "nltk.corpus.reader.wordnet.Lemma",
+   "exports": [
+    "Lemma"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/wordnet_objects.ts",
+     "anchor": "export class Lemma"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "name",
+     "synset",
+     "key",
+     "lang",
+     "antonyms",
+     "count",
+     "syntactic_marker",
+     "frame_ids",
+     "frame_strings",
+     "derivationally_related_forms",
+     "pertainyms",
+     "hypernyms",
+     "hyponyms",
+     "member_holonyms",
+     "member_meronyms",
+     "part_holonyms",
+     "part_meronyms",
+     "substance_holonyms",
+     "substance_meronyms",
+     "topic_domains",
+     "usage_domains",
+     "region_domains",
+     "in_topic_domains",
+     "in_usage_domains",
+     "in_region_domains",
+     "similar_tos",
+     "also_sees",
+     "verb_groups",
+     "attributes",
+     "entailments",
+     "causes",
+     "instance_hypernyms",
+     "instance_hyponyms"
+    ],
+    "gaps": [
+     "count/syntactic_marker/lex_id are defaults (0/null); pertainyms and derivationally_related_forms need lemma-level pointers absent from the payload; synset-delegated relations share the Synset gaps."
+    ]
+   },
+   "evidence": [
+    "wordnet-objects-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Lemma-level pointer relations (pertainyms/DRF/counts) need an extended pack."
+    ]
+   },
+   "notes": "Lemma objects with synset-delegated relations; sense key uses lexfile number with lex_id 00."
   }
  ]
 }

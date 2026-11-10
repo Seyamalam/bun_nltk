@@ -47,6 +47,7 @@ export type WordNetSynset = {
   id: string;
   pos: WordNetPos;
   lemmas: string[];
+  senseNums?: number[];
   gloss: string;
   examples: string[];
   hypernyms: string[];
@@ -110,6 +111,7 @@ export class WordNet {
         id: row.id,
         pos: row.pos,
         lemmas: row.lemmas.map((lemma) => normalizeLemma(lemma)),
+        senseNums: row.senseNums ?? row.lemmas.map(() => 0),
         gloss: row.gloss,
         examples: [...row.examples],
         hypernyms: [...row.hypernyms],
@@ -169,6 +171,11 @@ export class WordNet {
       const root = this.morphy(query.word, query.pos) ?? normalizeLemma(query.word);
       return { ...query, root, synsets: this.synsets(root, query.pos) };
     });
+  }
+
+  /** Per-lemma index.<pos> sense numbers; empty when the payload predates senseNums. */
+  senseNumsFor(row: WordNetSynset): number[] {
+    return row.senseNums ?? [];
   }
 
   lemmaNames(idOrSynset: string | WordNetSynset): string[] {
@@ -390,10 +397,35 @@ export class WordNet {
 class NativeBackedWordNet extends WordNet {
   readonly #native: NativeWordNetHandle;
   readonly #lemmaSets = new Map<WordNetPos, Set<string>>();
+  readonly #packPath: string;
+  #senseNums: Map<string, number[]> | null = null;
 
   constructor(path: string) {
     super({ version: 1, synsets: [] });
     this.#native = new NativeWordNetHandle(path);
+    this.#packPath = path;
+  }
+
+  override senseNumsFor(row: WordNetSynset): number[] {
+    if (!this.#senseNums) {
+      const table = new Map<string, number[]>();
+      try {
+        const bytes = readFileSync(this.#packPath);
+        const magic = new TextDecoder().decode(bytes.subarray(0, WORDNET_PACK_MAGIC.length));
+        if (magic === WORDNET_PACK_MAGIC) {
+          const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+          const len = view.getUint32(WORDNET_PACK_MAGIC.length, true);
+          const payload = JSON.parse(new TextDecoder().decode(
+            bytes.subarray(WORDNET_PACK_MAGIC.length + 4, WORDNET_PACK_MAGIC.length + 4 + len),
+          )) as WordNetMiniPayload;
+          for (const synset of payload.synsets) {
+            if (synset.senseNums) table.set(synset.id, synset.senseNums);
+          }
+        }
+      } catch { /* side table is best-effort */ }
+      this.#senseNums = table;
+    }
+    return this.#senseNums.get(row.id) ?? [];
   }
 
   override synset(id: string): WordNetSynset | null {

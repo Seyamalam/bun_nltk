@@ -687,3 +687,9 @@ export {
   NgramCounter,
   PythonRandom,
 } from "./src/lm_nltk";
+export {
+  Synset,
+  Lemma,
+  WordNetReader,
+  wordnetReader,
+} from "./src/wordnet_objects";

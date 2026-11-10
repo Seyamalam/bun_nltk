@@ -8,6 +8,7 @@ type SynsetRow = {
   id: string;
   pos: Pos;
   lemmas: string[];
+  senseNums: number[];
   gloss: string;
   examples: string[];
   hypernyms: string[];
@@ -66,15 +67,27 @@ function sortedUnique(values: string[]): string[] {
 
 function canonicalize(payload: WordNetMiniPayload): WordNetMiniPayload {
   const synsets = payload.synsets
-    .map((row) => ({
+    .map((row) => {
+      const seen = new Set<string>();
+      const lemmas: string[] = [];
+      const senseNums: number[] = [];
+      row.lemmas.forEach((lemma, i) => {
+        if (seen.has(lemma)) return;
+        seen.add(lemma);
+        lemmas.push(lemma);
+        senseNums.push(row.senseNums?.[i] ?? 0);
+      });
+      return {
       ...row,
-      lemmas: sortedUnique(row.lemmas),
+      lemmas,
+      senseNums,
       examples: sortedUnique(row.examples),
       hypernyms: sortedUnique(row.hypernyms),
       hyponyms: sortedUnique(row.hyponyms),
       similarTo: sortedUnique(row.similarTo),
       antonyms: sortedUnique(row.antonyms),
-    }))
+      };
+    })
     .sort((a, b) => a.id.localeCompare(b.id));
 
   return {
@@ -91,6 +104,7 @@ function parseWordNetDataFile(path: string, posRaw: string): SynsetRow[] {
     id: string;
     pos: Pos;
     lemmas: string[];
+    senseNums?: number[];
     gloss: string;
     examples: string[];
     pointerTargets: Array<{ symbol: string; target: string }>;
@@ -156,7 +170,8 @@ function parseWordNetDataFile(path: string, posRaw: string): SynsetRow[] {
     return {
       id: row.id,
       pos: row.pos,
-      lemmas: sortedUnique(row.lemmas),
+      lemmas: [...new Set(row.lemmas)],
+      senseNums: row.senseNums ?? row.lemmas.map(() => 0),
       gloss: row.gloss,
       examples: sortedUnique(row.examples),
       hypernyms: sortedUnique(hypernyms),
@@ -167,8 +182,36 @@ function parseWordNetDataFile(path: string, posRaw: string): SynsetRow[] {
   });
 }
 
+function parseIndexFile(path: string, pos: Pos): Map<string, number> {
+  // index.<pos>: lemma pos synset_cnt p_cnt ptrs... sense_cnt tagsense_cnt offset+
+  const out = new Map<string, number>();
+  let text = "";
+  try {
+    text = readFileSync(path, "utf8");
+  } catch {
+    return out;
+  }
+  for (const line of text.split(/\r?\n/)) {
+    if (!line || line.startsWith("  ")) continue;
+    const parts = line.trim().split(/\s+/g);
+    if (parts.length < 7) continue;
+    const lemma = normalizeLemma(parts[0]!);
+    const synsetCnt = Number.parseInt(parts[2]!, 10);
+    const pCnt = Number.parseInt(parts[3]!, 10);
+    if (!Number.isFinite(synsetCnt) || !Number.isFinite(pCnt)) continue;
+    const senseCntIdx = 4 + pCnt;
+    const offsets = parts.slice(senseCntIdx + 2, senseCntIdx + 2 + synsetCnt);
+    offsets.forEach((off, i) => out.set(`${lemma}.${pos}.${off}`, i + 1));
+  }
+  return out;
+}
+
 export function buildFromDictDir(dictDir: string): WordNetMiniPayload {
   const root = resolve(dictDir);
+  const index = new Map<string, number>();
+  for (const [file, pos] of [["index.noun", "n"], ["index.verb", "v"], ["index.adj", "a"], ["index.adv", "r"]] as const) {
+    for (const [k, v] of parseIndexFile(resolve(root, file), pos)) index.set(k, v);
+  }
   const rows = [
     ...parseWordNetDataFile(resolve(root, "data.noun"), "n"),
     ...parseWordNetDataFile(resolve(root, "data.verb"), "v"),
@@ -177,7 +220,10 @@ export function buildFromDictDir(dictDir: string): WordNetMiniPayload {
   ];
   return canonicalize({
     version: 1,
-    synsets: rows,
+    synsets: rows.map((row) => ({
+      ...row,
+      senseNums: row.lemmas.map((lemma) => index.get(`${lemma}.${row.pos}.${row.id.split(".")[0]}`) ?? 0),
+    })),
   });
 }
 

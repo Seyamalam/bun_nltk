@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { ConditionalFreqDist, FreqDist } from "../src/freqdist.ts";
 import {
   AbsoluteDiscountingInterpolated,
   KneserNeyInterpolated,
@@ -49,7 +50,7 @@ describe("MLE misc members", () => {
   test("counts / logscore / context trimming", () => {
     expect(m.counts.N()).toBe(11);
     expect(m.counts.unigrams.get("a")).toBe(1);
-    expect([...m.counts.get(2).get(["<s>"]).entries()]).toEqual([["a", 1]]);
+    expect([...(m.counts.get(2) as ConditionalFreqDist<string[], string>).get(["<s>"]).entries()]).toEqual([["a", 1]]);
     expect(m.logscore("a", ["<s>"])).toBe(0);
     expect(m.score("d", ["a", "b", "c", "d"])).toBe(0);
     expect(m.entropy([["<s>", "a"], ["a", "b"]])).toBe(-0);
@@ -102,8 +103,8 @@ describe("NgramCounter", () => {
 
   test("orders, N, indexing, repr", () => {
     expect(nc.N()).toBe(3);
-    expect(nc.get(2).get(["a"]).get("b")).toBe(1);
-    expect(nc.get(1).get("a")).toBe(0);
+    expect((nc.get(2) as ConditionalFreqDist<string[], string>).get(["a"]).get("b")).toBe(1);
+    expect((nc.get(1) as FreqDist<string>).get("a")).toBe(0);
     expect(nc.get("c")).toBe(1);
     expect(nc.get(["a"]).get("b")).toBe(1);
     expect(nc.ngramOrderCount).toBe(2);
