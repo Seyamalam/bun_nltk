@@ -33,6 +33,79 @@ test("WordNetLemmatizer uses morphy behavior", () => {
   expect(l.lemmatize("running", "v")).toBe("run");
 });
 
+// Values below are pinned to Python NLTK 3.10.3 (WordNetLemmatizer + wn._morphy/morphy).
+test("WordNetLemmatizer picks shortest lemma like NLTK", () => {
+  const l = new WordNetLemmatizer();
+  const cases: Array<[string, string, string]> = [
+    ["us", "n", "u"],
+    ["better", "a", "good"],
+    ["dogs", "n", "dog"],
+    ["Dogs", "n", "Dogs"],
+    ["mice", "n", "mouse"],
+    ["churches", "n", "church"],
+    ["aardwolves", "n", "aardwolf"],
+    ["abaci", "n", "abacus"],
+    ["hardrock", "n", "hardrock"],
+    ["catss", "n", "catss"],
+    ["running", "v", "run"],
+    ["went", "v", "go"],
+    ["bought", "v", "buy"],
+    ["geese", "n", "goose"],
+    ["corpora", "n", "corpus"],
+    ["axes", "n", "ax"],
+    ["children", "n", "child"],
+    ["men", "n", "men"],
+    ["teeth", "n", "teeth"],
+    ["worse", "a", "bad"],
+    ["worst", "a", "bad"],
+    ["faster", "a", "fast"],
+    ["best", "a", "best"],
+    ["quickly", "r", "quickly"],
+    ["lives", "v", "live"],
+    ["lives", "n", "life"],
+    ["saw", "v", "saw"],
+    ["saw", "n", "saw"],
+  ];
+  for (const [word, pos, expected] of cases) {
+    expect(l.lemmatize(word, pos)).toBe(expected);
+  }
+});
+
+test("WordNetLemmatizer _morphy returns the full lemma list like NLTK", () => {
+  const l = new WordNetLemmatizer();
+  const cases: Array<[string, string, string[]]> = [
+    ["us", "n", ["us", "u"]],
+    ["better", "a", ["better", "good", "well"]],
+    ["dogs", "n", ["dog"]],
+    ["mice", "n", ["mouse"]],
+    ["went", "v", ["go"]],
+    ["axes", "n", ["ax", "axis"]],
+    ["catss", "n", []],
+    ["Dogs", "n", []],
+    ["lives", "v", ["live"]],
+    ["saw", "n", ["saw"]],
+    ["better", "s", ["better", "good", "well"]],
+    ["worse", "a", ["worse", "bad"]],
+  ];
+  for (const [form, pos, expected] of cases) {
+    expect(l._morphy(form, pos)).toEqual(expected);
+  }
+});
+
+test("WordNetLemmatizer morphy returns first lemma or null like NLTK", () => {
+  const l = new WordNetLemmatizer();
+  expect(l.morphy("us", "n")).toBe("us");
+  expect(l.morphy("dogs")).toBe("dog");
+  expect(l.morphy("book", "a")).toBeNull();
+  expect(l.morphy("catss")).toBeNull();
+  expect(l.morphy("better")).toBe("better");
+  expect(l.morphy("saw", "v")).toBe("saw");
+  expect(l.morphy("lives")).toBe("life");
+  expect(l.morphy("mice", "n", false)).toBeNull();
+  expect(l.morphy("us", "n", false)).toBe("us");
+  expect(l.morphy("went", "v", false)).toBeNull();
+});
+
 // Oracle values below are pinned against Python NLTK 3.10.3.
 
 test("SnowballStemmer ignore_stopwords returns stopwords unstemmed", () => {

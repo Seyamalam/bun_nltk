@@ -1,8 +1,47 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { NativeWordNetHandle, wordnetMorphyAsciiNative } from "./native";
+import { NativeWordNetHandle } from "./native";
+import { WORDNET_EXCEPTIONS } from "./wordnet_exceptions";
 
 export type WordNetPos = "n" | "v" | "a" | "r";
+export type WordNetMorphPos = WordNetPos | "s";
+
+const MORPHOLOGICAL_SUBSTITUTIONS: Record<"n" | "v" | "a" | "r" | "s", Array<readonly [string, string]>> = {
+  n: [
+    ["s", ""],
+    ["ses", "s"],
+    ["ves", "f"],
+    ["xes", "x"],
+    ["zes", "z"],
+    ["ches", "ch"],
+    ["shes", "sh"],
+    ["men", "man"],
+    ["ies", "y"],
+  ],
+  v: [
+    ["s", ""],
+    ["ies", "y"],
+    ["es", "e"],
+    ["es", ""],
+    ["ed", "e"],
+    ["ed", ""],
+    ["ing", "e"],
+    ["ing", ""],
+  ],
+  a: [
+    ["er", ""],
+    ["est", ""],
+    ["er", "e"],
+    ["est", "e"],
+  ],
+  r: [],
+  s: [
+    ["er", ""],
+    ["est", ""],
+    ["er", "e"],
+    ["est", "e"],
+  ],
+};
 
 export type WordNetSynset = {
   id: string;
@@ -44,61 +83,6 @@ function normalizeLemma(lemma: string): string {
 
 function unique<T>(values: T[]): T[] {
   return [...new Set(values)];
-}
-
-function nounMorphCandidates(word: string): string[] {
-  const lower = normalizeLemma(word);
-  const out = [lower];
-  if (lower.endsWith("ies") && lower.length > 3) out.push(`${lower.slice(0, -3)}y`);
-  if (lower.endsWith("ves") && lower.length > 3) out.push(`${lower.slice(0, -3)}f`);
-  if (lower.endsWith("es") && lower.length > 2) out.push(lower.slice(0, -2));
-  if (lower.endsWith("s") && lower.length > 1) out.push(lower.slice(0, -1));
-  return unique(out);
-}
-
-function verbMorphCandidates(word: string): string[] {
-  const lower = normalizeLemma(word);
-  const out = [lower];
-  if (lower.endsWith("ies") && lower.length > 3) out.push(`${lower.slice(0, -3)}y`);
-  if (lower.endsWith("ing") && lower.length > 4) {
-    const stem = lower.slice(0, -3);
-    out.push(stem);
-    out.push(`${stem}e`);
-    if (stem.length >= 2 && stem[stem.length - 1] === stem[stem.length - 2]) {
-      out.push(stem.slice(0, -1));
-    }
-  }
-  if (lower.endsWith("ed") && lower.length > 3) {
-    const stem = lower.slice(0, -2);
-    out.push(stem);
-    out.push(`${lower.slice(0, -1)}`);
-    if (stem.length >= 2 && stem[stem.length - 1] === stem[stem.length - 2]) {
-      out.push(stem.slice(0, -1));
-    }
-  }
-  if (lower.endsWith("s") && lower.length > 1) out.push(lower.slice(0, -1));
-  return unique(out);
-}
-
-function adjectiveMorphCandidates(word: string): string[] {
-  const lower = normalizeLemma(word);
-  const out = [lower];
-  if (lower.endsWith("er") && lower.length > 2) out.push(lower.slice(0, -2));
-  if (lower.endsWith("est") && lower.length > 3) out.push(lower.slice(0, -3));
-  return unique(out);
-}
-
-function morphCandidates(word: string, pos?: WordNetPos): string[] {
-  if (pos === "n") return nounMorphCandidates(word);
-  if (pos === "v") return verbMorphCandidates(word);
-  if (pos === "a") return adjectiveMorphCandidates(word);
-  if (pos === "r") return [normalizeLemma(word)];
-  return unique([
-    ...nounMorphCandidates(word),
-    ...verbMorphCandidates(word),
-    ...adjectiveMorphCandidates(word),
-    normalizeLemma(word),
-  ]);
 }
 
 export class WordNet {
@@ -202,18 +186,36 @@ export class WordNet {
     return out;
   }
 
-  morphy(word: string, pos?: WordNetPos): string | null {
-    const nativeCandidate = wordnetMorphyAsciiNative(word, pos);
-    if (nativeCandidate) {
-      const rows = this.lemmaIndex.get(nativeCandidate);
-      if (rows && rows.length > 0 && (!pos || rows.some((row) => row.pos === pos))) {
-        return nativeCandidate;
-      }
+  protected hasLemma(lemma: string, pos: WordNetPos): boolean {
+    const rows = this.lemmaIndex.get(lemma);
+    return !!rows?.some((row) => row.pos === pos);
+  }
+
+  _morphy(form: string, pos: WordNetMorphPos, checkExceptions = true): string[] {
+    const filterPos = pos === "s" ? "a" : pos;
+    const exceptions = WORDNET_EXCEPTIONS[filterPos] ?? {};
+    const substitutions = MORPHOLOGICAL_SUBSTITUTIONS[pos];
+
+    const forms = checkExceptions && exceptions[form]
+      ? exceptions[form]
+      : substitutions
+          .filter(([old]) => form.endsWith(old))
+          .map(([old, replacement]) => form.slice(0, form.length - old.length) + replacement);
+
+    const result: string[] = [];
+    const seen = new Set<string>();
+    for (const candidate of [form, ...forms]) {
+      if (seen.has(candidate) || !this.hasLemma(candidate, filterPos)) continue;
+      result.push(candidate);
+      seen.add(candidate);
     }
-    for (const candidate of morphCandidates(word, pos)) {
-      const rows = this.lemmaIndex.get(candidate);
-      if (!rows || rows.length === 0) continue;
-      if (!pos || rows.some((row) => row.pos === pos)) return candidate;
+    return result;
+  }
+
+  morphy(form: string, pos?: WordNetMorphPos | null, checkExceptions = true): string | null {
+    for (const candidatePos of pos ? [pos] : (["n", "v", "a", "r"] as const)) {
+      const analyses = this._morphy(form, candidatePos, checkExceptions);
+      if (analyses.length > 0) return analyses[0]!;
     }
     return null;
   }
@@ -387,6 +389,7 @@ export class WordNet {
 
 class NativeBackedWordNet extends WordNet {
   readonly #native: NativeWordNetHandle;
+  readonly #lemmaSets = new Map<WordNetPos, Set<string>>();
 
   constructor(path: string) {
     super({ version: 1, synsets: [] });
@@ -418,8 +421,13 @@ class NativeBackedWordNet extends WordNet {
     return this.#native.query<string[]>({ op: "lemmas", pos });
   }
 
-  override morphy(word: string, pos?: WordNetPos): string | null {
-    return this.#native.query<string | null>({ op: "morphy", word, pos });
+  protected override hasLemma(lemma: string, pos: WordNetPos): boolean {
+    let set = this.#lemmaSets.get(pos);
+    if (!set) {
+      set = new Set(this.lemmas(pos));
+      this.#lemmaSets.set(pos, set);
+    }
+    return set.has(lemma);
   }
 
   override synsetFromPosAndOffset(pos: WordNetPos, offset: string | number): WordNetSynset | null {

@@ -564,6 +564,17 @@
    "scope": "corpusChrF/corpusNist and NIST penalty, Unicode whitespace and orders 0..7; sentenceChrF is a one-pair adapter, not independently called in this differential block."
   },
   {
+   "id": "wordnet-morphy-differential",
+   "kind": "differential",
+   "files": [
+    "test/stemmers.test.ts",
+    "test/wordnet_morphy_oracle.py"
+   ],
+   "anchor": "Values below are pinned to Python NLTK 3.10.3 (WordNetLemmatizer + wn._morphy/morphy).",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: _morphy exception lists + substitution rules + lemma filtering, shortest-lemma lemmatize, first-analysis morphy, check_exceptions, pos='s', no input normalization."
+  },
+  {
    "id": "bleu-differential",
    "kind": "differential",
    "files": [
@@ -1460,7 +1471,7 @@
     "WordNetLemmatizer"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/stemmers.ts",
@@ -1468,31 +1479,33 @@
     },
     {
      "file": "src/wordnet.ts",
-     "anchor": "morphy"
+     "anchor": "_morphy"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [
-     "lemmatize"
+     "lemmatize",
+     "morphy"
     ],
     "gaps": [
-     "morphy absent on facade; normalization/POS adaptation and shortest-lemma selection differ."
+     "camelCase checkExceptions; _morphy exposed but not a discovered public member; satellite-adjective 's' lemmas collapse to 'a' in packed data, so 's'-only lemma filtering is approximated."
     ]
    },
    "evidence": [
-    "stemmer-unit"
+    "stemmer-unit",
+    "wordnet-morphy-differential"
    ],
    "fixtures": {
-    "status": "blocked-data",
+    "status": "pinned-differential",
     "resources": [
      "corpora/wordnet"
     ],
     "gaps": [
-     "Official WordNet differential data missing; bundled subset cannot prove full lemma selection."
+     "Packed data collapses 's' to 'a'; satellite-only _morphy filtering cannot be proven until the pack preserves ADJ_SAT."
     ]
    },
-   "notes": "TS facade and WordNet dispatch; native morphy path does not establish lemmatizer parity."
+   "notes": "Faithful NLTK _morphy port (exception lists + suffix substitutions + lemma filtering); lemmatize picks shortest lemma; input is not normalized, matching NLTK."
   },
   {
    "target": "nltk.probability.FreqDist",

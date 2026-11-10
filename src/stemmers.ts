@@ -1,7 +1,7 @@
 import { SNOWBALL_LANGUAGES, snowballStem } from "./snowball";
 import { SNOWBALL_STOPWORDS } from "./snowball/stopwords";
 import { PorterStemmer } from "./porter_stemmer";
-import { loadWordNet, type WordNetPos } from "./wordnet";
+import { loadWordNet, type WordNetMorphPos } from "./wordnet";
 
 function normalize(word: string): string {
   return word.trim().toLowerCase();
@@ -139,23 +139,38 @@ export const RussianStemmer = languageStemmer("russian");
 export const SpanishStemmer = languageStemmer("spanish");
 export const SwedishStemmer = languageStemmer("swedish");
 
-function normalizePos(pos?: string): WordNetPos | undefined {
+function normalizePos(pos?: string): WordNetMorphPos | undefined {
   if (!pos) return undefined;
   const lower = pos.toLowerCase();
   if (lower === "n" || lower === "noun") return "n";
   if (lower === "v" || lower === "verb") return "v";
-  if (lower === "a" || lower === "s" || lower === "adj" || lower === "adjective") return "a";
+  if (lower === "a" || lower === "adj" || lower === "adjective") return "a";
+  if (lower === "s" || lower === "adj_sat" || lower === "satellite") return "s";
   if (lower === "r" || lower === "adv" || lower === "adverb") return "r";
   return undefined;
 }
 
 export class WordNetLemmatizer {
-  lemmatize(word: string, pos: string = "n"): string {
-    const value = normalize(word);
-    if (!value) return value;
+  _morphy(form: string, pos: string = "n", checkExceptions = true): string[] {
     const wnPos = normalizePos(pos);
-    const lemma = loadWordNet().morphy(value, wnPos);
-    return lemma ?? value;
+    if (!wnPos) throw new Error(`'${pos}'`);
+    return loadWordNet()._morphy(form, wnPos, checkExceptions);
+  }
+
+  morphy(form: string, pos: string | null = null, checkExceptions = true): string | null {
+    const wnPos = normalizePos(pos ?? undefined);
+    if (pos && !wnPos) throw new Error(`'${pos}'`);
+    return loadWordNet().morphy(form, wnPos ?? null, checkExceptions);
+  }
+
+  lemmatize(word: string, pos: string = "n"): string {
+    const lemmas = this._morphy(word, pos);
+    if (lemmas.length === 0) return word;
+    return lemmas.reduce((best, lemma) => (lemma.length < best.length ? lemma : best));
+  }
+
+  toString(): string {
+    return "<WordNetLemmatizer>";
   }
 }
 
