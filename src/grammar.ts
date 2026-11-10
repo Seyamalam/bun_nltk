@@ -446,22 +446,24 @@ export class CFG {
     if (lhs === undefined && rhs === undefined) {
       return empty ? [...this._emptyIndex.values()] : [...this._productions];
     }
+    const lhsSym = lhs instanceof Nonterminal ? lhs.symbol() : null;
     if (lhs !== undefined && rhs === undefined) {
-      if (!empty) return [...(this._lhsIndex.get(lhs.symbol()) ?? [])];
-      const prod = this._emptyIndex.get(lhs.symbol());
+      if (!empty) return lhsSym === null ? [] : [...(this._lhsIndex.get(lhsSym) ?? [])];
+      const prod = lhsSym === null ? undefined : this._emptyIndex.get(lhsSym);
       return prod ? [prod] : [];
     }
     if (rhs !== undefined && lhs === undefined) {
       return [...(this._rhsIndex.get(symbolKey(rhs)) ?? [])];
     }
     const rhsKey = symbolKey(rhs!);
-    return (this._lhsIndex.get(lhs!.symbol()) ?? []).filter((prod) =>
+    return (lhsSym === null ? [] : (this._lhsIndex.get(lhsSym) ?? [])).filter((prod) =>
       (this._rhsIndex.get(rhsKey) ?? []).includes(prod),
     );
   }
 
   leftcorners(cat: Nonterminal): Nonterminal[] {
-    const syms = this._leftcorners.get(cat.symbol()) ?? new Set([cat.symbol()]);
+    const sym = cat instanceof Nonterminal ? cat.symbol() : String(cat);
+    const syms = this._leftcorners.get(sym) ?? new Set([sym]);
     return [...syms].map((s) => this.nonterm(s));
   }
 
@@ -469,8 +471,9 @@ export class CFG {
     if (left instanceof Nonterminal) {
       return this.leftcorners(cat).some((nt) => nt.symbol() === left.symbol());
     }
+    const catSym = cat instanceof Nonterminal ? cat.symbol() : String(cat);
     if (this._leftcornerWords) {
-      return this._leftcornerWords.get(cat.symbol())?.has(left) ?? false;
+      return this._leftcornerWords.get(catSym)?.has(left) ?? false;
     }
     for (const parent of this.leftcorners(cat)) {
       if (this._immediateLeftcornerWords.get(parent.symbol())?.has(left)) return true;
@@ -483,7 +486,8 @@ export class CFG {
   }
 
   leftcorner_parents(cat: Nonterminal): Nonterminal[] {
-    const syms = this._leftcornerParents.get(cat.symbol()) ?? new Set([cat.symbol()]);
+    const sym = cat instanceof Nonterminal ? cat.symbol() : String(cat);
+    const syms = this._leftcornerParents.get(sym) ?? new Set([sym]);
     return [...syms].map((s) => this.nonterm(s));
   }
 

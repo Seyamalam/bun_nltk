@@ -2,7 +2,6 @@ import {
   chartParse,
   earleyParse,
   leftCornerParse,
-  parseCfgGrammar,
   parsePcfgGrammar,
   probabilisticChartParse,
   recursiveDescentParse,
@@ -32,7 +31,8 @@ function joinTokens(tokens: string[]): string {
 }
 
 export { CFG } from "./grammar";
-import { CFG } from "./grammar";
+import { CFG, Nonterminal, Production } from "./grammar";
+import { NltkChartParser, type ChartParserOptions } from "./chart";
 
 export class PCFG {
   constructor(public readonly grammar: PcfgGrammar) {}
@@ -50,11 +50,6 @@ export class FeatureCFG {
   }
 }
 
-function asCfgGrammar(grammar: CFG | CfgGrammar | string): CfgGrammar {
-  if (typeof grammar === "string") return parseCfgGrammar(grammar);
-  return grammar instanceof CFG ? grammar.grammar : grammar;
-}
-
 function asPcfgGrammar(grammar: PCFG | PcfgGrammar | string): PcfgGrammar {
   if (typeof grammar === "string") return parsePcfgGrammar(grammar);
   return grammar instanceof PCFG ? grammar.grammar : grammar;
@@ -65,37 +60,46 @@ function asFeatureGrammar(grammar: FeatureCFG | FeatureCfgGrammar | string): Fea
   return grammar instanceof FeatureCFG ? grammar.grammar : grammar;
 }
 
-export class ChartParser {
-  protected readonly grammar: CfgGrammar;
+function toNltkGrammar(grammar: CFG | CfgGrammar | string): CFG {
+  if (grammar instanceof CFG) return grammar;
+  if (typeof grammar === "string") return CFG.fromstring(grammar);
+  const lhsSet = new Set(grammar.productions.map((p) => p.lhs));
+  return new CFG(
+    new Nonterminal(grammar.startSymbol),
+    grammar.productions.map(
+      (p) => new Production(new Nonterminal(p.lhs), p.rhs.map((s) => (lhsSet.has(s) ? new Nonterminal(s) : s))),
+    ),
+  );
+}
 
-  constructor(grammar: CFG | CfgGrammar | string) {
-    this.grammar = asCfgGrammar(grammar);
+export class ChartParser extends NltkChartParser {
+  protected readonly cfgGrammar: CfgGrammar;
+
+  constructor(grammar: CFG | CfgGrammar | string, options: ChartParserOptions = {}) {
+    super(toNltkGrammar(grammar), options);
+    this.cfgGrammar = this.grammar().grammar;
   }
 
-  parse(tokens: string[]): ParseTree[] {
-    return chartParse(tokens, this.grammar);
-  }
-
-  parseOne(tokens: string[]): ParseTree | null {
-    return this.parse(tokens)[0] ?? null;
+  override parse<T = ParseTree>(tokens: Iterable<string>): T[] {
+    return chartParse([...tokens], this.cfgGrammar) as T[];
   }
 }
 
 export class EarleyChartParser extends ChartParser {
-  override parse(tokens: string[]): ParseTree[] {
-    return earleyParse(tokens, this.grammar);
+  override parse<T = ParseTree>(tokens: Iterable<string>): T[] {
+    return earleyParse([...tokens], this.cfgGrammar) as T[];
   }
 }
 
 export class RecursiveDescentParser extends ChartParser {
-  override parse(tokens: string[]): ParseTree[] {
-    return recursiveDescentParse(tokens, this.grammar);
+  override parse<T = ParseTree>(tokens: Iterable<string>): T[] {
+    return recursiveDescentParse([...tokens], this.cfgGrammar) as T[];
   }
 }
 
 export class LeftCornerChartParser extends ChartParser {
-  override parse(tokens: string[]): ParseTree[] {
-    return leftCornerParse(tokens, this.grammar);
+  override parse<T = ParseTree>(tokens: Iterable<string>): T[] {
+    return leftCornerParse([...tokens], this.cfgGrammar) as T[];
   }
 }
 

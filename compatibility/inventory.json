@@ -107,7 +107,25 @@
    "transitiveClosure": "src/grammar.ts",
    "invertGraph": "src/grammar.ts",
    "nonterminals": "src/grammar.ts",
-   "Nonterminal": "src/grammar.ts"
+   "Nonterminal": "src/grammar.ts",
+   "TopDownChartParser": "src/chart.ts",
+   "EdgeI": "src/chart.ts",
+   "TopDownPredictRule": "src/chart.ts",
+   "LeafInitRule": "src/chart.ts",
+   "CachedTopDownPredictRule": "src/chart.ts",
+   "SingleEdgeFundamentalRule": "src/chart.ts",
+   "LeafEdge": "src/chart.ts",
+   "FilteredSingleEdgeFundamentalRule": "src/chart.ts",
+   "FilteredBottomUpPredictCombineRule": "src/chart.ts",
+   "FundamentalRule": "src/chart.ts",
+   "BottomUpPredictRule": "src/chart.ts",
+   "Chart": "src/chart.ts",
+   "TopDownInitRule": "src/chart.ts",
+   "EmptyPredictRule": "src/chart.ts",
+   "BottomUpChartParser": "src/chart.ts",
+   "BottomUpLeftCornerChartParser": "src/chart.ts",
+   "TreeEdge": "src/chart.ts",
+   "BottomUpPredictCombineRule": "src/chart.ts"
   }
  },
  "modules": [
@@ -716,6 +734,17 @@
    "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.grammar CFG/Production/Nonterminal",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: CFG init/indexes/leftcorner closure, productions(lhs/rhs/empty) filters, grammar-form predicates, chomsky_normal_form pipeline (eliminate_start, binarize, remove_mixed_rules, remove_unitary_rules with cycle guard), check_coverage quoting, read_grammar errors, Production/ProbabilisticProduction/DependencyProduction/Nonterminal/nonterminals."
+  },
+  {
+   "id": "chart-differential",
+   "kind": "differential",
+   "files": [
+    "test/chart_parser.test.ts",
+    "test/chart_oracle.py"
+   ],
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.parse.chart",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: ChartParser.chart_parse agenda/non-agenda loops, BU_LC/TD/LC strategies, edge set/count equality, shared-edge ambiguity via child_pointer_lists, select restrictions, pretty_format_edge/leaves, parse trees and ParserI surface."
   }
  ],
  "signatureBindings": [
@@ -2359,7 +2388,7 @@
     "chartParse"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/parser_tagger_compat.ts",
@@ -2371,21 +2400,28 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [
-     "parse"
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
     ],
     "gaps": [
-     "Returns project tree arrays; chart_parse, strategy, trace, chart_class and inherited parser API missing."
+     "Constructor takes (grammar, {strategy,trace,traceChartWidth,useAgenda,chartClass}) options object; parse() returns an array (NLTK generator); CfgGrammar/string inputs converted with lhs-set nonterminal heuristic.",
+     "strategy rules are exported classes (LeafInitRule, EmptyPredictRule, BottomUpPredictCombineRule, SingleEdgeFundamentalRule, TD/BU/LC strategies); SteppingChartParser and dot_digraph not ported."
     ]
    },
    "evidence": [
+    "chart-differential",
     "parser-unit"
    ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "No full pinned chart/edge/rule/member fixtures."
+     "SteppingChartParser interactive stepping not ported."
     ]
    },
    "notes": "Chart construction runs TS; cykRecognizeIdsNative is a different recognition path."
@@ -3179,6 +3215,669 @@
     "grammar-differential"
    ],
    "notes": "Pure-TS port; camelCase export name adaptation."
+  },
+  {
+   "target": "nltk.parse.chart.Chart",
+   "exports": [
+    "Chart"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class Chart"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "child_pointer_lists",
+     "edges",
+     "initialize",
+     "insert",
+     "insert_with_backpointer",
+     "iteredges",
+     "leaf",
+     "leaves",
+     "num_edges",
+     "num_leaves",
+     "parses",
+     "pretty_format",
+     "pretty_format_edge",
+     "pretty_format_leaves",
+     "select",
+     "trees"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.EdgeI",
+   "exports": [
+    "EdgeI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export abstract class EdgeI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "dot",
+     "end",
+     "is_complete",
+     "is_incomplete",
+     "length",
+     "lhs",
+     "nextsym",
+     "rhs",
+     "span",
+     "start"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.TreeEdge",
+   "exports": [
+    "TreeEdge"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class TreeEdge"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "dot",
+     "end",
+     "is_complete",
+     "is_incomplete",
+     "length",
+     "lhs",
+     "move_dot_forward",
+     "nextsym",
+     "rhs",
+     "span",
+     "start"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.LeafEdge",
+   "exports": [
+    "LeafEdge"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class LeafEdge"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "dot",
+     "end",
+     "is_complete",
+     "is_incomplete",
+     "length",
+     "lhs",
+     "nextsym",
+     "rhs",
+     "span",
+     "start"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.TopDownChartParser",
+   "exports": [
+    "TopDownChartParser"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class TopDownChartParser"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.BottomUpChartParser",
+   "exports": [
+    "BottomUpChartParser"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class BottomUpChartParser"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.BottomUpLeftCornerChartParser",
+   "exports": [
+    "BottomUpLeftCornerChartParser"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class BottomUpLeftCornerChartParser"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.FundamentalRule",
+   "exports": [
+    "FundamentalRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class FundamentalRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.SingleEdgeFundamentalRule",
+   "exports": [
+    "SingleEdgeFundamentalRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class SingleEdgeFundamentalRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.LeafInitRule",
+   "exports": [
+    "LeafInitRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class LeafInitRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.EmptyPredictRule",
+   "exports": [
+    "EmptyPredictRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class EmptyPredictRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.TopDownInitRule",
+   "exports": [
+    "TopDownInitRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class TopDownInitRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.TopDownPredictRule",
+   "exports": [
+    "TopDownPredictRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class TopDownPredictRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.CachedTopDownPredictRule",
+   "exports": [
+    "CachedTopDownPredictRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class CachedTopDownPredictRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.BottomUpPredictRule",
+   "exports": [
+    "BottomUpPredictRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class BottomUpPredictRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.BottomUpPredictCombineRule",
+   "exports": [
+    "BottomUpPredictCombineRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class BottomUpPredictCombineRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.FilteredSingleEdgeFundamentalRule",
+   "exports": [
+    "FilteredSingleEdgeFundamentalRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class FilteredSingleEdgeFundamentalRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.parse.chart.FilteredBottomUpPredictCombineRule",
+   "exports": [
+    "FilteredBottomUpPredictCombineRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chart.ts",
+     "anchor": "export class FilteredBottomUpPredictCombineRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
+    "gaps": [
+     "camelCase aliases; JS iterables/arrays for generators; edge equality via canonical keys."
+    ]
+   },
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "evidence": [
+    "chart-differential"
+   ],
+   "notes": "Pure-TS port of nltk.parse.chart machinery."
   }
  ]
 }
