@@ -266,11 +266,14 @@ export type {
 } from "./src/wordnet";
 export { LancasterStemmer, RegexpStemmer, SnowballStemmer, WordNetLemmatizer } from "./src/stemmers";
 export {
+  ArabicStemmer,
   DanishStemmer,
   DutchStemmer,
   EnglishStemmer,
+  FinnishStemmer,
   FrenchStemmer,
   GermanStemmer,
+  HungarianStemmer,
   ItalianStemmer,
   NorwegianStemmer,
   PortugueseStemmer,

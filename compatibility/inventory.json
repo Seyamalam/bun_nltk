@@ -159,7 +159,10 @@
    "Synset": "src/wordnet_objects.ts",
    "Lemma": "src/wordnet_objects.ts",
    "WordNetReader": "src/wordnet_objects.ts",
-   "wordnetReader": "src/wordnet_objects.ts"
+   "wordnetReader": "src/wordnet_objects.ts",
+   "ArabicStemmer": "src/stemmers.ts",
+   "FinnishStemmer": "src/stemmers.ts",
+   "HungarianStemmer": "src/stemmers.ts"
   }
  },
  "modules": [
@@ -812,6 +815,17 @@
    "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.corpus.wordnet Synset/Lemma object model",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: Synset name/pos/offset/lexname/definition/examples/lemma_names, Lemma name/key/repr/antonyms/lang, hypernym/hyponym relations, index.<pos> sense numbering, hypernym_paths, root_hypernyms, lowest_common_hypernyms, common_hypernyms membership, hypernym_distances, max/min_depth, shortest_path_distance, path/wup/lch similarity. Requires the packed wordnet artifact (senseNums + original lemma/pointer order)."
+  },
+  {
+   "id": "snowball-arfihu-differential",
+   "kind": "differential",
+   "files": [
+    "test/snowball_arfihu.test.ts",
+    "test/snowball_arfihu_oracle.py"
+   ],
+   "anchor": "Values pinned from Python NLTK 3.10.3 (see test/snowball_arfihu_oracle.py)",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: 45 Arabic + 40 Finnish + 43 Hungarian stems including diacritic normalization, string-vs-tuple suffix iteration quirks (noun step2b '\u0627\u062a'), Hungarian digraph R1, Finnish vowel-harmony step checks, ignore_stopwords post-normalization check for Arabic."
   }
  ],
  "signatureBindings": [
@@ -1635,9 +1649,12 @@
    "exports": [
     "SnowballStemmer",
     "snowballStem",
+    "ArabicStemmer",
     "EnglishStemmer",
+    "FinnishStemmer",
     "FrenchStemmer",
     "GermanStemmer",
+    "HungarianStemmer",
     "ItalianStemmer",
     "SpanishStemmer",
     "PortugueseStemmer",
@@ -1662,6 +1679,18 @@
     {
      "file": "src/snowball/stopwords.ts",
      "anchor": "export const SNOWBALL_STOPWORDS"
+    },
+    {
+     "file": "src/snowball/arabic.ts",
+     "anchor": "export function stemArabic"
+    },
+    {
+     "file": "src/snowball/finnish.ts",
+     "anchor": "export function stemFinnish"
+    },
+    {
+     "file": "src/snowball/hungarian.ts",
+     "anchor": "export function stemHungarian"
     }
    ],
    "signatures": {
@@ -1670,17 +1699,18 @@
      "stem"
     ],
     "gaps": [
-     "stopwords/stemmer/languages instance attrs exposed like NLTK; ignore_stopwords implemented incl. NLTK corpus lists and porter ValueError; language-specific classes exported. Missing languages: arabic, finnish, hungarian. JS Error types not ValueError."
+     "stopwords/stemmer/languages instance attrs exposed like NLTK; ignore_stopwords implemented incl. NLTK corpus lists and porter ValueError; all 16 NLTK language classes exported. JS Error types not ValueError."
     ]
    },
    "evidence": [
     "snowball-unit",
-    "snowball-differential"
+    "snowball-differential",
+    "snowball-arfihu-differential"
    ],
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "ignore_stopwords values pinned in test/stemmers.test.ts; arabic/finnish/hungarian stemmers absent."
+     "ignore_stopwords values pinned in test/stemmers.test.ts and test/snowball_arfihu.test.ts; all 16 NLTK snowball languages now implemented."
     ]
    },
    "notes": "SnowballStemmer facade + per-language classes + porter delegation now mirror NLTK; arabic/finnish/hungarian algorithms not yet ported."

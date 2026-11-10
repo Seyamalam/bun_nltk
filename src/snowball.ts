@@ -5,8 +5,9 @@
  * (ported line-for-line from NLTK's nltk/stem/snowball.py, which itself is a
  * Python translation of the Snowball spec at http://snowball.tartarus.org/).
  *
- * Supported languages: danish, dutch, english, french, german, italian,
- * norwegian, portuguese, romanian, russian, spanish, swedish.
+ * Supported languages: arabic, danish, dutch, english, finnish, french,
+ * german, hungarian, italian, norwegian, portuguese, romanian, russian,
+ * spanish, swedish.
  *
  * Behavior notes:
  * - Each language stemmer lowercases its input first (exactly like NLTK;
@@ -15,11 +16,14 @@
  *   "The language '<language>' is not supported."
  */
 
+export { stemArabic } from "./snowball/arabic";
 export { stemDanish } from "./snowball/danish";
 export { stemDutch } from "./snowball/dutch";
 export { stemEnglish } from "./snowball/english";
+export { stemFinnish } from "./snowball/finnish";
 export { stemFrench } from "./snowball/french";
 export { stemGerman } from "./snowball/german";
+export { stemHungarian } from "./snowball/hungarian";
 export { stemItalian } from "./snowball/italian";
 export { stemNorwegian } from "./snowball/norwegian";
 export { stemPortuguese } from "./snowball/portuguese";
@@ -28,11 +32,14 @@ export { stemRussian } from "./snowball/russian";
 export { stemSpanish } from "./snowball/spanish";
 export { stemSwedish } from "./snowball/swedish";
 
+import { stemArabic } from "./snowball/arabic";
 import { stemDanish } from "./snowball/danish";
 import { stemDutch } from "./snowball/dutch";
 import { stemEnglish } from "./snowball/english";
+import { stemFinnish } from "./snowball/finnish";
 import { stemFrench } from "./snowball/french";
 import { stemGerman } from "./snowball/german";
+import { stemHungarian } from "./snowball/hungarian";
 import { stemItalian } from "./snowball/italian";
 import { stemNorwegian } from "./snowball/norwegian";
 import { stemPortuguese } from "./snowball/portuguese";
@@ -46,11 +53,14 @@ import { stemSwedish } from "./snowball/swedish";
 // ---------------------------------------------------------------------------
 
 export const SNOWBALL_LANGUAGES = [
+  "arabic",
   "danish",
   "dutch",
   "english",
+  "finnish",
   "french",
   "german",
+  "hungarian",
   "italian",
   "norwegian",
   "portuguese",
@@ -62,12 +72,15 @@ export const SNOWBALL_LANGUAGES = [
 
 export type SnowballLanguage = (typeof SNOWBALL_LANGUAGES)[number];
 
-const SNOWBALL_STEMMERS: Record<string, (word: string) => string> = {
+const SNOWBALL_STEMMERS: Record<string, (word: string, stopwords?: ReadonlySet<string>) => string> = {
+  arabic: stemArabic,
   danish: stemDanish,
   dutch: stemDutch,
   english: stemEnglish,
+  finnish: stemFinnish,
   french: stemFrench,
   german: stemGerman,
+  hungarian: stemHungarian,
   italian: stemItalian,
   norwegian: stemNorwegian,
   portuguese: stemPortuguese,
@@ -84,13 +97,13 @@ const SNOWBALL_STEMMERS: Record<string, (word: string) => string> = {
  * supported. Each language's algorithm lowercases internally (except
  * Russian, which does not lowercase — matching NLTK exactly).
  */
-export function snowballStem(word: string, language: string): string {
+export function snowballStem(word: string, language: string, stopwords?: ReadonlySet<string>): string {
   const key = language.toLowerCase();
   const stemmer = SNOWBALL_STEMMERS[key];
   if (!stemmer) {
     throw new Error(`The language '${language}' is not supported.`);
   }
-  return stemmer(word);
+  return stemmer(word, stopwords);
 }
 
 export function isSnowballLanguage(language: string): boolean {

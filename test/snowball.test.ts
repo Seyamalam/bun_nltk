@@ -50,15 +50,15 @@ test("snowballStem russian transliteration round-trips cyrillic case", () => {
 });
 
 test("snowballStem throws on unsupported language", () => {
-  expect(() => snowballStem("running", "finnish")).toThrowError(
-    "The language 'finnish' is not supported.",
+  expect(() => snowballStem("running", "czech")).toThrowError(
+    "The language 'czech' is not supported.",
   );
 });
 
 test("SNOWBALL_LANGUAGES registry covers the ported languages", () => {
   expect(SNOWBALL_LANGUAGES).toContain("english");
   expect(SNOWBALL_LANGUAGES).toContain("russian");
-  expect(SNOWBALL_LANGUAGES.length).toBe(12);
+  expect(SNOWBALL_LANGUAGES.length).toBe(15);
 });
 
 type PythonBaseline = Record<string, string[]>;
@@ -94,6 +94,9 @@ test("snowball parity with python3 nltk baseline", () => {
     norwegian: ["jaktene", "barnas", "utvikling"],
     swedish: ["jakterna", "barnens", "utveckling"],
     russian: ["времени", "работа", "развитие"],
+    arabic: ["الكتاب", "المكتبة", "بالبيت", "استطاعوا", "تستعملون", "كالرجل", "وكالة"],
+    finnish: ["taloissa", "kirjani", "autossani", "tullessaan", "menivätkin", "keltaisessa"],
+    hungarian: ["abroncsokkal", "házakban", "könyveket", "gyalogosoknak", "tanították", "vízcseppek"],
   };
 
   const py = runPythonSnowballBaseline(langWords);

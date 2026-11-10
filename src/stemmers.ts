@@ -150,7 +150,11 @@ export class LancasterStemmer {
  * {@link PorterStemmer} exactly like NLTK's snowball.PorterStemmer.
  */
 export class SnowballStemmer {
-  static readonly languages: readonly string[] = [...SNOWBALL_LANGUAGES, "porter"];
+  static readonly languages: readonly string[] = [
+    ...SNOWBALL_LANGUAGES.slice(0, 10),
+    "porter",
+    ...SNOWBALL_LANGUAGES.slice(10),
+  ];
 
   readonly language: string;
   readonly stopwords: Set<string>;
@@ -173,10 +177,15 @@ export class SnowballStemmer {
     this.stemmer =
       this.language === "porter"
         ? new PorterStemmer()
-        : { stem: (word: string) => snowballStem(word, this.language) };
+        : { stem: (word: string) => snowballStem(word, this.language, this.stopwords) };
   }
 
   stem(word: string): string {
+    if (this.language === "arabic") {
+      // NLTK's ArabicStemmer checks stopwords after pre-normalization
+      // (diacritics stripped), inside stem() — never on the raw input.
+      return this.stemmer.stem(word);
+    }
     const normalized = this.language === "russian" ? word : word.toLowerCase();
     if (this.stopwords.has(normalized)) return normalized;
     return this.stemmer.stem(word);
@@ -191,11 +200,14 @@ function languageStemmer(language: string) {
   };
 }
 
+export const ArabicStemmer = languageStemmer("arabic");
 export const DanishStemmer = languageStemmer("danish");
 export const DutchStemmer = languageStemmer("dutch");
 export const EnglishStemmer = languageStemmer("english");
+export const FinnishStemmer = languageStemmer("finnish");
 export const FrenchStemmer = languageStemmer("french");
 export const GermanStemmer = languageStemmer("german");
+export const HungarianStemmer = languageStemmer("hungarian");
 export const ItalianStemmer = languageStemmer("italian");
 export const NorwegianStemmer = languageStemmer("norwegian");
 export const PortugueseStemmer = languageStemmer("portuguese");
