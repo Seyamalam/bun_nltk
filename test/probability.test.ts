@@ -111,3 +111,39 @@ test("Probability helpers match expected information-theory semantics", () => {
   expectClose(entropy(actual), 0.8112781244591328);
   expectClose(logLikelihood(testDist, actual), -1);
 });
+
+// NLTK 3.10.3 oracle pins — ProbDistI inherited surface.
+test("MLEProbDist/LidstoneProbDist: NLTK SUM_TO_ONE/discount/generate/logprob pins", () => {
+  const fd = new FreqDist(["a", "a", "b", "c"]);
+  const mle = new MLEProbDist(fd);
+  expect(MLEProbDist.SUM_TO_ONE).toBe(true);
+  expect(LidstoneProbDist.SUM_TO_ONE).toBe(false);
+  expect(LaplaceProbDist.SUM_TO_ONE).toBe(false);
+  expect(ELEProbDist.SUM_TO_ONE).toBe(false);
+  expect(SimpleGoodTuringProbDist.SUM_TO_ONE).toBe(false);
+  // discount: base ProbDistI → 0.0 (MLE inherits); Lidstone → gamma*bins/(N+gamma*bins)
+  expect(mle.discount()).toBe(0);
+  const lid = new LidstoneProbDist(fd, 0.5);
+  expect(lid.discount()).toBeCloseTo(0.2727272727272727, 15);
+  // logprob: prob=0 → -1e300 (NLTK _NINF), else log2
+  expect(mle.logprob("a")).toBe(-1);
+  expect(mle.logprob("z")).toBe(-1e300);
+  // prob of unseen → 0; empty freqdist → 0 (no ZeroDivisionError path in TS port)
+  expect(mle.prob("z")).toBe(0);
+  expect(new MLEProbDist(new FreqDist()).prob("x")).toBe(0);
+  // generate: weighted sampling — seeded draws land on cumulative mass
+  const lid2 = new LidstoneProbDist(new FreqDist(["a", "b"]), 0.5, 4);
+  expect(lid2.generate(() => 0.9)).toBe("b");
+  expect(lid2.generate(() => 0.05)).toBe("a");
+  expect(mle.generate(() => 0.4)).toBe("a");
+  // repr pins
+  expect(mle.toString()).toBe("<MLEProbDist based on 4 samples>");
+  expect(lid.toString()).toBe("<LidstoneProbDist based on 4 samples>");
+});
+
+test("LidstoneProbDist: NLTK bins validation message", () => {
+  const fd = new FreqDist(["a", "a", "b", "c"]);
+  expect(() => new LidstoneProbDist(fd, 0.5, 1)).toThrow(
+    /must be greater than or equal to/,
+  );
+});

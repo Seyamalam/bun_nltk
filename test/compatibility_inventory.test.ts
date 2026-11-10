@@ -212,7 +212,7 @@ test("mixed generic object APIs and unreviewed parser/integration names never in
     expect(targets.find((row) => row.target === `nltk.probability.${name}`)!.category).toBe("ts-algorithm");
   }
   for (const name of ["MLEProbDist", "LidstoneProbDist"]) {
-    expect(manifest.mappings.find((mapping) => mapping.target === `nltk.probability.${name}`)!.status).toBe("partial");
+    expect(manifest.mappings.find((mapping) => mapping.target === `nltk.probability.${name}`)!.status).toBe("implemented-subset");
   }
   const sentence = manifest.mappings.find((mapping) => mapping.target.endsWith("sentence_chrf"))!;
   expect(sentence.status).toBe("implemented-subset");

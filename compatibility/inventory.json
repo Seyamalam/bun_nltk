@@ -685,6 +685,17 @@
    "anchor": "NLTK 3.10.3 oracle pins \u2014 full SentimentIntensityAnalyzer member surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: 5 doctest polarity_scores dicts, SentiText words/cap_diff, VaderConstants negated/normalize/scalar_inc_dec, score_valence + empty, sentiment_valence, make_lex_dict, 7502-entry lexicon."
+  },
+  {
+   "id": "probdist-differential",
+   "kind": "differential",
+   "files": [
+    "test/probability.test.ts",
+    "test/probdist_oracle.py"
+   ],
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 ProbDistI inherited surface",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: SUM_TO_ONE per class, discount (base 0.0 vs Lidstone formula), logprob -1e300 unseen, prob unseen/empty=0, generate weighted sampling, repr, bins>=B() error wording."
   }
  ],
  "signatureBindings": [
@@ -1654,7 +1665,7 @@
     "MLEProbDist"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/probability.ts",
@@ -1670,18 +1681,23 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [
-     "prob",
+     "discount",
+     "freqdist",
+     "generate",
+     "logprob",
      "max",
-     "samples",
-     "logprob"
+     "prob",
+     "samples"
     ],
     "gaps": [
-     "Rust numerical prob/logprob; TS FreqDist max/samples/count storage. Generic equality/order/zero counts and inherited methods remain incomplete; no wholesale Rust object claim."
+     "SUM_TO_ONE is a static readonly class attr; generate() accepts an injectable rng (NLTK uses global random.random).",
+     "freqdist() method call rather than attr; toString repr unchanged."
     ]
    },
    "evidence": [
+    "probdist-differential",
     "next-probability-numeric"
    ],
    "fixtures": {
@@ -1698,7 +1714,7 @@
     "LidstoneProbDist"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/probability.ts",
@@ -1714,18 +1730,23 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [
-     "prob",
+     "discount",
+     "freqdist",
+     "generate",
+     "logprob",
      "max",
-     "samples",
-     "logprob"
+     "prob",
+     "samples"
     ],
     "gaps": [
-     "Rust smoothing/divisor/logprob/discount kernels but TS counts/max/samples and bins checks. Python equality/order and full constructor/error-class domains not certified."
+     "SUM_TO_ONE is a static readonly class attr; generate() accepts an injectable rng (NLTK uses global random.random).",
+     "freqdist() method call rather than attr; toString repr unchanged."
     ]
    },
    "evidence": [
+    "probdist-differential",
     "next-probability-numeric"
    ],
    "fixtures": {

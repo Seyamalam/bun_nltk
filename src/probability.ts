@@ -81,6 +81,9 @@ export function entropy<T>(pdist: ProbDistLike<T>): number {
 }
 
 export abstract class ProbDistI<T> implements ProbDistLike<T> {
+  /** NLTK ``SUM_TO_ONE`` — overridden by distributions that don't. */
+  static readonly SUM_TO_ONE: boolean = true;
+
   abstract prob(sample: T): number;
   abstract max(): T;
   abstract samples(): Iterable<T>;
@@ -91,6 +94,34 @@ export abstract class ProbDistI<T> implements ProbDistLike<T> {
 
   logProb(sample: T): number {
     return this.logprob(sample);
+  }
+
+  /** NLTK ``ProbDistI.discount``: base distributions don't discount. */
+  discount(): number {
+    return 0;
+  }
+
+  /**
+   * NLTK ``generate``: weighted reservoir — draw p ~ U(0,1), walk samples
+   * subtracting prob until p <= 0; trailing rounding slack (< 0.0001)
+   * returns the last sample; otherwise warn (SUM_TO_ONE) and draw uniformly.
+   */
+  generate(random: () => number = Math.random): T {
+    let p = random();
+    const pInit = p;
+    let sample: T | undefined;
+    for (sample of this.samples()) {
+      p -= this.prob(sample);
+      if (p <= 0) return sample;
+    }
+    if (p < 0.0001 && sample !== undefined) return sample;
+    if ((this.constructor as typeof ProbDistI).SUM_TO_ONE) {
+      console.warn(
+        `Probability distribution ${this.toString()} sums to ${pInit - p}; generate() is returning an arbitrary sample.`,
+      );
+    }
+    const all = [...this.samples()];
+    return all[Math.floor(random() * all.length)]!;
   }
 }
 
@@ -182,6 +213,9 @@ export class MLEProbDist<T> extends ProbDistI<T> {
 }
 
 export class LidstoneProbDist<T> extends ProbDistI<T> {
+  /** NLTK: Lidstone only sums to one when bins cover every possible sample. */
+  static override readonly SUM_TO_ONE = false;
+
   protected readonly freqDistValue: FreqDist<T>;
   protected gammaValue: number;
   protected readonly totalCount: number;
@@ -198,7 +232,7 @@ export class LidstoneProbDist<T> extends ProbDistI<T> {
     if (bins !== undefined && bins < freqdist.B()) {
       const name = this.constructor.name.replace(/ProbDist$/, "");
       throw new Error(
-        `The number of bins in a ${name} distribution (${bins}) must be >= the number of bins in the FreqDist used to create it (${freqdist.B()}).`,
+        `The number of bins in a ${name} distribution (${bins}) must be greater than or equal to\nthe number of bins in the FreqDist used to create it (${freqdist.B()}).`,
       );
     }
 
@@ -225,7 +259,7 @@ export class LidstoneProbDist<T> extends ProbDistI<T> {
     return this.freqDistValue.keys();
   }
 
-  discount(): number {
+  override discount(): number {
     return numeric(9, [this.totalCount, this.binsValue, this.gammaValue])[0]!;
   }
 
@@ -293,7 +327,7 @@ export class WittenBellProbDist<T> extends ProbDistI<T> {
     return this.#freqdist;
   }
 
-  discount(): never {
+  override discount(): never {
     throw new Error("WittenBellProbDist.discount is not implemented in bun_nltk");
   }
 
@@ -303,6 +337,9 @@ export class WittenBellProbDist<T> extends ProbDistI<T> {
 }
 
 export class SimpleGoodTuringProbDist<T> extends ProbDistI<T> {
+  /** NLTK: smoothed mass does not sum to one. */
+  static override readonly SUM_TO_ONE = false;
+
   readonly #freqdist: FreqDist<T>;
   readonly #bins: number;
   readonly #fit: number[];
@@ -328,7 +365,7 @@ export class SimpleGoodTuringProbDist<T> extends ProbDistI<T> {
       ...this.#freqdist.values()])[0]!;
   }
 
-  discount(): number {
+  override discount(): number {
     return numeric(15, [...this.#fit, this.#freqdist.N()])[0]!;
   }
 
