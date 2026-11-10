@@ -11,7 +11,7 @@ import { IBMModelBase, Counts, factorial, longestTargetSentenceLength } from "./
 import { IBMModel4, type SrcTrgClasses } from "./ibm4";
 
 /** Tracks occupied positions in a target sentence (1-indexed with dummy at 0). */
-class Slots {
+export class Slots {
   private readonly slots: boolean[];
 
   constructor(targetSentenceLength: number) {
@@ -35,7 +35,7 @@ class Slots {
   }
 }
 
-class Model5Counts extends Counts {
+export class Model5Counts extends Counts {
   /** head_vacancy[dv][max_v][trg_class] */
   head_vacancy = new Map<number, Map<number, Map<number, number>>>();
   head_vacancy_for_any_dv = new Map<number, Map<number, number>>();

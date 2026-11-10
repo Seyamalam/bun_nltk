@@ -219,6 +219,9 @@ export abstract class IBMModelBase {
 }
 
 /** Factorial (small n; used by IBM models 3-5). */
+/** `nltk.translate.ibm_model.IBMModel` — the abstract base class. */
+export { IBMModelBase as IBMModel };
+
 export function factorial(n: number): number {
   let out = 1;
   for (let i = 2; i <= n; i += 1) out *= i;

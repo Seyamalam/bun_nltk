@@ -10,7 +10,7 @@
 import { IBMModelBase, MIN_PROB, type AlignedSentInput } from "./ibm_model";
 import { IBMModel1 } from "./ibm1";
 
-class Model2Counts {
+export class Model2Counts {
   t_given_s = new Map<string, Map<string, number>>();
   any_t_given_s = new Map<string, number>();
   /** alignment[i][j][l][m] */

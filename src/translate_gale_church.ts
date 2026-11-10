@@ -15,16 +15,37 @@ export const LanguageIndependent = {
   VARIANCE_CHARACTERS: 6.8,
 } as const;
 
-function erfcc(x: number): number {
+export function erfcc(x: number): number {
   const z = Math.abs(x);
   const t = 1 / (1 + 0.5 * z);
   const r = t * Math.exp(-z*z -1.26551223 + t*(1.00002368 + t*(0.37409196 + t*(0.09678418 + t*(-0.18628806 + t*(0.27886807 + t*(-1.13520398 + t*(1.48851587 + t*(-0.82215223 + t*0.17087277)))))))));
   return x >= 0 ? r : 2 - r;
 }
-function normCdf(x: number): number { return 1 - 0.5 * erfcc(x / Math.SQRT2); }
-function normLogSf(x: number): number {
-  try { const v = 1 - normCdf(x); return v <= 0 ? Number.NEGATIVE_INFINITY : Math.log(v); }
+export function norm_cdf(x: number): number { return 1 - 0.5 * erfcc(x / Math.SQRT2); }
+export function norm_logsf(x: number): number {
+  try { const v = 1 - norm_cdf(x); return v <= 0 ? Number.NEGATIVE_INFINITY : Math.log(v); }
   catch { return Number.NEGATIVE_INFINITY; }
+}
+
+/** `gale_church.split_at` — split a token stream on a delimiter value. */
+export function* split_at<T>(it: Iterable<T>, splitValue: T): Generator<T[]> {
+  let acc: T[] = [];
+  for (const token of it) {
+    if (token === splitValue) {
+      yield acc;
+      acc = [];
+    } else acc.push(token);
+  }
+  yield acc;
+}
+
+/** `gale_church.parse_token_stream` — token stream → per-block sentence-length lists. */
+export function parse_token_stream(stream: Iterable<string>, soft_delimiter: string, hard_delimiter: string): number[][] {
+  return [...split_at(stream, hard_delimiter)].map((block) =>
+    [...split_at(block, soft_delimiter)].map((sentence) =>
+      sentence.reduce((n, token) => n + token.length, 0),
+    ),
+  );
 }
 
 export function alignLogProb(
@@ -113,3 +134,23 @@ export function alignBlocks(
   // NLTK's trace walks backlinks to produce sentence-to-sentence pairs
   return trace(backlinks, sourceSentsLens, targetSentsLens);
 }
+
+/** `gale_church.align_texts` — align block-segmented texts; per-block `align_blocks`. */
+export function align_texts(
+  source_blocks: number[][],
+  target_blocks: number[][],
+  params: typeof LanguageIndependent = LanguageIndependent,
+): Array<[number, number]>[] {
+  if (source_blocks.length !== target_blocks.length) {
+    throw new Error("Source and target texts do not have the same number of blocks.");
+  }
+  return source_blocks.map((sb, i) => alignBlocks(sb, target_blocks[i]!, params));
+}
+
+export const normCdf = norm_cdf;
+export const normLogSf = norm_logsf;
+export const splitAt = split_at;
+export const parseTokenStream = parse_token_stream;
+export const alignTexts = align_texts;
+export const align_blocks = alignBlocks;
+export const align_log_prob = alignLogProb;

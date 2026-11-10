@@ -9,7 +9,35 @@
 // ---------------------------------------------------------------------------
 // PhraseTable (port of nltk.translate.api.PhraseTable)
 // ---------------------------------------------------------------------------
-export type PhraseTableEntry = { trgPhrase: string[]; logProb: number };
+/** `nltk.translate.api.PhraseTableEntry` — namedtuple(trg_phrase, log_prob). */
+export class PhraseTableEntry {
+  constructor(
+    readonly trgPhrase: readonly string[],
+    readonly logProb: number,
+  ) {}
+
+  static _make(it: readonly [readonly string[], number]): PhraseTableEntry {
+    return new PhraseTableEntry(it[0], it[1]);
+  }
+
+  _asdict(): { trgPhrase: readonly string[]; logProb: number } {
+    return { trgPhrase: this.trgPhrase, logProb: this.logProb };
+  }
+
+  _replace(opts: { trgPhrase?: readonly string[]; logProb?: number }): PhraseTableEntry {
+    return new PhraseTableEntry(opts.trgPhrase ?? this.trgPhrase, opts.logProb ?? this.logProb);
+  }
+
+  get 0(): readonly string[] { return this.trgPhrase; }
+  get 1(): number { return this.logProb; }
+
+  count(): number { return 0; }
+  index(): number { throw new Error("x not in PhraseTableEntry"); }
+
+  toString(): string {
+    return `PhraseTableEntry(trg_phrase=${this.trgPhrase.map((w) => `'${w}'`).join(", ")}, log_prob=${this.logProb})`;
+  }
+}
 
 export class PhraseTable {
   private readonly srcPhrases = new Map<string, PhraseTableEntry[]>();
@@ -22,7 +50,7 @@ export class PhraseTable {
   translations_for = this.translationsFor.bind(this);
   add(srcPhrase: readonly string[], trgPhrase: readonly string[], logProb: number): void {
     const k = this.key(srcPhrase as string[]);
-    const entry: PhraseTableEntry = { trgPhrase: [...trgPhrase], logProb };
+    const entry = new PhraseTableEntry([...trgPhrase], logProb);
     const list = this.srcPhrases.get(k);
     if (list === undefined) this.srcPhrases.set(k, [entry]);
     else { list.push(entry); list.sort((a, b) => b.logProb - a.logProb); }

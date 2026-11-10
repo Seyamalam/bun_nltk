@@ -14,7 +14,7 @@ import {
 import { IBMModelBase, Counts, factorial } from "./ibm_model";
 import { IBMModel2 } from "./ibm2";
 
-class Model3Counts extends Counts {
+export class Model3Counts extends Counts {
   /** distortion[j][i][l][m] */
   distortion = new Map<number, Map<number, Map<number, Map<number, number>>>>();
   /** distortion_for_any_j[i][l][m] */

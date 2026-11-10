@@ -11,6 +11,10 @@ import argparse
 import json
 import warnings
 
+import nltk
+
+assert nltk.__version__ == "3.10.3"
+
 from nltk.translate.ibm1 import IBMModel1
 from nltk.translate.ibm2 import IBMModel2
 from nltk.translate import AlignedSent

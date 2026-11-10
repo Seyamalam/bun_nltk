@@ -38,42 +38,40 @@ export function growDiagFinalAnd(
 
   const neighbors: Point[] = [[-1,0],[0,-1],[1,0],[0,1],[-1,-1],[-1,1],[1,-1],[1,1]];
 
+  // NLTK quirk: `aligned` is a dict keyed "e"/"f", so `point not in aligned` is
+  // vacuously true for int coordinates — grow_diag adds any in-union neighbor of
+  // an in-bounds aligned point (the neighbor itself is NOT bounds-checked).
   const growDiag = () => {
-    let prev = alignment.size - 1;
-    while (prev < alignment.size) {
-      let added = false;
+    let added = true;
+    while (added) {
+      added = false;
       for (const k of Array.from(alignment)) {
         const [e, f] = k.split(",").map(Number) as [number, number];
         if (!(0 <= e && e < srclen && 0 <= f && f < trglen)) continue;
         for (const [de, df] of neighbors) {
-          const ne = e + de, nf = f + df;
-          const nk = `${ne},${nf}`;
-          if (union.has(nk)) {
+          const nk = `${e + de},${f + df}`;
+          if (union.has(nk) && !alignment.has(nk)) {
             alignment.add(nk);
-            alignedE.add(ne); alignedF.add(nf);
-            prev++;
             added = true;
           }
         }
       }
-      if (!added) break;
     }
   };
 
-  const finalAnd = (label: string) => {
-    void label;
+  // final_and(a): `a` is unused in NLTK — it adds every in-bounds union point.
+  const finalAnd = () => {
     for (const k of union) {
       const [e, f] = k.split(",").map(Number) as [number, number];
-      const k2 = `${e},${f}`;
-      if (!alignment.has(k2) && 0 <= e && e < srclen && 0 <= f && f < trglen) {
-        alignment.add(k);
+      if (0 <= e && e < srclen && 0 <= f && f < trglen) {
+        alignment.add(`${e},${f}`);
         alignedE.add(e); alignedF.add(f);
       }
     }
   };
 
   growDiag();
-  finalAnd("e2f");
-  finalAnd("f2e");
+  finalAnd();
+  finalAnd();
   return [...alignment].map(k => k.split(",").map(Number) as Point).sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
 }

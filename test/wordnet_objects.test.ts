@@ -120,7 +120,7 @@ describe("similarity", () => {
     expect(res_similarity(dog, cat, ic)).toBe(7.911666509036577);
     expect(jcn_similarity(dog, cat, ic)).toBe(0.4497755285516739);
     expect(lin_similarity(dog, cat, ic)).toBe(0.8768009843733973);
-    expect(() => information_content(dog, { v: ic.v })).toThrowError(
+    expect(() => information_content(dog, { v: ic.v! })).toThrowError(
       /Information content file has no entries for part-of-speech: n/,
     );
     expect(() => dog.res_similarity(reader.synset("bark.v.01")!, ic)).toThrowError(/least common subsumer/);

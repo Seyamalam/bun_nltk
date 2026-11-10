@@ -381,7 +381,64 @@
    "ISRI_STOP_WORDS": "src/stem_isri.ts",
    "RSLPStemmer": "src/stem_rslp.ts",
    "Cistem": "src/stem_cistem.ts",
-   "CistemStemmer": "src/stem_cistem.ts"
+   "CistemStemmer": "src/stem_cistem.ts",
+   "Alignment": "src/translate_api.ts",
+   "AlignedSent": "src/translate_api.ts",
+   "PhraseTable": "src/translate_stack_decoder.ts",
+   "PhraseTableEntry": "src/translate_stack_decoder.ts",
+   "find_binary": "src/internals.ts",
+   "LanguageIndependent": "src/translate_gale_church.ts",
+   "align_blocks": "src/translate_gale_church.ts",
+   "align_log_prob": "src/translate_gale_church.ts",
+   "align_texts": "src/translate_gale_church.ts",
+   "erfcc": "src/translate_gale_church.ts",
+   "norm_cdf": "src/translate_gale_church.ts",
+   "norm_logsf": "src/translate_gale_church.ts",
+   "parse_token_stream": "src/translate_gale_church.ts",
+   "split_at": "src/translate_gale_church.ts",
+   "trace": "src/translate_gale_church.ts",
+   "grow_diag_final_and": "src/translate_gdfa.ts",
+   "growDiagFinalAnd": "src/translate_gdfa.ts",
+   "corpusGleu": "src/translate_gleu.ts",
+   "sentenceGleu": "src/translate_gleu.ts",
+   "alignment": "src/translate_lepor.ts",
+   "corpus_lepor": "src/translate_lepor.ts",
+   "harmonic": "src/translate_lepor.ts",
+   "length_penalty": "src/translate_lepor.ts",
+   "ngram_positional_penalty": "src/translate_lepor.ts",
+   "sentence_lepor": "src/translate_lepor.ts",
+   "alignWords": "src/translate_meteor.ts",
+   "exactMatch": "src/translate_meteor.ts",
+   "meteorScore": "src/translate_meteor.ts",
+   "singleMeteorScore": "src/translate_meteor.ts",
+   "stemMatch": "src/translate_meteor.ts",
+   "wordnetsyn_match": "src/translate_meteor.ts",
+   "WordNetCorpusReader": "src/wordnet_objects.ts",
+   "alignment_error_rate": "src/translate_metrics.ts",
+   "extract": "src/translate_phrase_based.ts",
+   "phraseExtraction": "src/translate_phrase_based.ts",
+   "corpusRibes": "src/translate_ribes.ts",
+   "findIncreasingSequences": "src/translate_ribes.ts",
+   "kendallTau": "src/translate_ribes.ts",
+   "position_of_ngram": "src/translate_ribes.ts",
+   "sentenceRibes": "src/translate_ribes.ts",
+   "spearmanRho": "src/translate_ribes.ts",
+   "wordRankAlignment": "src/translate_ribes.ts",
+   "StackDecoder": "src/translate_stack_decoder.ts",
+   "IBMModel": "src/ibm_model.ts",
+   "Counts": "src/ibm_model.ts",
+   "AlignmentInfo": "src/ibm_sampling.ts",
+   "longest_target_sentence_length": "src/ibm_model.ts",
+   "IBMModel1": "src/ibm1.ts",
+   "IBMModel2": "src/ibm2.ts",
+   "Model2Counts": "src/ibm2.ts",
+   "IBMModel3": "src/ibm3.ts",
+   "Model3Counts": "src/ibm3.ts",
+   "IBMModel4": "src/ibm4.ts",
+   "Model4Counts": "src/ibm4.ts",
+   "IBMModel5": "src/ibm5.ts",
+   "Model5Counts": "src/ibm5.ts",
+   "Slots": "src/ibm5.ts"
   }
  },
  "modules": [
@@ -1167,6 +1224,50 @@
    "anchor": "stem-extra-differential",
    "oracleVersion": "3.10.3",
    "scope": "153 stems: arlstem/arlstem2/isri on 30 Arabic words, rslp on 25 Portuguese words, cistem/case_insensitive on 19 German words."
+  },
+  {
+   "id": "translate-api-differential",
+   "kind": "differential",
+   "files": [
+    "test/translate_api.test.ts",
+    "test/translate_api_oracle.py"
+   ],
+   "anchor": "nltk.translate Alignment oracle parity",
+   "oracleVersion": "3.10.3",
+   "scope": "Alignment/AlignedSent repr/str/invert/index/range/fromstring; erfcc/norm_cdf/norm_logsf; align_texts block error; alignment_error_rate; position_of_ngram; split_at/parse_token_stream document-contract (py3 NLTK broken)."
+  },
+  {
+   "id": "translate-modules-differential",
+   "kind": "differential",
+   "files": [
+    "test/translate_modules.test.ts",
+    "test/translate_modules_oracle.py"
+   ],
+   "anchor": "nltk.translate.gdfa oracle parity",
+   "oracleVersion": "3.10.3",
+   "scope": "gdfa incl OOB grow_diag, gleu, lepor (all helpers + sentence/corpus), phrase_extraction."
+  },
+  {
+   "id": "ibm-differential",
+   "kind": "differential",
+   "files": [
+    "test/ibm_models.test.ts",
+    "bench/python_ibm_baseline.py"
+   ],
+   "anchor": "python_ibm_baseline",
+   "oracleVersion": "3.10.3",
+   "scope": "IBM model 1-2 training/translation tables via bench/python_ibm_baseline.py spawn."
+  },
+  {
+   "id": "meteor-ribes-differential",
+   "kind": "differential",
+   "files": [
+    "test/meteor_ribes_texttiling_tnt.test.ts",
+    "test/meteor_ribes_oracle.py"
+   ],
+   "anchor": "sentence_ribes single reference matches python baseline",
+   "oracleVersion": "3.10.3",
+   "scope": "RIBES sentence scores vs python baseline; meteor/texttiling/tnt python baselines."
   }
  ],
  "signatureBindings": [
@@ -2954,7 +3055,7 @@
     "wsd-unit"
    ],
    "fixtures": {
-    "status": "blocked-data",
+    "status": "unit-only",
     "resources": [
      "corpora/wordnet"
     ],
@@ -16887,6 +16988,3001 @@
      "Pinned sample corpus; unbounded input space excluded."
     ]
    }
+  },
+  {
+   "target": "nltk.translate.api.Alignment",
+   "exports": [
+    "Alignment"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_api.ts",
+     "anchor": "export class Alignment"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromstring",
+     "intersection",
+     "invert",
+     "issubset",
+     "range"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Frozenset-style alignment set: str/repr giza format, invert, range, index lookup, issubset/intersection, sorted iteration."
+  },
+  {
+   "target": "nltk.translate.api.AlignedSent",
+   "exports": [
+    "AlignedSent"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_api.ts",
+     "anchor": "export class AlignedSent"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "invert"
+    ],
+    "gaps": [
+     "_repr_svg_ raises (external dot binary); alignment is readonly property not settable attribute"
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Aligned sentence pair with Alignment; str/invert parity; _repr_svg_ requires external graphviz."
+  },
+  {
+   "target": "nltk.translate.api.PhraseTable",
+   "exports": [
+    "PhraseTable"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/translate_stack_decoder.ts",
+     "anchor": "export class PhraseTable"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "add",
+     "translations_for"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "PhraseTable with add/translations_for surface (camelCase translationsFor)."
+  },
+  {
+   "target": "nltk.translate.api.PhraseTableEntry",
+   "exports": [
+    "PhraseTableEntry"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_stack_decoder.ts",
+     "anchor": "export class PhraseTableEntry"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "count",
+     "index"
+    ],
+    "gaps": [
+     "Positional tuple access via numeric getters; repr uses Python field names trg_phrase/log_prob."
+    ]
+   },
+   "evidence": [
+    "translation-unit",
+    "translate-modules-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "namedtuple surface covered via PhraseTable.add/translationsFor in stack-decoder tests."
+    ]
+   },
+   "notes": "NamedTuple entry {trgPhrase, logProb} — exported as TS type only."
+  },
+  {
+   "target": "nltk.translate.api.find_binary",
+   "exports": [
+    "find_binary"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/internals.ts",
+     "anchor": "export function findBinary"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Throwing stub — subprocess binary discovery is platform-excluded."
+  },
+  {
+   "target": "nltk.translate.gale_church.LanguageIndependent",
+   "exports": [
+    "LanguageIndependent"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_gale_church.ts",
+     "anchor": "export const LanguageIndependent"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gale_church.LanguageIndependent"
+  },
+  {
+   "target": "nltk.translate.gale_church.align_blocks",
+   "exports": [
+    "align_blocks"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_gale_church.ts",
+     "anchor": "export function alignBlocks"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gale_church.align_blocks"
+  },
+  {
+   "target": "nltk.translate.gale_church.align_log_prob",
+   "exports": [
+    "align_log_prob"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_gale_church.ts",
+     "anchor": "export function alignLogProb"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gale_church.align_log_prob"
+  },
+  {
+   "target": "nltk.translate.gale_church.align_texts",
+   "exports": [
+    "align_texts"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_gale_church.ts",
+     "anchor": "export function align_texts"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gale_church.align_texts"
+  },
+  {
+   "target": "nltk.translate.gale_church.erfcc",
+   "exports": [
+    "erfcc"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_gale_church.ts",
+     "anchor": "export function erfcc"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gale_church.erfcc"
+  },
+  {
+   "target": "nltk.translate.gale_church.norm_cdf",
+   "exports": [
+    "norm_cdf"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_gale_church.ts",
+     "anchor": "export function norm_cdf"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gale_church.norm_cdf"
+  },
+  {
+   "target": "nltk.translate.gale_church.norm_logsf",
+   "exports": [
+    "norm_logsf"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_gale_church.ts",
+     "anchor": "export function norm_logsf"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gale_church.norm_logsf"
+  },
+  {
+   "target": "nltk.translate.gale_church.parse_token_stream",
+   "exports": [
+    "parse_token_stream"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_gale_church.ts",
+     "anchor": "export function parse_token_stream"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gale_church.parse_token_stream: implements documented contract — Python 3 NLTK impl always raises (py2 .next() + PEP479)"
+  },
+  {
+   "target": "nltk.translate.gale_church.split_at",
+   "exports": [
+    "split_at"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_gale_church.ts",
+     "anchor": "export function* split_at"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gale_church.split_at: implements documented contract — Python 3 NLTK impl always raises (py2 .next() + PEP479)"
+  },
+  {
+   "target": "nltk.translate.gale_church.trace",
+   "exports": [
+    "trace"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_gale_church.ts",
+     "anchor": "export function trace"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gale_church.trace"
+  },
+  {
+   "target": "nltk.translate.gdfa.grow_diag_final_and",
+   "exports": [
+    "grow_diag_final_and",
+    "growDiagFinalAnd"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_gdfa.ts",
+     "anchor": "export function growDiagFinalAnd"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-modules-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "GDFA incl. vacuous aligned-guard quirk and unbounded grow_diag neighbors."
+  },
+  {
+   "target": "nltk.translate.gleu_score.corpus_gleu",
+   "exports": [
+    "corpusGleu"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_gleu.ts",
+     "anchor": "export function corpusGleu"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-modules-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gleu_score.corpus_gleu"
+  },
+  {
+   "target": "nltk.translate.gleu_score.sentence_gleu",
+   "exports": [
+    "sentenceGleu"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_gleu.ts",
+     "anchor": "export function sentenceGleu"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-modules-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gleu_score.sentence_gleu"
+  },
+  {
+   "target": "nltk.translate.gleu_score.ngrams",
+   "exports": [
+    "ngrams"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_compat.ts",
+     "anchor": "ngrams"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "util-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gleu_score.ngrams"
+  },
+  {
+   "target": "nltk.translate.gleu_score.everygrams",
+   "exports": [
+    "everygrams"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "export function* everygrams"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "util-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.gleu_score.everygrams"
+  },
+  {
+   "target": "nltk.translate.lepor.alignment",
+   "exports": [
+    "alignment"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_lepor.ts",
+     "anchor": "export function alignment"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-modules-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.lepor.alignment"
+  },
+  {
+   "target": "nltk.translate.lepor.corpus_lepor",
+   "exports": [
+    "corpus_lepor"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_lepor.ts",
+     "anchor": "export const corpus_lepor"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-modules-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.lepor.corpus_lepor"
+  },
+  {
+   "target": "nltk.translate.lepor.harmonic",
+   "exports": [
+    "harmonic"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_lepor.ts",
+     "anchor": "export function harmonic"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-modules-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.lepor.harmonic"
+  },
+  {
+   "target": "nltk.translate.lepor.length_penalty",
+   "exports": [
+    "length_penalty"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_lepor.ts",
+     "anchor": "export const length_penalty"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-modules-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.lepor.length_penalty"
+  },
+  {
+   "target": "nltk.translate.lepor.ngram_positional_penalty",
+   "exports": [
+    "ngram_positional_penalty"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_lepor.ts",
+     "anchor": "export const ngram_positional_penalty"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-modules-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.lepor.ngram_positional_penalty"
+  },
+  {
+   "target": "nltk.translate.lepor.sentence_lepor",
+   "exports": [
+    "sentence_lepor"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_lepor.ts",
+     "anchor": "export const sentence_lepor"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-modules-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.lepor.sentence_lepor"
+  },
+  {
+   "target": "nltk.translate.meteor_score.align_words",
+   "exports": [
+    "alignWords"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_meteor.ts",
+     "anchor": "export function alignWords"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.meteor_score.align_words"
+  },
+  {
+   "target": "nltk.translate.meteor_score.exact_match",
+   "exports": [
+    "exactMatch"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_meteor.ts",
+     "anchor": "export function exactMatch"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.meteor_score.exact_match"
+  },
+  {
+   "target": "nltk.translate.meteor_score.meteor_score",
+   "exports": [
+    "meteorScore"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_meteor.ts",
+     "anchor": "export function meteorScore"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.meteor_score.meteor_score"
+  },
+  {
+   "target": "nltk.translate.meteor_score.single_meteor_score",
+   "exports": [
+    "singleMeteorScore"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_meteor.ts",
+     "anchor": "export function singleMeteorScore"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.meteor_score.single_meteor_score"
+  },
+  {
+   "target": "nltk.translate.meteor_score.stem_match",
+   "exports": [
+    "stemMatch"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_meteor.ts",
+     "anchor": "export function stemMatch"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.meteor_score.stem_match"
+  },
+  {
+   "target": "nltk.translate.meteor_score.wordnetsyn_match",
+   "exports": [
+    "wordnetsyn_match"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_meteor.ts",
+     "anchor": "export function wordnetsynMatch"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.meteor_score.wordnetsyn_match"
+  },
+  {
+   "target": "nltk.translate.meteor_score.PorterStemmer",
+   "exports": [
+    "PorterStemmer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/porter_stemmer.ts",
+     "anchor": "export class PorterStemmer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "porter-unit",
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Re-exported PorterStemmer."
+  },
+  {
+   "target": "nltk.translate.meteor_score.StemmerI",
+   "exports": [
+    "StemmerI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/api_interfaces.ts",
+     "anchor": "export abstract class StemmerI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "stem"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Re-exported StemmerI ABC."
+  },
+  {
+   "target": "nltk.translate.meteor_score.WordNetCorpusReader",
+   "exports": [
+    "WordNetCorpusReader"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/wordnet_objects.ts",
+     "anchor": "export class WordNetReader"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "synset",
+     "synsets"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "WordNetCorpusReader → WordNetReader alias."
+  },
+  {
+   "target": "nltk.translate.metrics.alignment_error_rate",
+   "exports": [
+    "alignment_error_rate"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_metrics.ts",
+     "anchor": "export function alignment_error_rate"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "AER = 1 - (|H∩S|+|H∩P|)/(|H|+|S|)."
+  },
+  {
+   "target": "nltk.translate.phrase_based.extract",
+   "exports": [
+    "extract"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_phrase_based.ts",
+     "anchor": "export function extract"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-modules-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.phrase_based.extract"
+  },
+  {
+   "target": "nltk.translate.phrase_based.phrase_extraction",
+   "exports": [
+    "phraseExtraction"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_phrase_based.ts",
+     "anchor": "export function phraseExtraction"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-modules-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.phrase_based.phrase_extraction"
+  },
+  {
+   "target": "nltk.translate.ribes_score.corpus_ribes",
+   "exports": [
+    "corpusRibes"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_ribes.ts",
+     "anchor": "export function corpusRibes"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ribes_score.corpus_ribes"
+  },
+  {
+   "target": "nltk.translate.ribes_score.find_increasing_sequences",
+   "exports": [
+    "findIncreasingSequences"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_ribes.ts",
+     "anchor": "export function findIncreasingSequences"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ribes_score.find_increasing_sequences"
+  },
+  {
+   "target": "nltk.translate.ribes_score.kendall_tau",
+   "exports": [
+    "kendallTau"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_ribes.ts",
+     "anchor": "export function kendallTau"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ribes_score.kendall_tau"
+  },
+  {
+   "target": "nltk.translate.ribes_score.position_of_ngram",
+   "exports": [
+    "position_of_ngram"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_ribes.ts",
+     "anchor": "export function position_of_ngram"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translate-api-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ribes_score.position_of_ngram"
+  },
+  {
+   "target": "nltk.translate.ribes_score.sentence_ribes",
+   "exports": [
+    "sentenceRibes"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_ribes.ts",
+     "anchor": "export function sentenceRibes"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ribes_score.sentence_ribes"
+  },
+  {
+   "target": "nltk.translate.ribes_score.spearman_rho",
+   "exports": [
+    "spearmanRho"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_ribes.ts",
+     "anchor": "export function spearmanRho"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ribes_score.spearman_rho"
+  },
+  {
+   "target": "nltk.translate.ribes_score.word_rank_alignment",
+   "exports": [
+    "wordRankAlignment"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_ribes.ts",
+     "anchor": "export function wordRankAlignment"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "meteor-ribes-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ribes_score.word_rank_alignment"
+  },
+  {
+   "target": "nltk.translate.ribes_score.ngrams",
+   "exports": [
+    "ngrams"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/nltk_compat.ts",
+     "anchor": "ngrams"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "util-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ribes_score.ngrams"
+  },
+  {
+   "target": "nltk.translate.ribes_score.choose",
+   "exports": [
+    "choose"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/util_nltk.ts",
+     "anchor": "choose"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "util-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ribes_score.choose"
+  },
+  {
+   "target": "nltk.translate.stack_decoder.StackDecoder",
+   "exports": [
+    "StackDecoder"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/translate_stack_decoder.ts",
+     "anchor": "export class StackDecoder"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "compute_future_scores",
+     "distortion_score",
+     "expansion_score",
+     "find_all_src_phrases",
+     "future_score",
+     "translate",
+     "valid_phrases"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Phrase-based stack decoder."
+  },
+  {
+   "target": "nltk.translate.ibm_model.IBMModel",
+   "exports": [
+    "IBMModel"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "export abstract class IBMModelBase"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "init_vocab",
+     "reset_probabilities",
+     "maximize_lexical_translation_probabilities",
+     "maximize_fertility_probabilities",
+     "maximize_null_generation_probabilities",
+     "best_model2_alignment"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Abstract IBM base."
+  },
+  {
+   "target": "nltk.translate.ibm_model.Counts",
+   "exports": [
+    "Counts"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "export class Counts"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "update_fertility",
+     "update_lexical_translation",
+     "update_null_generation"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Counts with t_given_s/any_t_given_s/p0/p1/fertility maps."
+  },
+  {
+   "target": "nltk.translate.ibm_model.AlignmentInfo",
+   "exports": [
+    "AlignmentInfo"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_sampling.ts",
+     "anchor": "export class AlignmentInfo"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "center_of_cept",
+     "fertility_of_i",
+     "is_head_word",
+     "previous_cept",
+     "previous_in_tablet",
+     "zero_indexed_alignment"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "AlignmentInfo."
+  },
+  {
+   "target": "nltk.translate.ibm_model.longest_target_sentence_length",
+   "exports": [
+    "longest_target_sentence_length"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "export function longestTargetSentenceLength"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "Longest trg sentence length."
+  },
+  {
+   "target": "nltk.translate.ibm1.AlignedSent",
+   "exports": [
+    "AlignedSent"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_api.ts",
+     "anchor": "export class AlignedSent"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "invert"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm1.AlignedSent re-export."
+  },
+  {
+   "target": "nltk.translate.ibm1.Alignment",
+   "exports": [
+    "Alignment"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_api.ts",
+     "anchor": "export class Alignment"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromstring",
+     "intersection",
+     "invert",
+     "issubset",
+     "range"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm1.Alignment re-export."
+  },
+  {
+   "target": "nltk.translate.ibm1.Counts",
+   "exports": [
+    "Counts"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "export class Counts"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "update_fertility",
+     "update_lexical_translation",
+     "update_null_generation"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm1.Counts re-export."
+  },
+  {
+   "target": "nltk.translate.ibm1.IBMModel",
+   "exports": [
+    "IBMModel"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "IBMModelBase"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "init_vocab",
+     "reset_probabilities",
+     "maximize_lexical_translation_probabilities",
+     "maximize_fertility_probabilities",
+     "maximize_null_generation_probabilities",
+     "best_model2_alignment"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm1.IBMModel re-export."
+  },
+  {
+   "target": "nltk.translate.ibm1.IBMModel1",
+   "exports": [
+    "IBMModel1"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm1.ts",
+     "anchor": "export class IBMModel1"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "prob_alignment_point",
+     "prob_all_alignments",
+     "prob_t_a_given_s",
+     "set_uniform_probabilities",
+     "train"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm1.IBMModel1 re-export."
+  },
+  {
+   "target": "nltk.translate.ibm2.IBMModel1",
+   "exports": [
+    "IBMModel1"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm1.ts",
+     "anchor": "export class IBMModel1"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "prob_alignment_point",
+     "prob_all_alignments",
+     "prob_t_a_given_s",
+     "set_uniform_probabilities",
+     "train"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm2.IBMModel1"
+  },
+  {
+   "target": "nltk.translate.ibm2.IBMModel2",
+   "exports": [
+    "IBMModel2"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm2.ts",
+     "anchor": "export class IBMModel2"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "maximize_alignment_probabilities",
+     "prob_alignment_point",
+     "prob_all_alignments",
+     "prob_t_a_given_s",
+     "set_uniform_probabilities",
+     "train"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm2.IBMModel2"
+  },
+  {
+   "target": "nltk.translate.ibm2.Model2Counts",
+   "exports": [
+    "Model2Counts"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm2.ts",
+     "anchor": "export class Model2Counts"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "update_alignment",
+     "update_lexical_translation"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm2.Model2Counts"
+  },
+  {
+   "target": "nltk.translate.ibm2.AlignedSent",
+   "exports": [
+    "AlignedSent"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_api.ts",
+     "anchor": "export class AlignedSent"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "invert"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm2.AlignedSent re-export."
+  },
+  {
+   "target": "nltk.translate.ibm2.Alignment",
+   "exports": [
+    "Alignment"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_api.ts",
+     "anchor": "export class Alignment"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromstring",
+     "intersection",
+     "invert",
+     "issubset",
+     "range"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm2.Alignment re-export."
+  },
+  {
+   "target": "nltk.translate.ibm2.Counts",
+   "exports": [
+    "Counts"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "export class Counts"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "update_fertility",
+     "update_lexical_translation",
+     "update_null_generation"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm2.Counts re-export."
+  },
+  {
+   "target": "nltk.translate.ibm2.IBMModel",
+   "exports": [
+    "IBMModel"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "IBMModelBase"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "init_vocab",
+     "reset_probabilities",
+     "maximize_lexical_translation_probabilities",
+     "maximize_fertility_probabilities",
+     "maximize_null_generation_probabilities",
+     "best_model2_alignment"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm2.IBMModel re-export."
+  },
+  {
+   "target": "nltk.translate.ibm3.IBMModel2",
+   "exports": [
+    "IBMModel2"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm2.ts",
+     "anchor": "export class IBMModel2"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "maximize_alignment_probabilities",
+     "prob_alignment_point",
+     "prob_all_alignments",
+     "prob_t_a_given_s",
+     "set_uniform_probabilities",
+     "train"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm3.IBMModel2"
+  },
+  {
+   "target": "nltk.translate.ibm3.IBMModel3",
+   "exports": [
+    "IBMModel3"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm3.ts",
+     "anchor": "export class IBMModel3"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "maximize_distortion_probabilities",
+     "prob_t_a_given_s",
+     "reset_probabilities",
+     "set_uniform_probabilities",
+     "train"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm3.IBMModel3"
+  },
+  {
+   "target": "nltk.translate.ibm3.Model3Counts",
+   "exports": [
+    "Model3Counts"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm3.ts",
+     "anchor": "export class Model3Counts"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "update_distortion",
+     "update_fertility",
+     "update_lexical_translation",
+     "update_null_generation"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm3.Model3Counts"
+  },
+  {
+   "target": "nltk.translate.ibm3.AlignedSent",
+   "exports": [
+    "AlignedSent"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_api.ts",
+     "anchor": "export class AlignedSent"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "invert"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm3.AlignedSent re-export."
+  },
+  {
+   "target": "nltk.translate.ibm3.Alignment",
+   "exports": [
+    "Alignment"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_api.ts",
+     "anchor": "export class Alignment"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromstring",
+     "intersection",
+     "invert",
+     "issubset",
+     "range"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm3.Alignment re-export."
+  },
+  {
+   "target": "nltk.translate.ibm3.Counts",
+   "exports": [
+    "Counts"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "export class Counts"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "update_fertility",
+     "update_lexical_translation",
+     "update_null_generation"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm3.Counts re-export."
+  },
+  {
+   "target": "nltk.translate.ibm3.IBMModel",
+   "exports": [
+    "IBMModel"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "IBMModelBase"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "init_vocab",
+     "reset_probabilities",
+     "maximize_lexical_translation_probabilities",
+     "maximize_fertility_probabilities",
+     "maximize_null_generation_probabilities",
+     "best_model2_alignment"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm3.IBMModel re-export."
+  },
+  {
+   "target": "nltk.translate.ibm4.IBMModel3",
+   "exports": [
+    "IBMModel3"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm3.ts",
+     "anchor": "export class IBMModel3"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "maximize_distortion_probabilities",
+     "prob_t_a_given_s",
+     "reset_probabilities",
+     "set_uniform_probabilities",
+     "train"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm4.IBMModel3"
+  },
+  {
+   "target": "nltk.translate.ibm4.IBMModel4",
+   "exports": [
+    "IBMModel4"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm4.ts",
+     "anchor": "export class IBMModel4"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "maximize_distortion_probabilities",
+     "model4_prob_t_a_given_s",
+     "prob_t_a_given_s",
+     "reset_probabilities",
+     "set_uniform_probabilities",
+     "train"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm4.IBMModel4"
+  },
+  {
+   "target": "nltk.translate.ibm4.Model4Counts",
+   "exports": [
+    "Model4Counts"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm4.ts",
+     "anchor": "export class Model4Counts"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "update_distortion",
+     "update_fertility",
+     "update_lexical_translation",
+     "update_null_generation"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm4.Model4Counts"
+  },
+  {
+   "target": "nltk.translate.ibm4.AlignedSent",
+   "exports": [
+    "AlignedSent"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_api.ts",
+     "anchor": "export class AlignedSent"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "invert"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm4.AlignedSent re-export."
+  },
+  {
+   "target": "nltk.translate.ibm4.Alignment",
+   "exports": [
+    "Alignment"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_api.ts",
+     "anchor": "export class Alignment"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromstring",
+     "intersection",
+     "invert",
+     "issubset",
+     "range"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm4.Alignment re-export."
+  },
+  {
+   "target": "nltk.translate.ibm4.Counts",
+   "exports": [
+    "Counts"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "export class Counts"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "update_fertility",
+     "update_lexical_translation",
+     "update_null_generation"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm4.Counts re-export."
+  },
+  {
+   "target": "nltk.translate.ibm4.IBMModel",
+   "exports": [
+    "IBMModel"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "IBMModelBase"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "init_vocab",
+     "reset_probabilities",
+     "maximize_lexical_translation_probabilities",
+     "maximize_fertility_probabilities",
+     "maximize_null_generation_probabilities",
+     "best_model2_alignment"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm4.IBMModel re-export."
+  },
+  {
+   "target": "nltk.translate.ibm4.longest_target_sentence_length",
+   "exports": [
+    "longest_target_sentence_length"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "export function longestTargetSentenceLength"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm4.longest_target_sentence_length re-export."
+  },
+  {
+   "target": "nltk.translate.ibm5.IBMModel4",
+   "exports": [
+    "IBMModel4"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm4.ts",
+     "anchor": "export class IBMModel4"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "maximize_distortion_probabilities",
+     "model4_prob_t_a_given_s",
+     "prob_t_a_given_s",
+     "reset_probabilities",
+     "set_uniform_probabilities",
+     "train"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm5.IBMModel4"
+  },
+  {
+   "target": "nltk.translate.ibm5.IBMModel5",
+   "exports": [
+    "IBMModel5"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm5.ts",
+     "anchor": "export class IBMModel5"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "hillclimb",
+     "maximize_vacancy_probabilities",
+     "prob_t_a_given_s",
+     "reset_probabilities",
+     "set_uniform_probabilities",
+     "train"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm5.IBMModel5"
+  },
+  {
+   "target": "nltk.translate.ibm5.Model5Counts",
+   "exports": [
+    "Model5Counts"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm5.ts",
+     "anchor": "export class Model5Counts"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "update_vacancy",
+     "update_fertility",
+     "update_lexical_translation",
+     "update_null_generation"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm5.Model5Counts"
+  },
+  {
+   "target": "nltk.translate.ibm5.Slots",
+   "exports": [
+    "Slots"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm5.ts",
+     "anchor": "export class Slots"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "occupy",
+     "vacancies_at"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm5.Slots"
+  },
+  {
+   "target": "nltk.translate.ibm5.AlignedSent",
+   "exports": [
+    "AlignedSent"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_api.ts",
+     "anchor": "export class AlignedSent"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "invert"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm5.AlignedSent re-export."
+  },
+  {
+   "target": "nltk.translate.ibm5.Alignment",
+   "exports": [
+    "Alignment"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/translate_api.ts",
+     "anchor": "export class Alignment"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromstring",
+     "intersection",
+     "invert",
+     "issubset",
+     "range"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm5.Alignment re-export."
+  },
+  {
+   "target": "nltk.translate.ibm5.Counts",
+   "exports": [
+    "Counts"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "export class Counts"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "update_fertility",
+     "update_lexical_translation",
+     "update_null_generation"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm5.Counts re-export."
+  },
+  {
+   "target": "nltk.translate.ibm5.IBMModel",
+   "exports": [
+    "IBMModel"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "IBMModelBase"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "init_vocab",
+     "reset_probabilities",
+     "maximize_lexical_translation_probabilities",
+     "maximize_fertility_probabilities",
+     "maximize_null_generation_probabilities",
+     "best_model2_alignment"
+    ],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm5.IBMModel re-export."
+  },
+  {
+   "target": "nltk.translate.ibm5.longest_target_sentence_length",
+   "exports": [
+    "longest_target_sentence_length"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/ibm_model.ts",
+     "anchor": "export function longestTargetSentenceLength"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "No signature gaps observed for the reviewed public members."
+    ]
+   },
+   "evidence": [
+    "ibm-differential",
+    "translation-unit"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No fixture gaps observed for the pinned cases."
+    ]
+   },
+   "notes": "nltk.translate.ibm5.longest_target_sentence_length re-export."
   }
  ]
 }

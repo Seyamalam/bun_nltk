@@ -203,6 +203,15 @@ export function sentenceRibes(
 /**
  * Corpus-level RIBES — macro-average of per-sentence best scores.
  */
+/** `ribes_score.position_of_ngram` — index of the first `ngram` occurrence, or -1. */
+export function position_of_ngram(ngram: readonly string[], sentence: readonly string[]): number | null {
+  const n = ngram.length;
+  for (let i = 0; i + n <= sentence.length; i++) {
+    if (ngram.every((w, k) => w === sentence[i + k])) return i;
+  }
+  return null;
+}
+
 export function corpusRibes(
   listOfReferences: string[][][],
   hypotheses: string[][],

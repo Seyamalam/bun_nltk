@@ -486,11 +486,11 @@ export { SNOWBALL_LANGUAGES, snowballStem } from "./src/snowball";
 export {
   IBMModel1,
 } from "./src/ibm1";
-export { IBMModel2 } from "./src/ibm2";
-export { IBMModel3 } from "./src/ibm3";
-export { factorial as ibmFactorial } from "./src/ibm_model";
-export { IBMModel4 } from "./src/ibm4";
-export { IBMModel5 } from "./src/ibm5";
+export { IBMModel2, Model2Counts } from "./src/ibm2";
+export { IBMModel3, Model3Counts } from "./src/ibm3";
+export { factorial as ibmFactorial, IBMModelBase as IBMModel } from "./src/ibm_model";
+export { IBMModel4, Model4Counts } from "./src/ibm4";
+export { IBMModel5, Model5Counts, Slots } from "./src/ibm5";
 export { CistemStemmer, CistemStemmer as Cistem, cistemStem } from "./src/stem_cistem";
 export { dependencyEvaluate } from "./src/parse_evaluate";
 export type { DependencyEvalNode } from "./src/parse_evaluate";
@@ -517,7 +517,18 @@ export { sentenceRibes, corpusRibes, wordRankAlignment, kendallTau, spearmanRho,
 export { TextTilingTokenizer, smooth as ttSmooth, BLOCK_COMPARISON, VOCABULARY_INTRODUCTION, HC as TT_HC, LC as TT_LC } from "./src/tokenize_texttiling";
 export { TnT } from "./src/tag_tnt";
 export { SyllableTokenizer, sonorityTokenize } from "./src/tokenize_sonority";
-export { alignBlocks, alignLogProb, trace as galeChurchTrace, LanguageIndependent as GaleChurchLanguageIndependent, MAX_ALIGN_BLOCKS } from "./src/translate_gale_church";
+export { alignBlocks, align_blocks, alignLogProb, align_log_prob, align_texts, alignTexts, parse_token_stream, parseTokenStream, split_at, splitAt, erfcc, norm_cdf, norm_logsf, trace, trace as galeChurchTrace, LanguageIndependent as GaleChurchLanguageIndependent, LanguageIndependent, MAX_ALIGN_BLOCKS } from "./src/translate_gale_church";
+export { Alignment, AlignedSent } from "./src/translate_api";
+export { alignment_error_rate } from "./src/translate_metrics";
+export { position_of_ngram } from "./src/translate_ribes";
+export { wordnetsynMatch, wordnetsynMatch as wordnetsyn_match } from "./src/translate_meteor";
+export { harmonic } from "./src/translate_lepor";
+export { alignment } from "./src/translate_lepor";
+export { extract } from "./src/translate_phrase_based";
+export { PhraseTable, PhraseTableEntry } from "./src/translate_stack_decoder";
+export { findBinary as find_binary } from "./src/internals";
+export { longestTargetSentenceLength as longest_target_sentence_length, factorial, Counts } from "./src/ibm_model";
+export { WordNetReader as WordNetCorpusReader } from "./src/wordnet_objects";
 export { phraseExtraction, extract as phraseExtract, MAX_PHRASE_EXTRACTION_DEFAULT_LEN } from "./src/translate_phrase_based";
 export { mapTag, tagsetMapping } from "./src/tag_mapping";
 export { parseSents, rootSemrep } from "./src/sem_util";

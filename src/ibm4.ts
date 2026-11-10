@@ -6,7 +6,7 @@ import { AlignmentInfo, MIN_PROB, SamplingModel, type AlignedSent } from "./ibm_
 import { IBMModelBase, Counts, factorial } from "./ibm_model";
 import { IBMModel3 } from "./ibm3";
 
-class Model4Counts extends Counts {
+export class Model4Counts extends Counts {
   /** head_distortion[dj][src_class][trg_class] */
   head_distortion = new Map<number, Map<number | null, Map<number, number>>>();
   head_distortion_for_any_dj = new Map<number | null, Map<number, number>>();
