@@ -206,3 +206,30 @@ test("QuadgramCollocationFinder builds counts and scores quadgrams", () => {
   expectClose(finder.scoreNgram(QuadgramAssocMeasures.pmi, "this", "this", "is", "is")!, 5);
   expectClose(finder.scoreNgram(QuadgramAssocMeasures.raw_freq, "a", "a", "test", "test")!, 1 / 8);
 });
+
+// NLTK 3.10.3 oracle pins — BigramCollocationFinder contract.
+test("BigramCollocationFinder: NLTK from_words/score_ngram/nbest/filters pins", () => {
+  const words = "the quick brown fox jumps over the lazy dog the dog barks".split(" ");
+  const f = BigramCollocationFinder.from_words(words);
+  expect(f.N).toBe(12);
+  expect(f.word_fd.get("dog")).toBe(2);
+  expect(f.window_size).toBe(2);
+  expect(f.score_ngram(BigramAssocMeasures.pmi, "the", "dog")).toBe(1);
+  // raw_freq scaled by 1/(ws-1)=1: every bigram 1/12
+  const top = f.score_ngrams(BigramAssocMeasures.raw_freq).slice(0, 3);
+  expect(top[0]![0]).toEqual(["brown", "fox"]);
+  expect(top[0]![1]).toBeCloseTo(1 / 12, 12);
+  expect(f.nbest(BigramAssocMeasures.raw_freq, 3)).toEqual([
+    ["brown", "fox"], ["dog", "barks"], ["dog", "the"],
+  ]);
+  expect([...f.above_score(BigramAssocMeasures.raw_freq, 1)]).toEqual([]);
+  // window_size=3 non-contiguous bigrams
+  const f3 = BigramCollocationFinder.from_words(words, 3);
+  const bg = new Map([...f3.ngram_fd.entries()].map(([k, v]) => [k.join(","), v]));
+  expect(bg.get("brown,fox")).toBe(1);
+  expect(bg.get("brown,jumps")).toBe(1);
+  expect(bg.get("dog,dog")).toBe(1);
+  // freq filter removes all freq<2
+  f.apply_freq_filter(2);
+  expect([...f.ngram_fd.entries()]).toEqual([]);
+});

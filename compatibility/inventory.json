@@ -614,7 +614,7 @@
     "test/sequential_taggers.test.ts",
     "test/sequential_tagger_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — TaggerI member surface",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 TaggerI member surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: accuracy/precision/recall/f_measure/evaluate_per_tag tables, size, _context_to_tag, _check_params both/neither, DefaultTagger backoff, encode/decode_json_obj."
   },
@@ -625,9 +625,9 @@
     "test/perceptron_tagger.test.ts",
     "test/perceptron_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 doctest pins — trained-tagger surface",
+   "anchor": "NLTK 3.10.3 doctest pins \u2014 trained-tagger surface",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: doctest train→tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
+   "scope": "NLTK 3.10.3-pinned: doctest train\u2192tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
   },
   {
    "id": "concordance-differential",
@@ -636,7 +636,7 @@
     "test/text.test.ts",
     "test/concordance_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — ConcordanceIndex contract",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 ConcordanceIndex contract",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: offsets/defaultdict types count, find_concordance line bytes (left rjust, i+context right slice, trailing space), phrase matching, print_concordance Displaying/no-matches format, repr."
   },
@@ -661,6 +661,17 @@
    "anchor": "Oracle values below are pinned against Python NLTK 3.10.3.",
    "oracleVersion": "3.10.3",
    "scope": "ignore_stopwords return/passthrough, corpus list sizes, porter delegation + ValueError, per-language classes, Russian un-normalized check."
+  },
+  {
+   "id": "collocations-differential",
+   "kind": "differential",
+   "files": [
+    "test/collocations.test.ts",
+    "test/collocations_oracle.py"
+   ],
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 BigramCollocationFinder contract",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: N/word_fd/window_size, pmi/raw_freq scores, score_ngrams ordering, nbest, above_score, ws=3 non-contiguous bigrams, freq filter."
   }
  ],
  "signatureBindings": [
@@ -2458,7 +2469,7 @@
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "confusion crashes on None tags in both implementations (sorted str+NoneType) — adapted."
+     "confusion crashes on None tags in both implementations (sorted str+NoneType) \u2014 adapted."
     ]
    },
    "notes": "TS sequential tagger, not the Rust perceptron/HMM primitives. TaggerI metric surface + ContextTagger._context_to_tag + _check_params both/neither + public context/chooseTag/train + encode/decode_json_obj."
@@ -2560,7 +2571,7 @@
      "Combining-character cut_string paths pinned by construction, not by oracle fixture."
     ]
    },
-   "notes": "Defaultdict offsets (miss registers key), i+context right-slice, untrimmed line join, cut_string combining-aware width, Displaying/no-matches print format — all pinned."
+   "notes": "Defaultdict offsets (miss registers key), i+context right-slice, untrimmed line join, cut_string combining-aware width, Displaying/no-matches print format \u2014 all pinned."
   },
   {
    "target": "nltk.collocations.BigramCollocationFinder",
@@ -2568,7 +2579,7 @@
     "BigramCollocationFinder"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/collocations.ts",
@@ -2576,22 +2587,36 @@
     }
    ],
    "signatures": {
-    "status": "unreviewed",
-    "members": [],
+    "status": "adapted",
+    "members": [
+     "above_score",
+     "apply_freq_filter",
+     "apply_ngram_filter",
+     "apply_word_filter",
+     "from_documents",
+     "from_words",
+     "nbest",
+     "score_ngram",
+     "score_ngrams"
+    ],
     "gaps": [
-     "Factories/filter/window/scorer members need per-member audit."
+     "default_ws is a class attribute not surfaced in discovery members.",
+     "camelCase adaptations: applyFreqFilter/applyNgramFilter/applyWordFilter/scoreNgram/scoreNgrams/aboveScore/fromWords/fromDocuments alongside snake_case aliases.",
+     "word_fd/ngram_fd/window_size exposed via getter/setter aliases; from_documents extended with windowSize beyond NLTK default_ws.",
+     "fromTextAscii native path is a project extension."
     ]
    },
    "evidence": [
-    "collocation-unit"
+    "collocation-unit",
+    "collocations-differential"
    ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Pinned full window/filter association fixtures missing."
+     "score ties ordered by Python tuple comparison adapted to compareTuple."
     ]
    },
-   "notes": "TS scoring and generic counts; native ASCII statistics are a distinct optimized path."
+   "notes": "Full NLTK member surface: defaultdict fds, n_ii/(ws-1) scaling, None-vs-NaN filtering, (-score,ngram) sort, word/ngram/freq filters, nbest/above_score."
   },
   {
    "target": "nltk.sentiment.vader.SentimentIntensityAnalyzer",

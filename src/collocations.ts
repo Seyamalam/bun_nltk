@@ -500,11 +500,28 @@ export class BigramCollocationFinder<T = string> {
     return scoreFn(scaledCount, [this.wordFd.get(left), this.wordFd.get(right)], this.N);
   }
 
+  get word_fd(): FreqDist<T> {
+    return this.wordFd;
+  }
+
+  get ngram_fd(): FreqDist<[T, T]> {
+    return this.ngramFd;
+  }
+
+  set ngram_fd(value: FreqDist<[T, T]>) {
+    this.ngramFd = value;
+  }
+
+  get window_size(): number {
+    return this.windowSize;
+  }
+
   scoreNgrams(scoreFn: BigramScoreFn<T>): Array<[[T, T], number]> {
     const scored: Array<[[T, T], number]> = [];
     for (const [ngram] of this.ngramFd.entries()) {
       const score = this.scoreNgram(scoreFn, ngram[0], ngram[1]);
-      if (score !== null && Number.isFinite(score)) {
+      // NLTK filters only `score is not None` — NaN scores are kept.
+      if (score !== null) {
         scored.push([ngram, score]);
       }
     }
@@ -514,6 +531,14 @@ export class BigramCollocationFinder<T = string> {
       return compareTuple(left[0], right[0]);
     });
     return scored;
+  }
+
+  score_ngrams(scoreFn: BigramScoreFn<T>): Array<[[T, T], number]> {
+    return this.scoreNgrams(scoreFn);
+  }
+
+  score_ngram(scoreFn: BigramScoreFn<T>, left: T, right: T): number | null {
+    return this.scoreNgram(scoreFn, left, right);
   }
 
   nbest(scoreFn: BigramScoreFn<T>, count: number): Array<[T, T]> {
@@ -530,6 +555,30 @@ export class BigramCollocationFinder<T = string> {
         break;
       }
     }
+  }
+
+  *above_score(scoreFn: BigramScoreFn<T>, minScore: number): IterableIterator<[T, T]> {
+    yield* this.aboveScore(scoreFn, minScore);
+  }
+
+  apply_freq_filter(minFreq: number): this {
+    return this.applyFreqFilter(minFreq);
+  }
+
+  apply_ngram_filter(fn: (left: T, right: T) => boolean): this {
+    return this.applyNgramFilter(fn);
+  }
+
+  apply_word_filter(fn: (word: T) => boolean): this {
+    return this.applyWordFilter(fn);
+  }
+
+  static from_words<T>(words: Iterable<T>, windowSize = 2): BigramCollocationFinder<T> {
+    return BigramCollocationFinder.fromWords(words, windowSize);
+  }
+
+  static from_documents<T>(documents: Iterable<Iterable<T>>): BigramCollocationFinder<T> {
+    return BigramCollocationFinder.fromDocuments(documents, BigramCollocationFinder.default_ws);
   }
 }
 
