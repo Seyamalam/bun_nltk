@@ -100,3 +100,34 @@ export function dependencyEvaluate(
 
   return [corrL / total, corr / total];
 }
+
+/** Port of nltk.parse.evaluate.DependencyEvaluator: wraps dependencyEvaluate. */
+type EvalInput =
+  | Parameters<typeof dependencyEvaluate>[0][number]
+  | { nodelist: ReadonlyArray<{ word: string | null; head: number | null; rel: string }> };
+
+function toEvalNodes(sent: EvalInput): readonly DependencyEvalNode[] {
+  const s = sent as { nodelist?: ReadonlyArray<{ word: string | null; head: number | null; rel: string }> };
+  if (s.nodelist) {
+    return s.nodelist.map((n) => ({ word: n.word ?? "", head: n.head ?? 0, rel: n.rel }));
+  }
+  return (sent as { nodes: readonly DependencyEvalNode[] }).nodes
+    ?? (() => { throw new Error("Unsupported dependency evaluation input."); })();
+}
+
+export class DependencyEvaluator {
+  private parsedSents: EvalInput[];
+  private goldSents: EvalInput[];
+
+  constructor(parsedSents: readonly EvalInput[], goldSents: readonly EvalInput[]) {
+    this.parsedSents = [...parsedSents];
+    this.goldSents = [...goldSents];
+  }
+
+  eval(): [las: number, uas: number] {
+    return dependencyEvaluate(
+      this.parsedSents.map((s) => ({ nodes: toEvalNodes(s) })),
+      this.goldSents.map((s) => ({ nodes: toEvalNodes(s) })),
+    );
+  }
+}

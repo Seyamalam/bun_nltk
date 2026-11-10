@@ -16,7 +16,7 @@ import {
 } from "./sem_logic";
 
 /** Port of nltk.sem.logic.skolem_function: Fn(v1)(v2)... */
-function skolemFunction(univScope: Set<Variable>): Expression {
+export function skolemFunction(univScope: Set<Variable>): Expression {
   const n = nextUniqueCounterValue();
   let sk: Expression = makeVariableExpression(`F${n}`);
   if (univScope.size > 0) {
@@ -36,7 +36,7 @@ function setToNames(s: Set<Variable>): Set<string> {
   return new Set(Array.from(s).map((v) => v.name));
 }
 
-function toCnf(first: Expression, second: Expression): Expression {
+export function toCnf(first: Expression, second: Expression): Expression {
   if (first instanceof AndExpression) {
     const r1 = toCnf(first.first, second);
     const r2 = toCnf(first.second, second);

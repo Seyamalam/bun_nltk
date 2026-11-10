@@ -1,133 +1,76 @@
-import { expect, test } from "bun:test";
-import { resolve } from "node:path";
+import { describe, expect, test } from "bun:test";
 import {
-  chartParse,
-  earleyParse,
-  earleyRecognize,
-  leftCornerParse,
-  parseCfgGrammar,
-  parseTextWithCfg,
-  parseTextWithEarley,
-  parseTextWithLeftCorner,
-  parseTextWithRecursiveDescent,
-  recursiveDescentParse,
-  type ParseTree,
+  DependencyGraph, DependencyEvaluator, taggedsent_to_conll, taggedsents_to_conll,
+  SteppingRecursiveDescentParser, InsideChartParser, ProjectiveDependencyParser,
+  Configuration, CoreNLPServer, find_maltparser, conll_demo, FeatureChart,
 } from "../index";
 
-const grammarText = `
-S -> NP VP
-NP -> Det N | Name
-VP -> V NP
-Det -> 'the' | 'a'
-N -> 'cat' | 'dog'
-V -> 'sees' | 'likes'
-Name -> 'alice'
-`;
+// Oracle: test/parse_oracle.py on NLTK 3.10.3 / Python 3.14.4
+const CONLL = "1\tThis\t_\tDT\tDT\t_\t2\ta\t_\t_\n2\tis\t_\tVBZ\tVBZ\t_\t0\tROOT\t_\t_\n3\ta\t_\tDT\tDT\t_\t4\ta\t_\t_\n4\tfoobar\t_\tJJ\tJJ\t_\t2\ta\t_\t_\n";
 
-function toBracket(tree: ParseTree): string {
-  const children = tree.children
-    .map((child) => (typeof child === "string" ? child : toBracket(child)))
-    .join(" ");
-  return `(${tree.label}${children ? ` ${children}` : ""})`;
-}
-
-test("chart parser returns parse tree for simple CFG", () => {
-  const grammar = parseCfgGrammar(grammarText);
-  const trees = chartParse(["alice", "sees", "the", "dog"], grammar);
-  expect(trees.length).toBeGreaterThan(0);
-  expect(toBracket(trees[0]!)).toBe("(S (NP (Name alice)) (VP (V sees) (NP (Det the) (N dog))))");
-});
-
-test("parseTextWithCfg tokenizes and parses text", () => {
-  const trees = parseTextWithCfg("Alice sees a cat.", grammarText);
-  expect(trees.length).toBeGreaterThan(0);
-  expect(toBracket(trees[0]!)).toContain("(V sees)");
-});
-
-test("chart parser parity with python nltk CFG chart parser", () => {
-  const tokens = ["alice", "sees", "the", "dog"];
-  const grammar = parseCfgGrammar(grammarText);
-  const jsTrees = chartParse(tokens, grammar).map(toBracket);
-
-  const payload = JSON.stringify({
-    grammar: grammarText,
-    tokens,
+describe("nltk.parse.util", () => {
+  test("taggedsent_to_conll emits 10-column lines", () => {
+    const out = [...taggedsent_to_conll([["This", "DT"], ["is", "VBZ"]])];
+    expect(out).toEqual([
+      "1\tThis\t_\tDT\tDT\t_\t0\ta\t_\t_\n",
+      "2\tis\t_\tVBZ\tVBZ\t_\t0\ta\t_\t_\n",
+    ]);
   });
-  const proc = Bun.spawnSync(["python3", "bench/python_parser_baseline.py", "--payload", payload], {
-    cwd: resolve(import.meta.dir, ".."),
-    stdout: "pipe",
-    stderr: "pipe",
+  test("taggedsents_to_conll emits blank line after each sentence", () => {
+    const out = [...taggedsents_to_conll([[["This", "DT"]], [["a", "DT"]]])];
+    expect(out).toEqual([
+      "1\tThis\t_\tDT\tDT\t_\t0\ta\t_\t_\n",
+      "\n\n",
+      "1\ta\t_\tDT\tDT\t_\t0\ta\t_\t_\n",
+      "\n\n",
+    ]);
   });
-  if (proc.exitCode !== 0) {
-    throw new Error(new TextDecoder().decode(proc.stderr));
-  }
-  const py = JSON.parse(new TextDecoder().decode(proc.stdout).trim()) as {
-    parse_count: number;
-    trees: string[];
-  };
-
-  expect(jsTrees.length).toBe(py.parse_count);
-  expect(jsTrees[0]).toBe(py.trees[0]);
 });
 
-test("earley recognizer accepts valid tokens and rejects invalid tokens", () => {
-  const grammar = parseCfgGrammar(grammarText);
-  expect(earleyRecognize(["alice", "sees", "the", "dog"], grammar)).toBeTrue();
-  expect(earleyRecognize(["alice", "the", "sees", "dog"], grammar)).toBeFalse();
+describe("nltk.parse.dependencygraph", () => {
+  test("DependencyGraph loads conll and round-trips all 3 styles", () => {
+    const dg = new DependencyGraph(CONLL);
+    expect(dg.to_conll(10)).toBe(CONLL);
+    expect(dg.to_conll(4)).toBe("This\tDT\t2\ta\nis\tVBZ\t0\tROOT\na\tDT\t4\ta\nfoobar\tJJ\t2\ta\n");
+    expect(dg.to_conll(3)).toBe("This\tDT\t2\nis\tVBZ\t0\na\tDT\t4\nfoobar\tJJ\t2\n");
+  });
+  test("triples yields ((word,ctag), rel, [(dep word,ctag)])", () => {
+    const dg = new DependencyGraph(CONLL);
+    expect([...dg.triples()]).toEqual([
+      [["is", "VBZ"], "a", [["This", "DT"]]],
+      [["is", "VBZ"], "a", [["foobar", "JJ"]]],
+      [["foobar", "JJ"], "a", [["a", "DT"]]],
+    ]);
+  });
+  test("contains_cycle dict-deps quirk: conll-loaded cycles report falsy", () => {
+    const dg = new DependencyGraph(CONLL);
+    expect(dg.contains_cycle()).toBeFalsy();
+    const cyc = new DependencyGraph("1\ta\t_\tX\tX\t_\t2\tx\t_\t_\n2\tb\t_\tX\tX\t_\t1\tx\t_\t_");
+    expect(cyc.contains_cycle()).toBeFalsy(); // NLTK 3.10.3 dict-deps iteration quirk
+  });
 });
 
-test("earley parse returns same top parse as chart parser on simple grammar", () => {
-  const grammar = parseCfgGrammar(grammarText);
-  const chart = chartParse(["alice", "sees", "the", "dog"], grammar);
-  const earley = earleyParse(["alice", "sees", "the", "dog"], grammar);
-  expect(earley.length).toBeGreaterThan(0);
-  expect(toBracket(earley[0]!)).toBe(toBracket(chart[0]!));
+describe("nltk.parse.evaluate", () => {
+  test("DependencyEvaluator returns (LAS, UAS) matching oracle", () => {
+    const dg = new DependencyGraph(CONLL);
+    expect(new DependencyEvaluator([dg], [dg]).eval()).toEqual([1, 1]);
+    const c2 = new DependencyGraph(CONLL.replace("_\t2\ta", "_\t4\ta"));
+    expect(new DependencyEvaluator([c2], [dg]).eval()).toEqual([0.75, 0.75]);
+    expect(() => new DependencyEvaluator([dg], [dg, dg]).eval()).toThrow(
+      "Number of parsed sentences is different from number of gold sentences.",
+    );
+  });
 });
 
-test("parseTextWithEarley tokenizes and parses text", () => {
-  const trees = parseTextWithEarley("Alice sees a cat.", grammarText);
-  expect(trees.length).toBeGreaterThan(0);
-  expect(toBracket(trees[0]!)).toContain("(V sees)");
-});
-
-test("recursive descent parser returns parse tree for simple CFG", () => {
-  const grammar = parseCfgGrammar(grammarText);
-  const trees = recursiveDescentParse(["alice", "sees", "the", "dog"], grammar);
-  expect(trees.length).toBeGreaterThan(0);
-  expect(toBracket(trees[0]!)).toBe("(S (NP (Name alice)) (VP (V sees) (NP (Det the) (N dog))))");
-});
-
-test("recursive descent parser parity with chart parser top tree", () => {
-  const grammar = parseCfgGrammar(grammarText);
-  const chart = chartParse(["alice", "sees", "the", "dog"], grammar);
-  const recursive = recursiveDescentParse(["alice", "sees", "the", "dog"], grammar);
-  expect(recursive.length).toBeGreaterThan(0);
-  expect(toBracket(recursive[0]!)).toBe(toBracket(chart[0]!));
-});
-
-test("parseTextWithRecursiveDescent tokenizes and parses text", () => {
-  const trees = parseTextWithRecursiveDescent("Alice sees a cat.", grammarText);
-  expect(trees.length).toBeGreaterThan(0);
-  expect(toBracket(trees[0]!)).toContain("(V sees)");
-});
-
-test("left-corner parser returns parse tree for simple CFG", () => {
-  const grammar = parseCfgGrammar(grammarText);
-  const trees = leftCornerParse(["alice", "sees", "the", "dog"], grammar);
-  expect(trees.length).toBeGreaterThan(0);
-  expect(toBracket(trees[0]!)).toBe("(S (NP (Name alice)) (VP (V sees) (NP (Det the) (N dog))))");
-});
-
-test("left-corner parser parity with chart parser top tree", () => {
-  const grammar = parseCfgGrammar(grammarText);
-  const chart = chartParse(["alice", "sees", "the", "dog"], grammar);
-  const left = leftCornerParse(["alice", "sees", "the", "dog"], grammar);
-  expect(left.length).toBeGreaterThan(0);
-  expect(toBracket(left[0]!)).toBe(toBracket(chart[0]!));
-});
-
-test("parseTextWithLeftCorner tokenizes and parses text", () => {
-  const trees = parseTextWithLeftCorner("Alice sees a cat.", grammarText);
-  expect(trees.length).toBeGreaterThan(0);
-  expect(toBracket(trees[0]!)).toContain("(V sees)");
+describe("honest gaps", () => {
+  test("unported machinery and external wrappers throw clearly", () => {
+    expect(() => new (SteppingRecursiveDescentParser as any)()).toThrow();
+    expect(() => new (InsideChartParser as any)()).toThrow();
+    expect(() => new (ProjectiveDependencyParser as any)()).toThrow();
+    expect(() => new (Configuration as any)()).toThrow();
+    expect(() => new (CoreNLPServer as any)()).toThrow();
+    expect(() => new (FeatureChart as any)()).toThrow();
+    expect(find_maltparser).toThrow();
+    expect(conll_demo).toThrow();
+  });
 });

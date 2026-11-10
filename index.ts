@@ -869,3 +869,60 @@ export {
 export { jaro_similarity, jaro_winkler_similarity, ghd, approxrand, MAX_DISTANCE_INPUT_LEN } from "./src/distance_metrics";
 export { TokenSearcher, TextCollection } from "./src/text";
 export { NLTKWordTokenizer } from "./src/tokenizers_nltk";
+
+// --- NLTK sem/parse module-scope exports ---
+export { Assignment, Model, LogicParser } from "./src/sem_logic";
+export { DrtExpression, DrtBinaryExpression, DrtParserFromString } from "./src/drt";
+export { SemError, Undefined, is_rel, set2rel, arity, read_valuation, readValuation, sem_trace } from "./src/sem_evaluate";
+export { read_sents, readSents, interpret_sents, interpretSents, evaluate_sents, evaluateSents, demo_model0, demoModel0, demo_legacy_grammar, demoLegacyGrammar, parse_sents, root_semrep } from "./src/sem_util";
+export { toCnf, toCnfInternal, toCnfInternal as to_cnf } from "./src/skolemize";
+export { Constants, Constraint, HoleSemantics as HoleSemanticsClass } from "./src/sem_hole";
+export { holeReadings, holeReadings as hole_readings, holeReadingsFromUsr } from "./src/sem_hole";
+export { AtomicExpression as LinearAtomicExpression, LinearLogicApplicationException, VariableBindingException } from "./src/sem_linearlogic";
+export { GlueFormula, DrtGlueFormula, DrtGlueDict } from "./src/sem_glue";
+export {
+  Concept, unaryConcept, unaryConcept as unary_concept, binaryConcept, binaryConcept as binary_concept,
+  clause2concepts, processBundle, processBundle as process_bundle, makeValuation, makeValuation as make_valuation,
+  labelIndivs, labelIndivs as label_indivs, makeLex, makeLex as make_lex, concepts,
+  valDump, valDump as val_dump, valLoad, valLoad as val_load, cities2table, sqlQuery, sqlQuery as sql_query,
+  sqlDemo, sqlDemo as sql_demo, main as chat80_main, items as chat80_items, rels as chat80_rels,
+} from "./src/sem_chat80";
+export {
+  class_abbrev, descape_entity, list2sym, tree2semi_rel, semi_rel2reldict, conllesp, conllned,
+  ieer_headlines, ne_chunked, in_demo, roles_demo, rtuple, clause, NE_CLASSES, short2long, long2short,
+} from "./src/sem_relextract";
+export { CooperStore, FStructure, parse_with_bindops } from "./src/sem_wrappers";
+export {
+  UnparseableInputException, AbstractBoxerDrs, BoxerCard, BoxerDrs, BoxerDrsParser, BoxerEq, BoxerIndexed,
+  BoxerNamed, BoxerNot, BoxerOr, BoxerOutputDrsParser, BoxerPred, BoxerProp, BoxerRel, BoxerWhq,
+  NltkDrtBoxerDrsInterpreter, PassthroughBoxerDrsInterpreter, find_binary_iter,
+  DrsDrawer, CanvasFrame, DrsWidget, ShowText, test_draw,
+  decorator, foldemo, folmodel, propdemo, satdemo, demo_read_depgraph,
+} from "./src/sem_gaps";
+export { DependencyGraph, DependencyGraphError } from "./src/dependency_graph";
+export { DependencyEvaluator } from "./src/parse_evaluate";
+export { taggedsent_to_conll, taggedSentToConll, taggedsents_to_conll, taggedSentsToConll } from "./src/parse_conll";
+export {
+  CoreNLPServerError, FeatStructNonterminal, FeatureChart, FeatureIncrementalChart, FeatureTreeEdge,
+  InstantiateVarsChart, FeatureFundamentalRule, FeatureSingleEdgeFundamentalRule, FeatureBottomUpPredictRule,
+  FeatureBottomUpPredictCombineRule, FeatureTopDownInitRule, FeatureTopDownPredictRule, FeatureEmptyPredictRule,
+  FeatureScannerRule, FeaturePredictorRule, FeatureCompleterRule, FeatureCompleteFundamentalRule,
+  FeatureBottomUpChartParser, FeatureBottomUpLeftCornerChartParser, FeatureTopDownChartParser,
+  FeatureIncrementalChartParser, FeatureIncrementalBottomUpChartParser, FeatureIncrementalBottomUpLeftCornerChartParser,
+  FeatureIncrementalTopDownChartParser, FeatureGrammar, find_variables, unify,
+  IncrementalChart, IncrementalChartParser, IncrementalBottomUpChartParser, IncrementalBottomUpLeftCornerChartParser,
+  IncrementalLeftCornerChartParser, IncrementalTopDownChartParser, PredictorRule, ScannerRule, CompleterRule,
+  CompleteFundamentalRule, FilteredCompleteFundamentalRule,
+  ProbabilisticTree, ProbabilisticTreeEdge, ProbabilisticLeafEdge, ProbabilisticFundamentalRule,
+  SingleEdgeProbabilisticFundamentalRule, ProbabilisticBottomUpInitRule, ProbabilisticBottomUpPredictRule,
+  BottomUpProbabilisticChartParser, InsideChartParser, LongestChartParser, RandomChartParser, UnsortedChartParser,
+  DependencySpan, ChartCell, ProjectiveDependencyParser, ProbabilisticProjectiveDependencyParser,
+  DependencyScorerI, NaiveBayesDependencyScorer, DemoScorer, NonprojectiveDependencyParser,
+  ProbabilisticNonprojectiveParser, Configuration, Transition, TestGrammar, extract_test_sentences,
+  SteppingRecursiveDescentParser, SteppingShiftReduceParser,
+  CoreNLPServer, CoreNLPDependencyParser, GenericCoreNLPParser, ZipFilePathPointer,
+  find_jar_iter, try_port, transform, find_dir, find_jars_within_path, find_malt_model, find_maltparser,
+  malt_regex_tagger, run_profile, conll_demo, conll_file_demo, cycle_finding_demo, dot2img, malt_demo,
+  hall_demo, nonprojective_conll_parse_demo, rule_based_demo, arity_parse_demo, projective_prob_parse_demo,
+  projective_rule_parse_demo,
+} from "./src/parse_gaps";
