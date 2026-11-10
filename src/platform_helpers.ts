@@ -53,6 +53,11 @@ export function punkt_pickle_load(_path: string): never {
 }
 
 
+/** nltk.picklesec.pickle_load — CPython pickle deserialization entry point. */
+export function pickle_load(_file: unknown): never {
+  throw new Error("pickle_load() requires CPython pickle serialization, which is not supported in the JS runtime");
+}
+
 /** nltk.parse.chart.demo_grammar — lands with the chart demo batch. */
 export function demo_grammar(): never {
   throw new Error("demo_grammar() lands with the chart SteppingChartParser batch");

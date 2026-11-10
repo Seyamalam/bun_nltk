@@ -5,7 +5,7 @@
  * to a tagger's output.
  */
 
-export type TaggedToken = [word: string, tag: string];
+export type TaggedToken = readonly [word: string, tag: string];
 export type TaggedSentence = TaggedToken[];
 
 /**
@@ -13,20 +13,26 @@ export type TaggedSentence = TaggedToken[];
  * Port of nltk.tbl.erroranalysis.error_list.
  */
 export function errorList(
-  trainSents: TaggedSentence[],
-  testSents: TaggedSentence[]
+  trainSents: ReadonlyArray<readonly TaggedToken[]>,
+  testSents: ReadonlyArray<readonly TaggedToken[]>
 ): string[] {
+  const center = (s: string, width: number): string => {
+    const pad = Math.max(0, width - s.length);
+    const lp = Math.floor(pad / 2);
+    return " ".repeat(lp) + s + " ".repeat(pad - lp);
+  };
   const header =
-    `${"left context".padStart(25)} | ${"word/test->gold".padStart(11).padEnd(22)} | ${"right context"}
+    `${"left context".padStart(25)} | ${center("word/test->gold", 22)} | ${"right context"}
 ` +
     "-".repeat(26) + "+" + "-".repeat(24) + "+" + "-".repeat(26);
   const errors: string[] = [header];
-  for (let si = 0; si < trainSents.length; si++) {
+  const n = Math.min(trainSents.length, testSents.length);
+  for (let si = 0; si < n; si++) {
     const trainSent = trainSents[si]!;
     const testSent = testSents[si]!;
     for (let wi = 0; wi < trainSent.length; wi++) {
       const [word, goldTag] = trainSent[wi]!;
-      const testTag = testSent[wi]?.[1] ?? "UNK";
+      const testTag = testSent[wi]![1];
       if (goldTag !== testTag) {
         const left = trainSent.slice(0, wi).map(([w, t]) => `${w}/${t}`).join(" ");
         const right = trainSent.slice(wi + 1).map(([w, t]) => `${w}/${t}`).join(" ");

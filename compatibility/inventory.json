@@ -448,7 +448,35 @@
    "cosine_distance": "src/cluster_api.ts",
    "KMeansClusterer": "src/cluster_kmeans.ts",
    "euclideanDistance": "src/cluster_api.ts",
-   "euclidean_distance": "src/cluster_api.ts"
+   "euclidean_distance": "src/cluster_api.ts",
+   "Feature": "src/brill_tagger.ts",
+   "Rule": "src/brill_tagger.ts",
+   "TagRule": "src/brill_tagger.ts",
+   "BrillTemplateI": "src/brill_tagger.ts",
+   "corpusSize": "src/tbl.ts",
+   "corpus_size": "src/tbl.ts",
+   "postag": "src/tbl.ts",
+   "pickle_load": "src/platform_helpers.ts",
+   "demoReprRuleFormat": "src/tbl_demo.ts",
+   "demoStrRuleFormat": "src/tbl_demo.ts",
+   "demoVerboseRuleFormat": "src/tbl_demo.ts",
+   "demoMultipositionFeature": "src/tbl_demo.ts",
+   "demoMultifeatureTemplate": "src/tbl_demo.ts",
+   "demoGeneratedTemplates": "src/tbl_demo.ts",
+   "demoTemplateStatistics": "src/tbl_demo.ts",
+   "demoErrorAnalysis": "src/tbl_demo.ts",
+   "demoSerializeTagger": "src/tbl_demo.ts",
+   "demoHighAccuracyRules": "src/tbl_demo.ts",
+   "demoLearningCurve": "src/tbl_demo.ts",
+   "BrillTaggerTrainer": "src/brill_tagger.ts",
+   "Pos": "src/brill_tagger.ts",
+   "TblFeature": "src/brill_tagger.ts",
+   "TblRule": "src/brill_tagger.ts",
+   "Template": "src/brill_tagger.ts",
+   "Word": "src/brill_tagger.ts",
+   "errorList": "src/tbl_demo.ts",
+   "error_list": "src/tbl_demo.ts",
+   "tblDemo": "src/tbl_demo.ts"
   }
  },
  "modules": [
@@ -489,6 +517,12 @@
   "nltk.stem.wordnet",
   "nltk.tag.perceptron",
   "nltk.tag.sequential",
+  "nltk.tbl",
+  "nltk.tbl.demo",
+  "nltk.tbl.erroranalysis",
+  "nltk.tbl.feature",
+  "nltk.tbl.rule",
+  "nltk.tbl.template",
   "nltk.text",
   "nltk.tokenize",
   "nltk.tokenize.casual",
@@ -994,7 +1028,7 @@
     "test/sequential_taggers.test.ts",
     "test/sequential_tagger_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — TaggerI member surface",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 TaggerI member surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: accuracy/precision/recall/f_measure/evaluate_per_tag tables, size, _context_to_tag, _check_params both/neither, DefaultTagger backoff, encode/decode_json_obj."
   },
@@ -1005,9 +1039,9 @@
     "test/perceptron_tagger.test.ts",
     "test/perceptron_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 doctest pins — trained-tagger surface",
+   "anchor": "NLTK 3.10.3 doctest pins \u2014 trained-tagger surface",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: doctest train→tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
+   "scope": "NLTK 3.10.3-pinned: doctest train\u2192tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
   },
   {
    "id": "concordance-differential",
@@ -1016,7 +1050,7 @@
     "test/text.test.ts",
     "test/concordance_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — ConcordanceIndex contract",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 ConcordanceIndex contract",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: offsets/defaultdict types count, find_concordance line bytes (left rjust, i+context right slice, trailing space), phrase matching, print_concordance Displaying/no-matches format, repr."
   },
@@ -1049,7 +1083,7 @@
     "test/collocations.test.ts",
     "test/collocations_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — BigramCollocationFinder contract",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 BigramCollocationFinder contract",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: N/word_fd/window_size, pmi/raw_freq scores, score_ngrams ordering, nbest, above_score, ws=3 non-contiguous bigrams, freq filter."
   },
@@ -1060,7 +1094,7 @@
     "test/sentiment.test.ts",
     "test/vader_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — full SentimentIntensityAnalyzer member surface",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 full SentimentIntensityAnalyzer member surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: 5 doctest polarity_scores dicts, SentiText words/cap_diff, VaderConstants negated/normalize/scalar_inc_dec, score_valence + empty, sentiment_valence, make_lex_dict, 7502-entry lexicon."
   },
@@ -1071,7 +1105,7 @@
     "test/probability.test.ts",
     "test/probdist_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — ProbDistI inherited surface",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 ProbDistI inherited surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: SUM_TO_ONE per class, discount (base 0.0 vs Lidstone formula), logprob -1e300 unseen, prob unseen/empty=0, generate weighted sampling, repr, bins>=B() error wording."
   },
@@ -1082,7 +1116,7 @@
     "test/grammar.test.ts",
     "test/grammar_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.grammar CFG/Production/Nonterminal",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.grammar CFG/Production/Nonterminal",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: CFG init/indexes/leftcorner closure, productions(lhs/rhs/empty) filters, grammar-form predicates, chomsky_normal_form pipeline (eliminate_start, binarize, remove_mixed_rules, remove_unitary_rules with cycle guard), check_coverage quoting, read_grammar errors, Production/ProbabilisticProduction/DependencyProduction/Nonterminal/nonterminals."
   },
@@ -1093,7 +1127,7 @@
     "test/chart_parser.test.ts",
     "test/chart_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.parse.chart",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.parse.chart",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: ChartParser.chart_parse agenda/non-agenda loops, BU_LC/TD/LC strategies, edge set/count equality, shared-edge ambiguity via child_pointer_lists, select restrictions, pretty_format_edge/leaves, parse trees and ParserI surface."
   },
@@ -1104,7 +1138,7 @@
     "test/chunk_parser.test.ts",
     "test/chunk_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.chunk RegexpParser/RegexpChunkParser/ChunkScore",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.chunk RegexpParser/RegexpChunkParser/ChunkScore",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: RegexpParser staged grammars/chinks/loop, all 8 RegexpChunkRule subclasses via fromstring, ChunkString brace validation, tag_pattern2re_pattern translations and errors, ChunkScore metrics/str/repr, ParserI parse_one/parse_all/parse_sents surface."
   },
@@ -1115,7 +1149,7 @@
     "test/lm_nltk.test.ts",
     "test/lm_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.lm LanguageModel/Vocabulary/NgramCounter",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.lm LanguageModel/Vocabulary/NgramCounter",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: MLE/Lidstone/Laplace/StupidBackoff/WittenBellInterpolated/AbsoluteDiscountingInterpolated/KneserNeyInterpolated score+perplexity matrix, generate via Python-compatible MT19937 (seed=3), context backoff/trimming, math domain error, Vocabulary cutoff/membership/lookup/update/str, NgramCounter orders/N/indexing/tuple validation."
   },
@@ -1126,7 +1160,7 @@
     "test/wordnet_objects.test.ts",
     "test/wordnet_objects_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.corpus.wordnet Synset/Lemma object model",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.corpus.wordnet Synset/Lemma object model",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: Synset name/pos/offset/lexname/definition/examples/lemma_names, Lemma name/key/repr/antonyms/lang, hypernym/hyponym relations, index.<pos> sense numbering, hypernym_paths, root_hypernyms, lowest_common_hypernyms, common_hypernyms membership, hypernym_distances, max/min_depth, shortest_path_distance, path/wup/lch similarity. Requires the packed wordnet artifact (senseNums + original lemma/pointer order)."
   },
@@ -1139,7 +1173,7 @@
    ],
    "anchor": "Values pinned from Python NLTK 3.10.3 (see test/snowball_arfihu_oracle.py)",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: 45 Arabic + 40 Finnish + 43 Hungarian stems including diacritic normalization, string-vs-tuple suffix iteration quirks (noun step2b 'ات'), Hungarian digraph R1, Finnish vowel-harmony step checks, ignore_stopwords post-normalization check for Arabic."
+   "scope": "NLTK 3.10.3-pinned: 45 Arabic + 40 Finnish + 43 Hungarian stems including diacritic normalization, string-vs-tuple suffix iteration quirks (noun step2b '\u0627\u062a'), Hungarian digraph R1, Finnish vowel-harmony step checks, ignore_stopwords post-normalization check for Arabic."
   },
   {
    "id": "tree-differential",
@@ -1303,6 +1337,17 @@
    ],
    "anchor": "native.cluster",
    "scope": "Rust-vs-JS kmeans means parity."
+  },
+  {
+   "id": "tbl-differential",
+   "kind": "differential",
+   "files": [
+    "test/tbl.test.ts",
+    "test/tbl_oracle.py"
+   ],
+   "anchor": "Pinned against NLTK 3.10.3",
+   "oracleVersion": "3.10.3",
+   "scope": "Feature/Rule/Template/TagRule/BrillTemplateI member surfaces, expand/issuperset/intersects/ordering quirks, repr/str/verbose formats, error_list layout, corpus_size, postag end-to-end on inline corpus"
   }
  ],
  "signatureBindings": [
@@ -3145,7 +3190,7 @@
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "confusion crashes on None tags in both implementations (sorted str+NoneType) — adapted."
+     "confusion crashes on None tags in both implementations (sorted str+NoneType) \u2014 adapted."
     ]
    },
    "notes": "TS sequential tagger, not the Rust perceptron/HMM primitives. TaggerI metric surface + ContextTagger._context_to_tag + _check_params both/neither + public context/chooseTag/train + encode/decode_json_obj."
@@ -3247,7 +3292,7 @@
      "Combining-character cut_string paths pinned by construction, not by oracle fixture."
     ]
    },
-   "notes": "Defaultdict offsets (miss registers key), i+context right-slice, untrimmed line join, cut_string combining-aware width, Displaying/no-matches print format — all pinned."
+   "notes": "Defaultdict offsets (miss registers key), i+context right-slice, untrimmed line join, cut_string combining-aware width, Displaying/no-matches print format \u2014 all pinned."
   },
   {
    "target": "nltk.collocations.BigramCollocationFinder",
@@ -3330,7 +3375,7 @@
      "No remaining tracked gaps in this fixture."
     ]
    },
-   "notes": "SentiText, VaderConstants, make_lex_dict, sentiment_valence, score_valence, polarity_scores — full discovered member surface, byte-pinned on doctest corpus."
+   "notes": "SentiText, VaderConstants, make_lex_dict, sentiment_valence, score_valence, polarity_scores \u2014 full discovered member surface, byte-pinned on doctest corpus."
   },
   {
    "target": "nltk.chunk.regexp.RegexpParser",
@@ -5630,7 +5675,7 @@
      "acyclic_tree"
     ],
     "gaps": [
-     "Meronym/holonym/domain/entailment/verb_group/attribute/frame/instance relations return empty — not carried in the packed payload.",
+     "Meronym/holonym/domain/entailment/verb_group/attribute/frame/instance relations return empty \u2014 not carried in the packed payload.",
      "res/jcn/lin_similarity are implemented; they need a caller-supplied IC mapping (WordNetICCorpusReader.ic).",
      "common_hypernyms ordering is BFS rather than Python set order."
     ]
@@ -8152,7 +8197,7 @@
      "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "classify.util accuracy(classifier, gold) — distinct from nltk.metrics accuracy."
+   "notes": "classify.util accuracy(classifier, gold) \u2014 distinct from nltk.metrics accuracy."
   },
   {
    "target": "nltk.classify.maxent.call_megam",
@@ -8330,7 +8375,7 @@
      "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "classify.util log_likelihood(classifier, gold) — distinct from the probdist log_likelihood."
+   "notes": "classify.util log_likelihood(classifier, gold) \u2014 distinct from the probdist log_likelihood."
   },
   {
    "target": "nltk.classify.maxent.parse_megam_weights",
@@ -17161,7 +17206,7 @@
      "namedtuple surface covered via PhraseTable.add/translationsFor in stack-decoder tests."
     ]
    },
-   "notes": "NamedTuple entry {trgPhrase, logProb} — exported as TS type only."
+   "notes": "NamedTuple entry {trgPhrase, logProb} \u2014 exported as TS type only."
   },
   {
    "target": "nltk.translate.api.find_binary",
@@ -17190,7 +17235,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "Throwing stub — subprocess binary discovery is platform-excluded."
+   "notes": "Throwing stub \u2014 subprocess binary discovery is platform-excluded."
   },
   {
    "target": "nltk.translate.gale_church.LanguageIndependent",
@@ -17438,7 +17483,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "nltk.translate.gale_church.parse_token_stream: implements documented contract — Python 3 NLTK impl always raises (py2 .next() + PEP479)"
+   "notes": "nltk.translate.gale_church.parse_token_stream: implements documented contract \u2014 Python 3 NLTK impl always raises (py2 .next() + PEP479)"
   },
   {
    "target": "nltk.translate.gale_church.split_at",
@@ -17469,7 +17514,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "nltk.translate.gale_church.split_at: implements documented contract — Python 3 NLTK impl always raises (py2 .next() + PEP479)"
+   "notes": "nltk.translate.gale_church.split_at: implements documented contract \u2014 Python 3 NLTK impl always raises (py2 .next() + PEP479)"
   },
   {
    "target": "nltk.translate.gale_church.trace",
@@ -18131,7 +18176,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "WordNetCorpusReader → WordNetReader alias."
+   "notes": "WordNetCorpusReader \u2192 WordNetReader alias."
   },
   {
    "target": "nltk.translate.metrics.alignment_error_rate",
@@ -18162,7 +18207,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "AER = 1 - (|H∩S|+|H∩P|)/(|H|+|S|)."
+   "notes": "AER = 1 - (|H\u2229S|+|H\u2229P|)/(|H|+|S|)."
   },
   {
    "target": "nltk.translate.phrase_based.extract",
@@ -20200,7 +20245,7 @@
     "status": "missing",
     "members": [],
     "gaps": [
-     "Interactive demo function — no non-interactive equivalent is provided."
+     "Interactive demo function \u2014 no non-interactive equivalent is provided."
     ]
    },
    "evidence": [],
@@ -20256,7 +20301,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "Group-average agglomerative clusterer — deterministic, oracle-pinned."
+   "notes": "Group-average agglomerative clusterer \u2014 deterministic, oracle-pinned."
   },
   {
    "target": "nltk.cluster.gaac.Dendrogram",
@@ -20388,7 +20433,7 @@
     "status": "missing",
     "members": [],
     "gaps": [
-     "Interactive demo function — no non-interactive equivalent is provided."
+     "Interactive demo function \u2014 no non-interactive equivalent is provided."
     ]
    },
    "evidence": [],
@@ -20506,7 +20551,7 @@
     "status": "missing",
     "members": [],
     "gaps": [
-     "Interactive demo function — no non-interactive equivalent is provided."
+     "Interactive demo function \u2014 no non-interactive equivalent is provided."
     ]
    },
    "evidence": [],
@@ -20700,6 +20745,771 @@
     ]
    },
    "notes": "euclidean_distance."
+  },
+  {
+   "target": "nltk.tbl.feature.Feature",
+   "exports": [
+    "Feature",
+    "TblFeature"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export abstract class TblFeature"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "decode_json_obj",
+     "encode_json_obj",
+     "expand",
+     "extract_property",
+     "intersects",
+     "issuperset"
+    ],
+    "gaps": [
+     "camelCase adaptations: decodeJsonObj/encodeJsonObj/extractProperty; class is abstract like nltk's ABC; __eq__/__ne__/__lt__/__le__/__gt__/__ge__ ported as equals/nequals/lt/le/gt/ge including the name-or-positions ordering quirk; constructor accepts the deprecated (start,end) interval form and raises ValueError-shaped RangeError.",
+     "static expand returns subclass instances via this-constructor; PROPERTY_NAME exported as propertyName()."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "camelCase member adaptations only; behavior pinned verbatim."
+    ]
+   },
+   "notes": "Port of nltk.tbl.feature.Feature; Word/Pos subclasses live in the same file."
+  },
+  {
+   "target": "nltk.tbl.rule.Rule",
+   "exports": [
+    "Rule",
+    "TblRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export class TblRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applies",
+     "apply",
+     "decode_json_obj",
+     "encode_json_obj",
+     "format"
+    ],
+    "gaps": [
+     "camelCase adaptations: decodeJsonObj/encodeJsonObj; templateid/originalTag/replacementTag attributes; __eq__ ignores templateid like nltk; __hash__ is a stable string hash of repr, not CPython hash().",
+     "format() supports str/repr/verbose and raises ValueError-shaped RangeError for unknown specs; empty-conditions __str__ quirk ('NN->VB if ') ported."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "camelCase member adaptations only; behavior pinned verbatim."
+    ]
+   },
+   "notes": "Port of nltk.tbl.rule.Rule (concrete TagRule) with cached repr/str/hash and format()."
+  },
+  {
+   "target": "nltk.tbl.rule.TagRule",
+   "exports": [
+    "TagRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export abstract class TagRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applies",
+     "apply"
+    ],
+    "gaps": [
+     "Abstract base; applies() abstract as in nltk; __eq__/__ne__/__hash__ raising TypeError ported as equals/nequals/hash (on py3.14 the abstract ctor already fails before __eq__ is reachable)."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Abstract class; behavior covered through Rule tests rather than a dedicated oracle."
+    ]
+   },
+   "notes": "Port of nltk.tbl.rule.TagRule abstract base; apply() uses the two-phase mutation semantics."
+  },
+  {
+   "target": "nltk.tbl.template.BrillTemplateI",
+   "exports": [
+    "BrillTemplateI"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export abstract class BrillTemplateI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applicable_rules",
+     "get_neighborhood"
+    ],
+    "gaps": [
+     "camelCase adaptations: applicableRules/getNeighborhood; TS abstract class mirrors the ABCMeta interface."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Interface contract verified through Template tests."
+    ]
+   },
+   "notes": "Port of nltk.tbl.template.BrillTemplateI interface."
+  },
+  {
+   "target": "nltk.tbl.template.Template",
+   "exports": [
+    "Template"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export class Template"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applicable_rules",
+     "get_neighborhood",
+     "expand"
+    ],
+    "gaps": [
+     "camelCase adaptations: applicableRules/getNeighborhood; ALLTEMPLATES registry + ids ported (creation-order '000' ids, expand() pops duplicate registry entries like nltk._poptemplate); deprecated ctor form Template(FeatureCls,(s,e),...) supported.",
+     "Template.expand filters supersets/intersections and dedupes by repr; combinations accepts number|[lo,hi]|null."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "camelCase member adaptations only; behavior pinned verbatim."
+    ]
+   },
+   "notes": "Port of nltk.tbl.template.Template incl. ALLTEMPLATES registry, expand(), neighborhood."
+  },
+  {
+   "target": "nltk.tbl.erroranalysis.error_list",
+   "exports": [
+    "errorList",
+    "error_list"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tbl_erroranalysis.ts",
+     "anchor": "export function errorList"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "camelCase alias error_list also exported; iteration follows zip() semantics (stops at the shorter corpus); header/column widths and center() padding pinned verbatim."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "camelCase member adaptations only; behavior pinned verbatim."
+    ]
+   },
+   "notes": "Port of nltk.tbl.erroranalysis.error_list (column layout pinned)."
+  },
+  {
+   "target": "nltk.tbl.demo.corpus_size",
+   "exports": [
+    "corpus_size",
+    "corpusSize"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function corpusSize"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Returns [sequences, tokens] tuple."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "camelCase member adaptations only; behavior pinned verbatim."
+    ]
+   },
+   "notes": "Port of nltk.tbl.demo.corpus_size."
+  },
+  {
+   "target": "nltk.tbl.demo.postag",
+   "exports": [
+    "postag"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function postag"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Returns a PostagResult {tagger, baselineAccuracy, brillAccuracy, taggedTest} \u2014 nltk returns None and only prints; tagged_data=None requires the treebank corpus reader and throws; randomize=True shuffles with a deterministic mulberry32 PRNG (Python's MT19937 seed ordering is not reproduced); cache_baseline_tagger/serialize_output (CPython pickle), learning_curve_output (matplotlib), incremental_stats/template_stats (batch_tag_incremental) throw unsupported errors; options object uses camelCase names.",
+     "error_output writes the error_list file on Node/Bun."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "camelCase member adaptations only; behavior pinned verbatim."
+    ]
+   },
+   "notes": "Port of nltk.tbl.demo.postag; corpus/pickle/matplotlib-bound options throw."
+  },
+  {
+   "target": "nltk.tbl.demo.Word",
+   "exports": [
+    "Word"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export class Word"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "decode_json_obj",
+     "encode_json_obj",
+     "expand",
+     "extract_property",
+     "intersects",
+     "issuperset"
+    ],
+    "gaps": [
+     "Imported by nltk.tbl.demo from nltk.tag.brill; same Feature surface as nltk.tbl.feature.Feature."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "camelCase member adaptations only; behavior pinned verbatim."
+    ]
+   },
+   "notes": "nltk.tag.brill.Word re-exported by nltk.tbl.demo; mapped to the same Feature subclass."
+  },
+  {
+   "target": "nltk.tbl.demo.Pos",
+   "exports": [
+    "Pos"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export class Pos"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "decode_json_obj",
+     "encode_json_obj",
+     "expand",
+     "extract_property",
+     "intersects",
+     "issuperset"
+    ],
+    "gaps": [
+     "Imported by nltk.tbl.demo from nltk.tag.brill; same Feature surface as nltk.tbl.feature.Feature."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "camelCase member adaptations only; behavior pinned verbatim."
+    ]
+   },
+   "notes": "nltk.tag.brill.Pos re-exported by nltk.tbl.demo; mapped to the same Feature subclass."
+  },
+  {
+   "target": "nltk.tbl.demo.BrillTaggerTrainer",
+   "exports": [
+    "BrillTaggerTrainer"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/brill_tagger.ts",
+     "anchor": "export class BrillTaggerTrainer"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "train"
+    ],
+    "gaps": [
+     "Fast-trainer port already pinned by test/brill_tagger.test.ts python3 baseline parity; options.trace/deterministic adapt nltk's trace/deterministic ctor params."
+    ]
+   },
+   "evidence": [
+    "tbl-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "camelCase member adaptations only; behavior pinned verbatim."
+    ]
+   },
+   "notes": "nltk.tag.brill_trainer.BrillTaggerTrainer re-exported by nltk.tbl.demo."
+  },
+  {
+   "target": "nltk.tbl.demo.pickle_load",
+   "exports": [
+    "pickle_load"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/platform_helpers.ts",
+     "anchor": "export function pickle_load"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "CPython pickle deserialization is not applicable to the TS runtime; throws a descriptive error."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "nltk.picklesec.pickle_load requires CPython pickle; throwing stub."
+  },
+  {
+   "target": "nltk.tbl.demo.demo",
+   "exports": [
+    "tblDemo"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function demo"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo or corpus/pickle/matplotlib-bound helper; delegates to postag which throws without tagged_data."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo is a demo driver over postag requiring the treebank corpus; unsupported without tagged_data."
+  },
+  {
+   "target": "nltk.tbl.demo.demo_repr_rule_format",
+   "exports": [
+    "demoReprRuleFormat"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function demoReprRuleFormat"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo or corpus/pickle/matplotlib-bound helper; delegates to postag which throws without tagged_data."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo_repr_rule_format is a demo driver over postag requiring the treebank corpus; unsupported without tagged_data."
+  },
+  {
+   "target": "nltk.tbl.demo.demo_str_rule_format",
+   "exports": [
+    "demoStrRuleFormat"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function demoStrRuleFormat"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo or corpus/pickle/matplotlib-bound helper; delegates to postag which throws without tagged_data."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo_str_rule_format is a demo driver over postag requiring the treebank corpus; unsupported without tagged_data."
+  },
+  {
+   "target": "nltk.tbl.demo.demo_verbose_rule_format",
+   "exports": [
+    "demoVerboseRuleFormat"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function demoVerboseRuleFormat"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo or corpus/pickle/matplotlib-bound helper; delegates to postag which throws without tagged_data."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo_verbose_rule_format is a demo driver over postag requiring the treebank corpus; unsupported without tagged_data."
+  },
+  {
+   "target": "nltk.tbl.demo.demo_multiposition_feature",
+   "exports": [
+    "demoMultipositionFeature"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function demoMultipositionFeature"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo or corpus/pickle/matplotlib-bound helper; delegates to postag which throws without tagged_data."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo_multiposition_feature is a demo driver over postag requiring the treebank corpus; unsupported without tagged_data."
+  },
+  {
+   "target": "nltk.tbl.demo.demo_multifeature_template",
+   "exports": [
+    "demoMultifeatureTemplate"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function demoMultifeatureTemplate"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo or corpus/pickle/matplotlib-bound helper; delegates to postag which throws without tagged_data."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo_multifeature_template is a demo driver over postag requiring the treebank corpus; unsupported without tagged_data."
+  },
+  {
+   "target": "nltk.tbl.demo.demo_generated_templates",
+   "exports": [
+    "demoGeneratedTemplates"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function demoGeneratedTemplates"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo or corpus/pickle/matplotlib-bound helper; delegates to postag which throws without tagged_data."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo_generated_templates is a demo driver over postag requiring the treebank corpus; unsupported without tagged_data."
+  },
+  {
+   "target": "nltk.tbl.demo.demo_template_statistics",
+   "exports": [
+    "demoTemplateStatistics"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function demoTemplateStatistics"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo or corpus/pickle/matplotlib-bound helper; delegates to postag which throws without tagged_data."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo_template_statistics is a demo driver over postag requiring the treebank corpus; unsupported without tagged_data."
+  },
+  {
+   "target": "nltk.tbl.demo.demo_error_analysis",
+   "exports": [
+    "demoErrorAnalysis"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function demoErrorAnalysis"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo or corpus/pickle/matplotlib-bound helper; delegates to postag which throws without tagged_data."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo_error_analysis is a demo driver over postag requiring the treebank corpus; unsupported without tagged_data."
+  },
+  {
+   "target": "nltk.tbl.demo.demo_serialize_tagger",
+   "exports": [
+    "demoSerializeTagger"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function demoSerializeTagger"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo or corpus/pickle/matplotlib-bound helper; delegates to postag which throws without tagged_data."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo_serialize_tagger is a demo driver over postag requiring the treebank corpus; unsupported without tagged_data."
+  },
+  {
+   "target": "nltk.tbl.demo.demo_high_accuracy_rules",
+   "exports": [
+    "demoHighAccuracyRules"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function demoHighAccuracyRules"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo or corpus/pickle/matplotlib-bound helper; delegates to postag which throws without tagged_data."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo_high_accuracy_rules is a demo driver over postag requiring the treebank corpus; unsupported without tagged_data."
+  },
+  {
+   "target": "nltk.tbl.demo.demo_learning_curve",
+   "exports": [
+    "demoLearningCurve"
+   ],
+   "category": "gap",
+   "status": "unsupported",
+   "source": [
+    {
+     "file": "src/tbl_demo.ts",
+     "anchor": "export function demoLearningCurve"
+    }
+   ],
+   "signatures": {
+    "status": "missing",
+    "members": [],
+    "gaps": [
+     "Interactive demo or corpus/pickle/matplotlib-bound helper; delegates to postag which throws without tagged_data."
+    ]
+   },
+   "evidence": [],
+   "fixtures": {
+    "status": "missing",
+    "gaps": [
+     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+    ]
+   },
+   "notes": "NLTK demo_learning_curve is a demo driver over postag requiring the treebank corpus; unsupported without tagged_data."
   }
  ]
 }

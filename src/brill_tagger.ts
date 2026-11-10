@@ -61,16 +61,62 @@ function tupleGreaterThan(a: PositionTuple, b: PositionTuple): boolean {
   return comparePositions(a, b) > 0;
 }
 
+function comparePositionsLists(a: readonly number[], b: readonly number[]): number {
+  const len = Math.min(a.length, b.length);
+  for (let i = 0; i < len; i += 1) {
+    if (a[i] !== b[i]) return a[i]! - b[i]!;
+  }
+  return a.length - b.length;
+}
+
+/**
+ * nltk.tbl.feature.Feature.__lt__ quirk: `cls_name_a < cls_name_b or
+ * positions_a < positions_b` — NOT a proper lexicographic (name, positions)
+ * order. When names differ the positions tuple can still dominate; ported
+ * verbatim so sorting reproduces the oracle's oddities.
+ */
+function featureLt(a: TblFeature, b: TblFeature): boolean {
+  return a.className() < b.className() ||
+    comparePositionsLists(a.positions, b.positions) < 0;
+}
+
+function compareFeatures(a: TblFeature, b: TblFeature): number {
+  if (featureLt(a, b)) return -1;
+  if (featureLt(b, a)) return 1;
+  return 0;
+}
+
+/**
+ * Port of nltk.tbl.feature.Feature — a property-extraction method plus the
+ * list of relative positions it applies to.
+ */
 export abstract class TblFeature {
   readonly kind: string;
   readonly positions: readonly number[];
 
-  constructor(kind: string, positions: readonly number[]) {
+  constructor(kind: string, positions: readonly number[] | number, end?: number) {
     this.kind = kind;
-    this.positions = [...new Set(positions.map((p) => Math.trunc(p)))].sort((a, b) => a - b);
+    if (end === undefined) {
+      this.positions = [...new Set((positions as readonly number[]).map((p) => Math.trunc(p)))].sort((a, b) => a - b);
+    } else {
+      const start = positions as number;
+      if (start > end) {
+        throw new RangeError(`illegal interval specification: (start=${start}, end=${end})`);
+      }
+      this.positions = Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    }
     for (const p of this.positions) {
       if (!Number.isFinite(p)) throw new TypeError(`illegal position: ${String(p)}`);
     }
+  }
+
+  /** PROPERTY_NAME: subclass-provided name used in rule output; defaults to kind. */
+  propertyName(): string {
+    return this.kind;
+  }
+
+  className(): string {
+    return this.kind;
   }
 
   repr(): string {
@@ -81,20 +127,82 @@ export abstract class TblFeature {
     return `${this.kind}:${this.positions.join(",")}`;
   }
 
+  encodeJsonObj(): readonly number[] {
+    return this.positions;
+  }
+
+  /** nltk.tbl.feature.Feature.decode_json_obj — classmethod. */
+  static decodeJsonObj<F extends TblFeature>(this: new (positions: readonly number[]) => F, obj: readonly number[]): F {
+    return new this(obj);
+  }
+
+  /**
+   * One Feature per (start, winlen) slice of `starts`; when excludezero is
+   * set, features containing position 0 are dropped.
+   */
+  static expand<F extends TblFeature>(
+    this: new (positions: readonly number[]) => F,
+    starts: readonly number[],
+    winlens: readonly number[],
+    excludezero = false,
+  ): F[] {
+    if (!winlens.every((w) => w > 0)) {
+      throw new RangeError(`non-positive window length in [${winlens.join(", ")}]`);
+    }
+    const out: F[] = [];
+    for (const w of winlens) {
+      for (let i = 0; i + w <= starts.length; i += 1) {
+        const slice = starts.slice(i, i + w);
+        if (excludezero && slice.includes(0)) continue;
+        out.push(new this(slice));
+      }
+    }
+    return out;
+  }
+
   abstract extractProperty(tokens: ReadonlyArray<readonly [string, string]>, index: number): string;
 
+  /** nltk Feature.__eq__: same class and same positions tuple. */
   equals(other: TblFeature): boolean {
     return (
-      this.kind === other.kind &&
+      this.constructor === other.constructor &&
       this.positions.length === other.positions.length &&
       this.positions.every((p, i) => p === other.positions[i])
     );
   }
+
+  nequals(other: TblFeature): boolean {
+    return !this.equals(other);
+  }
+
+  /** True when this feature looks at all positions that `other` does (same class). */
+  issuperset(other: TblFeature): boolean {
+    return this.constructor === other.constructor && other.positions.every((p) => this.positions.includes(p));
+  }
+
+  /** True when the position sets intersect (same class). */
+  intersects(other: TblFeature): boolean {
+    return this.constructor === other.constructor && other.positions.some((p) => this.positions.includes(p));
+  }
+
+  /** nltk quirk: __lt__ is `name_a < name_b or positions_a < positions_b`. */
+  lt(other: TblFeature): boolean {
+    return featureLt(this, other);
+  }
+  gt(other: TblFeature): boolean {
+    return featureLt(other, this);
+  }
+  ge(other: TblFeature): boolean {
+    return !featureLt(this, other);
+  }
+  le(other: TblFeature): boolean {
+    return featureLt(this, other) || this.equals(other);
+  }
 }
 
 export class Word extends TblFeature {
-  constructor(positions: readonly number[]) {
-    super("Word", positions);
+  constructor(positions: readonly number[] | number, end?: number) {
+    super("Word", positions, end);
   }
 
   extractProperty(tokens: ReadonlyArray<readonly [string, string]>, index: number): string {
@@ -103,8 +211,8 @@ export class Word extends TblFeature {
 }
 
 export class Pos extends TblFeature {
-  constructor(positions: readonly number[]) {
-    super("Pos", positions);
+  constructor(positions: readonly number[] | number, end?: number) {
+    super("Pos", positions, end);
   }
 
   extractProperty(tokens: ReadonlyArray<readonly [string, string]>, index: number): string {
@@ -114,21 +222,89 @@ export class Pos extends TblFeature {
 
 export type Condition = readonly [feature: TblFeature, value: string];
 
-export class TblRule {
-  readonly templateid: string;
+/**
+ * Port of nltk.tbl.rule.TagRule — the abstract rule that maps an original tag
+ * to a replacement tag wherever `applies` holds.
+ */
+export abstract class TagRule {
   readonly originalTag: string;
   readonly replacementTag: string;
+
+  constructor(originalTag: string, replacementTag: string) {
+    this.originalTag = originalTag;
+    this.replacementTag = replacementTag;
+  }
+
+  /**
+   * Apply this rule at every position in `positions` where it applies; the
+   * tag change is computed in a separate step so the rule does not interact
+   * with itself. Returns the indices whose tags were changed.
+   */
+  apply(tokens: Array<readonly [string, string]>, positions?: readonly number[]): number[] {
+    const targets =
+      positions !== undefined ? positions : Array.from({ length: tokens.length }, (_, i) => i);
+    const change = targets.filter((i) => this.applies(tokens, i));
+    const mutable = tokens as Array<[string, string]>;
+    for (const i of change) {
+      mutable[i] = [tokens[i]![0], this.replacementTag];
+    }
+    return change;
+  }
+
+  /** True if the rule would change the tag of tokens[index]. */
+  abstract applies(tokens: ReadonlyArray<readonly [string, string]>, index: number): boolean;
+
+  /** nltk quirk: TagRule.__eq__/__ne__/__hash__ unconditionally raise TypeError. */
+  equals(_other: unknown): boolean {
+    throw new TypeError("Rules must implement __eq__()");
+  }
+  nequals(_other: unknown): boolean {
+    throw new TypeError("Rules must implement __ne__()");
+  }
+  hash(): number {
+    throw new TypeError("Rules must implement __hash__()");
+  }
+}
+
+export class TblRule extends TagRule {
+  readonly templateid: string;
   readonly conditions: readonly Condition[];
 
   #repr?: string;
   #key?: string;
   #str?: string;
+  #hash?: number;
 
   constructor(templateid: string, originalTag: string, replacementTag: string, conditions: readonly Condition[]) {
+    super(originalTag, replacementTag);
     this.templateid = templateid;
-    this.originalTag = originalTag;
-    this.replacementTag = replacementTag;
     this.conditions = conditions;
+  }
+
+  encodeJsonObj(): { templateid: string; original: string; replacement: string; conditions: readonly Condition[] } {
+    return {
+      templateid: this.templateid,
+      original: this.originalTag,
+      replacement: this.replacementTag,
+      conditions: this.conditions,
+    };
+  }
+
+  static decodeJsonObj(obj: { templateid: string; original: string; replacement: string; conditions: readonly Condition[] }): TblRule {
+    return new TblRule(obj.templateid, obj.original, obj.replacement, obj.conditions);
+  }
+
+  override equals(other: unknown): boolean {
+    return (
+      other instanceof TblRule &&
+      this.originalTag === other.originalTag &&
+      this.replacementTag === other.replacementTag &&
+      this.conditions.length === other.conditions.length &&
+      this.conditions.every(([f, v], i) => {
+        const [of, ov] = other.conditions[i]!;
+        return v === ov && f.equals(of);
+      })
+    );
   }
 
   repr(): string {
@@ -153,7 +329,7 @@ export class TblRule {
     return this.#key;
   }
 
-  toString(): string {
+  override toString(): string {
     if (this.#str === undefined) {
       const conditionText = this.conditions
         .map(
@@ -161,10 +337,8 @@ export class TblRule {
             `${feature.kind}:${value}@[${feature.positions.join(",")}]`,
         )
         .join(" & ");
-      this.#str =
-        conditionText.length > 0
-          ? `${this.originalTag}->${this.replacementTag} if ${conditionText}`
-          : `${this.originalTag}->${this.replacementTag}`;
+      // nltk quirk: __str__ unconditionally appends " if {...}".
+      this.#str = `${this.originalTag}->${this.replacementTag} if ${conditionText}`;
     }
     return this.#str;
   }
@@ -186,34 +360,107 @@ export class TblRule {
     return true;
   }
 
-  apply(tokens: BrillSentence, positions?: readonly number[]): number[] {
-    const targets =
-      positions !== undefined ? positions : Array.from({ length: tokens.length }, (_, i) => i);
-    const change = targets.filter((i) => this.applies(tokens, i)!);
-    for (const i of change) {
-      tokens[i] = [tokens[i]![0], this.replacementTag];
+  override hash(): number {
+    // nltk caches hash(repr(self)); a stable string hash serves the same role.
+    if (this.#hash === undefined) {
+      const s = this.repr();
+      let h = 0;
+      for (let i = 0; i < s.length; i += 1) h = (Math.imul(h, 31) + s.charCodeAt(i)) | 0;
+      this.#hash = h;
     }
-    return change;
+    return this.#hash;
+  }
+
+  /** nltk.tbl.rule.Rule.format — "str" | "repr" | "verbose". */
+  format(fmt: string): string {
+    if (fmt === "str") return this.toString();
+    if (fmt === "repr") return this.repr();
+    if (fmt === "verbose") return this.verboseFormat();
+    throw new RangeError(`unknown rule format spec: ${fmt}`);
+  }
+
+  verboseFormat(): string {
+    const conditionToStr = (feature: TblFeature, value: string): string =>
+      `the ${feature.propertyName()} of ${rangeToStr(feature.positions)} is "${value}"`;
+    const rangeToStr = (positions: readonly number[]): string => {
+      if (positions.length === 1) {
+        const p = positions[0]!;
+        if (p === 0) return "this word";
+        if (p === -1) return "the preceding word";
+        if (p === 1) return "the following word";
+        if (p < 0) return `word i-${-p}`;
+        return `word i+${p}`;
+      }
+      const mx = Math.max(...positions);
+      const mn = Math.min(...positions);
+      if (mx - mn === positions.length - 1) {
+        return `words i${mn >= 0 ? "+" : ""}${mn}...i${mx >= 0 ? "+" : ""}${mx}`;
+      }
+      return `words {${positions.map((d) => `i${d >= 0 ? "+" : ""}${d}`).join(",")}}`;
+    };
+    const replacement = `${this.originalTag} -> ${this.replacementTag}`;
+    const conditions =
+      (this.conditions.length > 0 ? " if " : "") +
+      this.conditions.map(([f, v]) => conditionToStr(f, v)).join(", and ");
+    return replacement + conditions;
   }
 }
 
-let nextTemplateId = 0;
+/** nltk.tbl.template.BrillTemplateI — interface for rule-generating templates. */
+export abstract class BrillTemplateI {
+  /**
+   * Return the rules that would correct the index-th token's tag to
+   * `correctTag`; empty when the token already has the correct tag.
+   */
+  abstract applicableRules(
+    tokens: ReadonlyArray<readonly [string, string]>,
+    index: number,
+    correctTag: string,
+  ): TblRule[];
 
-export function clearTemplateRegistry(): void {
-  nextTemplateId = 0;
+  /** Indices on which applicable_rules may depend (used by the fast trainer). */
+  abstract getNeighborhood(tokens: ReadonlyArray<unknown>, index: number): number[];
 }
 
-export class Template {
+/** nltk.tbl.template.Template.ALLTEMPLATES — creation-order registry. */
+const ALLTEMPLATES: Template[] = [];
+
+export function clearTemplateRegistry(): void {
+  ALLTEMPLATES.length = 0;
+}
+
+function popTemplate(): Template | undefined {
+  return ALLTEMPLATES.pop();
+}
+
+type FeatureConstructor = new (positions: readonly number[] | number, end?: number) => TblFeature;
+
+export class Template extends BrillTemplateI {
   readonly id: string;
   readonly features: readonly TblFeature[];
 
-  constructor(...features: TblFeature[]) {
-    if (features.length === 0 || !features.every((f) => f instanceof TblFeature)) {
-      throw new TypeError("expected one or more Feature instances");
+  constructor(...features: Array<TblFeature | FeatureConstructor | readonly [number, number]>) {
+    super();
+    let resolved: TblFeature[];
+    if (features.every((f) => f instanceof TblFeature)) {
+      resolved = features as TblFeature[];
+    } else if (
+      features.length > 0 &&
+      typeof features[0] === "function" &&
+      features.slice(1).every((a) => Array.isArray(a))
+    ) {
+      const ctor = features[0] as FeatureConstructor;
+      resolved = (features.slice(1) as ReadonlyArray<readonly [number, number]>).map(
+        (tp) => new ctor(tp[0], tp[1]),
+      );
+    } else {
+      throw new TypeError(
+        "expected either Feature1(args), Feature2(args), ... or Feature, (start1, end1), (start2, end2), ...",
+      );
     }
-    this.features = features;
-    this.id = String(nextTemplateId).padStart(3, "0");
-    nextTemplateId += 1;
+    this.features = resolved;
+    this.id = String(ALLTEMPLATES.length).padStart(3, "0");
+    ALLTEMPLATES.push(this);
   }
 
   repr(): string {
@@ -260,6 +507,87 @@ export class Template {
     for (let i = from; i < to; i += 1) neighborhood.add(i);
     return [...neighborhood].sort((a, b) => a - b);
   }
+
+  /**
+   * nltk.tbl.template.Template.expand — mass-generate Templates from lists of
+   * Features. `combinations` selects how many feature lists are drawn per
+   * Template: a single int k (exactly k) or [k1, k2] (k1..k2); default 1..n.
+   * Superset and (by default) intersecting features are dropped; repr-equal
+   * Templates are deduplicated and popped from the registry like nltk.
+   */
+  static expand(
+    featurelists: ReadonlyArray<readonly TblFeature[]>,
+    combinations: number | readonly [number, number] | null = null,
+    skipintersecting = true,
+  ): Template[] {
+    const combrange: readonly [number, number] =
+      combinations === null
+        ? [1, featurelists.length + 1]
+        : typeof combinations === "number"
+          ? [combinations, combinations + 1]
+          : [combinations[0], combinations[1] + 1];
+
+    const powerset: Array<ReadonlyArray<readonly TblFeature[]>> = [];
+    for (let r = combrange[0]; r < combrange[1]; r += 1) {
+      for (const pick of combineLists(featurelists, r)) powerset.push(pick);
+    }
+
+    const out: Template[] = [];
+    const seentemplates = new Set<string>();
+    for (const picks of powerset) {
+      for (const pick of productLists(picks)) {
+        let skip = false;
+        for (let i = 0; i < pick.length && !skip; i += 1) {
+          for (let j = 0; j < pick.length && !skip; j += 1) {
+            if (i === j) continue;
+            if (pick[i]!.issuperset(pick[j]!)) skip = true;
+            else if (skipintersecting && pick[i]!.intersects(pick[j]!)) skip = true;
+          }
+        }
+        if (skip) continue;
+        const sorted = [...pick].sort(compareFeatures);
+        const thistemplate = new Template(...sorted);
+        const strpick = thistemplate.repr();
+        if (seentemplates.has(strpick)) {
+          popTemplate();
+          continue;
+        }
+        seentemplates.add(strpick);
+        out.push(thistemplate);
+      }
+    }
+    return out;
+  }
+}
+
+/** itertools.combinations over sublists: choose r of the feature lists. */
+function combineLists<T>(xs: readonly T[], r: number): T[][] {
+  const out: T[][] = [];
+  const idx: number[] = [];
+  const step = (start: number): void => {
+    if (idx.length === r) {
+      out.push(idx.map((i) => xs[i]!));
+      return;
+    }
+    for (let i = start; i < xs.length; i += 1) {
+      idx.push(i);
+      step(i + 1);
+      idx.pop();
+    }
+  };
+  if (r >= 0) step(0);
+  return out;
+}
+
+/** itertools.product over lists of Features. */
+function productLists<T>(lists: ReadonlyArray<readonly T[]>): T[][] {
+  let acc: T[][] = [[]];
+  for (const list of lists) {
+    const next: T[][] = [];
+    for (const prefix of acc) for (const item of list) next.push([...prefix, item]);
+    acc = next;
+  }
+  return acc;
 }
 
 export interface BrillTrainingStats {

@@ -532,7 +532,20 @@ export { WordNetReader as WordNetCorpusReader } from "./src/wordnet_objects";
 export { phraseExtraction, extract as phraseExtract, MAX_PHRASE_EXTRACTION_DEFAULT_LEN } from "./src/translate_phrase_based";
 export { mapTag, tagsetMapping } from "./src/tag_mapping";
 export { parseSents, rootSemrep } from "./src/sem_util";
-export { demo as tblDemo } from "./src/tbl_demo";
+export {
+  demo as tblDemo,
+  demoReprRuleFormat,
+  demoStrRuleFormat,
+  demoVerboseRuleFormat,
+  demoMultipositionFeature,
+  demoMultifeatureTemplate,
+  demoGeneratedTemplates,
+  demoTemplateStatistics,
+  demoErrorAnalysis,
+  demoSerializeTagger,
+  demoHighAccuracyRules,
+  demoLearningCurve,
+} from "./src/tbl_demo";
 export { NISTTokenizer, nistInternationalTokenize, nistTokenize } from "./src/tokenize_nist";
 export { generate, generateSentences, MAX_GENERATE_OPERATIONS } from "./src/parse_generate";
 export { errorList } from "./src/tbl_erroranalysis";
@@ -781,7 +794,7 @@ export {
   demo, open_datafile, call_megam, call_tadm, train_maxent_classifier_with_megam,
   write_megam_file, write_tadm_file, parse_megam_weights, parse_tadm_weights,
   load_maxent_params, save_maxent_params, allowlisted_pickle_load, punkt_pickle_load,
-  demo_grammar, demo_eval, gzip_open_unicode,
+  demo_grammar, demo_eval, gzip_open_unicode, pickle_load,
 } from "./src/platform_helpers";
 export {
   AbstractLazySequence, LazyConcatenation, LazyEnumerate, LazyIteratorList,
