@@ -7,13 +7,6 @@
 #   docker build -t bun_nltk .
 #   docker run --rm bun_nltk
 
-FROM oven/bun:1 AS js-base
-
-FROM rust:1-slim AS rust-build
-WORKDIR /app
-COPY rust/ ./rust/
-RUN cd rust && cargo build --release
-
 FROM python:3.14.4-slim-trixie AS py-oracle
 
 FROM oven/bun:1
@@ -30,7 +23,6 @@ COPY --from=rust:1-slim /usr/local/rustup /usr/local/rustup
 COPY --from=rust:1-slim /usr/local/cargo /usr/local/cargo
 
 WORKDIR /app
-COPY --from=js-base /usr/local/bin/bun /usr/local/bin/bun
 COPY package.json bun.lock tsconfig.json ./
 COPY src/ ./src/
 COPY scripts/ ./scripts/
