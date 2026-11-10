@@ -2011,6 +2011,26 @@
    "anchor": "assert nltk.__version__ == \"3.10.3\"",
    "oracleVersion": "3.10.3",
    "scope": "DependencyGraph conll round-trip/styles/triples/dict-deps cycle quirk, DependencyEvaluator LAS/UAS, taggedsent(s)_to_conll column layout."
+  },
+  {
+   "id": "parse-internals-differential",
+   "kind": "differential",
+   "files": [
+    "test/parse_internals.test.ts",
+    "test/parse_internals_oracle.py"
+   ],
+   "anchor": "Transition constructor rejects unknown algorithms like NLTK",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: transition Configuration extract_features + Transition arc-standard/arc-eager ops + ctor validation; DependencySpan repr/str/head_index/eq/lt; ChartCell set dedup; DependencyScorerI abstract failures, DemoScorer/NaiveBayesDependencyScorer score matrices incl. dict-deps all-\"F\" quirk; extract_test_sentences all branches; normalize_resource_url incl. unsafe-path ValueError; gzip_open_unicode UTF-8 decode."
+  },
+  {
+   "id": "parse-internals-unit",
+   "kind": "unit",
+   "files": [
+    "test/parse_internals.test.ts"
+   ],
+   "anchor": "probabilistic edges and ProbabilisticTree prob mixin behavior",
+   "scope": "Unit coverage for ProbabilisticTreeEdge/ProbabilisticLeafEdge prob surface, ProbabilisticTree prob/logprob mixin + convert, ProbabilisticDependencyGrammar contains/repr, and the deprecated() wrapper."
   }
  ],
  "signatureBindings": [
@@ -8954,29 +8974,31 @@
    "exports": [
     "gzip_open_unicode"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/data.ts",
-     "anchor": "gzip_open_unicode"
+     "anchor": "export function gzipOpenUnicode"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Returns decoded text (string) rather than a file object; filename-or-bytes adapted; gzip decode pinned."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "UTF-8 decode incl. non-ASCII pinned against the pinned oracle."
     ]
    },
-   "notes": "NLTK gzip_open_unicode is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Real gzip decode path; returns string not a stream."
   },
   {
    "target": "nltk.classify.maxent.load_maxent_params",
@@ -9649,8 +9671,8 @@
    "exports": [
     "deprecated"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "partial",
    "source": [
     {
      "file": "src/util_nltk.ts",
@@ -9658,20 +9680,22 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Adapted to (message, fn) wrapper rather than a Python decorator factory; warning goes to console.warn."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-unit"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "unit-only",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Unit coverage that the wrapped fn still runs and returns; no oracle."
     ]
    },
-   "notes": "NLTK deprecated is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Real deprecated() wrapper (adapted signature)."
   },
   {
    "target": "nltk.corpus.reader.wordnet.map_tag",
@@ -32907,8 +32931,8 @@
    "exports": [
     "normalize_resource_url"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/data.ts",
@@ -32916,20 +32940,22 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "nltk:/file:/http(s) normalization + unsafe-path ValueError pinned; downstream resource loading remains resource-dependent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "URL normalization incl. unsafe-path rejection pinned against the pinned oracle."
     ]
    },
-   "notes": "URL normalization stub throws (data.normalize_resource_url unavailable)."
+   "notes": "Real normalize_resource_url."
   },
   {
    "target": "nltk.tag.mapping.tagset_mapping",
@@ -42115,29 +42141,38 @@
    "exports": [
     "NaiveBayesDependencyScorer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export class NaiveBayesDependencyScorer"
+    },
+    {
+     "file": "src/classifier_compat.ts",
+     "anchor": "export class NaiveBayesClassifier"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "score",
+     "train"
+    ],
     "gaps": [
-     "NaiveBayesDependencyScorer depends on unported chart/dependency/transition machinery; stub throws."
+     "Re-export of nonprojectivedependencyparser.NaiveBayesDependencyScorer; score() reproduces NLTK dict-deps quirk where every label is \"F\"."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NaiveBayesDependencyScorer depends on unported chart/dependency/transition machinery; stub throws."
+     "Score matrix pinned against the pinned oracle including the all-\"F\" dict-deps quirk."
     ]
    },
-   "notes": "NaiveBayesDependencyScorer depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "nltk.parse re-export of the real NB scorer."
   },
   {
    "target": "nltk.parse.NonprojectiveDependencyParser",
@@ -42608,11 +42643,11 @@
    "exports": [
     "extract_test_sentences"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export function extract_test_sentences"
     }
    ],
@@ -42620,17 +42655,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "extract_test_sentences: external-binary/server-bound or interactive demo; honest stub throws."
+     "Re-export of parse.util.extract_test_sentences; all parsing branches pinned; string input adapted."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "extract_test_sentences: external-binary/server-bound or interactive demo; honest stub throws."
+     "All parsing branches pinned against the pinned oracle."
     ]
    },
-   "notes": "extract_test_sentences: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "nltk.parse re-export of the real extract_test_sentences."
   },
   {
    "target": "nltk.parse.load_parser",
@@ -46334,29 +46371,34 @@
    "exports": [
     "DemoScorer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export class DemoScorer"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "score",
+     "train"
+    ],
     "gaps": [
-     "DemoScorer depends on unported chart/dependency/transition machinery; stub throws."
+     "train() prints \"Training...\"; score() returns nested 2-D score matrices keyed by head/mod indices, pinned on the NLTK demo graph."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "DemoScorer depends on unported chart/dependency/transition machinery; stub throws."
+     "score matrix pinned against the pinned oracle conll demo graph."
     ]
    },
-   "notes": "DemoScorer depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real DemoScorer; train() prints like NLTK."
   },
   {
    "target": "nltk.parse.nonprojectivedependencyparser.DependencyGraph",
@@ -46394,58 +46436,72 @@
    "exports": [
     "DependencyScorerI"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export class DependencyScorerI"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "score",
+     "train"
+    ],
     "gaps": [
-     "DependencyScorerI depends on unported chart/dependency/transition machinery; stub throws."
+     "Abstract ctor TypeError and abstract train/score NotImplementedError pinned; concrete scoring lives in subclasses."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "DependencyScorerI depends on unported chart/dependency/transition machinery; stub throws."
+     "Abstract-interface failures pinned against the pinned oracle."
     ]
    },
-   "notes": "DependencyScorerI depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Abstract scorer interface matching NLTK."
   },
   {
    "target": "nltk.parse.nonprojectivedependencyparser.NaiveBayesDependencyScorer",
    "exports": [
     "NaiveBayesDependencyScorer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export class NaiveBayesDependencyScorer"
+    },
+    {
+     "file": "src/classifier_compat.ts",
+     "anchor": "export class NaiveBayesClassifier"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "score",
+     "train"
+    ],
     "gaps": [
-     "NaiveBayesDependencyScorer depends on unported chart/dependency/transition machinery; stub throws."
+     "train() adapted to classifier.train(events); score() reproduces NLTK dict-deps quirk where every label is \"F\" because deps keys are relation names, not child indices."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NaiveBayesDependencyScorer depends on unported chart/dependency/transition machinery; stub throws."
+     "Score matrix pinned against the pinned oracle including the all-\"F\" dict-deps quirk."
     ]
    },
-   "notes": "NaiveBayesDependencyScorer depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real NB scorer on the shared NaiveBayesClassifier; matches NLTK dict-deps label quirk."
   },
   {
    "target": "nltk.parse.nonprojectivedependencyparser.NonprojectiveDependencyParser",
@@ -46974,87 +47030,125 @@
    "exports": [
     "ProbabilisticLeafEdge"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "partial",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export class ProbabilisticLeafEdge"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "dot",
+     "end",
+     "is_complete",
+     "is_incomplete",
+     "length",
+     "lhs",
+     "nextsym",
+     "prob",
+     "rhs",
+     "span",
+     "start"
+    ],
     "gaps": [
-     "ProbabilisticLeafEdge depends on unported chart/dependency/transition machinery; stub throws."
+     "Leaf-edge surface ported with prob()=1.0; probabilistic chart parsers unported."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-unit"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "unit-only",
     "gaps": [
-     "ProbabilisticLeafEdge depends on unported chart/dependency/transition machinery; stub throws."
+     "Unit coverage for prob/is_complete; no oracle for edge internals."
     ]
    },
-   "notes": "ProbabilisticLeafEdge depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real prob-carrying LeafEdge."
   },
   {
    "target": "nltk.parse.pchart.ProbabilisticTree",
    "exports": [
     "ProbabilisticTree"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "partial",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export class ProbabilisticTree"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "convert",
+     "logprob",
+     "prob",
+     "set_logprob",
+     "set_prob"
+    ],
     "gaps": [
-     "ProbabilisticTree depends on unported chart/dependency/transition machinery; stub throws."
+     "prob/logprob mixin ported with log2 semantics and either-prob-or-logprob validation; constructor adapted (runtime-first, options bag); ViterbiParser extraction unported."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-unit"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "unit-only",
     "gaps": [
-     "ProbabilisticTree depends on unported chart/dependency/transition machinery; stub throws."
+     "Unit coverage for prob/logprob/set_*/convert; no oracle."
     ]
    },
-   "notes": "ProbabilisticTree depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real ProbabilisticTree prob mixin on the shared Tree."
   },
   {
    "target": "nltk.parse.pchart.ProbabilisticTreeEdge",
    "exports": [
     "ProbabilisticTreeEdge"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "partial",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export class ProbabilisticTreeEdge"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "dot",
+     "end",
+     "from_production",
+     "is_complete",
+     "is_incomplete",
+     "length",
+     "lhs",
+     "move_dot_forward",
+     "nextsym",
+     "prob",
+     "rhs",
+     "span",
+     "start"
+    ],
     "gaps": [
-     "ProbabilisticTreeEdge depends on unported chart/dependency/transition machinery; stub throws."
+     "Edge surface ported (prob mixin + TreeEdge ops); from_production adapted to runtime ProbabilisticProduction; probabilistic chart parsers unported."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-unit"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "unit-only",
     "gaps": [
-     "ProbabilisticTreeEdge depends on unported chart/dependency/transition machinery; stub throws."
+     "Unit coverage for prob/move_dot_forward/key; no oracle for edge internals."
     ]
    },
-   "notes": "ProbabilisticTreeEdge depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real prob-carrying TreeEdge for probabilistic charting."
   },
   {
    "target": "nltk.parse.pchart.RandomChartParser",
@@ -47235,29 +47329,33 @@
    "exports": [
     "ChartCell"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export class ChartCell"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "add"
+    ],
     "gaps": [
-     "ChartCell depends on unported chart/dependency/transition machinery; stub throws."
+     "set-style dedup via span compare key pinned; str() ordering is hash-derived in Python so only size/contents are pinned; projective chart machinery not ported."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ChartCell depends on unported chart/dependency/transition machinery; stub throws."
+     "Dedup/size/entries pinned against the pinned oracle; str ordering normalized."
     ]
    },
-   "notes": "ChartCell depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real ChartCell set semantics over DependencySpan."
   },
   {
    "target": "nltk.parse.projectivedependencyparser.DependencyGrammar",
@@ -47353,37 +47451,41 @@
    "exports": [
     "DependencySpan"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export class DependencySpan"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "head_index"
+    ],
     "gaps": [
-     "DependencySpan depends on unported chart/dependency/transition machinery; stub throws."
+     "repr/str/eq/lt dunder semantics pinned differentially but not discoverable members; compare-key adapted."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "DependencySpan depends on unported chart/dependency/transition machinery; stub throws."
+     "repr/str/head_index/eq/lt pinned against the pinned oracle."
     ]
    },
-   "notes": "DependencySpan depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real DependencySpan with NLTK repr/str/equality/ordering."
   },
   {
    "target": "nltk.parse.projectivedependencyparser.ProbabilisticDependencyGrammar",
    "exports": [
     "ProbabilisticDependencyGrammar"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "partial",
    "source": [
     {
      "file": "src/grammar.ts",
@@ -47392,19 +47494,23 @@
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "contains"
+    ],
     "gaps": [
-     "ProbabilisticDependencyGrammar depends on unported chart/dependency/transition machinery; stub throws."
+     "contains() iterates productions matching lhs symbol and rhs modifier; constructor adapted to (productions, Map events, Map tags); repr/toString ported; not differentially pinned."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-unit"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "unit-only",
     "gaps": [
-     "ProbabilisticDependencyGrammar depends on unported chart/dependency/transition machinery; stub throws."
+     "Unit coverage for contains/repr; no oracle."
     ]
    },
-   "notes": "ProbabilisticDependencyGrammar depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real ProbabilisticDependencyGrammar container."
   },
   {
    "target": "nltk.parse.projectivedependencyparser.ProbabilisticProjectiveDependencyParser",
@@ -47991,29 +48097,37 @@
    "exports": [
     "Configuration"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export class Configuration"
+    },
+    {
+     "file": "src/dependency_graph.ts",
+     "anchor": "export class DependencyGraph"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "extract_features"
+    ],
     "gaps": [
-     "Configuration depends on unported chart/dependency/transition machinery; stub throws."
+     "Constructor state plus left_arc/right_arc/shift/reduce effects pinned via Transition cases; private _check_informative mirrors NLTK; mutable stack/buffer/arcs arrays adapted."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Configuration depends on unported chart/dependency/transition machinery; stub throws."
+     "State transitions and feature strings pinned against the pinned oracle on conll-style graphs."
     ]
    },
-   "notes": "Configuration depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real Configuration state container + NLTK extract_features vector; stack/buffer/arcs adapted to mutable arrays."
   },
   {
    "target": "nltk.parse.transitionparser.DependencyEvaluator",
@@ -48111,29 +48225,36 @@
    "exports": [
     "Transition"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export class Transition"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "left_arc",
+     "reduce",
+     "right_arc",
+     "shift"
+    ],
     "gaps": [
-     "Transition depends on unported chart/dependency/transition machinery; stub throws."
+     "Four ops pinned on arc-standard and arc-eager; unknown algorithm rejected with ValueError; constants LEFT_ARC/RIGHT_ARC/SHIFT/REDUCE/ARC_STANDARD/ARC_EAGER mirror NLTK."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Transition depends on unported chart/dependency/transition machinery; stub throws."
+     "Per-op state transitions pinned against the pinned oracle for both algorithms."
     ]
    },
-   "notes": "Transition depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real Transition ops (arc-standard + arc-eager); TransitionParser training remains unported."
   },
   {
    "target": "nltk.parse.transitionparser.TransitionParser",
@@ -48488,11 +48609,11 @@
    "exports": [
     "extract_test_sentences"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export function extract_test_sentences"
     }
    ],
@@ -48500,17 +48621,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "extract_test_sentences: external-binary/server-bound or interactive demo; honest stub throws."
+     "Input adapted to string; comment/bool/int-expectation parsing branches pinned; returns plain string[] without eval of eval-based expectation branch (NLTK eval() kept as string passthrough)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "extract_test_sentences: external-binary/server-bound or interactive demo; honest stub throws."
+     "All parsing branches pinned against the pinned oracle."
     ]
    },
-   "notes": "extract_test_sentences: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Real extract_test_sentences parser."
   },
   {
    "target": "nltk.parse.util.load",
@@ -48666,29 +48789,37 @@
    "exports": [
     "ProbabilisticTree"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "partial",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_dependency.ts",
      "anchor": "export class ProbabilisticTree"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "convert",
+     "logprob",
+     "prob",
+     "set_logprob",
+     "set_prob"
+    ],
     "gaps": [
-     "ProbabilisticTree depends on unported chart/dependency/transition machinery; stub throws."
+     "Same ProbabilisticTree export serves viterbi; constructor adapted (runtime-first, options bag); ViterbiParser unported."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-internals-unit"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "unit-only",
     "gaps": [
-     "ProbabilisticTree depends on unported chart/dependency/transition machinery; stub throws."
+     "Unit coverage for prob/logprob/set_*/convert; no oracle."
     ]
    },
-   "notes": "ProbabilisticTree depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "viterbi.ProbabilisticTree aliases pchart.ProbabilisticTree in NLTK."
   },
   {
    "target": "nltk.parse.viterbi.Tree",

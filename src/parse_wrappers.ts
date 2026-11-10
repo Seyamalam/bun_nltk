@@ -25,6 +25,8 @@ export class StanfordParser {
   rawParse(_sentence: string): unknown { return externalError("StanfordParser.rawParse"); }
 }
 export class TransitionParser {
+  static readonly ARC_STANDARD = "arc-standard";
+  static readonly ARC_EAGER = "arc-eager";
   constructor(..._args: unknown[]) { void _args; }
   parse(_tokens: string[]): unknown { return externalError("TransitionParser.parse"); }
 }

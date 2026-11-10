@@ -853,13 +853,14 @@ export {
   demo, open_datafile, call_megam, call_tadm, train_maxent_classifier_with_megam,
   write_megam_file, write_tadm_file, parse_megam_weights, parse_tadm_weights,
   load_maxent_params, save_maxent_params, allowlisted_pickle_load, punkt_pickle_load,
-  demo_grammar, demo_eval, gzip_open_unicode, pickle_load,
+  demo_grammar, demo_eval, pickle_load,
 } from "./src/platform_helpers";
 export {
   AbstractLazySequence, LazyConcatenation, LazyEnumerate, LazyIteratorList,
   LazyMap, LazySubsequence, LazyZip, Trie, OrderedDict,
 } from "./src/collections";
 export { FileSystemPathPointer, find, load } from "./src/data";
+export { gzipOpenUnicode as gzip_open_unicode } from "./src/data";
 export { regexpTokenize as regexp_tokenize } from "./src/tokenizers_regexp";
 export { Fraction } from "./src/fraction";
 export {
@@ -918,7 +919,8 @@ export {
   BottomUpProbabilisticChartParser, InsideChartParser, LongestChartParser, RandomChartParser, UnsortedChartParser,
   DependencySpan, ChartCell, ProjectiveDependencyParser, ProbabilisticProjectiveDependencyParser,
   DependencyScorerI, NaiveBayesDependencyScorer, DemoScorer, NonprojectiveDependencyParser,
-  ProbabilisticNonprojectiveParser, Configuration, Transition, TestGrammar, extract_test_sentences,
+  ProbabilisticNonprojectiveParser, Configuration, Transition, TestGrammar, extract_test_sentences, extractTestSentences,
+  ARC_EAGER, ARC_STANDARD,
   SteppingRecursiveDescentParser, SteppingShiftReduceParser,
   CoreNLPServer, CoreNLPDependencyParser, GenericCoreNLPParser, ZipFilePathPointer,
   find_jar_iter, try_port, transform, find_dir, find_jars_within_path, find_malt_model, find_maltparser,

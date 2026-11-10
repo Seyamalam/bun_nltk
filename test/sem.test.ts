@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   read_valuation, is_rel, set2rel, arity, demo_model0, toCnf, LinearLogicParser,
   list2sym, class_abbrev, rtuple, fromstring, skolemize, SemError, Undefined,
+  resetUniqueVariableCounter,
   CooperStore, FStructure, parse_with_bindops, BoxerDrs, DrsDrawer, foldemo,
   hole_readings, Constants, read_sents, interpret_sents,
 } from "../index";
@@ -58,6 +59,7 @@ describe("nltk.sem.util", () => {
 
 describe("nltk.sem.skolemize", () => {
   test("skolemize + to_cnf match oracle", () => {
+    resetUniqueVariableCounter();
     expect(String(skolemize(fromstring("exists x. (dog(x) & bark(x))")))).toBe("(dog(z1) & bark(z1))");
     expect(String(toCnf(fromstring("(P | Q)"), fromstring("R")))).toBe("(P | Q | R)");
   });

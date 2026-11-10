@@ -57,9 +57,6 @@ export class CompleteFundamentalRule { constructor() { unsupported("CompleteFund
 export class FilteredCompleteFundamentalRule { constructor() { unsupported("FilteredCompleteFundamentalRule", INC_WHY); } }
 
 const PC_WHY = "probabilistic chart machinery not yet ported";
-export class ProbabilisticTree { constructor() { unsupported("ProbabilisticTree", "nltk.tree.ProbabilisticTree not yet ported"); } }
-export class ProbabilisticTreeEdge { constructor() { unsupported("ProbabilisticTreeEdge", PC_WHY); } }
-export class ProbabilisticLeafEdge { constructor() { unsupported("ProbabilisticLeafEdge", PC_WHY); } }
 export class ProbabilisticFundamentalRule { constructor() { unsupported("ProbabilisticFundamentalRule", PC_WHY); } }
 export class SingleEdgeProbabilisticFundamentalRule { constructor() { unsupported("SingleEdgeProbabilisticFundamentalRule", PC_WHY); } }
 export class ProbabilisticBottomUpInitRule { constructor() { unsupported("ProbabilisticBottomUpInitRule", PC_WHY); } }
@@ -71,19 +68,20 @@ export class RandomChartParser { constructor() { unsupported("RandomChartParser"
 export class UnsortedChartParser { constructor() { unsupported("UnsortedChartParser", PC_WHY); } }
 
 const DP_WHY = "dependency-parser machinery not yet ported";
-export class DependencySpan { constructor() { unsupported("DependencySpan", DP_WHY); } }
-export class ChartCell { constructor() { unsupported("ChartCell", DP_WHY); } }
 export class ProjectiveDependencyParser { constructor() { unsupported("ProjectiveDependencyParser", DP_WHY); } }
 export class ProbabilisticProjectiveDependencyParser { constructor() { unsupported("ProbabilisticProjectiveDependencyParser", DP_WHY); } }
-export class DependencyScorerI { constructor() { unsupported("DependencyScorerI", DP_WHY); } }
-export class NaiveBayesDependencyScorer { constructor() { unsupported("NaiveBayesDependencyScorer", DP_WHY); } }
-export class DemoScorer { constructor() { unsupported("DemoScorer", DP_WHY); } }
 export class NonprojectiveDependencyParser { constructor() { unsupported("NonprojectiveDependencyParser", DP_WHY); } }
 export class ProbabilisticNonprojectiveParser { constructor() { unsupported("ProbabilisticNonprojectiveParser", DP_WHY); } }
-export class Configuration { constructor() { unsupported("Configuration", "transition-parser state not yet ported"); } }
-export class Transition { constructor() { unsupported("Transition", "transition-parser state not yet ported"); } }
 export class TestGrammar { constructor() { unsupported("TestGrammar", "test-grammar loader not yet ported"); } }
-export function extract_test_sentences(): never { return unsupported("extract_test_sentences", "test-grammar loader not yet ported"); }
+
+// Real ports promoted out of the stub set live in parse_dependency; the export
+// names stay routed through this module so reviewed provenance is stable.
+export {
+  ARC_EAGER, ARC_STANDARD, Configuration, Transition, DependencySpan, ChartCell,
+  DependencyScorerI, NaiveBayesDependencyScorer, DemoScorer,
+  ProbabilisticTree, ProbabilisticTreeEdge, ProbabilisticLeafEdge,
+  extract_test_sentences, extractTestSentences,
+} from "./parse_dependency";
 
 const STEP_WHY = "interactive stepping parser UI not applicable to the TS runtime contract";
 export class SteppingRecursiveDescentParser { constructor() { unsupported("SteppingRecursiveDescentParser", STEP_WHY); } }
