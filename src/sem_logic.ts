@@ -6,6 +6,8 @@
  * quoted tokens, and `?`/`@`-prefixed predicate variables.
  */
 
+import { pyError } from "./internals";
+
 export const APP = "APP";
 
 // ---------------------------------------------------------------------------
@@ -116,6 +118,10 @@ export class Variable {
   equals(other: Variable): boolean {
     return other instanceof Variable && this.name === other.name;
   }
+  /** NLTK Variable.substitute_bindings: return bound value, or self. */
+  substituteBindings(bindings: Map<string, Variable | Expression>): Variable | Expression {
+    return bindings.get(this.name) ?? this;
+  }
   toString(): string {
     return this.name;
   }
@@ -163,6 +169,253 @@ export function uniqueVariable(pattern?: Variable, ignore?: Set<string>): Variab
   return v;
 }
 
+export const unique_variable = uniqueVariable;
+
+// ---------------------------------------------------------------------------
+// Types (nltk.sem.logic type hierarchy)
+// ---------------------------------------------------------------------------
+
+export class Type {
+  static fromstring(s: string): Type {
+    return read_type(s);
+  }
+  equals(other: unknown): boolean {
+    return this === other;
+  }
+  matches(_other: Type): boolean {
+    throw new Error("NotImplementedError");
+  }
+  resolve(_other: Type): Type | null {
+    throw new Error("NotImplementedError");
+  }
+  toString(): string {
+    return "Type";
+  }
+  /** NLTK Type.str() — verbose form distinct from __str__. */
+  str(): string {
+    return this.toString();
+  }
+}
+
+export class ComplexType extends Type {
+  first: Type;
+  second: Type;
+  constructor(first: Type, second: Type) {
+    super();
+    if (!(first instanceof Type)) throw new Error(`${first} is not a Type`);
+    if (!(second instanceof Type)) throw new Error(`${second} is not a Type`);
+    this.first = first;
+    this.second = second;
+  }
+  override equals(other: unknown): boolean {
+    return (
+      other instanceof ComplexType &&
+      this.first.equals(other.first) &&
+      this.second.equals(other.second)
+    );
+  }
+  override matches(other: Type): boolean {
+    if (other instanceof ComplexType) {
+      return this.first.matches(other.first) && this.second.matches(other.second);
+    }
+    return this.equals(ANY_TYPE);
+  }
+  override resolve(other: Type): Type | null {
+    if (other instanceof AnyType) {
+      return this;
+    } else if (other instanceof ComplexType) {
+      const f = this.first.resolve(other.first);
+      const s = this.second.resolve(other.second);
+      if (f && s) return new ComplexType(f, s);
+      return null;
+    } else if (this.equals(ANY_TYPE)) {
+      return other;
+    }
+    return null;
+  }
+  override toString(): string {
+    if (this.equals(ANY_TYPE)) return `${ANY_TYPE}`;
+    return `<${this.first},${this.second}>`;
+  }
+  override str(): string {
+    if (this.equals(ANY_TYPE)) return ANY_TYPE.str();
+    return `(${this.first.str()} -> ${this.second.str()})`;
+  }
+}
+
+export class BasicType extends Type {
+  override equals(other: unknown): boolean {
+    return other instanceof BasicType && `${this}` === `${other}`;
+  }
+  override matches(other: Type): boolean {
+    return other instanceof AnyType || this.equals(other);
+  }
+  override resolve(other: Type): Type | null {
+    return this.matches(other) ? this : null;
+  }
+}
+
+export class EntityType extends BasicType {
+  override toString(): string {
+    return "e";
+  }
+  override str(): string {
+    return "IND";
+  }
+}
+
+export class TruthValueType extends BasicType {
+  override toString(): string {
+    return "t";
+  }
+  override str(): string {
+    return "BOOL";
+  }
+}
+
+export class EventType extends BasicType {
+  override toString(): string {
+    return "v";
+  }
+  override str(): string {
+    return "EVENT";
+  }
+}
+
+/** NLTK AnyType(BasicType, ComplexType) — TS single-inherits ComplexType; the
+ * BasicType-side behaviors are special-cased via AnyType instanceof checks. */
+export class AnyType extends ComplexType {
+  constructor() {
+    super(new Type(), new Type());
+    this.first = this;
+    this.second = this;
+  }
+  override equals(other: unknown): boolean {
+    return other instanceof AnyType || (other instanceof Type && other.equals(this));
+  }
+  override matches(_other: Type): boolean {
+    return true;
+  }
+  override resolve(other: Type): Type | null {
+    return other;
+  }
+  override toString(): string {
+    return "?";
+  }
+  override str(): string {
+    return "ANY";
+  }
+}
+
+export const TRUTH_TYPE = new TruthValueType();
+export const ENTITY_TYPE = new EntityType();
+export const EVENT_TYPE = new EventType();
+export const ANY_TYPE = new AnyType();
+
+/** Port of nltk.sem.logic.read_type. Note: 'v' is NOT accepted by NLTK (only
+ * e, t, ?, and <first,second> forms) — divergence preserved. */
+export function read_type(typeString: string): Type {
+  const s = typeString.replace(/ /g, "");
+  if (s.length === 0) throw pyError("IndexError", "string index out of range");
+  if (s[0] === "<") {
+    if (s[s.length - 1] !== ">") throw pyError("AssertionError", "");
+    let parenCount = 0;
+    let i = 0;
+    for (; i < s.length; i++) {
+      const char = s[i]!;
+      if (char === "<") {
+        parenCount += 1;
+      } else if (char === ">") {
+        parenCount -= 1;
+        if (parenCount <= 0) throw pyError("AssertionError", "");
+      } else if (char === ",") {
+        if (parenCount === 1) break;
+      }
+    }
+    return new ComplexType(read_type(s.slice(1, i)), read_type(s.slice(i + 1, -1)));
+  } else if (s[0] === `${ENTITY_TYPE}`) {
+    return ENTITY_TYPE;
+  } else if (s[0] === `${TRUTH_TYPE}`) {
+    return TRUTH_TYPE;
+  } else if (s[0] === `${ANY_TYPE}`) {
+    return ANY_TYPE;
+  }
+  throw new LogicalExpressionException(null, `Unexpected character: '${s[0]}'.`);
+}
+export const readType = read_type;
+
+export class TypeException extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "TypeException";
+  }
+}
+
+export class InconsistentTypeHierarchyException extends TypeException {
+  constructor(variable: Expression, expression?: Expression) {
+    super(
+      expression
+        ? `The variable '${variable}' was found in multiple places with different types in '${expression}'.`
+        : `The variable '${variable}' was found in multiple places with different types.`,
+    );
+    this.name = "InconsistentTypeHierarchyException";
+  }
+}
+
+export class TypeResolutionException extends TypeException {
+  constructor(expression: Expression, otherType: Type) {
+    super(
+      `The type of '${expression}', '${expression.type}', cannot be resolved with type '${otherType}'`,
+    );
+    this.name = "TypeResolutionException";
+  }
+}
+
+export class IllegalTypeException extends TypeException {
+  constructor(expression: Expression, otherType: Type, allowedType: Type) {
+    super(
+      `Cannot set type of ${expression.constructor.name} '${expression}' to '${otherType}'; must match type '${allowedType}'.`,
+    );
+    this.name = "IllegalTypeException";
+  }
+}
+
+/** A signature maps variable names to type-annotated variable expressions. */
+type TypeSignature = Map<string, AbstractVariableExpression[]>;
+
+function sigPush(sig: TypeSignature, name: string, expr: AbstractVariableExpression): void {
+  let list = sig.get(name);
+  if (!list) {
+    list = [];
+    sig.set(name, list);
+  }
+  list.push(expr);
+}
+
+/**
+ * Port of nltk.sem.logic.typecheck: infer and check types across a collection
+ * of Expression objects. Returns the (augmented) signature.
+ */
+export function typecheck(
+  expressions: Expression[],
+  signature?: Record<string, Type | string>,
+): Record<string, Type> {
+  let sig: Record<string, Type> | undefined;
+  if (signature) {
+    for (const key of Object.keys(signature)) {
+      const val = signature[key]!;
+      (sig ??= {})[key] = val instanceof Type ? val : read_type(val);
+    }
+  }
+  for (const expression of expressions) {
+    sig = expression.typecheck(sig);
+  }
+  for (const expression of expressions.slice(0, -1)) {
+    expression.typecheck(sig);
+  }
+  return sig ?? {};
+}
+
 // ---------------------------------------------------------------------------
 // Expression hierarchy
 // ---------------------------------------------------------------------------
@@ -179,9 +432,21 @@ function setHasVar(set: Set<Variable>, v: Variable): boolean {
 }
 
 export abstract class Expression {
+  /** NLTK raises AttributeError when `.type` is read before typechecking or on
+   * expressions that carry no stored type; subclasses override as needed. */
+  get type(): Type {
+    throw new Error(`AttributeError: '${this.constructor.name}' object has no attribute 'type'`);
+  }
+  set type(_value: Type) {
+    throw new Error("AttributeError: can't set attribute");
+  }
   abstract str(): string;
   toString(): string {
     return this.str();
+  }
+  /** NLTK __repr__: ``<ClassName str>``. */
+  repr(): string {
+    return `<${this.constructor.name} ${this.str()}>`;
   }
   abstract equals(other: Expression): boolean;
   /** Free (non-bound) variables; includes individual and function variables, not constants. */
@@ -194,9 +459,21 @@ export abstract class Expression {
     alphaConvert?: boolean,
   ): Expression;
 
-  /** All free variables (constants excluded unless ?/@-prefixed, which are unsupported). */
+  static fromstring(
+    s: string,
+    typeCheck = false,
+    signature?: Record<string, Type | string>,
+  ): Expression {
+    return new LogicParser(typeCheck).parse(s, signature);
+  }
+
+  /** All free variables plus ?/@-prefixed predicates and constants (NLTK quirk). */
   variables(): Set<Variable> {
-    return this.free();
+    const out = new Set<Variable>(this.free());
+    for (const p of unionVars(this.predicates(), this.constants())) {
+      if (/^[?@]/.test(p.name)) out.add(p);
+    }
+    return out;
   }
 
   constants(): Set<Variable> {
@@ -222,11 +499,16 @@ export abstract class Expression {
   }
 
   substituteBindings(bindings: Map<string, Variable | Expression>): Expression {
-    const expr = Array.from(this.free()).reduce<Expression>((acc, v) => {
+    const expr = Array.from(this.variables()).reduce<Expression>((acc, v) => {
       if (!bindings.has(v.name)) return acc;
       let val = bindings.get(v.name)!;
       if (val instanceof Variable) {
-        val = makeVariableExpression(val.name);
+        val = this.make_VariableExpression(val);
+      } else if (!(val instanceof Expression)) {
+        throw pyError(
+          "ValueError",
+          `Can not substitute a non-expression value into an expression: ${val}`,
+        );
       }
       val = val.substituteBindings(bindings);
       return acc.replace(v, val);
@@ -235,11 +517,79 @@ export abstract class Expression {
   }
 
   applyto(other: Expression): ApplicationExpression {
+    if (!(other instanceof Expression)) {
+      throw pyError("AssertionError", `${other} is not an Expression`);
+    }
     return new ApplicationExpression(this, other);
+  }
+
+  /** Logical equivalence via a theorem prover. Without an explicit prover,
+   * delegates to Prover9 — unavailable without the external binary. */
+  equiv(other: Expression, prover?: { prove(e: Expression): boolean }): boolean {
+    if (!(other instanceof Expression)) {
+      throw pyError("AssertionError", `${other} is not an Expression`);
+    }
+    if (prover === undefined) {
+      throw new Error("equiv requires a Prover9 binary — not available in JS");
+    }
+    const bicond = new IffExpression(this.simplify(), other.simplify());
+    return prover.prove(bicond);
   }
 
   negate(): Expression {
     return new NegatedExpression(this);
+  }
+
+  make_VariableExpression(variable: Variable): AbstractVariableExpression {
+    return VariableExpression(variable);
+  }
+
+  /**
+   * Port of Expression.typecheck: infer/check types, returning the signature
+   * plus any additional type mappings.
+   */
+  typecheck(signature?: Record<string, Type | string>): Record<string, Type> {
+    const sig: TypeSignature = new Map();
+    if (signature) {
+      for (const key of Object.keys(signature)) {
+        const varEx = VariableExpression(new Variable(key));
+        const val = signature[key]!;
+        varEx.type = val instanceof Type ? val : read_type(val);
+        sigPush(sig, key, varEx);
+      }
+    }
+    this.setType(ANY_TYPE, sig);
+    const out: Record<string, Type> = {};
+    for (const [key, list] of sig) out[key] = list[0]!.type;
+    return out;
+  }
+
+  /** Find the type of `variable` as used in this expression. */
+  findtype(variable: Variable): Type {
+    void variable;
+    throw pyError("NotImplementedError", "");
+  }
+
+  /**
+   * Set the type of this expression to `otherType`, recording variable
+   * expressions in `signature` (NLTK _set_type).
+   */
+  setType(otherType: Type = ANY_TYPE, signature?: TypeSignature): void {
+    void otherType;
+    void signature;
+    throw pyError("NotImplementedError", "");
+  }
+
+  /** Recursively visit subexpressions; combinator aggregates the results. */
+  visit<T, R>(fn: (e: Expression) => T, combinator: (parts: T[]) => R): R {
+    void fn;
+    void combinator;
+    throw pyError("NotImplementedError", "");
+  }
+
+  /** Like visit, but the combinator takes the node's own constructor args. */
+  visitStructured<T>(fn: (e: Expression) => T, combinator: (...parts: unknown[]) => Expression): Expression {
+    return this.visit(fn, (parts) => combinator(...parts));
   }
 }
 
@@ -267,6 +617,13 @@ function collectIndivVars(
 // -- AbstractVariableExpression family --------------------------------------
 
 export class AbstractVariableExpression extends Expression {
+  protected _type: Type | undefined;
+  override get type(): Type {
+    return this._type as Type;
+  }
+  override set type(value: Type) {
+    this._type = value;
+  }
   variable: Variable;
   constructor(variable: Variable) {
     super();
@@ -294,40 +651,134 @@ export class AbstractVariableExpression extends Expression {
       other instanceof AbstractVariableExpression && this.variable.equals(other.variable)
     );
   }
+  /** NLTK _set_type: resolve `otherType` against every recorded use of this
+   * variable name, then apply the result to all of them. */
+  override setType(otherType: Type = ANY_TYPE, signature?: TypeSignature): void {
+    const sig = signature ?? new Map<string, AbstractVariableExpression[]>();
+    let resolution: Type = otherType;
+    for (const varEx of sig.get(this.variable.name) ?? []) {
+      const r = varEx.type.resolve(resolution);
+      if (!r) throw new InconsistentTypeHierarchyException(this);
+      resolution = r;
+    }
+    sigPush(sig, this.variable.name, this);
+    for (const varEx of sig.get(this.variable.name)!) {
+      varEx.type = resolution;
+    }
+  }
+  override findtype(variable: Variable): Type {
+    return this.variable.equals(variable) ? this.type : ANY_TYPE;
+  }
   str(): string {
     return this.variable.name;
   }
 }
 
 export class IndividualVariableExpression extends AbstractVariableExpression {
+  /** NLTK exposes `type` as a property: reading yields ENTITY_TYPE, assigning
+   * runs _set_type (the entity-type check). */
+  override get type(): Type {
+    return ENTITY_TYPE;
+  }
+  override set type(otherType: Type) {
+    this.setType(otherType);
+  }
+  override setType(otherType: Type = ANY_TYPE, signature?: TypeSignature): void {
+    const sig = signature ?? new Map<string, AbstractVariableExpression[]>();
+    if (!otherType.matches(ENTITY_TYPE)) {
+      throw new IllegalTypeException(this, otherType, ENTITY_TYPE);
+    }
+    sigPush(sig, this.variable.name, this);
+  }
   override free(): Set<Variable> {
     return new Set([this.variable]);
   }
 }
 
 export class FunctionVariableExpression extends AbstractVariableExpression {
+  protected override _type: Type | undefined = ANY_TYPE;
   override free(): Set<Variable> {
     return new Set([this.variable]);
   }
 }
 
-export class EventVariableExpression extends IndividualVariableExpression {}
+export class EventVariableExpression extends IndividualVariableExpression {
+  protected override _type: Type | undefined = EVENT_TYPE;
+  /** NLTK stores type as a plain class attribute on EventVariableExpression —
+   * reads/writes bypass the individual-variable property. */
+  override get type(): Type {
+    return this._type as Type;
+  }
+  override set type(value: Type) {
+    this._type = value;
+  }
+}
 
 export class ConstantExpression extends AbstractVariableExpression {
+  protected override _type: Type | undefined = ENTITY_TYPE;
+  override setType(otherType: Type = ANY_TYPE, signature?: TypeSignature): void {
+    const sig = signature ?? new Map<string, AbstractVariableExpression[]>();
+    let resolution: Type | null;
+    if (otherType instanceof AnyType) {
+      // entity type by default, for individuals
+      resolution = ENTITY_TYPE;
+    } else {
+      resolution = otherType;
+      if (!this.type.equals(ENTITY_TYPE)) {
+        // NLTK lets this resolve to None; the inconsistency only surfaces if
+        // the variable name already has recorded uses.
+        resolution = resolution.resolve(this.type);
+      }
+    }
+    for (const varEx of sig.get(this.variable.name) ?? []) {
+      resolution = varEx.type.resolve(resolution as Type);
+      if (!resolution) throw new InconsistentTypeHierarchyException(this);
+    }
+    sigPush(sig, this.variable.name, this);
+    for (const varEx of sig.get(this.variable.name)!) {
+      varEx.type = resolution as Type;
+    }
+  }
   override constants(): Set<Variable> {
     return new Set([this.variable]);
   }
 }
 
-/** Factory mirroring nltk.sem.logic.VariableExpression(). */
+/** Port of nltk.sem.logic.VariableExpression() — factory dispatching on the
+ * variable's lexical class. */
+export function VariableExpression(variable: Variable): AbstractVariableExpression {
+  if (is_indvar(variable.name)) return new IndividualVariableExpression(variable);
+  if (is_funcvar(variable.name)) return new FunctionVariableExpression(variable);
+  if (is_eventvar(variable.name)) return new EventVariableExpression(variable);
+  return new ConstantExpression(variable);
+}
+
+/** Name-based convenience wrapper around VariableExpression(). */
 export function makeVariableExpression(name: string): AbstractVariableExpression {
-  if (is_indvar(name)) return new IndividualVariableExpression(new Variable(name));
-  if (is_funcvar(name)) return new FunctionVariableExpression(new Variable(name));
-  if (is_eventvar(name)) return new EventVariableExpression(new Variable(name));
-  return new ConstantExpression(new Variable(name));
+  return VariableExpression(new Variable(name));
 }
 
 // -- Application ------------------------------------------------------------
+
+/** Upper bound on subexpressions a single beta-reduction may produce
+ * (nltk.sem.logic.MAX_SIMPLIFY_SIZE, CWE-400). */
+export const MAX_SIMPLIFY_SIZE = 10_000;
+
+function exceedsSize(expression: Expression, limit: number): boolean {
+  let count = 0;
+  const stack = [expression];
+  while (stack.length) {
+    const node = stack.pop()!;
+    count += 1;
+    if (count > limit) return true;
+    if (!(node instanceof AbstractVariableExpression)) {
+      node.visit((e) => {
+        stack.push(e);
+      }, () => undefined);
+    }
+  }
+  return false;
+}
 
 export class ApplicationExpression extends Expression {
   function: Expression;
@@ -338,11 +789,75 @@ export class ApplicationExpression extends Expression {
     this.argument = argument;
   }
 
+  /** NLTK property: the result type is the second half of the function's
+   * complex type, or ANY_TYPE when the function type is not complex. */
+  override get type(): Type {
+    return this.function.type instanceof ComplexType
+      ? this.function.type.second
+      : ANY_TYPE;
+  }
+
+  override setType(otherType: Type = ANY_TYPE, signature?: TypeSignature): void {
+    const sig = signature ?? new Map<string, AbstractVariableExpression[]>();
+    this.argument.setType(ANY_TYPE, sig);
+    try {
+      this.function.setType(new ComplexType(this.argument.type, otherType), sig);
+    } catch (e) {
+      if (e instanceof TypeResolutionException) {
+        throw new TypeException(
+          `The function '${this.function}' is of type '${this.function.type}' and cannot be applied ` +
+            `to '${this.argument}' of type '${this.argument.type}'.  Its argument must match type '${(this.function.type as ComplexType).first}'.`,
+        );
+      }
+      throw e;
+    }
+  }
+
+  override findtype(variable: Variable): Type {
+    let function_: Expression;
+    let args: Expression[];
+    if (this.isAtom()) {
+      [function_, args] = this.uncurry();
+    } else {
+      // It's not a predicate expression ("P(x,y)"), so leave args curried
+      function_ = this.function;
+      args = [this.argument];
+    }
+    const found = [function_, ...args].map((a) => a.findtype(variable));
+    // NLTK quirk: `unique` only ever receives the first non-ANY type — the
+    // inner matches() loop has no else, so the list can never grow past one.
+    const unique: Type[] = [];
+    for (const f of found) {
+      if (!f.equals(ANY_TYPE)) {
+        if (unique.length) {
+          for (const u of unique) {
+            if (f.matches(u)) break;
+          }
+        } else {
+          unique.push(f);
+        }
+      }
+    }
+    return unique.length === 1 ? unique[0]! : ANY_TYPE;
+  }
+
+  override visit<T, R>(fn: (e: Expression) => T, combinator: (parts: T[]) => R): R {
+    return combinator([fn(this.function), fn(this.argument)]);
+  }
+
   simplify(): Expression {
     const fn = this.function.simplify();
     const arg = this.argument.simplify();
     if (fn instanceof LambdaExpression) {
-      return fn.term.replace(fn.variable, arg).simplify();
+      const result = fn.term.replace(fn.variable, arg);
+      if (exceedsSize(result, MAX_SIMPLIFY_SIZE)) {
+        throw new Error(
+          `The following expression has more than ${MAX_SIMPLIFY_SIZE} subexpressions; the expression may ` +
+            `cause exponential blow-up (CWE-400). Raise ` +
+            `nltk.sem.logic.MAX_SIMPLIFY_SIZE to allow it.`,
+        );
+      }
+      return result.simplify();
     }
     return new ApplicationExpression(fn, arg);
   }
@@ -486,6 +1001,22 @@ export abstract class VariableBinderExpression extends Expression {
     return out;
   }
 
+  override findtype(variable: Variable): Type {
+    if (variable.equals(this.variable)) return ANY_TYPE;
+    return this.term.findtype(variable);
+  }
+
+  override visit<T, R>(fn: (e: Expression) => T, combinator: (parts: T[]) => R): R {
+    return combinator([fn(this.term)]);
+  }
+
+  override visitStructured<T>(
+    fn: (e: Expression) => T,
+    combinator: (...parts: unknown[]) => Expression,
+  ): Expression {
+    return combinator(this.variable, fn(this.term));
+  }
+
   equals(other: Expression): boolean {
     if (!(other instanceof VariableBinderExpression)) return false;
     if (this.constructor !== other.constructor) return false;
@@ -498,6 +1029,17 @@ export abstract class VariableBinderExpression extends Expression {
 }
 
 export class LambdaExpression extends VariableBinderExpression {
+  /** NLTK property: <type-of-variable, type-of-term>. */
+  override get type(): Type {
+    return new ComplexType(this.term.findtype(this.variable), this.term.type);
+  }
+  override setType(otherType: Type = ANY_TYPE, signature?: TypeSignature): void {
+    const sig = signature ?? new Map<string, AbstractVariableExpression[]>();
+    this.term.setType((otherType as ComplexType).second, sig);
+    if (!this.type.resolve(otherType)) {
+      throw new TypeResolutionException(this, otherType);
+    }
+  }
   protected rebuild(variable: Variable, term: Expression): VariableBinderExpression {
     return new LambdaExpression(variable, term);
   }
@@ -515,7 +1057,18 @@ export class LambdaExpression extends VariableBinderExpression {
   }
 }
 
-abstract class QuantifiedExpression extends VariableBinderExpression {
+export abstract class QuantifiedExpression extends VariableBinderExpression {
+  /** NLTK property: quantified expressions are truth-valued. */
+  override get type(): Type {
+    return TRUTH_TYPE;
+  }
+  override setType(otherType: Type = ANY_TYPE, signature?: TypeSignature): void {
+    const sig = signature ?? new Map<string, AbstractVariableExpression[]>();
+    if (!otherType.matches(TRUTH_TYPE)) {
+      throw new IllegalTypeException(this, otherType, TRUTH_TYPE);
+    }
+    this.term.setType(TRUTH_TYPE, sig);
+  }
   abstract getQuantifier(): string;
   str(): string {
     const variables = [this.variable];
@@ -578,6 +1131,23 @@ export class NegatedExpression extends Expression {
     super();
     this.term = term;
   }
+  /** NLTK property: negations are truth-valued. */
+  override get type(): Type {
+    return TRUTH_TYPE;
+  }
+  override setType(otherType: Type = ANY_TYPE, signature?: TypeSignature): void {
+    const sig = signature ?? new Map<string, AbstractVariableExpression[]>();
+    if (!otherType.matches(TRUTH_TYPE)) {
+      throw new IllegalTypeException(this, otherType, TRUTH_TYPE);
+    }
+    this.term.setType(TRUTH_TYPE, sig);
+  }
+  override findtype(variable: Variable): Type {
+    return this.term.findtype(variable);
+  }
+  override visit<T, R>(fn: (e: Expression) => T, combinator: (parts: T[]) => R): R {
+    return combinator([fn(this.term)]);
+  }
   simplify(): Expression {
     return new NegatedExpression(this.term.simplify());
   }
@@ -614,6 +1184,20 @@ export abstract class BinaryExpression extends Expression {
     super();
     this.first = first;
     this.second = second;
+  }
+  /** NLTK property: binary connectives are truth-valued. */
+  override get type(): Type {
+    return TRUTH_TYPE;
+  }
+  override findtype(variable: Variable): Type {
+    const f = this.first.findtype(variable);
+    const s = this.second.findtype(variable);
+    if (f.equals(s) || s.equals(ANY_TYPE)) return f;
+    if (f.equals(ANY_TYPE)) return s;
+    return ANY_TYPE;
+  }
+  override visit<T, R>(fn: (e: Expression) => T, combinator: (parts: T[]) => R): R {
+    return combinator([fn(this.first), fn(this.second)]);
   }
   abstract getOp(): string;
   protected subexStr(subex: Expression): string {
@@ -659,7 +1243,16 @@ export abstract class BinaryExpression extends Expression {
   }
 }
 
-export abstract class BooleanExpression extends BinaryExpression {}
+export abstract class BooleanExpression extends BinaryExpression {
+  override setType(otherType: Type = ANY_TYPE, signature?: TypeSignature): void {
+    const sig = signature ?? new Map<string, AbstractVariableExpression[]>();
+    if (!otherType.matches(TRUTH_TYPE)) {
+      throw new IllegalTypeException(this, otherType, TRUTH_TYPE);
+    }
+    this.first.setType(TRUTH_TYPE, sig);
+    this.second.setType(TRUTH_TYPE, sig);
+  }
+}
 
 export class AndExpression extends BooleanExpression {
   getOp(): string {
@@ -694,6 +1287,14 @@ export class IffExpression extends BooleanExpression {
 }
 
 export class EqualityExpression extends BinaryExpression {
+  override setType(otherType: Type = ANY_TYPE, signature?: TypeSignature): void {
+    const sig = signature ?? new Map<string, AbstractVariableExpression[]>();
+    if (!otherType.matches(TRUTH_TYPE)) {
+      throw new IllegalTypeException(this, otherType, TRUTH_TYPE);
+    }
+    this.first.setType(ENTITY_TYPE, sig);
+    this.second.setType(ENTITY_TYPE, sig);
+  }
   getOp(): string {
     return Tokens.EQ;
   }
@@ -742,15 +1343,32 @@ type BooleanFactory =
   | typeof ImpExpression
   | typeof IffExpression;
 
+type QuantifiedFactory =
+  | typeof ExistsExpression
+  | typeof AllExpression
+  | typeof IotaExpression;
+
 export class LogicParser {
+  /** Maximum expression-nesting depth (nltk.sem.logic LogicParser.MAX_PARSE_DEPTH). */
+  static MAX_PARSE_DEPTH = 200;
+
   private currentIndex = 0;
   private buffer: string[] = [];
+  private parseDepth = 0;
+  private typeCheck: boolean;
   private symbolTrie = buildSymbolTrie(SYMBOLS);
+  private quoteChars: [string, string, string, boolean][] = [];
 
-  parse(data: string): Expression {
+  constructor(typeCheck = false) {
+    this.typeCheck = typeCheck;
+  }
+
+  parse(data: string, signature?: Record<string, Type | string>): Expression {
     data = data.replace(/\s+$/, "");
     this.currentIndex = 0;
-    this.buffer = this.process(data);
+    this.parseDepth = 0;
+    const [buffer, mapping] = this.process(data);
+    this.buffer = buffer;
 
     let result: Expression;
     try {
@@ -760,21 +1378,36 @@ export class LogicParser {
       }
     } catch (e) {
       // NLTK wraps every parser error in a fresh LogicalExpressionException,
-      // erasing the original subclass.
+      // rendering the input and a caret at the error position.
       if (e instanceof LogicalExpressionException) {
-        throw new LogicalExpressionException(null, e.message);
+        const caret = mapping.get(e.index! - 1)!;
+        const msg = `${e.message}\n${data}\n${" ".repeat(caret)}^`;
+        throw new LogicalExpressionException(null, msg);
       }
       throw e;
     }
+    if (this.typeCheck) result.typecheck(signature);
     return result;
   }
 
-  /** Split the data into tokens (trie-based longest symbol match, like NLTK). */
-  process(data: string): string[] {
+  /** Split the data into tokens (trie-based longest symbol match, like NLTK).
+   * Returns [tokens, mapping] where mapping indexes token positions to
+   * character offsets in `data`. */
+  process(data: string): [string[], Map<number, number>] {
     const out: string[] = [];
+    const mapping = new Map<number, number>();
     let token = "";
     let dataIdx = 0;
+    let tokenStartIdx = dataIdx;
     while (dataIdx < data.length) {
+      const [quotedToken, nextIdx] = this.processQuotedToken(dataIdx, data);
+      if (quotedToken) {
+        if (!token) tokenStartIdx = dataIdx;
+        token += quotedToken;
+        dataIdx = nextIdx;
+        continue;
+      }
+
       let st: TrieNode = this.symbolTrie;
       let c = data[dataIdx]!;
       let symbol = "";
@@ -789,26 +1422,75 @@ export class LogicParser {
       }
       if (LEAF in st) {
         if (token) {
+          mapping.set(out.length, tokenStartIdx);
           out.push(token);
           token = "";
         }
+        mapping.set(out.length, dataIdx);
         out.push(symbol);
         dataIdx += symbol.length;
       } else {
-        const ch = data[dataIdx];
+        const ch = data[dataIdx]!;
         if (ch === " " || ch === "\t" || ch === "\n") {
           if (token) {
+            mapping.set(out.length, tokenStartIdx);
             out.push(token);
             token = "";
           }
         } else {
+          if (!token) tokenStartIdx = dataIdx;
           token += ch;
         }
         dataIdx += 1;
       }
     }
-    if (token) out.push(token);
-    return out;
+    if (token) {
+      mapping.set(out.length, tokenStartIdx);
+      out.push(token);
+    }
+    mapping.set(out.length, data.length);
+    mapping.set(out.length + 1, data.length + 1);
+    return [out, mapping];
+  }
+
+  /** Quote-char handling; the base parser defines no quote chars, so this
+   * always returns no token (NLTK parity hook for subclasses). */
+  processQuotedToken(dataIdx: number, data: string): [string, number] {
+    let token = "";
+    const c = data[dataIdx]!;
+    let i = dataIdx;
+    for (const [start, end, escape, inclQuotes] of this.quoteChars) {
+      if (c === start) {
+        if (inclQuotes) token += c;
+        i += 1;
+        while (data[i] !== end) {
+          if (data[i] === escape) {
+            if (inclQuotes) token += data[i];
+            i += 1;
+            if (data.length === i) {
+              throw new LogicalExpressionException(
+                null,
+                `End of input reached.  Escape character [${escape}] found at end.`,
+              );
+            }
+            token += data[i]!;
+          } else {
+            token += data[i]!;
+          }
+          i += 1;
+          if (data.length === i) {
+            throw new LogicalExpressionException(null, `End of input reached.  Expected: [${end}]`);
+          }
+        }
+        if (inclQuotes) token += data[i];
+        i += 1;
+        if (!token) {
+          throw new LogicalExpressionException(null, "Empty quoted token found");
+        }
+        break;
+      }
+    }
+    return [token, i];
   }
 
   getAllSymbols(): string[] {
@@ -821,11 +1503,13 @@ export class LogicParser {
 
   token(location?: number): string {
     const idx = location === undefined ? this.currentIndex : this.currentIndex + location;
-    if (idx >= this.buffer.length || idx < 0) {
+    // NLTK indexes a Python list, so negative locations wrap around.
+    const tok = idx < 0 ? this.buffer[this.buffer.length + idx] : this.buffer[idx];
+    if (tok === undefined) {
       throw new ExpectedMoreTokensException(this.currentIndex + 1);
     }
     if (location === undefined) this.currentIndex += 1;
-    return this.buffer[idx]!;
+    return tok;
   }
 
   isvariable(tok: string): boolean {
@@ -833,20 +1517,31 @@ export class LogicParser {
   }
 
   processNextExpression(context: string | null): Expression {
-    let tok: string;
+    this.parseDepth += 1;
     try {
-      tok = this.token();
-    } catch (e) {
-      if (e instanceof ExpectedMoreTokensException) {
-        throw new ExpectedMoreTokensException(this.currentIndex + 1, "Expression expected.");
+      if (this.parseDepth > LogicParser.MAX_PARSE_DEPTH) {
+        throw new LogicalExpressionException(
+          this.currentIndex + 1,
+          `Expression nesting exceeds the maximum depth (${LogicParser.MAX_PARSE_DEPTH}).`,
+        );
       }
-      throw e;
+      let tok: string;
+      try {
+        tok = this.token();
+      } catch (e) {
+        if (e instanceof ExpectedMoreTokensException) {
+          throw new ExpectedMoreTokensException(this.currentIndex + 1, "Expression expected.");
+        }
+        throw e;
+      }
+      const accum = this.handle(tok, context);
+      if (!accum) {
+        throw new UnexpectedTokenException(this.currentIndex, tok, undefined, "Expression expected.");
+      }
+      return this.attemptAdjuncts(accum, context);
+    } finally {
+      this.parseDepth -= 1;
     }
-    const accum = this.handle(tok, context);
-    if (!accum) {
-      throw new UnexpectedTokenException(this.currentIndex, tok, undefined, "Expression expected.");
-    }
-    return this.attemptAdjuncts(accum, context);
   }
 
   handle(tok: string, context: string | null): Expression | undefined {
@@ -876,12 +1571,40 @@ export class LogicParser {
     return expr;
   }
 
+  makeApplicationExpression(function_: Expression, argument: Expression): ApplicationExpression {
+    return new ApplicationExpression(function_, argument);
+  }
+
+  makeVariableExpression(name: string): AbstractVariableExpression {
+    return VariableExpression(new Variable(name));
+  }
+
+  makeLambdaExpression(variable: Variable, term: Expression): LambdaExpression {
+    return new LambdaExpression(variable, term);
+  }
+
+  makeNegatedExpression(term: Expression): NegatedExpression {
+    return new NegatedExpression(term);
+  }
+
+  makeEqualityExpression(first: Expression, second: Expression): EqualityExpression {
+    return new EqualityExpression(first, second);
+  }
+
+  makeQuanifiedExpression(factory: QuantifiedFactory, variable: Variable, term: Expression): QuantifiedExpression {
+    return new factory(variable, term);
+  }
+
+  makeBooleanExpression(factory: BooleanFactory, first: Expression, second: Expression): BooleanExpression {
+    return new factory(first, second);
+  }
+
   handleNegation(_tok: string, _context: string | null): Expression {
-    return new NegatedExpression(this.processNextExpression(Tokens.NOT));
+    return this.makeNegatedExpression(this.processNextExpression(Tokens.NOT));
   }
 
   handleVariable(tok: string, _context: string | null): Expression {
-    let accum: Expression = makeVariableExpression(tok);
+    let accum: Expression = this.makeVariableExpression(tok);
     if (this.inRange(0) && this.token(0) === Tokens.OPEN) {
       if (
         !(accum instanceof FunctionVariableExpression) &&
@@ -893,10 +1616,10 @@ export class LogicParser {
         );
       }
       this.token(); // swallow the open paren
-      accum = new ApplicationExpression(accum, this.processNextExpression(APP));
+      accum = this.makeApplicationExpression(accum, this.processNextExpression(APP));
       while (this.inRange(0) && this.token(0) === Tokens.COMMA) {
         this.token(); // swallow the comma
-        accum = new ApplicationExpression(accum, this.processNextExpression(APP));
+        accum = this.makeApplicationExpression(accum, this.processNextExpression(APP));
       }
       this.assertNextToken(Tokens.CLOSE);
     }
@@ -913,7 +1636,7 @@ export class LogicParser {
       }
       throw e;
     }
-    if (makeVariableExpression(tok) instanceof ConstantExpression) {
+    if (this.makeVariableExpression(tok) instanceof ConstantExpression) {
       throw new LogicalExpressionException(
         this.currentIndex,
         `'${tok}' is an illegal variable name.  Constants may not be ${description}.`,
@@ -942,7 +1665,7 @@ export class LogicParser {
     }
     let accum = this.processNextExpression(tok);
     while (vars.length) {
-      accum = new LambdaExpression(vars.pop()!, accum);
+      accum = this.makeLambdaExpression(vars.pop()!, accum);
     }
     return accum;
   }
@@ -968,14 +1691,12 @@ export class LogicParser {
     }
     let accum = this.processNextExpression(tok);
     while (vars.length) {
-      accum = new factory(vars.pop()!, accum);
+      accum = this.makeQuanifiedExpression(factory, vars.pop()!, accum);
     }
     return accum;
   }
 
-  getQuantifiedExpressionFactory(
-    tok: string,
-  ): new (v: Variable, t: Expression) => QuantifiedExpression {
+  getQuantifiedExpressionFactory(tok: string): QuantifiedFactory {
     if (Tokens.EXISTS_LIST.includes(tok)) return ExistsExpression;
     if (Tokens.ALL_LIST.includes(tok)) return AllExpression;
     if (Tokens.IOTA_LIST.includes(tok)) return IotaExpression;
@@ -996,12 +1717,12 @@ export class LogicParser {
           this.hasPriority(tok, context))
       ) {
         this.token(); // swallow the operator
-        let expr: Expression = new EqualityExpression(
+        let expr: Expression = this.makeEqualityExpression(
           expression,
           this.processNextExpression(tok),
         );
         if (Tokens.NEQ_LIST.includes(tok)) {
-          expr = new NegatedExpression(expr);
+          expr = this.makeNegatedExpression(expr);
         }
         return expr;
       }
@@ -1016,7 +1737,7 @@ export class LogicParser {
       const factory = this.getBooleanExpressionFactory(tok);
       if (factory && this.hasPriority(tok, context)) {
         this.token(); // swallow the operator
-        expr = new factory(expr, this.processNextExpression(tok));
+        expr = this.makeBooleanExpression(factory, expr, this.processNextExpression(tok));
       } else {
         break;
       }
@@ -1047,10 +1768,10 @@ export class LogicParser {
           );
         }
         this.token(); // swallow the open paren
-        let accum = new ApplicationExpression(expression, this.processNextExpression(APP));
+        let accum = this.makeApplicationExpression(expression, this.processNextExpression(APP));
         while (this.inRange(0) && this.token(0) === Tokens.COMMA) {
           this.token(); // swallow the comma
-          accum = new ApplicationExpression(accum, this.processNextExpression(APP));
+          accum = this.makeApplicationExpression(accum, this.processNextExpression(APP));
         }
         this.assertNextToken(Tokens.CLOSE);
         return accum;
@@ -1082,6 +1803,16 @@ export class LogicParser {
       throw new UnexpectedTokenException(this.currentIndex, tok, expected);
     }
   }
+
+  assertToken(tok: string, expected: string | string[]): void {
+    if (Array.isArray(expected)) {
+      if (!expected.includes(tok)) {
+        throw new UnexpectedTokenException(this.currentIndex, tok, expected.join(","));
+      }
+    } else if (tok !== expected) {
+      throw new UnexpectedTokenException(this.currentIndex, tok, expected);
+    }
+  }
 }
 
 /** Convenience mirror of Expression.fromstring. */
@@ -1090,6 +1821,158 @@ export function fromstring(s: string): Expression {
 }
 
 export const lexpr = fromstring;
+
+/** NLTK SubstituteBindingsI — interface for objects that can substitute
+ * variables. Methods raise NotImplementedError, as in NLTK. */
+export class SubstituteBindingsI {
+  substitute_bindings(_bindings: unknown): unknown {
+    throw new Error("NotImplementedError");
+  }
+  variables(): unknown {
+    throw new Error("NotImplementedError");
+  }
+}
+
+/** Port of nltk.sem.logic.read_logic: parse a string containing one logical
+ * formula per line ('#' comments and blank lines skipped). */
+export function read_logic(
+  s: string | Uint8Array,
+  logicParser?: LogicParser,
+  encoding?: string,
+): Expression[] {
+  let text: string;
+  if (encoding !== undefined && typeof s !== "string") {
+    text = new TextDecoder(encoding as ConstructorParameters<typeof TextDecoder>[0]).decode(s);
+  } else {
+    text = s as string;
+  }
+  const parser = logicParser ?? new LogicParser();
+  const statements: Expression[] = [];
+  const lines = text.split(/\r?\n/);
+  for (let linenum = 0; linenum < lines.length; linenum++) {
+    const line = lines[linenum]!.trim();
+    if (line.startsWith("#") || line === "") continue;
+    try {
+      statements.push(parser.parse(line));
+    } catch (e) {
+      if (e instanceof LogicalExpressionException) {
+        const err = new Error(`Unable to parse line ${linenum}: ${line}`, { cause: e });
+        err.name = "ValueError";
+        throw err;
+      }
+      throw e;
+    }
+  }
+  return statements;
+}
+export const readLogic = read_logic;
+
+/** Port of nltk.sem.logic.skolem_function: a fresh F-counter function variable
+ * applied to each variable in `univScope`. */
+export function skolem_function(univScope?: Iterable<Variable>): Expression {
+  let skolem: Expression = VariableExpression(new Variable(`F${nextUniqueCounterValue()}`));
+  if (univScope) {
+    for (const v of univScope) {
+      skolem = skolem.applyto(VariableExpression(v));
+    }
+  }
+  return skolem;
+}
+export const skolemFunction = skolem_function;
+
+/** NLTK boolean_ops — print the boolean operator table. */
+export function boolean_ops(): void {
+  const names = ["negation", "conjunction", "disjunction", "implication", "equivalence"];
+  const ops = [Tokens.NOT, Tokens.AND, Tokens.OR, Tokens.IMP, Tokens.IFF];
+  names.forEach((name, i) => console.log(`${name.padEnd(15)}\t${ops[i]}`));
+}
+
+/** NLTK equality_preds — print the equality predicate table. */
+export function equality_preds(): void {
+  const names = ["equality", "inequality"];
+  const ops = [Tokens.EQ, Tokens.NEQ];
+  names.forEach((name, i) => console.log(`${name.padEnd(15)}\t${ops[i]}`));
+}
+
+/** NLTK binding_ops — print the binding operator table. Quirk preserved: the
+ * zip truncates to the 3 names, so the iota token is never printed. */
+export function binding_ops(): void {
+  const names = ["existential", "universal", "lambda"];
+  const ops = [Tokens.EXISTS, Tokens.ALL, Tokens.LAMBDA, Tokens.IOTA];
+  names.forEach((name, i) => console.log(`${name.padEnd(15)}\t${ops[i]}`));
+}
+
+/** NLTK printtype — broken in NLTK 3.10.3: it calls ``ex.str()``, which does
+ * not exist on NLTK expressions, so it always raises AttributeError. The
+ * py3-broken contract is preserved rather than silently fixed. */
+export function printtype(ex: Expression): void {
+  throw new Error(`AttributeError: '${ex.constructor.name}' object has no attribute 'str'`);
+}
+
+/** NLTK demoException — parse `s`, printing the exception class and message. */
+export function demoException(s: string): void {
+  try {
+    Expression.fromstring(s);
+  } catch (e) {
+    if (e instanceof LogicalExpressionException) {
+      console.log(`${e.name}: ${e.message}`);
+    } else {
+      throw e;
+    }
+  }
+}
+
+/** NLTK nltk.sem.logic.demo() — deterministic parser demonstration. */
+export function semLogicDemo(): void {
+  const lexpr = (s: string) => Expression.fromstring(s);
+  console.log("=".repeat(20) + "Test reader" + "=".repeat(20));
+  console.log(`${lexpr("john")}`);
+  console.log(`${lexpr("man(x)")}`);
+  console.log(`${lexpr("-man(x)")}`);
+  console.log(`${lexpr("(man(x) & tall(x) & walks(x))")}`);
+  console.log(`${lexpr("exists x.(man(x) & tall(x) & walks(x))")}`);
+  console.log(`${lexpr("\\x.man(x)")}`);
+  console.log(`${lexpr("\\x.man(x)(john)")}`);
+  console.log(`${lexpr("\\x y.sees(x,y)")}`);
+  console.log(`${lexpr("\\x y.sees(x,y)(a,b)")}`);
+  console.log(`${lexpr("(\\x.exists y.walks(x,y))(x)")}`);
+  console.log(`${lexpr("exists x.x = y")}`);
+  console.log(`${lexpr("exists x.(x = y)")}`);
+  console.log(`${lexpr("P(x) & x=y & P(y)")}`);
+  console.log(`${lexpr("\\P Q.exists x.(P(x) & Q(x))")}`);
+  console.log(`${lexpr("man(x) <-> tall(x)")}`);
+
+  console.log("=".repeat(20) + "Test simplify" + "=".repeat(20));
+  console.log(`${lexpr("\\x.\\y.sees(x,y)(john)(mary)").simplify()}`);
+  console.log(`${lexpr("\\x.\\y.sees(x,y)(john, mary)").simplify()}`);
+  console.log(`${lexpr("all x.(man(x) & (\\x.exists y.walks(x,y))(x))").simplify()}`);
+  console.log(`${lexpr("(\\P.\\Q.exists x.(P(x) & Q(x)))(\\x.dog(x))(\\x.bark(x))").simplify()}`);
+
+  console.log("=".repeat(20) + "Test alpha conversion and binder expression equality" + "=".repeat(20));
+  const e1 = lexpr("exists x.P(x)");
+  console.log(`${e1}`);
+  const e2 = (e1 as VariableBinderExpression).alphaConvert(new Variable("z"));
+  console.log(`${e2}`);
+  console.log(e1.equals(e2) ? "True" : "False");
+}
+
+/** NLTK nltk.sem.logic.demo_errors() — prints one line per parse failure. */
+export function semLogicDemoErrors(): void {
+  console.log("=".repeat(20) + "Test reader errors" + "=".repeat(20));
+  demoException("(P(x) & Q(x)");
+  demoException("((P(x) &) & Q(x))");
+  demoException("P(x) -> ");
+  demoException("P(x");
+  demoException("P(x,");
+  demoException("P(x,)");
+  demoException("exists");
+  demoException("exists x.");
+  demoException("\\");
+  demoException("\\ x y.");
+  demoException("P(x)Q(x)");
+  demoException("(P(x)Q(x)");
+  demoException("exists x -> y");
+}
 
 // ---------------------------------------------------------------------------
 // Evaluation (core of nltk.sem.evaluate)

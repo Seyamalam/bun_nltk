@@ -1,6 +1,8 @@
 // NLTK collections — lightweight JS port
 // Original: nltk/collections.py
 
+import { pyError } from "./internals";
+
 export class OrderedDict<K, V> extends Map<K, V> {
   private _keys: K[] = [];
   constructor(entries?: Iterable<[K, V]> | null) {
@@ -70,25 +72,95 @@ export class LazyIteratorList<T> extends AbstractLazySequence<T> {
   get(index: number): T { return this.cache[index] as T; }
 }
 
-export class Trie extends Map<string, unknown> {
-  insert(word: string, value: unknown = true): void {
-    Trie.insertInto(this, word, value);
+/** Port of nltk.collections.Trie — a dict-subclass trie where ``self[key]``
+ * auto-vivifies a subtrie via ``__missing__`` and a complete string stores
+ * ``{Trie.LEAF: None}`` at its node. dict methods are inherited in Python;
+ * here they are explicit Map-compatible members. Preserves the
+ * ``dict.copy() -> dict`` quirk: copy() returns a plain Map, not a Trie.
+ */
+export class Trie extends Map<unknown, unknown> {
+  static readonly LEAF = true;
+
+  constructor(strings?: Iterable<string> | null) {
+    super();
+    if (strings) for (const string of strings) this.insert(string);
   }
-  private static insertInto(node: Map<string, unknown>, word: string, value: unknown): void {
-    for (const ch of word) {
-      if (!node.has(ch)) node.set(ch, new Map());
-      node = node.get(ch) as Map<string, unknown>;
+
+  private missing(key: unknown): Trie {
+    const subtrie = new Trie();
+    super.set(key, subtrie);
+    return subtrie;
+  }
+
+  insert(string: string): void {
+    if (string.length) {
+      const node = super.has(string[0]) ? super.get(string[0]) : this.missing(string[0]);
+      (node as Trie).insert(string.slice(1));
+    } else {
+      super.set(Trie.LEAF, null);
     }
-    node.set("__value__", value);
   }
+
+  override get(key: unknown, defaultValue?: unknown): unknown {
+    return super.has(key) ? super.get(key) : defaultValue;
+  }
+
+  /** Quirk preserved: nltk's Trie.copy() resolves to dict.copy(), which
+   * returns a plain dict (shallow), not a Trie. */
+  copy(): Map<unknown, unknown> {
+    return new Map(this);
+  }
+
+  static fromkeys(iterable: Iterable<unknown>, value: unknown = null): Trie {
+    const trie = new Trie();
+    for (const key of iterable) trie.set(key, value);
+    return trie;
+  }
+
+  pop(key: unknown, defaultValue?: unknown): unknown {
+    if (super.has(key)) {
+      const value = super.get(key);
+      super.delete(key);
+      return value;
+    }
+    if (arguments.length > 1) return defaultValue;
+    throw pyError("KeyError", `${String(key)}`);
+  }
+
+  popitem(): [unknown, unknown] {
+    if (super.size === 0) throw pyError("KeyError", "popitem(): dictionary is empty");
+    let last: unknown;
+    for (const key of super.keys()) last = key;
+    const value = super.get(last);
+    super.delete(last);
+    return [last, value];
+  }
+
+  setdefault(key: unknown, defaultValue: unknown = null): unknown {
+    if (!super.has(key)) super.set(key, defaultValue);
+    return super.get(key);
+  }
+
+  update(other: Iterable<[unknown, unknown]> | Map<unknown, unknown> | Record<string, unknown>): void {
+    if (other instanceof Map || Symbol.iterator in Object(other)) {
+      for (const [k, v] of other as Iterable<[unknown, unknown]>) super.set(k, v);
+    } else {
+      for (const [k, v] of Object.entries(other)) super.set(k, v);
+    }
+  }
+
+  items(): MapIterator<[unknown, unknown]> {
+    return super.entries();
+  }
+
   hasWord(word: string): boolean {
-    return Trie.hasPath(this, word);
-  }
-  private static hasPath(node: Map<string, unknown>, word: string): boolean {
+    // eslint-disable-next-line typescript/no-this-alias -- trie node descent
+    let node: Trie = this;
     for (const ch of word) {
-      if (!node.has(ch)) return false;
-      node = node.get(ch) as Map<string, unknown>;
+      const next = node.get(ch);
+      if (!(next instanceof Trie)) return false;
+      node = next;
     }
-    return node.has("__value__");
+    return node.has(Trie.LEAF);
   }
 }

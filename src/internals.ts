@@ -1,6 +1,14 @@
 // NLTK internals — shim (Java + file-find helpers not available in JS)
 // Original: nltk/internals.py
 
+/** Build an Error carrying a Python exception class name for
+ * NLTK-compatible error surfacing (e.g. KeyError, IndexError). */
+export function pyError(name: string, message: string): Error {
+  const e = new Error(message);
+  e.name = name;
+  return e;
+}
+
 function unavailable(name: string): never {
   throw new Error(`${name} requires Java/subprocess — not available in JS`);
 }
@@ -19,7 +27,16 @@ export const read_number = readNumber;
 export function overridden(_method: unknown): boolean { return false; }
 export function deprecated(_message: string) { return (_t: unknown, _k: string, d: PropertyDescriptor) => d; }
 export class Deprecated { constructor(public message: string) {} }
-export class Counter { constructor(..._a: unknown[]) { unavailable("internals.Counter"); } }
+export class Counter {
+  private value: number;
+  constructor(initialValue = 0) {
+    this.value = initialValue;
+  }
+  get(): number {
+    this.value += 1;
+    return this.value;
+  }
+}
 export function findFile(..._a: unknown[]): never { return unavailable("internals.find_file"); }
 export const find_file = findFile;
 export function findDir(..._a: unknown[]): never { return unavailable("internals.find_dir"); }

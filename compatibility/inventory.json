@@ -490,7 +490,67 @@
    "selection": "src/misc_sort.ts",
    "step": "src/misc_wordfinder.ts",
    "word_finder": "src/misc_wordfinder.ts",
-   "wordfinder": "src/misc_wordfinder.ts"
+   "wordfinder": "src/misc_wordfinder.ts",
+   "Expression": "src/sem_logic.ts",
+   "AbstractVariableExpression": "src/sem_logic.ts",
+   "IndividualVariableExpression": "src/sem_logic.ts",
+   "FunctionVariableExpression": "src/sem_logic.ts",
+   "EventVariableExpression": "src/sem_logic.ts",
+   "ConstantExpression": "src/sem_logic.ts",
+   "ApplicationExpression": "src/sem_logic.ts",
+   "VariableBinderExpression": "src/sem_logic.ts",
+   "LambdaExpression": "src/sem_logic.ts",
+   "QuantifiedExpression": "src/sem_logic.ts",
+   "ExistsExpression": "src/sem_logic.ts",
+   "AllExpression": "src/sem_logic.ts",
+   "IotaExpression": "src/sem_logic.ts",
+   "NegatedExpression": "src/sem_logic.ts",
+   "BinaryExpression": "src/sem_logic.ts",
+   "BooleanExpression": "src/sem_logic.ts",
+   "AndExpression": "src/sem_logic.ts",
+   "OrExpression": "src/sem_logic.ts",
+   "LogicImpExpression": "src/sem_logic.ts",
+   "IffExpression": "src/sem_logic.ts",
+   "EqualityExpression": "src/sem_logic.ts",
+   "Type": "src/sem_logic.ts",
+   "BasicType": "src/sem_logic.ts",
+   "ComplexType": "src/sem_logic.ts",
+   "EntityType": "src/sem_logic.ts",
+   "TruthValueType": "src/sem_logic.ts",
+   "EventType": "src/sem_logic.ts",
+   "AnyType": "src/sem_logic.ts",
+   "Variable": "src/sem_logic.ts",
+   "VariableExpression": "src/sem_logic.ts",
+   "SubstituteBindingsI": "src/sem_logic.ts",
+   "Tokens": "src/sem_logic.ts",
+   "SemLogicParser": "src/sem_logic.ts",
+   "LogicalExpressionException": "src/sem_logic.ts",
+   "UnexpectedTokenException": "src/sem_logic.ts",
+   "ExpectedMoreTokensException": "src/sem_logic.ts",
+   "TypeException": "src/sem_logic.ts",
+   "InconsistentTypeHierarchyException": "src/sem_logic.ts",
+   "TypeResolutionException": "src/sem_logic.ts",
+   "IllegalTypeException": "src/sem_logic.ts",
+   "binding_ops": "src/sem_logic.ts",
+   "boolean_ops": "src/sem_logic.ts",
+   "equality_preds": "src/sem_logic.ts",
+   "semLogicDemo": "src/sem_logic.ts",
+   "semLogicDemoErrors": "src/sem_logic.ts",
+   "demoException": "src/sem_logic.ts",
+   "printtype": "src/sem_logic.ts",
+   "read_logic": "src/sem_logic.ts",
+   "readLogic": "src/sem_logic.ts",
+   "read_type": "src/sem_logic.ts",
+   "readType": "src/sem_logic.ts",
+   "skolem_function": "src/sem_logic.ts",
+   "skolemFunction": "src/sem_logic.ts",
+   "typecheck": "src/sem_logic.ts",
+   "unique_variable": "src/sem_logic.ts",
+   "uniqueVariable": "src/sem_logic.ts",
+   "is_indvar": "src/sem_logic.ts",
+   "is_funcvar": "src/sem_logic.ts",
+   "is_eventvar": "src/sem_logic.ts",
+   "Counter": "src/internals.ts"
   }
  },
  "modules": [
@@ -522,6 +582,7 @@
   "nltk.misc.wordfinder",
   "nltk.parse.chart",
   "nltk.probability",
+  "nltk.sem.logic",
   "nltk.sentiment.vader",
   "nltk.stem.api",
   "nltk.stem.arlstem",
@@ -1048,7 +1109,7 @@
     "test/sequential_taggers.test.ts",
     "test/sequential_tagger_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 TaggerI member surface",
+   "anchor": "NLTK 3.10.3 oracle pins — TaggerI member surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: accuracy/precision/recall/f_measure/evaluate_per_tag tables, size, _context_to_tag, _check_params both/neither, DefaultTagger backoff, encode/decode_json_obj."
   },
@@ -1059,9 +1120,9 @@
     "test/perceptron_tagger.test.ts",
     "test/perceptron_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 doctest pins \u2014 trained-tagger surface",
+   "anchor": "NLTK 3.10.3 doctest pins — trained-tagger surface",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: doctest train\u2192tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
+   "scope": "NLTK 3.10.3-pinned: doctest train→tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
   },
   {
    "id": "concordance-differential",
@@ -1070,7 +1131,7 @@
     "test/text.test.ts",
     "test/concordance_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 ConcordanceIndex contract",
+   "anchor": "NLTK 3.10.3 oracle pins — ConcordanceIndex contract",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: offsets/defaultdict types count, find_concordance line bytes (left rjust, i+context right slice, trailing space), phrase matching, print_concordance Displaying/no-matches format, repr."
   },
@@ -1103,7 +1164,7 @@
     "test/collocations.test.ts",
     "test/collocations_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 BigramCollocationFinder contract",
+   "anchor": "NLTK 3.10.3 oracle pins — BigramCollocationFinder contract",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: N/word_fd/window_size, pmi/raw_freq scores, score_ngrams ordering, nbest, above_score, ws=3 non-contiguous bigrams, freq filter."
   },
@@ -1114,7 +1175,7 @@
     "test/sentiment.test.ts",
     "test/vader_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 full SentimentIntensityAnalyzer member surface",
+   "anchor": "NLTK 3.10.3 oracle pins — full SentimentIntensityAnalyzer member surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: 5 doctest polarity_scores dicts, SentiText words/cap_diff, VaderConstants negated/normalize/scalar_inc_dec, score_valence + empty, sentiment_valence, make_lex_dict, 7502-entry lexicon."
   },
@@ -1125,7 +1186,7 @@
     "test/probability.test.ts",
     "test/probdist_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 ProbDistI inherited surface",
+   "anchor": "NLTK 3.10.3 oracle pins — ProbDistI inherited surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: SUM_TO_ONE per class, discount (base 0.0 vs Lidstone formula), logprob -1e300 unseen, prob unseen/empty=0, generate weighted sampling, repr, bins>=B() error wording."
   },
@@ -1136,7 +1197,7 @@
     "test/grammar.test.ts",
     "test/grammar_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.grammar CFG/Production/Nonterminal",
+   "anchor": "NLTK 3.10.3 oracle pins — nltk.grammar CFG/Production/Nonterminal",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: CFG init/indexes/leftcorner closure, productions(lhs/rhs/empty) filters, grammar-form predicates, chomsky_normal_form pipeline (eliminate_start, binarize, remove_mixed_rules, remove_unitary_rules with cycle guard), check_coverage quoting, read_grammar errors, Production/ProbabilisticProduction/DependencyProduction/Nonterminal/nonterminals."
   },
@@ -1147,7 +1208,7 @@
     "test/chart_parser.test.ts",
     "test/chart_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.parse.chart",
+   "anchor": "NLTK 3.10.3 oracle pins — nltk.parse.chart",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: ChartParser.chart_parse agenda/non-agenda loops, BU_LC/TD/LC strategies, edge set/count equality, shared-edge ambiguity via child_pointer_lists, select restrictions, pretty_format_edge/leaves, parse trees and ParserI surface."
   },
@@ -1158,7 +1219,7 @@
     "test/chunk_parser.test.ts",
     "test/chunk_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.chunk RegexpParser/RegexpChunkParser/ChunkScore",
+   "anchor": "NLTK 3.10.3 oracle pins — nltk.chunk RegexpParser/RegexpChunkParser/ChunkScore",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: RegexpParser staged grammars/chinks/loop, all 8 RegexpChunkRule subclasses via fromstring, ChunkString brace validation, tag_pattern2re_pattern translations and errors, ChunkScore metrics/str/repr, ParserI parse_one/parse_all/parse_sents surface."
   },
@@ -1169,7 +1230,7 @@
     "test/lm_nltk.test.ts",
     "test/lm_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.lm LanguageModel/Vocabulary/NgramCounter",
+   "anchor": "NLTK 3.10.3 oracle pins — nltk.lm LanguageModel/Vocabulary/NgramCounter",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: MLE/Lidstone/Laplace/StupidBackoff/WittenBellInterpolated/AbsoluteDiscountingInterpolated/KneserNeyInterpolated score+perplexity matrix, generate via Python-compatible MT19937 (seed=3), context backoff/trimming, math domain error, Vocabulary cutoff/membership/lookup/update/str, NgramCounter orders/N/indexing/tuple validation."
   },
@@ -1180,7 +1241,7 @@
     "test/wordnet_objects.test.ts",
     "test/wordnet_objects_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.corpus.wordnet Synset/Lemma object model",
+   "anchor": "NLTK 3.10.3 oracle pins — nltk.corpus.wordnet Synset/Lemma object model",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: Synset name/pos/offset/lexname/definition/examples/lemma_names, Lemma name/key/repr/antonyms/lang, hypernym/hyponym relations, index.<pos> sense numbering, hypernym_paths, root_hypernyms, lowest_common_hypernyms, common_hypernyms membership, hypernym_distances, max/min_depth, shortest_path_distance, path/wup/lch similarity. Requires the packed wordnet artifact (senseNums + original lemma/pointer order)."
   },
@@ -1193,7 +1254,7 @@
    ],
    "anchor": "Values pinned from Python NLTK 3.10.3 (see test/snowball_arfihu_oracle.py)",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: 45 Arabic + 40 Finnish + 43 Hungarian stems including diacritic normalization, string-vs-tuple suffix iteration quirks (noun step2b '\u0627\u062a'), Hungarian digraph R1, Finnish vowel-harmony step checks, ignore_stopwords post-normalization check for Arabic."
+   "scope": "NLTK 3.10.3-pinned: 45 Arabic + 40 Finnish + 43 Hungarian stems including diacritic normalization, string-vs-tuple suffix iteration quirks (noun step2b 'ات'), Hungarian digraph R1, Finnish vowel-harmony step checks, ignore_stopwords post-normalization check for Arabic."
   },
   {
    "id": "tree-differential",
@@ -1379,6 +1440,17 @@
    "anchor": "Pinned against NLTK 3.10.3",
    "oracleVersion": "3.10.3",
    "scope": "Instrumented sort counts, MinimalSet contexts/displays, wordfinder check/step placements, chomsky textwrap pin, babelize_shell notice"
+  },
+  {
+   "id": "sem-logic-differential",
+   "kind": "differential",
+   "files": [
+    "test/sem_logic_types.test.ts",
+    "test/sem_logic_oracle.py"
+   ],
+   "anchor": "Pinned against NLTK 3.10.3",
+   "oracleVersion": "3.10.3",
+   "scope": "Type hierarchy parse/match/resolve/str surfaces, typecheck signatures, expression typing/findtype/visit/visitStructured, parser errors with caret positions, read_logic, skolem_function, unique_variable, Counter, Trie, verbatim demo/demo_errors/printtype outputs including NLTK's broken AttributeError path"
   }
  ],
  "signatureBindings": [
@@ -3221,7 +3293,7 @@
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "confusion crashes on None tags in both implementations (sorted str+NoneType) \u2014 adapted."
+     "confusion crashes on None tags in both implementations (sorted str+NoneType) — adapted."
     ]
    },
    "notes": "TS sequential tagger, not the Rust perceptron/HMM primitives. TaggerI metric surface + ContextTagger._context_to_tag + _check_params both/neither + public context/chooseTag/train + encode/decode_json_obj."
@@ -3323,7 +3395,7 @@
      "Combining-character cut_string paths pinned by construction, not by oracle fixture."
     ]
    },
-   "notes": "Defaultdict offsets (miss registers key), i+context right-slice, untrimmed line join, cut_string combining-aware width, Displaying/no-matches print format \u2014 all pinned."
+   "notes": "Defaultdict offsets (miss registers key), i+context right-slice, untrimmed line join, cut_string combining-aware width, Displaying/no-matches print format — all pinned."
   },
   {
    "target": "nltk.collocations.BigramCollocationFinder",
@@ -3406,7 +3478,7 @@
      "No remaining tracked gaps in this fixture."
     ]
    },
-   "notes": "SentiText, VaderConstants, make_lex_dict, sentiment_valence, score_valence, polarity_scores \u2014 full discovered member surface, byte-pinned on doctest corpus."
+   "notes": "SentiText, VaderConstants, make_lex_dict, sentiment_valence, score_valence, polarity_scores — full discovered member surface, byte-pinned on doctest corpus."
   },
   {
    "target": "nltk.chunk.regexp.RegexpParser",
@@ -5706,7 +5778,7 @@
      "acyclic_tree"
     ],
     "gaps": [
-     "Meronym/holonym/domain/entailment/verb_group/attribute/frame/instance relations return empty \u2014 not carried in the packed payload.",
+     "Meronym/holonym/domain/entailment/verb_group/attribute/frame/instance relations return empty — not carried in the packed payload.",
      "res/jcn/lin_similarity are implemented; they need a caller-supplied IC mapping (WordNetICCorpusReader.ic).",
      "common_hypernyms ordering is BFS rather than Python set order."
     ]
@@ -8228,7 +8300,7 @@
      "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "classify.util accuracy(classifier, gold) \u2014 distinct from nltk.metrics accuracy."
+   "notes": "classify.util accuracy(classifier, gold) — distinct from nltk.metrics accuracy."
   },
   {
    "target": "nltk.classify.maxent.call_megam",
@@ -8406,7 +8478,7 @@
      "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "classify.util log_likelihood(classifier, gold) \u2014 distinct from the probdist log_likelihood."
+   "notes": "classify.util log_likelihood(classifier, gold) — distinct from the probdist log_likelihood."
   },
   {
    "target": "nltk.classify.maxent.parse_megam_weights",
@@ -17237,7 +17309,7 @@
      "namedtuple surface covered via PhraseTable.add/translationsFor in stack-decoder tests."
     ]
    },
-   "notes": "NamedTuple entry {trgPhrase, logProb} \u2014 exported as TS type only."
+   "notes": "NamedTuple entry {trgPhrase, logProb} — exported as TS type only."
   },
   {
    "target": "nltk.translate.api.find_binary",
@@ -17266,7 +17338,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "Throwing stub \u2014 subprocess binary discovery is platform-excluded."
+   "notes": "Throwing stub — subprocess binary discovery is platform-excluded."
   },
   {
    "target": "nltk.translate.gale_church.LanguageIndependent",
@@ -17514,7 +17586,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "nltk.translate.gale_church.parse_token_stream: implements documented contract \u2014 Python 3 NLTK impl always raises (py2 .next() + PEP479)"
+   "notes": "nltk.translate.gale_church.parse_token_stream: implements documented contract — Python 3 NLTK impl always raises (py2 .next() + PEP479)"
   },
   {
    "target": "nltk.translate.gale_church.split_at",
@@ -17545,7 +17617,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "nltk.translate.gale_church.split_at: implements documented contract \u2014 Python 3 NLTK impl always raises (py2 .next() + PEP479)"
+   "notes": "nltk.translate.gale_church.split_at: implements documented contract — Python 3 NLTK impl always raises (py2 .next() + PEP479)"
   },
   {
    "target": "nltk.translate.gale_church.trace",
@@ -18207,7 +18279,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "WordNetCorpusReader \u2192 WordNetReader alias."
+   "notes": "WordNetCorpusReader → WordNetReader alias."
   },
   {
    "target": "nltk.translate.metrics.alignment_error_rate",
@@ -18238,7 +18310,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "AER = 1 - (|H\u2229S|+|H\u2229P|)/(|H|+|S|)."
+   "notes": "AER = 1 - (|H∩S|+|H∩P|)/(|H|+|S|)."
   },
   {
    "target": "nltk.translate.phrase_based.extract",
@@ -20276,7 +20348,7 @@
     "status": "missing",
     "members": [],
     "gaps": [
-     "Interactive demo function \u2014 no non-interactive equivalent is provided."
+     "Interactive demo function — no non-interactive equivalent is provided."
     ]
    },
    "evidence": [],
@@ -20332,7 +20404,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "Group-average agglomerative clusterer \u2014 deterministic, oracle-pinned."
+   "notes": "Group-average agglomerative clusterer — deterministic, oracle-pinned."
   },
   {
    "target": "nltk.cluster.gaac.Dendrogram",
@@ -20464,7 +20536,7 @@
     "status": "missing",
     "members": [],
     "gaps": [
-     "Interactive demo function \u2014 no non-interactive equivalent is provided."
+     "Interactive demo function — no non-interactive equivalent is provided."
     ]
    },
    "evidence": [],
@@ -20582,7 +20654,7 @@
     "status": "missing",
     "members": [],
     "gaps": [
-     "Interactive demo function \u2014 no non-interactive equivalent is provided."
+     "Interactive demo function — no non-interactive equivalent is provided."
     ]
    },
    "evidence": [],
@@ -21041,7 +21113,7 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Returns a PostagResult {tagger, baselineAccuracy, brillAccuracy, taggedTest} \u2014 nltk returns None and only prints; tagged_data=None requires the treebank corpus reader and throws; randomize=True shuffles with a deterministic mulberry32 PRNG (Python's MT19937 seed ordering is not reproduced); cache_baseline_tagger/serialize_output (CPython pickle), learning_curve_output (matplotlib), incremental_stats/template_stats (batch_tag_incremental) throw unsupported errors; options object uses camelCase names.",
+     "Returns a PostagResult {tagger, baselineAccuracy, brillAccuracy, taggedTest} — nltk returns None and only prints; tagged_data=None requires the treebank corpus reader and throws; randomize=True shuffles with a deterministic mulberry32 PRNG (Python's MT19937 seed ordering is not reproduced); cache_baseline_tagger/serialize_output (CPython pickle), learning_curve_output (matplotlib), incremental_stats/template_stats (batch_tag_incremental) throw unsupported errors; options object uses camelCase names.",
      "error_output writes the error_list file on Node/Bun."
     ]
    },
@@ -21629,7 +21701,7 @@
      "targets"
     ],
     "gaps": [
-     "camelCase displayAll with display_all alias; _targets/_contexts/_seen/_displays are private fields; iteration order follows JS insertion-ordered Set (Python set order differs) \u2014 contents are equal."
+     "camelCase displayAll with display_all alias; _targets/_contexts/_seen/_displays are private fields; iteration order follows JS insertion-ordered Set (Python set order differs) — contents are equal."
     ]
    },
    "evidence": [
@@ -21948,6 +22020,2320 @@
     ]
    },
    "notes": "nltk.misc.wordfinder.word_finder needs the words corpus; wordfinder() itself is ported."
+  },
+  {
+   "target": "nltk.sem.logic.Expression",
+   "exports": [
+    "Expression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export abstract class Expression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.Expression."
+  },
+  {
+   "target": "nltk.sem.logic.AbstractVariableExpression",
+   "exports": [
+    "AbstractVariableExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class AbstractVariableExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.AbstractVariableExpression."
+  },
+  {
+   "target": "nltk.sem.logic.IndividualVariableExpression",
+   "exports": [
+    "IndividualVariableExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class IndividualVariableExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.IndividualVariableExpression."
+  },
+  {
+   "target": "nltk.sem.logic.FunctionVariableExpression",
+   "exports": [
+    "FunctionVariableExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class FunctionVariableExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.FunctionVariableExpression."
+  },
+  {
+   "target": "nltk.sem.logic.EventVariableExpression",
+   "exports": [
+    "EventVariableExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class EventVariableExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.EventVariableExpression."
+  },
+  {
+   "target": "nltk.sem.logic.ConstantExpression",
+   "exports": [
+    "ConstantExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class ConstantExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.ConstantExpression."
+  },
+  {
+   "target": "nltk.sem.logic.ApplicationExpression",
+   "exports": [
+    "ApplicationExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class ApplicationExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured",
+     "is_atom",
+     "uncurry"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict.",
+     "is_atom adapted to isAtom(); uncurry() preserved."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.ApplicationExpression."
+  },
+  {
+   "target": "nltk.sem.logic.VariableBinderExpression",
+   "exports": [
+    "VariableBinderExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export abstract class VariableBinderExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured",
+     "alpha_convert"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict.",
+     "alpha_convert adapted to alphaConvert()."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.VariableBinderExpression."
+  },
+  {
+   "target": "nltk.sem.logic.LambdaExpression",
+   "exports": [
+    "LambdaExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class LambdaExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured",
+     "alpha_convert"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict.",
+     "alpha_convert adapted to alphaConvert()."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.LambdaExpression."
+  },
+  {
+   "target": "nltk.sem.logic.QuantifiedExpression",
+   "exports": [
+    "QuantifiedExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export abstract class QuantifiedExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured",
+     "alpha_convert"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict.",
+     "alpha_convert adapted to alphaConvert()."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.QuantifiedExpression."
+  },
+  {
+   "target": "nltk.sem.logic.ExistsExpression",
+   "exports": [
+    "ExistsExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class ExistsExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured",
+     "alpha_convert",
+     "getQuantifier"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict.",
+     "alpha_convert adapted to alphaConvert()."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.ExistsExpression."
+  },
+  {
+   "target": "nltk.sem.logic.AllExpression",
+   "exports": [
+    "AllExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class AllExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured",
+     "alpha_convert",
+     "getQuantifier"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict.",
+     "alpha_convert adapted to alphaConvert()."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.AllExpression."
+  },
+  {
+   "target": "nltk.sem.logic.IotaExpression",
+   "exports": [
+    "IotaExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class IotaExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured",
+     "alpha_convert",
+     "getQuantifier"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict.",
+     "alpha_convert adapted to alphaConvert()."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.IotaExpression."
+  },
+  {
+   "target": "nltk.sem.logic.NegatedExpression",
+   "exports": [
+    "NegatedExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class NegatedExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.NegatedExpression."
+  },
+  {
+   "target": "nltk.sem.logic.BinaryExpression",
+   "exports": [
+    "BinaryExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export abstract class BinaryExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.BinaryExpression."
+  },
+  {
+   "target": "nltk.sem.logic.BooleanExpression",
+   "exports": [
+    "BooleanExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export abstract class BooleanExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.BooleanExpression."
+  },
+  {
+   "target": "nltk.sem.logic.AndExpression",
+   "exports": [
+    "AndExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class AndExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured",
+     "getOp"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.AndExpression."
+  },
+  {
+   "target": "nltk.sem.logic.OrExpression",
+   "exports": [
+    "OrExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class OrExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured",
+     "getOp"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.OrExpression."
+  },
+  {
+   "target": "nltk.sem.logic.ImpExpression",
+   "exports": [
+    "LogicImpExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class ImpExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured",
+     "getOp"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict.",
+     "Exported as LogicImpExpression: the unqualified ImpExpression name is owned by the linear-logic port (nltk.sem.linearlogic)."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.ImpExpression."
+  },
+  {
+   "target": "nltk.sem.logic.IffExpression",
+   "exports": [
+    "IffExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class IffExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured",
+     "getOp"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.IffExpression."
+  },
+  {
+   "target": "nltk.sem.logic.EqualityExpression",
+   "exports": [
+    "EqualityExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class EqualityExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "applyto",
+     "constants",
+     "equiv",
+     "findtype",
+     "free",
+     "fromstring",
+     "make_VariableExpression",
+     "negate",
+     "normalize",
+     "predicates",
+     "replace",
+     "simplify",
+     "substitute_bindings",
+     "typecheck",
+     "variables",
+     "visit",
+     "visit_structured",
+     "getOp"
+    ],
+    "gaps": [
+     "camelCase adaptations: substitute_bindings->substituteBindings, visit_structured->visitStructured; make_VariableExpression/getOp/getQuantifier keep NLTK spelling.",
+     "equiv() requires an explicit prover object ({prove}); without one it throws since NLTK's default delegates to the Prover9 binary (external, unsupported in JS).",
+     "Python dunder surfaces (__eq__/__ne__/__lt__/__call__) adapted to equals()/applyto(); typecheck returns a plain object signature rather than a dict."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Deterministic surfaces pinned verbatim; prover-bound and dict-order surfaces noted."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.EqualityExpression."
+  },
+  {
+   "target": "nltk.sem.logic.Type",
+   "exports": [
+    "Type"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class Type"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromstring"
+    ],
+    "gaps": [
+     "read_type/fromstring share the NLTK parser including quirks: 'v' rejected, 'e,t' silently returns e, malformed angle forms raise AssertionError-shaped errors, empty input raises IndexError-shaped error.",
+     "Python total_ordering dunders (__eq__/__lt__/__ne__) adapted to equals()."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "toString()/str()/equals() pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.Type."
+  },
+  {
+   "target": "nltk.sem.logic.BasicType",
+   "exports": [
+    "BasicType"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class BasicType"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromstring",
+     "matches",
+     "resolve"
+    ],
+    "gaps": [
+     "read_type/fromstring share the NLTK parser including quirks: 'v' rejected, 'e,t' silently returns e, malformed angle forms raise AssertionError-shaped errors, empty input raises IndexError-shaped error."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "toString()/str()/equals() pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.BasicType."
+  },
+  {
+   "target": "nltk.sem.logic.ComplexType",
+   "exports": [
+    "ComplexType"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class ComplexType"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromstring",
+     "matches",
+     "resolve",
+     "str"
+    ],
+    "gaps": [
+     "read_type/fromstring share the NLTK parser including quirks: 'v' rejected, 'e,t' silently returns e, malformed angle forms raise AssertionError-shaped errors, empty input raises IndexError-shaped error."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "toString()/str()/equals() pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.ComplexType."
+  },
+  {
+   "target": "nltk.sem.logic.EntityType",
+   "exports": [
+    "EntityType"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class EntityType"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromstring",
+     "matches",
+     "resolve",
+     "str"
+    ],
+    "gaps": [
+     "read_type/fromstring share the NLTK parser including quirks: 'v' rejected, 'e,t' silently returns e, malformed angle forms raise AssertionError-shaped errors, empty input raises IndexError-shaped error.",
+     "ENTITY_TYPE singleton also exported."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "toString()/str()/equals() pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.EntityType."
+  },
+  {
+   "target": "nltk.sem.logic.TruthValueType",
+   "exports": [
+    "TruthValueType"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class TruthValueType"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromstring",
+     "matches",
+     "resolve",
+     "str"
+    ],
+    "gaps": [
+     "read_type/fromstring share the NLTK parser including quirks: 'v' rejected, 'e,t' silently returns e, malformed angle forms raise AssertionError-shaped errors, empty input raises IndexError-shaped error.",
+     "TRUTH_TYPE singleton also exported."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "toString()/str()/equals() pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.TruthValueType."
+  },
+  {
+   "target": "nltk.sem.logic.EventType",
+   "exports": [
+    "EventType"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class EventType"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromstring",
+     "matches",
+     "resolve",
+     "str"
+    ],
+    "gaps": [
+     "read_type/fromstring share the NLTK parser including quirks: 'v' rejected, 'e,t' silently returns e, malformed angle forms raise AssertionError-shaped errors, empty input raises IndexError-shaped error.",
+     "EVENT_TYPE singleton also exported; 'v' type strings still rejected by read_type per NLTK."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "toString()/str()/equals() pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.EventType."
+  },
+  {
+   "target": "nltk.sem.logic.AnyType",
+   "exports": [
+    "AnyType"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class AnyType"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "fromstring",
+     "matches",
+     "resolve",
+     "str"
+    ],
+    "gaps": [
+     "read_type/fromstring share the NLTK parser including quirks: 'v' rejected, 'e,t' silently returns e, malformed angle forms raise AssertionError-shaped errors, empty input raises IndexError-shaped error.",
+     "ANY_TYPE singleton also exported; Python multiple inheritance (BasicType+ComplexType) emulated via ComplexType subclassing plus AnyType special-casing."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "toString()/str()/equals() pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.AnyType."
+  },
+  {
+   "target": "nltk.sem.logic.Variable",
+   "exports": [
+    "Variable"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class Variable"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "substitute_bindings"
+    ],
+    "gaps": [
+     "substitute_bindings adapted to substituteBindings; Variable objects are immutable keys rather than hash-on-name structs."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Substitution semantics pinned via expression-level differentials."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.Variable."
+  },
+  {
+   "target": "nltk.sem.logic.VariableExpression",
+   "exports": [
+    "VariableExpression"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function VariableExpression"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Factory dispatches on is_indvar/is_funcvar/is_eventvar like NLTK; makeVariableExpression(name) helper also exported."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Dispatch results pinned on each variable kind."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.VariableExpression factory."
+  },
+  {
+   "target": "nltk.sem.logic.SubstituteBindingsI",
+   "exports": [
+    "SubstituteBindingsI"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class SubstituteBindingsI"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "substitute_bindings",
+     "variables"
+    ],
+    "gaps": [
+     "substitute_bindings adapted to substituteBindings; abstract interface class raises NotImplementedError-shaped errors like NLTK."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Interface contract exercised via Expression subclasses."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.SubstituteBindingsI."
+  },
+  {
+   "target": "nltk.sem.logic.Tokens",
+   "exports": [
+    "Tokens"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export const Tokens"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Token-name constants object; class-only namespace in NLTK carries no callable members."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Parser accepts the same token spellings; exercised through parse differentials."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.Tokens token namespace."
+  },
+  {
+   "target": "nltk.sem.logic.LogicParser",
+   "exports": [
+    "SemLogicParser"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class LogicParser"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "assertNextToken",
+     "assertToken",
+     "attempt_ApplicationExpression",
+     "attempt_BooleanExpression",
+     "attempt_EqualityExpression",
+     "attempt_adjuncts",
+     "get_BooleanExpression_factory",
+     "get_QuantifiedExpression_factory",
+     "get_all_symbols",
+     "get_next_token_variable",
+     "handle",
+     "handle_lambda",
+     "handle_negation",
+     "handle_open",
+     "handle_quant",
+     "handle_variable",
+     "has_priority",
+     "inRange",
+     "isvariable",
+     "make_ApplicationExpression",
+     "make_BooleanExpression",
+     "make_EqualityExpression",
+     "make_LambdaExpression",
+     "make_NegatedExpression",
+     "make_QuanifiedExpression",
+     "make_VariableExpression",
+     "parse",
+     "process",
+     "process_next_expression",
+     "process_quoted_token",
+     "token"
+    ],
+    "gaps": [
+     "Exported as SemLogicParser: LogicParser name collides with the DRT parser in the public entrypoint.",
+     "camelCase adaptations for the snake_case members (attempt_adjuncts->attemptAdjuncts, process_next_expression->processNextExpression, etc.); NLTK's make_QuanifiedExpression typo preserved.",
+     "type_check parse mode, caret-marked LogicalExpressionException rendering, quoted-token handling, and the 200-depth guard ported verbatim."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Parse trees, error messages, and caret positions pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.LogicParser (recursive-descent logic parser)."
+  },
+  {
+   "target": "nltk.sem.logic.LogicalExpressionException",
+   "exports": [
+    "LogicalExpressionException"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class LogicalExpressionException"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "JS Error subclass; Python add_note/with_traceback are inherited builtins.",
+     "index/message payload plus caret-rendered str() output ported verbatim."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Error names and messages pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.LogicalExpressionException."
+  },
+  {
+   "target": "nltk.sem.logic.UnexpectedTokenException",
+   "exports": [
+    "UnexpectedTokenException"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class UnexpectedTokenException"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "JS Error subclass; Python add_note/with_traceback are inherited builtins.",
+     "LogicalExpressionException subclass"
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Error names and messages pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.UnexpectedTokenException."
+  },
+  {
+   "target": "nltk.sem.logic.ExpectedMoreTokensException",
+   "exports": [
+    "ExpectedMoreTokensException"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class ExpectedMoreTokensException"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "JS Error subclass; Python add_note/with_traceback are inherited builtins.",
+     "LogicalExpressionException subclass"
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Error names and messages pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.ExpectedMoreTokensException."
+  },
+  {
+   "target": "nltk.sem.logic.TypeException",
+   "exports": [
+    "TypeException"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class TypeException"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "JS Error subclass; Python add_note/with_traceback are inherited builtins.",
+     "LogicalExpressionException subclass"
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Error names and messages pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.TypeException."
+  },
+  {
+   "target": "nltk.sem.logic.InconsistentTypeHierarchyException",
+   "exports": [
+    "InconsistentTypeHierarchyException"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class InconsistentTypeHierarchyException"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "JS Error subclass; Python add_note/with_traceback are inherited builtins.",
+     "LogicalExpressionException subclass"
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Error names and messages pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.InconsistentTypeHierarchyException."
+  },
+  {
+   "target": "nltk.sem.logic.TypeResolutionException",
+   "exports": [
+    "TypeResolutionException"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class TypeResolutionException"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "JS Error subclass; Python add_note/with_traceback are inherited builtins.",
+     "LogicalExpressionException subclass"
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Error names and messages pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.TypeResolutionException."
+  },
+  {
+   "target": "nltk.sem.logic.IllegalTypeException",
+   "exports": [
+    "IllegalTypeException"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export class IllegalTypeException"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "JS Error subclass; Python add_note/with_traceback are inherited builtins.",
+     "LogicalExpressionException subclass"
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Error names and messages pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.IllegalTypeException."
+  },
+  {
+   "target": "nltk.sem.logic.binding_ops",
+   "exports": [
+    "binding_ops"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function binding_ops"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Prints the binding operator list verbatim like NLTK."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.binding_ops."
+  },
+  {
+   "target": "nltk.sem.logic.boolean_ops",
+   "exports": [
+    "boolean_ops"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function boolean_ops"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Prints the boolean operator table verbatim like NLTK."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.boolean_ops."
+  },
+  {
+   "target": "nltk.sem.logic.equality_preds",
+   "exports": [
+    "equality_preds"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function equality_preds"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Prints the equality predicate list verbatim like NLTK."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.equality_preds."
+  },
+  {
+   "target": "nltk.sem.logic.demo",
+   "exports": [
+    "semLogicDemo"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function semLogicDemo"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Exported as semLogicDemo; stdout output pinned verbatim."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.demo."
+  },
+  {
+   "target": "nltk.sem.logic.demo_errors",
+   "exports": [
+    "semLogicDemoErrors"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function semLogicDemoErrors"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Exported as semLogicDemoErrors; stdout output pinned verbatim including caret positions."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.demo_errors."
+  },
+  {
+   "target": "nltk.sem.logic.demoException",
+   "exports": [
+    "demoException"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function demoException"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Renders the exception class name and caret-marked source like NLTK."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.demoException."
+  },
+  {
+   "target": "nltk.sem.logic.printtype",
+   "exports": [
+    "printtype"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function printtype"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Reproduces NLTK 3.10.3's broken behavior verbatim: raises AttributeError-shaped error because ApplicationExpression lacks .str()."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.printtype (broken upstream; parity preserved)."
+  },
+  {
+   "target": "nltk.sem.logic.read_logic",
+   "exports": [
+    "read_logic",
+    "readLogic"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function read_logic"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Optional sdict decoding, comment/blank-line skipping, and ValueError-shaped line-failure wrapping ported; BytesIO input adapted to Uint8Array."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.read_logic."
+  },
+  {
+   "target": "nltk.sem.logic.read_type",
+   "exports": [
+    "read_type",
+    "readType"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function read_type"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "NLTK quirks ported: 'v' rejected, 'e,t' silently returns e, '<e,t,z>' raises AssertionError-shaped error, empty input raises IndexError-shaped error."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.read_type."
+  },
+  {
+   "target": "nltk.sem.logic.skolem_function",
+   "exports": [
+    "skolem_function",
+    "skolemFunction"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function skolem_function"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "univScope iteration follows Set iteration order like NLTK's unordered-set iteration; skolem constant names pinned for the deterministic cases."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.skolem_function."
+  },
+  {
+   "target": "nltk.sem.logic.typecheck",
+   "exports": [
+    "typecheck"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function typecheck"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Signature dict adapted to a plain object; IllegalTypeException on non-variable keys ported."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.typecheck."
+  },
+  {
+   "target": "nltk.sem.logic.unique_variable",
+   "exports": [
+    "unique_variable",
+    "uniqueVariable"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function uniqueVariable"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Shared counter matches nltk.internals.Counter auto-increment; ignore-set and pattern-prefix rules ported."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.unique_variable."
+  },
+  {
+   "target": "nltk.sem.logic.is_indvar",
+   "exports": [
+    "is_indvar"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function is_indvar"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Regex parity; Python's isinstance assert adapted to a string-typed parameter."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.is_indvar."
+  },
+  {
+   "target": "nltk.sem.logic.is_funcvar",
+   "exports": [
+    "is_funcvar"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function is_funcvar"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Regex parity; Python's isinstance assert adapted to a string-typed parameter."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.is_funcvar."
+  },
+  {
+   "target": "nltk.sem.logic.is_eventvar",
+   "exports": [
+    "is_eventvar"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/sem_logic.ts",
+     "anchor": "export function is_eventvar"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "Regex parity; Python's isinstance assert adapted to a string-typed parameter."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Output pinned verbatim against the oracle."
+    ]
+   },
+   "notes": "Port of nltk.sem.logic.is_eventvar."
+  },
+  {
+   "target": "nltk.sem.logic.Counter",
+   "exports": [
+    "Counter"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/internals.ts",
+     "anchor": "export class Counter"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "get"
+    ],
+    "gaps": [
+     "get() auto-increments then returns like nltk.internals.Counter."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Increment sequence pinned verbatim."
+    ]
+   },
+   "notes": "nltk.internals.Counter re-exported through nltk.sem.logic; qualified mapping since nltk.internals is out of scope."
+  },
+  {
+   "target": "nltk.sem.logic.Trie",
+   "exports": [
+    "Trie"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/collections.ts",
+     "anchor": "export class Trie"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "clear",
+     "copy",
+     "fromkeys",
+     "get",
+     "insert",
+     "items",
+     "keys",
+     "pop",
+     "popitem",
+     "setdefault",
+     "update",
+     "values"
+    ],
+    "gaps": [
+     "dict-subclass adapted to a Map subclass; __missing__ auto-vivification drives insert() only (no bracket access in JS).",
+     "copy() preserved NLTK quirk: returns a plain dict/Map, not a Trie; fromkeys() returns a Trie.",
+     "pop/setdefault/popitem raise KeyError-shaped errors for missing keys like the dict contract."
+    ]
+   },
+   "evidence": [
+    "sem-logic-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "Nested structure, leaf markers, and dict-method semantics pinned verbatim."
+    ]
+   },
+   "notes": "nltk.collections.Trie re-exported through nltk.sem.logic; qualified mapping since nltk.collections is out of scope."
   }
  ]
 }
