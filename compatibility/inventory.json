@@ -567,7 +567,8 @@
    "id": "regexp-differential",
    "kind": "differential",
    "files": [
-    "test/stemmers.test.ts"
+    "test/stemmers.test.ts",
+    "test/regexp_stemmer_oracle.py"
    ],
    "anchor": "Values below are pinned to Python NLTK 3.10.3 RegexpStemmer",
    "oracleVersion": "3.10.3",
