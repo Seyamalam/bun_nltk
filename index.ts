@@ -649,3 +649,23 @@ export {
   BottomUpLeftCornerChartParser,
   type ChartParserOptions,
 } from "./src/chart";
+export {
+  ChunkString,
+  ChunkScore,
+  RegexpChunkRule,
+  ChunkRule,
+  StripRule,
+  UnChunkRule,
+  MergeRule,
+  SplitRule,
+  ExpandLeftRule,
+  ExpandRightRule,
+  ChunkRuleWithContext,
+  RegexpChunkParser,
+  RegexpParser,
+  tag_pattern2re_pattern,
+  tagPattern2rePattern,
+  tree2conlltags,
+  conlltags2tree,
+  type ChunkTree,
+} from "./src/chunk_nltk";

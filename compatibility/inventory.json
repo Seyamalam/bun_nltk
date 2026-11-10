@@ -125,7 +125,21 @@
    "BottomUpChartParser": "src/chart.ts",
    "BottomUpLeftCornerChartParser": "src/chart.ts",
    "TreeEdge": "src/chart.ts",
-   "BottomUpPredictCombineRule": "src/chart.ts"
+   "BottomUpPredictCombineRule": "src/chart.ts",
+   "RegexpParser": "src/chunk_nltk.ts",
+   "RegexpChunkParser": "src/chunk_nltk.ts",
+   "ChunkString": "src/chunk_nltk.ts",
+   "RegexpChunkRule": "src/chunk_nltk.ts",
+   "ChunkRule": "src/chunk_nltk.ts",
+   "StripRule": "src/chunk_nltk.ts",
+   "UnChunkRule": "src/chunk_nltk.ts",
+   "MergeRule": "src/chunk_nltk.ts",
+   "SplitRule": "src/chunk_nltk.ts",
+   "ExpandLeftRule": "src/chunk_nltk.ts",
+   "ExpandRightRule": "src/chunk_nltk.ts",
+   "ChunkRuleWithContext": "src/chunk_nltk.ts",
+   "tag_pattern2re_pattern": "src/chunk_nltk.ts",
+   "tagPattern2rePattern": "src/chunk_nltk.ts"
   }
  },
  "modules": [
@@ -745,6 +759,17 @@
    "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.parse.chart",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: ChartParser.chart_parse agenda/non-agenda loops, BU_LC/TD/LC strategies, edge set/count equality, shared-edge ambiguity via child_pointer_lists, select restrictions, pretty_format_edge/leaves, parse trees and ParserI surface."
+  },
+  {
+   "id": "chunk-differential",
+   "kind": "differential",
+   "files": [
+    "test/chunk_parser.test.ts",
+    "test/chunk_oracle.py"
+   ],
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.chunk RegexpParser/RegexpChunkParser/ChunkScore",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: RegexpParser staged grammars/chinks/loop, all 8 RegexpChunkRule subclasses via fromstring, ChunkString brace validation, tag_pattern2re_pattern translations and errors, ChunkScore metrics/str/repr, ParserI parse_one/parse_all/parse_sents surface."
   }
  ],
  "signatureBindings": [
@@ -2770,33 +2795,42 @@
   {
    "target": "nltk.chunk.regexp.RegexpParser",
    "exports": [
+    "RegexpParser",
     "regexpChunkParse"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/chunk.ts",
-     "anchor": "export function regexpChunkParse"
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export class RegexpParser"
     }
    ],
    "signatures": {
-    "status": "missing",
-    "members": [],
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "evaluate",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
     "gaps": [
-     "Functional tagged-token grammar subset, not RegexpParser constructor/rule/stage/trace API."
+     "Tree-mutation form of parse: TS returns a new tree rather than mutating the input; parse_one/parse_all delegate to the deterministic parse."
     ]
    },
    "evidence": [
-    "chunk-unit"
+    "chunk-differential"
    ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Pinned full rule/stage differential fixtures missing."
+     "No remaining tracked gaps in this fixture."
     ]
    },
-   "notes": "TS grammar/chunk building; native chunkIobIdsNative is a separate primitive."
+   "notes": "Staged grammar parsing, chinks, loop, root_label and ChunkScore-backed evaluate/accuracy; deterministic single-tree parser."
   },
   {
    "target": "nltk.util.ngrams",
@@ -3878,6 +3912,466 @@
     "chart-differential"
    ],
    "notes": "Pure-TS port of nltk.parse.chart machinery."
+  },
+  {
+   "target": "nltk.chunk.regexp.RegexpChunkParser",
+   "exports": [
+    "RegexpChunkParser"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export class RegexpChunkParser"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "evaluate",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents",
+     "rules"
+    ],
+    "gaps": [
+     "TS object model returns new trees; no in-place mutation of input trees."
+    ]
+   },
+   "evidence": [
+    "chunk-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Ordered RegexpChunkRule application over a ChunkString; chunk_label/root_label constructor args; ChunkScore evaluate/accuracy."
+  },
+  {
+   "target": "nltk.chunk.regexp.ChunkParserI",
+   "exports": [
+    "RegexpChunkParser"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export class RegexpChunkParser"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "evaluate",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
+    "gaps": [
+     "TS object model returns new trees; no in-place mutation of input trees."
+    ]
+   },
+   "evidence": [
+    "chunk-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Abstract chunk-parser surface realized by RegexpChunkParser; parse returns a single deterministic tree."
+  },
+  {
+   "target": "nltk.chunk.regexp.ChunkString",
+   "exports": [
+    "ChunkString"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export class ChunkString"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "to_chunkstruct",
+     "xform"
+    ],
+    "gaps": [
+     "TS object model returns new trees; no in-place mutation of input trees."
+    ]
+   },
+   "evidence": [
+    "chunk-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Brace/angle-tag chunkstring encoding with NLTK xform validation (valid grammar, balanced brackets, unchanged tags, empty-chunk removal)."
+  },
+  {
+   "target": "nltk.chunk.regexp.RegexpChunkRule",
+   "exports": [
+    "RegexpChunkRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export class RegexpChunkRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "descr",
+     "fromstring"
+    ],
+    "gaps": [
+     "TS object model returns new trees; no in-place mutation of input trees."
+    ]
+   },
+   "evidence": [
+    "chunk-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Base regex-substitution rule; fromstring dispatches on {..}/}../}{/{} pattern bodies and strips comments."
+  },
+  {
+   "target": "nltk.chunk.regexp.ChunkRule",
+   "exports": [
+    "ChunkRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export class ChunkRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "descr",
+     "fromstring"
+    ],
+    "gaps": [
+     "TS object model returns new trees; no in-place mutation of input trees."
+    ]
+   },
+   "evidence": [
+    "chunk-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "{regexp} chunking rule with IN_STRIP_PATTERN lookahead."
+  },
+  {
+   "target": "nltk.chunk.regexp.StripRule",
+   "exports": [
+    "StripRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export class StripRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "descr",
+     "fromstring"
+    ],
+    "gaps": [
+     "TS object model returns new trees; no in-place mutation of input trees."
+    ]
+   },
+   "evidence": [
+    "chunk-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "}regexp{ chink/strip rule with IN_CHUNK_PATTERN lookahead."
+  },
+  {
+   "target": "nltk.chunk.regexp.UnChunkRule",
+   "exports": [
+    "UnChunkRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export class UnChunkRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "descr",
+     "fromstring"
+    ],
+    "gaps": [
+     "TS object model returns new trees; no in-place mutation of input trees."
+    ]
+   },
+   "evidence": [
+    "chunk-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Removes braces around a matching chunk."
+  },
+  {
+   "target": "nltk.chunk.regexp.MergeRule",
+   "exports": [
+    "MergeRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export class MergeRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "descr",
+     "fromstring"
+    ],
+    "gaps": [
+     "TS object model returns new trees; no in-place mutation of input trees."
+    ]
+   },
+   "evidence": [
+    "chunk-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "left}{right merge rule removing the chunk boundary."
+  },
+  {
+   "target": "nltk.chunk.regexp.SplitRule",
+   "exports": [
+    "SplitRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export class SplitRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "descr",
+     "fromstring"
+    ],
+    "gaps": [
+     "TS object model returns new trees; no in-place mutation of input trees."
+    ]
+   },
+   "evidence": [
+    "chunk-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Splits a chunk between left and right tag patterns."
+  },
+  {
+   "target": "nltk.chunk.regexp.ExpandLeftRule",
+   "exports": [
+    "ExpandLeftRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export class ExpandLeftRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "descr",
+     "fromstring"
+    ],
+    "gaps": [
+     "TS object model returns new trees; no in-place mutation of input trees."
+    ]
+   },
+   "evidence": [
+    "chunk-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Pulls the left tag pattern into the adjacent chunk."
+  },
+  {
+   "target": "nltk.chunk.regexp.ExpandRightRule",
+   "exports": [
+    "ExpandRightRule"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export class ExpandRightRule"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "descr",
+     "fromstring"
+    ],
+    "gaps": [
+     "TS object model returns new trees; no in-place mutation of input trees."
+    ]
+   },
+   "evidence": [
+    "chunk-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Pulls the right tag pattern into the adjacent chunk."
+  },
+  {
+   "target": "nltk.chunk.regexp.ChunkRuleWithContext",
+   "exports": [
+    "ChunkRuleWithContext"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export class ChunkRuleWithContext"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "apply",
+     "descr",
+     "fromstring"
+    ],
+    "gaps": [
+     "TS object model returns new trees; no in-place mutation of input trees."
+    ]
+   },
+   "evidence": [
+    "chunk-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "left{chunk}right context-sensitive chunking rule."
+  },
+  {
+   "target": "nltk.chunk.regexp.tag_pattern2re_pattern",
+   "exports": [
+    "tag_pattern2re_pattern",
+    "tagPattern2rePattern"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/chunk_nltk.ts",
+     "anchor": "export function tagPattern2rePattern"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [],
+    "gaps": [
+     "TS object model returns new trees; no in-place mutation of input trees."
+    ]
+   },
+   "evidence": [
+    "chunk-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Whitespace-insensitive tag-pattern to regex translation; . wildcard; Bad tag pattern errors."
   }
  ]
 }
