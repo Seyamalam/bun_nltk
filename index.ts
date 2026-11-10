@@ -669,3 +669,21 @@ export {
   conlltags2tree,
   type ChunkTree,
 } from "./src/chunk_nltk";
+export {
+  LanguageModel,
+  MLE,
+  Lidstone,
+  Laplace,
+  StupidBackoff,
+  InterpolatedLanguageModel,
+  WittenBellInterpolated,
+  AbsoluteDiscountingInterpolated,
+  KneserNeyInterpolated,
+  Smoothing,
+  WittenBell,
+  AbsoluteDiscounting,
+  KneserNey,
+  Vocabulary,
+  NgramCounter,
+  PythonRandom,
+} from "./src/lm_nltk";

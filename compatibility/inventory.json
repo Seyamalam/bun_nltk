@@ -139,7 +139,23 @@
    "ExpandRightRule": "src/chunk_nltk.ts",
    "ChunkRuleWithContext": "src/chunk_nltk.ts",
    "tag_pattern2re_pattern": "src/chunk_nltk.ts",
-   "tagPattern2rePattern": "src/chunk_nltk.ts"
+   "tagPattern2rePattern": "src/chunk_nltk.ts",
+   "LanguageModel": "src/lm_nltk.ts",
+   "MLE": "src/lm_nltk.ts",
+   "Lidstone": "src/lm_nltk.ts",
+   "Laplace": "src/lm_nltk.ts",
+   "StupidBackoff": "src/lm_nltk.ts",
+   "InterpolatedLanguageModel": "src/lm_nltk.ts",
+   "WittenBellInterpolated": "src/lm_nltk.ts",
+   "AbsoluteDiscountingInterpolated": "src/lm_nltk.ts",
+   "KneserNeyInterpolated": "src/lm_nltk.ts",
+   "Smoothing": "src/lm_nltk.ts",
+   "WittenBell": "src/lm_nltk.ts",
+   "AbsoluteDiscounting": "src/lm_nltk.ts",
+   "KneserNey": "src/lm_nltk.ts",
+   "Vocabulary": "src/lm_nltk.ts",
+   "NgramCounter": "src/lm_nltk.ts",
+   "ConditionalFreqDist": "src/freqdist.ts"
   }
  },
  "modules": [
@@ -770,6 +786,17 @@
    "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.chunk RegexpParser/RegexpChunkParser/ChunkScore",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: RegexpParser staged grammars/chinks/loop, all 8 RegexpChunkRule subclasses via fromstring, ChunkString brace validation, tag_pattern2re_pattern translations and errors, ChunkScore metrics/str/repr, ParserI parse_one/parse_all/parse_sents surface."
+  },
+  {
+   "id": "lm-differential",
+   "kind": "differential",
+   "files": [
+    "test/lm_nltk.test.ts",
+    "test/lm_oracle.py"
+   ],
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.lm LanguageModel/Vocabulary/NgramCounter",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: MLE/Lidstone/Laplace/StupidBackoff/WittenBellInterpolated/AbsoluteDiscountingInterpolated/KneserNeyInterpolated score+perplexity matrix, generate via Python-compatible MT19937 (seed=3), context backoff/trimming, math domain error, Vocabulary cutoff/membership/lookup/update/str, NgramCounter orders/N/indexing/tuple validation."
   }
  ],
  "signatureBindings": [
@@ -2450,42 +2477,6 @@
     ]
    },
    "notes": "Chart construction runs TS; cykRecognizeIdsNative is a different recognition path."
-  },
-  {
-   "target": "nltk.lm.models.MLE",
-   "exports": [
-    "NgramLanguageModel",
-    "trainNgramLanguageModel"
-   ],
-   "category": "ts-algorithm",
-   "status": "partial",
-   "source": [
-    {
-     "file": "src/lm.ts",
-     "anchor": "export class NgramLanguageModel"
-    },
-    {
-     "file": "rust/src/lm.rs",
-     "anchor": "pub fn"
-    }
-   ],
-   "signatures": {
-    "status": "missing",
-    "members": [],
-    "gaps": [
-     "No NLTK MLE constructor, fit, vocabulary/count object contract; model discriminator is an adaptation."
-    ]
-   },
-   "evidence": [
-    "lm-unit"
-   ],
-   "fixtures": {
-    "status": "unit-only",
-    "gaps": [
-     "Pinned per-method score/entropy/OOV fixture audit incomplete."
-    ]
-   },
-   "notes": "TS count construction and scoring with optional native MLE/Lidstone/KneserNey batch evaluation at order <=3; mixed route classified TS, not wholesale Rust."
   },
   {
    "target": "nltk.corpus.reader.wordnet.WordNetCorpusReader",
@@ -4372,6 +4363,655 @@
     ]
    },
    "notes": "Whitespace-insensitive tag-pattern to regex translation; . wildcard; Bad tag pattern errors."
+  },
+  {
+   "target": "nltk.lm.counter.ConditionalFreqDist",
+   "exports": [
+    "ConditionalFreqDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "partial",
+   "source": [
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class ConditionalFreqDist"
+    }
+   ],
+   "signatures": {
+    "status": "partial",
+    "members": [
+     "N",
+     "conditions",
+     "get",
+     "update"
+    ],
+    "gaps": [
+     "Dict-protocol members absent: items, keys, values, pop, popitem, setdefault, fromkeys, copy, deepcopy, clear, plot, tabulate."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "unit-only",
+    "gaps": [
+     "Member-level differential fixtures for ConditionalFreqDist dict protocols missing."
+    ]
+   },
+   "notes": "defaultdict-style get(condition) auto-creates FreqDist; used by NgramCounter order indexes."
+  },
+  {
+   "target": "nltk.lm.counter.FreqDist",
+   "exports": [
+    "FreqDist"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/freqdist.ts",
+     "anchor": "export class FreqDist"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "B",
+     "N",
+     "Nr",
+     "elements",
+     "freq",
+     "hapaxes",
+     "max",
+     "most_common",
+     "pformat",
+     "r_Nr",
+     "subtract",
+     "tabulate",
+     "total",
+     "update"
+    ],
+    "gaps": [
+     "cumulative_frequencies/plot/pprint tracked under nltk.probability.FreqDist mapping."
+    ]
+   },
+   "evidence": [
+    "lm-differential",
+    "freqdist-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Same FreqDist class as nltk.probability.FreqDist mapping; lm.counter re-exports it."
+  },
+  {
+   "target": "nltk.lm.models.LanguageModel",
+   "exports": [
+    "LanguageModel"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export abstract class LanguageModel"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "context_counts",
+     "entropy",
+     "fit",
+     "generate",
+     "logscore",
+     "perplexity",
+     "score",
+     "unmasked_score"
+    ],
+    "gaps": [
+     "Abstract in NLTK; TS exposes abstract class with identical member surface."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Base class: vocab masking via Vocabulary.lookup, context_counts defaultdict semantics, seeded generate via Python-compatible MT19937."
+  },
+  {
+   "target": "nltk.lm.models.MLE",
+   "exports": [
+    "MLE",
+    "NgramLanguageModel",
+    "trainNgramLanguageModel"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export class MLE"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "context_counts",
+     "entropy",
+     "fit",
+     "generate",
+     "logscore",
+     "perplexity",
+     "score",
+     "unmasked_score"
+    ],
+    "gaps": [
+     "NgramLanguageModel is the legacy eager WASM facade (lowercases tokens, different padding); MLE is the faithful construct-then-fit object model."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "unmasked_score = context_counts(context).freq(word); no context trimming, matching NLTK."
+  },
+  {
+   "target": "nltk.lm.models.Lidstone",
+   "exports": [
+    "Lidstone"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export class Lidstone"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "context_counts",
+     "entropy",
+     "fit",
+     "generate",
+     "logscore",
+     "perplexity",
+     "score",
+     "unmasked_score"
+    ],
+    "gaps": [
+     "No remaining tracked signature gaps."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "gamma-first constructor; (count+gamma)/(N+|V|*gamma)."
+  },
+  {
+   "target": "nltk.lm.models.Laplace",
+   "exports": [
+    "Laplace"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export class Laplace"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "context_counts",
+     "entropy",
+     "fit",
+     "generate",
+     "logscore",
+     "perplexity",
+     "score",
+     "unmasked_score"
+    ],
+    "gaps": [
+     "No remaining tracked signature gaps."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Lidstone with gamma=1."
+  },
+  {
+   "target": "nltk.lm.models.StupidBackoff",
+   "exports": [
+    "StupidBackoff"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export class StupidBackoff"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "context_counts",
+     "entropy",
+     "fit",
+     "generate",
+     "logscore",
+     "perplexity",
+     "score",
+     "unmasked_score"
+    ],
+    "gaps": [
+     "alpha precedes order positionally (alpha=0.4, *args)."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Recursive alpha-scaled backoff with order-1 context cap."
+  },
+  {
+   "target": "nltk.lm.models.InterpolatedLanguageModel",
+   "exports": [
+    "InterpolatedLanguageModel"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export class InterpolatedLanguageModel"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "context_counts",
+     "entropy",
+     "fit",
+     "generate",
+     "logscore",
+     "perplexity",
+     "score",
+     "unmasked_score"
+    ],
+    "gaps": [
+     "smoothing_cls parameter realized via subclass estimator construction."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "alpha+gamma recursion; unseen context -> (0,1)."
+  },
+  {
+   "target": "nltk.lm.models.WittenBellInterpolated",
+   "exports": [
+    "WittenBellInterpolated"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export class WittenBellInterpolated"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "context_counts",
+     "entropy",
+     "fit",
+     "generate",
+     "logscore",
+     "perplexity",
+     "score",
+     "unmasked_score"
+    ],
+    "gaps": [
+     "No remaining tracked signature gaps."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "InterpolatedLanguageModel with WittenBell estimator."
+  },
+  {
+   "target": "nltk.lm.models.AbsoluteDiscountingInterpolated",
+   "exports": [
+    "AbsoluteDiscountingInterpolated"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export class AbsoluteDiscountingInterpolated"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "context_counts",
+     "entropy",
+     "fit",
+     "generate",
+     "logscore",
+     "perplexity",
+     "score",
+     "unmasked_score"
+    ],
+    "gaps": [
+     "No remaining tracked signature gaps."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "discount=0.75 default."
+  },
+  {
+   "target": "nltk.lm.models.KneserNeyInterpolated",
+   "exports": [
+    "KneserNeyInterpolated"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export class KneserNeyInterpolated"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "context_counts",
+     "entropy",
+     "fit",
+     "generate",
+     "logscore",
+     "perplexity",
+     "score",
+     "unmasked_score"
+    ],
+    "gaps": [
+     "No remaining tracked signature gaps."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "discount=0.1 default with [0,1] validation; continuation-count unigrams."
+  },
+  {
+   "target": "nltk.lm.models.Smoothing",
+   "exports": [
+    "Smoothing"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export abstract class Smoothing"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "alpha_gamma",
+     "unigram_score"
+    ],
+    "gaps": [
+     "No remaining tracked signature gaps."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Estimator base over (vocabulary, counter)."
+  },
+  {
+   "target": "nltk.lm.models.WittenBell",
+   "exports": [
+    "WittenBell"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export class WittenBell extends Smoothing"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "alpha_gamma",
+     "unigram_score"
+    ],
+    "gaps": [
+     "No remaining tracked signature gaps."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "n+/(n+ + N) gamma; unigram freq."
+  },
+  {
+   "target": "nltk.lm.models.AbsoluteDiscounting",
+   "exports": [
+    "AbsoluteDiscounting"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export class AbsoluteDiscounting extends Smoothing"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "alpha_gamma",
+     "unigram_score"
+    ],
+    "gaps": [
+     "No remaining tracked signature gaps."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "discount=0.75; (c-D)/N alpha, D*n+/N gamma."
+  },
+  {
+   "target": "nltk.lm.models.KneserNey",
+   "exports": [
+    "KneserNey"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export class KneserNey extends Smoothing"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "alpha_gamma",
+     "unigram_score"
+    ],
+    "gaps": [
+     "No remaining tracked signature gaps."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "Continuation counts at top order, prefix counts below."
+  },
+  {
+   "target": "nltk.lm.vocabulary.Vocabulary",
+   "exports": [
+    "Vocabulary"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export class Vocabulary"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "lookup",
+     "update"
+    ],
+    "gaps": [
+     "Dict-style access via get/contains/iteration (Counter membership + unk_label); len via .length."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "unk_cutoff >=1 validation, unk_label masking, Counter-backed counts."
+  },
+  {
+   "target": "nltk.lm.counter.NgramCounter",
+   "exports": [
+    "NgramCounter"
+   ],
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
+   "source": [
+    {
+     "file": "src/lm_nltk.ts",
+     "anchor": "export class NgramCounter"
+    }
+   ],
+   "signatures": {
+    "status": "adapted",
+    "members": [
+     "N",
+     "update"
+    ],
+    "gaps": [
+     "__getitem__ split (int->order CFD, str->unigram count, seq->context dist) via typed get(); MAX_NGRAMS guard retained."
+    ]
+   },
+   "evidence": [
+    "lm-differential"
+   ],
+   "fixtures": {
+    "status": "pinned-differential",
+    "gaps": [
+     "No remaining tracked gaps in this fixture."
+    ]
+   },
+   "notes": "defaultdict(ConditionalFreqDist) per order; unigrams alias; CVE-2026-12928 bound."
   }
  ]
 }
