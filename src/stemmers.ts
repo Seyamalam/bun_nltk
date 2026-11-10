@@ -3,9 +3,6 @@ import { SNOWBALL_STOPWORDS } from "./snowball/stopwords";
 import { PorterStemmer } from "./porter_stemmer";
 import { loadWordNet, type WordNetMorphPos } from "./wordnet";
 
-function normalize(word: string): string {
-  return word.trim().toLowerCase();
-}
 
 export class RegexpStemmer {
   private readonly pattern: RegExp;
@@ -22,52 +19,112 @@ export class RegexpStemmer {
   }
 }
 
-type LancasterRule = {
-  suffix: string;
-  replacement: string;
-  minLen: number;
-};
-
-// Compact aggressive subset inspired by Lancaster behavior.
-const LANCASTER_RULES: LancasterRule[] = [
-  { suffix: "sses", replacement: "ss", minLen: 4 },
-  { suffix: "ies", replacement: "y", minLen: 4 },
-  { suffix: "ied", replacement: "y", minLen: 4 },
-  { suffix: "ing", replacement: "", minLen: 5 },
-  { suffix: "edly", replacement: "e", minLen: 6 },
-  { suffix: "ed", replacement: "", minLen: 4 },
-  { suffix: "ly", replacement: "", minLen: 4 },
-  { suffix: "ness", replacement: "", minLen: 6 },
-  { suffix: "ment", replacement: "", minLen: 6 },
-  { suffix: "tion", replacement: "t", minLen: 6 },
-  { suffix: "ions", replacement: "ion", minLen: 6 },
-  { suffix: "ers", replacement: "er", minLen: 5 },
-  { suffix: "er", replacement: "", minLen: 5 },
-  { suffix: "s", replacement: "", minLen: 4 },
-];
-
-function undouble(term: string): string {
-  if (term.length < 2) return term;
-  const last = term[term.length - 1]!;
-  const prev = term[term.length - 2]!;
-  if (last === prev && /[bdfgmnprst]/.test(last)) return term.slice(0, -1);
-  return term;
-}
-
 export class LancasterStemmer {
-  stem(word: string): string {
-    let stem = normalize(word);
-    if (!stem) return stem;
+  static readonly defaultRuleTuple: readonly string[] = [
+    "ai*2.", "a*1.", "bb1.", "city3s.", "ci2>", "cn1t>", "dd1.", "dei3y>",
+    "deec2ss.", "dee1.", "de2>", "dooh4>", "e1>", "feil1v.", "fi2>",
+    "gni3>", "gai3y.", "ga2>", "gg1.", "ht*2.", "hsiug5ct.", "hsi3>",
+    "i*1.", "i1y>", "ji1d.", "juf1s.", "ju1d.", "jo1d.", "jeh1r.",
+    "jrev1t.", "jsim2t.", "jn1d.", "j1s.", "lbaifi6.", "lbai4y.", "lba3>",
+    "lbi3.", "lib2l>", "lc1.", "lufi4y.", "luf3>", "lu2.", "lai3>",
+    "lau3>", "la2>", "ll1.", "mui3.", "mu*2.", "msi3>", "mm1.", "nois4j>",
+    "noix4ct.", "noi3>", "nai3>", "na2>", "nee0.", "ne2>", "nn1.", "pihs4>",
+    "pp1.", "re2>", "rae0.", "ra2.", "ro2>", "ru2>", "rr1.", "rt1>",
+    "rei3y>", "sei3y>", "sis2.", "si2>", "ssen4>", "ss0.", "suo3>", "su*2.",
+    "s*1>", "s0.", "tacilp4y.", "ta2>", "tnem4>", "tne3>", "tna3>",
+    "tpir2b.", "tpro2b.", "tcud1.", "tpmus2.", "tpec2iv.", "tulo2v.",
+    "tsis0.", "tsi3>", "tt1.", "uqi3.", "ugo1.", "vis3j>", "vie0.", "vi2>",
+    "ylb1>", "yli3y>", "ylp0.", "yl2>", "ygo1.", "yhp1.", "ymo1.", "ypo1.",
+    "yti3>", "yte3>", "ytl2.", "yrtsi5.", "yra3>", "yro3>", "yfi3.",
+    "ycn2t>", "yca3>", "zi2>", "zy1s.",
+  ];
 
-    for (const rule of LANCASTER_RULES) {
-      if (!stem.endsWith(rule.suffix)) continue;
-      if (stem.length < rule.minLen) continue;
-      stem = stem.slice(0, -rule.suffix.length) + rule.replacement;
-      stem = undouble(stem);
-      break;
+  ruleDictionary: Record<string, string[]> = {};
+  readonly stripPrefixFlag: boolean;
+  readonly ruleTuple: readonly string[];
+
+  constructor(ruleTuple?: readonly string[] | null, stripPrefixFlag = false) {
+    this.stripPrefixFlag = stripPrefixFlag;
+    this.ruleTuple = ruleTuple ?? LancasterStemmer.defaultRuleTuple;
+  }
+
+  parseRules(ruleTuple?: readonly string[] | null): void {
+    const tuple = ruleTuple ?? this.ruleTuple;
+    const validRule = /^[a-z]+\*?\d[a-z]*[>.]?$/;
+    this.ruleDictionary = {};
+    for (const rule of tuple) {
+      if (!validRule.test(rule)) throw new Error(`The rule ${rule} is invalid`);
+      const firstLetter = rule.slice(0, 1);
+      (this.ruleDictionary[firstLetter] ??= []).push(rule);
     }
+  }
 
-    return stem || normalize(word);
+  stem(word: string): string {
+    let stemmed = word.toLowerCase();
+    if (this.stripPrefixFlag) stemmed = this.stripPrefix(stemmed);
+    const intactWord = stemmed;
+    if (Object.keys(this.ruleDictionary).length === 0) this.parseRules();
+    return this.doStemming(stemmed, intactWord);
+  }
+
+  private doStemming(word: string, intactWord: string): string {
+    const validRule = /^([a-z]+)(\*?)(\d)([a-z]*)([>.]?)$/;
+    let proceed = true;
+    while (proceed) {
+      const lastLetterPosition = this.getLastLetter(word);
+      if (lastLetterPosition < 0 || !(word[lastLetterPosition]! in this.ruleDictionary)) {
+        proceed = false;
+        continue;
+      }
+      let ruleWasApplied = false;
+      for (const rule of this.ruleDictionary[word[lastLetterPosition]!]!) {
+        const match = validRule.exec(rule);
+        if (!match) continue;
+        const [, endingString, intactFlag, removeTotalRaw, appendString, contFlag] = match;
+        const removeTotal = Number(removeTotalRaw);
+        if (!word.endsWith([...endingString!].reverse().join(""))) continue;
+        if (intactFlag && word !== intactWord) continue;
+        if (!this.isAcceptable(word, removeTotal)) continue;
+        word = this.applyRule(word, removeTotal, appendString!);
+        ruleWasApplied = true;
+        if (contFlag === ".") proceed = false;
+        break;
+      }
+      if (!ruleWasApplied) proceed = false;
+    }
+    return word;
+  }
+
+  private getLastLetter(word: string): number {
+    let lastLetter = -1;
+    for (let position = 0; position < word.length; position += 1) {
+      if (/\p{L}/u.test(word[position]!)) lastLetter = position;
+      else break;
+    }
+    return lastLetter;
+  }
+
+  private isAcceptable(word: string, removeTotal: number): boolean {
+    if ("aeiouy".includes(word[0]!)) return word.length - removeTotal >= 2;
+    if (word.length - removeTotal >= 3) {
+      return "aeiouy".includes(word[1]!) || "aeiouy".includes(word[2]!);
+    }
+    return false;
+  }
+
+  private applyRule(word: string, removeTotal: number, appendString: string): string {
+    return word.slice(0, word.length - removeTotal) + appendString;
+  }
+
+  private stripPrefix(word: string): string {
+    for (const prefix of ["kilo", "micro", "milli", "intra", "ultra", "mega", "nano", "pico", "pseudo"]) {
+      if (word.startsWith(prefix)) return word.slice(prefix.length);
+    }
+    return word;
+  }
+
+  toString(): string {
+    return "<LancasterStemmer>";
   }
 }
 

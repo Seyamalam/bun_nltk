@@ -564,6 +564,17 @@
    "scope": "corpusChrF/corpusNist and NIST penalty, Unicode whitespace and orders 0..7; sentenceChrF is a one-pair adapter, not independently called in this differential block."
   },
   {
+   "id": "lancaster-differential",
+   "kind": "differential",
+   "files": [
+    "test/stemmers.test.ts",
+    "test/lancaster_oracle.py"
+   ],
+   "anchor": "Values below are pinned to Python NLTK 3.10.3 LancasterStemmer",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: all doctest stems, strip_prefix_flag, custom rule_tuple, parseRules validation error, 115 default rules."
+  },
+  {
    "id": "wordnet-morphy-differential",
    "kind": "differential",
    "files": [
@@ -1350,32 +1361,34 @@
     "LancasterStemmer"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/stemmers.ts",
-     "anchor": "const LANCASTER_RULES"
+     "anchor": "export class LancasterStemmer"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [
-     "stem"
+     "stem",
+     "parseRules"
     ],
     "gaps": [
-     "rule_tuple and strip_prefix_flag missing; parseRules/applyRules absent."
+     "camelCase ruleTuple/stripPrefixFlag/defaultRuleTuple/ruleDictionary; private __doStemming/__applyRule/__stripPrefix are TS private members."
     ]
    },
    "evidence": [
-    "stemmer-unit"
+    "stemmer-unit",
+    "lancaster-differential"
    ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Full Lancaster rule/iteration differential fixtures missing."
+     "Pinned doctest matrix covers rule iteration, intact/continue flags and prefix stripping; exhaustive 115-rule suffix sweep not separately enumerated."
     ]
    },
-   "notes": "Compact inspired suffix subset with only one rule applied."
+   "notes": "Full Paice/Husk rule engine: all 115 default rules, iterative application, intact-word and acceptability checks, parseRules validation and prefix stripping."
   },
   {
    "target": "nltk.stem.regexp.RegexpStemmer",

@@ -15,10 +15,41 @@ test("RegexpStemmer strips matching suffix", () => {
   expect(stemmer.stem("go")).toBe("go");
 });
 
-test("LancasterStemmer is aggressive", () => {
+// Values below are pinned to Python NLTK 3.10.3 LancasterStemmer (doctest + extras).
+test("LancasterStemmer reproduces the NLTK Paice/Husk rule engine", () => {
   const stemmer = new LancasterStemmer();
-  expect(stemmer.stem("running")).toBe("run");
-  expect(stemmer.stem("happiness")).toBe("happi");
+  const cases: Array<[string, string]> = [
+    ["maximum", "maxim"],
+    ["presumably", "presum"],
+    ["multiply", "multiply"],
+    ["provision", "provid"],
+    ["owed", "ow"],
+    ["ear", "ear"],
+    ["saying", "say"],
+    ["crying", "cry"],
+    ["string", "string"],
+    ["meant", "meant"],
+    ["cement", "cem"],
+    ["running", "run"],
+    ["happiness", "happy"],
+    ["word", "word"],
+    ["test2x", "test2x"],
+    ["123abc", "123abc"],
+  ];
+  for (const [word, expected] of cases) {
+    expect(stemmer.stem(word)).toBe(expected);
+  }
+});
+
+test("LancasterStemmer strip_prefix_flag, custom rules and parseRules match NLTK", () => {
+  expect(new LancasterStemmer(null, true).stem("kilometer")).toBe("met");
+  const custom = new LancasterStemmer(["ssen4>", "s1t."]);
+  expect(custom.stem("ness")).toBe("nest");
+  expect(Object.keys(custom.ruleDictionary)).toEqual(["s"]);
+  const stemmer = new LancasterStemmer();
+  expect(() => stemmer.parseRules(["bad!rule"])).toThrow("The rule bad!rule is invalid");
+  expect(stemmer.toString()).toBe("<LancasterStemmer>");
+  expect(LancasterStemmer.defaultRuleTuple.length).toBe(115);
 });
 
 test("SnowballStemmer english path uses porter-like stemming", () => {
