@@ -608,6 +608,17 @@
    "scope": "NLTK 3.10.3-pinned: _morphy exception lists + substitution rules + lemma filtering, shortest-lemma lemmatize, first-analysis morphy, check_exceptions, pos='s', no input normalization."
   },
   {
+   "id": "sequential-tagger-differential",
+   "kind": "differential",
+   "files": [
+    "test/sequential_taggers.test.ts",
+    "test/sequential_tagger_oracle.py"
+   ],
+   "anchor": "NLTK 3.10.3 oracle pins — TaggerI member surface",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: accuracy/precision/recall/f_measure/evaluate_per_tag tables, size, _context_to_tag, _check_params both/neither, DefaultTagger backoff, encode/decode_json_obj."
+  },
+  {
    "id": "bleu-differential",
    "kind": "differential",
    "files": [
@@ -2386,7 +2397,7 @@
     "UnigramTagger"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/sequential_taggers.ts",
@@ -2394,22 +2405,41 @@
     }
    ],
    "signatures": {
-    "status": "unreviewed",
-    "members": [],
+    "status": "adapted",
+    "members": [
+     "accuracy",
+     "choose_tag",
+     "confusion",
+     "context",
+     "decode_json_obj",
+     "encode_json_obj",
+     "evaluate",
+     "evaluate_per_tag",
+     "f_measure",
+     "precision",
+     "recall",
+     "size",
+     "tag",
+     "tag_one",
+     "tag_sents"
+    ],
     "gaps": [
-     "Training/model/backoff options and inherited member contract need audit."
+     "camelCase adaptations: chooseTag/tagOne/tagSents/fMeasure/evaluatePerTag/encodeJsonObj/decodeJsonObj.",
+     "precision/recall/f_measure return Map<K,V> rather than dict.",
+     "json_tag and backoff chain JSON encoding remain approximations."
     ]
    },
    "evidence": [
-    "sequence-unit"
+    "sequence-unit",
+    "sequential-tagger-differential"
    ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Pinned token/context/backoff/training fixtures not audited."
+     "confusion crashes on None tags in both implementations (sorted str+NoneType) — adapted."
     ]
    },
-   "notes": "TS sequential tagger, not the Rust perceptron/HMM primitives."
+   "notes": "TS sequential tagger, not the Rust perceptron/HMM primitives. TaggerI metric surface + ContextTagger._context_to_tag + _check_params both/neither + public context/chooseTag/train + encode/decode_json_obj."
   },
   {
    "target": "nltk.tag.perceptron.PerceptronTagger",

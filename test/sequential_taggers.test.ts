@@ -247,3 +247,73 @@ test("python3 baseline parity: sequential backoff tagger chains", () => {
 
   expect(jsChains).toEqual(py.chains);
 });
+
+// NLTK 3.10.3 oracle pins — TaggerI member surface (accuracy/confusion/precision/recall/f_measure/evaluate_per_tag).
+test("unigram tagger: NLTK TaggerI metric members", () => {
+  const train2: GoldSentence[] = [
+    [["the", "DT"], ["dog", "NN"], ["runs", "VB"]],
+    [["a", "DT"], ["dog", "NN"], ["sleeps", "VB"]],
+  ];
+  const gold2: GoldSentence[] = [[["the", "DT"], ["dog", "NN"]]];
+  const t = new UnigramTagger(train2);
+  // accuracy: 2/2 = 1.0; NLTK: 1.0
+  expect(t.accuracy(gold2)).toBe(1);
+  // confusion on fully-covered gold — prec/rec/fms all 1.0 per NLTK
+  const prec = Object.fromEntries(t.precision(gold2));
+  const rec = Object.fromEntries(t.recall(gold2));
+  const fms = Object.fromEntries(t.fMeasure(gold2));
+  expect(prec).toEqual({ DT: 1, NN: 1 });
+  expect(rec).toEqual({ DT: 1, NN: 1 });
+  expect(fms).toEqual({ DT: 1, NN: 1 });
+  // evaluate_per_tag formatted table — NLTK repr:
+  // 'Tag | Prec.  | Recall | F-measure\n----+--------+--------+-----------\n DT | 1.0000 ...'
+  const table = t.evaluatePerTag(gold2);
+  expect(table).toContain("Tag | Prec.  | Recall | F-measure");
+  expect(table).toContain("DT | 1.0000 | 1.0000 | 1.0000");
+  expect(table).toContain("NN | 1.0000 | 1.0000 | 1.0000");
+  // size = unique contexts: runs,a,the,sleeps,dog = 5
+  expect(t.size()).toBe(5);
+  // _context_to_tag view
+  const c2t = t.contextToTag;
+  expect(c2t.get("runs")).toBe("VB");
+  expect(c2t.get("the")).toBe("DT");
+});
+
+test("unigram tagger: constructor validation (NLTK _check_params)", () => {
+  const train2: GoldSentence[] = [[["the", "DT"], ["dog", "NN"]]];
+  // neither train nor model → error
+  expect(() => new UnigramTagger()).toThrow("Must specify either training data or trained model");
+  // both → error
+  expect(() => new UnigramTagger({ train: train2, model: { dog: "NN" } })).toThrow(
+    "Must specify either training data or trained model",
+  );
+  // positional form
+  const t = new UnigramTagger(train2);
+  expect(t.size()).toBeGreaterThan(0);
+  // model-only positional
+  const tm = new UnigramTagger(null, { dog: "NN" });
+  expect(tm.tag([["dog"]].flat())).toEqual([["dog", "NN"]]);
+});
+
+test("unigram tagger: backoff chain (NLTK backoff_tag)", () => {
+  const train2: GoldSentence[] = [
+    [["the", "DT"], ["dog", "NN"], ["runs", "VB"]],
+    [["a", "DT"], ["dog", "NN"], ["sleeps", "VB"]],
+  ];
+  const t = new UnigramTagger({ train: train2, backoff: new DefaultTagger("NN") });
+  // NLTK: tag(['unknown','word']) → [('unknown','NN'),('word','NN')]
+  expect(t.tag(["unknown", "word"])).toEqual([["unknown", "NN"], ["word", "NN"]]);
+});
+
+test("unigram tagger: encode_json_obj round-trip", () => {
+  const train2: GoldSentence[] = [
+    [["the", "DT"], ["dog", "NN"], ["runs", "VB"]],
+  ];
+  const t = new UnigramTagger(train2);
+  const enc = t.encodeJsonObj();
+  const [ctx] = enc;
+  expect(ctx[JSON.stringify("runs")]).toBe("VB");
+  const back = UnigramTagger.decodeJsonObj(enc);
+  expect(back).not.toBeNull();
+  expect((back as UnigramTagger).tag(["runs"])).toEqual([["runs", "VB"]]);
+});

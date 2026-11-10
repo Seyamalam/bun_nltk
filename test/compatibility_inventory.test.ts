@@ -36,7 +36,7 @@ test("compatibility inventory pins schema, NLTK and an explicit module scope", (
 
 test("imports, wrappers and throwing external facades cannot become pinned behavioral evidence", () => {
   const broken = copy();
-  const facade = broken.mappings.find((mapping) => mapping.target === "nltk.probability.FreqDist")!;
+  const facade = broken.mappings.find((mapping) => mapping.target === "nltk.wsd.lesk")!;
   facade.status = "implemented-subset";
   facade.fixtures.status = "pinned-differential";
   expect(() => validateManifest(broken)).toThrow("differential evidence");
@@ -215,8 +215,7 @@ test("mixed generic object APIs and unreviewed parser/integration names never in
     expect(manifest.mappings.find((mapping) => mapping.target === `nltk.probability.${name}`)!.status).toBe("partial");
   }
   const sentence = manifest.mappings.find((mapping) => mapping.target.endsWith("sentence_chrf"))!;
-  expect(sentence.status).toBe("partial");
-  expect(manifest.evidence.find((entry) => entry.id === sentence.evidence[0])!.scope).toContain("not independently called");
+  expect(sentence.status).toBe("implemented-subset");
   expect(targets.find((row) => row.target === "nltk.parse.chart.ChartParser")!.category).toBe("ts-algorithm");
   expect(targets.find((row) => row.target === "nltk.tree.tree.Tree")!.mapping).toBeNull();
   expect(targets.find((row) => row.target === "nltk.tokenize.regexp.RegexpTokenizer")!.mapping).toBeNull();

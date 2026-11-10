@@ -1,10 +1,11 @@
 import { ConditionalFreqDist } from "./freqdist";
+import { accuracy, ConfusionMatrix } from "./confusion_metrics";
 
 export type TaggedToken = readonly [word: string, tag: string];
 export type GoldSentence = readonly TaggedToken[];
 export type UntaggedSentence = readonly string[];
 
-export type TagContext = string | null | readonly (string | null)[];
+export type TagContext = string | null | readonly (string | null | readonly (string | null)[])[];
 
 export type TaggerModel = ReadonlyMap<TagContext, string> | Record<string, string>;
 
@@ -74,7 +75,52 @@ export abstract class SequentialBackoffTagger {
     return total === 0 ? 0 : correct / total;
   }
 
-  protected abstract chooseTag(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): string | null;
+  /** NLTK TaggerI.accuracy: retag the untagged gold tokens, compare tags. */
+  accuracy(gold: ReadonlyArray<GoldSentence>): number {
+    const taggedSents = this.tagSents(gold.map((sentence) => sentence.map(([word]) => word)));
+    return accuracy(
+      gold.flat().map(([, tag]) => tag),
+      taggedSents.flat().map(([, tag]) => tag),
+    );
+  }
+
+  /** NLTK TaggerI.confusion: ConfusionMatrix of gold tags vs predicted tags. */
+  confusion(gold: ReadonlyArray<GoldSentence>): ConfusionMatrix<string | null> {
+    const taggedSents = this.tagSents(gold.map((sentence) => sentence.map(([word]) => word)));
+    return new ConfusionMatrix(
+      gold.flat().map(([, tag]) => tag),
+      taggedSents.flat().map(([, tag]) => tag),
+    );
+  }
+
+  precision(gold: ReadonlyArray<GoldSentence>): Map<string | null, number> {
+    const cm = this.confusion(gold);
+    return new Map(cm.labels.map((tag) => [tag, cm.precision(tag)]));
+  }
+
+  recall(gold: ReadonlyArray<GoldSentence>): Map<string | null, number> {
+    const cm = this.confusion(gold);
+    return new Map(cm.labels.map((tag) => [tag, cm.recall(tag)]));
+  }
+
+  fMeasure(gold: ReadonlyArray<GoldSentence>, alpha = 0.5): Map<string | null, number> {
+    const cm = this.confusion(gold);
+    return new Map(cm.labels.map((tag) => [tag, cm.fMeasure(tag, alpha)]));
+  }
+
+  f_measure(gold: ReadonlyArray<GoldSentence>, alpha = 0.5): Map<string | null, number> {
+    return this.fMeasure(gold, alpha);
+  }
+
+  /** NLTK TaggerI.evaluate_per_tag: tabulated per-tag metrics string. */
+  evaluatePerTag(
+    gold: ReadonlyArray<GoldSentence>,
+    options: { alpha?: number; truncate?: number; sortByCount?: boolean } = {},
+  ): string {
+    return this.confusion(gold).evaluate(options.alpha ?? 0.5, options.truncate, options.sortByCount ?? false);
+  }
+
+  abstract chooseTag(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): string | null;
 
   abstract size(): number;
 }
@@ -97,7 +143,7 @@ export abstract class ContextTagger extends SequentialBackoffTagger {
     }
   }
 
-  protected train(taggedCorpus: ReadonlyArray<GoldSentence>, cutoff = 0, verbose = false): void {
+  train(taggedCorpus: ReadonlyArray<GoldSentence>, cutoff = 0, verbose = false): void {
     let tokenCount = 0;
     let hitCount = 0;
     const usefulContexts = new Set<string>();
@@ -147,7 +193,12 @@ export abstract class ContextTagger extends SequentialBackoffTagger {
     return this.table.get(contextKey(context))?.tag ?? null;
   }
 
-  protected abstract context(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): TagContext | null;
+  /** NLTK ``_context_to_tag`` view. */
+  get contextToTag(): Map<TagContext, string> {
+    return new Map([...this.table.values()].map((entry) => [entry.context, entry.tag]));
+  }
+
+  abstract context(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): TagContext | null;
 }
 
 export class DefaultTagger extends SequentialBackoffTagger {
@@ -166,7 +217,7 @@ export class DefaultTagger extends SequentialBackoffTagger {
     return 1;
   }
 
-  protected chooseTag(): string | null {
+  chooseTag(): string | null {
     return this.#tag;
   }
 
@@ -181,18 +232,28 @@ export class NgramTagger extends ContextTagger {
   constructor(n: number, options: NgramTaggerOptions = {}) {
     super(options.backoff ?? null);
     this.n = n;
-    if (options.train && options.model) {
-      throw new Error("Cannot specify both train and model for NgramTagger");
+    const train = options.train ?? null;
+    const model = options.model ?? null;
+    if ((train === null) === (model === null)) {
+      throw new Error("Must specify either training data or trained model.");
     }
-    if (options.model) this.loadModel(options.model);
-    if (options.train && options.train.length > 0) {
-      this.train(options.train, options.cutoff ?? 0, options.verbose ?? false);
+    if (model) this.loadModel(model);
+    if (train && train.length > 0) {
+      this.train(train, options.cutoff ?? 0, options.verbose ?? false);
     }
   }
 
-  protected context(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): TagContext {
+  context(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): TagContext {
     const start = Math.max(0, index - this.n + 1);
-    return [...history.slice(start, index), tokens[index]!] as TagContext;
+    return [history.slice(start, index) as readonly (string | null)[], tokens[index]!] as TagContext;
+  }
+
+  encodeJsonObj(): [number, Record<string, string>, SequentialBackoffTagger | null] {
+    const contextToTag: Record<string, string> = {};
+    for (const { context, tag } of this.table.values()) {
+      contextToTag[JSON.stringify(context)] = tag;
+    }
+    return [this.n, contextToTag, this.backoff];
   }
 
   override toString(): string {
@@ -201,19 +262,58 @@ export class NgramTagger extends ContextTagger {
 }
 
 export class UnigramTagger extends ContextTagger {
-  constructor(options: NgramTaggerOptions = {}) {
+  constructor(options?: NgramTaggerOptions);
+  constructor(
+    train?: readonly GoldSentence[] | null,
+    model?: TaggerModel | null,
+    backoff?: SequentialBackoffTagger | null,
+    cutoff?: number,
+    verbose?: boolean,
+  );
+  constructor(
+    trainOrOptions: readonly GoldSentence[] | NgramTaggerOptions | null = null,
+    model: TaggerModel | null = null,
+    backoff: SequentialBackoffTagger | null = null,
+    cutoff = 0,
+    verbose = false,
+  ) {
+    const isOptions =
+      trainOrOptions !== null && !Array.isArray(trainOrOptions);
+    const options: NgramTaggerOptions = isOptions
+      ? (trainOrOptions as NgramTaggerOptions)
+      : { train: trainOrOptions ?? undefined, model: model ?? undefined, backoff, cutoff, verbose };
     super(options.backoff ?? null);
-    if (options.train && options.model) {
-      throw new Error("Cannot specify both train and model for UnigramTagger");
+    const train = options.train ?? null;
+    const resolvedModel = options.model ?? null;
+    if ((train === null) === (resolvedModel === null)) {
+      throw new Error("Must specify either training data or trained model.");
     }
-    if (options.model) this.loadModel(options.model);
-    if (options.train && options.train.length > 0) {
-      this.train(options.train, options.cutoff ?? 0, options.verbose ?? false);
+    if (resolvedModel) this.loadModel(resolvedModel);
+    if (train && train.length > 0) {
+      this.train(train, options.cutoff ?? 0, options.verbose ?? false);
     }
   }
 
-  protected context(tokens: UntaggedSentence, index: number): TagContext {
+  context(tokens: UntaggedSentence, index: number): TagContext {
     return tokens[index]!;
+  }
+
+  encodeJsonObj(): [Record<string, string>, SequentialBackoffTagger | null] {
+    const contextToTag: Record<string, string> = {};
+    for (const { context, tag } of this.table.values()) {
+      contextToTag[JSON.stringify(context)] = tag;
+    }
+    return [contextToTag, this.backoff];
+  }
+
+  static decodeJsonObj(obj: [Record<string, string>, SequentialBackoffTagger | null]): SequentialBackoffTagger | null {
+    const [contextToTag, backoff] = obj;
+    const model: Record<string, string> = {};
+    for (const [key, tag] of Object.entries(contextToTag)) {
+      model[JSON.parse(key) as string] = tag;
+    }
+    if (Object.keys(model).length === 0) return backoff;
+    return new UnigramTagger(null, model, backoff);
   }
 
   override toString(): string {
@@ -261,7 +361,7 @@ export class RegexpTagger extends SequentialBackoffTagger {
     return this.regexps.length;
   }
 
-  protected chooseTag(tokens: UntaggedSentence, index: number): string | null {
+  chooseTag(tokens: UntaggedSentence, index: number): string | null {
     const token = tokens[index]!;
     for (const { pattern, tag } of this.regexps) {
       pattern.lastIndex = 0;

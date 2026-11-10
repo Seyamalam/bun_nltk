@@ -50,6 +50,30 @@ export class ConfusionMatrix<T = string> {
     return result;
   }
   f_measure(label: T, alpha = 0.5): number { return this.fMeasure(label, alpha); }
+  private rowTotal(reference: T): number {
+    let total = 0;
+    for (const test of this.labels) total += this.get(reference, test);
+    return total;
+  }
+  /** NLTK ConfusionMatrix.evaluate(): tabulated precision/recall/f-measure string. */
+  evaluate(alpha = 0.5, truncate?: number, sortByCount = false): string {
+    let tags = [...this.labels].sort((a, b) => String(a).localeCompare(String(b)));
+    if (sortByCount) tags = tags.sort((a, b) => this.rowTotal(b) - this.rowTotal(a));
+    if (truncate) tags = tags.slice(0, truncate);
+
+    let tagColumnLen = 3;
+    for (const tag of tags) tagColumnLen = Math.max(tagColumnLen, String(tag).length);
+
+    let out = `${" ".repeat(tagColumnLen - 3)}Tag | Prec.  | Recall | F-measure\n`;
+    out += `${"-".repeat(tagColumnLen)}-+--------+--------+-----------\n`;
+    for (const tag of tags) {
+      out += `${String(tag).padStart(tagColumnLen)} | `;
+      out += `${this.precision(tag).toFixed(4).padEnd(6)} | `;
+      out += `${this.recall(tag).toFixed(4).padEnd(6)} | `;
+      out += `${this.fMeasure(tag, alpha).toFixed(4)}\n`;
+    }
+    return out;
+  }
   /** Legacy dense output; capped explicitly rather than risking quadratic OOM. */
   toMatrix(): number[][] {
     if (this.labels.length > 2048) throw new RangeError("dense confusion matrix exceeds 2048 labels; use ConfusionMatrix.get instead");
