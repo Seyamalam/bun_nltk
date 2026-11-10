@@ -39,7 +39,7 @@ export { confusionMatrix as confusion_matrix } from "./metrics";
 export { convertToProver9 as convert_to_prover9 } from "./inference_prover9";
 export { cooperStore as cooper_store } from "./sem_wrappers";
 export { copyVector as copy_vector } from "./cluster_api";
-export { corpusBleu as corpus_bleu } from "./metrics";
+export { brevityPenalty as brevity_penalty, closestRefLength as closest_ref_length, corpusBleu as corpus_bleu, modifiedPrecision as modified_precision, SmoothingFunction } from "./metrics";
 export { corpusChrF as corpus_chr_f } from "./translation_metrics_extra";
 export { corpusGleu as corpus_gleu } from "./translate_gleu";
 export { corpusLepor as corpus_lepor } from "./translate_lepor";

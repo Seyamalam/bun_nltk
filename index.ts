@@ -266,7 +266,9 @@ export type {
 } from "./src/wordnet";
 export { LancasterStemmer, RegexpStemmer, SnowballStemmer, WordNetLemmatizer } from "./src/stemmers";
 export { accuracy, ConfusionMatrix, confusionMatrix, corpusBleu, editDistance, sentenceBleu } from "./src/metrics";
-export type { BleuWeights, ConfusionMatrixResult, EditDistanceOptions } from "./src/metrics";
+export { brevityPenalty, closestRefLength, modifiedPrecision, SmoothingFunction } from "./src/metrics";
+export type { BleuPrecision, BleuSmoothingContext, BleuSmoothingFn, BleuSmoothingResult, BleuWeights } from "./src/metrics";
+export type { ConfusionMatrixResult, EditDistanceOptions } from "./src/metrics";
 export { SentimentIntensityAnalyzer } from "./src/sentiment";
 export type { VaderOptions, VaderPolarity } from "./src/sentiment";
 export { WasmNltk } from "./src/wasm";
