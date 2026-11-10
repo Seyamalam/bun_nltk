@@ -4,7 +4,17 @@
  */
 
 import { BaseProverCommand, Prover } from "./inference_api";
-import type { Expression } from "./sem_logic";
+import {
+  AllExpression,
+  AndExpression,
+  EqualityExpression,
+  ExistsExpression,
+  Expression,
+  IffExpression,
+  ImpExpression,
+  NegatedExpression,
+  OrExpression,
+} from "./sem_logic";
 
 function externalError(name: string): never {
   throw new Error(
@@ -106,7 +116,150 @@ export class Prover9Command extends Prover9CommandParent {
   decorateProof(_proofString: string, _simplify = true): string { return externalError("Prover9Command.decorateProof"); }
 }
 
+/** Port of nltk.inference.prover9.convert_to_prover9 — pure string
+ * transformation (no binary needed). Elements that fail conversion print the
+ * diagnostic then re-raise, like NLTK. */
 export function convertToProver9(input: Expression | Expression[]): string | string[] {
-  void input;
-  return externalError("convertToProver9");
+  if (Array.isArray(input)) {
+    const result: string[] = [];
+    for (const s of input) {
+      try {
+        result.push(_convertToProver9(s.simplify()));
+      } catch (e) {
+        console.log(`input ${input} cannot be converted to Prover9 input syntax`);
+        throw e;
+      }
+    }
+    return result;
+  }
+  try {
+    return _convertToProver9(input.simplify());
+  } catch (e) {
+    console.log(`input ${input} cannot be converted to Prover9 input syntax`);
+    throw e;
+  }
 }
+// ---------------------------------------------------------------------------
+// Module-level helpers
+// ---------------------------------------------------------------------------
+
+function _convertToProver9(expression: Expression): string {
+  if (expression instanceof ExistsExpression) {
+    return "exists " + String(expression.variable) + " " + _convertToProver9(expression.term);
+  } else if (expression instanceof AllExpression) {
+    return "all " + String(expression.variable) + " " + _convertToProver9(expression.term);
+  } else if (expression instanceof NegatedExpression) {
+    return "-(" + _convertToProver9(expression.term) + ")";
+  } else if (expression instanceof AndExpression) {
+    return "(" + _convertToProver9(expression.first) + " & " + _convertToProver9(expression.second) + ")";
+  } else if (expression instanceof OrExpression) {
+    return "(" + _convertToProver9(expression.first) + " | " + _convertToProver9(expression.second) + ")";
+  } else if (expression instanceof ImpExpression) {
+    return "(" + _convertToProver9(expression.first) + " -> " + _convertToProver9(expression.second) + ")";
+  } else if (expression instanceof IffExpression) {
+    return "(" + _convertToProver9(expression.first) + " <-> " + _convertToProver9(expression.second) + ")";
+  } else if (expression instanceof EqualityExpression) {
+    return "(" + _convertToProver9(expression.first) + " = " + _convertToProver9(expression.second) + ")";
+  }
+  return expression.str();
+}
+
+/** Port of nltk.inference.prover9.spacer. */
+export function spacer(num = 45): void {
+  console.log("-".repeat(num));
+}
+
+/** Port of nltk.inference.prover9.test_convert_to_prover9 (pure — no binary). */
+export function test_convert_to_prover9(expr: string[]): void {
+  for (const t of expr) {
+    const e = Expression.fromstring(t);
+    console.log(convertToProver9(e));
+  }
+}
+export const testConvertToProver9 = test_convert_to_prover9;
+
+/** Port of nltk.inference.prover9.test_config — propagates the
+ * external-binary error from prove() like NLTK without the binary. */
+export function test_config(): void {
+  const a = Expression.fromstring("(walk(j) & sing(j))");
+  const g = Expression.fromstring("walk(j)");
+  const p = new Prover9Command(g, [a]);
+  (p as unknown as { _executablePath: unknown })._executablePath = null;
+  (p as unknown as { prover9Search: unknown }).prover9Search = [];
+  p.prove();
+  console.log(p.prove());
+  console.log(p.proof());
+}
+export const testConfig = test_config;
+
+/** Port of nltk.inference.prover9.test_prove — propagates the
+ * external-binary error from prove() like NLTK without the binary. */
+export function test_prove(args: Array<[string, string[]]>): void {
+  for (const [goal, assumptions] of args) {
+    const g = Expression.fromstring(goal);
+    const alist = assumptions.map((a) => Expression.fromstring(a));
+    const p = new Prover9Command(g, alist).prove();
+    for (const a of alist) console.log(`   ${a}`);
+    console.log(`|- ${g}: ${p}\n`);
+  }
+}
+export const testProve = test_prove;
+
+/** Module-level demo argument lists (NLTK prover9.py module state).
+ * NLTK names the second list ``arguments`` — a reserved word in JS modules,
+ * so it is exported as ``arguments_``. */
+export const arguments_: Array<[string, string[]]> = [
+  ["(man(x) <-> (not (not man(x))))", []],
+  ["(not (man(x) & (not man(x))))", []],
+  ["(man(x) | (not man(x)))", []],
+  ["(man(x) & (not man(x)))", []],
+  ["(man(x) -> man(x))", []],
+  ["(not (man(x) & (not man(x))))", []],
+  ["(man(x) | (not man(x)))", []],
+  ["(man(x) -> man(x))", []],
+  ["(man(x) <-> man(x))", []],
+  ["(not (man(x) <-> (not man(x))))", []],
+  ["mortal(Socrates)", ["all x.(man(x) -> mortal(x))", "man(Socrates)"]],
+  ["((all x.(man(x) -> walks(x)) & man(Socrates)) -> some y.walks(y))", []],
+  ["(all x.man(x) -> all x.man(x))", []],
+  ["some x.all y.sees(x,y)", []],
+  [
+    "some e3.(walk(e3) & subj(e3, mary))",
+    ["some e1.(see(e1) & subj(e1, john) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))"],
+  ],
+  [
+    "some x e1.(see(e1) & subj(e1, x) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))",
+    ["some e1.(see(e1) & subj(e1, john) & some e2.(pred(e1, e2) & walk(e2) & subj(e2, mary)))"],
+  ],
+];
+
+export const expressions = [
+  "some x y.sees(x,y)",
+  "some x.(man(x) & walks(x))",
+  "\\x.(man(x) & walks(x))",
+  "\\x y.sees(x,y)",
+  "walks(john)",
+  "\\x.big(x, \\y.mouse(y))",
+  "(walks(x) & (runs(x) & (threes(x) & fours(x))))",
+  "(walks(x) -> runs(x))",
+  "some x.(PRO(x) & sees(John, x))",
+  "some x.(man(x) & (not walks(x)))",
+  "all x.(man(x) -> walks(x))",
+];
+
+/** Port of nltk.inference.prover9.demo — prints the section headers then hits
+ * the external-binary wall in test_config, as NLTK does without prover9. */
+export function demo(): void {
+  console.log("Testing configuration");
+  spacer();
+  test_config();
+  console.log();
+  console.log("Testing conversion to Prover9 format");
+  spacer();
+  test_convert_to_prover9(expressions);
+  console.log();
+  console.log("Testing proofs");
+  spacer();
+  test_prove(arguments_);
+}
+export const prover9Demo = demo;

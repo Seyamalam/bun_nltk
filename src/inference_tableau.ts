@@ -66,7 +66,7 @@ function nextCounter(): number {
 // Debug
 // ---------------------------------------------------------------------------
 
-class Debug {
+export class Debug {
   verbose: boolean;
   indent: number;
   lines: string[];
@@ -275,6 +275,11 @@ export class TableauProver extends Prover {
   TIMEOUT = 60;
   MAX_TABLEAU_DEPTH = 200;
   private _deadline: number | null = null;
+
+  /** NLTK snake_case spelling of the static ``is_atom`` (see ``isAtom``). */
+  static is_atom(e: Expression): boolean {
+    return TableauProver.isAtom(e);
+  }
 
   _prove(goal: Expression | null, assumptions: Expression[] | null, verbose = false): [boolean, string] {
     const assumps = assumptions ?? [];
@@ -581,3 +586,78 @@ export class TableauProverCommand extends BaseProverCommand {
     super(prover ?? new TableauProver(), goal, assumptions);
   }
 }
+
+// ---------------------------------------------------------------------------
+// Module-level test functions
+// ---------------------------------------------------------------------------
+
+/** Port of nltk.inference.tableau.tableau_test. */
+export function tableau_test(c: string, ps: string[] | null = null, verbose = false): void {
+  const pc = Expression.fromstring(c);
+  const pps = (ps ?? []).map((p) => Expression.fromstring(p));
+  console.log(`${(ps ?? []).join(", ")} |- ${pc}: ${new TableauProver().prove(pc, pps, verbose) ? "True" : "False"}`);
+}
+export const tableauTest = tableau_test;
+
+/** Port of nltk.inference.tableau.testTableauProver. */
+export function testTableauProver(): void {
+  tableau_test("P | -P");
+  tableau_test("P & -P");
+  tableau_test("Q", ["P", "(P -> Q)"]);
+  tableau_test("man(x)");
+  tableau_test("(man(x) -> man(x))");
+  tableau_test("(man(x) -> --man(x))");
+  tableau_test("-(man(x) and -man(x))");
+  tableau_test("(man(x) or -man(x))");
+  tableau_test("(man(x) -> man(x))");
+  tableau_test("-(man(x) and -man(x))");
+  tableau_test("(man(x) or -man(x))");
+  tableau_test("(man(x) -> man(x))");
+  tableau_test("(man(x) iff man(x))");
+  tableau_test("-(man(x) iff -man(x))");
+  tableau_test("all x.man(x)");
+  tableau_test("all x.all y.((x = y) -> (y = x))");
+  tableau_test("all x.all y.all z.(((x = y) & (y = z)) -> (x = z))");
+  //    tableau_test('-all x.some y.F(x,y) & some x.all y.(-F(x,y))')
+  //    tableau_test('some x.all y.sees(x,y)')
+
+  const p1 = "all x.(man(x) -> mortal(x))";
+  const p2 = "man(Socrates)";
+  tableau_test("mortal(Socrates)", [p1, p2]);
+
+  const q1 = "all x.(man(x) -> walks(x))";
+  const q2 = "man(John)";
+  tableau_test("some y.walks(y)", [q1, q2]);
+
+  tableau_test("walks(x)", ["((x = y) & walks(y))"]);
+  tableau_test("(x = w)", ["((x = y) & ((y = z) & (z = w)))"]);
+  tableau_test(
+    "some e0.walk(e0,mary)",
+    ["some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))"],
+  );
+  tableau_test(
+    "(exists x.exists z3.((x = Mary) & ((z3 = John) & sees(z3,x))) <-> exists x.exists z4.((x = John) & ((z4 = Mary) & sees(x,z4))))",
+  );
+}
+
+/** Port of nltk.inference.tableau.testHigherOrderTableauProver. */
+export function testHigherOrderTableauProver(): void {
+  tableau_test("believe(j, -lie(b))", ["believe(j, -lie(b) & -cheat(b))"]);
+  tableau_test("believe(j, lie(b) & cheat(b))", ["believe(j, lie(b))"]);
+  tableau_test("believe(j, lie(b))", ["lie(b)"]); // how do we capture that John believes all things that are true
+  tableau_test(
+    "believe(j, know(b, cheat(b)))",
+    ["believe(j, know(b, lie(b)) & know(b, steals(b) & cheat(b)))"],
+  );
+  tableau_test("P(Q(y), R(y) & R(z))", ["P(Q(x) & Q(y), R(y) & R(z))"]);
+
+  tableau_test("believe(j, cheat(b) & lie(b))", ["believe(j, lie(b) & cheat(b))"]);
+  tableau_test("believe(j, -cheat(b) & -lie(b))", ["believe(j, -lie(b) & -cheat(b))"]);
+}
+
+/** Port of nltk.inference.tableau.demo. */
+export function demo(): void {
+  testTableauProver();
+  testHigherOrderTableauProver();
+}
+export const tableauDemo = demo;

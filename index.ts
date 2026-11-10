@@ -502,6 +502,7 @@ export {
   unique_variable,
   resetUniqueVariableCounter,
   nextUniqueCounterValue,
+  Valuation,
 } from "./src/sem_logic";
 export {
   DRS,
@@ -611,6 +612,7 @@ export { extractRels, clause as relextractClause } from "./src/sem_relextract";
 export { LinearLogicParser, GlueFormula as LinearGlueFormula, ImpExpression, ParExpression, Atom as LinearAtom } from "./src/sem_linearlogic";
 export { HoleSemantics } from "./src/sem_hole";
 export { Glue, GlueDict } from "./src/sem_glue";
+export { DrtGlue } from "./src/sem_glue_engine";
 export { Chat80CorpusReader } from "./src/sem_chat80";
 export { DrtGlueDemo } from "./src/sem_drt_glue_demo";
 // cluster family (kmeans, em, gaac)
@@ -637,11 +639,13 @@ export * from "./src/ccg_chart";
 export * from "./src/ccg_logic";
 // inference family (explicit to avoid ProverParseError star collision)
 export * from "./src/inference_api";
-export { BindingException, BindingDict, mostGeneralUnification, Clause, clausify, ResolutionProver, ResolutionProverCommand, ProverParseError as ResolutionProverParseError } from "./src/inference_resolution";
-export { Categories, Agenda, TableauProver, TableauProverCommand, ProverParseError as TableauProverParseError } from "./src/inference_tableau";
+export { BindingException, BindingDict, mostGeneralUnification, Clause, clausify, ResolutionProver, ResolutionProverCommand, ProverParseError as ResolutionProverParseError, UnificationException, DebugObject, resolution_test, resolutionTest, testResolutionProver, test_clausify, testClausify, resolutionDemo } from "./src/inference_resolution";
+export { Categories, Agenda, TableauProver, TableauProverCommand, ProverParseError as TableauProverParseError, Debug as TableauDebug, tableau_test, tableauTest, testTableauProver, testHigherOrderTableauProver, tableauDemo } from "./src/inference_tableau";
 export * from "./src/inference_prover9";
-export * from "./src/inference_mace";
-export * from "./src/inference_discourse";
+export { spacer as prover9Spacer } from "./src/inference_prover9";
+export { MaceCommand, Mace, decode_result, decodeResult, test_make_relation_set, testMakeRelationSet, test_build_model, testBuildModel, test_model_found, testModelFound, test_transform_output, testTransformOutput, spacer as maceSpacer, demo as maceDemo } from "./src/inference_mace";
+export { ReadingCommand, CfgReadingCommand, DrtGlueReadingCommand, DiscourseTester, spacer, load_fol, loadFol, load_parser, loadParser, show_cfg, showCfg, AnaphoraResolutionException, PossibleAntecedents, MAX_ANAPHORA_OPERATIONS, AnaphoraBudget, resolve_anaphora, resolveAnaphora, discourse_demo, discourseDemo, drt_discourse_demo, drtDiscourseDemo, demo as discourseModuleDemo } from "./src/inference_discourse";
+export type { DiscourseTesterOptions } from "./src/inference_discourse";
 // package roots (barrels) + small shims — push over 80%
 export * from "./src/translate";
 export * from "./src/sem";
@@ -653,7 +657,7 @@ export * from "./src/util";
 export * from "./src/featstruct";
 export * from "./src/help";
 export * from "./src/downloader";
-export * from "./src/inference_nonmonotonic";
+export { ClosedDomainProver, ClosedWorldProver, UniqueNamesProver, SetHolder, PredHolder, get_domain, getDomain, print_proof, printProof, ProverParseError as NonmonotonicProverParseError, closed_domain_demo, closedDomainDemo, closed_world_demo, closedWorldDemo, combination_prover_demo, combinationProverDemo, default_reasoning_demo, defaultReasoningDemo, unique_names_demo, uniqueNamesDemo, nonmonotonicDemo } from "./src/inference_nonmonotonic";
 // final GUI tranche — app/chat/draw/twitter + small shims (v0.16.0) — namespaced to avoid demo/app collisions
 export * as app_ns from "./src/app";
 export * as app_chartparser_app_ns from "./src/app_chartparser_app";

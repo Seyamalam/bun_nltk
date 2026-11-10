@@ -476,12 +476,23 @@ export abstract class Expression {
     return out;
   }
 
+  /**
+   * Return a set of individual constants (non-predicates).
+   * NLTK implements this via ``visit`` so every composite expression gets it.
+   */
   constants(): Set<Variable> {
-    return new Set();
+    return this.visit(
+      (e) => e.constants(),
+      (parts) => parts.reduce((acc, s) => unionVars(acc, s), new Set<Variable>()),
+    );
   }
 
+  /** Return a set of predicates (constants, not variables). */
   predicates(): Set<Variable> {
-    return new Set();
+    return this.visit(
+      (e) => e.predicates(),
+      (parts) => parts.reduce((acc, s) => unionVars(acc, s), new Set<Variable>()),
+    );
   }
 
   normalize(): Expression {
@@ -641,6 +652,9 @@ export class AbstractVariableExpression extends Expression {
     return this.variable.equals(variable) ? expression : this;
   }
   free(): Set<Variable> {
+    return new Set();
+  }
+  override constants(): Set<Variable> {
     return new Set();
   }
   override predicates(): Set<Variable> {
@@ -915,6 +929,16 @@ export class ApplicationExpression extends Expression {
 
   isAtom(): boolean {
     return this.uncurry()[0] instanceof AbstractVariableExpression;
+  }
+
+  /** NLTK property: uncurried arg-list. */
+  get args(): Expression[] {
+    return this.uncurry()[1];
+  }
+
+  /** NLTK snake_case alias. */
+  is_atom(): boolean {
+    return this.isAtom();
   }
 
   str(): string {

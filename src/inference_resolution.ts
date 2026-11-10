@@ -38,6 +38,32 @@ export class BindingException extends Error {
   }
 }
 
+/** Port of nltk.inference.resolution.UnificationException (defined but never
+ * raised in NLTK 3.10.3 — carried for parity). */
+export class UnificationException extends Error {
+  constructor(a: Expression, b: Expression) {
+    super(`'${a}' cannot unify with '${b}'`);
+    this.name = "UnificationException";
+  }
+}
+
+/** Port of nltk.inference.resolution.DebugObject — indented debug printer
+ * supporting `debug + n` indent adjustment. */
+export class DebugObject {
+  enabled: boolean;
+  indent: number;
+  constructor(enabled = true, indent = 0) {
+    this.enabled = enabled;
+    this.indent = indent;
+  }
+  add(i: number): DebugObject {
+    return new DebugObject(this.enabled, this.indent + i);
+  }
+  line(line: string): void {
+    if (this.enabled) console.log("    ".repeat(this.indent) + line);
+  }
+}
+
 class UnifyTimeout extends Error {
   constructor() {
     super("unify timeout");
@@ -160,6 +186,35 @@ export class Clause extends Array<Expression> {
       if (data) for (const d of data) (this as unknown as Expression[]).push(d);
     }
     Object.setPrototypeOf(this, Clause.prototype);
+  }
+
+  // Python ``list`` member surface (Clause subclasses list in NLTK).
+  append(x: Expression): void {
+    this.push(x);
+  }
+  clear(): void {
+    this.length = 0;
+  }
+  copy(): Expression[] {
+    return this.slice();
+  }
+  count(x: Expression): number {
+    return this.filter((e) => e === x).length;
+  }
+  extend(xs: Iterable<Expression>): void {
+    this.push(...xs);
+  }
+  index(x: Expression, start = 0, stop = this.length): number {
+    for (let i = start; i < Math.min(stop, this.length); i++) {
+      if (this[i] === x) return i;
+    }
+    throw new Error(`ValueError: ${x} is not in list`);
+  }
+  insert(i: number, x: Expression): void {
+    this.splice(i, 0, x);
+  }
+  remove(x: Expression): void {
+    this.splice(this.index(x), 1);
   }
 
   static override from(data: Expression[]): Clause {
@@ -581,3 +636,92 @@ export class ResolutionProverCommand extends BaseProverCommand {
     return proofString;
   }
 }
+
+// ---------------------------------------------------------------------------
+// Module-level test functions (NLTK's own regression drivers — pure algorithm)
+// ---------------------------------------------------------------------------
+
+/** Port of nltk.inference.resolution.resolution_test. */
+export function resolution_test(e: string): void {
+  const f = Expression.fromstring(e);
+  const t = new ResolutionProver().prove(f);
+  console.log(`|- ${f}: ${t ? "True" : "False"}`);
+}
+export const resolutionTest = resolution_test;
+
+/** Port of nltk.inference.resolution.testResolutionProver. */
+export function testResolutionProver(): void {
+  resolution_test("man(x)");
+  resolution_test("(man(x) -> man(x))");
+  resolution_test("(man(x) -> --man(x))");
+  resolution_test("-(man(x) and -man(x))");
+  resolution_test("(man(x) or -man(x))");
+  resolution_test("(man(x) -> man(x))");
+  resolution_test("-(man(x) and -man(x))");
+  resolution_test("(man(x) or -man(x))");
+  resolution_test("(man(x) -> man(x))");
+  resolution_test("(man(x) iff man(x))");
+  resolution_test("-(man(x) iff -man(x))");
+  resolution_test("all x.man(x)");
+  resolution_test("-all x.some y.F(x,y) & some x.all y.(-F(x,y))");
+  resolution_test("some x.all y.sees(x,y)");
+
+  const p1 = Expression.fromstring("all x.(man(x) -> mortal(x))");
+  const p2 = Expression.fromstring("man(Socrates)");
+  const c = Expression.fromstring("mortal(Socrates)");
+  console.log(`${p1}, ${p2} |- ${c}: ${new ResolutionProver().prove(c, [p1, p2]) ? "True" : "False"}`);
+
+  const q1 = Expression.fromstring("all x.(man(x) -> walks(x))");
+  const q2 = Expression.fromstring("man(John)");
+  const c2 = Expression.fromstring("some y.walks(y)");
+  console.log(`${q1}, ${q2} |- ${c2}: ${new ResolutionProver().prove(c2, [q1, q2]) ? "True" : "False"}`);
+
+  const p = Expression.fromstring("some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))");
+  const c3 = Expression.fromstring("some e0.walk(e0,mary)");
+  console.log(`${p} |- ${c3}: ${new ResolutionProver().prove(c3, [p]) ? "True" : "False"}`);
+}
+
+/** Port of nltk.inference.resolution.test_clausify — prints clausify()
+ * results for the pinned inputs (Python list reprs rendered with str()). */
+export function test_clausify(): void {
+  const lexpr = Expression.fromstring;
+  const show = (e: string) => {
+    const clauses = clausify(lexpr(e));
+    console.log(`[${clauses.map((cl) => cl.toString()).join(", ")}]`);
+  };
+
+  show("P(x) | Q(x)");
+  show("(P(x) & Q(x)) | R(x)");
+  show("P(x) | (Q(x) & R(x))");
+  show("(P(x) & Q(x)) | (R(x) & S(x))");
+
+  show("P(x) | Q(x) | R(x)");
+  show("P(x) | (Q(x) & R(x)) | S(x)");
+
+  show("exists x.P(x) | Q(x)");
+
+  show("-(-P(x) & Q(x))");
+  show("P(x) <-> Q(x)");
+  show("-(P(x) <-> Q(x))");
+  show("-(all x.P(x))");
+  show("-(some x.P(x))");
+
+  show("some x.P(x)");
+  show("some x.all y.P(x,y)");
+  show("all y.some x.P(x,y)");
+  show("all z.all y.some x.P(x,y,z)");
+  show("all x.(all y.P(x,y) -> -all y.(Q(x,y) -> R(x,y)))");
+}
+export const testClausify = test_clausify;
+
+/** Port of nltk.inference.resolution.demo. */
+export function demo(): void {
+  test_clausify();
+  console.log();
+  testResolutionProver();
+  console.log();
+
+  const p = Expression.fromstring("man(x)");
+  console.log(new ResolutionProverCommand(p, [p]).prove() ? "True" : "False");
+}
+export const resolutionDemo = demo;
