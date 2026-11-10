@@ -40,20 +40,41 @@ export type ConcordanceLine = {
   leftPrint: string;
   rightPrint: string;
   line: string;
+  left_print: string;
+  right_print: string;
 };
 
 type Context = [string, string];
 
+// nltk.util.cut_string: width counts only non-combining characters; a
+// negative width takes the *last* |width| display chars (Python s[-width:]).
+function cutString(s: string, width = 70): string {
+  const absWidth = Math.abs(width);
+  const chars = [...s];
+  let widthSoFar = 0;
+  let charsSoFar = 0;
+  let result = "";
+  while (widthSoFar < absWidth && charsSoFar < chars.length) {
+    let char: string;
+    if (width < 0) {
+      char = chars[chars.length - 1 - charsSoFar]!;
+      result = char + result;
+    } else {
+      char = chars[charsSoFar]!;
+      result += char;
+    }
+    charsSoFar += 1;
+    if (!/\p{M}/u.test(char)) widthSoFar += 1;
+  }
+  return result;
+}
+
 function truncateLeft(value: string, width: number): string {
-  if (width <= 0) return "";
-  if (value.length <= width) return value;
-  return value.slice(value.length - width);
+  return cutString(value, -width);
 }
 
 function truncateRight(value: string, width: number): string {
-  if (width <= 0) return "";
-  if (value.length <= width) return value;
-  return value.slice(0, width);
+  return cutString(value, width);
 }
 
 function contextKey([left, right]: Context): string {
@@ -80,28 +101,38 @@ export class ConcordanceIndex {
   }
 
   offsets(word: string): number[] {
-    return this.#offsets.get(this.key(word)) ?? [];
+    const key = this.key(word);
+    // NLTK uses defaultdict(list): a missed lookup still registers the key.
+    let offsets = this.#offsets.get(key);
+    if (!offsets) {
+      offsets = [];
+      this.#offsets.set(key, offsets);
+    }
+    return offsets;
   }
 
   findConcordance(word: string | string[], width = 80): ConcordanceLine[] {
     const phrase = Array.isArray(word) ? word : [word];
     if (phrase.length === 0) return [];
 
-    const phraseWidth = phrase.join(" ").length;
-    const halfWidth = Math.max(0, Math.floor((width - phraseWidth - 2) / 2));
-    const contextWindow = Math.max(1, Math.floor(width / 4));
+    const phraseStr = phrase.join(" ");
+    const phraseLen = [...phraseStr].filter((c) => !/\p{M}/u.test(c)).length;
+    const halfWidth = Math.floor((width - phraseLen - 2) / 2);
+    const contextWindow = Math.floor(width / 4);
 
     let offsets = this.offsets(phrase[0]!);
     for (let i = 1; i < phrase.length; i += 1) {
       const nextOffsets = new Set(this.offsets(phrase[i]!).map((offset) => offset - i));
-      offsets = offsets.filter((offset) => nextOffsets.has(offset));
+      offsets = offsets.filter((offset) => nextOffsets.has(offset)).sort((a, b) => a - b);
     }
 
     const out: ConcordanceLine[] = [];
     for (const offset of offsets) {
       const query = this.tokensValue.slice(offset, offset + phrase.length).join(" ");
       const left = this.tokensValue.slice(Math.max(0, offset - contextWindow), offset);
-      const right = this.tokensValue.slice(offset + phrase.length, offset + phrase.length + contextWindow);
+      // NLTK slices right context to i+context (from the phrase start), not
+      // i+len(phrase)+context.
+      const right = this.tokensValue.slice(offset + phrase.length, offset + contextWindow);
       const leftPrint = truncateLeft(left.join(" "), halfWidth).padStart(halfWidth, " ");
       const rightPrint = truncateRight(right.join(" "), halfWidth);
       out.push({
@@ -111,10 +142,30 @@ export class ConcordanceIndex {
         offset,
         leftPrint,
         rightPrint,
-        line: `${leftPrint} ${query} ${rightPrint}`.trimEnd(),
+        left_print: leftPrint,
+        right_print: rightPrint,
+        line: [leftPrint, query, rightPrint].join(" "),
       });
     }
     return out;
+  }
+
+  find_concordance(word: string | string[], width = 80): ConcordanceLine[] {
+    return this.findConcordance(word, width);
+  }
+
+  /** NLTK ``print_concordance`` rendered as a string (printing adapted). */
+  printConcordance(word: string | string[], width = 80, lines = 25): string {
+    const concordanceList = this.findConcordance(word, width);
+    if (concordanceList.length === 0) return "no matches\n";
+    const shown = Math.min(lines, concordanceList.length);
+    let out = `Displaying ${shown} of ${concordanceList.length} matches:\n`;
+    for (const row of concordanceList.slice(0, shown)) out += `${row.line}\n`;
+    return out;
+  }
+
+  print_concordance(word: string | string[], width = 80, lines = 25): string {
+    return this.printConcordance(word, width, lines);
   }
 
   concordance(word: string | string[], width = 80, lines = 25): string[] {

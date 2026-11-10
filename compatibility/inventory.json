@@ -630,6 +630,17 @@
    "scope": "NLTK 3.10.3-pinned: doctest train→tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
   },
   {
+   "id": "concordance-differential",
+   "kind": "differential",
+   "files": [
+    "test/text.test.ts",
+    "test/concordance_oracle.py"
+   ],
+   "anchor": "NLTK 3.10.3 oracle pins — ConcordanceIndex contract",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: offsets/defaultdict types count, find_concordance line bytes (left rjust, i+context right slice, trailing space), phrase matching, print_concordance Displaying/no-matches format, repr."
+  },
+  {
    "id": "bleu-differential",
    "kind": "differential",
    "files": [
@@ -2519,7 +2530,7 @@
     "ConcordanceIndex"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/text.ts",
@@ -2527,22 +2538,29 @@
     }
    ],
    "signatures": {
-    "status": "unreviewed",
-    "members": [],
+    "status": "adapted",
+    "members": [
+     "find_concordance",
+     "offsets",
+     "print_concordance",
+     "tokens"
+    ],
     "gaps": [
-     "Printing, custom key and line object member contracts need audit."
+     "print_concordance returns the composed output string rather than printing to stdout.",
+     "ConcordanceLine is a plain object with camelCase leftPrint/rightPrint plus snake_case aliases; the key function is constructor-injected."
     ]
    },
    "evidence": [
-    "text-unit"
+    "text-unit",
+    "concordance-differential"
    ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Pinned formatting/concordance/Unicode fixtures missing."
+     "Combining-character cut_string paths pinned by construction, not by oracle fixture."
     ]
    },
-   "notes": "TS index; Text and ContextIndex remain unreviewed targets."
+   "notes": "Defaultdict offsets (miss registers key), i+context right-slice, untrimmed line join, cut_string combining-aware width, Displaying/no-matches print format — all pinned."
   },
   {
    "target": "nltk.collocations.BigramCollocationFinder",

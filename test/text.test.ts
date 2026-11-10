@@ -47,3 +47,27 @@ test("Text commonContexts returns ranked shared context tuples", () => {
   expect(text.similar("dog", 5)).toContain("cat");
   expect(text.commonContexts(["dog", "cat"])).toEqual([["a", "today"]]);
 });
+
+// NLTK 3.10.3 oracle pins — ConcordanceIndex contract.
+test("ConcordanceIndex: NLTK find_concordance/print_concordance/offsets pins", () => {
+  const toks = "the quick brown dog jumps over the lazy dog".split(" ");
+  const ci = new ConcordanceIndex(toks);
+  expect(ci.offsets("dog")).toEqual([3, 8]);
+  // defaultdict: missing lookup returns [] AND registers the key (8 types in repr)
+  expect(ci.offsets("missing")).toEqual([]);
+  expect(ci.toString()).toBe("<ConcordanceIndex for 9 tokens (8 types)>");
+  const lines = ci.findConcordance("dog", 40);
+  expect(lines[0]!.line).toBe("  the quick brown dog jumps over the la");
+  expect(lines[0]!.offset).toBe(3);
+  expect(lines[0]!.left).toEqual(["the", "quick", "brown"]);
+  expect(lines[0]!.right).toEqual(["jumps", "over", "the", "lazy", "dog"]);
+  // line 2 keeps the trailing space (NLTK does not trim)
+  expect(lines[1]!.line).toBe("mps over the lazy dog ");
+  // print_concordance format
+  expect(ci.printConcordance("dog", 40, 1)).toBe(
+    "Displaying 1 of 2 matches:\n  the quick brown dog jumps over the la\n",
+  );
+  expect(ci.printConcordance("zebra", 40)).toBe("no matches\n");
+  // phrase
+  expect(ci.findConcordance(["the", "lazy"], 40)[0]!.line).toBe(" dog jumps over the lazy dog");
+});
