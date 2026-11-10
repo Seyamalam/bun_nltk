@@ -93,3 +93,7 @@ paper/springer-template/
 .DS_Store
 rust/target/
 rust/compat/target/
+
+# Python bytecode cache
+__pycache__/
+*.pyc
