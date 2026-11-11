@@ -305,7 +305,7 @@ export function readGrammar(
     continueLine = "";
     try {
       if (line[0] === "%") {
-        const [directive, args] = splitOnce(line.slice(1));
+        const [directive, args] = splitOnce(line.slice(1).trimStart());
         if (directive === "start") {
           const [s, pos] = nontermParser(args, 0);
           start = s;

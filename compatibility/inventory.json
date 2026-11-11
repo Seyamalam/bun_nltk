@@ -2450,6 +2450,17 @@
    "anchor": "retrieve copies file:// resource, errors on existing, derives name",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: BufferedGzipFile read/readline/readlines/tell/seek/peek/eof, write-mode None return + write-on-read OSError + invalid-mode ValueError + DeprecationWarning + missing size attr; retrieve file:// copy, exists ValueError, verbose stdout, derived filename."
+  },
+  {
+   "id": "load-parser-differential",
+   "kind": "differential",
+   "files": [
+    "test/load_parser.test.ts",
+    "test/load_parser_oracle.py"
+   ],
+   "anchor": "cfg/pcfg/fcfg dispatch, trees, probs, errors, show_cfg output match oracle",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: load_parser dispatch to ChartParser/InsideChartParser/FeatureChartParser, custom parser class, parse trees + probabilities, missing-resource/unrecognized-format LookupErrors, show_cfg escape/empty-line filtering."
   }
  ],
  "signatureBindings": [
@@ -26181,8 +26192,8 @@
     "load_parser",
     "loadParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/inference_discourse.ts",
@@ -26193,20 +26204,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Grammar loading via nltk.data/resource URLs is not ported; the stub throws a documented external-resource error.",
-     "Canonical origin nltk.parse.util is out of scope; qualified mapping."
+     "trace/chart_class/beam_size carried via adapted constructor options; remote http(s) grammar URLs unsupported (local nltk:/file: only)."
     ]
    },
    "evidence": [
-    "inference-differential"
+    "load-parser-differential"
    ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Grammar loading via nltk.data/resource URLs is not ported; the stub throws a documented external-resource error."
+     "Oracle-pinned (NLTK 3.10.3): cfg/pcfg/fcfg parser dispatch, parse trees + pcfg probabilities, custom parser class, missing-resource LookupError, unrecognized-format LookupError."
     ]
    },
-   "notes": "load_parser requires NLTK grammar-resource loading (nltk.data.load) which is out of scope."
+   "notes": "Real port of nltk.parse.util.load_parser / nltk.data.show_cfg; differential-pinned."
   },
   {
    "target": "nltk.inference.discourse.resolve_anaphora",
@@ -26247,8 +26257,8 @@
     "show_cfg",
     "showCfg"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/inference_discourse.ts",
@@ -26259,20 +26269,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Pretty-printing a CFG grammar resource requires nltk.data loading; the stub throws a documented error.",
-     "Canonical origin nltk.data is out of scope; qualified mapping."
+     "Local nltk:/file: resources only; remote http(s) unsupported."
     ]
    },
    "evidence": [
-    "inference-differential"
+    "load-parser-differential"
    ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Pretty-printing a CFG grammar resource requires nltk.data loading; the stub throws a documented error."
+     "Oracle-pinned (NLTK 3.10.3): escape-prefix and empty-line filtering, stdout output."
     ]
    },
-   "notes": "show_cfg requires nltk.data grammar loading which is out of scope."
+   "notes": "Real port of nltk.parse.util.load_parser / nltk.data.show_cfg; differential-pinned."
   },
   {
    "target": "nltk.inference.discourse.spacer",
@@ -36483,7 +36492,7 @@
     "load_parser"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/inference_discourse.ts",
@@ -36494,17 +36503,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "NLTK re-exports load_parser from nltk.parse.util; mapped to the shared implementation."
+     "trace/chart_class/beam_size carried via adapted constructor options; remote http(s) grammar URLs unsupported (local nltk:/file: only)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "load-parser-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports load_parser from nltk.parse.util; mapped to the shared implementation."
+     "Oracle-pinned (NLTK 3.10.3): cfg/pcfg/fcfg parser dispatch, parse trees + pcfg probabilities, custom parser class, missing-resource LookupError, unrecognized-format LookupError."
     ]
    },
-   "notes": "NLTK re-exports load_parser from nltk.parse.util; mapped to the shared implementation."
+   "notes": "Real port of nltk.parse.util.load_parser / nltk.data.show_cfg; differential-pinned."
   },
   {
    "target": "nltk.sem.cooper_storage.parse_with_bindops",
@@ -40151,7 +40162,7 @@
     "load_parser"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/inference_discourse.ts",
@@ -40162,17 +40173,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "NLTK re-exports load_parser from nltk.parse.util; mapped to the shared implementation."
+     "trace/chart_class/beam_size carried via adapted constructor options; remote http(s) grammar URLs unsupported (local nltk:/file: only)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "load-parser-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports load_parser from nltk.parse.util; mapped to the shared implementation."
+     "Oracle-pinned (NLTK 3.10.3): cfg/pcfg/fcfg parser dispatch, parse trees + pcfg probabilities, custom parser class, missing-resource LookupError, unrecognized-format LookupError."
     ]
    },
-   "notes": "NLTK re-exports load_parser from nltk.parse.util; mapped to the shared implementation."
+   "notes": "Real port of nltk.parse.util.load_parser / nltk.data.show_cfg; differential-pinned."
   },
   {
    "target": "nltk.sem.hole.skolemize",
@@ -43327,7 +43340,7 @@
     "load_parser"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/inference_discourse.ts",
@@ -43338,17 +43351,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "NLTK re-exports load_parser from nltk.parse.util; mapped to the shared implementation."
+     "trace/chart_class/beam_size carried via adapted constructor options; remote http(s) grammar URLs unsupported (local nltk:/file: only)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "load-parser-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports load_parser from nltk.parse.util; mapped to the shared implementation."
+     "Oracle-pinned (NLTK 3.10.3): cfg/pcfg/fcfg parser dispatch, parse trees + pcfg probabilities, custom parser class, missing-resource LookupError, unrecognized-format LookupError."
     ]
    },
-   "notes": "NLTK re-exports load_parser from nltk.parse.util; mapped to the shared implementation."
+   "notes": "Real port of nltk.parse.util.load_parser / nltk.data.show_cfg; differential-pinned."
   },
   {
    "target": "nltk.parse.api.ParserI",
@@ -49929,7 +49944,7 @@
     "load_parser"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/inference_discourse.ts",
@@ -49940,17 +49955,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "NLTK re-exports load_parser from nltk.parse.util; mapped to the shared implementation."
+     "trace/chart_class/beam_size carried via adapted constructor options; remote http(s) grammar URLs unsupported (local nltk:/file: only)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "load-parser-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports load_parser from nltk.parse.util; mapped to the shared implementation."
+     "Oracle-pinned (NLTK 3.10.3): cfg/pcfg/fcfg parser dispatch, parse trees + pcfg probabilities, custom parser class, missing-resource LookupError, unrecognized-format LookupError."
     ]
    },
-   "notes": "NLTK re-exports load_parser from nltk.parse.util; mapped to the shared implementation."
+   "notes": "Real port of nltk.parse.util.load_parser / nltk.data.show_cfg; differential-pinned."
   },
   {
    "target": "nltk.parse.util.taggedsent_to_conll",
@@ -95076,28 +95093,30 @@
     "show_cfg"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/inference_discourse.ts",
-     "anchor": "export function show_cfg(_resourceUrl: string, _escape = \"##\"): never {"
+     "anchor": "export function show_cfg"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Existing implementation re-exported through this corpus module."
+     "Local nltk:/file: resources only; remote http(s) unsupported."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "load-parser-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Oracle-pinned (NLTK 3.10.3): escape-prefix and empty-line filtering, stdout output."
     ]
    },
-   "notes": "nltk.data.show_cfg re-exports an existing implementation (corpus module alias)."
+   "notes": "Real port of nltk.parse.util.load_parser / nltk.data.show_cfg; differential-pinned."
   },
   {
    "target": "nltk.internals.Counter",

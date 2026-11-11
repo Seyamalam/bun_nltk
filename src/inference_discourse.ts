@@ -15,6 +15,13 @@ import {
   NegatedExpression,
   Variable,
 } from "./sem_logic";
+import { readFileSync } from "node:fs";
+import { pyError } from "./internals";
+import { CFG, PCFG } from "./grammar";
+import { Chart, NltkChartParser } from "./chart";
+import { FeatureChart, FeatureChartParser, FeatureGrammar } from "./parse_feature";
+import { InsideChartParser } from "./parse_pchart";
+import { find as dataFind, normalizeResourceUrl } from "./data";
 import {
   DRS,
   DrtApplicationExpression,
@@ -195,15 +202,62 @@ export function load_fol(s: string): Expression[] {
 }
 export const loadFol = load_fol;
 
-/** Grammar loading requires nltk.data.load + corpus resources — unsupported. */
-export function load_parser(_grammarUrl: string, _trace = 0, _parser?: unknown, _chartClass?: unknown, _beamSize = 0, _loadArgs?: unknown): never {
-  return externalError("load_parser");
+/** nltk.parse.util.load_parser — load a grammar and build a parser.
+ *  Adapted: grammar dispatch is by resource extension (.pcfg/.fcfg/.cfg);
+ *  parser/chartClass args are ctor references (oracle passes classes). */
+export function load_parser(
+  grammarUrl: string,
+  trace = 0,
+  parser?: ((grammar: never, options?: unknown) => unknown) | null,
+  chartClass?: unknown,
+  beamSize = 0,
+  _loadArgs?: unknown,
+): unknown {
+  const grammar = _loadGrammar(grammarUrl);
+  if (grammar instanceof PCFG) {
+    const P = (parser ?? InsideChartParser) as new (g: PCFG, beamSize?: number, trace?: number) => unknown;
+    return new P(grammar, beamSize, trace);
+  }
+  if (grammar instanceof FeatureGrammar) {
+    const P = (parser ?? FeatureChartParser) as new (g: FeatureGrammar, o?: object) => unknown;
+    return new P(grammar, { trace, chartClass: chartClass ?? FeatureChart });
+  }
+  if (grammar instanceof CFG) {
+    const P = (parser ?? NltkChartParser) as new (g: CFG, o?: object) => unknown;
+    return new P(grammar, { trace, chartClass: chartClass ?? Chart });
+  }
+  throw pyError("ValueError", "The grammar must be a CFG, or a subclass thereof.");
 }
 export const loadParser = load_parser;
 
-/** Resource dumping requires nltk.data.load — unsupported. */
-export function show_cfg(_resourceUrl: string, _escape = "##"): never {
-  return externalError("show_cfg");
+function _loadText(resourceUrl: string): string {
+  const url = normalizeResourceUrl(resourceUrl);
+  if (url.startsWith("nltk:")) {
+    const ptr = dataFind(url.slice(5).replace(/^\//, ""));
+    return ptr.open("utf-8").read();
+  }
+  if (url.startsWith("file:")) {
+    return readFileSync(url.replace(/^file:\/\//, ""), "utf-8");
+  }
+  throw pyError("LookupError", `Error loading '${resourceUrl}': remote URLs are not supported`);
+}
+
+function _loadGrammar(grammarUrl: string): CFG | FeatureGrammar | PCFG {
+  const url = normalizeResourceUrl(grammarUrl);
+  const text = _loadText(grammarUrl);
+  if (/\.fcfg$/i.test(url)) return FeatureGrammar.fromstring(text);
+  if (/\.pcfg$/i.test(url)) return PCFG.fromstring(text);
+  if (/\.(cfg|grammar)$/i.test(url)) return CFG.fromstring(text);
+  throw pyError("LookupError", `Error loading '${grammarUrl}': unrecognized format`);
+}
+
+/** nltk.data.show_cfg — write out a grammar file, skipping escaped/empty lines. */
+export function show_cfg(resourceUrl: string, escape = "##"): void {
+  const text = _loadText(resourceUrl);
+  for (const l of text.split(/\r?\n/)) {
+    if (l.startsWith(escape) || l === "") continue;
+    console.log(l);
+  }
 }
 export const showCfg = show_cfg;
 
