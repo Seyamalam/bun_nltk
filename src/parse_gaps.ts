@@ -56,22 +56,11 @@ export class CompleterRule { constructor() { unsupported("CompleterRule", INC_WH
 export class CompleteFundamentalRule { constructor() { unsupported("CompleteFundamentalRule", INC_WHY); } }
 export class FilteredCompleteFundamentalRule { constructor() { unsupported("FilteredCompleteFundamentalRule", INC_WHY); } }
 
-const PC_WHY = "probabilistic chart machinery not yet ported";
-export class ProbabilisticFundamentalRule { constructor() { unsupported("ProbabilisticFundamentalRule", PC_WHY); } }
-export class SingleEdgeProbabilisticFundamentalRule { constructor() { unsupported("SingleEdgeProbabilisticFundamentalRule", PC_WHY); } }
-export class ProbabilisticBottomUpInitRule { constructor() { unsupported("ProbabilisticBottomUpInitRule", PC_WHY); } }
-export class ProbabilisticBottomUpPredictRule { constructor() { unsupported("ProbabilisticBottomUpPredictRule", PC_WHY); } }
-export class BottomUpProbabilisticChartParser { constructor() { unsupported("BottomUpProbabilisticChartParser", PC_WHY); } }
-export class InsideChartParser { constructor() { unsupported("InsideChartParser", PC_WHY); } }
-export class LongestChartParser { constructor() { unsupported("LongestChartParser", PC_WHY); } }
-export class RandomChartParser { constructor() { unsupported("RandomChartParser", PC_WHY); } }
-export class UnsortedChartParser { constructor() { unsupported("UnsortedChartParser", PC_WHY); } }
-
 export class TestGrammar { constructor() { unsupported("TestGrammar", "test-grammar loader not yet ported"); } }
 
 // Real ports promoted out of the stub set live in parse_dependency /
-// parse_dep_parsers; the export names stay routed through this module so
-// reviewed provenance is stable.
+// parse_dep_parsers / parse_pchart; the export names stay routed through
+// this module so reviewed provenance is stable.
 export {
   ARC_EAGER, ARC_STANDARD, Configuration, Transition, DependencySpan, ChartCell,
   DependencyScorerI, NaiveBayesDependencyScorer, DemoScorer,
@@ -82,6 +71,12 @@ export {
   ProjectiveDependencyParser, ProbabilisticProjectiveDependencyParser,
   NonprojectiveDependencyParser, ProbabilisticNonprojectiveParser,
 } from "./parse_dep_parsers";
+export {
+  ProbabilisticFundamentalRule, SingleEdgeProbabilisticFundamentalRule,
+  ProbabilisticBottomUpInitRule, ProbabilisticBottomUpPredictRule,
+  BottomUpProbabilisticChartParser, InsideChartParser, LongestChartParser,
+  RandomChartParser, UnsortedChartParser,
+} from "./parse_pchart";
 
 const STEP_WHY = "interactive stepping parser UI not applicable to the TS runtime contract";
 export class SteppingRecursiveDescentParser { constructor() { unsupported("SteppingRecursiveDescentParser", STEP_WHY); } }
