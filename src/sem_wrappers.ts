@@ -24,8 +24,4 @@ export function lfgParse(_sentence: string, _grammar?: unknown): unknown { retur
 export { CooperStore, cooperStoreFromTree, parse_with_bindops } from "./cooper_storage";
 export { InstantiateVarsChart } from "./parse_feature";
 
-/** Honest stub: FStructure LFG parsing depends on the MaltParser dependency pipeline. */
-export class FStructure {
-  static read_depgraph(..._args: unknown[]): never { return externalError("nltk.sem.lfg.FStructure.read_depgraph"); }
-  constructor(..._args: unknown[]) { externalError("nltk.sem.lfg.FStructure"); }
-}
+export { FStructure } from "./sem_lfg";

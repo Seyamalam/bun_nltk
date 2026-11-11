@@ -2428,6 +2428,17 @@
    "anchor": "validate_network_url outcomes match oracle",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: validate_network_url scheme/file/SSRF outcomes incl. embedded+tunneled IPv4 unwraps; _ip_is_forbidden IANA classification; urlopen file:// + proxied-fetch refusal; ZipFile namelist/read/extract/extractall + traversal-member rejection."
+  },
+  {
+   "id": "lfg-differential",
+   "kind": "differential",
+   "files": [
+    "test/sem_lfg.test.ts",
+    "test/lfg_oracle.py"
+   ],
+   "anchor": "pretty_format/repr/pred/label/features match oracle",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: FStructure.read_depgraph on three conll graphs (VB/VBD tense quirk, spec/punct tuple leaves), pretty_format/repr/pred/label/features, to_depgraph node/deps/root reconstruction incl. TOP dummy node, case-insensitive keys, _makeLabel IndexError boundary."
   }
  ],
  "signatureBindings": [
@@ -34241,11 +34252,11 @@
    "exports": [
     "FStructure"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_wrappers.ts",
+     "file": "src/sem_lfg.ts",
      "anchor": "export class FStructure"
     }
    ],
@@ -34253,17 +34264,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "FStructure depends on unported machinery (cooper storage / lfg depgraph / tkinter); stub throws."
+     "Signature adapted to the TypeScript runtime contract (Map-based dict, camelCase members)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "lfg-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "FStructure depends on unported machinery (cooper storage / lfg depgraph / tkinter); stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3): read_depgraph/pretty_format/to_depgraph/labels."
     ]
    },
-   "notes": "FStructure depends on unported machinery (cooper storage / lfg depgraph / tkinter); stub throws."
+   "notes": "Real lfg.FStructure port (DependencyGraph round-trip); oracle-pinned."
   },
   {
    "target": "nltk.sem.LogicalExpressionException",
@@ -40213,11 +40226,11 @@
    "exports": [
     "FStructure"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_wrappers.ts",
+     "file": "src/sem_lfg.ts",
      "anchor": "export class FStructure"
     }
    ],
@@ -40225,17 +40238,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "FStructure depends on unported machinery (cooper storage / lfg depgraph / tkinter); stub throws."
+     "Signature adapted to the TypeScript runtime contract (Map-based dict, camelCase members)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "lfg-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "FStructure depends on unported machinery (cooper storage / lfg depgraph / tkinter); stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3): read_depgraph/pretty_format/to_depgraph/labels."
     ]
    },
-   "notes": "FStructure depends on unported machinery (cooper storage / lfg depgraph / tkinter); stub throws."
+   "notes": "Real lfg.FStructure port (DependencyGraph round-trip); oracle-pinned."
   },
   {
    "target": "nltk.sem.lfg.demo_read_depgraph",

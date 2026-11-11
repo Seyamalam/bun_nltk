@@ -3,7 +3,7 @@ import {
   read_valuation, is_rel, set2rel, arity, demo_model0, toCnf, LinearLogicParser,
   list2sym, class_abbrev, rtuple, fromstring, skolemize, SemError, Undefined,
   resetUniqueVariableCounter,
-  CooperStore, FStructure, parse_with_bindops, BoxerDrs, DrsDrawer, foldemo,
+  CooperStore, parse_with_bindops, BoxerDrs, DrsDrawer, foldemo,
   hole_readings, Constants, read_sents, interpret_sents,
 } from "../index";
 
@@ -83,7 +83,6 @@ describe("nltk.sem.linearlogic / relextract / hole", () => {
 describe("honest gaps", () => {
   test("external/toolchain-bound stubs throw clearly", () => {
     expect(() => new (CooperStore as any)()).toThrow();
-    expect(() => new (FStructure as any)()).toThrow();
     expect(() => (parse_with_bindops as any)()).toThrow();
     expect(() => new (BoxerDrs as any)()).toThrow();
     expect(() => new (DrsDrawer as any)()).toThrow();
