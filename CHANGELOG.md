@@ -8,9 +8,45 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+- Complete `nltk.*` compatibility-inventory coverage: **2,983 reviewed mappings
+  across 211 discovered modules with 0 unmapped targets**. Every discovered
+  Python NLTK 3.10.3 name is now either implemented with pinned differential or
+  unit evidence, or recorded as an explicit documented gap. Newly covered
+  families include `nltk.stem` (ARLSTem/ARLSTem2/ISRI/RSLP/Cistem),
+  `nltk.translate` (`Alignment`, `AlignedSent`, `alignment_error_rate`,
+  `position_of_ngram`, gale-church helpers, `PhraseTable`, IBM model counts),
+  `nltk.cluster`, `nltk.tbl`, `nltk.misc`, `nltk.sem` (logic + evaluate/util/
+  chat80/relextract/hole/linearlogic), `nltk.inference`, `nltk.ccg`,
+  `nltk.tag` (brill template sets, `pos_tag_sents`, `str2tuple`/`tuple2str`),
+  `nltk.parse` (`DependencyGraph` CoNLL I/O, `DependencyEvaluator`,
+  `taggedsent(s)_to_conll`), and the `nltk.corpus` reader scope plus the
+  excluded `app`/`draw`/`chat`/`toolbox`/`downloader`/`twitter`/`compat`
+  modules as reviewed coverage or documented gaps.
+- Faithful ports of upstream NLTK quirks where the oracle proves them:
+  GDFA's vacuous `aligned`-dict membership guard, `DependencyGraph`'s
+  dict-deps `contains_cycle` behavior, `read_valuation`'s IndexError
+  propagation / `walk => True` string storage / integer `set2rel` bare-string
+  values, and Gale-Church's Python-3 `split_at` iterator failure (documented
+  divergence; a functional contract is kept).
+
 ### Changed
 
+- Package size gate rebaselined from 13 MB to **15 MB** by owner decision
+  (2026-11-11): parity implementation growth plus bundled native libraries,
+  WASM, models and source raised the tarball to 14,171,205 unpacked bytes
+  across 362 files with no removable synthetic payload.
+- `dist/portable` rebuilt (stale since `1406167`); `WasmPunktTrainer` is now
+  exported from the browser root, maxent encoding types are re-exported from
+  `index.ts`, and a `node:fs` re-export no longer leaks into declarations.
+- `GAAClusterer.clusterName` accepts and returns any value to match NLTK's
+  identity `cluster_name`; `set2rel` returns `Set<unknown>` since NLTK's
+  integer quirk yields bare `str(elem)` strings.
+
 ### Fixed
+
+- Stale source-hash snapshot drift and test-file type errors
+  (`cluster.test.ts`, `sem.test.ts`); `tsc --noEmit` is clean.
+- Committed `__pycache__` bytecode removed; `*.pyc` is now gitignored.
 
 ## [1.1.0] - 2026-11-09
 

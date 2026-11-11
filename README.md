@@ -6,7 +6,7 @@ marshaling, and remaining legacy algorithms. The target is Python NLTK 3.10.3.
 
 ![module surfaces 241/241](https://img.shields.io/badge/module_surfaces-241%2F241-blue)
 ![fidelity 43 passed](https://img.shields.io/badge/fidelity-43_passed-blue)
-![version 1.0.0](https://img.shields.io/badge/version-1.0.0-blue)
+![version 1.1.0](https://img.shields.io/badge/version-1.1.0-blue)
 
 ## Status
 
@@ -15,19 +15,25 @@ marshaling, and remaining legacy algorithms. The target is Python NLTK 3.10.3.
   [NLTK API index](https://www.nltk.org/api/nltk.html) against this repo.
   Importable surfaces include partial implementations and shims; this is not a
   behavioral-parity percentage. Regenerate with `bun run parity:checklist`.
+- The [compatibility inventory](docs/compatibility-inventory.md) resolves
+  **2,983 reviewed mappings across 211 discovered `nltk.*` modules — 0
+  unmapped targets**. Every discovered name is either implemented with pinned
+  differential or unit evidence, or recorded as an explicit documented gap
+  (pickle-bound demos, external binaries, Tkinter GUIs, unprovisioned corpora).
 - The fidelity gate reports **43 passed, 0 failed, 0 skipped, and 3 unsupported**
   of 46 groups in the current Linux x64 run (Bun 1.4.4, Python 3.14.4,
-   NLTK 3.10.3, 2026-11-09). Missing required fixtures fail the gate; unsupported
+   NLTK 3.10.3, 2026-11-11). Missing required fixtures fail the gate; unsupported
   GUI, Java, and network integrations are reported separately and never counted
   as passed.
 - The integrated Rust crate passes **117 tests** plus **2 seeded adversarial**
-  and **4 compatibility-crate tests**. The Bun suite has **639 passes and 0
+  and **4 compatibility-crate tests**. The Bun suite has **1,251 passes and 0
   failures** on Linux x64 (Bun 1.4.4, Node v26.13.0): the shipped WASM is
-  **1,088,530 bytes** against the 1,100,000-byte gate.
-- The package gate passes at **11,742,008 unpacked bytes** across **321 files**
-  (limits: 13,000,000 bytes / 400 files). NE chunker models ship as Brotli.
-- The browser WASM budget was raised from 700,000 to **1,100,000 bytes** on
-  2026-10-21 by explicit owner decision. Exact float round-tripping (required
+  **1,088,530 bytes** against the 1,300,000-byte gate.
+- The package gate passes at **14,171,205 unpacked bytes** across **362 files**
+  (limits: 15,000,000 bytes / 400 files). NE chunker models ship as Brotli.
+- The browser WASM budget was raised from 700,000 to 1,100,000 bytes on
+  2026-10-21 and to **1,300,000 bytes** on 2026-11-09 by explicit owner
+  decisions. Exact float round-tripping (required
   for model snapshots) and the recovered Punkt training, regexp tokenizer,
   Tree/PCFG, legacy text-classifier and Tweet/Toktok/MWE kernels exceed the old
   limit; the new budget keeps every portable API instead of silently dropping
@@ -89,7 +95,7 @@ To verify the published package shape from a clean tarball:
 ```bash
 bun run build:portable
 bun pm pack --destination /tmp/opencode
-bun run verify:packaged-portable /tmp/opencode/bun_nltk-1.0.0.tgz
+bun run verify:packaged-portable /tmp/opencode/bun_nltk-1.1.0.tgz
 ```
 
 This installs with npm and Bun, runs Node/Bun execution checks, and type-checks
@@ -354,8 +360,8 @@ bun run release:check
 bash scripts/loc-guard.sh 600
 ```
 
-The npm package currently contains 265 files / 12,247,492 unpacked bytes, below
-the 400-file and 13 MB limits. The LOC guard rejects non-grandfathered `.ts` and
+The npm package currently contains 362 files / 14,171,205 unpacked bytes, below
+the 400-file and 15 MB limits. The LOC guard rejects non-grandfathered `.ts` and
 `.rs` files above 600 lines.
 
 ## Environment
@@ -418,6 +424,8 @@ docker build -t bun_nltk . && docker run --rm bun_nltk
 - [Native-host validation](docs/NATIVE_HOST_VALIDATION.md)
 - [Rust-first migration plan](docs/RUST_MIGRATION.md)
 - [Parity checklist](docs/PARITY_CHECKLIST.md)
+- [Compatibility inventory](docs/compatibility-inventory.md)
+- [Migrating from Python NLTK](docs/MIGRATING_FROM_NLTK.md)
 - [Versioning](docs/VERSIONING.md)
 - [Publishing](docs/PUBLISHING.md)
 - [Changelog](CHANGELOG.md)
