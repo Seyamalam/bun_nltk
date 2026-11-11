@@ -2406,6 +2406,17 @@
    "anchor": "read_str matches oracle (literals, escapes, errors)",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: read_str/read_int/read_number (values, end positions, ReadError expected/position), overridden MRO flags, Deprecated warning text, find_file_iter/find_binary_iter on synthetic dirs (incl. CWD-relative filtering), is_writable POSIX bits, data.find resource hits/miss."
+  },
+  {
+   "id": "sem-cooper-storage-differential",
+   "kind": "differential",
+   "files": [
+    "test/cooper_storage.test.ts",
+    "test/cooper_storage_oracle.py"
+   ],
+   "anchor": "parse_with_bindops on storage.fcfg matches oracle end-to-end",
+   "oracleVersion": "3.10.3",
+   "scope": "CooperStore init/s_retrieve (permutations, trace, FeatList TypeError, AttributeError paths) plus parse_with_bindops end-to-end on the real book_grammars/storage.fcfg: 3 sentences incl. 6-reading DTV case, exercising FeatureValueConcat/Tuple, <expr> logic values and @var instantiation inside expressions."
   }
  ],
  "signatureBindings": [
@@ -36265,29 +36276,33 @@
    "exports": [
     "CooperStore"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_wrappers.ts",
+     "file": "src/cooper_storage.ts",
      "anchor": "export class CooperStore"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "s_retrieve"
+    ],
     "gaps": [
-     "CooperStore depends on unported machinery (cooper storage / lfg depgraph / tkinter); stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "sem-cooper-storage-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CooperStore depends on unported machinery (cooper storage / lfg depgraph / tkinter); stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "notes": "CooperStore depends on unported machinery (cooper storage / lfg depgraph / tkinter); stub throws."
+   "notes": "Real CooperStore port: CORE/STORE extraction with oracle diagnostic, _permute + s_retrieve (trace, ApplicationExpression/LambdaExpression composition, simplify); FeatList-STORE TypeError and AttributeError paths pinned."
   },
   {
    "target": "nltk.sem.cooper_storage.InstantiateVarsChart",
@@ -36461,11 +36476,11 @@
    "exports": [
     "parse_with_bindops"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_wrappers.ts",
+     "file": "src/cooper_storage.ts",
      "anchor": "export function parse_with_bindops"
     }
    ],
@@ -36473,17 +36488,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "parse_with_bindops depends on unported machinery (cooper storage / lfg depgraph / tkinter); stub throws."
+     "grammar defaults to book_grammars/storage.fcfg in the oracle; the nltk_data resource is not bundled — pass a FeatureGrammar or fcfg text (signature otherwise matches: sentence, grammar, trace)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "sem-cooper-storage-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "parse_with_bindops depends on unported machinery (cooper storage / lfg depgraph / tkinter); stub throws."
+     "grammar defaults to book_grammars/storage.fcfg in the oracle; the nltk_data resource is not bundled — pass a FeatureGrammar or fcfg text (signature otherwise matches: sentence, grammar, trace)."
     ]
    },
-   "notes": "parse_with_bindops depends on unported machinery (cooper storage / lfg depgraph / tkinter); stub throws."
+   "notes": "Real port via FeatureIncrementalChartParser + InstantiateVarsChart on feature grammars; oracle-pinned end-to-end on the real storage.fcfg. Default grammar unavailable (nltk_data not bundled) — raises LookupError."
   },
   {
    "target": "nltk.sem.drt.AbstractVariableExpression",

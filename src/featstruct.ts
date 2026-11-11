@@ -8,6 +8,7 @@
  * equivalents the feature-chart port depends on.
  */
 import { pyError } from "./internals";
+import { Expression, Variable as LogicVariable } from "./sem_logic";
 
 export const TYPE = "type";
 export const SLASH = "slash";
@@ -29,7 +30,7 @@ export const UnificationFailure = new UnificationFailureType();
 class UnificationFailureError extends Error {}
 
 export type FeatPrimitive = string | number | boolean | null;
-export type FeatValue = FeatPrimitive | Variable | FeatDict | FeatList | FeatStructNonterminalLike;
+export type FeatValue = FeatPrimitive | Variable | Expression | FeatDict | FeatList | FeatStructNonterminalLike;
 
 /** nltk.featstruct.FeatList — sequence feature value. */
 export class FeatList {
@@ -37,6 +38,212 @@ export class FeatList {
   get length(): number {
     return this.items.length;
   }
+}
+
+// ---- SubstituteBindingsSequence values ---------------------------------------
+//
+// nltk.featstruct.FeatureValueTuple/Concat/Set/Union: sequence-valued base
+// feature values that distribute variables() and substitute_bindings() over
+// their elements.  Concat (`+` in `()`) collapses to a flat tuple once all
+// variables are bound; Union (`+` in `{}`) collapses to a set.
+
+export type FeatSeqValue = FeatureValueTuple | FeatureValueConcat | FeatureValueSet | FeatureValueUnion;
+
+function seqItemsEq(a: FeatValue, b: FeatValue): boolean {
+  return featValueEq(a, b);
+}
+
+/** nltk.featstruct.FeatureValueTuple — an immutable tuple of base values. */
+export class FeatureValueTuple {
+  readonly items: FeatValue[];
+  constructor(values: Iterable<FeatValue> = []) {
+    this.items = [...values];
+  }
+  get length(): number {
+    return this.items.length;
+  }
+  *[Symbol.iterator](): Iterator<FeatValue> {
+    yield* this.items;
+  }
+  variables(): Variable[] {
+    return seqVariables(this.items);
+  }
+  substituteBindings(bindings: Bindings): FeatValue {
+    return new FeatureValueTuple(this.items.map((v) => substSeqElt(v, bindings)));
+  }
+  toString(): string {
+    if (this.items.length === 0) return "()";
+    return `(${this.items.map((v) => `${v}`).join(", ")})`;
+  }
+}
+
+/** nltk.featstruct.FeatureValueConcat — `a + b` inside `()`. */
+export class FeatureValueConcat {
+  readonly items: FeatValue[];
+  private constructor(values: FeatValue[]) {
+    this.items = values;
+  }
+  /** Mirrors FeatureValueConcat.__new__: flatten concats; if no variables
+   * remain, collapse tuple elements into a FeatureValueTuple; a single
+   * remaining value collapses to that value. */
+  static create(values: Iterable<FeatValue>): FeatValue {
+    let flat = flattenSeq(values, FeatureValueConcat);
+    if (!flat.some((v) => v instanceof Variable)) {
+      flat = flattenSeq(flat, FeatureValueTuple);
+      return new FeatureValueTuple(flat);
+    }
+    if (flat.length === 1) return flat[0]!;
+    return new FeatureValueConcat(flat);
+  }
+  get length(): number {
+    return this.items.length;
+  }
+  *[Symbol.iterator](): Iterator<FeatValue> {
+    yield* this.items;
+  }
+  variables(): Variable[] {
+    return new FeatureValueTuple(this.items).variables();
+  }
+  substituteBindings(bindings: Bindings): FeatValue {
+    return FeatureValueConcat.create(this.items.map((v) => substSeqElt(v, bindings)));
+  }
+  toString(): string {
+    return `(${this.items.map((v) => `${v}`).join("+")})`;
+  }
+}
+
+/** nltk.featstruct.FeatureValueSet — immutable set of base values (dedup'd). */
+export class FeatureValueSet {
+  readonly items: FeatValue[];
+  constructor(values: Iterable<FeatValue> = []) {
+    const out: FeatValue[] = [];
+    for (const v of values) if (!out.some((x) => seqItemsEq(x, v))) out.push(v);
+    this.items = out;
+  }
+  get length(): number {
+    return this.items.length;
+  }
+  *[Symbol.iterator](): Iterator<FeatValue> {
+    yield* this.items;
+  }
+  variables(): Variable[] {
+    return new FeatureValueTuple(this.items).variables();
+  }
+  substituteBindings(bindings: Bindings): FeatValue {
+    return new FeatureValueSet(this.items.map((v) => substSeqElt(v, bindings)));
+  }
+  toString(): string {
+    if (this.items.length === 0) return "{/}";
+    return `{${this.items.map((v) => `${v}`).sort().join(", ")}}`;
+  }
+}
+
+/** nltk.featstruct.FeatureValueUnion — `a + b` inside `{}`. */
+export class FeatureValueUnion {
+  readonly items: FeatValue[];
+  private constructor(values: FeatValue[]) {
+    this.items = values;
+  }
+  /** Mirrors FeatureValueUnion.__new__: flatten unions; if no variables
+   * remain, collapse set elements into a FeatureValueSet; a single
+   * remaining value collapses to that value. */
+  static create(values: Iterable<FeatValue>): FeatValue {
+    let flat = flattenSeq(values, FeatureValueUnion);
+    if (!flat.some((v) => v instanceof Variable)) {
+      flat = flattenSeq(flat, FeatureValueSet);
+      return new FeatureValueSet(flat);
+    }
+    if (flat.length === 1) return flat[0]!;
+    return new FeatureValueUnion(flat);
+  }
+  get length(): number {
+    return this.items.length;
+  }
+  *[Symbol.iterator](): Iterator<FeatValue> {
+    yield* this.items;
+  }
+  variables(): Variable[] {
+    return new FeatureValueTuple(this.items).variables();
+  }
+  substituteBindings(bindings: Bindings): FeatValue {
+    return FeatureValueUnion.create(this.items.map((v) => substSeqElt(v, bindings)));
+  }
+  toString(): string {
+    return `{${this.items.map((v) => `${v}`).sort().join("+")}}`;
+  }
+}
+
+function isSeqValue(v: unknown): v is FeatSeqValue {
+  return v instanceof FeatureValueTuple || v instanceof FeatureValueConcat ||
+    v instanceof FeatureValueSet || v instanceof FeatureValueUnion;
+}
+
+/** SubstituteBindingsSequence.variables: Variable elements first (in order),
+ * then the variables() of nested SubstituteBindingsI elements. */
+function seqVariables(items: readonly FeatValue[]): Variable[] {
+  const out: Variable[] = [];
+  for (const elt of items) if (elt instanceof Variable) out.push(elt);
+  for (const elt of items) {
+    if (isSeqValue(elt)) out.push(...elt.variables());
+    else if (elt instanceof Expression) for (const v of elt.variables()) out.push(new Variable(v.name));
+  }
+  return out;
+}
+
+/** Translate a feature-structure bindings map into the Variable|Expression
+ * map that Expression.substituteBindings expects (oracle keys on Variable;
+ * feature-structure Variables map to identically-named logic Variables). */
+function exprBindings(bindings: Bindings): Map<string, LogicVariable | Expression> {
+  const out = new Map<string, LogicVariable | Expression>();
+  for (const [k, v] of bindings) {
+    if (v instanceof Variable) out.set(k, new LogicVariable(v.name));
+    else out.set(k, v as LogicVariable | Expression);
+  }
+  return out;
+}
+
+function flattenSeq(values: Iterable<FeatValue>, cls: Function): FeatValue[] {
+  const result: FeatValue[] = [];
+  for (const elt of values) {
+    if (elt instanceof cls) result.push(...(elt as FeatSeqValue).items);
+    else result.push(elt);
+  }
+  return result;
+}
+
+function substSeqElt(v: FeatValue, bindings: Bindings): FeatValue {
+  if (v instanceof FeatureValueTuple || v instanceof FeatureValueConcat ||
+      v instanceof FeatureValueSet || v instanceof FeatureValueUnion) {
+    return v.substituteBindings(bindings);
+  }
+  if (v instanceof Expression) return v.substituteBindings(exprBindings(bindings));
+  if (v instanceof Variable) return bindings.get(v.name) ?? v;
+  return v;
+}
+
+/** Structural equality for base feature values (oracle `fval1 == fval2`). */
+export function featValueEq(a: FeatValue, b: FeatValue): boolean {
+  if (a instanceof Variable || b instanceof Variable) {
+    return a instanceof Variable && b instanceof Variable && a.name === b.name;
+  }
+  if (a instanceof Expression || b instanceof Expression) {
+    return a instanceof Expression && b instanceof Expression && a.equals(b);
+  }
+  const seqA = a instanceof FeatureValueTuple || a instanceof FeatureValueConcat;
+  const seqB = b instanceof FeatureValueTuple || b instanceof FeatureValueConcat;
+  if (seqA || seqB) {
+    if (!seqA || !seqB || a!.constructor !== b!.constructor) return false;
+    const x = (a as FeatSeqValue).items, y = (b as FeatSeqValue).items;
+    return x.length === y.length && x.every((v, i) => featValueEq(v, y[i]!));
+  }
+  const setA = a instanceof FeatureValueSet || a instanceof FeatureValueUnion;
+  const setB = b instanceof FeatureValueSet || b instanceof FeatureValueUnion;
+  if (setA || setB) {
+    if (!setA || !setB || a!.constructor !== b!.constructor) return false;
+    const x = (a as FeatSeqValue).items, y = (b as FeatSeqValue).items;
+    return x.length === y.length && x.every((v) => y.some((w) => featValueEq(v, w)));
+  }
+  return a === b;
 }
 
 /** nltk.featstruct.FeatDict — mapping feature value (the canonical FeatStruct). */
@@ -136,6 +343,8 @@ function _substitute(fstruct: FeatDict | FeatList, bindings: Bindings, visited: 
     if (isFeatStruct(v)) _substitute(v, bindings, visited);
     else if (v instanceof FeatStructNonterminalLike) {
       setSlot(fstruct, k, v.substitute_bindings(bindings));
+    } else if (isSeqValue(v) || v instanceof Expression) {
+      setSlot(fstruct, k, substSeqElt(v, bindings));
     }
   }
 }
@@ -151,7 +360,7 @@ export const findVariables = find_variables;
 
 function isIterable(v: unknown): v is Iterable<FeatValue> {
   return typeof v === "object" && v !== null && !(v instanceof FeatDict) && !(v instanceof FeatList) &&
-    !(v instanceof Variable) && Symbol.iterator in v;
+    !(v instanceof Variable) && !(v instanceof Expression) && Symbol.iterator in v;
 }
 
 function _findVars(v: FeatValue, out: Map<string, Variable>, visited: Set<object>): void {
@@ -161,6 +370,14 @@ function _findVars(v: FeatValue, out: Map<string, Variable>, visited: Set<object
   }
   if (v instanceof FeatStructNonterminalLike) {
     for (const inner of v.variables()) out.set(inner.name, inner);
+    return;
+  }
+  if (isSeqValue(v)) {
+    for (const inner of v.variables()) out.set(inner.name, inner);
+    return;
+  }
+  if (v instanceof Expression) {
+    for (const inner of v.variables()) out.set(inner.name, new Variable(inner.name));
     return;
   }
   if (!isFeatStruct(v) || visited.has(v)) return;
@@ -208,6 +425,19 @@ function _rename(fstruct: FeatDict | FeatList, vars: Set<string>, used: Map<stri
         }
       }
       setSlot(fstruct, k, fv.substitute_bindings(new Map([...newVars].map(([k2, v2]) => [k2, v2 as FeatValue]))));
+    } else if (isSeqValue(fv) || fv instanceof Expression) {
+      const fvars = fv instanceof Expression
+        ? [...fv.variables()].map((v) => new Variable(v.name))
+        : fv.variables();
+      for (const v of fvars) {
+        if (vars.has(v.name) && !newVars.has(v.name)) {
+          const nv = _renameVariable(v, used);
+          newVars.set(v.name, nv);
+          used.set(nv.name, nv);
+        }
+      }
+      const nb = new Map<string, FeatValue>([...newVars].map(([k2, v2]) => [k2, v2 as FeatValue]));
+      setSlot(fstruct, k, fv instanceof Expression ? fv.substituteBindings(exprBindings(nb)) : fv.substituteBindings(nb));
     }
   }
 }
@@ -345,7 +575,7 @@ function _unifyValue(
   } else if (isFeatStruct(fval1) || isFeatStruct(fval2)) {
     result = UnificationFailure;
   } else {
-    result = fval1 === fval2 ? fval1 : UnificationFailure;
+    result = featValueEq(fval1, fval2) ? fval1 : UnificationFailure;
     if (result !== UnificationFailure) {
       if (fvar1) {
         bindings.set(fvar1.name, result as FeatValue);
@@ -403,6 +633,8 @@ function _resolveAliases(bindings: Bindings): void {
 
 export function reprValue(v: FeatValue): string {
   if (v instanceof Variable) return v.name;
+  if (v instanceof Expression) return `<${v.toString()}>`;
+  if (isSeqValue(v)) return v.toString();
   if (v instanceof FeatDict) return reprFeatDict(v);
   if (v instanceof FeatList) return `(${v.items.map(reprValue).join(", ")})`;
   if (v === null) return "None";
@@ -432,6 +664,12 @@ export function reprFeatDict(d: FeatDict): string {
 
 export class FeatStructReader {
   private readonly _reent = new Map<string, FeatValue>();
+  private readonly _logicParser: (s: string) => Expression;
+
+  /** nltk FeatStructReader(..., logic_parser) — defaults to LogicParser(). */
+  constructor(logicParser: ((s: string) => Expression) | null = null) {
+    this._logicParser = logicParser ?? ((s) => Expression.fromstring(s));
+  }
 
   /** read_partial: parse a symbol starting at `position`; returns [value, endPos]. */
   read_partial(s: string, position = 0): [FeatValue, number] {
@@ -454,11 +692,13 @@ export class FeatStructReader {
       // bare prefix without brackets
       prefix = pm[1]!.startsWith("?") ? new Variable(pm[1]!) : pm[1]!;
       pos += pm[0].length;
+      if (prefix instanceof Variable) return [prefix, pos];
       const d = new FeatDict();
       d.set(TYPE, prefix);
       if (reentKey) this._reent.set(reentKey, d);
       return [d, pos];
     }
+    if (s[pos] === "<" || s[pos] === "(" || s[pos] === "{") return this._readValue(s, pos);
     if (s[pos] !== "[") throw pyError("ValueError", `Expected open bracket or identifier at ${pos}`);
     pos++;
     // Dict vs list: lookahead for a top-level '=' or '->' before first ',' or ']'.
@@ -551,11 +791,54 @@ export class FeatStructReader {
       if (target === undefined) throw pyError("ValueError", `bound identifier at ${pos}`);
       return [target, pos + m[0].length];
     }
+    if ((m = /^\s*<app\((\?[a-z][a-z]*)\s*,\s*(\?[a-z][a-z]*)\)>/.exec(rest))) {
+      return [this._logicParser(`${m[1]!}(${m[2]!})`), pos + m[0].length];
+    }
+    if ((m = /^\s*<(.*?)(?<!-)>/.exec(rest))) {
+      let expr: Expression;
+      try {
+        expr = this._logicParser(m[1]!);
+      } catch (e) {
+        throw pyError("ValueError", `logic expression at ${pos}: ${(e as Error).message}`);
+      }
+      return [expr, pos + m[0].length];
+    }
     if ((m = /^\s*'([^']*)'/.exec(rest)) || (m = /^\s*"([^"]*)"/.exec(rest))) {
       return [m[1]!, pos + m[0].length];
     }
-    if ((m = /^\s*[^\s,\])]+/.exec(rest))) return [m[0]!.trim(), pos + m[0].length];
+    if (rest.trimStart().startsWith("(")) return this._readSeqValue(s, pos, ")", "tuple");
+    if (rest.trimStart().startsWith("{")) return this._readSeqValue(s, pos, "}", "set");
+    if ((m = /^\s*[^\s,\])}]+/.exec(rest))) return [m[0]!.trim(), pos + m[0].length];
     throw pyError("ValueError", `Expected value at ${pos}`);
+  }
+
+  /** _read_seq_value: `(...)` tuples/concats and `{...}` sets/unions. */
+  private _readSeqValue(s: string, pos: number, close: ")" | "}", kind: "tuple" | "set"): [FeatValue, number] {
+    pos = pos + s.slice(pos).indexOf(kind === "tuple" ? "(" : "{") + 1;
+    const cp = close === ")" ? "\\)" : "\\}";
+    let m = new RegExp(`^\\s*/?\\s*${cp}`).exec(s.slice(pos));
+    if (m) {
+      return [kind === "tuple" ? new FeatureValueTuple() : new FeatureValueSet(), pos + m[0].length];
+    }
+    const values: FeatValue[] = [];
+    let seenPlus = false;
+    for (;;) {
+      m = new RegExp(`^\\s*${cp}`).exec(s.slice(pos));
+      if (m) {
+        const end = pos + m[0].length;
+        if (seenPlus) {
+          return [kind === "tuple" ? FeatureValueConcat.create(values) : FeatureValueUnion.create(values), end];
+        }
+        return [kind === "tuple" ? new FeatureValueTuple(values) : new FeatureValueSet(values), end];
+      }
+      const [v, np] = this._readValue(s, pos);
+      values.push(v);
+      pos = np;
+      m = new RegExp(`^\\s*(,|\\+|(?=${cp}))`).exec(s.slice(pos));
+      if (!m) throw pyError("ValueError", `',' or '+' or '${close}' at ${pos}`);
+      if (m[1] === "+") seenPlus = true;
+      pos += m[0].length;
+    }
   }
 
   /** fromstring — parse a complete feature-structure string. */

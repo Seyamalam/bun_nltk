@@ -43,6 +43,7 @@ const oracle = (() => {
     find_file_iter: string[];
     find_binary: string[];
     writable: { file: boolean; ro: boolean; missing: boolean };
+    data_find: { hit: string; hit_file: string; miss: string };
   };
 })();
 
