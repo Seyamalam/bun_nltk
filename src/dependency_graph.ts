@@ -16,14 +16,15 @@ export class DependencyGraphError extends Error {
 }
 
 export interface DependencyNode {
-  address: number;
+  /** defaultdict-created placeholder nodes keep address None (null) until update. */
+  address: number | null;
   word: string | null;
   lemma: string | null;
   ctag: string | null;
   tag: string | null;
   feats: string | null;
   head: number | null;
-  rel: string;
+  rel: string | null;
   deps: Record<string, number[]>;
 }
 
@@ -48,8 +49,10 @@ function defaultCellExtractor(cells: string[]) {
 // NLTK DependencyGraph._parse extractors, keyed by cell count. `index` is the
 // 1-based line ordinal used when the row lacks a numeric id column.
 const CELL_EXTRACTORS: Record<number, CellExtractor> = {
-  3: (cells) => ({ number: 0, word: cells[0]!, lemma: cells[0]!, ctag: cells[1]!, tag: cells[1]!, feats: "", head: parseInt(cells[2]!, 10), rel: "" }),
-  4: (cells) => ({ number: 0, word: cells[0]!, lemma: cells[0]!, ctag: cells[1]!, tag: cells[1]!, feats: "", head: parseInt(cells[2]!, 10), rel: cells[3]! }),
+  // 3/4-cell extractors return the enumerate index verbatim (oracle never
+  // parses an id column for them) — NaN here falls back to the line ordinal.
+  3: (cells) => ({ number: Number.NaN, word: cells[0]!, lemma: cells[0]!, ctag: cells[1]!, tag: cells[1]!, feats: "", head: parseInt(cells[2]!, 10), rel: "" }),
+  4: (cells) => ({ number: Number.NaN, word: cells[0]!, lemma: cells[0]!, ctag: cells[1]!, tag: cells[1]!, feats: "", head: parseInt(cells[2]!, 10), rel: cells[3]! }),
   7: (cells) => {
     const n = parseInt(cells[0]!, 10);
     return { number: n, word: cells[1]!, lemma: cells[2]!, ctag: cells[3]!, tag: cells[3]!, feats: "", head: parseInt(cells[5]!, 10), rel: cells[6]! };
@@ -61,104 +64,118 @@ export class DependencyGraph {
   nodes: DependencyNode[] = [];
   root: DependencyNode | null = null;
   stream: string[] = [];
-  cellSeparator = "\t";
+  /** null = whitespace split (oracle cell_separator=None). */
+  cellSeparator: string | null = null;
   topRelationLabel = "ROOT";
 
   constructor(treeStr?: string, options?: {
     cellExtractor?: CellExtractor;
     zeroBased?: boolean;
-    cellSeparator?: string;
+    cellSeparator?: string | null;
     topRelationLabel?: string;
   }) {
     this.topRelationLabel = options?.topRelationLabel ?? "ROOT";
-    this.cellSeparator = options?.cellSeparator ?? "\t";
+    this.cellSeparator = options?.cellSeparator ?? null;
+    // Oracle: nodes is a defaultdict pre-seeded with the TOP node at 0.
+    this.nodes = [this.makeRootNode()];
     if (treeStr !== undefined) {
       this.load(treeStr, {
         cellExtractor: options?.cellExtractor,
+        cellSeparator: this.cellSeparator,
         zeroBased: options?.zeroBased,
       });
     }
   }
 
-  /** Port of DependencyGraph.load. */
-  load(data: string | string[], options?: { cellExtractor?: CellExtractor; cellSeparator?: string; zeroBased?: boolean }): void {
-    const lines = Array.isArray(data) ? data : data.split(/\r?\n/);
+  /** Port of DependencyGraph.load/_parse. */
+  load(data: string | string[], options?: { cellExtractor?: CellExtractor; cellSeparator?: string | null; zeroBased?: boolean }): void {
+    // Oracle: rstrip each line, drop empties; "#" comment lines are kept in
+    // this port's stream[] (an adaptation — oracle _parse has no comment path).
+    const rawLines = Array.isArray(data) ? data : data.split(/\r?\n/);
     this.nodes = [this.makeRootNode()];
     this.root = null;
+    this.stream = [];
+    const sep = options?.cellSeparator === undefined ? null : options.cellSeparator;
     let lineIndex = 0;
-    for (const line of lines) {
+    let cellNumber: number | null = null;
+    let extractor = options?.cellExtractor;
+    for (const raw of rawLines) {
+      const line = raw.replace(/\s+$/, "");
       if (line.startsWith("#")) {
         this.stream.push(line);
         continue;
       }
-      const trimmed = line.trim();
-      if (trimmed === "") continue;
+      if (line === "") continue;
       lineIndex += 1;
-      const cells = trimmed.split(options?.cellSeparator ?? this.cellSeparator);
-      let extractor = options?.cellExtractor;
+      const cells = sep === null ? line.trim().split(/\s+/) : line.split(sep);
+      if (cellNumber === null) cellNumber = cells.length;
+      else if (cells.length !== cellNumber) {
+        throw pyError("AssertionError", `cell count ${cells.length} != ${cellNumber}`);
+      }
       if (!extractor) {
-        // NLTK _parse: extractor is chosen by column count (Malt-TAB/CoNLL).
-        extractor = CELL_EXTRACTORS[cells.length];
+        extractor = CELL_EXTRACTORS[cellNumber];
         if (!extractor) {
           throw new DependencyGraphError(
-            `Number of tab-delimited fields (${cells.length}) not supported by CoNLL(10) or Malt-Tab(4) format`,
+            `Number of tab-delimited fields (${cellNumber}) not supported by CoNLL(10) or Malt-Tab(4) format`,
           );
         }
       }
-      // A "_" head cell marks the row unparsed (NLTK skips it).
-      const headCell = cells.length === 3 ? cells[2] : cells.length === 4 ? cells[2] : cells.length === 7 ? cells[5] : cells.length === 10 ? cells[6] : undefined;
-      if (headCell === "_") continue;
       const newNode = extractor(cells);
-      if (!Number.isFinite(newNode.number) || newNode.number <= 0) {
+      // Oracle checks the raw head cell for "_" before int() — rows marked "_"
+      // are unparsed and skipped; other non-numeric heads raise.
+      const rawHead = cellNumber === 3 || cellNumber === 4 ? cells[2] : cellNumber === 7 ? cells[5] : cells[6];
+      if (rawHead === "_" || (newNode.head as unknown) === "_") continue;
+      if (!Number.isFinite(newNode.number)) {
         newNode.number = lineIndex;
       }
       if (newNode.head !== null && !Number.isFinite(newNode.head)) {
-        throw new DependencyGraphError(`Non-number cell in line '${trimmed}'`);
+        throw new DependencyGraphError(`Non-number cell in line '${line}'`);
       }
-      const address = options?.zeroBased ? newNode.number + 1 : newNode.number;
-      this.nodes[address] = {
-        address,
-        word: newNode.word ?? null,
-        lemma: newNode.lemma ?? null,
-        ctag: newNode.ctag ?? null,
-        tag: newNode.tag ?? null,
-        feats: newNode.feats ?? null,
-        head: newNode.head,
-        rel: newNode.rel,
-        deps: {},
+      // Oracle zero_based shifts the head, never the address.
+      const head = options?.zeroBased && newNode.head !== null ? newNode.head + 1 : newNode.head;
+      const address = newNode.number;
+      const rel = cellNumber === 3 && head === 0 ? this.topRelationLabel : newNode.rel;
+      // Oracle does nodes[index].update({...}) — dep links pushed by earlier
+      // rows must survive, so update in place instead of replacing the node.
+      const existing = this.nodes[address];
+      const target = existing ?? {
+        address: null, word: null, lemma: null, ctag: null, tag: null,
+        feats: null, head: null, rel: null, deps: {} as Record<string, number[]>,
       };
-    }
-    // NLTK: root is the node whose head is 0; TOP node keeps deps links.
-    const top = this.nodes[0]!;
-    for (let i = 1; i < this.nodes.length; i++) {
-      const node = this.nodes[i];
-      if (!node) continue;
-      if (node.head === 0) this.root = node;
-      if (node.head === 0 || node.head === null || node.head === undefined) {
-        if (node.rel !== this.topRelationLabel && (node.head === 0)) {
-          top.deps[node.rel] = top.deps[node.rel] ?? [];
-          top.deps[node.rel]!.push(node.address);
-          continue;
+      target.address = address;
+      target.word = newNode.word ?? null;
+      target.lemma = newNode.lemma ?? null;
+      target.ctag = newNode.ctag ?? null;
+      target.tag = newNode.tag ?? null;
+      target.feats = newNode.feats ?? null;
+      target.head = head;
+      target.rel = newNode.rel;
+      this.nodes[address] = target;
+      // Oracle: self.nodes[head]["deps"][rel].append(index) — defaultdict
+      // semantics: touching a not-yet-loaded head address creates its node.
+      if (head !== null && head !== undefined) {
+        let headNode = this.nodes[head];
+        if (!headNode) {
+          // defaultdict touch: fields stay None (incl. address) until update.
+          headNode = {
+            address: null, word: null, lemma: null, ctag: null, tag: null,
+            feats: null, head: null, rel: null, deps: {},
+          };
+          this.nodes[head] = headNode;
         }
-        if (node.head === 0) {
-          top.deps[this.topRelationLabel] = top.deps[this.topRelationLabel] ?? [];
-          top.deps[this.topRelationLabel]!.push(node.address);
-          continue;
-        }
-        continue;
-      }
-      const headNode = this.nodes[node.head];
-      if (headNode) {
-        headNode.deps[node.rel] = headNode.deps[node.rel] ?? [];
-        headNode.deps[node.rel]!.push(node.address);
+        headNode.deps[rel] = headNode.deps[rel] ?? [];
+        headNode.deps[rel]!.push(address);
       }
     }
+    // Oracle: root = first node linked under TOP's topRelationLabel deps.
+    const rootAddress = this.nodes[0]!.deps[this.topRelationLabel]?.[0];
+    this.root = rootAddress !== undefined ? this.nodes[rootAddress]! : null;
   }
 
   private makeRootNode(): DependencyNode {
     return {
       address: 0, word: null, lemma: null, ctag: "TOP", tag: "TOP",
-      feats: null, head: null, rel: this.topRelationLabel, deps: {},
+      feats: null, head: null, rel: null, deps: {},
     };
   }
 
@@ -177,7 +194,7 @@ export class DependencyGraph {
       } else {
         const deps = "_";
         lines.push(
-          `${node.address}\t${node.word}\t${node.lemma ?? "_"}\t${node.ctag ?? "_"}\t${node.tag ?? "_"}\t${node.feats ?? "_"}\t${node.head ?? 0}\t${node.rel}\t${deps}\t${deps}`,
+          `${node.address}\t${node.word}\t${node.lemma ?? "_"}\t${node.ctag ?? "_"}\t${node.tag ?? "_"}\t${node.feats ?? "_"}\t${node.head ?? 0}\t${node.rel ?? "None"}\t${deps}\t${deps}`,
         );
       }
     }
@@ -185,7 +202,7 @@ export class DependencyGraph {
   }
 
   /** Port of DependencyGraph.triples: ((head word, ctag), rel, [(dep word, ctag)]). */
-  *triples(node?: DependencyNode | number): Generator<[[string | null, string | null], string, Array<[string | null, string | null]>]> {
+  *triples(node?: DependencyNode | number): Generator<[[string | null, string | null], string | null, Array<[string | null, string | null]>]> {
     const nodes: DependencyNode[] = node === undefined
       ? this.nodelist.filter(Boolean)
       : [typeof node === "number" ? this.nodes[node]! : node];
@@ -200,15 +217,15 @@ export class DependencyGraph {
     }
   }
 
-  /** Port of DependencyGraph.add_arc. */
+  /** Port of DependencyGraph.add_arc: deps[mod.rel].append(mod) only — no head write. */
   add_arc(headAddress: number, modAddress: number): void {
     const head = this.nodes[headAddress];
     const mod = this.nodes[modAddress];
     if (!head || !mod) throw new DependencyGraphError("Node address out of range");
-    const rel = mod.rel || this.topRelationLabel;
+    // Oracle uses nodes[mod]["rel"] verbatim; a null rel keys "None" (Python None).
+    const rel = mod.rel ?? "None";
     head.deps[rel] = head.deps[rel] ?? [];
     head.deps[rel]!.push(modAddress);
-    mod.head = headAddress;
   }
 
   /** Port of DependencyGraph.remove_by_address. */
@@ -273,19 +290,111 @@ export class DependencyGraph {
     return false;
   }
 
-  /** Port of DependencyGraph.connect_graph (attach cycle roots to node 0). */
+  /** Port of DependencyGraph.connect_graph: fully connect all non-TOP nodes. */
   connect_graph(): void {
-    for (const node of this.nodelist) {
-      if (!node) continue;
-      if (node.head === null || node.head === undefined) {
-        if (node.address !== 0 && !Object.values(this.nodes[0]!.deps).flat().includes(node.address)) {
-          node.head = 0;
-          node.rel = this.topRelationLabel;
-          this.nodes[0]!.deps[this.topRelationLabel] = this.nodes[0]!.deps[this.topRelationLabel] ?? [];
-          this.nodes[0]!.deps[this.topRelationLabel]!.push(node.address);
+    for (const node1 of this.nodes) {
+      if (!node1) continue;
+      for (const node2 of this.nodes) {
+        if (!node2) continue;
+        if (node1.address !== node2.address && node2.rel !== "TOP") {
+          const relation = node2.rel ?? this.topRelationLabel;
+          node1.deps[relation] = node1.deps[relation] ?? [];
+          node1.deps[relation]!.push(node2.address as number);
         }
       }
     }
+  }
+
+  /** Port of DependencyGraph.get_by_address. */
+  get_by_address(nodeAddress: number): DependencyNode | undefined {
+    return this.nodes[nodeAddress];
+  }
+
+  /** Port of DependencyGraph.contains_address. */
+  contains_address(nodeAddress: number): boolean {
+    return this.nodes[nodeAddress] !== undefined;
+  }
+
+  /**
+   * defaultdict-style node creation used by NLTK's parser ports: ``nodes[k]``
+   * auto-instantiates ``{address: None, ..., deps: {}}`` on first access.
+   */
+  ensure_node(address: number): DependencyNode {
+    let node = this.nodes[address];
+    if (!node) {
+      // defaultdict touch: address stays None until an update provides it.
+      node = {
+        address: null, word: null, lemma: null, ctag: null, tag: null,
+        feats: null, head: null, rel: null, deps: {},
+      };
+      this.nodes[address] = node;
+    }
+    return node;
+  }
+
+  /** dict.update() semantics: merge ``partial`` into the node at ``address``. */
+  update_node(address: number, partial: Partial<DependencyNode>): DependencyNode {
+    const node = this.ensure_node(address);
+    Object.assign(node, partial);
+    return node;
+  }
+
+  /** Port of DependencyGraph.add_node (update-if-absent, no replace). */
+  add_node(node: Partial<DependencyNode> & { address: number }): void {
+    if (!this.contains_address(node.address)) {
+      this.update_node(node.address, node);
+    }
+  }
+
+  /**
+   * Port of DependencyGraph.redirect_arcs. NLTK quirk: it iterates the deps
+   * dict directly, yielding rel names (not addresses); rel names never match
+   * the integer ``originals``, so every node's deps is replaced by the flat
+   * list of its rel keys. Reproduced faithfully.
+   */
+  redirect_arcs(originals: number[], redirect: number): void {
+    for (const node of this.nodes) {
+      if (!node) continue;
+      const newDeps: Array<string | number> = [];
+      for (const dep of Object.keys(node.deps)) {
+        newDeps.push(originals.includes(dep as unknown as number) ? redirect : dep);
+      }
+      node.deps = newDeps as unknown as Record<string, number[]>;
+    }
+  }
+
+  /** Port of DependencyGraph.left_children. */
+  left_children(nodeIndex: number): number {
+    const node = this.nodes[nodeIndex];
+    if (!node) return 0;
+    const children = Object.values(node.deps).flat();
+    return children.filter((c) => c < (node.address as number)).length;
+  }
+
+  /** Port of DependencyGraph.right_children. */
+  right_children(nodeIndex: number): number {
+    const node = this.nodes[nodeIndex];
+    if (!node) return 0;
+    const children = Object.values(node.deps).flat();
+    return children.filter((c) => c > (node.address as number)).length;
+  }
+
+  private _tree(i: number): { label: string; children: Array<unknown> } | string {
+    const node = this.nodes[i];
+    const word = node?.word ?? null;
+    const deps = node ? Object.values(node.deps).flat().sort((a, b) => a - b) : [];
+    if (deps.length) {
+      return { label: word ?? "", children: deps.map((dep) => this._tree(dep)) };
+    }
+    return word ?? "";
+  }
+
+  /** Port of DependencyGraph.tree: dependency tree rooted at ``root`` (word labels only). */
+  tree(): { label: string; children: Array<unknown> } {
+    const node = this.root;
+    if (!node) throw new DependencyGraphError("DependencyGraph has no root node");
+    const deps = Object.values(node.deps).flat().sort((a, b) => a - b);
+    return { label: node.word ?? "", children: deps.map((dep) => this._tree(dep)) };
   }
 }
 

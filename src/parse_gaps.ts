@@ -67,21 +67,21 @@ export class LongestChartParser { constructor() { unsupported("LongestChartParse
 export class RandomChartParser { constructor() { unsupported("RandomChartParser", PC_WHY); } }
 export class UnsortedChartParser { constructor() { unsupported("UnsortedChartParser", PC_WHY); } }
 
-const DP_WHY = "dependency-parser machinery not yet ported";
-export class ProjectiveDependencyParser { constructor() { unsupported("ProjectiveDependencyParser", DP_WHY); } }
-export class ProbabilisticProjectiveDependencyParser { constructor() { unsupported("ProbabilisticProjectiveDependencyParser", DP_WHY); } }
-export class NonprojectiveDependencyParser { constructor() { unsupported("NonprojectiveDependencyParser", DP_WHY); } }
-export class ProbabilisticNonprojectiveParser { constructor() { unsupported("ProbabilisticNonprojectiveParser", DP_WHY); } }
 export class TestGrammar { constructor() { unsupported("TestGrammar", "test-grammar loader not yet ported"); } }
 
-// Real ports promoted out of the stub set live in parse_dependency; the export
-// names stay routed through this module so reviewed provenance is stable.
+// Real ports promoted out of the stub set live in parse_dependency /
+// parse_dep_parsers; the export names stay routed through this module so
+// reviewed provenance is stable.
 export {
   ARC_EAGER, ARC_STANDARD, Configuration, Transition, DependencySpan, ChartCell,
   DependencyScorerI, NaiveBayesDependencyScorer, DemoScorer,
   ProbabilisticTree, ProbabilisticTreeEdge, ProbabilisticLeafEdge,
   extract_test_sentences, extractTestSentences,
 } from "./parse_dependency";
+export {
+  ProjectiveDependencyParser, ProbabilisticProjectiveDependencyParser,
+  NonprojectiveDependencyParser, ProbabilisticNonprojectiveParser,
+} from "./parse_dep_parsers";
 
 const STEP_WHY = "interactive stepping parser UI not applicable to the TS runtime contract";
 export class SteppingRecursiveDescentParser { constructor() { unsupported("SteppingRecursiveDescentParser", STEP_WHY); } }

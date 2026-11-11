@@ -10,8 +10,8 @@ export type DependencyEvalNode = {
   word: string;
   /** Head position, 0 = root. */
   head: number;
-  /** Dependency relation label. */
-  rel: string;
+  /** Dependency relation label; oracle nodes may carry rel=None. */
+  rel: string | null;
 };
 
 const PUNCT_RE =
@@ -104,10 +104,10 @@ export function dependencyEvaluate(
 /** Port of nltk.parse.evaluate.DependencyEvaluator: wraps dependencyEvaluate. */
 type EvalInput =
   | Parameters<typeof dependencyEvaluate>[0][number]
-  | { nodelist: ReadonlyArray<{ word: string | null; head: number | null; rel: string }> };
+  | { nodelist: ReadonlyArray<{ word: string | null; head: number | null; rel: string | null }> };
 
 function toEvalNodes(sent: EvalInput): readonly DependencyEvalNode[] {
-  const s = sent as { nodelist?: ReadonlyArray<{ word: string | null; head: number | null; rel: string }> };
+  const s = sent as { nodelist?: ReadonlyArray<{ word: string | null; head: number | null; rel: string | null }> };
   if (s.nodelist) {
     return s.nodelist.map((n) => ({ word: n.word ?? "", head: n.head ?? 0, rel: n.rel }));
   }

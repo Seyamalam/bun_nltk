@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   DependencyGraph, DependencyEvaluator, taggedsent_to_conll, taggedsents_to_conll,
-  SteppingRecursiveDescentParser, InsideChartParser, ProjectiveDependencyParser,
+  SteppingRecursiveDescentParser, InsideChartParser,
   Configuration, CoreNLPServer, find_maltparser, conll_demo, FeatureChart,
 } from "../index";
 
@@ -66,7 +66,6 @@ describe("honest gaps", () => {
   test("unported machinery and external wrappers throw clearly", () => {
     expect(() => new (SteppingRecursiveDescentParser as any)()).toThrow();
     expect(() => new (InsideChartParser as any)()).toThrow();
-    expect(() => new (ProjectiveDependencyParser as any)()).toThrow();
     expect(() => new (Configuration as any)()).toThrow();
     expect(() => new (CoreNLPServer as any)()).toThrow();
     expect(() => new (FeatureChart as any)()).toThrow();

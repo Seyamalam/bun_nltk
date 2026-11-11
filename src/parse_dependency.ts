@@ -394,8 +394,9 @@ export class NaiveBayesDependencyScorer extends DependencyScorerI {
       for (const headNode of graph.nodes) {
         if (!headNode) continue;
         for (let childIndex = 0; childIndex < graph.nodes.length; childIndex++) {
-          const childNode = graph.nodes[childIndex];
-          if (!childNode) continue;
+          // Oracle: graph.nodes[child_index] is a defaultdict write — missing
+          // addresses materialize as ghost nodes (all-None fields, "F" label).
+          const childNode = graph.ensure_node(childIndex);
           const label = nodeHasDependency(headNode, childIndex) ? "T" : "F";
           labeled.push([edgeFeatures(headNode, childNode), label]);
         }
