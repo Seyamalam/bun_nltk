@@ -363,7 +363,10 @@ export class LazyCorpusLoader {
     return this.load();
   }
 
-  repr(): string { return `<LazyCorpusLoader '${this.name}'>`; }
+  repr(): string {
+    if (this.loaded !== null) return this.loaded.repr();
+    return `<${this.readerCls.name} in '.../corpora/${this.name}' (not loaded yet)>`;
+  }
 }
 
 export { AbstractLazySequence };

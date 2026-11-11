@@ -119,11 +119,51 @@ export class SimpleTree {
     return `(${this.label} ${childstrs.join(" ")})`;
   }
 
-  toString(): string { return this.repr(); }
+  toString(): string { return this.pformat(); }
+
+  /** nltk.tree.Tree.pformat — one-line flat form, or margin-wrapped layout. */
+  pformat(options: { margin?: number; indent?: number; nodesep?: string; parens?: [string, string]; quotes?: [string, string] | true } = {}): string {
+    const margin = options.margin ?? 70;
+    const indent = options.indent ?? 0;
+    const nodesep = options.nodesep ?? "";
+    const parens = options.parens ?? ["(", ")"];
+    const quotes = options.quotes ?? ["", ""];
+    const flat = this._pformatFlat(nodesep, parens, quotes);
+    if (flat.length + indent < margin) return flat;
+    let s = `${parens[0]}${this.label}${nodesep}`;
+    const indentStr = " ".repeat(indent + 2);
+    for (const child of this.children) {
+      if (child instanceof SimpleTree) {
+        s += "\n" + indentStr + child.pformat({ margin, indent: indent + 2, nodesep, parens, quotes });
+      } else if (Array.isArray(child)) {
+        s += "\n" + indentStr + child.join("/");
+      } else if (typeof child === "string" && quotes !== true) {
+        s += "\n" + indentStr + quotes[0] + String(child) + quotes[1];
+      } else {
+        s += "\n" + indentStr + pyRepr(child);
+      }
+    }
+    return s + parens[1];
+  }
+
+  private _pformatFlat(nodesep: string, parens: [string, string], quotes: [string, string] | true): string {
+    const childstrs = this.children.map((child) => {
+      if (child instanceof SimpleTree) return child._pformatFlat(nodesep, parens, quotes);
+      if (Array.isArray(child)) return child.join("/");
+      if (typeof child === "string" && quotes !== true) return `${quotes[0]}${child}${quotes[1]}`;
+      return pyRepr(child);
+    });
+    return `${parens[0]}${this.label}${nodesep} ${childstrs.join(" ")}${parens[1]}`;
+  }
 }
 
 function tupleStr(t: [string, string | null]): string {
   return t[1] === null ? t[0] : `${t[0]}/${t[1]}`;
+}
+
+function pyRepr(value: unknown): string {
+  if (typeof value === "string") return `'${value.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`;
+  return String(value);
 }
 
 /** nltk.chunk.tagstr2tree — bracketed tagged text → Tree. */

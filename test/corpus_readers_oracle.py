@@ -15,7 +15,13 @@ from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.chunked import ChunkedCorpusReader
 from nltk.corpus.reader.aligned import AlignedCorpusReader
 from nltk.corpus.reader.api import CorpusReader
-from nltk.corpus.reader.util import read_alignedsent_block
+from nltk.corpus.reader.util import (
+    read_alignedsent_block,
+    read_whitespace_block,
+    tagged_treebank_para_block_reader,
+    ConcatenatedCorpusView,
+    StreamBackedCorpusView,
+)
 from nltk.tokenize import WhitespaceTokenizer
 from nltk.data import SeekableUnicodeStreamReader, FileSystemPathPointer
 from nltk import pathsec
@@ -102,6 +108,29 @@ try:
     out["aligned"] = {"err": None}
 except IndexError as e:
     out["aligned"] = {"err": f"IndexError:{e}"}
+
+# --- ConcatenatedCorpusView across two corpus files
+v1 = StreamBackedCorpusView(os.path.join(ROOT, "plain.txt"), read_whitespace_block, encoding="utf-8")
+v2 = StreamBackedCorpusView(os.path.join(ROOT, "tagged.txt"), read_whitespace_block, encoding="utf-8")
+ccv = ConcatenatedCorpusView([v1, v2])
+out["concat"] = {
+    "len": len(ccv),
+    "all": list(ccv),
+    "get3": ccv[3],
+    "getneg": ccv[-1],
+    "slice": list(ccv[2:5]),
+}
+
+# --- tagged_treebank_para_block_reader on =====-separated file
+tb = open(os.path.join(ROOT, "treebank_para.txt"), "rb")
+tbs = SeekableUnicodeStreamReader(tb, "utf-8")
+out["ttb_blocks"] = []
+while True:
+    block = tagged_treebank_para_block_reader(tbs)
+    if not block:
+        break
+    out["ttb_blocks"].append(block)
+tbs.close()
 
 # --- pathsec: out-of-root corpus raises PermissionError
 try:

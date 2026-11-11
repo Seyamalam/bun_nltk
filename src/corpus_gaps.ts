@@ -1,4 +1,7 @@
 // Honest gap stubs for nltk.corpus/data/internals surfaces not yet ported.
+// ConcatenatedCorpusView/tagged_treebank_para_block_reader graduated to real
+// implementations; they re-export here so the root route stays stable.
+export { ConcatenatedCorpusView, tagged_treebank_para_block_reader } from "./corpus_view";
 function unavailable(name: string): never { throw new Error(`nltk gap: ${name} is not implemented in the TS runtime`); }
 
 export class AlpinoCorpusReader { constructor(..._a: unknown[]) { unavailable("AlpinoCorpusReader"); } }
@@ -15,7 +18,6 @@ export class ChasenCorpusView { constructor(..._a: unknown[]) { unavailable("Cha
 export class CodeBlock { constructor(..._a: unknown[]) { unavailable("CodeBlock"); } }
 export class ComparativeSentencesCorpusReader { constructor(..._a: unknown[]) { unavailable("ComparativeSentencesCorpusReader"); } }
 export class Comparison { constructor(..._a: unknown[]) { unavailable("Comparison"); } }
-export class ConcatenatedCorpusView { constructor(..._a: unknown[]) { unavailable("ConcatenatedCorpusView"); } }
 export class ConllCorpusReader { constructor(..._a: unknown[]) { unavailable("ConllCorpusReader"); } }
 export class ConllSRLInstance { constructor(..._a: unknown[]) { unavailable("ConllSRLInstance"); } }
 export class ConllSRLInstanceList { constructor(..._a: unknown[]) { unavailable("ConllSRLInstanceList"); } }
@@ -124,7 +126,6 @@ export class switch_chunker { constructor(..._a: unknown[]) { unavailable("switc
 export class switch_p_tagger { constructor(..._a: unknown[]) { unavailable("switch_p_tagger"); } }
 export class switch_punkt { constructor(..._a: unknown[]) { unavailable("switch_punkt"); } }
 export class switch_t_tagger { constructor(..._a: unknown[]) { unavailable("switch_t_tagger"); } }
-export class tagged_treebank_para_block_reader { constructor(..._a: unknown[]) { unavailable("tagged_treebank_para_block_reader"); } }
 export class test { constructor(..._a: unknown[]) { unavailable("test"); } }
 export class urlopen { constructor(..._a: unknown[]) { unavailable("urlopen"); } }
 export class validate_network_url { constructor(..._a: unknown[]) { unavailable("validate_network_url"); } }

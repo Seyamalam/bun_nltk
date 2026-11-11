@@ -12,8 +12,8 @@ import { CorpusReader as NLTKCorpusReader } from "../src/corpus_api";
 import { WhitespaceTokenizer } from "../src/tokenizers";
 import { RegexpTokenizer } from "../src/tokenizers_regexp";
 import { SeekableUnicodeStreamReader } from "../src/corpus_stream";
-import { find, dataPath } from "../src/data";
-import { read_alignedsent_block } from "../src/corpus_view";
+import { find, dataPath, FileSystemPathPointer } from "../src/data";
+import { read_alignedsent_block, read_whitespace_block, tagged_treebank_para_block_reader, ConcatenatedCorpusView, StreamBackedCorpusView } from "../src/corpus_view";
 
 const NLTK_DATA = process.env.NLTK_DATA ?? join(process.cwd(), ".cache/nltk-data");
 const ROOT = join(NLTK_DATA, "tmp-synth-corpus");
@@ -29,6 +29,7 @@ function setup(): string {
   writeFileSync(join(ROOT, "trees.mrg"), "(S (NP (DT the) (JJ little) (NN dog)) (VP (VBD barked)))\n(S (NP (NNP Fido)) (VP (VBZ barks)))\n");
   writeFileSync(join(ROOT, "chunks.txt"), "[the/DT dog/NN] chased/VBD [the/DT cat/NN]\n");
   writeFileSync(join(ROOT, "aligned.txt"), "hello world ||| hola mundo ||| 0-0 1-1 2-2\n");
+  writeFileSync(join(ROOT, "treebank_para.txt"), "one/NN two/JJ\n\n==============================\nmore/NN stuff/VB here/RB\n");
   return ROOT;
 }
 
@@ -129,6 +130,30 @@ describe("corpus readers vs NLTK 3.10.3 oracle", () => {
       expect(e.name).toBe("IndexError");
       expect(o!.aligned.err).toContain("IndexError");
     }
+  });
+
+  test("ConcatenatedCorpusView joins views across files", () => {
+    if (!hasData) return;
+    const v1 = new StreamBackedCorpusView<string>(join(root!, "plain.txt"), read_whitespace_block, 0, "utf-8");
+    const v2 = new StreamBackedCorpusView<string>(join(root!, "tagged.txt"), read_whitespace_block, 0, "utf-8");
+    const ccv = new ConcatenatedCorpusView([v1, v2]);
+    expect(ccv.length).toBe(o!.concat.len);
+    expect([...ccv.iterate_from(0)]).toEqual(o!.concat.all);
+    expect(ccv.get(3)).toBe(o!.concat.get3);
+    expect(ccv.get(-1)).toBe(o!.concat.getneg);
+    expect([...ccv.iterate_from(2)].slice(0, 3)).toEqual(o!.concat.slice);
+  });
+
+  test("tagged_treebank_para_block_reader splits on ===== rules", () => {
+    if (!hasData) return;
+    const stream = new FileSystemPathPointer(join(root!, "treebank_para.txt")).open("utf-8");
+    const blocks: string[][] = [];
+    for (;;) {
+      const block = tagged_treebank_para_block_reader(stream);
+      if (!block.length) break;
+      blocks.push(block);
+    }
+    expect(blocks).toEqual(o!.ttb_blocks);
   });
 
   test("pathsec ENFORCE blocks out-of-root corpus", () => {
