@@ -14,11 +14,10 @@ import {
 import type { BlockReader } from "./corpus_view";
 import {
   CategorizedCorpusReader, CorpusReader,
-  SyntaxCorpusReader, categorizedInit,
+  SyntaxCorpusReader,
 } from "./corpus_api";
 import type { CategorizedInit, EncodingSpec } from "./corpus_api";
 import { WhitespaceTokenizer } from "./tokenizers";
-import { RegexpTokenizer } from "./tokenizers_regexp";
 import type { TextTokenizerLike } from "./corpus_text_readers";
 import { str2tuple } from "./tag_util";
 import { mapTag } from "./tag_mapping";
@@ -299,16 +298,15 @@ export function conllstr2tree(s: string, chunkTypes = ["NP", "PP", "VP"], rootLa
 // { categorized_sents
 
 export class CategorizedSentencesCorpusReader extends CategorizedCorpusReader {
-  private _tok: RegexpTokenizer;
+  private _tok: TextTokenizerLike;
   private _sentTokenizer: TextTokenizerLike | null = null;
 
   constructor(root: string | PathPointer, fileids: string | string[],
-    wordTokenizer: RegexpTokenizer | null = null,
+    wordTokenizer: TextTokenizerLike | null = null,
     sentTokenizer: TextTokenizerLike | null = null,
     encoding: EncodingSpec = "utf8", catInit?: CategorizedInit) {
-    super(root, fileids, encoding);
-    categorizedInit(this, catInit ?? {});
-    this._tok = wordTokenizer ?? new RegexpTokenizer("(\\w|[^\\w\\s])+");
+    super(root, fileids, encoding, null, catInit);
+    this._tok = wordTokenizer ?? new WhitespaceTokenizer();
     this._sentTokenizer = sentTokenizer;
   }
 
@@ -326,20 +324,22 @@ export class CategorizedSentencesCorpusReader extends CategorizedCorpusReader {
 
   private readWordBlock(stream: SeekableUnicodeStreamReader): string[] {
     const words: string[] = [];
-    for (let i = 0; i < 20; i++) {
-      const line = stream.readline();
-      if (line === "") break;
-      const m = /^(\S+)\s(.+)/.exec(line);
-      const tok = m ? m[2]! : line;
-      words.push(...(this._tok.tokenize(tok) as string[]));
-    }
+    for (const sent of this.readSentBlock(stream)) words.push(...sent);
     return words;
   }
 
   private readSentBlock(stream: SeekableUnicodeStreamReader): string[][] {
     const sents: string[][] = [];
-    for (const line of read_regexp_block(stream, "\\S", "\\S")) {
-      void line;
+    for (let i = 0; i < 20; i++) {
+      const line = stream.readline();
+      if (line === "") continue;
+      if (this._sentTokenizer !== null) {
+        for (const sent of this._sentTokenizer.tokenize(line)) {
+          sents.push(this._tok.tokenize(sent));
+        }
+      } else {
+        sents.push(this._tok.tokenize(line));
+      }
     }
     return sents;
   }

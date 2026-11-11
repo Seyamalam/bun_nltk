@@ -14,6 +14,7 @@ from nltk.corpus.reader.cmudict import CMUDictCorpusReader
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.chunked import ChunkedCorpusReader
 from nltk.corpus.reader.aligned import AlignedCorpusReader
+from nltk.corpus.reader.categorized_sents import CategorizedSentencesCorpusReader
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import (
     read_alignedsent_block,
@@ -131,6 +132,19 @@ while True:
         break
     out["ttb_blocks"].append(block)
 tbs.close()
+
+# --- CategorizedSentencesCorpusReader (default tokenizers; blank line pins the
+# empty-sentence quirk: WhitespaceTokenizer().tokenize("\n") -> [] appended)
+cs = CategorizedSentencesCorpusReader(
+    ROOT, r"pol\.(neg|pos)", cat_pattern=r"pol\.(neg|pos)", encoding="utf-8"
+)
+out["catsents"] = {
+    "categories": cs.categories(),
+    "sents": [list(s) for s in cs.sents()],
+    "sents_neg": [list(s) for s in cs.sents(categories="neg")],
+    "words_pos": list(cs.words(categories="pos")),
+    "fileids_pos": cs.fileids(categories="pos"),
+}
 
 # --- pathsec: out-of-root corpus raises PermissionError
 try:

@@ -7,7 +7,7 @@ import {
   PlaintextCorpusReader, TaggedCorpusReader, DependencyCorpusReader,
   WordListCorpusReader, CMUDictCorpusReader, AlignedCorpusReader,
 } from "../src/corpus_text_readers";
-import { BracketParseCorpusReader, ChunkedCorpusReader } from "../src/corpus_readers2";
+import { BracketParseCorpusReader, CategorizedSentencesCorpusReader, ChunkedCorpusReader } from "../src/corpus_readers2";
 import { CorpusReader as NLTKCorpusReader } from "../src/corpus_api";
 import { WhitespaceTokenizer } from "../src/tokenizers";
 import { RegexpTokenizer } from "../src/tokenizers_regexp";
@@ -30,6 +30,8 @@ function setup(): string {
   writeFileSync(join(ROOT, "chunks.txt"), "[the/DT dog/NN] chased/VBD [the/DT cat/NN]\n");
   writeFileSync(join(ROOT, "aligned.txt"), "hello world ||| hola mundo ||| 0-0 1-1 2-2\n");
   writeFileSync(join(ROOT, "treebank_para.txt"), "one/NN two/JJ\n\n==============================\nmore/NN stuff/VB here/RB\n");
+  writeFileSync(join(ROOT, "pol.neg"), "bad movie , really dull .\n\nworst film ever .\n");
+  writeFileSync(join(ROOT, "pol.pos"), "great movie , truly fun .\nwonderful acting here .\n");
   return ROOT;
 }
 
@@ -154,6 +156,17 @@ describe("corpus readers vs NLTK 3.10.3 oracle", () => {
       blocks.push(block);
     }
     expect(blocks).toEqual(o!.ttb_blocks);
+  });
+
+  test("CategorizedSentencesCorpusReader categories/sents/words + blank-line quirk", () => {
+    if (!hasData) return;
+    const cs = new CategorizedSentencesCorpusReader(root!, "pol\\.(neg|pos)", null, null,
+      "utf8", { cat_pattern: "pol\\.(neg|pos)" });
+    expect(cs.categories()).toEqual(o!.catsents.categories);
+    expect([...cs.sents() as Iterable<string[]>]).toEqual(o!.catsents.sents);
+    expect([...cs.sents(undefined, "neg") as Iterable<string[]>]).toEqual(o!.catsents.sents_neg);
+    expect([...cs.words(undefined, "pos") as Iterable<string>]).toEqual(o!.catsents.words_pos);
+    expect(cs.fileids("pos")).toEqual(o!.catsents.fileids_pos);
   });
 
   test("pathsec ENFORCE blocks out-of-root corpus", () => {

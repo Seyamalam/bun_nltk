@@ -49520,7 +49520,7 @@
     "CategorizedSentencesCorpusReader"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/corpus_readers2.ts",
@@ -49531,14 +49531,16 @@
     "status": "partial",
     "members": [],
     "gaps": [
-     "Corpus reader/data-layer port; member coverage pinned selectively via differential tests."
+     "Categorized line-per-instance reader; words/sents/categories pinned vs NLTK 3.10.3 on a synthetic categorized corpus incl. the blank-line empty-sent quirk. sent_tokenizer branch pinned only via default (None) path."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Real NLTK corpus resources not provisioned; reader logic verified on synthetic fixtures."
+     "Categorized line-per-instance reader; words/sents/categories pinned vs NLTK 3.10.3 on a synthetic categorized corpus incl. the blank-line empty-sent quirk. sent_tokenizer branch pinned only via default (None) path."
     ]
    },
    "notes": "Port of nltk.corpus.CategorizedSentencesCorpusReader onto the JS corpus data layer (PathPointer/SeekableUnicodeStreamReader/stream-backed views)."
@@ -51679,7 +51681,7 @@
     "CategorizedSentencesCorpusReader"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/corpus_readers2.ts",
@@ -51690,14 +51692,16 @@
     "status": "partial",
     "members": [],
     "gaps": [
-     "Corpus reader/data-layer port; member coverage pinned selectively via differential tests."
+     "Categorized line-per-instance reader; words/sents/categories pinned vs NLTK 3.10.3 on a synthetic categorized corpus incl. the blank-line empty-sent quirk. sent_tokenizer branch pinned only via default (None) path."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Real NLTK corpus resources not provisioned; reader logic verified on synthetic fixtures."
+     "Categorized line-per-instance reader; words/sents/categories pinned vs NLTK 3.10.3 on a synthetic categorized corpus incl. the blank-line empty-sent quirk. sent_tokenizer branch pinned only via default (None) path."
     ]
    },
    "notes": "Port of nltk.corpus.europarl_raw.CategorizedSentencesCorpusReader onto the JS corpus data layer (PathPointer/SeekableUnicodeStreamReader/stream-backed views)."
@@ -53780,7 +53784,7 @@
     "CategorizedSentencesCorpusReader"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/corpus_readers2.ts",
@@ -53791,14 +53795,16 @@
     "status": "partial",
     "members": [],
     "gaps": [
-     "Corpus reader/data-layer port; member coverage pinned selectively via differential tests."
+     "Categorized line-per-instance reader; words/sents/categories pinned vs NLTK 3.10.3 on a synthetic categorized corpus incl. the blank-line empty-sent quirk. sent_tokenizer branch pinned only via default (None) path."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Real NLTK corpus resources not provisioned; reader logic verified on synthetic fixtures."
+     "Categorized line-per-instance reader; words/sents/categories pinned vs NLTK 3.10.3 on a synthetic categorized corpus incl. the blank-line empty-sent quirk. sent_tokenizer branch pinned only via default (None) path."
     ]
    },
    "notes": "Port of nltk.corpus.reader.CategorizedSentencesCorpusReader onto the JS corpus data layer (PathPointer/SeekableUnicodeStreamReader/stream-backed views)."
@@ -57814,7 +57820,7 @@
     "CategorizedSentencesCorpusReader"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/corpus_readers2.ts",
@@ -57825,14 +57831,16 @@
     "status": "partial",
     "members": [],
     "gaps": [
-     "Corpus reader/data-layer port; member coverage pinned selectively via differential tests."
+     "Categorized line-per-instance reader; words/sents/categories pinned vs NLTK 3.10.3 on a synthetic categorized corpus incl. the blank-line empty-sent quirk. sent_tokenizer branch pinned only via default (None) path."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Real NLTK corpus resources not provisioned; reader logic verified on synthetic fixtures."
+     "Categorized line-per-instance reader; words/sents/categories pinned vs NLTK 3.10.3 on a synthetic categorized corpus incl. the blank-line empty-sent quirk. sent_tokenizer branch pinned only via default (None) path."
     ]
    },
    "notes": "Port of nltk.corpus.reader.categorized_sents.CategorizedSentencesCorpusReader onto the JS corpus data layer (PathPointer/SeekableUnicodeStreamReader/stream-backed views)."
