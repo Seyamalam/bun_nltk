@@ -7,6 +7,7 @@
 import { openDatafile } from "./data";
 import type { PathPointer } from "./data";
 import type { SeekableUnicodeStreamReader } from "./corpus_stream";
+import { CFG } from "./grammar";
 
 /** Shared interactive-demo stub — NLTK demos are interactive scripts. */
 export function demo(): never {
@@ -62,9 +63,30 @@ export function pickle_load(_file: unknown): never {
   throw new Error("pickle_load() requires CPython pickle serialization, which is not supported in the JS runtime");
 }
 
-/** nltk.parse.chart.demo_grammar — lands with the chart demo batch. */
-export function demo_grammar(): never {
-  throw new Error("demo_grammar() lands with the chart SteppingChartParser batch");
+/** nltk.parse.chart.demo_grammar — the chart-parser demo CFG. */
+export function demo_grammar(): CFG {
+  return CFG.fromstring(
+    `
+S  -> NP VP
+PP -> "with" NP
+NP -> NP PP
+VP -> VP PP
+VP -> Verb NP
+VP -> Verb
+NP -> Det Noun
+NP -> "John"
+NP -> "I"
+Det -> "the"
+Det -> "my"
+Det -> "a"
+Noun -> "dog"
+Noun -> "cookie"
+Verb -> "ate"
+Verb -> "saw"
+Prep -> "with"
+Prep -> "under"
+`,
+  );
 }
 
 /** nltk.chunk.regexp.demo_eval — interactive demo. */

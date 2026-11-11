@@ -7,6 +7,7 @@
  */
 
 import type { CfgGrammar } from "./parse";
+import { CFG, Nonterminal, type GrammarSymbol } from "./grammar";
 
 export const MAX_GENERATE_OPERATIONS = 1_000_000;
 
@@ -26,9 +27,33 @@ class GenerationBudget {
   }
 }
 
+type GenItem = { sym: string; isNt: boolean };
+type GenProd = { lhs: string; rhs: GenItem[] };
+
+function normalize(grammar: CfgGrammar | CFG): { prods: GenProd[]; start: GenItem } {
+  if (grammar instanceof CFG) {
+    return {
+      prods: grammar.productions().map((p) => ({
+        lhs: p.lhs().symbol(),
+        rhs: p.rhs().map((elt) =>
+          elt instanceof Nonterminal
+            ? { sym: elt.symbol(), isNt: true }
+            : { sym: String(elt), isNt: false },
+        ),
+      })),
+      start: { sym: grammar.start().symbol(), isNt: true },
+    };
+  }
+  const prods = grammar.productions.map((p) => ({
+    lhs: p.lhs,
+    rhs: p.rhs.map((sym) => ({ sym, isNt: grammar.productions.some((q) => q.lhs === sym) })),
+  }));
+  return { prods, start: { sym: grammar.startSymbol, isNt: true } };
+}
+
 function* generateAll(
-  grammar: CfgGrammar,
-  items: string[],
+  prods: GenProd[],
+  items: GenItem[],
   depth: number,
   budget: GenerationBudget,
 ): Generator<string[]> {
@@ -38,8 +63,8 @@ function* generateAll(
   }
   const first = items[0]!;
   const rest = items.slice(1);
-  for (const frag1 of generateOne(grammar, first, depth, budget)) {
-    for (const frag2 of generateAll(grammar, rest, depth, budget)) {
+  for (const frag1 of generateOne(prods, first, depth, budget)) {
+    for (const frag2 of generateAll(prods, rest, depth, budget)) {
       budget.spend(); // per emitted sentence
       yield [...frag1, ...frag2];
     }
@@ -47,39 +72,45 @@ function* generateAll(
 }
 
 function* generateOne(
-  grammar: CfgGrammar,
-  item: string,
+  prods: GenProd[],
+  item: GenItem,
   depth: number,
   budget: GenerationBudget,
 ): Generator<string[]> {
   budget.spend();
   if (depth <= 0) return;
-  const isNonterminal = grammar.productions.some((p) => p.lhs === item);
-  if (!isNonterminal) {
+  if (!item.isNt) {
     // terminal
-    yield [item];
+    yield [item.sym];
     return;
   }
-  for (const prod of grammar.productions) {
-    if (prod.lhs !== item) continue;
-    yield* generateAll(grammar, prod.rhs, depth - 1, budget);
+  for (const prod of prods) {
+    if (prod.lhs !== item.sym) continue;
+    yield* generateAll(prods, prod.rhs, depth - 1, budget);
   }
 }
 
 /**
  * Generate sentences from a CFG.
  *
- * @param grammar  CFG to generate from
- * @param options  start symbol (default: grammar.startSymbol), depth & n limits
+ * @param grammar  CFG (or CfgGrammar) to generate from
+ * @param options  start symbol (default: grammar.start()), depth & n limits
  */
 export function* generate(
-  grammar: CfgGrammar,
-  options: { start?: string; depth?: number; n?: number } = {},
+  grammar: CfgGrammar | CFG,
+  options: { start?: string | GrammarSymbol; depth?: number; n?: number } = {},
 ): Generator<string[]> {
-  const start = options.start ?? grammar.startSymbol;
+  const { prods, start } = normalize(grammar);
+  const startItem: GenItem = options.start === undefined
+    ? start
+    : typeof options.start === "string"
+      ? { sym: options.start, isNt: prods.some((p) => p.lhs === options.start) }
+      : options.start instanceof Nonterminal
+        ? { sym: options.start.symbol(), isNt: true }
+        : { sym: String(options.start), isNt: false };
   const depth = options.depth ?? 12; // safe default (NLTK uses recursionlimit/3)
   const budget = new GenerationBudget(MAX_GENERATE_OPERATIONS);
-  let iter: Generator<string[]> = generateAll(grammar, [start], depth, budget);
+  let iter: Generator<string[]> = generateAll(prods, [startItem], depth, budget);
   if (options.n !== undefined) {
     // honour n=0 as "no sentences"
     let count = 0;
@@ -97,8 +128,8 @@ export function* generate(
 
 /** Convenience: collect up to n sentences into an array. */
 export function generateSentences(
-  grammar: CfgGrammar,
-  options: { start?: string; depth?: number; n?: number } = {},
+  grammar: CfgGrammar | CFG,
+  options: { start?: string | GrammarSymbol; depth?: number; n?: number } = {},
 ): string[][] {
   return [...generate(grammar, options)];
 }

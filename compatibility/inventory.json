@@ -2384,6 +2384,17 @@
    "anchor": "feature-chart parsers match oracle trees for all eight strategies",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: FeatureChartParser/TopDown/BottomUp/BULC + Earley + 3 incremental feature parsers on the featurechart demo grammar — exact tree sets per strategy; FeatStruct unify results + bindings; FeatureGrammar TYPE-indexed productions; FeatureTreeEdge binding substitution on completion; InstantiateVarsChart @-var renaming; find_variables."
+  },
+  {
+   "id": "parse-generate-differential",
+   "kind": "differential",
+   "files": [
+    "test/parse_generate.test.ts",
+    "test/parse_generate_oracle.py"
+   ],
+   "anchor": "generate() sentence stream matches oracle",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: generate() on a test CFG — depth-limited enumeration order, n slicing, n=0; chart.demo_grammar() productions + start symbol."
   }
  ],
  "signatureBindings": [
@@ -10852,8 +10863,8 @@
    "exports": [
     "demo_grammar"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/platform_helpers.ts",
@@ -10861,20 +10872,22 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Signature adapted to the TypeScript runtime contract (options-object start/depth/n, generator return)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-generate-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sentence stream + demo grammar productions oracle-pinned (NLTK 3.10.3)."
     ]
    },
-   "notes": "NLTK demo_grammar is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Real port oracle-pinned."
   },
   {
    "target": "nltk.parse.chart.is_nonterminal",
@@ -47043,7 +47056,7 @@
     "generate"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/parse_generate.ts",
@@ -47054,17 +47067,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "NLTK re-exports generate from nltk.parse.generate; mapped to the shared implementation."
+     "Signature adapted to the TypeScript runtime contract (options-object start/depth/n, generator return)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-generate-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports generate from nltk.parse.generate; mapped to the shared implementation."
+     "Sentence stream + demo grammar productions oracle-pinned (NLTK 3.10.3)."
     ]
    },
-   "notes": "NLTK re-exports generate from nltk.parse.generate; mapped to the shared implementation."
+   "notes": "Real port oracle-pinned."
   },
   {
    "target": "nltk.parse.malt.DependencyGraph",
