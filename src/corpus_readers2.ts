@@ -28,6 +28,10 @@ import { ZipFilePathPointer } from "./data";
 
 // { bracket_parse
 
+// we use [^\s()]+ instead of \S+? to avoid matching ()
+const TAGWORD = /\(([^\s()]+) ([^\s()]+)\)/g;
+const WORD = /\([^\s()]+ ([^\s()]+)\)/g;
+
 export class BracketParseCorpusReader extends SyntaxCorpusReader {
   protected _comment_char: string | null;
   protected _detect_blocks: string;
@@ -63,19 +67,41 @@ export class BracketParseCorpusReader extends SyntaxCorpusReader {
   }
 
   protected override _parse(t: string): SimpleTree {
-    const tree = SimpleTree.fromstring(this._normalize(t));
-    if (tree.label === "" && tree.children.length === 1 && tree.children[0] instanceof SimpleTree) {
-      return tree.children[0];
+    try {
+      const tree = SimpleTree.fromstring(this._normalize(t));
+      // If there's an empty node at the top, strip it off
+      if (tree.label === "" && tree.children.length === 1 && tree.children[0] instanceof SimpleTree) {
+        return tree.children[0];
+      }
+      return tree;
+    } catch (e) {
+      if (!(e instanceof Error) || e.name !== "ValueError") throw e;
+      // Try to recover, if we can:
+      if (e.message === "mismatched parens") {
+        for (let n = 1; n < 5; n++) {
+          try {
+            // NLTK calls the Tree *constructor* here (the normalized string
+            // becomes the label), not Tree.fromstring — it cannot raise.
+            return new SimpleTree(this._normalize(t + ")".repeat(n)));
+          } catch (e2) {
+            if (!(e2 instanceof Error) || e2.name !== "ValueError") throw e2;
+          }
+        }
+      }
+      // Try something else: return a flat parse.
+      return new SimpleTree("S", this._tag(t));
     }
-    return tree;
   }
 
-  protected override _word(t: string): Array<string | [string, string | null]> {
-    return this._parse(t).leaves();
+  protected override _word(t: string): string[] {
+    const out: string[] = [];
+    for (const m of this._normalize(t).matchAll(WORD)) out.push(m[1]!);
+    return out;
   }
 
   protected override _tag(t: string, tagset: string | null = null): Array<[string, string | null]> {
-    const taggedSent = this._parse(t).pos();
+    const taggedSent: Array<[string, string | null]> = [];
+    for (const m of this._normalize(t).matchAll(TAGWORD)) taggedSent.push([m[2]!, m[1]!]);
     if (tagset && tagset !== this._tagset) {
       return taggedSent.map(([w, t2]) => [w, t2 === null ? t2 : mapTag(this._tagset!, tagset, t2)] as [string, string | null]);
     }

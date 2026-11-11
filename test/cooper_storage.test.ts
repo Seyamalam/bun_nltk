@@ -3,9 +3,16 @@ import { resolve } from "node:path";
 import { Expression, resetUniqueVariableCounter } from "../src/sem_logic";
 import { FeatDict, FeatList, FeatureValueTuple, type FeatValue } from "../src/featstruct";
 import { CooperStore, cooperStoreFromTree, parse_with_bindops } from "../src/cooper_storage";
+import { dataPath } from "../src/data";
 
 const ORACLE = resolve(import.meta.dir, "cooper_storage_oracle.py");
 const PYTHON = resolve(import.meta.dir, "../.venv/bin/python3");
+const DATA = resolve(import.meta.dir, "../.cache/nltk-data");
+
+// parse_with_bindops resolves grammars/book_grammars/storage.fcfg through
+// data.find — self-provision the data dir so the test does not depend on
+// NLTK_DATA being set or on another test file pushing it first.
+if (!dataPath.includes(DATA)) dataPath.push(DATA);
 
 const oracle = (() => {
   const proc = Bun.spawnSync([PYTHON, ORACLE], {

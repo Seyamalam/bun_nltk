@@ -10,8 +10,19 @@ import { AbstractLazySequence } from "./collections";
 import { FileSystemPathPointer, PathPointer, ZipFilePathPointer, find as dataFind } from "./data";
 import { SeekableUnicodeStreamReader } from "./corpus_stream";
 import { StreamBackedCorpusView, concat, find_corpus_fileids } from "./corpus_view";
+import { SimpleTree } from "./corpus_tree";
 
 export type EncodingSpec = string | null | Record<string, string> | Array<[string, string]>;
+
+/** Python ``filter(None, ...)`` truthiness for block-reader results: drops
+ * null/undefined/false/0/""/empty-lists, and empty Trees (a Tree is a list
+ * subclass — its elements are its children, so a childless tree is falsy). */
+function pyTruthy(v: unknown): boolean {
+  if (v === null || v === undefined || v === false || v === 0 || v === "") return false;
+  if (Array.isArray(v)) return v.length > 0;
+  if (v instanceof SimpleTree) return v.children.length > 0;
+  return true;
+}
 
 export class CorpusReader {
   protected _fileids: string[];
@@ -249,15 +260,15 @@ export class SyntaxCorpusReader extends CorpusReader {
   protected _read_block(_stream: SeekableUnicodeStreamReader): unknown[] { throw pyError("NotImplementedError", "SyntaxCorpusReader._read_block"); }
 
   protected _read_parsed_sent_block(stream: SeekableUnicodeStreamReader): unknown[] {
-    return this._read_block(stream).map((block) => this._parse(block as string));
+    return this._read_block(stream).map((block) => this._parse(block as string)).filter(pyTruthy);
   }
 
   protected _read_tagged_sent_block(stream: SeekableUnicodeStreamReader, tagset: string | null = null): unknown[] {
-    return this._read_block(stream).map((block) => this._tag(block as string, tagset));
+    return this._read_block(stream).map((block) => this._tag(block as string, tagset)).filter(pyTruthy);
   }
 
   protected _read_sent_block(stream: SeekableUnicodeStreamReader): unknown[] {
-    return this._read_block(stream).map((block) => this._word(block as string));
+    return this._read_block(stream).map((block) => this._word(block as string)).filter(pyTruthy);
   }
 
   protected _read_word_block(stream: SeekableUnicodeStreamReader): unknown[] {

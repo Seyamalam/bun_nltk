@@ -7,17 +7,15 @@ export {
   IndianCorpusReader, IndianCorpusView, PPAttachment, PPAttachmentCorpusReader,
   ProsConsCorpusReader, Review, ReviewLine, ReviewsCorpusReader, TwitterCorpusReader,
 } from "./corpus_readers2";
+export {
+  AlpinoCorpusReader, ChasenCorpusReader, ChasenCorpusView, ConllCorpusReader,
+  ConllSRLInstance, ConllSRLInstanceList, KNBCorpusReader, LinThesaurusCorpusReader,
+  SinicaTreebankCorpusReader, SwitchboardCorpusReader, SwitchboardTurn,
+  ToolboxCorpusReader, YCOECorpusReader, YCOEParseCorpusReader, YCOETaggedCorpusReader,
+  sinica_parse, knbc_test, chasen_test,
+} from "./corpus_readers3";
 function unavailable(name: string): never { throw new Error(`nltk gap: ${name} is not implemented in the TS runtime`); }
 
-export class AlpinoCorpusReader { constructor(..._a: unknown[]) { unavailable("AlpinoCorpusReader"); } }
-export { Deprecated, ReadError, UntrustedJarError } from "./internals";
-export {
-  findFileIter as find_file_iter,
-  isWritable as is_writable,
-  readInt as read_int,
-  readNumber as read_number,
-  readStr as read_str,
-} from "./internals";
 export class AttrDict { constructor(..._a: unknown[]) { unavailable("AttrDict"); } }
 export class BCP47CorpusReader { constructor(..._a: unknown[]) { unavailable("BCP47CorpusReader"); } }
 export class BNCCorpusReader { constructor(..._a: unknown[]) { unavailable("BNCCorpusReader"); } }
@@ -26,13 +24,16 @@ export class BNCWordView { constructor(..._a: unknown[]) { unavailable("BNCWordV
 export { BufferedGzipFile } from "./data";
 export class CHILDESCorpusReader { constructor(..._a: unknown[]) { unavailable("CHILDESCorpusReader"); } }
 export class CategorizedMarkdownCorpusReader { constructor(..._a: unknown[]) { unavailable("CategorizedMarkdownCorpusReader"); } }
-export class ChasenCorpusReader { constructor(..._a: unknown[]) { unavailable("ChasenCorpusReader"); } }
-export class ChasenCorpusView { constructor(..._a: unknown[]) { unavailable("ChasenCorpusView"); } }
 export class CodeBlock { constructor(..._a: unknown[]) { unavailable("CodeBlock"); } }
-export class ConllCorpusReader { constructor(..._a: unknown[]) { unavailable("ConllCorpusReader"); } }
-export class ConllSRLInstance { constructor(..._a: unknown[]) { unavailable("ConllSRLInstance"); } }
-export class ConllSRLInstanceList { constructor(..._a: unknown[]) { unavailable("ConllSRLInstanceList"); } }
 export class CrubadanCorpusReader { constructor(..._a: unknown[]) { unavailable("CrubadanCorpusReader"); } }
+export { Deprecated, ReadError, UntrustedJarError } from "./internals";
+export {
+  findFileIter as find_file_iter,
+  isWritable as is_writable,
+  readInt as read_int,
+  readNumber as read_number,
+  readStr as read_str,
+} from "./internals";
 export class ElementWrapper { constructor(..._a: unknown[]) { unavailable("ElementWrapper"); } }
 export class FramenetCorpusReader { constructor(..._a: unknown[]) { unavailable("FramenetCorpusReader"); } }
 export class FramenetError { constructor(..._a: unknown[]) { unavailable("FramenetError"); } }
@@ -40,8 +41,6 @@ export class Future { constructor(..._a: unknown[]) { unavailable("Future"); } }
 export class IPIPANCorpusReader { constructor(..._a: unknown[]) { unavailable("IPIPANCorpusReader"); } }
 export class IPIPANCorpusView { constructor(..._a: unknown[]) { unavailable("IPIPANCorpusView"); } }
 export class Image { constructor(..._a: unknown[]) { unavailable("Image"); } }
-export class KNBCorpusReader { constructor(..._a: unknown[]) { unavailable("KNBCorpusReader"); } }
-export class LinThesaurusCorpusReader { constructor(..._a: unknown[]) { unavailable("LinThesaurusCorpusReader"); } }
 export class Link { constructor(..._a: unknown[]) { unavailable("Link"); } }
 export class List { constructor(..._a: unknown[]) { unavailable("List"); } }
 export class MTECorpusReader { constructor(..._a: unknown[]) { unavailable("MTECorpusReader"); } }
@@ -88,21 +87,14 @@ export class SemcorWordView { constructor(..._a: unknown[]) { unavailable("Semco
 export class SensevalCorpusReader { constructor(..._a: unknown[]) { unavailable("SensevalCorpusReader"); } }
 export class SensevalCorpusView { constructor(..._a: unknown[]) { unavailable("SensevalCorpusView"); } }
 export class SensevalInstance { constructor(..._a: unknown[]) { unavailable("SensevalInstance"); } }
-export class SinicaTreebankCorpusReader { constructor(..._a: unknown[]) { unavailable("SinicaTreebankCorpusReader"); } }
 export class SpeakerInfo { constructor(..._a: unknown[]) { unavailable("SpeakerInfo"); } }
 export class SpecialList { constructor(..._a: unknown[]) { unavailable("SpecialList"); } }
-export class SwitchboardCorpusReader { constructor(..._a: unknown[]) { unavailable("SwitchboardCorpusReader"); } }
-export class SwitchboardTurn { constructor(..._a: unknown[]) { unavailable("SwitchboardTurn"); } }
 export class TEICorpusView { constructor(..._a: unknown[]) { unavailable("TEICorpusView"); } }
 export class TimitCorpusReader { constructor(..._a: unknown[]) { unavailable("TimitCorpusReader"); } }
-export class ToolboxCorpusReader { constructor(..._a: unknown[]) { unavailable("ToolboxCorpusReader"); } }
 export class VerbnetCorpusReader { constructor(..._a: unknown[]) { unavailable("VerbnetCorpusReader"); } }
 export class XMLCorpusReader { constructor(..._a: unknown[]) { unavailable("XMLCorpusReader"); } }
 export class XMLCorpusView { constructor(..._a: unknown[]) { unavailable("XMLCorpusView"); } }
 export class XML_Tool { constructor(..._a: unknown[]) { unavailable("XML_Tool"); } }
-export class YCOECorpusReader { constructor(..._a: unknown[]) { unavailable("YCOECorpusReader"); } }
-export class YCOEParseCorpusReader { constructor(..._a: unknown[]) { unavailable("YCOEParseCorpusReader"); } }
-export class YCOETaggedCorpusReader { constructor(..._a: unknown[]) { unavailable("YCOETaggedCorpusReader"); } }
 export { ZipFile } from "./pathsec";
 export class comma_separated_string_args { constructor(..._a: unknown[]) { unavailable("comma_separated_string_args"); } }
 export class error { constructor(..._a: unknown[]) { unavailable("error"); } }
@@ -113,7 +105,6 @@ export class read_parse_blankline_block { constructor(..._a: unknown[]) { unavai
 export class restricted_pickle_load { constructor(..._a: unknown[]) { unavailable("restricted_pickle_load"); } }
 export { retrieve } from "./data";
 export class safe_parse { constructor(..._a: unknown[]) { unavailable("safe_parse"); } }
-export class sinica_parse { constructor(..._a: unknown[]) { unavailable("sinica_parse"); } }
 export class switch_chunker { constructor(..._a: unknown[]) { unavailable("switch_chunker"); } }
 export class switch_p_tagger { constructor(..._a: unknown[]) { unavailable("switch_p_tagger"); } }
 export class switch_punkt { constructor(..._a: unknown[]) { unavailable("switch_punkt"); } }
