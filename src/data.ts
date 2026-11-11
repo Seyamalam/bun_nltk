@@ -1,9 +1,10 @@
 // NLTK data — path pointers, streams, resource lookup and URL helpers.
 // Original: nltk/data.py
-import { existsSync, readFileSync, statSync } from "node:fs";
-import { gunzipSync } from "node:zlib";
+import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { gunzipSync, gzipSync } from "node:zlib";
 import { isAbsolute, normalize, resolve as pathResolve, sep } from "node:path";
 import { pyError } from "./internals";
+import { pathsec_open as pathsecOpen, urlopen as pathsecUrlopen, validate_path as pathsecValidatePath } from "./pathsec";
 import { SeekableUnicodeStreamReader as SeekableUnicodeStreamReaderImpl } from "./corpus_stream";
 import { OpenOnDemandZipFile as OpenOnDemandZipFileImpl } from "./zipfile";
 
@@ -53,7 +54,120 @@ export class FileSystemPathPointer extends PathPointer {
   override toString(): string { return this.path; }
 }
 
-export class BufferedGzipFile { constructor(..._a: unknown[]) { unavailable("data.BufferedGzipFile"); } }
+/** nltk.data.BufferedGzipFile — GzipFile subclass for older-release compat.
+ *  Adapted: decompresses lazily into a byte buffer with read/line/seek/peek;
+ *  write buffers until close() (gzip-compresses to `filename` then). */
+export class BufferedGzipFile {
+  readonly name: string | null;
+  private readonly _fileobj: Uint8Array | null;
+  private readonly _mode: string;
+  private _pos = 0;
+  private _buf: Uint8Array | null = null;
+  private _wbuf: Uint8Array[] = [];
+  private _closed = false;
+
+  constructor(filename?: string | null, mode = "rb", _compresslevel = 9, fileobj?: Uint8Array | null) {
+    // NLTK 3.10.3 warns on every construction (Deprecated mixin).
+    process.emitWarning(
+      "Function BufferedGzipFile() has been deprecated.  Use gzip.GzipFile instead as it also uses a buffer.",
+      "DeprecationWarning",
+    );
+    const m = (mode ?? "rb").replace(/[tb]/g, "");
+    if (!["r", "w", "a"].includes(m)) {
+      throw pyError("ValueError", `Invalid mode: '${mode}'`);
+    }
+    this.name = filename ?? null;
+    this._fileobj = fileobj ?? null;
+    this._mode = m;
+    if (m !== "r" && filename == null && fileobj == null) {
+      throw pyError("ValueError", "filename or fileobj required for write mode");
+    }
+    if (m === "a" && fileobj == null && filename != null && existsSync(filename)) {
+      this._wbuf = [new Uint8Array(gunzipSync(readFileSync(filename)))];
+    }
+  }
+
+  private _ensure(): Uint8Array {
+    if (this._mode !== "r") throw pyError("OSError", "file not open for reading");
+    if (this._buf === null) {
+      const raw = this._fileobj ?? new Uint8Array(readFileSync(this.name!));
+      this._buf = new Uint8Array(gunzipSync(Buffer.from(raw)));
+    }
+    return this._buf;
+  }
+
+  get closed(): boolean { return this._closed; }
+  tell(): number { return this._pos; }
+
+  seek(offset: number, whence = 0): number {
+    const buf = this._ensure();
+    const base = whence === 0 ? 0 : whence === 1 ? this._pos : buf.length;
+    const next = base + offset;
+    if (next < 0) throw pyError("OSError", "Negative seek position");
+    this._pos = next;
+    return this._pos;
+  }
+
+  read(size = -1): Uint8Array {
+    const buf = this._ensure();
+    const n = this._pos >= buf.length ? 0 : size < 0 ? buf.length - this._pos : Math.min(size, buf.length - this._pos);
+    const out = buf.subarray(this._pos, this._pos + n);
+    this._pos += n;
+    return new Uint8Array(out);
+  }
+
+  peek(n = 1): Uint8Array {
+    const buf = this._ensure();
+    return new Uint8Array(buf.subarray(this._pos, this._pos + Math.max(n, 1)));
+  }
+
+  readline(size = -1): Uint8Array {
+    const buf = this._ensure();
+    if (this._pos >= buf.length) return new Uint8Array(0);
+    let end = size < 0 ? buf.length : Math.min(buf.length, this._pos + size);
+    const nl = buf.indexOf(0x0a, this._pos);
+    if (nl >= 0 && nl < end) end = nl + 1;
+    const out = new Uint8Array(buf.subarray(this._pos, end));
+    this._pos = end;
+    return out;
+  }
+
+  readlines(sizehint = -1): Uint8Array[] {
+    const out: Uint8Array[] = [];
+    let total = 0;
+    for (;;) {
+      const line = this.readline();
+      if (!line.length) break;
+      out.push(line);
+      if (sizehint > 0 && (total += line.length) >= sizehint) break;
+    }
+    return out;
+  }
+
+  *[Symbol.iterator](): Generator<Uint8Array> {
+    for (;;) { const l = this.readline(); if (!l.length) return; yield l; }
+  }
+
+  /** Oracle swallows the byte count for compat — returns undefined. */
+  write(data: Uint8Array | string): void {
+    if (this._mode === "r") throw pyError("OSError", "file not open for writing");
+    this._wbuf.push(typeof data === "string" ? new TextEncoder().encode(data) : data);
+  }
+
+  close(): void {
+    if (this._closed) return;
+    this._closed = true;
+    if (this._mode !== "r" && this.name != null) {
+      const len = this._wbuf.reduce((n, b) => n + b.length, 0);
+      const raw = new Uint8Array(len);
+      let off = 0;
+      for (const b of this._wbuf) { raw.set(b, off); off += b.length; }
+      writeFileSync(this.name, gzipSync(Buffer.from(raw)));
+    }
+    this._buf = null;
+    this._wbuf = [];
+  }
+}
 
 export class GzipFileSystemPathPointer extends FileSystemPathPointer {
   override open(encoding: string | null = null): SeekableUnicodeStreamReaderImpl {
@@ -191,7 +305,6 @@ export function find(resourceName: string, paths?: string[]): PathPointer {
 function statSafeIsDir(p: string): boolean {
   try { return statSync(p).isDirectory(); } catch { return false; }
 }
-export function retrieve(..._a: unknown[]): never { return unavailable("data.retrieve"); }
 export function load(..._a: unknown[]): never { return unavailable("data.load"); }
 export function showCfg(..._a: unknown[]): never { return unavailable("data.show_cfg"); }
 export function clearCache(): void { /* no-op */ }
@@ -338,3 +451,44 @@ export function gzipOpenUnicode(
 }
 
 export const gzip_open_unicode = gzipOpenUnicode;
+
+/** nltk.data.retrieve — copy a resource to a local file (file/nltk:/http(s)).
+ *  Adapted: async because remote fetches go through pathsec.urlopen. */
+export async function retrieve(
+  resourceUrl: string,
+  options: { filename?: string; verbose?: boolean } = {},
+): Promise<void> {
+  const { verbose = true } = options;
+  let { filename } = options;
+  const normalized = normalizeResourceUrl(resourceUrl);
+  if (filename === undefined) {
+    if (normalized.startsWith("file:")) {
+      filename = normalized.split("/").pop()!;
+    } else {
+      filename = normalized.replace(/^(\w+)?:?.*\//, "");
+    }
+  }
+  if (existsSync(filename)) {
+    throw pyError("ValueError", `File '${pathResolve(filename)}' already exists!`);
+  }
+  if (verbose) console.log(`Retrieving '${normalized}', saving to '${filename}'`);
+
+  // Open input stream (file:// / nltk: / remote URL).
+  let data: Uint8Array;
+  if (normalized.startsWith("http://") || normalized.startsWith("https://")) {
+    const res = await pathsecUrlopen(normalized);
+    data = new Uint8Array(await res.arrayBuffer());
+  } else if (normalized.startsWith("nltk:")) {
+    const ptr = find(normalized.slice(5));
+    const stream = ptr.open(null);
+    data = (stream as unknown as { _data?: Uint8Array })._data ?? new Uint8Array(readFileSync((ptr as unknown as { path: string }).path));
+  } else if (normalized.startsWith("file:")) {
+    data = new Uint8Array(pathsecOpen(normalized.slice(5), "rb", "data.retrieve"));
+  } else {
+    data = new Uint8Array(readFileSync(normalized));
+  }
+
+  // Route the write through pathsec (oracle _secure_open parity).
+  pathsecValidatePath(pathResolve(filename), "data.retrieve");
+  writeFileSync(filename, data);
+}

@@ -2439,6 +2439,17 @@
    "anchor": "pretty_format/repr/pred/label/features match oracle",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: FStructure.read_depgraph on three conll graphs (VB/VBD tense quirk, spec/punct tuple leaves), pretty_format/repr/pred/label/features, to_depgraph node/deps/root reconstruction incl. TOP dummy node, case-insensitive keys, _makeLabel IndexError boundary."
+  },
+  {
+   "id": "data-io-differential",
+   "kind": "differential",
+   "files": [
+    "test/data_retrieve.test.ts",
+    "test/data_oracle.py"
+   ],
+   "anchor": "retrieve copies file:// resource, errors on existing, derives name",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: BufferedGzipFile read/readline/readlines/tell/seek/peek/eof, write-mode None return + write-on-read OSError + invalid-mode ValueError + DeprecationWarning + missing size attr; retrieve file:// copy, exists ValueError, verbose stdout, derived filename."
   }
  ],
  "signatureBindings": [
@@ -94739,29 +94750,31 @@
    "exports": [
     "BufferedGzipFile"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "BufferedGzipFile"
+     "file": "src/data.ts",
+     "anchor": "export class BufferedGzipFile {"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "BufferedGzipFile: data/internal surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (async retrieve, Uint8Array returns, options-object kwargs)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "data-io-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BufferedGzipFile: not implemented."
+     "Behavior oracle-pinned (NLTK 3.10.3): gzip file ops incl. quirks; retrieve copy/exists/verbose/name."
     ]
    },
-   "notes": "Honest gap: nltk.data.BufferedGzipFile not yet ported."
+   "notes": "Real BufferedGzipFile (deprecation warning preserved) + retrieve over pathsec; oracle-pinned."
   },
   {
    "target": "nltk.data.FileSystemPathPointer",
@@ -95031,29 +95044,31 @@
    "exports": [
     "retrieve"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "retrieve"
+     "file": "src/data.ts",
+     "anchor": "export async function retrieve("
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "retrieve: data/internal surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (async retrieve, Uint8Array returns, options-object kwargs)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "data-io-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "retrieve: not implemented."
+     "Behavior oracle-pinned (NLTK 3.10.3): gzip file ops incl. quirks; retrieve copy/exists/verbose/name."
     ]
    },
-   "notes": "Honest gap: nltk.data.retrieve not yet ported."
+   "notes": "Real BufferedGzipFile (deprecation warning preserved) + retrieve over pathsec; oracle-pinned."
   },
   {
    "target": "nltk.data.show_cfg",
