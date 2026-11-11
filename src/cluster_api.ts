@@ -122,7 +122,7 @@ export abstract class ClusterI {
     return Array.from({ length: this.numClusters() }, (_, i) => i);
   }
 
-  clusterName(index: number): number {
+  clusterName<T>(index: T): T {
     return index;
   }
 }

@@ -39,7 +39,7 @@ export function is_rel(s: Set<unknown>): boolean {
 }
 
 /** Port of nltk.sem.evaluate.set2rel. */
-export function set2rel(s: Set<unknown>): Set<unknown[]> {
+export function set2rel(s: Set<unknown>): Set<unknown> {
   // NLTK quirk: strings -> (elem,) tuples, but ints -> bare str(elem) element.
   const out = new Set<unknown>();
   for (const elem of s) {

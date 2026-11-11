@@ -72,7 +72,7 @@ describe("nltk.sem.linearlogic / relextract / hole", () => {
   test("relextract helpers match oracle", () => {
     expect(class_abbrev("LOCATION")).toBe("LOC");
     expect(list2sym(["New", "York"])).toBe("new_york");
-    expect(rtuple({ lcon: false, rcon: false, untagged_filler: "X", subjclass: "PER", subjtext: "John", subjsym: "john", objclass: "LOC", objtext: "York", objsym: "york", filler: "in" })).toBe("[PER: 'John'] 'in' [LOC: 'York']");
+    expect(rtuple({ untagged_filler: "X", subjclass: "PER", subjtext: "John", subjsym: "john", objclass: "LOC", objtext: "York", objsym: "york", filler: "in" })).toBe("[PER: 'John'] 'in' [LOC: 'York']");
   });
   test("hole Constants and hole_readings exported", () => {
     expect(Constants).toBeTruthy();

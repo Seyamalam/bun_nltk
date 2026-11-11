@@ -12,7 +12,7 @@ describe("nltk.cluster oracle parity", () => {
     expect(c.classify([2, 2])).toBe(2);
     expect(c.classify([5.5, 3.5])).toBe(2);
     expect(c.classify([1, 3.1])).toBe(1);
-    const d = c.dendrogram();
+    const d = c.dendrogram()!;
     expect(d.groups(3).map((g) => g.map((l) => l as unknown as number[]))).toEqual([
       [[2, 1]], [[1, 3]], [[5, 3], [6, 4], [2, 1.5]],
     ]);
