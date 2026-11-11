@@ -161,7 +161,7 @@ function tupleStr(t: [string, string | null]): string {
   return t[1] === null ? t[0] : `${t[0]}/${t[1]}`;
 }
 
-function pyRepr(value: unknown): string {
+export function pyRepr(value: unknown): string {
   if (typeof value === "string") return `'${value.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`;
   return String(value);
 }

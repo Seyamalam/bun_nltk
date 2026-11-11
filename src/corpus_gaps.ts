@@ -2,6 +2,11 @@
 // ConcatenatedCorpusView/tagged_treebank_para_block_reader graduated to real
 // implementations; they re-export here so the root route stays stable.
 export { ConcatenatedCorpusView, tagged_treebank_para_block_reader } from "./corpus_view";
+export {
+  ComparativeSentencesCorpusReader, Comparison, IEERCorpusReader, IEERDocument,
+  IndianCorpusReader, IndianCorpusView, PPAttachment, PPAttachmentCorpusReader,
+  ProsConsCorpusReader, Review, ReviewLine, ReviewsCorpusReader, TwitterCorpusReader,
+} from "./corpus_readers2";
 function unavailable(name: string): never { throw new Error(`nltk gap: ${name} is not implemented in the TS runtime`); }
 
 export class AlpinoCorpusReader { constructor(..._a: unknown[]) { unavailable("AlpinoCorpusReader"); } }
@@ -16,8 +21,6 @@ export class CategorizedMarkdownCorpusReader { constructor(..._a: unknown[]) { u
 export class ChasenCorpusReader { constructor(..._a: unknown[]) { unavailable("ChasenCorpusReader"); } }
 export class ChasenCorpusView { constructor(..._a: unknown[]) { unavailable("ChasenCorpusView"); } }
 export class CodeBlock { constructor(..._a: unknown[]) { unavailable("CodeBlock"); } }
-export class ComparativeSentencesCorpusReader { constructor(..._a: unknown[]) { unavailable("ComparativeSentencesCorpusReader"); } }
-export class Comparison { constructor(..._a: unknown[]) { unavailable("Comparison"); } }
 export class ConllCorpusReader { constructor(..._a: unknown[]) { unavailable("ConllCorpusReader"); } }
 export class ConllSRLInstance { constructor(..._a: unknown[]) { unavailable("ConllSRLInstance"); } }
 export class ConllSRLInstanceList { constructor(..._a: unknown[]) { unavailable("ConllSRLInstanceList"); } }
@@ -27,13 +30,9 @@ export class ElementWrapper { constructor(..._a: unknown[]) { unavailable("Eleme
 export class FramenetCorpusReader { constructor(..._a: unknown[]) { unavailable("FramenetCorpusReader"); } }
 export class FramenetError { constructor(..._a: unknown[]) { unavailable("FramenetError"); } }
 export class Future { constructor(..._a: unknown[]) { unavailable("Future"); } }
-export class IEERCorpusReader { constructor(..._a: unknown[]) { unavailable("IEERCorpusReader"); } }
-export class IEERDocument { constructor(..._a: unknown[]) { unavailable("IEERDocument"); } }
 export class IPIPANCorpusReader { constructor(..._a: unknown[]) { unavailable("IPIPANCorpusReader"); } }
 export class IPIPANCorpusView { constructor(..._a: unknown[]) { unavailable("IPIPANCorpusView"); } }
 export class Image { constructor(..._a: unknown[]) { unavailable("Image"); } }
-export class IndianCorpusReader { constructor(..._a: unknown[]) { unavailable("IndianCorpusReader"); } }
-export class IndianCorpusView { constructor(..._a: unknown[]) { unavailable("IndianCorpusView"); } }
 export class KNBCorpusReader { constructor(..._a: unknown[]) { unavailable("KNBCorpusReader"); } }
 export class LinThesaurusCorpusReader { constructor(..._a: unknown[]) { unavailable("LinThesaurusCorpusReader"); } }
 export class Link { constructor(..._a: unknown[]) { unavailable("Link"); } }
@@ -58,8 +57,6 @@ export class NombankInstance { constructor(..._a: unknown[]) { unavailable("Nomb
 export class NombankPointer { constructor(..._a: unknown[]) { unavailable("NombankPointer"); } }
 export class NombankSplitTreePointer { constructor(..._a: unknown[]) { unavailable("NombankSplitTreePointer"); } }
 export class NombankTreePointer { constructor(..._a: unknown[]) { unavailable("NombankTreePointer"); } }
-export class PPAttachment { constructor(..._a: unknown[]) { unavailable("PPAttachment"); } }
-export class PPAttachmentCorpusReader { constructor(..._a: unknown[]) { unavailable("PPAttachmentCorpusReader"); } }
 export class PanLexLiteCorpusReader { constructor(..._a: unknown[]) { unavailable("PanLexLiteCorpusReader"); } }
 export class PanlexLanguage { constructor(..._a: unknown[]) { unavailable("PanlexLanguage"); } }
 export class PanlexSwadeshCorpusReader { constructor(..._a: unknown[]) { unavailable("PanlexSwadeshCorpusReader"); } }
@@ -76,13 +73,9 @@ export class PropbankInstance { constructor(..._a: unknown[]) { unavailable("Pro
 export class PropbankPointer { constructor(..._a: unknown[]) { unavailable("PropbankPointer"); } }
 export class PropbankSplitTreePointer { constructor(..._a: unknown[]) { unavailable("PropbankSplitTreePointer"); } }
 export class PropbankTreePointer { constructor(..._a: unknown[]) { unavailable("PropbankTreePointer"); } }
-export class ProsConsCorpusReader { constructor(..._a: unknown[]) { unavailable("ProsConsCorpusReader"); } }
 export class RTECorpusReader { constructor(..._a: unknown[]) { unavailable("RTECorpusReader"); } }
 export class RTEPair { constructor(..._a: unknown[]) { unavailable("RTEPair"); } }
 export class ReadError { constructor(..._a: unknown[]) { unavailable("ReadError"); } }
-export class Review { constructor(..._a: unknown[]) { unavailable("Review"); } }
-export class ReviewLine { constructor(..._a: unknown[]) { unavailable("ReviewLine"); } }
-export class ReviewsCorpusReader { constructor(..._a: unknown[]) { unavailable("ReviewsCorpusReader"); } }
 export class SemcorCorpusReader { constructor(..._a: unknown[]) { unavailable("SemcorCorpusReader"); } }
 export class SemcorSentence { constructor(..._a: unknown[]) { unavailable("SemcorSentence"); } }
 export class SemcorWordView { constructor(..._a: unknown[]) { unavailable("SemcorWordView"); } }
@@ -97,7 +90,6 @@ export class SwitchboardTurn { constructor(..._a: unknown[]) { unavailable("Swit
 export class TEICorpusView { constructor(..._a: unknown[]) { unavailable("TEICorpusView"); } }
 export class TimitCorpusReader { constructor(..._a: unknown[]) { unavailable("TimitCorpusReader"); } }
 export class ToolboxCorpusReader { constructor(..._a: unknown[]) { unavailable("ToolboxCorpusReader"); } }
-export class TwitterCorpusReader { constructor(..._a: unknown[]) { unavailable("TwitterCorpusReader"); } }
 export class UntrustedJarError { constructor(..._a: unknown[]) { unavailable("UntrustedJarError"); } }
 export class VerbnetCorpusReader { constructor(..._a: unknown[]) { unavailable("VerbnetCorpusReader"); } }
 export class XMLCorpusReader { constructor(..._a: unknown[]) { unavailable("XMLCorpusReader"); } }

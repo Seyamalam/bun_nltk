@@ -18,10 +18,13 @@ import {
 } from "./corpus_api";
 import type { CategorizedInit, EncodingSpec } from "./corpus_api";
 import { WhitespaceTokenizer } from "./tokenizers";
+import { WordPunctTokenizer } from "./tokenizers_treebank";
+import { TweetTokenizer } from "./tokenizers_social";
 import type { TextTokenizerLike } from "./corpus_text_readers";
 import { str2tuple } from "./tag_util";
 import { mapTag } from "./tag_mapping";
-import { SimpleTree, tagstr2tree } from "./corpus_tree";
+import { SimpleTree, tagstr2tree, pyRepr } from "./corpus_tree";
+import { ZipFilePathPointer } from "./data";
 
 // { bracket_parse
 
@@ -516,6 +519,547 @@ export class StringCategoryCorpusReader extends CorpusReader {
 
 function escapeRe(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// { comparative_sents — Jindal & Liu comparative sentence dataset
+
+const CS_STARS = /^\*+\n?$/;
+const CS_COMPARISON = /<cs-[1234]>/g;
+const CS_CLOSE_COMPARISON = /<\/cs-[1234]>/;
+const CS_GRAD_COMPARISON = /<cs-[123]>/g;
+const CS_NON_GRAD_COMPARISON = /<cs-4>/g;
+const CS_ENTITIES_FEATS = /(\d)_((?:[.\w\s/-](?!\d_))+)/g;
+const CS_ENTITIES_FEATS_TEST = /(\d)_((?:[.\w\s/-](?!\d_))+)/;
+const CS_KEYWORD = /\(([^()]*)\)\n?$/;
+const CS_COMP_TYPE = /<cs-(\d)>/;
+
+export class Comparison {
+  constructor(
+    public text: unknown = null,
+    public comp_type: number | null = null,
+    public entity_1: string | null = null,
+    public entity_2: string | null = null,
+    public feature: string | null = null,
+    public keyword: string | null = null) {}
+  repr(): string {
+    return `Comparison(text="${this.text}", comp_type=${this.comp_type}, ` +
+      `entity_1="${this.entity_1}", entity_2="${this.entity_2}", ` +
+      `feature="${this.feature}", keyword="${this.keyword}")`;
+  }
+}
+
+export class ComparativeSentencesCorpusReader extends CorpusReader {
+  private _wordTokenizer: TextTokenizerLike;
+  private _sentTokenizer: TextTokenizerLike | null;
+
+  constructor(root: string | PathPointer, fileids: string | string[],
+    wordTokenizer: TextTokenizerLike = new WhitespaceTokenizer(),
+    sentTokenizer: TextTokenizerLike | null = null,
+    encoding: EncodingSpec = "utf8") {
+    super(root, fileids, encoding);
+    this._wordTokenizer = wordTokenizer;
+    this._sentTokenizer = sentTokenizer;
+  }
+
+  comparisons(fileids?: string | string[] | null): unknown {
+    let ids: string | string[] = fileids ?? this._fileids;
+    if (typeof ids === "string") ids = [ids];
+    return concat((this.abspaths(ids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readComparisonBlock(s), 0, e)));
+  }
+
+  keywords(fileids?: string | string[] | null): Set<string> {
+    let ids: string | string[] = fileids ?? this._fileids;
+    if (typeof ids === "string") ids = [ids];
+    const all = concat((this.abspaths(ids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readKeywordBlock(s), 0, e)));
+    const out = new Set<string>();
+    for (const k of all as Iterable<string | null>) if (k) out.add(k.toLowerCase());
+    return out;
+  }
+
+  keywords_readme(): string[] {
+    const rawText = this.open("listOfkeywords.txt").read();
+    const keywords: string[] = [];
+    for (const line of rawText.split("\n")) {
+      if (line === "" || line.startsWith("//")) continue;
+      keywords.push(line.trim());
+    }
+    return keywords;
+  }
+
+  keywordsReadme(): string[] { return this.keywords_readme(); }
+
+  sents(fileids?: string | string[] | null): unknown {
+    return concat((this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readSentBlock(s), 0, e)));
+  }
+
+  words(fileids?: string | string[] | null): unknown {
+    return concat((this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readWordBlock(s), 0, e)));
+  }
+
+  private readComparisonBlock(stream: SeekableUnicodeStreamReader): Comparison[] {
+    for (;;) {
+      let line = stream.readline();
+      if (line === "") return [];
+      const comparisonTags = line.match(CS_COMPARISON);
+      if (comparisonTags !== null) {
+        const gradComparisons = line.match(CS_GRAD_COMPARISON) ?? [];
+        const nonGradComparisons = line.match(CS_NON_GRAD_COMPARISON) ?? [];
+        let comparisonText: unknown = stream.readline().trim();
+        if (this._wordTokenizer) comparisonText = this._wordTokenizer.tokenize(comparisonText as string);
+        stream.readline();
+        const bundle: Comparison[] = [];
+        for (const comp of gradComparisons) {
+          const compType = parseInt(CS_COMP_TYPE.exec(comp)![1]!, 10);
+          const comparison = new Comparison(comparisonText, compType);
+          line = stream.readline();
+          for (const m of line.matchAll(CS_ENTITIES_FEATS)) {
+            if (m[1] === "1") comparison.entity_1 = m[2]!.trim();
+            else if (m[1] === "2") comparison.entity_2 = m[2]!.trim();
+            else if (m[1] === "3") comparison.feature = m[2]!.trim();
+          }
+          const kw = CS_KEYWORD.exec(line);
+          if (kw !== null) comparison.keyword = kw[1]!;
+          bundle.push(comparison);
+        }
+        for (const comp of nonGradComparisons) {
+          const compType = parseInt(CS_COMP_TYPE.exec(comp)![1]!, 10);
+          bundle.push(new Comparison(comparisonText, compType));
+        }
+        return bundle;
+      }
+    }
+  }
+
+  private readKeywordBlock(stream: SeekableUnicodeStreamReader): Array<string | null> {
+    return this.readComparisonBlock(stream).map((c) => c.keyword);
+  }
+
+  private readSentBlock(stream: SeekableUnicodeStreamReader): string[][] {
+    for (;;) {
+      let line = stream.readline();
+      if (CS_STARS.test(line)) {
+        for (;;) {
+          line = stream.readline();
+          if (CS_STARS.test(line)) break;
+        }
+        continue;
+      }
+      if (!/<cs-[1234]>/.test(line) && !CS_ENTITIES_FEATS_TEST.test(line)
+        && !CS_CLOSE_COMPARISON.test(line)) {
+        if (this._sentTokenizer !== null) {
+          return this._sentTokenizer.tokenize(line).map((s) => this._wordTokenizer.tokenize(s));
+        }
+        return [this._wordTokenizer.tokenize(line)];
+      }
+    }
+  }
+
+  private readWordBlock(stream: SeekableUnicodeStreamReader): string[] {
+    const words: string[] = [];
+    for (const sent of this.readSentBlock(stream)) words.push(...sent);
+    return words;
+  }
+}
+
+// { pros_cons — Bing Liu Pros/Cons dataset
+
+const PROSCONS_SENT = /^(?!\n)\s*<(Pros|Cons)>(.*)<\/(?:Pros|Cons)>/;
+
+export class ProsConsCorpusReader extends CategorizedCorpusReader {
+  private _wordTokenizer: TextTokenizerLike;
+
+  constructor(root: string | PathPointer, fileids: string | string[],
+    wordTokenizer: TextTokenizerLike = new WordPunctTokenizer(),
+    encoding: EncodingSpec = "utf8", catInit?: CategorizedInit) {
+    super(root, fileids, encoding, null, catInit);
+    this._wordTokenizer = wordTokenizer;
+  }
+
+  sents(fileids?: string | string[] | null, categories?: string | string[] | null): unknown {
+    const ids = this._resolve(fileids, categories);
+    return concat((this.abspaths(ids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readSentBlock(s), 0, e)));
+  }
+
+  words(fileids?: string | string[] | null, categories?: string | string[] | null): unknown {
+    const ids = this._resolve(fileids, categories);
+    return concat((this.abspaths(ids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readWordBlock(s), 0, e)));
+  }
+
+  private readSentBlock(stream: SeekableUnicodeStreamReader): string[][] {
+    const sents: string[][] = [];
+    for (let i = 0; i < 20; i++) {
+      const line = stream.readline();
+      if (line === "") continue;
+      const m = PROSCONS_SENT.exec(line);
+      if (m !== null) sents.push(this._wordTokenizer.tokenize(m[2]!.trim()));
+    }
+    return sents;
+  }
+
+  private readWordBlock(stream: SeekableUnicodeStreamReader): string[] {
+    const words: string[] = [];
+    for (const sent of this.readSentBlock(stream)) words.push(...sent);
+    return words;
+  }
+}
+
+// { ppattach — Ratnaparkhi prepositional phrase attachment corpus
+
+export class PPAttachment {
+  constructor(
+    readonly sent: string, readonly verb: string, readonly noun1: string,
+    readonly prep: string, readonly noun2: string, readonly attachment: string) {}
+  repr(): string {
+    return `PPAttachment(sent=${pyRepr(this.sent)}, verb=${pyRepr(this.verb)}, ` +
+      `noun1=${pyRepr(this.noun1)}, prep=${pyRepr(this.prep)}, ` +
+      `noun2=${pyRepr(this.noun2)}, attachment=${pyRepr(this.attachment)})`;
+  }
+}
+
+export class PPAttachmentCorpusReader extends CorpusReader {
+  attachments(fileids: string | string[]): unknown {
+    return concat((this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readObjBlock(s), 0, e)));
+  }
+
+  tuples(fileids: string | string[]): unknown {
+    return concat((this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readTupleBlock(s), 0, e)));
+  }
+
+  private readTupleBlock(stream: SeekableUnicodeStreamReader): string[][] {
+    const line = stream.readline();
+    if (line === "") return [];
+    const trimmed = line.trim();
+    return [trimmed === "" ? [] : trimmed.split(/\s+/)];
+  }
+
+  private readObjBlock(stream: SeekableUnicodeStreamReader): PPAttachment[] {
+    const line = stream.readline();
+    if (line === "") return [];
+    const trimmed = line.trim();
+    const fields = trimmed === "" ? [] : trimmed.split(/\s+/);
+    if (fields.length !== 6) {
+      throw pyError("TypeError", `PPAttachment() takes 6 fields, ${fields.length} given`);
+    }
+    return [new PPAttachment(fields[0]!, fields[1]!, fields[2]!, fields[3]!, fields[4]!, fields[5]!)];
+  }
+}
+
+// { ieer — NIST 1999 IE-ER corpus
+
+export const titles: Record<string, string> = {
+  "APW_19980314": "Associated Press Weekly, 14 March 1998",
+  "APW_19980424": "Associated Press Weekly, 24 April 1998",
+  "APW_19980429": "Associated Press Weekly, 29 April 1998",
+  "NYT_19980315": "New York Times, 15 March 1998",
+  "NYT_19980403": "New York Times, 3 April 1998",
+  "NYT_19980407": "New York Times, 7 April 1998",
+};
+
+export const documents: string[] = Object.keys(titles).sort();
+
+export class IEERDocument {
+  constructor(
+    public text: unknown,
+    public docno: string | null = null,
+    public doctype: string | null = null,
+    public date_time: string | null = null,
+    public headline: unknown = "") {}
+
+  repr(): string {
+    let headline: string;
+    if (this.headline) {
+      headline = (this.headline as { leaves(): string[] }).leaves().join(" ");
+    } else {
+      const leaves = (this.text as { leaves(): string[] }).leaves();
+      headline = leaves.filter((w) => w.slice(0, 1) !== "<").slice(0, 12).join(" ") + "...";
+    }
+    if (this.docno !== null) return `<IEERDocument ${this.docno}: ${pyRepr(headline)}>`;
+    return `<IEERDocument: ${pyRepr(headline)}>`;
+  }
+}
+
+export class IEERCorpusReader extends CorpusReader {
+  docs(fileids?: string | string[] | null): unknown {
+    return concat((this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readBlock(s), 0, e)));
+  }
+
+  parsed_docs(fileids?: string | string[] | null): unknown {
+    return concat((this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readParsedBlock(s), 0, e)));
+  }
+
+  parsedDocs(fileids?: string | string[] | null): unknown { return this.parsed_docs(fileids); }
+
+  private readParsedBlock(stream: SeekableUnicodeStreamReader): IEERDocument[] {
+    return this.readBlock(stream).map((doc) => this.parse(doc));
+  }
+
+  private parse(_doc: string): IEERDocument {
+    throw pyError("NotImplementedError", "nltk.chunk.ieerstr2tree is not ported — parsed_docs unavailable");
+  }
+
+  private readBlock(stream: SeekableUnicodeStreamReader): string[] {
+    const out: string[] = [];
+    let line: string;
+    for (;;) {
+      line = stream.readline();
+      if (line === "") return [];
+      if (line.trim() === "<DOC>") break;
+    }
+    out.push(line);
+    for (;;) {
+      line = stream.readline();
+      if (line === "") break;
+      out.push(line);
+      if (line.trim() === "</DOC>") break;
+    }
+    return [out.join("\n")];
+  }
+}
+
+// { reviews — Hu & Liu customer review data
+
+const REV_TITLE = /^\[t\](.*)\n?$/;
+const REV_FEATURES = /(\w+(?:\s\w+){0,50})\[((?:\+|-)\d)\]/g;
+const REV_NOTES = /\[(?!t)(p|u|s|cc|cs)\]/g;
+const REV_SENT = /##(.*)\n?$/;
+
+export class ReviewLine {
+  constructor(
+    public sent: unknown,
+    public features: string[][] = [],
+    public notes: string[] = []) {}
+  repr(): string {
+    return `ReviewLine(features=${JSON.stringify(this.features)}, notes=${JSON.stringify(this.notes)}, sent=${JSON.stringify(this.sent)})`;
+  }
+}
+
+export class Review {
+  review_lines: ReviewLine[];
+  constructor(public title: string | null = null, review_lines: ReviewLine[] | null = null) {
+    this.review_lines = review_lines ?? [];
+  }
+  add_line(reviewLine: ReviewLine): void {
+    if (!(reviewLine instanceof ReviewLine)) throw pyError("AssertionError", "");
+    this.review_lines.push(reviewLine);
+  }
+  addLine(reviewLine: ReviewLine): void { this.add_line(reviewLine); }
+  features(): string[][] {
+    return this.review_lines.flatMap((l) => l.features);
+  }
+  sents(): unknown[] {
+    return this.review_lines.map((l) => l.sent);
+  }
+  repr(): string {
+    return `Review(title="${this.title}", review_lines=${JSON.stringify(this.review_lines)})`;
+  }
+}
+
+export class ReviewsCorpusReader extends CorpusReader {
+  private _wordTokenizer: TextTokenizerLike;
+
+  constructor(root: string | PathPointer, fileids: string | string[],
+    wordTokenizer: TextTokenizerLike = new WordPunctTokenizer(),
+    encoding: EncodingSpec = "utf8") {
+    super(root, fileids, encoding);
+    this._wordTokenizer = wordTokenizer;
+  }
+
+  features(fileids?: string | string[] | null): unknown {
+    let ids: string | string[] = fileids ?? this._fileids;
+    if (typeof ids === "string") ids = [ids];
+    return concat((this.abspaths(ids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readFeatures(s), 0, e)));
+  }
+
+  reviews(fileids?: string | string[] | null): unknown {
+    const ids = fileids ?? this._fileids;
+    return concat((this.abspaths(ids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readReviewBlock(s), 0, e)));
+  }
+
+  sents(fileids?: string | string[] | null): unknown {
+    return concat((this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readSentBlock(s), 0, e)));
+  }
+
+  words(fileids?: string | string[] | null): unknown {
+    return concat((this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readWordBlock(s), 0, e)));
+  }
+
+  private readFeatures(stream: SeekableUnicodeStreamReader): string[][] {
+    const features: string[][] = [];
+    for (let i = 0; i < 20; i++) {
+      const line = stream.readline();
+      if (line === "") return features;
+      for (const m of line.matchAll(REV_FEATURES)) features.push([m[1]!, m[2]!]);
+    }
+    return features;
+  }
+
+  private readReviewBlock(stream: SeekableUnicodeStreamReader): Review[] {
+    let line: string;
+    let review: Review;
+    for (;;) {
+      line = stream.readline();
+      if (line === "") return [];
+      const m = REV_TITLE.exec(line);
+      if (m !== null) {
+        review = new Review(m[1]!.trim());
+        break;
+      }
+    }
+    for (;;) {
+      const oldpos = stream.tell();
+      line = stream.readline();
+      if (line === "") return [review];
+      if (REV_TITLE.test(line)) {
+        stream.seek(oldpos);
+        return [review];
+      }
+      const feats: string[][] = [];
+      for (const m of line.matchAll(REV_FEATURES)) feats.push([m[1]!, m[2]!]);
+      const notes: string[] = [];
+      for (const m of line.matchAll(REV_NOTES)) notes.push(m[1]!);
+      const sentM = REV_SENT.exec(line);
+      const sent: unknown = sentM !== null ? this._wordTokenizer.tokenize(sentM[1]!) : [];
+      review.add_line(new ReviewLine(sent, feats, notes));
+    }
+  }
+
+  private readSentBlock(stream: SeekableUnicodeStreamReader): unknown[] {
+    const sents: unknown[] = [];
+    for (const review of this.readReviewBlock(stream)) sents.push(...review.sents());
+    return sents;
+  }
+
+  private readWordBlock(stream: SeekableUnicodeStreamReader): string[] {
+    const words: string[] = [];
+    for (let i = 0; i < 20; i++) {
+      const line = stream.readline();
+      const m = REV_SENT.exec(line);
+      if (m !== null) words.push(...this._wordTokenizer.tokenize(m[1]!));
+    }
+    return words;
+  }
+}
+
+// { indian — Indian POS-tagged corpora, one sentence per line
+
+export class IndianCorpusReader extends CorpusReader {
+  words(fileids?: string | string[] | null): unknown {
+    return concat((this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new IndianCorpusView(f, e, false, false)));
+  }
+
+  tagged_words(fileids?: string | string[] | null, tagset: string | null = null): unknown {
+    const tagMapping = tagset !== null && tagset !== this._tagset
+      ? (t: string) => mapTag(this._tagset!, tagset, t) : null;
+    return concat((this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new IndianCorpusView(f, e, true, false, tagMapping)));
+  }
+
+  taggedWords(fileids?: string | string[] | null, tagset: string | null = null): unknown {
+    return this.tagged_words(fileids, tagset);
+  }
+
+  sents(fileids?: string | string[] | null): unknown {
+    return concat((this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new IndianCorpusView(f, e, false, true)));
+  }
+
+  tagged_sents(fileids?: string | string[] | null, tagset: string | null = null): unknown {
+    const tagMapping = tagset !== null && tagset !== this._tagset
+      ? (t: string) => mapTag(this._tagset!, tagset, t) : null;
+    return concat((this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new IndianCorpusView(f, e, true, true, tagMapping)));
+  }
+
+  taggedSents(fileids?: string | string[] | null, tagset: string | null = null): unknown {
+    return this.tagged_sents(fileids, tagset);
+  }
+}
+
+export class IndianCorpusView extends StreamBackedCorpusView<unknown> {
+  constructor(corpusFile: string | PathPointer, encoding: string | null,
+    private _tagged: boolean, private _groupBySent: boolean,
+    private _tagMappingFunction: ((t: string) => string) | null = null) {
+    super(corpusFile, undefined, 0, encoding);
+    this.read_block = (stream) => this.readBlock(stream);
+  }
+
+  private readBlock(stream: SeekableUnicodeStreamReader): unknown[] {
+    const line = stream.readline();
+    if (line.startsWith("<")) return [];
+    const trimmed = line.trim();
+    let sent: unknown[] = (trimmed === "" ? [] : trimmed.split(/\s+/))
+      .map((w) => str2tuple(w, "_"));
+    if (this._tagMappingFunction !== null) {
+      const fn = this._tagMappingFunction;
+      sent = (sent as Array<[string, string]>).map(([w, t]) => [w, fn(t)]);
+    }
+    if (!this._tagged) sent = (sent as Array<[string, unknown]>).map(([w]) => w);
+    if (this._groupBySent) return [sent];
+    return sent;
+  }
+}
+
+// { twitter — line-delimited JSON tweets
+
+export class TwitterCorpusReader extends CorpusReader {
+  private _wordTokenizer: TextTokenizerLike;
+
+  constructor(root: string | PathPointer, fileids: string | string[] = ".*",
+    wordTokenizer: TextTokenizerLike = new TweetTokenizer(), encoding: EncodingSpec = "utf8") {
+    super(root, fileids, encoding);
+    for (const path of this.abspaths(this._fileids) as PathPointer[]) {
+      if (path instanceof ZipFilePathPointer) continue;
+      if (path.file_size() === 0) {
+        throw pyError("ValueError", `File ${path} is empty`);
+      }
+    }
+    this._wordTokenizer = wordTokenizer;
+  }
+
+  docs(fileids?: string | string[] | null): unknown {
+    return concat((this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
+      .map(([f, e]) => new StreamBackedCorpusView(f, (s) => this.readTweets(s), 0, e)));
+  }
+
+  strings(fileids?: string | string[] | null): unknown[] {
+    const fulltweets = this.docs(fileids) as Iterable<Record<string, unknown>>;
+    const tweets: unknown[] = [];
+    for (const jsono of fulltweets) {
+      if (!("text" in jsono)) continue;
+      tweets.push(jsono["text"]);
+    }
+    return tweets;
+  }
+
+  tokenized(fileids?: string | string[] | null): string[][] {
+    const tweets = this.strings(fileids) as string[];
+    return tweets.map((t) => this._wordTokenizer.tokenize(t));
+  }
+
+  private readTweets(stream: SeekableUnicodeStreamReader): unknown[] {
+    const tweets: unknown[] = [];
+    for (let i = 0; i < 10; i++) {
+      const line = stream.readline();
+      if (line === "") return tweets;
+      tweets.push(JSON.parse(line));
+    }
+    return tweets;
+  }
 }
 
 export { read_whitespace_block };

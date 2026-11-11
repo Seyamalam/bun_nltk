@@ -49642,29 +49642,31 @@
    "exports": [
     "ComparativeSentencesCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ComparativeSentencesCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class ComparativeSentencesCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "ComparativeSentencesCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "comparisons/keywords/sents/words pinned vs NLTK 3.10.3 on a synthetic labeled corpus incl. stars-section skipping and cs-1..4 typing. keywords_readme needs listOfkeywords.txt."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ComparativeSentencesCorpusReader: not implemented in the TS runtime."
+     "comparisons/keywords/sents/words pinned vs NLTK 3.10.3 on a synthetic labeled corpus incl. stars-section skipping and cs-1..4 typing. keywords_readme needs listOfkeywords.txt."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.ComparativeSentencesCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.ComparativeSentencesCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.ConllChunkCorpusReader",
@@ -49879,29 +49881,31 @@
    "exports": [
     "IEERCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "IEERCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class IEERCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "IEERCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "docs() pinned vs NLTK 3.10.3 on a synthetic <DOC> file. parsed_docs stays gap: requires nltk.chunk.ieerstr2tree (chunk machinery, unported)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IEERCorpusReader: not implemented in the TS runtime."
+     "docs() pinned vs NLTK 3.10.3 on a synthetic <DOC> file. parsed_docs stays gap: requires nltk.chunk.ieerstr2tree (chunk machinery, unported)."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.IEERCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.IEERCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.IPIPANCorpusReader",
@@ -49937,29 +49941,31 @@
    "exports": [
     "IndianCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "IndianCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class IndianCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "IndianCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "words/tagged_words/sents/tagged_sents pinned vs NLTK 3.10.3 incl. blank-line empty-sent and \"<\"-skip quirks. tagset remap path pinned without universal_tagset data."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IndianCorpusReader: not implemented in the TS runtime."
+     "words/tagged_words/sents/tagged_sents pinned vs NLTK 3.10.3 incl. blank-line empty-sent and \"<\"-skip quirks. tagset remap path pinned without universal_tagset data."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.IndianCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.IndianCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.KNBCorpusReader",
@@ -50287,29 +50293,31 @@
    "exports": [
     "PPAttachmentCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "PPAttachmentCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class PPAttachmentCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "PPAttachmentCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "tuples/attachments pinned vs NLTK 3.10.3; fileids arg required like NLTK."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PPAttachmentCorpusReader: not implemented in the TS runtime."
+     "tuples/attachments pinned vs NLTK 3.10.3; fileids arg required like NLTK."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.PPAttachmentCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.PPAttachmentCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.PanLexLiteCorpusReader",
@@ -50493,29 +50501,31 @@
    "exports": [
     "ProsConsCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ProsConsCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class ProsConsCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "ProsConsCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "categories/sents/words pinned vs NLTK 3.10.3 on synthetic Integrated{Pros,Cons}.txt with WordPunctTokenizer."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ProsConsCorpusReader: not implemented in the TS runtime."
+     "categories/sents/words pinned vs NLTK 3.10.3 on synthetic Integrated{Pros,Cons}.txt with WordPunctTokenizer."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.ProsConsCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.ProsConsCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.RTECorpusReader",
@@ -50580,29 +50590,31 @@
    "exports": [
     "ReviewsCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ReviewsCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class ReviewsCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "ReviewsCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "features/reviews/sents/words pinned vs NLTK 3.10.3 incl. [t] title rewind and feature/note/##sent annotation parsing."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ReviewsCorpusReader: not implemented in the TS runtime."
+     "features/reviews/sents/words pinned vs NLTK 3.10.3 incl. [t] title rewind and feature/note/##sent annotation parsing."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.ReviewsCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.ReviewsCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.SemcorCorpusReader",
@@ -51021,29 +51033,31 @@
    "exports": [
     "TwitterCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "TwitterCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class TwitterCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "TwitterCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "docs/strings/tokenized pinned vs NLTK 3.10.3 incl. empty-file ValueError and missing-text skip."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TwitterCorpusReader: not implemented in the TS runtime."
+     "docs/strings/tokenized pinned vs NLTK 3.10.3 incl. empty-file ValueError and missing-text skip."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.TwitterCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.TwitterCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.UdhrCorpusReader",
@@ -51803,29 +51817,31 @@
    "exports": [
     "ComparativeSentencesCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ComparativeSentencesCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class ComparativeSentencesCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "ComparativeSentencesCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "comparisons/keywords/sents/words pinned vs NLTK 3.10.3 on a synthetic labeled corpus incl. stars-section skipping and cs-1..4 typing. keywords_readme needs listOfkeywords.txt."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ComparativeSentencesCorpusReader: not implemented in the TS runtime."
+     "comparisons/keywords/sents/words pinned vs NLTK 3.10.3 on a synthetic labeled corpus incl. stars-section skipping and cs-1..4 typing. keywords_readme needs listOfkeywords.txt."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.ComparativeSentencesCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.europarl_raw.ComparativeSentencesCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.europarl_raw.ConllChunkCorpusReader",
@@ -52040,29 +52056,31 @@
    "exports": [
     "IEERCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "IEERCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class IEERCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "IEERCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "docs() pinned vs NLTK 3.10.3 on a synthetic <DOC> file. parsed_docs stays gap: requires nltk.chunk.ieerstr2tree (chunk machinery, unported)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IEERCorpusReader: not implemented in the TS runtime."
+     "docs() pinned vs NLTK 3.10.3 on a synthetic <DOC> file. parsed_docs stays gap: requires nltk.chunk.ieerstr2tree (chunk machinery, unported)."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.IEERCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.europarl_raw.IEERCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.europarl_raw.IPIPANCorpusReader",
@@ -52098,29 +52116,31 @@
    "exports": [
     "IndianCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "IndianCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class IndianCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "IndianCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "words/tagged_words/sents/tagged_sents pinned vs NLTK 3.10.3 incl. blank-line empty-sent and \"<\"-skip quirks. tagset remap path pinned without universal_tagset data."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IndianCorpusReader: not implemented in the TS runtime."
+     "words/tagged_words/sents/tagged_sents pinned vs NLTK 3.10.3 incl. blank-line empty-sent and \"<\"-skip quirks. tagset remap path pinned without universal_tagset data."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.IndianCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.europarl_raw.IndianCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.europarl_raw.KNBCorpusReader",
@@ -52448,29 +52468,31 @@
    "exports": [
     "PPAttachmentCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "PPAttachmentCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class PPAttachmentCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "PPAttachmentCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "tuples/attachments pinned vs NLTK 3.10.3; fileids arg required like NLTK."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PPAttachmentCorpusReader: not implemented in the TS runtime."
+     "tuples/attachments pinned vs NLTK 3.10.3; fileids arg required like NLTK."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.PPAttachmentCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.europarl_raw.PPAttachmentCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.europarl_raw.PanLexLiteCorpusReader",
@@ -52654,29 +52676,31 @@
    "exports": [
     "ProsConsCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ProsConsCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class ProsConsCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "ProsConsCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "categories/sents/words pinned vs NLTK 3.10.3 on synthetic Integrated{Pros,Cons}.txt with WordPunctTokenizer."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ProsConsCorpusReader: not implemented in the TS runtime."
+     "categories/sents/words pinned vs NLTK 3.10.3 on synthetic Integrated{Pros,Cons}.txt with WordPunctTokenizer."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.ProsConsCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.europarl_raw.ProsConsCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.europarl_raw.RTECorpusReader",
@@ -52712,29 +52736,31 @@
    "exports": [
     "ReviewsCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ReviewsCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class ReviewsCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "ReviewsCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "features/reviews/sents/words pinned vs NLTK 3.10.3 incl. [t] title rewind and feature/note/##sent annotation parsing."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ReviewsCorpusReader: not implemented in the TS runtime."
+     "features/reviews/sents/words pinned vs NLTK 3.10.3 incl. [t] title rewind and feature/note/##sent annotation parsing."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.ReviewsCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.europarl_raw.ReviewsCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.europarl_raw.SemcorCorpusReader",
@@ -53153,29 +53179,31 @@
    "exports": [
     "TwitterCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "TwitterCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class TwitterCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "TwitterCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "docs/strings/tokenized pinned vs NLTK 3.10.3 incl. empty-file ValueError and missing-text skip."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TwitterCorpusReader: not implemented in the TS runtime."
+     "docs/strings/tokenized pinned vs NLTK 3.10.3 incl. empty-file ValueError and missing-text skip."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.TwitterCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.europarl_raw.TwitterCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.europarl_raw.UdhrCorpusReader",
@@ -53906,29 +53934,31 @@
    "exports": [
     "ComparativeSentencesCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ComparativeSentencesCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class ComparativeSentencesCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "ComparativeSentencesCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "comparisons/keywords/sents/words pinned vs NLTK 3.10.3 on a synthetic labeled corpus incl. stars-section skipping and cs-1..4 typing. keywords_readme needs listOfkeywords.txt."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ComparativeSentencesCorpusReader: not implemented in the TS runtime."
+     "comparisons/keywords/sents/words pinned vs NLTK 3.10.3 on a synthetic labeled corpus incl. stars-section skipping and cs-1..4 typing. keywords_readme needs listOfkeywords.txt."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.ComparativeSentencesCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.ComparativeSentencesCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.ConllChunkCorpusReader",
@@ -54143,29 +54173,31 @@
    "exports": [
     "IEERCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "IEERCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class IEERCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "IEERCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "docs() pinned vs NLTK 3.10.3 on a synthetic <DOC> file. parsed_docs stays gap: requires nltk.chunk.ieerstr2tree (chunk machinery, unported)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IEERCorpusReader: not implemented in the TS runtime."
+     "docs() pinned vs NLTK 3.10.3 on a synthetic <DOC> file. parsed_docs stays gap: requires nltk.chunk.ieerstr2tree (chunk machinery, unported)."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.IEERCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.IEERCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.IPIPANCorpusReader",
@@ -54201,29 +54233,31 @@
    "exports": [
     "IndianCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "IndianCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class IndianCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "IndianCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "words/tagged_words/sents/tagged_sents pinned vs NLTK 3.10.3 incl. blank-line empty-sent and \"<\"-skip quirks. tagset remap path pinned without universal_tagset data."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IndianCorpusReader: not implemented in the TS runtime."
+     "words/tagged_words/sents/tagged_sents pinned vs NLTK 3.10.3 incl. blank-line empty-sent and \"<\"-skip quirks. tagset remap path pinned without universal_tagset data."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.IndianCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.IndianCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.KNBCorpusReader",
@@ -54520,29 +54554,31 @@
    "exports": [
     "PPAttachmentCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "PPAttachmentCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class PPAttachmentCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "PPAttachmentCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "tuples/attachments pinned vs NLTK 3.10.3; fileids arg required like NLTK."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PPAttachmentCorpusReader: not implemented in the TS runtime."
+     "tuples/attachments pinned vs NLTK 3.10.3; fileids arg required like NLTK."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.PPAttachmentCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.PPAttachmentCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.PanLexLiteCorpusReader",
@@ -54726,29 +54762,31 @@
    "exports": [
     "ProsConsCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ProsConsCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class ProsConsCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "ProsConsCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "categories/sents/words pinned vs NLTK 3.10.3 on synthetic Integrated{Pros,Cons}.txt with WordPunctTokenizer."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ProsConsCorpusReader: not implemented in the TS runtime."
+     "categories/sents/words pinned vs NLTK 3.10.3 on synthetic Integrated{Pros,Cons}.txt with WordPunctTokenizer."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.ProsConsCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.ProsConsCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.RTECorpusReader",
@@ -54784,29 +54822,31 @@
    "exports": [
     "ReviewsCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ReviewsCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class ReviewsCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "ReviewsCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "features/reviews/sents/words pinned vs NLTK 3.10.3 incl. [t] title rewind and feature/note/##sent annotation parsing."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ReviewsCorpusReader: not implemented in the TS runtime."
+     "features/reviews/sents/words pinned vs NLTK 3.10.3 incl. [t] title rewind and feature/note/##sent annotation parsing."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.ReviewsCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.ReviewsCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.SemcorCorpusReader",
@@ -55225,29 +55265,31 @@
    "exports": [
     "TwitterCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "TwitterCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class TwitterCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "TwitterCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "docs/strings/tokenized pinned vs NLTK 3.10.3 incl. empty-file ValueError and missing-text skip."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TwitterCorpusReader: not implemented in the TS runtime."
+     "docs/strings/tokenized pinned vs NLTK 3.10.3 incl. empty-file ValueError and missing-text skip."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.TwitterCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.TwitterCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.UdhrCorpusReader",
@@ -62283,58 +62325,62 @@
    "exports": [
     "ComparativeSentencesCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ComparativeSentencesCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class ComparativeSentencesCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "ComparativeSentencesCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "comparisons/keywords/sents/words pinned vs NLTK 3.10.3 on a synthetic labeled corpus incl. stars-section skipping and cs-1..4 typing. keywords_readme needs listOfkeywords.txt."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ComparativeSentencesCorpusReader: not implemented in the TS runtime."
+     "comparisons/keywords/sents/words pinned vs NLTK 3.10.3 on a synthetic labeled corpus incl. stars-section skipping and cs-1..4 typing. keywords_readme needs listOfkeywords.txt."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.comparative_sents.ComparativeSentencesCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.comparative_sents.ComparativeSentencesCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.comparative_sents.Comparison",
    "exports": [
     "Comparison"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "Comparison"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class Comparison"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "Comparison: corpus reader surface not yet ported; honest stub throws."
+     "Data holder; field population pinned inside ComparativeSentencesCorpusReader comparisons()."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Comparison: not implemented in the TS runtime."
+     "Data holder; field population pinned inside ComparativeSentencesCorpusReader comparisons()."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.comparative_sents.Comparison not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.comparative_sents.Comparison onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.comparative_sents.ConcatenatedCorpusView",
@@ -67201,58 +67247,62 @@
    "exports": [
     "IEERCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "IEERCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class IEERCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "IEERCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "docs() pinned vs NLTK 3.10.3 on a synthetic <DOC> file. parsed_docs stays gap: requires nltk.chunk.ieerstr2tree (chunk machinery, unported)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IEERCorpusReader: not implemented in the TS runtime."
+     "docs() pinned vs NLTK 3.10.3 on a synthetic <DOC> file. parsed_docs stays gap: requires nltk.chunk.ieerstr2tree (chunk machinery, unported)."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.ieer.IEERCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.ieer.IEERCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.ieer.IEERDocument",
    "exports": [
     "IEERDocument"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "IEERDocument"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class IEERDocument"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "IEERDocument: corpus reader surface not yet ported; honest stub throws."
+     "Data holder pinned only via class surface; not exercised by docs() (raw strings). repr() requires tree leaves."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IEERDocument: not implemented in the TS runtime."
+     "Data holder pinned only via class surface; not exercised by docs() (raw strings). repr() requires tree leaves."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.ieer.IEERDocument not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.ieer.IEERDocument onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.ieer.StreamBackedCorpusView",
@@ -67475,58 +67525,62 @@
    "exports": [
     "IndianCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "IndianCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class IndianCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "IndianCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "words/tagged_words/sents/tagged_sents pinned vs NLTK 3.10.3 incl. blank-line empty-sent and \"<\"-skip quirks. tagset remap path pinned without universal_tagset data."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IndianCorpusReader: not implemented in the TS runtime."
+     "words/tagged_words/sents/tagged_sents pinned vs NLTK 3.10.3 incl. blank-line empty-sent and \"<\"-skip quirks. tagset remap path pinned without universal_tagset data."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.indian.IndianCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.indian.IndianCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.indian.IndianCorpusView",
    "exports": [
     "IndianCorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "IndianCorpusView"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class IndianCorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "IndianCorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Block semantics pinned vs NLTK 3.10.3 through IndianCorpusReader methods."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IndianCorpusView: not implemented in the TS runtime."
+     "Block semantics pinned vs NLTK 3.10.3 through IndianCorpusReader methods."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.indian.IndianCorpusView not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.indian.IndianCorpusView onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.indian.LazyConcatenation",
@@ -75349,58 +75403,62 @@
    "exports": [
     "PPAttachment"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "PPAttachment"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class PPAttachment"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "PPAttachment: corpus reader surface not yet ported; honest stub throws."
+     "Data holder; fields+repr pinned vs NLTK 3.10.3 attachments()."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PPAttachment: not implemented in the TS runtime."
+     "Data holder; fields+repr pinned vs NLTK 3.10.3 attachments()."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.ppattach.PPAttachment not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.ppattach.PPAttachment onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.ppattach.PPAttachmentCorpusReader",
    "exports": [
     "PPAttachmentCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "PPAttachmentCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class PPAttachmentCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "PPAttachmentCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "tuples/attachments pinned vs NLTK 3.10.3; fileids arg required like NLTK."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PPAttachmentCorpusReader: not implemented in the TS runtime."
+     "tuples/attachments pinned vs NLTK 3.10.3; fileids arg required like NLTK."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.ppattach.PPAttachmentCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.ppattach.PPAttachmentCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.ppattach.PathPointer",
@@ -77298,29 +77356,31 @@
    "exports": [
     "ProsConsCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ProsConsCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class ProsConsCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "ProsConsCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "categories/sents/words pinned vs NLTK 3.10.3 on synthetic Integrated{Pros,Cons}.txt with WordPunctTokenizer."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ProsConsCorpusReader: not implemented in the TS runtime."
+     "categories/sents/words pinned vs NLTK 3.10.3 on synthetic Integrated{Pros,Cons}.txt with WordPunctTokenizer."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.pros_cons.ProsConsCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.pros_cons.ProsConsCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.pros_cons.PunktSentenceTokenizer",
@@ -79070,87 +79130,93 @@
    "exports": [
     "Review"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "Review"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class Review "
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "Review: corpus reader surface not yet ported; honest stub throws."
+     "Data holder; fields pinned vs NLTK 3.10.3 through ReviewsCorpusReader.reviews()."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Review: not implemented in the TS runtime."
+     "Data holder; fields pinned vs NLTK 3.10.3 through ReviewsCorpusReader.reviews()."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.reviews.Review not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.reviews.Review onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.reviews.ReviewLine",
    "exports": [
     "ReviewLine"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ReviewLine"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class ReviewLine"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "ReviewLine: corpus reader surface not yet ported; honest stub throws."
+     "Data holder; sent/features/notes pinned vs NLTK 3.10.3."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ReviewLine: not implemented in the TS runtime."
+     "Data holder; sent/features/notes pinned vs NLTK 3.10.3."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.reviews.ReviewLine not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.reviews.ReviewLine onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.reviews.ReviewsCorpusReader",
    "exports": [
     "ReviewsCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ReviewsCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class ReviewsCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "ReviewsCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "features/reviews/sents/words pinned vs NLTK 3.10.3 incl. [t] title rewind and feature/note/##sent annotation parsing."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ReviewsCorpusReader: not implemented in the TS runtime."
+     "features/reviews/sents/words pinned vs NLTK 3.10.3 incl. [t] title rewind and feature/note/##sent annotation parsing."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.reviews.ReviewsCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.reviews.ReviewsCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.reviews.SExprTokenizer",
@@ -90014,29 +90080,31 @@
    "exports": [
     "TwitterCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "TwitterCorpusReader"
+     "file": "src/corpus_readers2.ts",
+     "anchor": "export class TwitterCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "partial",
     "members": [],
     "gaps": [
-     "TwitterCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "docs/strings/tokenized pinned vs NLTK 3.10.3 incl. empty-file ValueError and missing-text skip."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TwitterCorpusReader: not implemented in the TS runtime."
+     "docs/strings/tokenized pinned vs NLTK 3.10.3 incl. empty-file ValueError and missing-text skip."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.twitter.TwitterCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Port of nltk.corpus.reader.twitter.TwitterCorpusReader onto the JS corpus data layer; pinned on a synthetic corpus."
   },
   {
    "target": "nltk.corpus.reader.twitter.ZipFilePathPointer",

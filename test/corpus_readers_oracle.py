@@ -15,6 +15,13 @@ from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.chunked import ChunkedCorpusReader
 from nltk.corpus.reader.aligned import AlignedCorpusReader
 from nltk.corpus.reader.categorized_sents import CategorizedSentencesCorpusReader
+from nltk.corpus.reader.ppattach import PPAttachmentCorpusReader
+from nltk.corpus.reader.pros_cons import ProsConsCorpusReader
+from nltk.corpus.reader.ieer import IEERCorpusReader
+from nltk.corpus.reader.comparative_sents import ComparativeSentencesCorpusReader
+from nltk.corpus.reader.reviews import ReviewsCorpusReader
+from nltk.corpus.reader.indian import IndianCorpusReader
+from nltk.corpus.reader.twitter import TwitterCorpusReader
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import (
     read_alignedsent_block,
@@ -145,6 +152,83 @@ out["catsents"] = {
     "words_pos": list(cs.words(categories="pos")),
     "fileids_pos": cs.fileids(categories="pos"),
 }
+
+# --- PPAttachmentCorpusReader: tuples + PPAttachment objects
+pp = PPAttachmentCorpusReader(ROOT, "pp\\.txt")
+out["ppattach"] = {
+    "tuples": [list(t) for t in pp.tuples("pp.txt")],
+    "attachments": [
+        {"sent": a.sent, "verb": a.verb, "noun1": a.noun1, "prep": a.prep,
+         "noun2": a.noun2, "attachment": a.attachment, "repr": repr(a)}
+        for a in pp.attachments("pp.txt")
+    ],
+}
+
+# --- ProsConsCorpusReader (categorized, WordPunctTokenizer default)
+pc = ProsConsCorpusReader(
+    ROOT, r"Integrated(Cons|Pros)\.txt", cat_pattern=r"Integrated(Cons|Pros)\.txt",
+    encoding="ISO-8859-2"
+)
+out["pros_cons"] = {
+    "categories": pc.categories(),
+    "sents": [list(s) for s in pc.sents()],
+    "sents_cons": [list(s) for s in pc.sents(categories="Cons")],
+    "words_pros": list(pc.words(categories="Pros")),
+}
+
+# --- IEERCorpusReader: docs() raw <DOC> blocks
+ie = IEERCorpusReader(ROOT, "ieer\\.txt")
+out["ieer"] = {"docs": list(ie.docs())}
+
+# --- ComparativeSentencesCorpusReader
+cmp_reader = ComparativeSentencesCorpusReader(ROOT, "comp\\.txt")
+out["comparative"] = {
+    "comparisons": [
+        {"text": c.text, "comp_type": c.comp_type, "entity_1": c.entity_1,
+         "entity_2": c.entity_2, "feature": c.feature, "keyword": c.keyword}
+        for c in cmp_reader.comparisons()
+    ],
+    "keywords": sorted(cmp_reader.keywords()),
+    "keywords_readme": cmp_reader.keywords_readme(),
+    "sents": [list(s) for s in cmp_reader.sents()],
+    "words": list(cmp_reader.words()),
+}
+
+# --- ReviewsCorpusReader (WordPunctTokenizer default)
+rv = ReviewsCorpusReader(ROOT, "reviews\\.txt")
+out["reviews"] = {
+    "features": [list(f) for f in rv.features()],
+    "reviews": [
+        {"title": r.title,
+         "lines": [{"sent": rl.sent, "features": [list(f) for f in rl.features],
+                    "notes": rl.notes} for rl in r.review_lines]}
+        for r in rv.reviews()
+    ],
+    "sents": [list(s) for s in rv.sents()],
+    "words": list(rv.words()),
+}
+
+# --- IndianCorpusReader (tagset='unknown', sep '_')
+ind = IndianCorpusReader(ROOT, "indian\\.pos", tagset="unknown", encoding="utf8")
+out["indian"] = {
+    "words": list(ind.words()),
+    "tagged_words": [list(t) for t in ind.tagged_words()],
+    "sents": [list(s) for s in ind.sents()],
+    "tagged_sents": [[list(t) for t in s] for s in ind.tagged_sents()],
+}
+
+# --- TwitterCorpusReader (TweetTokenizer default)
+tw = TwitterCorpusReader(ROOT, "tweets\\.json")
+out["twitter"] = {
+    "docs": list(tw.docs()),
+    "strings": list(tw.strings()),
+    "tokenized": [list(t) for t in tw.tokenized()],
+}
+try:
+    TwitterCorpusReader(ROOT, "empty\\.json")
+    out["twitter_empty"] = {"err": None}
+except ValueError as e:
+    out["twitter_empty"] = {"err": str(e).split(":")[-1].strip()[:20]}
 
 # --- pathsec: out-of-root corpus raises PermissionError
 try:
