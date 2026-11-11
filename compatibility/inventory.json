@@ -2417,6 +2417,17 @@
    "anchor": "parse_with_bindops on storage.fcfg matches oracle end-to-end",
    "oracleVersion": "3.10.3",
    "scope": "CooperStore init/s_retrieve (permutations, trace, FeatList TypeError, AttributeError paths) plus parse_with_bindops end-to-end on the real book_grammars/storage.fcfg: 3 sentences incl. 6-reading DTV case, exercising FeatureValueConcat/Tuple, <expr> logic values and @var instantiation inside expressions."
+  },
+  {
+   "id": "pathsec-differential",
+   "kind": "differential",
+   "files": [
+    "test/pathsec.test.ts",
+    "test/pathsec_oracle.py"
+   ],
+   "anchor": "validate_network_url outcomes match oracle",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: validate_network_url scheme/file/SSRF outcomes incl. embedded+tunneled IPv4 unwraps; _ip_is_forbidden IANA classification; urlopen file:// + proxied-fetch refusal; ZipFile namelist/read/extract/extractall + traversal-member rejection."
   }
  ],
  "signatureBindings": [
@@ -94529,29 +94540,31 @@
    "exports": [
     "ZipFile"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ZipFile"
+     "file": "src/pathsec.ts",
+     "anchor": "export class ZipFile {"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "ZipFile: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (async fetch/Response returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "pathsec-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ZipFile: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3): SSRF URL validation, file:// + proxy handling, zip extraction audit."
     ]
    },
-   "notes": "Honest gap: nltk.pathsec.ZipFile not yet ported (corpus-family stub)."
+   "notes": "Real pathsec network/zip port (ipaddr SSRF classification, per-hop redirect revalidation, member audit); oracle-pinned."
   },
   {
    "target": "nltk.pathsec.open",
@@ -94589,58 +94602,62 @@
    "exports": [
     "urlopen"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "urlopen"
+     "file": "src/pathsec.ts",
+     "anchor": "export async function urlopen("
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "urlopen: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (async fetch/Response returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "pathsec-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "urlopen: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3): SSRF URL validation, file:// + proxy handling, zip extraction audit."
     ]
    },
-   "notes": "Honest gap: nltk.pathsec.urlopen not yet ported (corpus-family stub)."
+   "notes": "Real pathsec network/zip port (ipaddr SSRF classification, per-hop redirect revalidation, member audit); oracle-pinned."
   },
   {
    "target": "nltk.pathsec.validate_network_url",
    "exports": [
     "validate_network_url"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "validate_network_url"
+     "file": "src/pathsec.ts",
+     "anchor": "export function validate_network_url("
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "validate_network_url: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (async fetch/Response returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "pathsec-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "validate_network_url: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3): SSRF URL validation, file:// + proxy handling, zip extraction audit."
     ]
    },
-   "notes": "Honest gap: nltk.pathsec.validate_network_url not yet ported (corpus-family stub)."
+   "notes": "Real pathsec network/zip port (ipaddr SSRF classification, per-hop redirect revalidation, member audit); oracle-pinned."
   },
   {
    "target": "nltk.pathsec.validate_path",

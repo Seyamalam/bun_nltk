@@ -98,7 +98,7 @@ export class XML_Tool { constructor(..._a: unknown[]) { unavailable("XML_Tool");
 export class YCOECorpusReader { constructor(..._a: unknown[]) { unavailable("YCOECorpusReader"); } }
 export class YCOEParseCorpusReader { constructor(..._a: unknown[]) { unavailable("YCOEParseCorpusReader"); } }
 export class YCOETaggedCorpusReader { constructor(..._a: unknown[]) { unavailable("YCOETaggedCorpusReader"); } }
-export class ZipFile { constructor(..._a: unknown[]) { unavailable("ZipFile"); } }
+export { ZipFile } from "./pathsec";
 export class comma_separated_string_args { constructor(..._a: unknown[]) { unavailable("comma_separated_string_args"); } }
 export class error { constructor(..._a: unknown[]) { unavailable("error"); } }
 export class find_file_iter { constructor(..._a: unknown[]) { unavailable("find_file_iter"); } }
@@ -119,6 +119,6 @@ export class switch_p_tagger { constructor(..._a: unknown[]) { unavailable("swit
 export class switch_punkt { constructor(..._a: unknown[]) { unavailable("switch_punkt"); } }
 export class switch_t_tagger { constructor(..._a: unknown[]) { unavailable("switch_t_tagger"); } }
 export class test { constructor(..._a: unknown[]) { unavailable("test"); } }
-export class urlopen { constructor(..._a: unknown[]) { unavailable("urlopen"); } }
-export class validate_network_url { constructor(..._a: unknown[]) { unavailable("validate_network_url"); } }
+export { urlopen } from "./pathsec";
+export { validate_network_url, validate_network_url_async } from "./pathsec";
 export class xpath { constructor(..._a: unknown[]) { unavailable("xpath"); } }
