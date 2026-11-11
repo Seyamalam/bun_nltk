@@ -15,33 +15,21 @@ export class CoreNLPServerError extends Error {
   constructor(message: string) { super(message); this.name = "CoreNLPServerError"; }
 }
 
-const FC_WHY = "feature-chart machinery (FeatStruct unification) not yet ported";
-export class FeatStructNonterminal { constructor() { unsupported("FeatStructNonterminal", FC_WHY); } }
-export class FeatureChart { constructor() { unsupported("FeatureChart", FC_WHY); } }
-export class FeatureIncrementalChart { constructor() { unsupported("FeatureIncrementalChart", FC_WHY); } }
-export class FeatureTreeEdge { constructor() { unsupported("FeatureTreeEdge", FC_WHY); } }
-export class InstantiateVarsChart { constructor() { unsupported("InstantiateVarsChart", FC_WHY); } }
-export class FeatureFundamentalRule { constructor() { unsupported("FeatureFundamentalRule", FC_WHY); } }
-export class FeatureSingleEdgeFundamentalRule { constructor() { unsupported("FeatureSingleEdgeFundamentalRule", FC_WHY); } }
-export class FeatureBottomUpPredictRule { constructor() { unsupported("FeatureBottomUpPredictRule", FC_WHY); } }
-export class FeatureBottomUpPredictCombineRule { constructor() { unsupported("FeatureBottomUpPredictCombineRule", FC_WHY); } }
-export class FeatureTopDownInitRule { constructor() { unsupported("FeatureTopDownInitRule", FC_WHY); } }
-export class FeatureTopDownPredictRule { constructor() { unsupported("FeatureTopDownPredictRule", FC_WHY); } }
-export class FeatureEmptyPredictRule { constructor() { unsupported("FeatureEmptyPredictRule", FC_WHY); } }
-export class FeatureScannerRule { constructor() { unsupported("FeatureScannerRule", FC_WHY); } }
-export class FeaturePredictorRule { constructor() { unsupported("FeaturePredictorRule", FC_WHY); } }
-export class FeatureCompleterRule { constructor() { unsupported("FeatureCompleterRule", FC_WHY); } }
-export class FeatureCompleteFundamentalRule { constructor() { unsupported("FeatureCompleteFundamentalRule", FC_WHY); } }
-export class FeatureBottomUpChartParser { constructor() { unsupported("FeatureBottomUpChartParser", FC_WHY); } }
-export class FeatureBottomUpLeftCornerChartParser { constructor() { unsupported("FeatureBottomUpLeftCornerChartParser", FC_WHY); } }
-export class FeatureTopDownChartParser { constructor() { unsupported("FeatureTopDownChartParser", FC_WHY); } }
-export class FeatureIncrementalChartParser { constructor() { unsupported("FeatureIncrementalChartParser", FC_WHY); } }
-export class FeatureIncrementalBottomUpChartParser { constructor() { unsupported("FeatureIncrementalBottomUpChartParser", FC_WHY); } }
-export class FeatureIncrementalBottomUpLeftCornerChartParser { constructor() { unsupported("FeatureIncrementalBottomUpLeftCornerChartParser", FC_WHY); } }
-export class FeatureIncrementalTopDownChartParser { constructor() { unsupported("FeatureIncrementalTopDownChartParser", FC_WHY); } }
-export class FeatureGrammar { constructor() { unsupported("FeatureGrammar", FC_WHY); } }
-export function find_variables(): never { return unsupported("find_variables", FC_WHY); }
-export function unify(): never { return unsupported("unify", FC_WHY); }
+// Feature-chart machinery ported to parse_feature.ts (FeatStruct internals in
+// featstruct.ts); names stay routed through this module so reviewed
+// provenance is stable.
+export {
+  FeatStructNonterminal, FeatureChart, FeatureIncrementalChart, FeatureTreeEdge,
+  InstantiateVarsChart, FeatureFundamentalRule, FeatureSingleEdgeFundamentalRule,
+  FeatureBottomUpPredictRule, FeatureBottomUpPredictCombineRule, FeatureTopDownInitRule,
+  FeatureTopDownPredictRule, FeatureEmptyPredictRule, FeatureScannerRule,
+  FeaturePredictorRule, FeatureCompleterRule, FeatureCompleteFundamentalRule,
+  FeatureBottomUpChartParser, FeatureBottomUpLeftCornerChartParser, FeatureTopDownChartParser,
+  FeatureIncrementalChartParser, FeatureIncrementalBottomUpChartParser,
+  FeatureIncrementalBottomUpLeftCornerChartParser, FeatureIncrementalTopDownChartParser,
+  FeatureGrammar,
+} from "./parse_feature";
+export { find_variables, unify } from "./featstruct";
 
 // Incremental/Earley chart machinery ported to parse_earley.ts; names stay
 // routed through this module so reviewed provenance is stable.

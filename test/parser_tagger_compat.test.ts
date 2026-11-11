@@ -14,7 +14,6 @@ import {
   chartParse,
   earleyParse,
   featureChartParse,
-  featureEarleyParse,
   leftCornerParse,
   parseCfgGrammar,
   parseFeatureCfgGrammar,
@@ -24,6 +23,7 @@ import {
   probabilisticChartParse,
   recursiveDescentParse,
 } from "../index";
+import type { ParseTree } from "../src/parse";
 
 const CFG_TEXT = `
 S -> NP VP
@@ -71,11 +71,20 @@ test("ViterbiParser wrapper matches probabilistic chart parser", () => {
   expect(wrapper.parseOne(tokens)).toEqual(probabilisticChartParse(tokens, grammar));
 });
 
-test("Feature parser wrappers match existing feature parser functions", () => {
+test("Feature parser wrappers match the real feature-chart parsers", () => {
   const tokens = ["dog", "runs"];
   const grammar = parseFeatureCfgGrammar(FEATURE_CFG_TEXT);
-  expect(new FeatureChartParser(grammar).parse(tokens)).toEqual(featureChartParse(tokens, grammar));
-  expect(new FeatureEarleyChartParser(grammar).parse(tokens)).toEqual(featureEarleyParse(tokens, grammar));
+  const expected = [{ label: "S[]", children: [
+    { label: "NP[NUM='sg']", children: ["dog"] },
+    { label: "VP[NUM='sg']", children: ["runs"] },
+  ] }];
+  const norm = (trees: ReturnType<typeof featureChartParse>) =>
+    trees.map((t) => ({
+      label: String(t.label),
+      children: t.children.map((c) => (typeof c === "string" ? c : { label: String((c as ParseTree).label), children: (c as ParseTree).children })),
+    }));
+  expect(norm(new FeatureChartParser(grammar).parse(tokens))).toEqual(expected);
+  expect(norm(new FeatureEarleyChartParser(grammar).parse(tokens))).toEqual(expected);
 });
 
 test("PerceptronTagger and pos_tag expose tuple-based tagging APIs", () => {

@@ -10,8 +10,6 @@ import {
   type ProbabilisticParse,
 } from "./parse";
 import {
-  featureChartParse,
-  featureEarleyParse,
   parseFeatureCfgGrammar,
   type FeatureCfgGrammar,
 } from "./feature_parse";
@@ -59,11 +57,6 @@ export class FeatureCFG {
 function asPcfgGrammar(grammar: PCFG | PcfgGrammar | string): PcfgGrammar {
   if (typeof grammar === "string") return parsePcfgGrammar(grammar);
   return grammar instanceof PCFG ? pcfgFromGrammar(grammar) : grammar;
-}
-
-function asFeatureGrammar(grammar: FeatureCFG | FeatureCfgGrammar | string): FeatureCfgGrammar {
-  if (typeof grammar === "string") return parseFeatureCfgGrammar(grammar);
-  return grammar instanceof FeatureCFG ? grammar.grammar : grammar;
 }
 
 function toNltkGrammar(grammar: CFG | CfgGrammar | string): CFG {
@@ -129,25 +122,61 @@ export class ViterbiParser {
   }
 }
 
-export class FeatureChartParser {
-  protected readonly grammar: FeatureCfgGrammar;
+import {
+  FeatureChartParser as RealFeatureChartParser,
+  FeatureEarleyChartParser as RealFeatureEarleyChartParser,
+  FeatureGrammar,
+  FeatStructNonterminal,
+} from "./parse_feature";
+import { FeatDict, Variable, TYPE, type FeatValue } from "./featstruct";
+import type { FeatureSymbol } from "./feature_parse";
 
-  constructor(grammar: FeatureCFG | FeatureCfgGrammar | string) {
-    this.grammar = asFeatureGrammar(grammar);
+function featureSymbolToGrammar(sym: FeatureSymbol): FeatStructNonterminal | string {
+  if (sym.terminal) return sym.surface ?? sym.base;
+  const d = new FeatDict();
+  // The flat parser leaves empty `[]` inside `base`; FeatureGrammar treats
+  // `X[]` as type X with no features — normalize to match.
+  d.set(TYPE, sym.base.replace(/\[\]$/, ""));
+  for (const [k, v] of Object.entries(sym.features)) {
+    d.set(k, (v.startsWith("?") ? new Variable(v) : v) as FeatValue);
   }
+  return new FeatStructNonterminal(d);
+}
 
-  parse(tokens: string[]): ParseTree[] {
-    return featureChartParse(tokens, this.grammar);
-  }
+function asFeatureGrammarObject(grammar: FeatureCFG | FeatureCfgGrammar | FeatureGrammar | string): FeatureGrammar {
+  if (grammar instanceof FeatureGrammar) return grammar;
+  if (typeof grammar === "string") return FeatureGrammar.fromstring(grammar);
+  const g = grammar instanceof FeatureCFG ? grammar.grammar : grammar;
+  const start = featureSymbolToGrammar(g.startSymbol) as FeatStructNonterminal;
+  const prods = g.productions.map(
+    (p) =>
+      new Production(
+        featureSymbolToGrammar(p.lhs) as FeatStructNonterminal,
+        p.rhs.map((s) => featureSymbolToGrammar(s)),
+      ),
+  );
+  return new FeatureGrammar(start, prods);
+}
 
-  parseOne(tokens: string[]): ParseTree | null {
-    return this.parse(tokens)[0] ?? null;
+/**
+ * nltk.parse.featurechart.FeatureChartParser — the real BU_LC_FEATURE_STRATEGY
+ * chart parser (parse_feature), bound under this name so the reviewed export
+ * route stays at parser_tagger_compat. Accepts the flat FeatureCfgGrammar
+ * shape and coerces it to FeatureGrammar.
+ */
+export class FeatureChartParser extends RealFeatureChartParser {
+  constructor(grammar: FeatureCFG | FeatureCfgGrammar | FeatureGrammar | string) {
+    super(asFeatureGrammarObject(grammar));
   }
 }
 
-export class FeatureEarleyChartParser extends FeatureChartParser {
-  override parse(tokens: string[]): ParseTree[] {
-    return featureEarleyParse(tokens, this.grammar);
+/**
+ * nltk.parse.earleychart.FeatureEarleyChartParser — the real incremental
+ * EARLEY_FEATURE_STRATEGY parser, bound under this name for route stability.
+ */
+export class FeatureEarleyChartParser extends RealFeatureEarleyChartParser {
+  constructor(grammar: FeatureCFG | FeatureCfgGrammar | FeatureGrammar | string) {
+    super(asFeatureGrammarObject(grammar));
   }
 }
 
