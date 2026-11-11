@@ -819,7 +819,7 @@
    "NltkDrtBoxerDrsInterpreter": "src/sem_gaps.ts",
    "PassthroughBoxerDrsInterpreter": "src/sem_gaps.ts",
    "UnparseableInputException": "src/sem_gaps.ts",
-   "find_binary_iter": "src/sem_gaps.ts",
+   "find_binary_iter": "src/internals.ts",
    "Concept": "src/sem_chat80.ts",
    "binary_concept": "src/sem_chat80.ts",
    "cities2table": "src/sem_chat80.ts",
@@ -2395,6 +2395,17 @@
    "anchor": "generate() sentence stream matches oracle",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: generate() on a test CFG — depth-limited enumeration order, n slicing, n=0; chart.demo_grammar() productions + start symbol."
+  },
+  {
+   "id": "internals-differential",
+   "kind": "differential",
+   "files": [
+    "test/internals.test.ts",
+    "test/internals_oracle.py"
+   ],
+   "anchor": "read_str matches oracle (literals, escapes, errors)",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: read_str/read_int/read_number (values, end positions, ReadError expected/position), overridden MRO flags, Deprecated warning text, find_file_iter/find_binary_iter on synthetic dirs (incl. CWD-relative filtering), is_writable POSIX bits, data.find resource hits/miss."
   }
  ],
  "signatureBindings": [
@@ -12124,8 +12135,8 @@
    "exports": [
     "find"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/data.ts",
@@ -12133,20 +12144,22 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "NLTK find is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.tag.perceptron.open_datafile",
@@ -18260,29 +18273,31 @@
    "exports": [
     "find_binary"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/internals.ts",
-     "anchor": "export function findBinary"
+     "anchor": "export const find_binary = findBinary"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "No signature gaps observed for the reviewed public members."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "No fixture gaps observed for the pinned cases."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "Throwing stub — subprocess binary discovery is platform-excluded."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.translate.gale_church.LanguageIndependent",
@@ -31297,8 +31312,8 @@
    "exports": [
     "find"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/data.ts",
@@ -31306,20 +31321,22 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "nltk.data.find resource lookup is an unavailable stub in the JS runtime."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.tag.load",
@@ -31745,8 +31762,8 @@
    "exports": [
     "overridden"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/internals.ts",
@@ -31754,20 +31771,22 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "nltk.internals.overridden MRO check is a stub returning false in the JS runtime."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.tag.api.untag",
@@ -33175,58 +33194,62 @@
    "exports": [
     "find_binary"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/internals.ts",
-     "anchor": "export function findBinary"
+     "anchor": "export const find_binary = findBinary"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "Binary lookup stub throws (internals.find_binary unavailable)."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.tag.hunpos.find_file",
    "exports": [
     "find_file"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/internals.ts",
-     "anchor": "export function findFile"
+     "anchor": "export const find_file = findFile"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "File lookup stub throws (internals.find_file unavailable)."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.tag.mapping.load",
@@ -33595,29 +33618,31 @@
    "exports": [
     "find_file"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/internals.ts",
-     "anchor": "export function findFile"
+     "anchor": "export const find_file = findFile"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "File lookup stub throws."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.tag.stanford.find_jar",
@@ -35745,29 +35770,31 @@
    "exports": [
     "find_binary_iter"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export function find_binary_iter"
+     "file": "src/internals.ts",
+     "anchor": "export const find_binary_iter = findBinaryIter"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "find_binary_iter: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "find_binary_iter: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "find_binary_iter: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.sem.chat80.Concept",
@@ -43304,7 +43331,7 @@
     "overridden"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/internals.ts",
@@ -43315,17 +43342,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "NLTK re-exports overridden from nltk.internals; mapped to the shared implementation."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports overridden from nltk.internals; mapped to the shared implementation."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "NLTK re-exports overridden from nltk.internals; mapped to the shared implementation."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.parse.bllip.BllipParser",
@@ -44055,28 +44084,30 @@
     "find_binary"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/internals.ts",
-     "anchor": "export const find_binary"
+     "anchor": "export const find_binary = findBinary"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "NLTK re-exports find_binary from nltk.internals; mapped to the shared implementation."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports find_binary from nltk.internals; mapped to the shared implementation."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "NLTK re-exports find_binary from nltk.internals; mapped to the shared implementation."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.parse.dependencygraph.malt_demo",
@@ -47204,29 +47235,31 @@
    "exports": [
     "find_dir"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function find_dir"
+     "file": "src/internals.ts",
+     "anchor": "export const find_dir = findDir"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "find_dir: external-binary/server-bound or interactive demo; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "find_dir: external-binary/server-bound or interactive demo; honest stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "find_dir: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.parse.malt.find_file",
@@ -47234,28 +47267,30 @@
     "find_file"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/internals.ts",
-     "anchor": "export const find_file"
+     "anchor": "export const find_file = findFile"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "NLTK re-exports find_file from nltk.internals; mapped to the shared implementation."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports find_file from nltk.internals; mapped to the shared implementation."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "NLTK re-exports find_file from nltk.internals; mapped to the shared implementation."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.parse.malt.find_jars_within_path",
@@ -95034,29 +95069,31 @@
    "exports": [
     "Deprecated"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "Deprecated"
+     "file": "src/internals.ts",
+     "anchor": "export class Deprecated"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Deprecated: data/internal surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Deprecated: not implemented."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "Honest gap: nltk.internals.Deprecated not yet ported."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.internals.ElementWrapper",
@@ -95092,58 +95129,68 @@
    "exports": [
     "ReadError"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ReadError"
+     "file": "src/internals.ts",
+     "anchor": "export class ReadError"
     }
    ],
    "signatures": {
-    "status": "missing",
-    "members": [],
+    "status": "adapted",
+    "members": [
+     "add_note",
+     "with_traceback"
+    ],
     "gaps": [
-     "ReadError: data/internal surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ReadError: not implemented."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "Honest gap: nltk.internals.ReadError not yet ported."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.internals.UntrustedJarError",
    "exports": [
     "UntrustedJarError"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "UntrustedJarError"
+     "file": "src/internals.ts",
+     "anchor": "export class UntrustedJarError"
     }
    ],
    "signatures": {
-    "status": "missing",
-    "members": [],
+    "status": "adapted",
+    "members": [
+     "add_note",
+     "with_traceback"
+    ],
     "gaps": [
-     "UntrustedJarError: data/internal surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "UntrustedJarError: not implemented."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "Honest gap: nltk.internals.UntrustedJarError not yet ported."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.internals.config_java",
@@ -95209,28 +95256,30 @@
     "find_binary"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export function find_binary_iter(_name: string): never {"
+     "file": "src/internals.ts",
+     "anchor": "export const find_binary = findBinary"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Existing implementation re-exported through this corpus module."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "nltk.internals.find_binary re-exports an existing implementation (corpus module alias)."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.internals.find_binary_iter",
@@ -95238,28 +95287,30 @@
     "find_binary_iter"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export function find_binary_iter(_name: string): never {"
+     "file": "src/internals.ts",
+     "anchor": "export const find_binary_iter = findBinaryIter"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Existing implementation re-exported through this corpus module."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "nltk.internals.find_binary_iter re-exports an existing implementation (corpus module alias)."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.internals.find_dir",
@@ -95267,28 +95318,30 @@
     "find_dir"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/internals.ts",
-     "anchor": "export const find_dir = findDir;"
+     "anchor": "export const find_dir = findDir"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Existing implementation re-exported through this corpus module."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "nltk.internals.find_dir re-exports an existing implementation (corpus module alias)."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.internals.find_file",
@@ -95296,57 +95349,61 @@
     "find_file"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/internals.ts",
-     "anchor": "export const find_file = findFile;"
+     "anchor": "export const find_file = findFile"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Existing implementation re-exported through this corpus module."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "nltk.internals.find_file re-exports an existing implementation (corpus module alias)."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.internals.find_file_iter",
    "exports": [
     "find_file_iter"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "find_file_iter"
+     "file": "src/internals.ts",
+     "anchor": "export const find_file_iter = findFileIter"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "find_file_iter: data/internal surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "find_file_iter: not implemented."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "Honest gap: nltk.internals.find_file_iter not yet ported."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.internals.find_jar",
@@ -95469,29 +95526,31 @@
    "exports": [
     "is_writable"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "is_writable"
+     "file": "src/internals.ts",
+     "anchor": "export const is_writable = isWritable"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "is_writable: data/internal surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "is_writable: not implemented."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "Honest gap: nltk.internals.is_writable not yet ported."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.internals.java",
@@ -95528,28 +95587,30 @@
     "overridden"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/internals.ts",
-     "anchor": "export function overridden(_method: unknown): boolean { return false; }"
+     "anchor": "export function overridden"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Existing implementation re-exported through this corpus module."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "nltk.internals.overridden re-exports an existing implementation (corpus module alias)."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.internals.raise_unorderable_types",
@@ -95585,87 +95646,93 @@
    "exports": [
     "read_int"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "read_int"
+     "file": "src/internals.ts",
+     "anchor": "export const read_int = readInt"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "read_int: data/internal surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "read_int: not implemented."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "Honest gap: nltk.internals.read_int not yet ported."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.internals.read_number",
    "exports": [
     "read_number"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "read_number"
+     "file": "src/internals.ts",
+     "anchor": "export const read_number = readNumber"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "read_number: data/internal surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "read_number: not implemented."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "Honest gap: nltk.internals.read_number not yet ported."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.internals.read_str",
    "exports": [
     "read_str"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "read_str"
+     "file": "src/internals.ts",
+     "anchor": "export const read_str = readStr"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "read_str: data/internal surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator/Error returns)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "internals-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "read_str: not implemented."
+     "Behavior oracle-pinned (NLTK 3.10.3): literal readers, MRO check, deprecation warning, file/binary search, writability, data.find."
     ]
    },
-   "notes": "Honest gap: nltk.internals.read_str not yet ported."
+   "notes": "Real internals/data port; oracle-pinned."
   },
   {
    "target": "nltk.internals.slice_bounds",

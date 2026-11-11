@@ -32,9 +32,7 @@ export class BoxerWhq { constructor() { unsupported("BoxerWhq", BOXER_WHY); } }
 export class NltkDrtBoxerDrsInterpreter { constructor() { unsupported("NltkDrtBoxerDrsInterpreter", BOXER_WHY); } }
 export class PassthroughBoxerDrsInterpreter { constructor() { unsupported("PassthroughBoxerDrsInterpreter", BOXER_WHY); } }
 
-export function find_binary_iter(_name: string): never {
-  return unsupported("find_binary_iter", "external binary lookup is not available in the JS runtime");
-}
+export { findBinaryIter as find_binary_iter } from "./internals";
 
 const TK_WHY = "requires tkinter/canvas visualization, unavailable in the JS runtime";
 export class DrsDrawer { constructor() { unsupported("DrsDrawer", TK_WHY); } }
