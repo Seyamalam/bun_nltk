@@ -133,21 +133,14 @@ try:
 except AttributeError as e:
     OUT["attr_err"] = str(e)
 
-# parse_with_bindops end-to-end on the real storage.fcfg.
-data_dir = os.environ.get(
-    "NLTK_DATA", os.path.join(os.path.dirname(__file__), "..", ".cache", "nltk-data")
-)
-data_dir = os.path.abspath(data_dir)
-os.makedirs(os.path.join(data_dir, "grammars"), exist_ok=True)
-gpath = os.path.join(data_dir, "grammars", "cooper_storage_test.fcfg")
-with open(gpath, "w") as f:
-    f.write(STORAGE_FCFG)
-
+# parse_with_bindops end-to-end on the real default storage.fcfg —
+# the oracle default path grammars/book_grammars/storage.fcfg resolves
+# through nltk.data.load just like the TS side's data.find.
 from nltk.sem.cooper_storage import parse_with_bindops
 
 OUT["bindops"] = {}
 for sent in ("every girl chases a dog", "a man gives a bone to every dog", "Angus smiles"):
-    trees = parse_with_bindops(sent, grammar="grammars/cooper_storage_test.fcfg")
+    trees = parse_with_bindops(sent)
     entry = {"num_trees": len(trees), "analyses": []}
     for t in trees:
         cs = CooperStore(t.label()["SEM"])

@@ -36523,7 +36523,7 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "grammar defaults to book_grammars/storage.fcfg in the oracle; the nltk_data resource is not bundled — pass a FeatureGrammar or fcfg text (signature otherwise matches: sentence, grammar, trace)."
+     "Signature adapted to the TypeScript runtime contract (returns ParseTree[]); trace flag accepted but tracing not wired."
     ]
    },
    "evidence": [
@@ -36535,7 +36535,7 @@
      "grammar defaults to book_grammars/storage.fcfg in the oracle; the nltk_data resource is not bundled — pass a FeatureGrammar or fcfg text (signature otherwise matches: sentence, grammar, trace)."
     ]
    },
-   "notes": "Real port via FeatureIncrementalChartParser + InstantiateVarsChart on feature grammars; oracle-pinned end-to-end on the real storage.fcfg. Default grammar unavailable (nltk_data not bundled) — raises LookupError."
+   "notes": "Real cooper_storage parse_with_bindops (load_parser-path grammar arg, default storage.fcfg via data.find); oracle-pinned."
   },
   {
    "target": "nltk.sem.drt.AbstractVariableExpression",

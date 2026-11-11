@@ -9,6 +9,8 @@ import type { FeatStructNonterminal } from "./parse_feature";
 import type { ParseTree } from "./parse";
 import { FeatureGrammar, FeatureIncrementalChartParser, InstantiateVarsChart } from "./parse_feature";
 import { pyError } from "./internals";
+import { readFileSync } from "node:fs";
+import { find as dataFind } from "./data";
 
 interface BindOpExpression extends Expression {
   args: Expression[];
@@ -78,9 +80,9 @@ export class CooperStore {
 
 /**
  * Use a grammar with Binding Operators to parse a sentence.
- * Adapted: `grammar` is a FeatureGrammar or feature-grammar text (the oracle's
- * default nltk_data grammar 'grammars/book_grammars/storage.fcfg' is not
- * bundled — pass a grammar explicitly).
+ * `grammar` mirrors the oracle's load_parser target: a FeatureGrammar or a
+ * resource path (default 'grammars/book_grammars/storage.fcfg' resolved via
+ * data.find). Positional `trace` accepted; tracing is not wired.
  */
 export function parse_with_bindops(
   sentence: string,
@@ -88,18 +90,16 @@ export function parse_with_bindops(
   trace = 0,
 ): ParseTree[] {
   void trace;
+  // Oracle: grammar is a load_parser target — FeatureGrammar or a resource path.
+  const grammarPath = typeof grammar === "string" ? grammar : "grammars/book_grammars/storage.fcfg";
   const g = grammar instanceof FeatureGrammar
     ? grammar
-    : typeof grammar === "string"
-      ? FeatureGrammar.fromstring(grammar)
-      : null;
-  if (!g) {
-    throw pyError(
-      "LookupError",
-      "parse_with_bindops() requires a feature grammar: the oracle default " +
-        "'grammars/book_grammars/storage.fcfg' is not bundled in this runtime.",
-    );
-  }
+    : FeatureGrammar.fromstring(
+        readFileSync(
+          (dataFind(grammarPath) as unknown as { path: string }).path,
+          "utf-8",
+        ),
+      );
   const tokens = sentence.trim().split(/\s+/).filter((t) => t.length > 0);
   const parser = new FeatureIncrementalChartParser(g, { chartClass: InstantiateVarsChart });
   return parser.parse(tokens);
