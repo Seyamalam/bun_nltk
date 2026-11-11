@@ -43,18 +43,8 @@ export class FeatureGrammar { constructor() { unsupported("FeatureGrammar", FC_W
 export function find_variables(): never { return unsupported("find_variables", FC_WHY); }
 export function unify(): never { return unsupported("unify", FC_WHY); }
 
-const INC_WHY = "incremental/Earley chart machinery not yet ported";
-export class IncrementalChart { constructor() { unsupported("IncrementalChart", INC_WHY); } }
-export class IncrementalChartParser { constructor() { unsupported("IncrementalChartParser", INC_WHY); } }
-export class IncrementalBottomUpChartParser { constructor() { unsupported("IncrementalBottomUpChartParser", INC_WHY); } }
-export class IncrementalBottomUpLeftCornerChartParser { constructor() { unsupported("IncrementalBottomUpLeftCornerChartParser", INC_WHY); } }
-export class IncrementalLeftCornerChartParser { constructor() { unsupported("IncrementalLeftCornerChartParser", INC_WHY); } }
-export class IncrementalTopDownChartParser { constructor() { unsupported("IncrementalTopDownChartParser", INC_WHY); } }
-export class PredictorRule { constructor() { unsupported("PredictorRule", INC_WHY); } }
-export class ScannerRule { constructor() { unsupported("ScannerRule", INC_WHY); } }
-export class CompleterRule { constructor() { unsupported("CompleterRule", INC_WHY); } }
-export class CompleteFundamentalRule { constructor() { unsupported("CompleteFundamentalRule", INC_WHY); } }
-export class FilteredCompleteFundamentalRule { constructor() { unsupported("FilteredCompleteFundamentalRule", INC_WHY); } }
+// Incremental/Earley chart machinery ported to parse_earley.ts; names stay
+// routed through this module so reviewed provenance is stable.
 
 export class TestGrammar { constructor() { unsupported("TestGrammar", "test-grammar loader not yet ported"); } }
 
@@ -77,6 +67,12 @@ export {
   BottomUpProbabilisticChartParser, InsideChartParser, LongestChartParser,
   RandomChartParser, UnsortedChartParser,
 } from "./parse_pchart";
+export {
+  IncrementalChart, IncrementalChartParser, IncrementalBottomUpChartParser,
+  IncrementalBottomUpLeftCornerChartParser, IncrementalLeftCornerChartParser,
+  IncrementalTopDownChartParser, PredictorRule, ScannerRule,
+  CompleterRule, CompleteFundamentalRule, FilteredCompleteFundamentalRule,
+} from "./parse_earley";
 
 const STEP_WHY = "interactive stepping parser UI not applicable to the TS runtime contract";
 export class SteppingRecursiveDescentParser { constructor() { unsupported("SteppingRecursiveDescentParser", STEP_WHY); } }

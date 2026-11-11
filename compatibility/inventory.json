@@ -2362,6 +2362,17 @@
    "anchor": "pchart parsers differential: parse trees and probabilities match oracle",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: InsideChartParser/LongestChartParser/UnsortedChartParser parse trees + inside probs on the pchart demo PCFGs (toy_pcfg1 2 parses, toy_pcfg2 14 parses with exact float probs), beam_size pruning (13 -> 0 parses, 30 -> all 14), RandomChartParser parse multiset, rule NUM_EDGES contracts, leaf/tree edge prob(), non-PCFG ValueError."
+  },
+  {
+   "id": "parse-earley-differential",
+   "kind": "differential",
+   "files": [
+    "test/parse_earley.test.ts",
+    "test/parse_earley_oracle.py"
+   ],
+   "anchor": "earleychart parsers differential: parses and per-end edge counts match oracle",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: Earley/IncrementalTopDown/IncrementalBottomUp/IncrementalBottomUpLeftCorner/IncrementalLeftCorner chart parsers on the chart.py demo grammar + sentence \u2014 exact parse trees, num_edges, and per-end edge counts; IncrementalChart select end contract; strategy NUM_EDGES partitions."
   }
  ],
  "signatureBindings": [
@@ -41926,28 +41937,37 @@
     "EarleyChartParser"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parser_tagger_compat.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class EarleyChartParser"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
     "gaps": [
-     "NLTK re-exports EarleyChartParser from nltk.parse.earleychart; mapped to the shared implementation."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports EarleyChartParser from nltk.parse.earleychart; mapped to the shared implementation."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "NLTK re-exports EarleyChartParser from nltk.parse.earleychart; mapped to the shared implementation."
+   "notes": "nltk.parse re-export of the real earleychart parser; oracle-pinned."
   },
   {
    "target": "nltk.parse.FeatureBottomUpChartParser",
@@ -42215,145 +42235,190 @@
    "exports": [
     "IncrementalBottomUpChartParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class IncrementalBottomUpChartParser"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
     "gaps": [
-     "IncrementalBottomUpChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IncrementalBottomUpChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "IncrementalBottomUpChartParser depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "nltk.parse re-export of the real earleychart parser; oracle-pinned."
   },
   {
    "target": "nltk.parse.IncrementalBottomUpLeftCornerChartParser",
    "exports": [
     "IncrementalBottomUpLeftCornerChartParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class IncrementalBottomUpLeftCornerChartParser"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
     "gaps": [
-     "IncrementalBottomUpLeftCornerChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IncrementalBottomUpLeftCornerChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "IncrementalBottomUpLeftCornerChartParser depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "nltk.parse re-export of the real earleychart parser; oracle-pinned."
   },
   {
    "target": "nltk.parse.IncrementalChartParser",
    "exports": [
     "IncrementalChartParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class IncrementalChartParser"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
     "gaps": [
-     "IncrementalChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IncrementalChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "IncrementalChartParser depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "nltk.parse re-export of the real earleychart parser; oracle-pinned."
   },
   {
    "target": "nltk.parse.IncrementalLeftCornerChartParser",
    "exports": [
     "IncrementalLeftCornerChartParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class IncrementalLeftCornerChartParser"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
     "gaps": [
-     "IncrementalLeftCornerChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IncrementalLeftCornerChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "IncrementalLeftCornerChartParser depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "nltk.parse re-export of the real earleychart parser; oracle-pinned."
   },
   {
    "target": "nltk.parse.IncrementalTopDownChartParser",
    "exports": [
     "IncrementalTopDownChartParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class IncrementalTopDownChartParser"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
     "gaps": [
-     "IncrementalTopDownChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IncrementalTopDownChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "IncrementalTopDownChartParser depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "nltk.parse re-export of the real earleychart parser; oracle-pinned."
   },
   {
    "target": "nltk.parse.InsideChartParser",
@@ -43935,11 +44000,13 @@
      "NLTK re-exports BottomUpPredictCombineRule from nltk.parse.chart; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports BottomUpPredictCombineRule from nltk.parse.chart; mapped to the shared implementation."
+     "Exercised through oracle-pinned incremental parser differentials."
     ]
    },
    "notes": "NLTK re-exports BottomUpPredictCombineRule from nltk.parse.chart; mapped to the shared implementation."
@@ -43964,11 +44031,13 @@
      "NLTK re-exports BottomUpPredictRule from nltk.parse.chart; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports BottomUpPredictRule from nltk.parse.chart; mapped to the shared implementation."
+     "Exercised through oracle-pinned incremental parser differentials."
     ]
    },
    "notes": "NLTK re-exports BottomUpPredictRule from nltk.parse.chart; mapped to the shared implementation."
@@ -43993,11 +44062,13 @@
      "NLTK re-exports CachedTopDownPredictRule from nltk.parse.chart; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports CachedTopDownPredictRule from nltk.parse.chart; mapped to the shared implementation."
+     "Exercised through oracle-pinned incremental parser differentials."
     ]
    },
    "notes": "NLTK re-exports CachedTopDownPredictRule from nltk.parse.chart; mapped to the shared implementation."
@@ -44022,11 +44093,13 @@
      "NLTK re-exports Chart from nltk.parse.chart; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports Chart from nltk.parse.chart; mapped to the shared implementation."
+     "Exercised through oracle-pinned incremental parser differentials."
     ]
    },
    "notes": "NLTK re-exports Chart from nltk.parse.chart; mapped to the shared implementation."
@@ -44051,11 +44124,13 @@
      "NLTK re-exports ChartParser from nltk.parse.chart; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports ChartParser from nltk.parse.chart; mapped to the shared implementation."
+     "Exercised through oracle-pinned incremental parser differentials."
     ]
    },
    "notes": "NLTK re-exports ChartParser from nltk.parse.chart; mapped to the shared implementation."
@@ -44065,58 +44140,68 @@
    "exports": [
     "CompleteFundamentalRule"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class CompleteFundamentalRule"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
     "gaps": [
-     "CompleteFundamentalRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CompleteFundamentalRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "CompleteFundamentalRule depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Incomplete direction restricted to empty complete edges; oracle-pinned via parser edge counts."
   },
   {
    "target": "nltk.parse.earleychart.CompleterRule",
    "exports": [
     "CompleterRule"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class CompleterRule"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
     "gaps": [
-     "CompleterRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CompleterRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "CompleterRule depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Fundamental rule on non-leaf edges; oracle-pinned."
   },
   {
    "target": "nltk.parse.earleychart.EarleyChartParser",
@@ -44124,28 +44209,37 @@
     "EarleyChartParser"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parser_tagger_compat.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class EarleyChartParser"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
     "gaps": [
-     "NLTK re-exports EarleyChartParser from nltk.parse.earleychart; mapped to the shared implementation."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports EarleyChartParser from nltk.parse.earleychart; mapped to the shared implementation."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "NLTK re-exports EarleyChartParser from nltk.parse.earleychart; mapped to the shared implementation."
+   "notes": "EARLEY_STRATEGY (top-down init + predictor/scanner/completer); oracle-pinned."
   },
   {
    "target": "nltk.parse.earleychart.EdgeI",
@@ -44167,11 +44261,13 @@
      "NLTK re-exports EdgeI from nltk.parse.chart; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports EdgeI from nltk.parse.chart; mapped to the shared implementation."
+     "Exercised through oracle-pinned incremental parser differentials."
     ]
    },
    "notes": "NLTK re-exports EdgeI from nltk.parse.chart; mapped to the shared implementation."
@@ -44196,11 +44292,13 @@
      "NLTK re-exports EmptyPredictRule from nltk.parse.chart; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports EmptyPredictRule from nltk.parse.chart; mapped to the shared implementation."
+     "Exercised through oracle-pinned incremental parser differentials."
     ]
    },
    "notes": "NLTK re-exports EmptyPredictRule from nltk.parse.chart; mapped to the shared implementation."
@@ -44732,8 +44830,8 @@
    "exports": [
     "FilteredBottomUpPredictCombineRule"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/chart.ts",
@@ -44742,56 +44840,66 @@
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
     "gaps": [
-     "FilteredBottomUpPredictCombineRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "FilteredBottomUpPredictCombineRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Exercised through the oracle-pinned IncrementalLeftCornerChartParser differential."
     ]
    },
-   "notes": "FilteredBottomUpPredictCombineRule depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real chart.ts implementation exercised by the LC incremental strategy; oracle-pinned."
   },
   {
    "target": "nltk.parse.earleychart.FilteredCompleteFundamentalRule",
    "exports": [
     "FilteredCompleteFundamentalRule"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class FilteredCompleteFundamentalRule"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
     "gaps": [
-     "FilteredCompleteFundamentalRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "FilteredCompleteFundamentalRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "FilteredCompleteFundamentalRule depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Filtered rule restricted to complete edges; oracle-pinned."
   },
   {
    "target": "nltk.parse.earleychart.FilteredSingleEdgeFundamentalRule",
    "exports": [
     "FilteredSingleEdgeFundamentalRule"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/chart.ts",
@@ -44800,193 +44908,256 @@
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
     "gaps": [
-     "FilteredSingleEdgeFundamentalRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "FilteredSingleEdgeFundamentalRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Exercised through the oracle-pinned IncrementalLeftCornerChartParser differential."
     ]
    },
-   "notes": "FilteredSingleEdgeFundamentalRule depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real chart.ts implementation exercised by the LC incremental strategy; oracle-pinned."
   },
   {
    "target": "nltk.parse.earleychart.IncrementalBottomUpChartParser",
    "exports": [
     "IncrementalBottomUpChartParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class IncrementalBottomUpChartParser"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
     "gaps": [
-     "IncrementalBottomUpChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IncrementalBottomUpChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "IncrementalBottomUpChartParser depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "BU_INCREMENTAL_STRATEGY; oracle-pinned."
   },
   {
    "target": "nltk.parse.earleychart.IncrementalBottomUpLeftCornerChartParser",
    "exports": [
     "IncrementalBottomUpLeftCornerChartParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class IncrementalBottomUpLeftCornerChartParser"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
     "gaps": [
-     "IncrementalBottomUpLeftCornerChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IncrementalBottomUpLeftCornerChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "IncrementalBottomUpLeftCornerChartParser depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "BU_LC_INCREMENTAL_STRATEGY; oracle-pinned."
   },
   {
    "target": "nltk.parse.earleychart.IncrementalChart",
    "exports": [
     "IncrementalChart"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class IncrementalChart"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "child_pointer_lists",
+     "edges",
+     "insert",
+     "iteredges",
+     "leaf",
+     "num_edges",
+     "num_leaves",
+     "parses",
+     "select",
+     "trees"
+    ],
     "gaps": [
-     "IncrementalChart depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IncrementalChart depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "IncrementalChart depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "End-bucketed incremental chart; select() requires end like the oracle positional signature."
   },
   {
    "target": "nltk.parse.earleychart.IncrementalChartParser",
    "exports": [
     "IncrementalChartParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class IncrementalChartParser"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
     "gaps": [
-     "IncrementalChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IncrementalChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "IncrementalChartParser depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Incremental end-bucketed chart_parse loop; oracle-pinned edge counts and parses."
   },
   {
    "target": "nltk.parse.earleychart.IncrementalLeftCornerChartParser",
    "exports": [
     "IncrementalLeftCornerChartParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class IncrementalLeftCornerChartParser"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
     "gaps": [
-     "IncrementalLeftCornerChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IncrementalLeftCornerChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "IncrementalLeftCornerChartParser depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "LC_INCREMENTAL_STRATEGY with nonempty-grammar ValueError; oracle-pinned."
   },
   {
    "target": "nltk.parse.earleychart.IncrementalTopDownChartParser",
    "exports": [
     "IncrementalTopDownChartParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class IncrementalTopDownChartParser"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "chart_parse",
+     "grammar",
+     "parse",
+     "parse_all",
+     "parse_one",
+     "parse_sents"
+    ],
     "gaps": [
-     "IncrementalTopDownChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IncrementalTopDownChartParser depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "IncrementalTopDownChartParser depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "TD_INCREMENTAL_STRATEGY; oracle-pinned."
   },
   {
    "target": "nltk.parse.earleychart.LeafEdge",
@@ -45008,11 +45179,13 @@
      "NLTK re-exports LeafEdge from nltk.parse.chart; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports LeafEdge from nltk.parse.chart; mapped to the shared implementation."
+     "Exercised through oracle-pinned incremental parser differentials."
     ]
    },
    "notes": "NLTK re-exports LeafEdge from nltk.parse.chart; mapped to the shared implementation."
@@ -45037,11 +45210,13 @@
      "NLTK re-exports LeafInitRule from nltk.parse.chart; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports LeafInitRule from nltk.parse.chart; mapped to the shared implementation."
+     "Exercised through oracle-pinned incremental parser differentials."
     ]
    },
    "notes": "NLTK re-exports LeafInitRule from nltk.parse.chart; mapped to the shared implementation."
@@ -45051,58 +45226,68 @@
    "exports": [
     "PredictorRule"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class PredictorRule"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
     "gaps": [
-     "PredictorRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PredictorRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "PredictorRule depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Cached top-down prediction; oracle-pinned."
   },
   {
    "target": "nltk.parse.earleychart.ScannerRule",
    "exports": [
     "ScannerRule"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/parse_earley.ts",
      "anchor": "export class ScannerRule"
     }
    ],
    "signatures": {
     "status": "adapted",
-    "members": [],
+    "members": [
+     "apply",
+     "apply_everywhere"
+    ],
     "gaps": [
-     "ScannerRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object constructor, CfgGrammar/string coercion, array-returning parse)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ScannerRule depends on unported chart/dependency/transition machinery; stub throws."
+     "Parse trees, edge counts, and select semantics oracle-pinned; trace formatting adapted."
     ]
    },
-   "notes": "ScannerRule depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Fundamental rule on leaf edges; oracle-pinned."
   },
   {
    "target": "nltk.parse.earleychart.SingleEdgeFundamentalRule",
@@ -45124,11 +45309,13 @@
      "NLTK re-exports SingleEdgeFundamentalRule from nltk.parse.chart; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports SingleEdgeFundamentalRule from nltk.parse.chart; mapped to the shared implementation."
+     "Exercised through oracle-pinned incremental parser differentials."
     ]
    },
    "notes": "NLTK re-exports SingleEdgeFundamentalRule from nltk.parse.chart; mapped to the shared implementation."
@@ -45153,11 +45340,13 @@
      "NLTK re-exports TopDownInitRule from nltk.parse.chart; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "parse-earley-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports TopDownInitRule from nltk.parse.chart; mapped to the shared implementation."
+     "Exercised through oracle-pinned incremental parser differentials."
     ]
    },
    "notes": "NLTK re-exports TopDownInitRule from nltk.parse.chart; mapped to the shared implementation."

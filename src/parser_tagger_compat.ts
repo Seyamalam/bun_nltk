@@ -1,6 +1,5 @@
 import {
   chartParse,
-  earleyParse,
   leftCornerParse,
   parsePcfgGrammar,
   probabilisticChartParse,
@@ -92,11 +91,14 @@ export class ChartParser extends NltkChartParser {
   }
 }
 
-export class EarleyChartParser extends ChartParser {
-  override parse<T = ParseTree>(tokens: Iterable<string>): T[] {
-    return earleyParse([...tokens], this.cfgGrammar) as T[];
-  }
-}
+import { EarleyChartParser as EarleyIncrementalChartParser } from "./parse_earley";
+
+/**
+ * nltk.parse.earleychart.EarleyChartParser — the real EARLEY_STRATEGY
+ * incremental chart parser (parse_earley), bound under this name so the
+ * reviewed export route stays at parser_tagger_compat.
+ */
+export class EarleyChartParser extends EarleyIncrementalChartParser {}
 
 export class RecursiveDescentParser extends ChartParser {
   override parse<T = ParseTree>(tokens: Iterable<string>): T[] {
