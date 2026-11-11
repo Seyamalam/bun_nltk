@@ -30,5 +30,17 @@ declare function ranksFromSequence<T>(sequence: Iterable<T>): Array<[T, number]>
 /** Input order is preserved; scores are not sorted by NLTK. */
 declare function ranksFromScores<T>(scores: Iterable<readonly [T, number]>, rankGap?: number): Array<[T, number]>;
 
-export { binaryDistance, customDistance, editDistanceAlign, fMeasure, fractionalPresence, intervalDistance, jaccardDistance, logLikelihood, masiDistance, pk, precision, presence, ranksFromScores, ranksFromSequence, ranksFromScores as ranks_from_scores, ranksFromSequence as ranks_from_sequence, recall, sorensenDiceDistance, sorensenDiceSimilarity, spearmanCorrelation, windowdiff };
+declare const MAX_DISTANCE_INPUT_LEN = 2000;
+declare function jaro_similarity(s1: string, s2: string): number;
+declare function jaro_winkler_similarity(s1: string, s2: string, p?: number, maxL?: number): number;
+
+declare function ghd(ref: string | readonly (string | number | boolean)[], hyp: string | readonly (string | number | boolean)[], insCost?: number, delCost?: number, shiftCostCoeff?: number, boundary?: string | number | boolean): number;
+declare function approxrand<T>(a: readonly T[], b: readonly T[], kwargs?: {
+    shuffles?: number;
+    statistic?: (lst: readonly T[]) => number;
+    verbose?: boolean;
+    rng?: () => number;
+}): [number, number, number];
+
+export { MAX_DISTANCE_INPUT_LEN, approxrand, binaryDistance, customDistance, editDistanceAlign, fMeasure, fractionalPresence, ghd, intervalDistance, jaccardDistance, jaro_similarity as jaroSimilarity, jaro_winkler_similarity as jaroWinklerSimilarity, jaro_similarity, jaro_winkler_similarity, logLikelihood, masiDistance, pk, precision, presence, ranksFromScores, ranksFromSequence, ranksFromScores as ranks_from_scores, ranksFromSequence as ranks_from_sequence, recall, sorensenDiceDistance, sorensenDiceSimilarity, spearmanCorrelation, windowdiff };
 export type { LabelSet, ProbabilityMap, Ranking, Segmentation };

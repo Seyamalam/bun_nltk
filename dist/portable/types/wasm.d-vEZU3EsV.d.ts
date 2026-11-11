@@ -88,6 +88,17 @@ declare function toktokTokenize(text: string): string[];
 declare function mweTokenize(tokens: readonly string[], mwes: readonly (readonly string[])[], separator?: string): string[];
 declare function casualTokenize(text: string, preserveCase?: boolean, reduceLen?: boolean, stripHandles?: boolean, matchPhoneNumbers?: boolean): string[];
 
+declare function reduce_lengthening(text: string): string;
+declare function remove_handles(text: string): string;
+
+type RegexpTokenizerOptions = {
+    gaps?: boolean;
+    discardEmpty?: boolean;
+    discard_empty?: boolean;
+    flags?: number;
+};
+/** Captures preserve Python findall tuples (arrays) and split's unmatched None (null). */
+type RegexpToken = string | string[] | null;
 type RegexpTokenizerRequest = {
     kind: "regexp";
     pattern: string;
@@ -97,6 +108,33 @@ type RegexpTokenizerRequest = {
     flags: number;
     spans: boolean;
 };
+declare class RegexpTokenizer {
+    private readonly runtime?;
+    private readonly pattern;
+    private readonly gaps;
+    private readonly discardEmpty;
+    private readonly flags;
+    constructor(pattern: string | {
+        pattern: string;
+    }, gaps?: boolean | RegexpTokenizerOptions, discardEmpty?: boolean, flags?: number, runtime?: WasmNltk);
+    constructor(pattern: string | {
+        pattern: string;
+    }, options?: RegexpTokenizerOptions, runtime?: WasmNltk);
+    private request;
+    tokenize(text: string): RegexpToken[];
+    spanTokenize(text: string): TokenSpan[];
+    span_tokenize(text: string): TokenSpan[];
+    tokenizeSents(texts: readonly string[]): RegexpToken[][];
+    tokenize_sents(texts: readonly string[]): RegexpToken[][];
+    spanTokenizeSents(texts: readonly string[]): TokenSpan[][];
+    span_tokenize_sents(texts: readonly string[]): TokenSpan[][];
+}
+declare function regexpTokenize(text: string, pattern: string | {
+    pattern: string;
+}, gaps?: boolean | RegexpTokenizerOptions, discardEmpty?: boolean, flags?: number): RegexpToken[];
+
+declare function regexp_span_tokenize(s: string, regexp: string | RegExp): Generator<TokenSpan>;
+declare function string_span_tokenize(s: string, sep: string): Generator<TokenSpan>;
 
 type ContractExports = {
     memory: WebAssembly.Memory;
@@ -361,5 +399,5 @@ declare class WasmNltk {
     };
 }
 
-export { MWETokenizer as M, ToktokTokenizer as T, WasmNltk as W, TweetTokenizer as a, casualTokenize as d, tweetTokenize as e, mweTokenize as m, toktokTokenize as t };
-export type { AsciiMetrics as A, SocialTokenizerRequest as S, TweetTokenizerOptions as b, WasmNltkInit as c, AsciiMetricsStream as f, AsciiMetricsStreamOptions as g, WasmLmModelType as h };
+export { MWETokenizer as M, RegexpTokenizer as R, ToktokTokenizer as T, WasmNltk as W, TweetTokenizer as a, casualTokenize as d, regexp_span_tokenize as e, regexpTokenize as f, remove_handles as g, tweetTokenize as h, mweTokenize as m, reduce_lengthening as r, string_span_tokenize as s, toktokTokenize as t };
+export type { AsciiMetrics as A, SocialTokenizerRequest as S, TweetTokenizerOptions as b, WasmNltkInit as c, AsciiMetricsStream as i, AsciiMetricsStreamOptions as j, WasmLmModelType as k };

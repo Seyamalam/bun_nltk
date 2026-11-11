@@ -14,4 +14,5 @@ export * from "./reference.ts";
 export * from "./tokenizers.ts";
 export * from "./sentence_tokenizer.ts";
 export * from "./punkt.ts";
+export { PunktTrainer as WasmPunktTrainer } from "./punkt.ts";
 export * from "./nltk_compat.ts";

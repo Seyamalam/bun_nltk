@@ -184,6 +184,7 @@ export {
 } from "./src/probability";
 export type { ProbDistFactory, ProbDistLike } from "./src/probability";
 export { BinaryMaxentFeatureEncoding, TypedMaxentFeatureEncoding, pythonFloat, PYTHON_INT, PYTHON_FLOAT, PYTHON_BOOL } from "./src/maxent_feature_encoding.ts";
+export type { MaxentEncodingOptions, MaxentFeatureMapping, MaxentMappingValue } from "./src/maxent_feature_encoding.ts";
 export {
   MaxentFeatureEncodingI, FunctionBackedMaxentFeatureEncoding, GISEncoding,
   TadmEventMaxentFeatureEncoding, CutoffChecker, ConditionalExponentialClassifier,

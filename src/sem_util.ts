@@ -31,6 +31,9 @@ export function rootSemrep(tree: FeatureTreeLike, semkey = "SEM"): unknown {
   return undefined;
 }
 
+export const parse_sents = parseSents;
+export const root_semrep = rootSemrep;
+
 export function skolemizeSemrep(tree: FeatureTreeLike, semkey = "SEM"): unknown {
   return rootSemrep(tree, semkey);
 }
@@ -39,8 +42,8 @@ import { readFileSync } from "node:fs";
 import { Assignment, Model, Valuation } from "./sem_logic";
 
 /** Port of nltk.sem.util.read_sents: read non-blank, non-comment lines from a file. */
-export function read_sents(filename: string, encoding: BufferEncoding = "utf8"): string[] {
-  const sents = readFileSync(filename, encoding)
+export function read_sents(filename: string, encoding = "utf8"): string[] {
+  const sents = readFileSync(filename, encoding as BufferEncoding)
     .split(/\r?\n/)
     .map((l) => l.replace(/\s+$/, ""));
   return sents.filter((l) => l.length > 0 && l[0] !== "#");

@@ -17,6 +17,9 @@ declare class ConfusionMatrix<T = string> {
     recall(label: T): number;
     fMeasure(label: T, alpha?: number): number;
     f_measure(label: T, alpha?: number): number;
+    private rowTotal;
+    /** NLTK ConfusionMatrix.evaluate(): tabulated precision/recall/f-measure string. */
+    evaluate(alpha?: number, truncate?: number, sortByCount?: boolean): string;
     /** Legacy dense output; capped explicitly rather than risking quadratic OOM. */
     toMatrix(): number[][];
 }

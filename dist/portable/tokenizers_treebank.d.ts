@@ -34,5 +34,11 @@ declare class TreebankWordDetokenizer {
 }
 declare function treebankWordTokenize(text: string): string[];
 declare function wordPunctTokenize(text: string): string[];
+declare class MacIntyreContractions {
+    static readonly CONTRACTIONS2: string[];
+    static readonly CONTRACTIONS3: string[];
+    static readonly CONTRACTIONS4: string[];
+}
+declare function align_tokens(tokens: readonly string[], sentence: string): Generator<TokenSpan>;
 
-export { TreebankWordDetokenizer, TreebankWordTokenizer, WordPunctTokenizer, treebankWordTokenize, wordPunctTokenize };
+export { MacIntyreContractions, TreebankWordDetokenizer, TreebankWordTokenizer, WordPunctTokenizer, align_tokens, treebankWordTokenize, wordPunctTokenize };

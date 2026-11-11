@@ -242,11 +242,10 @@ test("built Node/browser export observations do not become package-wide behavior
   for (const name of ["word_tokenize", "wordpunct_tokenize", "WordPunctTokenizer", "RustCFG", "Tree", "RustEarleyParser", "ngrams_iter"]) {
     expect(observed[name]).toEqual([true, true]);
   }
-  for (const name of ["PorterStemmer", "FreqDist", "MLEProbDist", "jaccardDistance", "sentenceChrF", "CFG", "ChartParser", "BinaryMaxentFeatureEncoding", "TypedMaxentFeatureEncoding"]) {
+  for (const name of ["PorterStemmer", "FreqDist", "MLEProbDist", "jaccardDistance", "sentenceChrF", "CFG", "ChartParser", "RegexpTokenizer", "ProbabilisticProduction", "BinaryMaxentFeatureEncoding", "TypedMaxentFeatureEncoding"]) {
     expect(observed[name]).toEqual([true, false]);
   }
-  expect(observed.RegexpTokenizer).toEqual([false, false]);
-  for (const name of ["RustPCFG", "RustViterbiParser", "ProbabilisticProduction", "RustPunktTokenizer"]) {
+  for (const name of ["RustPCFG", "RustViterbiParser", "RustPunktTokenizer"]) {
     expect(observed[name]).toEqual([false, false]);
   }
   expect(result.parse).toEqual([true, true, true]);

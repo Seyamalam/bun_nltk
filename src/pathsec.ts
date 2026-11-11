@@ -1,7 +1,7 @@
 // nltk.pathsec — path sandbox for corpus/data access (ENFORCE mode).
 // Original: nltk/pathsec.py (NLTK 3.10.3, GHSA-p4rw follow-up).
 
-import { existsSync, statSync, openSync, readSync, closeSync, mkdirSync } from "node:fs";
+import { existsSync, statSync, openSync, readSync, closeSync } from "node:fs";
 import { resolve as pathResolve } from "node:path";
 import { homedir, tmpdir } from "node:os";
 import { pyError } from "./internals";
@@ -146,4 +146,3 @@ export const zip_member_is_unsafe = (name: string): boolean => {
   return normalized.startsWith("/") || /^[a-zA-Z]:/.test(normalized) || normalized.split("/").includes("..");
 };
 
-export { mkdirSync as _mkdirSync };

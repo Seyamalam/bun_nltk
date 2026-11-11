@@ -1,24 +1,26 @@
-import { W as WasmNltk } from './types/wasm.d-DQjev3Ji.js';
+import { W as WasmNltk, R as RegexpTokenizer } from './types/wasm.d-vEZU3EsV.js';
 import { SocialTokenizerRequest } from './index.browser.js';
-export { M as MWETokenizer, M as RustMWETokenizer, T as RustToktokTokenizer, a as RustTweetTokenizer, T as ToktokTokenizer, a as TweetTokenizer, type b as TweetTokenizerOptions, type c as WasmNltkInit, d as casualTokenize, d as casual_tokenize, m as mweTokenize, m as mwe_tokenize, t as toktokTokenize, t as toktok_tokenize, e as tweetTokenize, e as tweet_tokenize } from './types/wasm.d-DQjev3Ji.js';
+export { M as MWETokenizer, M as RustMWETokenizer, T as RustToktokTokenizer, a as RustTweetTokenizer, T as ToktokTokenizer, a as TweetTokenizer, type b as TweetTokenizerOptions, type c as WasmNltkInit, d as casualTokenize, d as casual_tokenize, m as mweTokenize, m as mwe_tokenize, r as reduce_lengthening, e as regexp_span_tokenize, f as regexp_tokenize, g as remove_handles, s as string_span_tokenize, t as toktokTokenize, t as toktok_tokenize, h as tweetTokenize, h as tweet_tokenize } from './types/wasm.d-vEZU3EsV.js';
 import { RustNaiveBayesClassifier, PositiveFeatureOptions } from './feature_nb.js';
 export { RustPositiveNaiveBayesClassifier } from './feature_nb.js';
-import { P as ProbDistLike, F as FreqDist, D as DictionaryProbDist, R as RustMaxentClassifier, a as FeatureMaxentOptions, C as ConditionalProbDist } from './types/feature_maxent.d-Du8uwQh3.js';
-import { MaxentEncodingExample, MaxentFeatureset } from './feature_maxent.js';
-export { B as BinaryMaxentFeatureEncoding, c as ConditionalFreqDist, type d as ConditionalFreqDistInput, e as ConditionalProbDistI, f as DictionaryConditionalProbDist, E as ELEProbDist, type g as FeatureMaxentSerialized, type h as FreqDistInput, L as LaplaceProbDist, i as LidstoneProbDist, j as MLEProbDist, k as MutableProbDist, l as PYTHON_BOOL, m as PYTHON_FLOAT, n as PYTHON_INT, type o as ProbDistFactory, p as ProbDistI, S as SimpleGoodTuringProbDist, T as TypedMaxentFeatureEncoding, U as UniformProbDist, W as WittenBellProbDist, q as addLogs, q as add_logs, r as entropy, s as logLikelihood, s as log_likelihood, t as pythonFloat, u as sumLogs, u as sum_logs } from './types/feature_maxent.d-Du8uwQh3.js';
+import { P as ProbDistLike, F as FreqDist, D as DictionaryProbDist, B as BinaryMaxentFeatureEncoding, b as MaxentFeatureMapping, c as MaxentEncodingOptions, d as MaxentMappingValue, R as RustMaxentClassifier, e as FeatureMaxentOptions, C as ConditionalProbDist, f as ConditionalFreqDist } from './types/feature_maxent.d-CRSpef1Y.js';
+import { MaxentFeatureset, MaxentEncodingExample } from './feature_maxent.js';
+export { type g as ConditionalFreqDistInput, h as ConditionalProbDistI, i as DictionaryConditionalProbDist, E as ELEProbDist, type j as FeatureMaxentSerialized, type k as FreqDistInput, L as LaplaceProbDist, l as LidstoneProbDist, m as MLEProbDist, n as MutableProbDist, o as PYTHON_BOOL, p as PYTHON_FLOAT, q as PYTHON_INT, type r as ProbDistFactory, s as ProbDistI, t as RandomProbDist, S as SimpleGoodTuringProbDist, T as TypedMaxentFeatureEncoding, U as UniformProbDist, W as WittenBellProbDist, u as addLogs, u as add_logs, v as entropy, w as logLikelihood, w as log_likelihood, x as pythonFloat, x as python_float, y as sumLogs, y as sum_logs } from './types/feature_maxent.d-CRSpef1Y.js';
 import { RustDecisionTreeClassifier, FeatureTreeOptions } from './feature_tree.js';
-export { type LanguageModelType, LegacyMWETokenizer, LegacyToktokTokenizer, LegacyTweetTokenizer, type LmProbe, NgramLanguageModel, type NgramLanguageModelOptions, type NgramOptions, type PunktModelSerialized, PunktSentenceTokenizer, PunktSentenceTokenizerSubset, PunktTrainer, PunktTrainerSubset, type PunktTrainingOptions, RustNgramLanguageModel, bigramWindowStatsAsciiIds as bigramWindowStatsAsciiIdsJs, bigramWindowStatsAscii as bigramWindowStatsAsciiJs, bigramWindowStatsAsciiIds as bigram_window_stats_ascii_ids_js, bigramWindowStatsAscii as bigram_window_stats_ascii_js, bigrams, computeAsciiMetrics as computeAsciiMetricsJs, computeAsciiMetrics as compute_ascii_metrics_js, countNgramsAscii as countNgramsAsciiJs, countTokensAscii as countTokensAsciiJs, countUniqueNgramsAscii as countUniqueNgramsAsciiJs, countUniqueTokensAscii as countUniqueTokensAsciiJs, countNgramsAscii as count_ngrams_ascii_js, countTokensAscii as count_tokens_ascii_js, countUniqueNgramsAscii as count_unique_ngrams_ascii_js, countUniqueTokensAscii as count_unique_tokens_ascii_js, defaultPunktModel, defaultPunktModel as default_punkt_model, everygramsAscii, everygramsAscii as everygrams_ascii, hashNgram, hashTokenAscii, hashNgram as hash_ngram, hashTokenAscii as hash_token_ascii, legacyMweTokenize, legacyToktokTokenize, legacyTweetTokenize, ngramFreqDistHashAscii as ngramFreqDistHashAsciiJs, ngramFreqDistHashAscii as ngram_freq_dist_hash_ascii_js, ngrams, ngramsAscii, ngramsAscii as ngrams_ascii, ngrams_iter, normalizeTokensAscii, normalizeTokensUnicode, normalizeTokensAscii as normalize_tokens_ascii, normalizeTokensUnicode as normalize_tokens_unicode, parsePunktModel, parsePunktModel as parse_punkt_model, posTagAscii, posTagAscii as pos_tag_ascii, sent_tokenize, sentenceTokenizePunkt, sentenceTokenizePunktCompat, sentenceTokenizeSubset, sentenceTokenizePunkt as sentence_tokenize_punkt, sentenceTokenizePunktCompat as sentence_tokenize_punkt_compat, sentenceTokenizeSubset as sentence_tokenize_subset, serializePunktModel, serializePunktModel as serialize_punkt_model, skipgramsAscii, skipgramsAscii as skipgrams_ascii, tokenFreqDistHashAscii as tokenFreqDistHashAsciiJs, tokenFreqDistIdsAscii as tokenFreqDistIdsAsciiJs, tokenFreqDistHashAscii as token_freq_dist_hash_ascii_js, tokenFreqDistIdsAscii as token_freq_dist_ids_ascii_js, tokenizeAscii, tokenizeAscii as tokenize_ascii, topPmiBigramsAscii as topPmiBigramsAsciiJs, topPmiBigramsAscii as top_pmi_bigrams_ascii_js, trainNgramLanguageModel, trainPunktModel, trainNgramLanguageModel as train_ngram_language_model, trainPunktModel as train_punkt_model, trigrams, tweetTokenizeSubset, tweetTokenizeSubset as tweet_tokenize_subset, wordTokenizeSubset, word_tokenize, wordTokenizeSubset as word_tokenize_subset, wordpunct_tokenize } from './index.browser.js';
-export { TreebankWordDetokenizer, TreebankWordTokenizer, WordPunctTokenizer, treebankWordTokenize, treebankWordTokenize as treebank_word_tokenize, wordPunctTokenize, wordPunctTokenize as word_punct_tokenize } from './tokenizers_treebank.js';
+export { type LanguageModelType, LegacyMWETokenizer, LegacyToktokTokenizer, LegacyTweetTokenizer, type LmProbe, NgramLanguageModel, type NgramLanguageModelOptions, type NgramOptions, type PunktModelSerialized, PunktSentenceTokenizerSubset, PunktTrainerSubset, type PunktTrainingOptions, RustNgramLanguageModel, PunktSentenceTokenizer as WasmPunktSentenceTokenizer, PunktTrainer as WasmPunktTrainer, bigramWindowStatsAsciiIds as bigramWindowStatsAsciiIdsJs, bigramWindowStatsAscii as bigramWindowStatsAsciiJs, bigramWindowStatsAsciiIds as bigram_window_stats_ascii_ids_js, bigramWindowStatsAscii as bigram_window_stats_ascii_js, bigrams, computeAsciiMetrics as computeAsciiMetricsJs, computeAsciiMetrics as compute_ascii_metrics_js, countNgramsAscii as countNgramsAsciiJs, countTokensAscii as countTokensAsciiJs, countUniqueNgramsAscii as countUniqueNgramsAsciiJs, countUniqueTokensAscii as countUniqueTokensAsciiJs, countNgramsAscii as count_ngrams_ascii_js, countTokensAscii as count_tokens_ascii_js, countUniqueNgramsAscii as count_unique_ngrams_ascii_js, countUniqueTokensAscii as count_unique_tokens_ascii_js, defaultPunktModel, defaultPunktModel as default_punkt_model, everygramsAscii, everygramsAscii as everygrams_ascii, hashNgram, hashTokenAscii, hashNgram as hash_ngram, hashTokenAscii as hash_token_ascii, legacyMweTokenize, legacyToktokTokenize, legacyTweetTokenize, legacyMweTokenize as legacy_mwe_tokenize, legacyToktokTokenize as legacy_toktok_tokenize, legacyTweetTokenize as legacy_tweet_tokenize, ngramFreqDistHashAscii as ngramFreqDistHashAsciiJs, ngramFreqDistHashAscii as ngram_freq_dist_hash_ascii_js, ngrams, ngramsAscii, ngramsAscii as ngrams_ascii, ngrams_iter, normalizeTokensAscii, normalizeTokensUnicode, normalizeTokensAscii as normalize_tokens_ascii, normalizeTokensUnicode as normalize_tokens_unicode, parsePunktModel, parsePunktModel as parse_punkt_model, posTagAscii, posTagAscii as pos_tag_ascii, sent_tokenize, sentenceTokenizePunkt, sentenceTokenizePunktCompat, sentenceTokenizeSubset, sentenceTokenizePunkt as sentence_tokenize_punkt, sentenceTokenizePunktCompat as sentence_tokenize_punkt_compat, sentenceTokenizeSubset as sentence_tokenize_subset, serializePunktModel, serializePunktModel as serialize_punkt_model, skipgramsAscii, skipgramsAscii as skipgrams_ascii, tokenFreqDistHashAscii as tokenFreqDistHashAsciiJs, tokenFreqDistIdsAscii as tokenFreqDistIdsAsciiJs, tokenFreqDistHashAscii as token_freq_dist_hash_ascii_js, tokenFreqDistIdsAscii as token_freq_dist_ids_ascii_js, tokenizeAscii, tokenizeAscii as tokenize_ascii, topPmiBigramsAscii as topPmiBigramsAsciiJs, topPmiBigramsAscii as top_pmi_bigrams_ascii_js, trainNgramLanguageModel, trainPunktModel, trainNgramLanguageModel as train_ngram_language_model, trainPunktModel as train_punkt_model, trigrams, tweetTokenizeSubset, tweetTokenizeSubset as tweet_tokenize_subset, wordTokenizeSubset, word_tokenize, wordTokenizeSubset as word_tokenize_subset, wordpunct_tokenize } from './index.browser.js';
+export { MacIntyreContractions, TreebankWordDetokenizer, TreebankWordTokenizer, WordPunctTokenizer, align_tokens, treebankWordTokenize, treebankWordTokenize as treebank_word_tokenize, wordPunctTokenize, wordPunctTokenize as word_punct_tokenize } from './tokenizers_treebank.js';
 export { BlanklineTokenizer, LineTokenizer, SpaceTokenizer, TabTokenizer, WhitespaceTokenizer, blanklineTokenize, blanklineTokenize as blankline_tokenize, lineTokenize, lineTokenize as line_tokenize } from './tokenizers_basic.js';
 export { type BlanklineHandling, type TokenSpan } from './tokenizer_types.js';
+import { P as ParseTree, G as GrammarSymbol, N as Nonterminal, C as CFG, a as Production, b as CfgGrammar, c as PCFG, d as PcfgGrammar, e as ProbabilisticParse, T as Tree } from './types/rust_parse.d-Cheopg5Z.js';
+export { type f as CfgProduction, D as DependencyGrammar, g as DependencyProduction, type h as PcfgProduction, i as ProbabilisticDependencyGrammar, j as ProbabilisticProduction, R as RustCFG, k as RustEarleyParser, type l as RustParseOptions, type m as RustParseResult, type n as RustTreeOrder, type o as RustTreePosition, type S as StringTree, type p as TreeFormatOptions, q as chartParse, q as chart_parse, r as earleyParse, s as earleyRecognize, r as earley_parse, s as earley_recognize, t as inducePcfg, u as induce_pcfg, v as invertGraph, v as invert_graph, w as isNonterminal, x as isTerminal, y as is_nonterminal, z as is_terminal, A as leftCornerParse, A as left_corner_parse, B as nonterminals, E as parseCfgGrammar, F as parsePcfgGrammar, H as parseTextWithCfg, I as parseTextWithEarley, J as parseTextWithLeftCorner, K as parseTextWithPcfg, L as parseTextWithRecursiveDescent, E as parse_cfg_grammar, F as parse_pcfg_grammar, H as parse_text_with_cfg, I as parse_text_with_earley, J as parse_text_with_left_corner, K as parse_text_with_pcfg, L as parse_text_with_recursive_descent, M as probabilisticChartParse, M as probabilistic_chart_parse, O as readGrammar, Q as read_grammar, U as recursiveDescentParse, U as recursive_descent_parse, V as standardNontermParser, W as standard_nonterm_parser, X as transitiveClosure, X as transitive_closure } from './types/rust_parse.d-Cheopg5Z.js';
+import { ConfusionMatrix } from './confusion_metrics.js';
+export { accuracy } from './confusion_metrics.js';
 import { FeatureSet, LabeledFeatureset } from './feature_types.js';
 export { type FeatureValue } from './feature_types.js';
-export { type BleuWeights, type ConfusionMatrixResult, type EditDistanceOptions, confusionMatrix, confusionMatrix as confusion_matrix, corpusBleu, corpusBleu as corpus_bleu, editDistance, editDistance as edit_distance, sentenceBleu, sentenceBleu as sentence_bleu } from './metrics.js';
-export { type LabelSet, type ProbabilityMap, type Ranking, type Segmentation, binaryDistance, binaryDistance as binary_distance, customDistance, customDistance as custom_distance, editDistanceAlign, editDistanceAlign as edit_distance_align, fMeasure, fMeasure as f_measure, fractionalPresence, fractionalPresence as fractional_presence, intervalDistance, intervalDistance as interval_distance, jaccardDistance, jaccardDistance as jaccard_distance, masiDistance, masiDistance as masi_distance, logLikelihood as metricsLogLikelihood, logLikelihood as metrics_log_likelihood, pk, precision, presence, ranksFromScores, ranksFromSequence, ranksFromScores as ranks_from_scores, ranksFromSequence as ranks_from_sequence, recall, sorensenDiceDistance, sorensenDiceSimilarity, sorensenDiceDistance as sorensen_dice_distance, sorensenDiceSimilarity as sorensen_dice_similarity, spearmanCorrelation, spearmanCorrelation as spearman_correlation, windowdiff } from './distance_metrics.js';
-export { type ChrFOptions, type NistOptions, corpusChrF, corpusNist, corpusChrF as corpus_chr_f, corpusNist as corpus_nist, nistLengthPenalty, nistLengthPenalty as nist_length_penalty, sentenceChrF, sentenceNist, sentenceChrF as sentence_chr_f, sentenceNist as sentence_nist } from './translation_metrics_extra.js';
-export { type GrammarSymbol, Nonterminal, Production, CFG as RustCFG, RustEarleyParser, type RustParseOptions, type RustParseResult, type RustTreeOrder, type RustTreePosition, type StringTree, Tree, type TreeFormatOptions, nonterminals } from './rust_parse.js';
-export { ConfusionMatrix, accuracy } from './confusion_metrics.js';
-export { ParsingRuntime } from './parsing_runtime.js';
+export { type BleuPrecision, type BleuSmoothingContext, type BleuSmoothingFn, type BleuSmoothingResult, type BleuWeights, type ConfusionMatrixResult, type EditDistanceOptions, SmoothingFunction, brevityPenalty, closestRefLength, confusionMatrix, confusionMatrix as confusion_matrix, corpusBleu, editDistance, editDistance as edit_distance, modifiedPrecision, sentenceBleu, sentenceBleu as sentence_bleu } from './metrics.js';
+export { type LabelSet, MAX_DISTANCE_INPUT_LEN, type ProbabilityMap, type Ranking, type Segmentation, approxrand, binaryDistance, binaryDistance as binary_distance, customDistance, customDistance as custom_distance, editDistanceAlign, editDistanceAlign as edit_distance_align, fMeasure, fMeasure as f_measure, fractionalPresence, fractionalPresence as fractional_presence, ghd, intervalDistance, intervalDistance as interval_distance, jaccardDistance, jaccardDistance as jaccard_distance, jaroSimilarity as jaro_similarity, jaroWinklerSimilarity as jaro_winkler_similarity, masiDistance, masiDistance as masi_distance, logLikelihood as metricsLogLikelihood, logLikelihood as metrics_log_likelihood, pk, precision, presence, ranksFromScores, ranksFromSequence, ranksFromScores as ranks_from_scores, ranksFromSequence as ranks_from_sequence, recall, sorensenDiceDistance, sorensenDiceSimilarity, sorensenDiceDistance as sorensen_dice_distance, sorensenDiceSimilarity as sorensen_dice_similarity, spearmanCorrelation, spearmanCorrelation as spearman_correlation, windowdiff } from './distance_metrics.js';
+export { type ChrFOptions, type NistOptions, chrfPrecisionRecallFscoreSupport as chrf_precision_recall_fscore_support, corpusChrF, corpusNist, corpusChrF as corpus_chr_f, corpusChrF as corpus_chrf, corpusNist as corpus_nist, nistLengthPenalty, nistLengthPenalty as nist_length_penalty, sentenceChrF, sentenceNist, sentenceChrF as sentence_chr_f, sentenceChrF as sentence_chrf, sentenceNist as sentence_nist } from './translation_metrics_extra.js';
+import { ParsingRuntime } from './parsing_runtime.js';
 import './metrics_wasm.js';
 
 /** NLTK intentionally returns None for unseen values when Nr(0) is zero. */
@@ -295,6 +297,157 @@ declare function socialTokenizerNative(request: SocialTokenizerRequest): string[
 /** True only when Bun can dlopen a native library exporting the tokenizer ABI. */
 declare function nativeTokenizerAvailable(): boolean;
 
+declare class PunktLanguageVars {
+    sent_end_chars: string[];
+    internal_punctuation: string;
+    re_boundary_realignment: RegExp;
+    get _re_sent_end_chars(): string;
+    _re_word_start: string;
+    get _re_non_word_chars(): string;
+    _re_multi_char_punct: string;
+    private _re_word_tokenizer?;
+    _word_tokenizer_re(): RegExp;
+    word_tokenize(s: string): string[];
+    private _re_period_context?;
+    period_context_re(): RegExp;
+}
+declare class PunktParameters {
+    abbrev_types: Set<string>;
+    collocations: Set<string>;
+    sent_starters: Set<string>;
+    ortho_context: Map<string, number>;
+    clear_abbrevs(): void;
+    clear_collocations(): void;
+    clear_sent_starters(): void;
+    clear_ortho_context(): void;
+    add_ortho_context(typ: string, flag: number): void;
+    _debug_ortho_context(typ: string): Generator<string>;
+}
+declare class PunktToken {
+    static readonly _properties: readonly ["parastart", "linestart", "sentbreak", "abbr", "ellipsis"];
+    tok: string;
+    type: string;
+    period_final: boolean;
+    parastart: boolean | null;
+    linestart: boolean | null;
+    sentbreak: boolean | null;
+    abbr: boolean | null;
+    ellipsis: boolean | null;
+    constructor(tok: string, params?: Record<string, boolean>);
+    get type_no_period(): string;
+    get type_no_sentperiod(): string;
+    get first_upper(): boolean;
+    get first_lower(): boolean;
+    get first_case(): string;
+    get is_ellipsis(): boolean;
+    get is_number(): boolean;
+    get is_initial(): boolean;
+    get is_alpha(): boolean;
+    get is_non_punct(): boolean;
+    repr(): string;
+    toString(): string;
+}
+declare class PunktBaseClass {
+    protected _params: PunktParameters;
+    protected _lang_vars: PunktLanguageVars;
+    protected _Token: typeof PunktToken;
+    constructor(lang_vars?: PunktLanguageVars, token_cls?: typeof PunktToken, params?: PunktParameters);
+    _tokenize_words(plaintext: string): Generator<PunktToken>;
+    _annotate_first_pass(tokens: Iterable<PunktToken>): Generator<PunktToken>;
+    _first_pass_annotation(aug_tok: PunktToken): void;
+}
+declare class PunktTrainer extends PunktBaseClass {
+    protected _type_fdist: FreqDist<string | null>;
+    protected _num_period_toks: number;
+    protected _collocation_fdist: FreqDist<string | null>;
+    protected _sent_starter_fdist: FreqDist<string | null>;
+    protected _sentbreak_count: number;
+    protected _finalized: boolean;
+    ABBREV: number;
+    IGNORE_ABBREV_PENALTY: boolean;
+    ABBREV_BACKOFF: number;
+    COLLOCATION: number;
+    SENT_STARTER: number;
+    INCLUDE_ALL_COLLOCS: boolean;
+    INCLUDE_ABBREV_COLLOCS: boolean;
+    MIN_COLLOC_FREQ: number;
+    constructor(train_text?: string, verbose?: boolean, lang_vars?: PunktLanguageVars, token_cls?: typeof PunktToken);
+    get_params(): PunktParameters;
+    getParams(): PunktParameters;
+    train(text: string, verbose?: boolean, finalize?: boolean): void;
+    train_tokens(tokens: Iterable<string>, verbose?: boolean, finalize?: boolean): void;
+    trainTokens(tokens: Iterable<string>, verbose?: boolean, finalize?: boolean): void;
+    _train_tokens(tokens: PunktToken[], verbose: boolean): void;
+    _unique_types(tokens: PunktToken[]): Set<string>;
+    finalize_training(verbose?: boolean): void;
+    finalizeTraining(verbose?: boolean): void;
+    freq_threshold(ortho_thresh?: number, type_thresh?: number, colloc_thres?: number, sentstart_thresh?: number): void;
+    freqThreshold(ortho_thresh?: number, type_thresh?: number, colloc_thres?: number, sentstart_thresh?: number): void;
+    _freq_threshold(fdist: FreqDist<string | null>, threshold: number): FreqDist<string | null>;
+    _get_orthography_data(tokens: PunktToken[]): void;
+    _reclassify_abbrev_types(types: Iterable<string>): Generator<[string, number, boolean]>;
+    find_abbrev_types(): void;
+    findAbbrevTypes(): void;
+    _is_rare_abbrev_type(cur_tok: PunktToken, next_tok: PunktToken): boolean;
+    static _dunning_log_likelihood(count_a: number, count_b: number, count_ab: number, N: number): number;
+    static _col_log_likelihood(count_a: number, count_b: number, count_ab: number, N: number): number;
+    _is_potential_collocation(aug_tok1: PunktToken, aug_tok2: PunktToken): boolean;
+    _find_collocations(): Generator<[string, number]>;
+    _is_potential_sent_starter(cur_tok: PunktToken, prev_tok: PunktToken): boolean;
+    _find_sent_starters(): Generator<[string, number]>;
+    _get_sentbreak_count(tokens: Iterable<PunktToken>): number;
+}
+type Span = [number, number];
+type EndContextMatch = {
+    start: number;
+    end: number;
+    text: string;
+    after_tok: string;
+    next_tok_start: number;
+};
+declare class PunktSentenceTokenizer extends PunktBaseClass {
+    constructor(train_text?: string | PunktParameters, verbose?: boolean, lang_vars?: PunktLanguageVars, token_cls?: typeof PunktToken);
+    train(train_text: string | PunktParameters, verbose?: boolean): PunktParameters;
+    get _params_accessor(): PunktParameters;
+    get params(): PunktParameters;
+    tokenize(text: string, realign_boundaries?: boolean): string[];
+    debug_decisions(text: string): Generator<Record<string, unknown>>;
+    span_tokenize(text: string, realign_boundaries?: boolean): Generator<Span>;
+    spanTokenize(text: string, realign_boundaries?: boolean): Span[];
+    sentences_from_text(text: string, realign_boundaries?: boolean): string[];
+    sentencesFromText(text: string, realign_boundaries?: boolean): string[];
+    _get_last_whitespace_index(text: string): number;
+    _match_potential_end_contexts(text: string): Generator<[EndContextMatch, string]>;
+    _slices_from_text(text: string): Generator<Span>;
+    _realign_boundaries(text: string, slices: Iterable<Span>): Generator<Span>;
+    text_contains_sentbreak(text: string): boolean;
+    textContainsSentbreak(text: string): boolean;
+    sentences_from_text_legacy(text: string): Generator<string>;
+    sentences_from_tokens(tokens: Iterable<string>): Generator<string[]>;
+    _annotate_tokens(tokens: Iterable<PunktToken>): Generator<PunktToken>;
+    _build_sentence_list(text: string, tokens: Iterable<PunktToken>): Generator<string>;
+    dump(tokens: Iterable<PunktToken>): void;
+    PUNCTUATION: string[];
+    _annotate_second_pass(tokens: Iterable<PunktToken>): Generator<PunktToken>;
+    _second_pass_annotation(aug_tok1: PunktToken, aug_tok2: PunktToken | null): string | undefined;
+    _ortho_heuristic(aug_tok: PunktToken): boolean | "unknown";
+    tokenize_sents(strings: readonly string[]): string[][];
+    span_tokenize_sents(strings: readonly string[]): Generator<Span[]>;
+}
+declare class PunktTokenizer extends PunktSentenceTokenizer {
+    private _lang;
+    constructor(lang?: string);
+    load_lang(lang?: string): void;
+    loadLang(lang?: string): void;
+    save_params(): void;
+    saveParams(): void;
+}
+declare function load_punkt_params(lang_dir: string): PunktParameters;
+declare function loadPunktParams(lang_dir: string): PunktParameters;
+declare function save_punkt_params(params: PunktParameters, dir?: string): void;
+declare function savePunktParams(params: PunktParameters, dir?: string): void;
+declare function format_debug_decision(d: Record<string, unknown>): string;
+
 type NormalizeOptions = {
     removeStopwords?: boolean;
     preferNativeAscii?: boolean;
@@ -302,23 +455,23 @@ type NormalizeOptions = {
 };
 declare function normalizeTokens(text: string, options?: NormalizeOptions): string[];
 
-type TaggedToken$3 = {
+type TaggedToken$5 = {
     token: string;
     tag: string;
 };
 type ChunkNode = {
     kind: "chunk";
     label: string;
-    tokens: TaggedToken$3[];
+    tokens: TaggedToken$5[];
 };
-type ChunkElement = TaggedToken$3 | ChunkNode;
-declare function regexpChunkParse(tokens: TaggedToken$3[], grammar: string): ChunkElement[];
-type IobRow = {
+type ChunkElement = TaggedToken$5 | ChunkNode;
+declare function regexpChunkParse(tokens: TaggedToken$5[], grammar: string): ChunkElement[];
+type IobRow$1 = {
     token: string;
     tag: string;
     iob: string;
 };
-declare function chunkTreeToIob(tree: ChunkElement[]): IobRow[];
+declare function chunkTreeToIob(tree: ChunkElement[]): IobRow$1[];
 
 /**
  * Default rule grammar approximating NLTK's NE categories. Rules are applied
@@ -342,10 +495,10 @@ type NeChunkOptions = {
     binary?: boolean;
 };
 /** Group tagged tokens into NE chunks (labeled nodes), NLTK `ne_chunk` style. */
-declare function neChunk(taggedSentence: TaggedToken$3[], options?: NeChunkOptions): ChunkElement[];
+declare function neChunk(taggedSentence: TaggedToken$5[], options?: NeChunkOptions): ChunkElement[];
 type NeIobTuple = [word: string, pos: string, ne: string];
 /** IOB-tagged view of the NE chunks: Array<[word, pos, ne]> with B-/I-/O tags. */
-declare function neChunkIob(taggedSentence: TaggedToken$3[], options?: NeChunkOptions): NeIobTuple[];
+declare function neChunkIob(taggedSentence: TaggedToken$5[], options?: NeChunkOptions): NeIobTuple[];
 
 type TextCatOptions = {
     /** Language name/code -> sample texts used to train that language's profile. */
@@ -374,89 +527,6 @@ declare class TextCat {
      */
     guessLanguage(text: string, returnAll?: boolean): string | null | string[];
 }
-
-type CfgProduction = {
-    lhs: string;
-    rhs: string[];
-};
-type CfgGrammar = {
-    startSymbol: string;
-    productions: CfgProduction[];
-};
-type PcfgProduction = {
-    lhs: string;
-    rhs: string[];
-    prob: number;
-};
-type PcfgGrammar = {
-    startSymbol: string;
-    productions: PcfgProduction[];
-};
-type ParseTree = {
-    label: string;
-    children: Array<ParseTree | string>;
-};
-type ProbabilisticParse = {
-    tree: ParseTree;
-    logProb: number;
-    prob: number;
-};
-declare function parseCfgGrammar(grammarText: string, options?: {
-    startSymbol?: string;
-}): CfgGrammar;
-declare function parsePcfgGrammar(grammarText: string, options?: {
-    startSymbol?: string;
-}): PcfgGrammar;
-declare function chartParse(tokens: string[], grammar: CfgGrammar, options?: {
-    maxTrees?: number;
-    startSymbol?: string;
-}): ParseTree[];
-declare function recursiveDescentParse(tokens: string[], grammar: CfgGrammar, options?: {
-    maxTrees?: number;
-    startSymbol?: string;
-    maxDepth?: number;
-}): ParseTree[];
-declare function leftCornerParse(tokens: string[], grammar: CfgGrammar, options?: {
-    maxTrees?: number;
-    startSymbol?: string;
-    maxDepth?: number;
-}): ParseTree[];
-declare function earleyRecognize(tokens: string[], grammar: CfgGrammar, options?: {
-    startSymbol?: string;
-}): boolean;
-declare function earleyParse(tokens: string[], grammar: CfgGrammar, options?: {
-    maxTrees?: number;
-    startSymbol?: string;
-}): ParseTree[];
-declare function probabilisticChartParse(tokens: string[], grammar: PcfgGrammar, options?: {
-    startSymbol?: string;
-}): ProbabilisticParse | null;
-declare function parseTextWithCfg(text: string, grammar: CfgGrammar | string, options?: {
-    maxTrees?: number;
-    startSymbol?: string;
-    normalizeTokens?: boolean;
-}): ParseTree[];
-declare function parseTextWithEarley(text: string, grammar: CfgGrammar | string, options?: {
-    maxTrees?: number;
-    startSymbol?: string;
-    normalizeTokens?: boolean;
-}): ParseTree[];
-declare function parseTextWithPcfg(text: string, grammar: PcfgGrammar | string, options?: {
-    startSymbol?: string;
-    normalizeTokens?: boolean;
-}): ProbabilisticParse | null;
-declare function parseTextWithRecursiveDescent(text: string, grammar: CfgGrammar | string, options?: {
-    maxTrees?: number;
-    startSymbol?: string;
-    normalizeTokens?: boolean;
-    maxDepth?: number;
-}): ParseTree[];
-declare function parseTextWithLeftCorner(text: string, grammar: CfgGrammar | string, options?: {
-    maxTrees?: number;
-    startSymbol?: string;
-    normalizeTokens?: boolean;
-    maxDepth?: number;
-}): ParseTree[];
 
 /**
  * ParentedTree / ImmutableTree subset (nltk.tree).
@@ -589,9 +659,21 @@ declare class BigramCollocationFinder<T = string> {
     applyNgramFilter(fn: (left: T, right: T) => boolean): this;
     applyWordFilter(fn: (word: T) => boolean): this;
     scoreNgram(scoreFn: BigramScoreFn<T>, left: T, right: T): number | null;
+    get word_fd(): FreqDist<T>;
+    get ngram_fd(): FreqDist<[T, T]>;
+    set ngram_fd(value: FreqDist<[T, T]>);
+    get window_size(): number;
     scoreNgrams(scoreFn: BigramScoreFn<T>): Array<[[T, T], number]>;
+    score_ngrams(scoreFn: BigramScoreFn<T>): Array<[[T, T], number]>;
+    score_ngram(scoreFn: BigramScoreFn<T>, left: T, right: T): number | null;
     nbest(scoreFn: BigramScoreFn<T>, count: number): Array<[T, T]>;
     aboveScore(scoreFn: BigramScoreFn<T>, minScore: number): IterableIterator<[T, T]>;
+    above_score(scoreFn: BigramScoreFn<T>, minScore: number): IterableIterator<[T, T]>;
+    apply_freq_filter(minFreq: number): this;
+    apply_ngram_filter(fn: (left: T, right: T) => boolean): this;
+    apply_word_filter(fn: (word: T) => boolean): this;
+    static from_words<T>(words: Iterable<T>, windowSize?: number): BigramCollocationFinder<T>;
+    static from_documents<T>(documents: Iterable<Iterable<T>>): BigramCollocationFinder<T>;
 }
 declare class TrigramCollocationFinder<T = string> {
     #private;
@@ -635,6 +717,378 @@ declare class QuadgramCollocationFinder<T = string> {
     aboveScore(scoreFn: QuadgramScoreFn<T>, minScore: number): IterableIterator<[T, T, T, T]>;
 }
 
+/**
+ * NLTK processing-interface ABCs, ported from nltk.tokenize.api,
+ * nltk.stem.api, nltk.tag.api, nltk.parse.api, nltk.classify.api and
+ * nltk.probability. Each class replicates Python's "delegates to the
+ * overridden sibling method" contract via prototype comparison.
+ */
+type TaggedToken$4<S = string, T = string> = [S, T];
+declare abstract class StemmerI {
+    /** Strip affixes from the token and return the stem. */
+    abstract stem(token: string): string;
+}
+declare abstract class TokenizerI {
+    /** Return a tokenized copy of `s`. */
+    tokenize(s: string): string[];
+    /** Integer `(start, end)` offsets for each token in `s`. */
+    span_tokenize(_s: string): Array<[number, number]>;
+    /** Apply `tokenize()` to each element of `strings`. */
+    tokenize_sents(strings: readonly string[]): string[][];
+    /** Apply `span_tokenize()` to each element of `strings`. */
+    span_tokenize_sents(strings: readonly string[]): Generator<Array<[number, number]>>;
+    spanTokenize(s: string): Array<[number, number]>;
+    tokenizeSents(strings: readonly string[]): string[][];
+    spanTokenizeSents(strings: readonly string[]): Array<Array<[number, number]>>;
+}
+declare abstract class TaggerI {
+    /** Tag `tokens` — delegates to `tag_sents` when that is overridden. */
+    tag(tokens: string[]): TaggedToken$4[];
+    /** Apply `tag()` to each element of `sentences`. */
+    tag_sents(sentences: Iterable<string[]>): TaggedToken$4[][];
+    tagSents(sentences: Iterable<string[]>): TaggedToken$4[][];
+    /** Deprecated alias of `accuracy` (NLTK `evaluate`). */
+    evaluate(gold: readonly TaggedToken$4[][]): number;
+    /** Score accuracy against the gold standard. */
+    accuracy(gold: readonly TaggedToken$4[][]): number;
+    /** ConfusionMatrix: gold tags as reference, predictions as test. */
+    confusion(gold: readonly TaggedToken$4[][]): ConfusionMatrix;
+    /** Per-tag precision over the gold standard (dict in NLTK, Map here). */
+    precision(gold: readonly TaggedToken$4[][]): Map<string, number>;
+    /** Per-tag recall over the gold standard. */
+    recall(gold: readonly TaggedToken$4[][]): Map<string, number>;
+    /** Per-tag F-measure over the gold standard. */
+    f_measure(gold: readonly TaggedToken$4[][], alpha?: number): Map<string, number>;
+    fMeasure(gold: readonly TaggedToken$4[][], alpha?: number): Map<string, number>;
+    /** Per-tag precision/recall/F table (NLTK `evaluate_per_tag`). */
+    evaluate_per_tag(gold: readonly TaggedToken$4[][]): string;
+    evaluatePerTag(gold: readonly TaggedToken$4[][]): string;
+}
+/** A tagger that requires tokens to be featuresets. */
+declare abstract class FeaturesetTaggerI extends TaggerI {
+}
+declare abstract class ParserI<T = string> {
+    /** The grammar used by this parser. */
+    grammar(): unknown;
+    /** Iterate parse trees for `sent`. */
+    parse(sent: readonly T[], ...args: unknown[]): Generator<unknown>;
+    /** Apply `parse()` to each element of `sents`. */
+    parse_sents(sents: Iterable<readonly T[]>, ...args: unknown[]): Generator<Generator<unknown>>;
+    /** All parses of `sent` as a list. */
+    parse_all(sent: readonly T[], ...args: unknown[]): unknown[];
+    /** The first parse of `sent`, or null. */
+    parse_one(sent: readonly T[], ...args: unknown[]): unknown | null;
+    parseSents(sents: Iterable<readonly T[]>, ...args: unknown[]): Generator<Generator<unknown>>;
+    parseAll(sent: readonly T[], ...args: unknown[]): unknown[];
+    parseOne(sent: readonly T[], ...args: unknown[]): unknown | null;
+}
+declare abstract class ClassifierI<F = unknown, L = string> {
+    /** The list of category labels used by this classifier. */
+    labels(): L[];
+    /** The most appropriate label for `featureset`. */
+    classify(featureset: F): L;
+    /** A probability distribution over labels for `featureset`. */
+    prob_classify(featureset: F): unknown;
+    /** Apply `classify()` to each element of `featuresets`. */
+    classify_many(featuresets: readonly F[]): L[];
+    /** Apply `prob_classify()` to each element of `featuresets`. */
+    prob_classify_many(featuresets: readonly F[]): unknown[];
+    probClassify(featureset: F): unknown;
+    classifyMany(featuresets: readonly F[]): L[];
+    probClassifyMany(featuresets: readonly F[]): unknown[];
+}
+declare class ProbabilisticMixIn {
+    private _prob;
+    private _logprob;
+    constructor({ prob, logprob }?: {
+        prob?: number;
+        logprob?: number;
+    });
+    set_prob(prob: number): void;
+    set_logprob(logprob: number): void;
+    setProb(prob: number): void;
+    setLogprob(logprob: number): void;
+    prob(): number | null;
+    logprob(): number | null;
+}
+declare class ImmutableProbabilisticMixIn extends ProbabilisticMixIn {
+    set_prob(_prob: number): void;
+    set_logprob(_logprob: number): void;
+}
+
+type TaggedToken$3 = readonly [word: string, tag: string];
+type GoldSentence = readonly TaggedToken$3[];
+type UntaggedSentence = readonly string[];
+type TagContext = string | null | readonly (string | null | readonly (string | null)[])[];
+type TaggerModel = ReadonlyMap<TagContext, string> | Record<string, string>;
+interface NgramTaggerOptions {
+    train?: readonly GoldSentence[];
+    model?: TaggerModel;
+    backoff?: SequentialBackoffTagger | null;
+    cutoff?: number;
+    verbose?: boolean;
+}
+declare abstract class SequentialBackoffTagger {
+    readonly taggers: readonly SequentialBackoffTagger[];
+    constructor(backoff?: SequentialBackoffTagger | null);
+    get backoff(): SequentialBackoffTagger | null;
+    tag(tokens: UntaggedSentence): Array<[string, string | null]>;
+    tagOne(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): string | null;
+    tagSents(sentences: ReadonlyArray<UntaggedSentence>): Array<Array<[string, string | null]>>;
+    evaluate(gold: ReadonlyArray<GoldSentence>): number;
+    /** NLTK TaggerI.accuracy: retag the untagged gold tokens, compare tags. */
+    accuracy(gold: ReadonlyArray<GoldSentence>): number;
+    /** NLTK TaggerI.confusion: ConfusionMatrix of gold tags vs predicted tags. */
+    confusion(gold: ReadonlyArray<GoldSentence>): ConfusionMatrix<string | null>;
+    precision(gold: ReadonlyArray<GoldSentence>): Map<string | null, number>;
+    recall(gold: ReadonlyArray<GoldSentence>): Map<string | null, number>;
+    fMeasure(gold: ReadonlyArray<GoldSentence>, alpha?: number): Map<string | null, number>;
+    f_measure(gold: ReadonlyArray<GoldSentence>, alpha?: number): Map<string | null, number>;
+    /** NLTK TaggerI.evaluate_per_tag: tabulated per-tag metrics string. */
+    evaluatePerTag(gold: ReadonlyArray<GoldSentence>, options?: {
+        alpha?: number;
+        truncate?: number;
+        sortByCount?: boolean;
+    }): string;
+    abstract chooseTag(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): string | null;
+    abstract size(): number;
+}
+declare abstract class ContextTagger extends SequentialBackoffTagger {
+    protected table: Map<string, {
+        context: TagContext;
+        tag: string;
+    }>;
+    constructor(backoff?: SequentialBackoffTagger | null);
+    size(): number;
+    protected loadModel(model: TaggerModel): void;
+    train(taggedCorpus: ReadonlyArray<GoldSentence>, cutoff?: number, verbose?: boolean): void;
+    chooseTag(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): string | null;
+    /** NLTK ``_context_to_tag`` view. */
+    get contextToTag(): Map<TagContext, string>;
+    abstract context(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): TagContext | null;
+}
+declare class DefaultTagger extends SequentialBackoffTagger {
+    #private;
+    constructor(tag: string);
+    get assignedTag(): string;
+    size(): number;
+    chooseTag(): string | null;
+    toString(): string;
+}
+declare class NgramTagger extends ContextTagger {
+    readonly n: number;
+    constructor(n: number, options?: NgramTaggerOptions);
+    context(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): TagContext;
+    encodeJsonObj(): [number, Record<string, string>, SequentialBackoffTagger | null];
+    toString(): string;
+}
+declare class UnigramTagger extends ContextTagger {
+    constructor(options?: NgramTaggerOptions);
+    constructor(train?: readonly GoldSentence[] | null, model?: TaggerModel | null, backoff?: SequentialBackoffTagger | null, cutoff?: number, verbose?: boolean);
+    context(tokens: UntaggedSentence, index: number): TagContext;
+    encodeJsonObj(): [Record<string, string>, SequentialBackoffTagger | null];
+    static decodeJsonObj(obj: [Record<string, string>, SequentialBackoffTagger | null]): SequentialBackoffTagger | null;
+    toString(): string;
+}
+declare class BigramTagger extends NgramTagger {
+    constructor(options?: NgramTaggerOptions);
+    toString(): string;
+}
+declare class TrigramTagger extends NgramTagger {
+    constructor(options?: NgramTaggerOptions);
+    toString(): string;
+}
+declare class RegexpTagger extends SequentialBackoffTagger {
+    readonly regexps: ReadonlyArray<{
+        pattern: RegExp;
+        tag: string;
+    }>;
+    constructor(regexps: ReadonlyArray<readonly [string, string]>, backoff?: SequentialBackoffTagger | null);
+    size(): number;
+    chooseTag(tokens: UntaggedSentence, index: number): string | null;
+    toString(): string;
+}
+type FeatureDetector = (tokens: UntaggedSentence, index: number, history: readonly (string | null)[]) => Record<string, unknown>;
+/** nltk.tag.sequential.AffixTagger — context = leading/trailing substring of the token. */
+declare class AffixTagger extends ContextTagger {
+    readonly affixLength: number;
+    readonly minStemLength: number;
+    private readonly minWordLength;
+    constructor(train?: ReadonlyArray<GoldSentence> | null, model?: TaggerModel | null, affixLength?: number, minStemLength?: number, backoff?: SequentialBackoffTagger | null, cutoff?: number, verbose?: boolean);
+    context(tokens: UntaggedSentence, index: number, _history?: readonly (string | null)[]): TagContext | null;
+    encodeJsonObj(): [number, number, Map<TagContext, string>, SequentialBackoffTagger | null];
+    static decodeJsonObj(obj: [number, number, Map<TagContext, string>, SequentialBackoffTagger | null]): AffixTagger;
+    toString(): string;
+}
+interface FeaturesetClassifier {
+    classify(featureset: Record<string, unknown>): string;
+    prob_classify?(featureset: Record<string, unknown>): {
+        max(): string;
+        prob(x: string): number;
+    };
+    probClassify?(featureset: Record<string, unknown>): {
+        max(): string;
+        prob(x: string): number;
+    };
+}
+/** nltk.tag.sequential.ClassifierBasedTagger — tagger driven by a classifier + feature detector. */
+declare class ClassifierBasedTagger extends SequentialBackoffTagger {
+    protected featureDetectorFn?: FeatureDetector;
+    protected classifierObj?: FeaturesetClassifier;
+    readonly cutoffProb?: number;
+    constructor(options?: {
+        feature_detector?: FeatureDetector;
+        train?: ReadonlyArray<GoldSentence> | null;
+        classifier_builder?: (labeled: ReadonlyArray<readonly [Record<string, unknown>, string]>) => FeaturesetClassifier;
+        classifier?: FeaturesetClassifier | null;
+        backoff?: SequentialBackoffTagger | null;
+        cutoff_prob?: number;
+        verbose?: boolean;
+    });
+    size(): number;
+    feature_detector(tokens: UntaggedSentence, index: number, history: readonly (string | null)[]): Record<string, unknown>;
+    classifier(): FeaturesetClassifier | undefined;
+    chooseTag(tokens: UntaggedSentence, index: number, history: readonly (string | null)[]): string | null;
+    private trainClassifier;
+    toString(): string;
+}
+/** nltk.tag.sequential.ClassifierBasedPOSTagger — POS-specific feature detector. */
+declare class ClassifierBasedPOSTagger extends ClassifierBasedTagger {
+    feature_detector(tokens: UntaggedSentence, index: number, history: readonly (string | null)[]): Record<string, unknown>;
+}
+
+type MaxentEncodedVector = Array<[number, number]>;
+interface MaxentEncodingLike {
+    encode(featureset: MaxentFeatureset, label: string): MaxentEncodedVector;
+    length(): number;
+    labels(): string[];
+    describe(fid: number): unknown;
+}
+type MaxentTrainToks = Iterable<MaxentEncodingExample>;
+declare class MaxentFeatureEncodingI {
+    encode(_featureset: unknown, _label: string): MaxentEncodedVector;
+    length(): number;
+    labels(): string[];
+    describe(_fid: number): unknown;
+}
+declare class FunctionBackedMaxentFeatureEncoding extends MaxentFeatureEncodingI {
+    private readonly _func;
+    private readonly _length;
+    private readonly _labels;
+    constructor(func: (featureset: MaxentFeatureset, label: string) => MaxentEncodedVector, length: number, labels: string[]);
+    encode(featureset: MaxentFeatureset, label: string): MaxentEncodedVector;
+    length(): number;
+    labels(): string[];
+    describe(_fid: number): string;
+}
+declare class GISEncoding extends BinaryMaxentFeatureEncoding {
+    private _C;
+    constructor(labels: Iterable<string>, mapping: MaxentFeatureMapping, unseen_features?: boolean, alwayson_features?: boolean, C?: number | null);
+    /** The non-negative constant that all encoded feature vectors will sum to. */
+    get C(): number;
+    encode(featureset: MaxentFeatureset, label: string): MaxentEncodedVector;
+    length(): number;
+    describe(f_id: number): string;
+    static train(train_toks: MaxentTrainToks, count_cutoff?: number, labels?: Iterable<string> | null, options?: MaxentEncodingOptions): GISEncoding;
+}
+type TadmMapping = Iterable<readonly [readonly [string, string], number]>;
+declare class TadmEventMaxentFeatureEncoding extends MaxentFeatureEncodingI {
+    private readonly _mapping;
+    private readonly _pairs;
+    private readonly _labelMapping;
+    private readonly _labels;
+    constructor(labels: Iterable<string>, mapping: TadmMapping, _unseen_features?: boolean, _alwayson_features?: boolean);
+    private pairKey;
+    encode(featureset: MaxentFeatureset, label: string): MaxentEncodedVector;
+    labels(): string[];
+    describe(fid: number): readonly [string, string] | undefined;
+    length(): number;
+    static train(train_toks: MaxentTrainToks, _count_cutoff?: number, labels?: Iterable<string> | null, _options?: MaxentEncodingOptions): TadmEventMaxentFeatureEncoding;
+}
+type ProbClassifier = {
+    prob_classify(featureset: MaxentFeatureset): {
+        prob(label: string): number;
+        max(): string;
+        samples(): Iterable<string>;
+    };
+    prob_classify_many(featuresets: readonly MaxentFeatureset[]): Array<{
+        prob(label: string): number;
+    }>;
+    classify_many(featuresets: readonly MaxentFeatureset[]): string[];
+};
+declare function classify_log_likelihood(classifier: ProbClassifier, gold: readonly MaxentEncodingExample[]): number;
+declare function classify_accuracy(classifier: ProbClassifier, gold: readonly MaxentEncodingExample[]): number;
+declare class CutoffChecker {
+    cutoffs: Record<string, number>;
+    ll: number | null;
+    acc: number | null;
+    iter: number;
+    constructor(cutoffs: Record<string, number>);
+    check(classifier: ProbClassifier, train_toks: readonly MaxentEncodingExample[]): boolean | undefined;
+}
+declare class ConditionalExponentialClassifier extends ClassifierI<MaxentFeatureset, string> {
+    static readonly ALGORITHMS: string[];
+    private readonly _encoding;
+    private _weights;
+    private readonly _logarithmic;
+    private _mostInformative;
+    constructor(encoding: MaxentEncodingLike, weights: ArrayLike<number>, logarithmic?: boolean);
+    get encoding(): MaxentEncodingLike;
+    labels(): string[];
+    set_weights(new_weights: ArrayLike<number>): void;
+    setWeights(new_weights: ArrayLike<number>): void;
+    weights(): number[];
+    classify(featureset: MaxentFeatureset): string;
+    prob_classify(featureset: MaxentFeatureset): DictionaryProbDist<string>;
+    probClassify(featureset: MaxentFeatureset): DictionaryProbDist<string>;
+    classify_many(featuresets: readonly MaxentFeatureset[]): string[];
+    prob_classify_many(featuresets: readonly MaxentFeatureset[]): DictionaryProbDist<string>[];
+    classifyMany(featuresets: readonly MaxentFeatureset[]): string[];
+    probClassifyMany(featuresets: readonly MaxentFeatureset[]): DictionaryProbDist<string>[];
+    explain(featureset: MaxentFeatureset, columns?: number): void;
+    most_informative_features(n?: number | null): number[];
+    mostInformativeFeatures(n?: number | null): number[];
+    show_most_informative_features(n?: number, show?: "all" | "neg" | "pos"): void;
+    showMostInformativeFeatures(n?: number, show?: "all" | "neg" | "pos"): void;
+    toString(): string;
+    static train(train_toks: MaxentTrainToks, options?: {
+        algorithm?: string | null;
+        trace?: number;
+        encoding?: MaxentEncodingLike | null;
+        labels?: Iterable<string> | null;
+        gaussian_prior_sigma?: number;
+    } & Record<string, unknown>): ConditionalExponentialClassifier;
+}
+declare function calculate_empirical_fcount(train_toks: MaxentTrainToks, encoding: MaxentEncodingLike): Float64Array;
+declare function calculate_estimated_fcount(classifier: ProbClassifier, train_toks: MaxentTrainToks, encoding: MaxentEncodingLike): Float64Array;
+declare function calculate_nfmap(train_toks: MaxentTrainToks, encoding: MaxentEncodingLike): Map<number, number>;
+declare function calculate_deltas(train_toks: MaxentTrainToks, classifier: ProbClassifier, unattested: ReadonlySet<number> | readonly number[], ffreq_empirical: ArrayLike<number>, nfmap: ReadonlyMap<number, number>, nfarray: ArrayLike<number>, nftranspose: ArrayLike<number> | ArrayLike<ArrayLike<number>>, encoding: MaxentEncodingLike): Float64Array;
+type MaxentTrainOptions = {
+    trace?: number;
+    encoding?: MaxentEncodingLike | null;
+    labels?: Iterable<string> | null;
+} & Record<string, unknown>;
+declare function train_maxent_classifier_with_gis(train_toks: MaxentTrainToks, options?: MaxentTrainOptions): ConditionalExponentialClassifier;
+declare function train_maxent_classifier_with_iis(train_toks: MaxentTrainToks, options?: MaxentTrainOptions): ConditionalExponentialClassifier;
+interface MaxentStreamLike {
+    write(text: string): unknown;
+}
+declare function write_megam_file(train_toks: MaxentTrainToks, encoding: MaxentEncodingLike & {
+    cost?: (featureset: MaxentFeatureset, label: string, l: string) => number;
+}, stream: MaxentStreamLike, bernoulli?: boolean, explicit?: boolean): void;
+declare function parse_megam_weights(s: string, features_count: number, explicit?: boolean): Float64Array;
+declare function write_tadm_file(train_toks: MaxentTrainToks, encoding: MaxentEncodingLike, stream: MaxentStreamLike): void;
+declare function parse_tadm_weights(paramfile: Iterable<string> | string): Float64Array;
+type MaxentParams = readonly [Float64Array, Array<[[string, MaxentMappingValue, string], number]>, string[], Record<string, number>];
+declare function load_maxent_params(tab_dir: string): MaxentParams;
+declare function save_maxent_params(params: MaxentParams | {
+    wgt: ArrayLike<number>;
+    mpg: Iterable<readonly [readonly [string, MaxentMappingValue, string], number]>;
+    lab: string[];
+    aon: ReadonlyMap<string, number> | Record<string, number>;
+}, tab_dir?: string): void;
+declare function maxent_pos_tagger(): ClassifierBasedPOSTagger;
+
 type ConcordanceLine = {
     left: string[];
     query: string;
@@ -643,6 +1097,8 @@ type ConcordanceLine = {
     leftPrint: string;
     rightPrint: string;
     line: string;
+    left_print: string;
+    right_print: string;
 };
 type Context = [string, string];
 declare class ConcordanceIndex {
@@ -653,6 +1109,10 @@ declare class ConcordanceIndex {
     tokens(): string[];
     offsets(word: string): number[];
     findConcordance(word: string | string[], width?: number): ConcordanceLine[];
+    find_concordance(word: string | string[], width?: number): ConcordanceLine[];
+    /** NLTK ``print_concordance`` rendered as a string (printing adapted). */
+    printConcordance(word: string | string[], width?: number, lines?: number): string;
+    print_concordance(word: string | string[], width?: number, lines?: number): string;
     concordance(word: string | string[], width?: number, lines?: number): string[];
     toString(): string;
 }
@@ -686,7 +1146,38 @@ declare class Text {
     collocations(num?: number, windowSize?: number): string[];
     similar(word: string, num?: number): string[];
     commonContexts(words: string[], num?: number): Context[];
+    common_contexts(words: string[], num?: number): Context[];
+    concordance_list(word: string | string[], width?: number, lines?: number): ConcordanceLine[];
+    collocation_list(num?: number, window_size?: number, options?: {
+        minFreq?: number;
+        scoreFn?: BigramScoreFn<string>;
+        stopwords?: Iterable<string>;
+    }): Array<[string, string]>;
+    findall(regexp: string, timeout?: number): string;
+    generate(length?: number, text_seed?: readonly string[], random_seed?: number): string;
+    readability(_method: string): never;
+    dispersion_plot(words: readonly string[]): number[][];
+    dispersionPlot(words: readonly string[]): number[][];
+    plot(...args: unknown[]): unknown;
     toString(): string;
+}
+/** nltk.text.TokenSearcher — regex search over a token stream using <token> markup. */
+declare class TokenSearcher {
+    private readonly raw;
+    constructor(tokens: Iterable<string>);
+    findall(regexp: string, _timeout?: number): string[][];
+}
+/** nltk.text.TextCollection — Text over a collection of texts with tf/idf helpers. */
+declare class TextCollection extends Text {
+    private readonly texts;
+    private readonly idfCache;
+    constructor(source: Iterable<Iterable<string>> | {
+        words(fileid?: string): Iterable<string>;
+        fileids(): string[];
+    });
+    tf(term: string, text: readonly string[]): number;
+    idf(term: string): number;
+    tf_idf(term: string, text: readonly string[]): number;
 }
 
 type CorpusDownloadOptions = {
@@ -727,7 +1218,7 @@ type ReadOptions = {
     fileIds?: string[];
     categories?: string[];
 };
-declare class CorpusReader {
+declare class CorpusReader$1 {
     private readonly files;
     constructor(files: CorpusFile[]);
     fileIds(options?: ReadOptions): string[];
@@ -738,8 +1229,8 @@ declare class CorpusReader {
     categories(): string[];
     private selectFiles;
 }
-declare function loadBundledMiniCorpus(rootPath?: string): CorpusReader;
-declare function loadCorpusBundleFromIndex(indexPath: string): CorpusReader;
+declare function loadBundledMiniCorpus(rootPath?: string): CorpusReader$1;
+declare function loadCorpusBundleFromIndex(indexPath: string): CorpusReader$1;
 
 type TaggedToken$2 = {
     token: string;
@@ -750,10 +1241,10 @@ type ChunkedToken = {
     pos: string;
     chunk: string;
 };
-type TaggedSentence$1 = TaggedToken$2[];
+type TaggedSentence = TaggedToken$2[];
 type ChunkedSentence = ChunkedToken[];
-declare function parseConllTagged(text: string): TaggedSentence$1[];
-declare function parseBrownTagged(text: string): TaggedSentence$1[];
+declare function parseConllTagged(text: string): TaggedSentence[];
+declare function parseBrownTagged(text: string): TaggedSentence[];
 declare function parseConllChunked(text: string): ChunkedSentence[];
 
 type FeatureMap = Record<string, string>;
@@ -1143,6 +1634,8 @@ declare class PositiveNaiveBayesClassifier extends FeatureClassifierBase {
     protected probClassifyText(text: string): DictionaryProbDist<string>;
     labels(): string[];
 }
+/** `nltk.classify.decisiontree.f` — debug helper: train(x, binary=True, verbose=True). */
+declare function f(x: Iterable<LabeledFeatureset>): DecisionTreeClassifier;
 
 type ConditionalExponentialExample = MaxEntExample;
 type ConditionalExponentialSerialized = {
@@ -1335,10 +1828,12 @@ declare function trainPerceptronTextClassifier(examples: PerceptronExample[], op
 declare function loadPerceptronTextClassifier(payload: PerceptronSerialized): PerceptronTextClassifier;
 
 type WordNetPos = "n" | "v" | "a" | "r";
+type WordNetMorphPos = WordNetPos | "s";
 type WordNetSynset = {
     id: string;
     pos: WordNetPos;
     lemmas: string[];
+    senseNums?: number[];
     gloss: string;
     examples: string[];
     hypernyms: string[];
@@ -1372,9 +1867,13 @@ declare class WordNet {
     allSynsets(pos?: WordNetPos): WordNetSynset[];
     synsets(word: string, pos?: WordNetPos): WordNetSynset[];
     lookupBatch(queries: readonly WordNetLookupQuery[]): WordNetLookupResult[];
+    /** Per-lemma index.<pos> sense numbers; empty when the payload predates senseNums. */
+    senseNumsFor(row: WordNetSynset): number[];
     lemmaNames(idOrSynset: string | WordNetSynset): string[];
     lemmas(pos?: WordNetPos): string[];
-    morphy(word: string, pos?: WordNetPos): string | null;
+    protected hasLemma(lemma: string, pos: WordNetPos): boolean;
+    _morphy(form: string, pos: WordNetMorphPos, checkExceptions?: boolean): string[];
+    morphy(form: string, pos?: WordNetMorphPos | null, checkExceptions?: boolean): string | null;
     synsetFromPosAndOffset(pos: WordNetPos, offset: string | number): WordNetSynset | null;
     synset_from_pos_and_offset(pos: WordNetPos, offset: string | number): WordNetSynset | null;
     synsetFromSenseKey(senseKey: string): WordNetSynset | null;
@@ -1403,27 +1902,221 @@ declare function loadWordNetPacked(path?: string): WordNet;
 declare function loadWordNet(path?: string): WordNet;
 
 declare class RegexpStemmer {
-    private readonly pattern;
+    private readonly regexp;
+    private readonly globalRegexp;
     private readonly min;
-    constructor(pattern: RegExp | string, min?: number);
+    constructor(regexp: RegExp | string, min?: number);
     stem(word: string): string;
+    toString(): string;
 }
 declare class LancasterStemmer {
+    static readonly defaultRuleTuple: readonly string[];
+    ruleDictionary: Record<string, string[]>;
+    readonly stripPrefixFlag: boolean;
+    readonly ruleTuple: readonly string[];
+    constructor(ruleTuple?: readonly string[] | null, stripPrefixFlag?: boolean);
+    parseRules(ruleTuple?: readonly string[] | null): void;
     stem(word: string): string;
+    private doStemming;
+    private getLastLetter;
+    private isAcceptable;
+    private applyRule;
+    private stripPrefix;
+    toString(): string;
 }
 /**
  * NLTK-compatible Snowball stemmer backed by real Snowball (Porter2-family)
  * implementations in ./snowball. Unsupported languages throw an Error
  * (mirroring NLTK's ValueError), both at construction time and via
  * {@link snowballStem}.
+ *
+ * `ignoreStopwords` mirrors NLTK's `ignore_stopwords`: the language's NLTK
+ * stopwords list is loaded at construction (a language without a list raises
+ * the same `'<X>Stemmer> has no list of stopwords' error NLTK raises), and
+ * `stem` returns a stopword unchanged (lowercased, except Russian which is
+ * checked un-normalized). The `porter` language delegates to the classic
+ * {@link PorterStemmer} exactly like NLTK's snowball.PorterStemmer.
  */
 declare class SnowballStemmer {
+    static readonly languages: readonly string[];
     readonly language: string;
-    constructor(language?: string);
+    readonly stopwords: Set<string>;
+    readonly stemmer: {
+        stem(word: string): string;
+    };
+    constructor(language?: string, ignoreStopwords?: boolean);
     stem(word: string): string;
 }
+declare const ArabicStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const DanishStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const DutchStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const EnglishStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const FinnishStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const FrenchStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const GermanStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const HungarianStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const ItalianStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const NorwegianStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const PortugueseStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const RomanianStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const RussianStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const SpanishStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
+declare const SwedishStemmer: {
+    new (ignoreStopwords?: boolean): {
+        readonly language: string;
+        readonly stopwords: Set<string>;
+        readonly stemmer: {
+            stem(word: string): string;
+        };
+        stem(word: string): string;
+    };
+    readonly languages: readonly string[];
+};
 declare class WordNetLemmatizer {
+    _morphy(form: string, pos?: string, checkExceptions?: boolean): string[];
+    morphy(form: string, pos?: string | null, checkExceptions?: boolean): string | null;
     lemmatize(word: string, pos?: string): string;
+    toString(): string;
 }
 
 type VaderPolarity = {
@@ -1434,11 +2127,51 @@ type VaderPolarity = {
 };
 type VaderOptions = {
     lexicon?: Record<string, number>;
+    lexiconFile?: string;
 };
+declare class SentiText {
+    readonly text: string;
+    readonly PUNC_LIST: readonly string[];
+    readonly REGEX_REMOVE_PUNCTUATION: RegExp;
+    readonly words_and_emoticons: string[];
+    readonly is_cap_diff: boolean;
+    constructor(text: string, puncList?: readonly string[], regexRemovePunctuation?: RegExp);
+    private _words_plus_punc;
+    private _words_and_emoticons;
+    allcap_differential(words: readonly string[]): boolean;
+}
+declare class VaderConstants {
+    readonly B_INCR = 0.293;
+    readonly B_DECR = -0.293;
+    readonly C_INCR = 0.733;
+    readonly N_SCALAR = -0.74;
+    readonly NEGATE: Set<string>;
+    readonly BOOSTER_DICT: Readonly<Record<string, number>>;
+    readonly PUNC_LIST: string[];
+    readonly REGEX_REMOVE_PUNCTUATION: RegExp;
+    negated(inputWords: readonly string[], includeNt?: boolean): boolean;
+    normalize(score: number, alpha?: number): number;
+    scalar_inc_dec(word: string, valence: number, isCapDiff: boolean): number;
+}
 declare class SentimentIntensityAnalyzer {
-    private readonly lexicon;
+    readonly constants: VaderConstants;
+    readonly lexicon: Readonly<Record<string, number>>;
+    readonly lexicon_file: string;
+    constructor(lexiconFile?: string | null);
     constructor(options?: VaderOptions);
+    private resolveLexiconFile;
+    /** NLTK ``make_lex_dict``: ``word\tmeasure`` lines → dict. */
+    makeLexDict(lexiconFile?: string): Record<string, number>;
+    make_lex_dict(): Record<string, number>;
+    /** NLTK ``sentiment_valence``: scores one item, appends to sentiments. */
+    sentimentValence(valence: number, sentitext: SentiText, item: string, i: number, sentiments: number[]): number[];
+    sentiment_valence(valence: number, sentitext: SentiText, item: string, i: number, sentiments: number[]): number[];
+    private leastCheck;
+    /** NLTK ``score_valence``: sentiments → {neg,neu,pos,compound}. */
+    scoreValence(sentiments: readonly number[], text: string): VaderPolarity;
+    score_valence(sentiments: readonly number[], text: string): VaderPolarity;
     polarityScores(text: string): VaderPolarity;
+    polarity_scores(text: string): VaderPolarity;
 }
 
 type PerceptronTaggerModelSerialized = {
@@ -1469,28 +2202,236 @@ type PerceptronTaggedToken = {
 };
 declare function preparePerceptronTaggerModel(payload: PerceptronTaggerModelSerialized): PerceptronTaggerModel;
 declare function loadPerceptronTaggerModel(path?: string): PerceptronTaggerModel;
-type PerceptronTaggerOptions = {
+type PerceptronTaggerOptions$1 = {
     model?: PerceptronTaggerModel;
     wasm?: WasmNltk;
     useWasm?: boolean;
     useNative?: boolean;
 };
-declare function posTagPerceptronAscii(text: string, options?: PerceptronTaggerOptions): PerceptronTaggedToken[];
+declare function posTagPerceptronAscii(text: string, options?: PerceptronTaggerOptions$1): PerceptronTaggedToken[];
 
-declare class CFG {
-    readonly grammar: CfgGrammar;
-    constructor(grammar: CfgGrammar);
-    static fromstring(grammarText: string, options?: {
-        startSymbol?: string;
-    }): CFG;
+type PerceptronWeights = Record<string, Record<string, number>>;
+type PerceptronFeatures = Record<string, number>;
+declare class AveragedPerceptron {
+    weights: PerceptronWeights;
+    classes: Set<string>;
+    private readonly totals;
+    private readonly tstamps;
+    i: number;
+    constructor(weights?: PerceptronWeights);
+    predict(features: PerceptronFeatures): [string | null, number | null];
+    update(truth: string, guess: string | null, features: PerceptronFeatures): void;
+    averageWeights(): void;
+    encodeJsonObj(): PerceptronWeights;
 }
-declare class PCFG {
-    readonly grammar: PcfgGrammar;
-    constructor(grammar: PcfgGrammar);
-    static fromstring(grammarText: string, options?: {
-        startSymbol?: string;
-    }): PCFG;
+
+declare const MAX_PARSE_TREES = 1000000;
+type EdgeKey = string;
+declare abstract class EdgeI {
+    abstract span(): [number, number];
+    start(): number;
+    end(): number;
+    length(): number;
+    abstract lhs(): GrammarSymbol;
+    abstract rhs(): readonly GrammarSymbol[];
+    abstract dot(): number;
+    abstract nextsym(): GrammarSymbol | null;
+    abstract is_complete(): boolean;
+    isComplete(): boolean;
+    is_incomplete(): boolean;
+    isIncomplete(): boolean;
+    abstract key(): EdgeKey;
 }
+declare class TreeEdge extends EdgeI {
+    private readonly _span;
+    private readonly _lhs;
+    private readonly _rhs;
+    private readonly _dot;
+    constructor(_span: [number, number], _lhs: GrammarSymbol, _rhs: readonly GrammarSymbol[], _dot?: number);
+    static from_production(production: Production, index: number): TreeEdge;
+    static fromProduction(production: Production, index: number): TreeEdge;
+    move_dot_forward(newEnd: number): TreeEdge;
+    moveDotForward(newEnd: number): TreeEdge;
+    lhs(): GrammarSymbol;
+    span(): [number, number];
+    rhs(): readonly GrammarSymbol[];
+    dot(): number;
+    is_complete(): boolean;
+    nextsym(): GrammarSymbol | null;
+    key(): EdgeKey;
+    toString(): string;
+}
+declare class LeafEdge extends EdgeI {
+    private readonly leaf;
+    private readonly index;
+    constructor(leaf: string, index: number);
+    lhs(): GrammarSymbol;
+    span(): [number, number];
+    rhs(): readonly GrammarSymbol[];
+    dot(): number;
+    is_complete(): boolean;
+    nextsym(): GrammarSymbol | null;
+    key(): EdgeKey;
+    toString(): string;
+}
+type TreeFactory<T> = (label: string, children: Array<T | string>) => T;
+declare class Chart {
+    private _tokens;
+    private _numLeaves;
+    private _edges;
+    private _edgeOrder;
+    private _edgeToCpls;
+    private _indexes;
+    constructor(tokens: Iterable<string>);
+    initialize(): void;
+    num_leaves(): number;
+    numLeaves(): number;
+    leaf(index: number): string;
+    leaves(): string[];
+    edges(): EdgeI[];
+    iteredges(): IterableIterator<EdgeI>;
+    [Symbol.iterator](): IterableIterator<EdgeI>;
+    num_edges(): number;
+    numEdges(): number;
+    select(restrictions?: Record<string, unknown>): EdgeI[];
+    private _edgeAttr;
+    private _addIndex;
+    private _registerWithIndexes;
+    insert_with_backpointer(newEdge: EdgeI, previousEdge: EdgeI, childEdge: EdgeI): boolean;
+    insertWithBackpointer(newEdge: EdgeI, previousEdge: EdgeI, childEdge: EdgeI): boolean;
+    insert(edge: EdgeI, ...childPointerLists: EdgeI[][]): boolean;
+    child_pointer_lists(edge: EdgeI): EdgeI[][];
+    childPointerLists(edge: EdgeI): EdgeI[][];
+    parses<T = ParseTree>(root: Nonterminal, treeClass?: TreeFactory<T>): Generator<T>;
+    trees<T = ParseTree>(edge: EdgeI, options?: {
+        treeClass?: TreeFactory<T>;
+        complete?: boolean;
+    }): T[];
+    private _spend;
+    private _trees;
+    pretty_format_edge(edge: EdgeI, width?: number): string;
+    prettyFormatEdge(edge: EdgeI, width?: number): string;
+    pretty_format_leaves(width?: number): string;
+    prettyFormatLeaves(width?: number): string;
+    pretty_format(width?: number): string;
+    prettyFormat(width?: number): string;
+}
+declare abstract class AbstractChartRule {
+    abstract readonly NUM_EDGES: number;
+    abstract apply(chart: Chart, grammar: CFG, ...edges: EdgeI[]): Iterable<EdgeI>;
+    apply_everywhere(chart: Chart, grammar: CFG): Generator<EdgeI>;
+    applyEverywhere(chart: Chart, grammar: CFG): Generator<EdgeI>;
+    toString(): string;
+}
+declare class FundamentalRule extends AbstractChartRule {
+    readonly NUM_EDGES: number;
+    apply(chart: Chart, _grammar: CFG, leftEdge: EdgeI, rightEdge: EdgeI): Generator<EdgeI>;
+}
+declare class SingleEdgeFundamentalRule extends FundamentalRule {
+    readonly NUM_EDGES: number;
+    apply(chart: Chart, grammar: CFG, edge: EdgeI): Generator<EdgeI>;
+    protected _applyComplete(chart: Chart, _grammar: CFG, rightEdge: EdgeI): Generator<EdgeI>;
+    protected _applyIncomplete(chart: Chart, _grammar: CFG, leftEdge: EdgeI): Generator<EdgeI>;
+}
+declare class LeafInitRule extends AbstractChartRule {
+    readonly NUM_EDGES: number;
+    apply(chart: Chart): Generator<EdgeI>;
+}
+declare class TopDownInitRule extends AbstractChartRule {
+    readonly NUM_EDGES: number;
+    apply(chart: Chart, grammar: CFG): Generator<EdgeI>;
+}
+declare class TopDownPredictRule extends AbstractChartRule {
+    readonly NUM_EDGES: number;
+    apply(chart: Chart, grammar: CFG, edge: EdgeI): Generator<EdgeI>;
+}
+declare class CachedTopDownPredictRule extends TopDownPredictRule {
+    private done;
+    apply(chart: Chart, grammar: CFG, edge: EdgeI): Generator<EdgeI>;
+}
+declare class BottomUpPredictRule extends AbstractChartRule {
+    readonly NUM_EDGES: number;
+    apply(chart: Chart, grammar: CFG, edge: EdgeI): Generator<EdgeI>;
+}
+declare class BottomUpPredictCombineRule extends BottomUpPredictRule {
+    apply(chart: Chart, grammar: CFG, edge: EdgeI): Generator<EdgeI>;
+}
+declare class EmptyPredictRule extends AbstractChartRule {
+    readonly NUM_EDGES: number;
+    apply(chart: Chart, grammar: CFG): Generator<EdgeI>;
+}
+declare class FilteredSingleEdgeFundamentalRule extends SingleEdgeFundamentalRule {
+    protected _applyComplete(chart: Chart, grammar: CFG, rightEdge: EdgeI): Generator<EdgeI>;
+    protected _applyIncomplete(chart: Chart, grammar: CFG, leftEdge: EdgeI): Generator<EdgeI>;
+}
+declare class FilteredBottomUpPredictCombineRule extends BottomUpPredictCombineRule {
+    apply(chart: Chart, grammar: CFG, edge: EdgeI): Generator<EdgeI>;
+}
+declare const TD_STRATEGY: (CachedTopDownPredictRule | LeafInitRule | SingleEdgeFundamentalRule | TopDownInitRule)[];
+declare const BU_STRATEGY: (BottomUpPredictRule | EmptyPredictRule | LeafInitRule | SingleEdgeFundamentalRule)[];
+declare const BU_LC_STRATEGY: (BottomUpPredictCombineRule | EmptyPredictRule | LeafInitRule | SingleEdgeFundamentalRule)[];
+declare const LC_STRATEGY: (FilteredBottomUpPredictCombineRule | FilteredSingleEdgeFundamentalRule | LeafInitRule)[];
+interface ChartParserOptions {
+    strategy?: readonly AbstractChartRule[];
+    trace?: number;
+    traceChartWidth?: number;
+    useAgenda?: boolean;
+    chartClass?: new (tokens: Iterable<string>) => Chart;
+}
+declare class NltkChartParser {
+    protected _grammar: CFG;
+    protected _strategy: readonly AbstractChartRule[];
+    protected _trace: number;
+    private readonly _traceChartWidth;
+    private _useAgenda;
+    private readonly _chartClass;
+    private readonly _axioms;
+    private readonly _inferenceRules;
+    constructor(grammar: CFG, options?: ChartParserOptions);
+    grammar(): CFG;
+    private _traceNewEdges;
+    chart_parse(tokens: Iterable<string>, trace?: number): Chart;
+    chartParse(tokens: Iterable<string>, trace?: number): Chart;
+    iterParse<T = ParseTree>(tokens: Iterable<string>, treeClass?: TreeFactory<T>): Generator<T>;
+    parse<T = ParseTree>(tokens: Iterable<string>, treeClass?: TreeFactory<T>): T[];
+    parse_one<T = ParseTree>(tokens: Iterable<string>, treeClass?: TreeFactory<T>): T | null;
+    parseOne<T = ParseTree>(tokens: Iterable<string>, treeClass?: TreeFactory<T>): T | null;
+    parse_all<T = ParseTree>(tokens: Iterable<string>, treeClass?: TreeFactory<T>): T[];
+    parseAll<T = ParseTree>(tokens: Iterable<string>, treeClass?: TreeFactory<T>): T[];
+    parse_sents<T = ParseTree>(sents: Iterable<Iterable<string>>, treeClass?: TreeFactory<T>): Generator<T[]>;
+    parseSents<T = ParseTree>(sents: Iterable<Iterable<string>>, treeClass?: TreeFactory<T>): T[][];
+}
+declare class TopDownChartParser extends NltkChartParser {
+    constructor(grammar: CFG, options?: Omit<ChartParserOptions, "strategy">);
+}
+declare class BottomUpChartParser extends NltkChartParser {
+    constructor(grammar: CFG, options?: Omit<ChartParserOptions, "strategy">);
+}
+declare class BottomUpLeftCornerChartParser extends NltkChartParser {
+    constructor(grammar: CFG, options?: Omit<ChartParserOptions, "strategy">);
+}
+/** nltk.parse.chart.SteppingChartParser — step through parsing one edge at a time. */
+declare class SteppingChartParser extends NltkChartParser {
+    private _chart;
+    private _current_chartrule;
+    private _restart;
+    constructor(grammar: CFG, options?: ChartParserOptions);
+    initialize(tokens: Iterable<string>): void;
+    step(): Generator<EdgeI | null>;
+    private _parse;
+    strategy(): readonly AbstractChartRule[];
+    chart(): Chart | null;
+    current_chartrule(): AbstractChartRule | null;
+    parses<T = ParseTree>(treeClass?: TreeFactory<T>): Generator<T>;
+    set_strategy(strategy: readonly AbstractChartRule[]): void;
+    setStrategy(strategy: readonly AbstractChartRule[]): void;
+    set_grammar(grammar: CFG): void;
+    setGrammar(grammar: CFG): void;
+    set_chart(chart: Chart): void;
+    setChart(chart: Chart): void;
+    parse<T = ParseTree>(tokens: Iterable<string>, treeClass?: TreeFactory<T>): T[];
+}
+
 declare class FeatureCFG {
     readonly grammar: FeatureCfgGrammar;
     constructor(grammar: FeatureCfgGrammar);
@@ -1498,20 +2439,19 @@ declare class FeatureCFG {
         startSymbol?: string;
     }): FeatureCFG;
 }
-declare class ChartParser {
-    protected readonly grammar: CfgGrammar;
-    constructor(grammar: CFG | CfgGrammar | string);
-    parse(tokens: string[]): ParseTree[];
-    parseOne(tokens: string[]): ParseTree | null;
+declare class ChartParser extends NltkChartParser {
+    protected readonly cfgGrammar: CfgGrammar;
+    constructor(grammar: CFG | CfgGrammar | string, options?: ChartParserOptions);
+    parse<T = ParseTree>(tokens: Iterable<string>): T[];
 }
 declare class EarleyChartParser extends ChartParser {
-    parse(tokens: string[]): ParseTree[];
+    parse<T = ParseTree>(tokens: Iterable<string>): T[];
 }
 declare class RecursiveDescentParser extends ChartParser {
-    parse(tokens: string[]): ParseTree[];
+    parse<T = ParseTree>(tokens: Iterable<string>): T[];
 }
 declare class LeftCornerChartParser extends ChartParser {
-    parse(tokens: string[]): ParseTree[];
+    parse<T = ParseTree>(tokens: Iterable<string>): T[];
 }
 declare class ViterbiParser {
     private readonly grammar;
@@ -1528,12 +2468,53 @@ declare class FeatureChartParser {
 declare class FeatureEarleyChartParser extends FeatureChartParser {
     parse(tokens: string[]): ParseTree[];
 }
+interface PerceptronTaggerOptions {
+    load?: boolean;
+    lang?: string;
+    loc?: string | null;
+    model?: PerceptronTaggerModel;
+}
 declare class PerceptronTagger {
-    private readonly model;
+    readonly jsonTag = "nltk.tag.perceptron.PerceptronTagger";
+    static readonly START: readonly ["-START-", "-START2-"];
+    static readonly END: readonly ["-END-", "-END2-"];
+    model: AveragedPerceptron;
+    tagdict: Record<string, string>;
+    classes: Set<string>;
+    lang: string;
+    saveDir: string;
+    sentences: GoldSentence[] | null;
+    private packed;
+    constructor(load?: boolean, lang?: string, loc?: string | null);
+    constructor(options?: PerceptronTaggerOptions);
     constructor(model?: PerceptronTaggerModel | string);
-    tag(tokens: string[]): Array<[string, string]>;
+    paramFiles(lang?: string): string[];
+    normalize(word: string): string;
+    getFeatures(i: number, word: string, context: readonly string[], prev: string, prev2: string): Record<string, number>;
+    makeTagdict(sentences: readonly GoldSentence[]): void;
+    tag(tokens: string[], returnConf?: false, useTagdict?: boolean): Array<[string, string]>;
+    tag(tokens: string[], returnConf: true, useTagdict?: boolean): Array<[string, string, number | null]>;
     tag_sents(sentences: string[][]): Array<Array<[string, string]>>;
+    tagSents(sentences: string[][]): Array<Array<[string, string]>>;
     tagText(text: string): Array<[string, string]>;
+    train(sentences: readonly GoldSentence[], saveLoc?: string | null, nrIter?: number): void;
+    encodeJsonObj(): [Record<string, Record<string, number>>, Record<string, string>, string[]];
+    decodeJsonParams(params: [Record<string, Record<string, number>>, Record<string, string>, string[]]): void;
+    encodeJsonParams(): [Record<string, Record<string, number>>, Record<string, string>, string[]];
+    saveToJson(lang?: string, loc?: string | null): Promise<void>;
+    loadFromJson(lang?: string, loc?: string | null): void;
+    accuracy(gold: readonly GoldSentence[]): number;
+    evaluate(gold: readonly GoldSentence[]): number;
+    confusion(gold: readonly GoldSentence[]): ConfusionMatrix;
+    precision(gold: readonly GoldSentence[]): Map<string, number>;
+    recall(gold: readonly GoldSentence[]): Map<string, number>;
+    fMeasure(gold: readonly GoldSentence[], alpha?: number): Map<string, number>;
+    f_measure(gold: readonly GoldSentence[], alpha?: number): Map<string, number>;
+    evaluatePerTag(gold: readonly GoldSentence[], options?: {
+        alpha?: number;
+        truncate?: number | null;
+        sortByCount?: boolean;
+    }): string;
 }
 declare function posTag(tokens: string[], options?: {
     model?: PerceptronTaggerModel | string;
@@ -1566,82 +2547,9 @@ declare function dependencyParseText(text: string, options?: {
     normalizeTokens?: boolean;
 }): DependencyParse;
 
-type TaggedToken$1 = readonly [word: string, tag: string];
-type GoldSentence = readonly TaggedToken$1[];
-type UntaggedSentence = readonly string[];
-type TagContext = string | null | readonly (string | null)[];
-type TaggerModel = ReadonlyMap<TagContext, string> | Record<string, string>;
-interface NgramTaggerOptions {
-    train?: readonly GoldSentence[];
-    model?: TaggerModel;
-    backoff?: SequentialBackoffTagger | null;
-    cutoff?: number;
-    verbose?: boolean;
-}
-declare abstract class SequentialBackoffTagger {
-    readonly taggers: readonly SequentialBackoffTagger[];
-    constructor(backoff?: SequentialBackoffTagger | null);
-    get backoff(): SequentialBackoffTagger | null;
-    tag(tokens: UntaggedSentence): Array<[string, string | null]>;
-    tagOne(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): string | null;
-    tagSents(sentences: ReadonlyArray<UntaggedSentence>): Array<Array<[string, string | null]>>;
-    evaluate(gold: ReadonlyArray<GoldSentence>): number;
-    protected abstract chooseTag(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): string | null;
-    abstract size(): number;
-}
-declare abstract class ContextTagger extends SequentialBackoffTagger {
-    protected table: Map<string, {
-        context: TagContext;
-        tag: string;
-    }>;
-    constructor(backoff?: SequentialBackoffTagger | null);
-    size(): number;
-    protected loadModel(model: TaggerModel): void;
-    protected train(taggedCorpus: ReadonlyArray<GoldSentence>, cutoff?: number, verbose?: boolean): void;
-    chooseTag(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): string | null;
-    protected abstract context(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): TagContext | null;
-}
-declare class DefaultTagger extends SequentialBackoffTagger {
-    #private;
-    constructor(tag: string);
-    get assignedTag(): string;
-    size(): number;
-    protected chooseTag(): string | null;
-    toString(): string;
-}
-declare class NgramTagger extends ContextTagger {
-    readonly n: number;
-    constructor(n: number, options?: NgramTaggerOptions);
-    protected context(tokens: UntaggedSentence, index: number, history: ReadonlyArray<string | null>): TagContext;
-    toString(): string;
-}
-declare class UnigramTagger extends ContextTagger {
-    constructor(options?: NgramTaggerOptions);
-    protected context(tokens: UntaggedSentence, index: number): TagContext;
-    toString(): string;
-}
-declare class BigramTagger extends NgramTagger {
-    constructor(options?: NgramTaggerOptions);
-    toString(): string;
-}
-declare class TrigramTagger extends NgramTagger {
-    constructor(options?: NgramTaggerOptions);
-    toString(): string;
-}
-declare class RegexpTagger extends SequentialBackoffTagger {
-    readonly regexps: ReadonlyArray<{
-        pattern: RegExp;
-        tag: string;
-    }>;
-    constructor(regexps: ReadonlyArray<readonly [string, string]>, backoff?: SequentialBackoffTagger | null);
-    size(): number;
-    protected chooseTag(tokens: UntaggedSentence, index: number): string | null;
-    toString(): string;
-}
-
-type Synset = WordNetSynset;
-declare function synsetDefinition(synset: Synset): string;
-declare function lesk(contextSentence: string[], ambiguousWord: string, pos?: string | number, synsets?: Synset[]): Synset | null;
+type Synset$1 = WordNetSynset;
+declare function synsetDefinition(synset: Synset$1): string;
+declare function lesk(contextSentence: string[], ambiguousWord: string, pos?: string | number, synsets?: Synset$1[]): Synset$1 | null;
 
 /**
  * Port of `nltk.metrics.agreement` (NLTK 3.10.3): annotation-task agreement
@@ -1801,45 +2709,125 @@ type RuleEffect = -1 | 0 | 1;
 interface InitialTaggerLike {
     tag(tokens: UntaggedSentence): Array<[string, string | null]>;
 }
+/**
+ * Port of nltk.tbl.feature.Feature — a property-extraction method plus the
+ * list of relative positions it applies to.
+ */
 declare abstract class TblFeature {
     readonly kind: string;
     readonly positions: readonly number[];
-    constructor(kind: string, positions: readonly number[]);
+    constructor(kind: string, positions: readonly number[] | number, end?: number);
+    /** PROPERTY_NAME: subclass-provided name used in rule output; defaults to kind. */
+    propertyName(): string;
+    className(): string;
     repr(): string;
     key(): string;
+    encodeJsonObj(): readonly number[];
+    /** nltk.tbl.feature.Feature.decode_json_obj — classmethod. */
+    static decodeJsonObj<F extends TblFeature>(this: new (positions: readonly number[]) => F, obj: readonly number[]): F;
+    /**
+     * One Feature per (start, winlen) slice of `starts`; when excludezero is
+     * set, features containing position 0 are dropped.
+     */
+    static expand<F extends TblFeature>(this: new (positions: readonly number[]) => F, starts: readonly number[], winlens: readonly number[], excludezero?: boolean): F[];
     abstract extractProperty(tokens: ReadonlyArray<readonly [string, string]>, index: number): string;
+    /** nltk Feature.__eq__: same class and same positions tuple. */
     equals(other: TblFeature): boolean;
+    nequals(other: TblFeature): boolean;
+    /** True when this feature looks at all positions that `other` does (same class). */
+    issuperset(other: TblFeature): boolean;
+    /** True when the position sets intersect (same class). */
+    intersects(other: TblFeature): boolean;
+    /** nltk quirk: __lt__ is `name_a < name_b or positions_a < positions_b`. */
+    lt(other: TblFeature): boolean;
+    gt(other: TblFeature): boolean;
+    ge(other: TblFeature): boolean;
+    le(other: TblFeature): boolean;
 }
 declare class Word extends TblFeature {
-    constructor(positions: readonly number[]);
+    constructor(positions: readonly number[] | number, end?: number);
     extractProperty(tokens: ReadonlyArray<readonly [string, string]>, index: number): string;
 }
 declare class Pos extends TblFeature {
-    constructor(positions: readonly number[]);
+    constructor(positions: readonly number[] | number, end?: number);
     extractProperty(tokens: ReadonlyArray<readonly [string, string]>, index: number): string;
 }
 type Condition = readonly [feature: TblFeature, value: string];
-declare class TblRule {
-    #private;
-    readonly templateid: string;
+/**
+ * Port of nltk.tbl.rule.TagRule — the abstract rule that maps an original tag
+ * to a replacement tag wherever `applies` holds.
+ */
+declare abstract class TagRule {
     readonly originalTag: string;
     readonly replacementTag: string;
+    constructor(originalTag: string, replacementTag: string);
+    /**
+     * Apply this rule at every position in `positions` where it applies; the
+     * tag change is computed in a separate step so the rule does not interact
+     * with itself. Returns the indices whose tags were changed.
+     */
+    apply(tokens: Array<readonly [string, string]>, positions?: readonly number[]): number[];
+    /** True if the rule would change the tag of tokens[index]. */
+    abstract applies(tokens: ReadonlyArray<readonly [string, string]>, index: number): boolean;
+    /** nltk quirk: TagRule.__eq__/__ne__/__hash__ unconditionally raise TypeError. */
+    equals(_other: unknown): boolean;
+    nequals(_other: unknown): boolean;
+    hash(): number;
+}
+declare class TblRule extends TagRule {
+    #private;
+    readonly templateid: string;
     readonly conditions: readonly Condition[];
     constructor(templateid: string, originalTag: string, replacementTag: string, conditions: readonly Condition[]);
+    encodeJsonObj(): {
+        templateid: string;
+        original: string;
+        replacement: string;
+        conditions: readonly Condition[];
+    };
+    static decodeJsonObj(obj: {
+        templateid: string;
+        original: string;
+        replacement: string;
+        conditions: readonly Condition[];
+    }): TblRule;
+    equals(other: unknown): boolean;
     repr(): string;
     key(): string;
     toString(): string;
     applies(tokens: ReadonlyArray<readonly [string, string]>, index: number): boolean;
-    apply(tokens: BrillSentence, positions?: readonly number[]): number[];
+    hash(): number;
+    /** nltk.tbl.rule.Rule.format — "str" | "repr" | "verbose". */
+    format(fmt: string): string;
+    verboseFormat(): string;
+}
+/** nltk.tbl.template.BrillTemplateI — interface for rule-generating templates. */
+declare abstract class BrillTemplateI {
+    /**
+     * Return the rules that would correct the index-th token's tag to
+     * `correctTag`; empty when the token already has the correct tag.
+     */
+    abstract applicableRules(tokens: ReadonlyArray<readonly [string, string]>, index: number, correctTag: string): TblRule[];
+    /** Indices on which applicable_rules may depend (used by the fast trainer). */
+    abstract getNeighborhood(tokens: ReadonlyArray<unknown>, index: number): number[];
 }
 declare function clearTemplateRegistry(): void;
-declare class Template {
+type FeatureConstructor = new (positions: readonly number[] | number, end?: number) => TblFeature;
+declare class Template extends BrillTemplateI {
     readonly id: string;
     readonly features: readonly TblFeature[];
-    constructor(...features: TblFeature[]);
+    constructor(...features: Array<TblFeature | FeatureConstructor | readonly [number, number]>);
     repr(): string;
     applicableRules(tokens: ReadonlyArray<readonly [string, string]>, index: number, correctTag: string): TblRule[];
     getNeighborhood(tokens: ReadonlyArray<unknown>, index: number): number[];
+    /**
+     * nltk.tbl.template.Template.expand — mass-generate Templates from lists of
+     * Features. `combinations` selects how many feature lists are drawn per
+     * Template: a single int k (exactly k) or [k1, k2] (k1..k2); default 1..n.
+     * Superset and (by default) intersecting features are dropped; repr-equal
+     * Templates are deduplicated and popped from the registry like nltk.
+     */
+    static expand(featurelists: ReadonlyArray<readonly TblFeature[]>, combinations?: number | readonly [number, number] | null, skipintersecting?: boolean): Template[];
 }
 interface BrillTrainingStats {
     min_acc: number | null;
@@ -1881,7 +2869,7 @@ declare function buildTemplates(specs: ReadonlyArray<ReadonlyArray<FeatureSpec>>
 declare function standardTemplates(): Template[];
 
 type Estimator = (freqdist: FreqDist<string>, bins: number) => ProbDistLike<string>;
-declare function untag(taggedSentence: ReadonlyArray<TaggedToken$1>): string[];
+declare function untag(taggedSentence: ReadonlyArray<TaggedToken$3>): string[];
 declare function untagSents(taggedSentences: ReadonlyArray<GoldSentence>): string[][];
 interface HiddenMarkovModelTrainerOptions {
     estimator?: Estimator;
@@ -1892,6 +2880,12 @@ declare class HiddenMarkovModelTrainer {
     symbols: string[];
     constructor(states?: Iterable<string>, symbols?: Iterable<string>);
     trainSupervised(labeledSequences: ReadonlyArray<GoldSentence>, options?: HiddenMarkovModelTrainerOptions): HiddenMarkovModelTagger;
+    /** NLTK `train_supervised` snake_case member. */
+    train_supervised(labeledSequences: ReadonlyArray<GoldSentence>, options?: HiddenMarkovModelTrainerOptions): HiddenMarkovModelTagger;
+    /** NLTK `train` — alias of `train_supervised` in this port. */
+    train(labeledSequences: ReadonlyArray<GoldSentence>, options?: HiddenMarkovModelTrainerOptions): HiddenMarkovModelTagger;
+    /** NLTK `train_unsupervised` (Baum-Welch) — not implemented. */
+    train_unsupervised(_unlabeledSequences: unknown, _options?: unknown): never;
 }
 declare class HiddenMarkovModelTagger {
     #private;
@@ -1918,7 +2912,37 @@ declare class HiddenMarkovModelTagger {
     probability(sequence: UntaggedSentence | GoldSentence): number;
     forwardProbability(unlabeledSequence: UntaggedSentence): number[][];
     toString(): string;
+    tag_sents(sentences: ReadonlyArray<UntaggedSentence>): Array<Array<[string, string]>>;
+    best_path(unlabeledSequence: UntaggedSentence): string[];
+    log_probability(sequence: UntaggedSentence | GoldSentence): number;
+    /** Score accuracy against the gold standard (NLTK `TaggerI.accuracy`). */
+    accuracy(gold: ReadonlyArray<GoldSentence>): number;
+    /** ConfusionMatrix: gold tags as reference, predictions as test. */
+    confusion(gold: ReadonlyArray<GoldSentence>): ConfusionMatrix;
+    precision(gold: ReadonlyArray<GoldSentence>): Map<string, number>;
+    recall(gold: ReadonlyArray<GoldSentence>): Map<string, number>;
+    f_measure(gold: ReadonlyArray<GoldSentence>, alpha?: number): Map<string, number>;
+    fMeasure(gold: ReadonlyArray<GoldSentence>, alpha?: number): Map<string, number>;
+    evaluate_per_tag(gold: ReadonlyArray<GoldSentence>): string;
+    evaluatePerTag(gold: ReadonlyArray<GoldSentence>): string;
 }
+/**
+ * Port of nltk.tag.hmm.logsumexp2 — `log2(sum(2**arr))` computed
+ * stably via the max-trick (`arr.max()` on an empty array raises in
+ * NLTK/numpy; here it returns -inf like numpy's `max` would not — NLTK
+ * always calls it on non-empty arrays).
+ */
+declare function logsumexp2(arr: readonly number[]): number;
+/** nltk.tag.hmm.load_pos — corpus-bound helper; unsupported without nltk_data. */
+declare function load_pos(_numSents?: number): never;
+/** nltk.tag.hmm.demo — corpus-bound demo; unsupported without nltk_data. */
+declare function demo$g(): never;
+/** nltk.tag.hmm.demo_pos — corpus-bound demo; unsupported without nltk_data. */
+declare function demo_pos(): never;
+/** nltk.tag.hmm.demo_bw — corpus-bound Baum-Welch demo; unsupported without nltk_data. */
+declare function demo_bw(): never;
+/** nltk.tag.hmm.demo_pos_bw — corpus-bound demo; unsupported without nltk_data. */
+declare function demo_pos_bw(): never;
 
 declare const APP = "APP";
 declare const Tokens: {
@@ -1966,6 +2990,8 @@ declare class Variable {
     readonly name: string;
     constructor(name: string);
     equals(other: Variable): boolean;
+    /** NLTK Variable.substitute_bindings: return bound value, or self. */
+    substituteBindings(bindings: Map<string, Variable | Expression$1>): Variable | Expression$1;
     toString(): string;
 }
 declare function is_indvar(expr: string): boolean;
@@ -1976,50 +3002,191 @@ declare function resetUniqueVariableCounter(): void;
 /** Next value of the shared unique-variable counter (nltk.internals.Counter.get()). */
 declare function nextUniqueCounterValue(): number;
 declare function uniqueVariable(pattern?: Variable, ignore?: Set<string>): Variable;
+declare const unique_variable: typeof uniqueVariable;
+declare class Type {
+    static fromstring(s: string): Type;
+    equals(other: unknown): boolean;
+    matches(_other: Type): boolean;
+    resolve(_other: Type): Type | null;
+    toString(): string;
+    /** NLTK Type.str() — verbose form distinct from __str__. */
+    str(): string;
+}
+declare class ComplexType extends Type {
+    first: Type;
+    second: Type;
+    constructor(first: Type, second: Type);
+    equals(other: unknown): boolean;
+    matches(other: Type): boolean;
+    resolve(other: Type): Type | null;
+    toString(): string;
+    str(): string;
+}
+declare class BasicType extends Type {
+    equals(other: unknown): boolean;
+    matches(other: Type): boolean;
+    resolve(other: Type): Type | null;
+}
+declare class EntityType extends BasicType {
+    toString(): string;
+    str(): string;
+}
+declare class TruthValueType extends BasicType {
+    toString(): string;
+    str(): string;
+}
+declare class EventType extends BasicType {
+    toString(): string;
+    str(): string;
+}
+/** NLTK AnyType(BasicType, ComplexType) — TS single-inherits ComplexType; the
+ * BasicType-side behaviors are special-cased via AnyType instanceof checks. */
+declare class AnyType extends ComplexType {
+    constructor();
+    equals(other: unknown): boolean;
+    matches(_other: Type): boolean;
+    resolve(other: Type): Type | null;
+    toString(): string;
+    str(): string;
+}
+declare const TRUTH_TYPE: TruthValueType;
+declare const ENTITY_TYPE: EntityType;
+declare const EVENT_TYPE: EventType;
+declare const ANY_TYPE: AnyType;
+/** Port of nltk.sem.logic.read_type. Note: 'v' is NOT accepted by NLTK (only
+ * e, t, ?, and <first,second> forms) — divergence preserved. */
+declare function read_type(typeString: string): Type;
+declare const readType: typeof read_type;
+declare class TypeException extends Error {
+    constructor(message: string);
+}
+declare class InconsistentTypeHierarchyException extends TypeException {
+    constructor(variable: Expression$1, expression?: Expression$1);
+}
+declare class TypeResolutionException extends TypeException {
+    constructor(expression: Expression$1, otherType: Type);
+}
+declare class IllegalTypeException extends TypeException {
+    constructor(expression: Expression$1, otherType: Type, allowedType: Type);
+}
+/** A signature maps variable names to type-annotated variable expressions. */
+type TypeSignature = Map<string, AbstractVariableExpression[]>;
+/**
+ * Port of nltk.sem.logic.typecheck: infer and check types across a collection
+ * of Expression objects. Returns the (augmented) signature.
+ */
+declare function typecheck(expressions: Expression$1[], signature?: Record<string, Type | string>): Record<string, Type>;
 declare abstract class Expression$1 {
+    /** NLTK raises AttributeError when `.type` is read before typechecking or on
+     * expressions that carry no stored type; subclasses override as needed. */
+    get type(): Type;
+    set type(_value: Type);
     abstract str(): string;
     toString(): string;
+    /** NLTK __repr__: ``<ClassName str>``. */
+    repr(): string;
     abstract equals(other: Expression$1): boolean;
     /** Free (non-bound) variables; includes individual and function variables, not constants. */
     abstract free(): Set<Variable>;
     abstract simplify(): Expression$1;
     abstract replace(variable: Variable, expression: Expression$1, replaceBound?: boolean, alphaConvert?: boolean): Expression$1;
-    /** All free variables (constants excluded unless ?/@-prefixed, which are unsupported). */
+    static fromstring(s: string, typeCheck?: boolean, signature?: Record<string, Type | string>): Expression$1;
+    /** All free variables plus ?/@-prefixed predicates and constants (NLTK quirk). */
     variables(): Set<Variable>;
+    /**
+     * Return a set of individual constants (non-predicates).
+     * NLTK implements this via ``visit`` so every composite expression gets it.
+     */
     constants(): Set<Variable>;
+    /** Return a set of predicates (constants, not variables). */
     predicates(): Set<Variable>;
     normalize(): Expression$1;
     substituteBindings(bindings: Map<string, Variable | Expression$1>): Expression$1;
     applyto(other: Expression$1): ApplicationExpression$1;
+    /** Logical equivalence via a theorem prover. Without an explicit prover,
+     * delegates to Prover9 — unavailable without the external binary. */
+    equiv(other: Expression$1, prover?: {
+        prove(e: Expression$1): boolean;
+    }): boolean;
     negate(): Expression$1;
+    make_VariableExpression(variable: Variable): AbstractVariableExpression;
+    /**
+     * Port of Expression.typecheck: infer/check types, returning the signature
+     * plus any additional type mappings.
+     */
+    typecheck(signature?: Record<string, Type | string>): Record<string, Type>;
+    /** Find the type of `variable` as used in this expression. */
+    findtype(variable: Variable): Type;
+    /**
+     * Set the type of this expression to `otherType`, recording variable
+     * expressions in `signature` (NLTK _set_type).
+     */
+    setType(otherType?: Type, signature?: TypeSignature): void;
+    /** Recursively visit subexpressions; combinator aggregates the results. */
+    visit<T, R>(fn: (e: Expression$1) => T, combinator: (parts: T[]) => R): R;
+    /** Like visit, but the combinator takes the node's own constructor args. */
+    visitStructured<T>(fn: (e: Expression$1) => T, combinator: (...parts: unknown[]) => Expression$1): Expression$1;
 }
 declare class AbstractVariableExpression extends Expression$1 {
+    protected _type: Type | undefined;
+    get type(): Type;
+    set type(value: Type);
     variable: Variable;
     constructor(variable: Variable);
     simplify(): Expression$1;
     replace(variable: Variable, expression: Expression$1, _replaceBound?: boolean, _alphaConvert?: boolean): Expression$1;
     free(): Set<Variable>;
+    constants(): Set<Variable>;
     predicates(): Set<Variable>;
     equals(other: Expression$1): boolean;
+    /** NLTK _set_type: resolve `otherType` against every recorded use of this
+     * variable name, then apply the result to all of them. */
+    setType(otherType?: Type, signature?: TypeSignature): void;
+    findtype(variable: Variable): Type;
     str(): string;
 }
 declare class IndividualVariableExpression extends AbstractVariableExpression {
+    /** NLTK exposes `type` as a property: reading yields ENTITY_TYPE, assigning
+     * runs _set_type (the entity-type check). */
+    get type(): Type;
+    set type(otherType: Type);
+    setType(otherType?: Type, signature?: TypeSignature): void;
     free(): Set<Variable>;
 }
 declare class FunctionVariableExpression extends AbstractVariableExpression {
+    protected _type: Type | undefined;
     free(): Set<Variable>;
 }
 declare class EventVariableExpression extends IndividualVariableExpression {
+    protected _type: Type | undefined;
+    /** NLTK stores type as a plain class attribute on EventVariableExpression —
+     * reads/writes bypass the individual-variable property. */
+    get type(): Type;
+    set type(value: Type);
 }
 declare class ConstantExpression$1 extends AbstractVariableExpression {
+    protected _type: Type | undefined;
+    setType(otherType?: Type, signature?: TypeSignature): void;
     constants(): Set<Variable>;
 }
-/** Factory mirroring nltk.sem.logic.VariableExpression(). */
+/** Port of nltk.sem.logic.VariableExpression() — factory dispatching on the
+ * variable's lexical class. */
+declare function VariableExpression$1(variable: Variable): AbstractVariableExpression;
+/** Name-based convenience wrapper around VariableExpression(). */
 declare function makeVariableExpression(name: string): AbstractVariableExpression;
+/** Upper bound on subexpressions a single beta-reduction may produce
+ * (nltk.sem.logic.MAX_SIMPLIFY_SIZE, CWE-400). */
+declare const MAX_SIMPLIFY_SIZE = 10000;
 declare class ApplicationExpression$1 extends Expression$1 {
     function: Expression$1;
     argument: Expression$1;
     constructor(func: Expression$1, argument: Expression$1);
+    /** NLTK property: the result type is the second half of the function's
+     * complex type, or ANY_TYPE when the function type is not complex. */
+    get type(): Type;
+    setType(otherType?: Type, signature?: TypeSignature): void;
+    findtype(variable: Variable): Type;
+    visit<T, R>(fn: (e: Expression$1) => T, combinator: (parts: T[]) => R): R;
     simplify(): Expression$1;
     replace(variable: Variable, expression: Expression$1, replaceBound?: boolean, alphaConvert?: boolean): Expression$1;
     free(): Set<Variable>;
@@ -2029,6 +3196,10 @@ declare class ApplicationExpression$1 extends Expression$1 {
     /** Uncurry: returns [base-function, arg-list]. */
     uncurry(): [Expression$1, Expression$1[]];
     isAtom(): boolean;
+    /** NLTK property: uncurried arg-list. */
+    get args(): Expression$1[];
+    /** NLTK snake_case alias. */
+    is_atom(): boolean;
     str(): string;
 }
 declare abstract class VariableBinderExpression extends Expression$1 {
@@ -2039,14 +3210,23 @@ declare abstract class VariableBinderExpression extends Expression$1 {
     alphaConvert(newvar: Variable): VariableBinderExpression;
     replace(variable: Variable, expression: Expression$1, replaceBound?: boolean, alphaConvert?: boolean): Expression$1;
     free(): Set<Variable>;
+    findtype(variable: Variable): Type;
+    visit<T, R>(fn: (e: Expression$1) => T, combinator: (parts: T[]) => R): R;
+    visitStructured<T>(fn: (e: Expression$1) => T, combinator: (...parts: unknown[]) => Expression$1): Expression$1;
     equals(other: Expression$1): boolean;
 }
 declare class LambdaExpression extends VariableBinderExpression {
+    /** NLTK property: <type-of-variable, type-of-term>. */
+    get type(): Type;
+    setType(otherType?: Type, signature?: TypeSignature): void;
     protected rebuild(variable: Variable, term: Expression$1): VariableBinderExpression;
     simplify(): Expression$1;
     str(): string;
 }
 declare abstract class QuantifiedExpression extends VariableBinderExpression {
+    /** NLTK property: quantified expressions are truth-valued. */
+    get type(): Type;
+    setType(otherType?: Type, signature?: TypeSignature): void;
     abstract getQuantifier(): string;
     str(): string;
 }
@@ -2068,6 +3248,11 @@ declare class IotaExpression extends QuantifiedExpression {
 declare class NegatedExpression extends Expression$1 {
     term: Expression$1;
     constructor(term: Expression$1);
+    /** NLTK property: negations are truth-valued. */
+    get type(): Type;
+    setType(otherType?: Type, signature?: TypeSignature): void;
+    findtype(variable: Variable): Type;
+    visit<T, R>(fn: (e: Expression$1) => T, combinator: (parts: T[]) => R): R;
     simplify(): Expression$1;
     replace(variable: Variable, expression: Expression$1, replaceBound?: boolean, alphaConvert?: boolean): Expression$1;
     free(): Set<Variable>;
@@ -2079,6 +3264,10 @@ declare abstract class BinaryExpression extends Expression$1 {
     first: Expression$1;
     second: Expression$1;
     constructor(first: Expression$1, second: Expression$1);
+    /** NLTK property: binary connectives are truth-valued. */
+    get type(): Type;
+    findtype(variable: Variable): Type;
+    visit<T, R>(fn: (e: Expression$1) => T, combinator: (parts: T[]) => R): R;
     abstract getOp(): string;
     protected subexStr(subex: Expression$1): string;
     simplify(): Expression$1;
@@ -2090,6 +3279,7 @@ declare abstract class BinaryExpression extends Expression$1 {
     str(): string;
 }
 declare abstract class BooleanExpression extends BinaryExpression {
+    setType(otherType?: Type, signature?: TypeSignature): void;
 }
 declare class AndExpression extends BooleanExpression {
     getOp(): string;
@@ -2105,14 +3295,30 @@ declare class ImpExpression$1 extends BooleanExpression {
 declare class IffExpression extends BooleanExpression {
     getOp(): string;
 }
+declare class EqualityExpression extends BinaryExpression {
+    setType(otherType?: Type, signature?: TypeSignature): void;
+    getOp(): string;
+}
 type BooleanFactory = typeof AndExpression | typeof OrExpression | typeof ImpExpression$1 | typeof IffExpression;
+type QuantifiedFactory = typeof ExistsExpression | typeof AllExpression | typeof IotaExpression;
 declare class LogicParser {
+    /** Maximum expression-nesting depth (nltk.sem.logic LogicParser.MAX_PARSE_DEPTH). */
+    static MAX_PARSE_DEPTH: number;
     private currentIndex;
     private buffer;
+    private parseDepth;
+    private typeCheck;
     private symbolTrie;
-    parse(data: string): Expression$1;
-    /** Split the data into tokens (trie-based longest symbol match, like NLTK). */
-    process(data: string): string[];
+    private quoteChars;
+    constructor(typeCheck?: boolean);
+    parse(data: string, signature?: Record<string, Type | string>): Expression$1;
+    /** Split the data into tokens (trie-based longest symbol match, like NLTK).
+     * Returns [tokens, mapping] where mapping indexes token positions to
+     * character offsets in `data`. */
+    process(data: string): [string[], Map<number, number>];
+    /** Quote-char handling; the base parser defines no quote chars, so this
+     * always returns no token (NLTK parity hook for subclasses). */
+    processQuotedToken(dataIdx: number, data: string): [string, number];
     getAllSymbols(): string[];
     inRange(location: number): boolean;
     token(location?: number): string;
@@ -2120,12 +3326,19 @@ declare class LogicParser {
     processNextExpression(context: string | null): Expression$1;
     handle(tok: string, context: string | null): Expression$1 | undefined;
     attemptAdjuncts(expression: Expression$1, context: string | null): Expression$1;
+    makeApplicationExpression(function_: Expression$1, argument: Expression$1): ApplicationExpression$1;
+    makeVariableExpression(name: string): AbstractVariableExpression;
+    makeLambdaExpression(variable: Variable, term: Expression$1): LambdaExpression;
+    makeNegatedExpression(term: Expression$1): NegatedExpression;
+    makeEqualityExpression(first: Expression$1, second: Expression$1): EqualityExpression;
+    makeQuanifiedExpression(factory: QuantifiedFactory, variable: Variable, term: Expression$1): QuantifiedExpression;
+    makeBooleanExpression(factory: BooleanFactory, first: Expression$1, second: Expression$1): BooleanExpression;
     handleNegation(_tok: string, _context: string | null): Expression$1;
     handleVariable(tok: string, _context: string | null): Expression$1;
     getNextTokenVariable(description: string): Variable;
     handleLambda(tok: string, _context: string | null): Expression$1;
     handleQuant(tok: string, _context: string | null): Expression$1;
-    getQuantifiedExpressionFactory(tok: string): new (v: Variable, t: Expression$1) => QuantifiedExpression;
+    getQuantifiedExpressionFactory(tok: string): QuantifiedFactory;
     handleOpen(_tok: string, _context: string | null): Expression$1;
     attemptEqualityExpression(expression: Expression$1, context: string | null): Expression$1;
     attemptBooleanExpression(expression: Expression$1, context: string | null): Expression$1;
@@ -2133,6 +3346,71 @@ declare class LogicParser {
     attemptApplicationExpression(expression: Expression$1, context: string | null): Expression$1;
     hasPriority(operation: string, context: string | null): boolean;
     assertNextToken(expected: string): void;
+    assertToken(tok: string, expected: string | string[]): void;
+}
+/** Convenience mirror of Expression.fromstring. */
+declare function fromstring$1(s: string): Expression$1;
+/** NLTK SubstituteBindingsI — interface for objects that can substitute
+ * variables. Methods raise NotImplementedError, as in NLTK. */
+declare class SubstituteBindingsI {
+    substitute_bindings(_bindings: unknown): unknown;
+    variables(): unknown;
+}
+/** Port of nltk.sem.logic.read_logic: parse a string containing one logical
+ * formula per line ('#' comments and blank lines skipped). */
+declare function read_logic(s: string | Uint8Array, logicParser?: LogicParser, encoding?: string): Expression$1[];
+declare const readLogic: typeof read_logic;
+/** Port of nltk.sem.logic.skolem_function: a fresh F-counter function variable
+ * applied to each variable in `univScope`. */
+declare function skolem_function(univScope?: Iterable<Variable>): Expression$1;
+declare const skolemFunction: typeof skolem_function;
+/** NLTK boolean_ops — print the boolean operator table. */
+declare function boolean_ops(): void;
+/** NLTK equality_preds — print the equality predicate table. */
+declare function equality_preds(): void;
+/** NLTK binding_ops — print the binding operator table. Quirk preserved: the
+ * zip truncates to the 3 names, so the iota token is never printed. */
+declare function binding_ops(): void;
+/** NLTK printtype — broken in NLTK 3.10.3: it calls ``ex.str()``, which does
+ * not exist on NLTK expressions, so it always raises AttributeError. The
+ * py3-broken contract is preserved rather than silently fixed. */
+declare function printtype(ex: Expression$1): void;
+/** NLTK demoException — parse `s`, printing the exception class and message. */
+declare function demoException(s: string): void;
+/** NLTK nltk.sem.logic.demo() — deterministic parser demonstration. */
+declare function semLogicDemo(): void;
+/** NLTK nltk.sem.logic.demo_errors() — prints one line per parse failure. */
+declare function semLogicDemoErrors(): void;
+type SemanticValue = string | boolean | string[][];
+type ValuationSpec = Record<string, string | boolean | string[] | string[][]>;
+declare class Valuation {
+    private values;
+    constructor(spec: ValuationSpec);
+    static normalizeValue(val: string | boolean | string[] | string[][]): SemanticValue;
+    has(sym: string): boolean;
+    get(sym: string): SemanticValue;
+    get domain(): Set<string>;
+    get symbols(): string[];
+}
+declare class Assignment {
+    domain: Set<string>;
+    private map;
+    constructor(domain: Iterable<string>, assign?: Record<string, string>);
+    has(key: string): boolean;
+    get(key: string): string;
+    add(v: string, val: string): Assignment;
+    copy(): Assignment;
+    purge(v?: string): void;
+    entries(): [string, string][];
+}
+declare class Model {
+    domain: Set<string>;
+    valuation: Valuation;
+    constructor(domain: Iterable<string>, valuation: Valuation);
+    evaluate(expr: string | Expression$1, g: Assignment): boolean | "Undefined";
+    satisfy(parsed: Expression$1, g: Assignment): unknown;
+    i(parsed: AbstractVariableExpression, g: Assignment): SemanticValue;
+    satisfiers(parsed: Expression$1, varex: Variable | string, g: Assignment): Set<string>;
 }
 
 declare const DrtTokens: {
@@ -2326,7 +3604,7 @@ declare class DrtParser {
     handleDRS(_tok: string, context: string | null): DrtExpression;
     handleRefs(): Variable[];
     handleConds(context: string | null): Expression$1[];
-    handleProp(tok: string, context: string | null): DrtExpression;
+    handleProp(tok: string, _context: string | null): DrtExpression;
     attemptAdjuncts(expr: DrtExpression, context: string | null): DrtExpression;
     attemptEqualityExpression(expr: DrtExpression, context: string | null): DrtExpression;
     attemptBooleanExpression(expr: DrtExpression, context: string | null): DrtExpression;
@@ -2335,7 +3613,9 @@ declare class DrtParser {
     hasPriority(op: string, context: string | null): boolean;
     assertNextToken(expected: string): void;
 }
+declare function DrtParserFromString(s: string): DrtExpression;
 
+declare function toCnf(first: Expression$1, second: Expression$1): Expression$1;
 declare function skolemize(expression: Expression$1, univScope?: Set<Variable> | null, usedVariables?: Set<Variable> | null): Expression$1;
 
 /**
@@ -2345,8 +3625,9 @@ declare function skolemize(expression: Expression$1, univScope?: Set<Variable> |
  * (ported line-for-line from NLTK's nltk/stem/snowball.py, which itself is a
  * Python translation of the Snowball spec at http://snowball.tartarus.org/).
  *
- * Supported languages: danish, dutch, english, french, german, italian,
- * norwegian, portuguese, romanian, russian, spanish, swedish.
+ * Supported languages: arabic, danish, dutch, english, finnish, french,
+ * german, hungarian, italian, norwegian, portuguese, romanian, russian,
+ * spanish, swedish.
  *
  * Behavior notes:
  * - Each language stemmer lowercases its input first (exactly like NLTK;
@@ -2355,7 +3636,7 @@ declare function skolemize(expression: Expression$1, univScope?: Set<Variable> |
  *   "The language '<language>' is not supported."
  */
 
-declare const SNOWBALL_LANGUAGES: readonly ["danish", "dutch", "english", "french", "german", "italian", "norwegian", "portuguese", "romanian", "russian", "spanish", "swedish"];
+declare const SNOWBALL_LANGUAGES: readonly ["arabic", "danish", "dutch", "english", "finnish", "french", "german", "hungarian", "italian", "norwegian", "portuguese", "romanian", "russian", "spanish", "swedish"];
 /**
  * Stem `word` with the NLTK-compatible Snowball stemmer for `language`.
  *
@@ -2363,7 +3644,7 @@ declare const SNOWBALL_LANGUAGES: readonly ["danish", "dutch", "english", "frenc
  * supported. Each language's algorithm lowercases internally (except
  * Russian, which does not lowercase — matching NLTK exactly).
  */
-declare function snowballStem(word: string, language: string): string;
+declare function snowballStem(word: string, language: string, stopwords?: ReadonlySet<string>): string;
 
 /**
  * Common methods and classes for all IBM models (port of nltk.translate.ibm_model).
@@ -2408,6 +3689,8 @@ declare class Counts {
     /** Number of times word i of the source occurs in the alignment. */
     static fertilityOfI(alignment: readonly number[], srcLen: number, i: number): number;
 }
+/** Longest target sentence length in the corpus. */
+declare function longestTargetSentenceLength(corpus: readonly AlignedSentInput[]): number;
 /** Abstract base state shared by all IBM model implementations. */
 declare abstract class IBMModelBase {
     MIN_PROB: number;
@@ -2440,7 +3723,7 @@ declare abstract class IBMModelBase {
      */
     bestAlignments(corpus: readonly AlignedSentInput[]): AlignmentPair[][];
 }
-/** Factorial (small n; used by IBM models 3-5). */
+
 declare function factorial(n: number): number;
 
 /**
@@ -2483,6 +3766,17 @@ declare class IBMModel1 extends IBMModelBase {
  * with 2x iterations (mirroring NLTK).
  */
 
+declare class Model2Counts {
+    t_given_s: Map<string, Map<string, number>>;
+    any_t_given_s: Map<string, number>;
+    /** alignment[i][j][l][m] */
+    alignment: Map<number, Map<number, Map<number, Map<number, number>>>>;
+    /** alignment_for_any_i[j][l][m] */
+    alignment_for_any_i: Map<number, Map<number, Map<number, number>>>;
+    updateLexicalTranslation(normalizedCount: number, s: string, t: string): void;
+    private ensureAlignment;
+    updateAlignment(normalizedCount: number, i: number, j: number, l: number, m: number): void;
+}
 type IBM2ProbabilityTables = {
     translation_table: Map<string, Map<string, number>>;
     alignment_table: Map<number, Map<number, Map<number, Map<number, number>>>>;
@@ -2507,7 +3801,7 @@ declare class IBMModel2 extends IBMModelBase {
  * Position 0 of the source sentence is NULL.
  */
 
-type AlignedSent = {
+type AlignedSent$1 = {
     words: string[];
     mots: string[];
 };
@@ -2538,10 +3832,10 @@ interface Scorer {
 }
 declare abstract class SamplingModel extends IBMModelBase implements Scorer {
     abstract probTAGivenS(alignment: AlignmentInfo): number;
-    bestModel2Alignment(sentencePair: AlignedSent, jPegged?: number, iPegged?: number): AlignmentInfo;
+    bestModel2Alignment(sentencePair: AlignedSent$1, jPegged?: number, iPegged?: number): AlignmentInfo;
     hillclimb(alignmentInfo: AlignmentInfo, jPegged?: number): AlignmentInfo;
     neighboring(alignmentInfo: AlignmentInfo, jPegged?: number): Set<AlignmentInfo>;
-    sample(sentencePair: AlignedSent): {
+    sample(sentencePair: AlignedSent$1): {
         sampled: Set<AlignmentInfo>;
         best: AlignmentInfo;
     };
@@ -2555,10 +3849,17 @@ declare abstract class SamplingModel extends IBMModelBase implements Scorer {
  * on top of Model 2. Seeded from IBM Model 2 when no tables are given.
  */
 
+declare class Model3Counts extends Counts {
+    /** distortion[j][i][l][m] */
+    distortion: Map<number, Map<number, Map<number, Map<number, number>>>>;
+    /** distortion_for_any_j[i][l][m] */
+    distortion_for_any_j: Map<number, Map<number, Map<number, number>>>;
+    updateDistortion(count: number, alignment: readonly number[], j: number, l: number, m: number): void;
+}
 declare class IBMModel3 extends SamplingModel {
     /** Probability(j | i,l,m): distortion_table[j][i][l][m]. */
     distortion_table: Map<number, Map<number, Map<number, Map<number, number>>>>;
-    constructor(corpus: readonly AlignedSent[], iterations: number, probabilityTables?: {
+    constructor(corpus: readonly AlignedSent$1[], iterations: number, probabilityTables?: {
         translation_table: IBMModelBase["translation_table"];
         alignment_table: IBMModelBase["alignment_table"];
         fertility_table: IBMModelBase["fertility_table"];
@@ -2567,7 +3868,7 @@ declare class IBMModel3 extends SamplingModel {
     });
     resetProbabilities(): void;
     private setUniformProbabilities;
-    train(parallel_corpus: readonly AlignedSent[]): void;
+    train(parallel_corpus: readonly AlignedSent$1[]): void;
     private maximizeDistortionProbabilities;
     probTAGivenS(alignmentInfo: AlignmentInfo): number;
 }
@@ -2577,6 +3878,15 @@ declare class IBMModel3 extends SamplingModel {
  * and the position of the previous cept's center, plus non-head displacement.
  */
 
+declare class Model4Counts extends Counts {
+    /** head_distortion[dj][src_class][trg_class] */
+    head_distortion: Map<number, Map<number | null, Map<number, number>>>;
+    head_distortion_for_any_dj: Map<number | null, Map<number, number>>;
+    /** non_head_distortion[dj][trg_class] */
+    non_head_distortion: Map<number, Map<number, number>>;
+    non_head_distortion_for_any_dj: Map<number, number>;
+    updateDistortion(count: number, alignmentInfo: AlignmentInfo, j: number, srcClasses: Record<string, number>, trgClasses: Record<string, number>): void;
+}
 type SrcTrgClasses = Record<string, number>;
 declare class IBMModel4 extends SamplingModel {
     /** Probability(displacement of head word | src class of previous cept, trg class). */
@@ -2585,7 +3895,7 @@ declare class IBMModel4 extends SamplingModel {
     non_head_distortion_table: Map<number, Map<number, number>>;
     src_classes: SrcTrgClasses;
     trg_classes: SrcTrgClasses;
-    constructor(corpus: readonly AlignedSent[], iterations: number, sourceWordClasses: SrcTrgClasses, targetWordClasses: SrcTrgClasses, probabilityTables?: {
+    constructor(corpus: readonly AlignedSent$1[], iterations: number, sourceWordClasses: SrcTrgClasses, targetWordClasses: SrcTrgClasses, probabilityTables?: {
         translation_table: IBMModelBase["translation_table"];
         alignment_table: IBMModelBase["alignment_table"];
         fertility_table: IBMModelBase["fertility_table"];
@@ -2595,7 +3905,7 @@ declare class IBMModel4 extends SamplingModel {
     });
     resetProbabilities(): void;
     private setUniformProbabilities;
-    train(parallel_corpus: readonly AlignedSent[]): void;
+    train(parallel_corpus: readonly AlignedSent$1[]): void;
     private maximizeDistortionProbabilities;
     probTAGivenS(alignmentInfo: AlignmentInfo): number;
     /** Exposed for Model 5 to reuse. */
@@ -2615,6 +3925,25 @@ declare class IBMModel4 extends SamplingModel {
  * vacancy-based probabilities for its own EM steps.
  */
 
+/** Tracks occupied positions in a target sentence (1-indexed with dummy at 0). */
+declare class Slots {
+    private readonly slots;
+    constructor(targetSentenceLength: number);
+    get length(): number;
+    occupy(position: number): void;
+    vacanciesAt(position: number): number;
+}
+declare class Model5Counts extends Counts {
+    /** head_vacancy[dv][max_v][trg_class] */
+    head_vacancy: Map<number, Map<number, Map<number, number>>>;
+    head_vacancy_for_any_dv: Map<number, Map<number, number>>;
+    /** non_head_vacancy[dv][max_v][trg_class] */
+    non_head_vacancy: Map<number, Map<number, Map<number, number>>>;
+    non_head_vacancy_for_any_dv: Map<number, Map<number, number>>;
+    updateVacancy(count: number, alignmentInfo: AlignmentInfo, i: number, trgClasses: SrcTrgClasses, slots: Slots): void;
+    private addTo;
+    private addAny;
+}
 declare class IBMModel5 extends SamplingModel {
     /** Probability(vacancy difference | remaining valid positions, target word class). */
     head_vacancy_table: Map<number, Map<number, Map<number, number>>>;
@@ -2623,7 +3952,7 @@ declare class IBMModel5 extends SamplingModel {
     non_head_distortion_table: Map<number, Map<number, number>>;
     src_classes: SrcTrgClasses;
     trg_classes: SrcTrgClasses;
-    constructor(corpus: readonly AlignedSent[], iterations: number, sourceWordClasses: SrcTrgClasses, targetWordClasses: SrcTrgClasses, probabilityTables?: {
+    constructor(corpus: readonly AlignedSent$1[], iterations: number, sourceWordClasses: SrcTrgClasses, targetWordClasses: SrcTrgClasses, probabilityTables?: {
         translation_table: IBMModelBase["translation_table"];
         alignment_table: IBMModelBase["alignment_table"];
         fertility_table: IBMModelBase["fertility_table"];
@@ -2636,7 +3965,7 @@ declare class IBMModel5 extends SamplingModel {
     resetProbabilities(): void;
     private setUniformProbabilities;
     private ensureVacancy;
-    train(parallel_corpus: readonly AlignedSent[]): void;
+    train(parallel_corpus: readonly AlignedSent$1[]): void;
     /** NLTK Model 5 hill climbs with Model 4 scoring. */
     hillclimb(alignmentInfo: AlignmentInfo, jPegged?: number): AlignmentInfo;
     probTAGivenS(alignmentInfo: AlignmentInfo): number;
@@ -2706,6 +4035,20 @@ declare function dependencyEvaluate(parsedSents: ReadonlyArray<{
     }>;
     root: number;
 }>): [las: number, uas: number];
+/** Port of nltk.parse.evaluate.DependencyEvaluator: wraps dependencyEvaluate. */
+type EvalInput = Parameters<typeof dependencyEvaluate>[0][number] | {
+    nodelist: ReadonlyArray<{
+        word: string | null;
+        head: number | null;
+        rel: string;
+    }>;
+};
+declare class DependencyEvaluator {
+    private parsedSents;
+    private goldSents;
+    constructor(parsedSents: readonly EvalInput[], goldSents: readonly EvalInput[]);
+    eval(): [las: number, uas: number];
+}
 
 /**
  * S-Expression tokenizer (port of nltk.tokenize.sexpr / SExprTokenizer).
@@ -2804,23 +4147,445 @@ declare function rteClassify(_text: string, _hypothesis: string): string;
 /**
  * External POS tagger wrappers (ports of nltk.tag.stanford/hunpos/senna).
  */
-declare class StanfordPOSTagger {
+/** Port of nltk.tag.stanford.StanfordTagger — base for the POS/NER taggers. */
+declare class StanfordTagger {
     constructor(_pathToModel?: string, _pathToJar?: string);
     tag(_tokens: string[]): Array<[string, string]>;
 }
-declare class StanfordNERTagger extends StanfordPOSTagger {
+declare class StanfordPOSTagger extends StanfordTagger {
 }
-declare class HunPosTagger {
+declare class StanfordNERTagger extends StanfordTagger {
+}
+/** Port of nltk.tag.hunpos.HunposTagger (external hunpos-tag binary). */
+declare class HunposTagger {
     constructor(_pathToModel?: string, _pathToBin?: string);
     tag(_tokens: string[]): Array<[string, string]>;
 }
-declare class SennaTagger {
+/** Backwards-compatible alias kept for the pre-rename export name. */
+declare const HunPosTagger: typeof HunposTagger;
+/** Port of nltk.tag.senna.Senna — base pipeline wrapper. */
+declare class Senna {
     constructor(_pathToSenna?: string);
     tag(_tokens: string[]): Array<[string, string]>;
+    tag_sents(_sents: Iterable<string[]>): Array<Array<[string, string]>>;
 }
-declare class SennaChunkTagger extends SennaTagger {
+declare class SennaTagger extends Senna {
 }
-declare class SennaNERTagger extends SennaTagger {
+declare class SennaChunkTagger extends Senna {
+}
+declare class SennaNERTagger extends Senna {
+}
+
+/**
+ * Given the string representation of a tagged token, return the
+ * corresponding tuple representation.  The rightmost occurrence of
+ * `sep` in `s` is used to divide `s` into a word string and a tag
+ * string.  If `sep` does not occur in `s`, return `[s, null]`.
+ *
+ * NLTK upper-cases the tag: `str2tuple('fly/nn') -> ('fly','NN')`.
+ */
+declare function str2tuple(s: string, sep?: string): [string, string | null];
+/**
+ * Given the tuple representation of a tagged token, return the
+ * corresponding string representation: `word + sep + tag`.  If the
+ * tag is null, return the bare word string.
+ */
+declare function tuple2str(taggedToken: readonly [string, string | null], sep?: string): string;
+/**
+ * Use NLTK's currently recommended part of speech tagger to tag the
+ * given list of sentences, each consisting of a list of tokens.
+ *
+ * The `tagset`/`lang` keyword arguments of the Python signature are
+ * accepted but ignored (the bundled perceptron model is always used).
+ */
+declare function pos_tag_sents(sentences: Iterable<readonly string[]>, _options?: {
+    tagset?: string;
+    lang?: string;
+}): Array<Array<[string, string]>>;
+declare const posTagSents: typeof pos_tag_sents;
+
+/**
+ * Ports of the template-set factories in nltk.tag.brill:
+ * nltkdemo18, nltkdemo18plus, fntbl37, brill24, describe_template_sets.
+ */
+
+/**
+ * Return 18 templates, from the original nltk demo, in multi-feature syntax.
+ */
+declare function nltkdemo18(): Template[];
+/**
+ * Return 18 templates, from the original nltk demo, and additionally a few
+ * multi-feature ones (the motivation is easy comparison with nltkdemo18).
+ */
+declare function nltkdemo18plus(): Template[];
+/**
+ * Return 37 templates taken from the postagging task of the
+ * fntbl distribution https://www.cs.jhu.edu/~rflorian/fntbl/
+ * (37 is after excluding a handful which do not condition on Pos[0];
+ * fntbl can do that but the current nltk implementation cannot.)
+ */
+declare function fntbl37(): Template[];
+/**
+ * Return 24 templates of the seminal TBL paper, Brill (1995).
+ */
+declare function brill24(): Template[];
+/**
+ * Print the available template sets in this demo, with a short description.
+ * NLTK enumerates the module functions via inspect (`print(name, obj.__doc__,
+ * "\n")`); the port pins the same four entries in alphabetical order, each
+ * emitted chunk ending in ` \n\n` exactly as print() produces.
+ */
+declare function describe_template_sets(out?: (chunk: string) => void): void;
+declare const describeTemplateSets: typeof describe_template_sets;
+
+/**
+ * TnT — Trigrams'n'Tags statistical POS tagger (port of nltk.tag.tnt).
+ *
+ * Second-order HMM per Brants (2000): deleted-interpolation transition
+ * smoothing over tag unigram/bigram/trigram tiers, suffix-model unknown
+ * words with successive abstraction + Bayesian inversion, beam-pruned
+ * Viterbi decoding over (prev1, current) state pairs.
+ */
+
+interface TntOptions {
+    /** Beam threshold N (Brants default 1000). */
+    N?: number;
+    /** Include capitalization in the tag state. */
+    C?: boolean;
+    /** External unknown-word tagger; overrides the built-in suffix model. */
+    unk?: {
+        tag(tokens: string[]): Array<[string, string]>;
+        train(data: unknown): void;
+    };
+}
+declare class TnT {
+    private readonly beamThreshold;
+    private readonly useCap;
+    private readonly unk?;
+    private unkTrained;
+    known: number;
+    unknown: number;
+    private tagUnigrams;
+    private tagBigrams;
+    private tagTrigrams;
+    private wordTagFreqs;
+    private lambda1;
+    private lambda2;
+    private lambda3;
+    private numTagTokens;
+    private transLogpUnigram;
+    private transLogpBigram;
+    private transLogpTrigram;
+    private tagPriorProbs;
+    private theta;
+    private suffixTrieByCap;
+    private candidateTagsCache;
+    constructor(options?: TntOptions);
+    /** Train on tagged sentences [[word, tag], ...]. Rebuilds the model from scratch. */
+    train(data: Array<Array<[string, string]>>): void;
+    private log2BeamThreshold;
+    private computeLambda;
+    private buildTransitionLogpCache;
+    private buildSuffixModel;
+    /** Brants's suffix-model scores for an unseen word (Bayes-inverted). */
+    unknownTagScores(word: string): Map<string, number>;
+    /**
+     * Tag one tokenized sentence.
+     */
+    tag(tokens: string[]): Array<[string, string]>;
+    /** Tag a list of sentences. */
+    tagdata(data: string[][]): Array<Array<[string, string]>>;
+    private tagWord;
+    private expandStates;
+    /** Apply `tag()` to each element of `sentences` (NLTK `TaggerI.tag_sents`). */
+    tag_sents(sentences: Iterable<string[]>): Array<Array<[string, string]>>;
+    tagSents(sentences: Iterable<string[]>): Array<Array<[string, string]>>;
+    /** Deprecated alias of `accuracy` (NLTK `evaluate`). */
+    evaluate(gold: ReadonlyArray<Array<[string, string]>>): number;
+    /** Score accuracy against the gold standard. */
+    accuracy(gold: ReadonlyArray<Array<[string, string]>>): number;
+    /** ConfusionMatrix: gold tags as reference, predictions as test. */
+    confusion(gold: ReadonlyArray<Array<[string, string]>>): ConfusionMatrix;
+    precision(gold: ReadonlyArray<Array<[string, string]>>): Map<string, number>;
+    recall(gold: ReadonlyArray<Array<[string, string]>>): Map<string, number>;
+    f_measure(gold: ReadonlyArray<Array<[string, string]>>, alpha?: number): Map<string, number>;
+    fMeasure(gold: ReadonlyArray<Array<[string, string]>>, alpha?: number): Map<string, number>;
+    evaluate_per_tag(gold: ReadonlyArray<Array<[string, string]>>): string;
+    evaluatePerTag(gold: ReadonlyArray<Array<[string, string]>>): string;
+}
+/**
+ * Port of nltk.tag.tnt.basic_sent_chop — split a flat token sequence into
+ * sentence-like segments, cutting after tokens in `sentMarks`. Works for
+ * raw tokens (`raw=true`, compare the token itself) and tagged
+ * `[word, tag]` pairs (`raw=false`, compare `word`).
+ */
+declare function basic_sent_chop<T extends string | readonly [string, string]>(data: readonly T[], raw?: boolean, sentMarks?: readonly string[]): T[][];
+declare const basicSentChop: typeof basic_sent_chop;
+/** nltk.tag.tnt.demo — corpus-bound demo; unsupported without nltk_data. */
+declare function demo$f(_testSize?: number): never;
+/** nltk.tag.tnt.demo_errors — corpus-bound demo; unsupported without nltk_data. */
+declare function demo_errors(_limit?: number, _testSize?: number): never;
+
+/** Build an Error carrying a Python exception class name for
+ * NLTK-compatible error surfacing (e.g. KeyError, IndexError). */
+declare function pyError(name: string, message: string): Error;
+declare function configJava(..._a: unknown[]): never;
+declare const config_java: typeof configJava;
+declare function java(..._a: unknown[]): never;
+declare class UntrustedJarError$1 extends Error {
+}
+declare class ReadError$1 extends Error {
+}
+declare function readStr(..._a: unknown[]): never;
+declare const read_str$1: typeof readStr;
+declare function readInt(..._a: unknown[]): never;
+declare const read_int$1: typeof readInt;
+declare function readNumber(..._a: unknown[]): never;
+declare const read_number$1: typeof readNumber;
+declare function overridden(_method: unknown): boolean;
+declare function deprecated$1<F extends (...args: any[]) => any>(message: string): (func: F) => F;
+declare class Deprecated$1 {
+    message: string;
+    constructor(message: string);
+}
+declare class Counter$1 {
+    private value;
+    constructor(initialValue?: number);
+    get(): number;
+}
+declare function findFile(..._a: unknown[]): never;
+declare const find_file: typeof findFile;
+declare function findDir(..._a: unknown[]): never;
+declare const find_dir$1: typeof findDir;
+declare function findBinary(..._a: unknown[]): never;
+declare const find_binary: typeof findBinary;
+declare function findJar(..._a: unknown[]): never;
+declare const find_jar: typeof findJar;
+declare function sliceBounds(_seq: unknown, _slice: unknown): [number, number];
+declare const slice_bounds$1: typeof sliceBounds;
+declare function isWritable(_path: string): boolean;
+declare const is_writable$1: typeof isWritable;
+
+declare const internals_d_configJava: typeof configJava;
+declare const internals_d_config_java: typeof config_java;
+declare const internals_d_findBinary: typeof findBinary;
+declare const internals_d_findDir: typeof findDir;
+declare const internals_d_findFile: typeof findFile;
+declare const internals_d_findJar: typeof findJar;
+declare const internals_d_find_binary: typeof find_binary;
+declare const internals_d_find_file: typeof find_file;
+declare const internals_d_find_jar: typeof find_jar;
+declare const internals_d_isWritable: typeof isWritable;
+declare const internals_d_java: typeof java;
+declare const internals_d_overridden: typeof overridden;
+declare const internals_d_pyError: typeof pyError;
+declare const internals_d_readInt: typeof readInt;
+declare const internals_d_readNumber: typeof readNumber;
+declare const internals_d_readStr: typeof readStr;
+declare const internals_d_sliceBounds: typeof sliceBounds;
+declare namespace internals_d {
+  export {
+    Counter$1 as Counter,
+    Deprecated$1 as Deprecated,
+    ReadError$1 as ReadError,
+    UntrustedJarError$1 as UntrustedJarError,
+    internals_d_configJava as configJava,
+    internals_d_config_java as config_java,
+    deprecated$1 as deprecated,
+    internals_d_findBinary as findBinary,
+    internals_d_findDir as findDir,
+    internals_d_findFile as findFile,
+    internals_d_findJar as findJar,
+    internals_d_find_binary as find_binary,
+    find_dir$1 as find_dir,
+    internals_d_find_file as find_file,
+    internals_d_find_jar as find_jar,
+    internals_d_isWritable as isWritable,
+    is_writable$1 as is_writable,
+    internals_d_java as java,
+    internals_d_overridden as overridden,
+    internals_d_pyError as pyError,
+    internals_d_readInt as readInt,
+    internals_d_readNumber as readNumber,
+    internals_d_readStr as readStr,
+    read_int$1 as read_int,
+    read_number$1 as read_number,
+    read_str$1 as read_str,
+    internals_d_sliceBounds as sliceBounds,
+    slice_bounds$1 as slice_bounds,
+  };
+}
+
+declare class SeekableUnicodeStreamReader {
+    private text;
+    private pos;
+    private isClosed;
+    readonly encoding: string | null;
+    constructor(bytes: Uint8Array, encoding?: string | null, _errors?: string);
+    /** Open a text stream directly from a decoded string (e.g. zip entry data). */
+    static fromString(text: string, encoding?: string | null): SeekableUnicodeStreamReader;
+    private checkOpen;
+    get closed(): boolean;
+    /** Total decoded length — the effective end-of-file position for tell()/seek(). */
+    get charLength(): number;
+    tell(): number;
+    seek(offset: number, whence?: number): number;
+    read(size?: number): string;
+    readline(size?: number): string;
+    readlines(sizehint?: number): string[];
+    close(): void;
+    /** nltk.data.SeekableUnicodeStreamReader.char_seek_forward — advance by chars. */
+    char_seek_forward(offset: number): void;
+    discard_line(): void;
+    xreadlines(): string[];
+    /** Iterate remaining lines (for..of support used by reader code). */
+    [Symbol.iterator](): Generator<string>;
+}
+
+interface ZipInfo {
+    filename: string;
+    compress_type: number;
+    file_size: number;
+    compress_size: number;
+    header_offset: number;
+}
+declare class OpenOnDemandZipFile {
+    readonly filename: string;
+    private entries;
+    private loaded;
+    constructor(filename: string);
+    private ensureLoaded;
+    namelist(): string[];
+    getinfo(name: string): ZipInfo;
+    infolist(): ZipInfo[];
+    /** Read and decompress a member. Mirrors OpenOnDemandZipFile.read(). */
+    read(name: string): Uint8Array;
+    open(name: string): Uint8Array;
+}
+
+declare abstract class PathPointer {
+    /** Return a readable stream for this pointer. encoding null -> latin-1 text view. */
+    abstract open(encoding?: string | null): SeekableUnicodeStreamReader;
+    /** Size of the pointed-to file in bytes. */
+    abstract file_size(): number;
+    /** Path pointer to a path relative to this one. */
+    abstract join(fileid: string): PathPointer;
+    fileSize(): number;
+    toString(): string;
+}
+declare class FileSystemPathPointer extends PathPointer {
+    readonly path: string;
+    constructor(path: string);
+    open(encoding?: string | null): SeekableUnicodeStreamReader;
+    file_size(): number;
+    join(fileid: string): FileSystemPathPointer;
+    repr(): string;
+    toString(): string;
+}
+declare class BufferedGzipFile$1 {
+    constructor(..._a: unknown[]);
+}
+declare class GzipFileSystemPathPointer extends FileSystemPathPointer {
+    open(encoding?: string | null): SeekableUnicodeStreamReader;
+}
+declare class ZipFilePathPointer$1 extends PathPointer {
+    readonly entry: string;
+    readonly zipfile: OpenOnDemandZipFile;
+    constructor(zipfile: string | OpenOnDemandZipFile, entry?: string);
+    open(encoding?: string | null): SeekableUnicodeStreamReader;
+    file_size(): number;
+    join(fileid: string): ZipFilePathPointer$1;
+    repr(): string;
+    toString(): string;
+}
+
+/** nltk.data.LazyLoader — defers a load until first access (adapted: thunk-based). */
+declare class LazyLoader<T = unknown> {
+    private readonly loader;
+    private loaded;
+    private didLoad;
+    constructor(loader: () => T);
+    load(): T;
+}
+/** Default NLTK data search path (mirrors nltk.data.path ordering). */
+declare const dataPath: string[];
+/** nltk.data.find — locate a resource under the data path, dir or zip variant. */
+declare function find(resourceName: string, paths?: string[]): PathPointer;
+declare function retrieve$1(..._a: unknown[]): never;
+declare function load(..._a: unknown[]): never;
+declare function showCfg$1(..._a: unknown[]): never;
+declare function clearCache(): void;
+declare const clear_cache: typeof clearCache;
+/** nltk.data.open_datafile — path.join(file_name).open(encoding). */
+declare function openDatafile(path: PathPointer, fileName?: string, encoding?: string | null): SeekableUnicodeStreamReader;
+declare const open_datafile$1: typeof openDatafile;
+/** nltk.data.split_resource_url — "<protocol>:<path>" splitter. */
+declare function splitResourceUrl(resourceUrl: string): [string, string];
+declare const split_resource_url: typeof splitResourceUrl;
+/** nltk.data.normalize_resource_name. */
+declare function normalizeResourceName(resourceName: string, allowRelative?: boolean, relativePath?: string): string;
+declare const normalize_resource_name: typeof normalizeResourceName;
+/** nltk.data.normalize_resource_url — nltk:/file:/external protocol normalization. */
+declare function normalizeResourceUrl(resourceUrl: string): string;
+declare const normalize_resource_url: typeof normalizeResourceUrl;
+/** nltk.data.gzip_open_unicode — returns the decoded text (JS adaptation of the text stream). */
+declare function gzipOpenUnicode(filename: string, _mode?: string, _compresslevel?: number, encoding?: string, fileobj?: Uint8Array, _errors?: string, _newline?: string): string;
+declare const gzip_open_unicode: typeof gzipOpenUnicode;
+
+type data_d_FileSystemPathPointer = FileSystemPathPointer;
+declare const data_d_FileSystemPathPointer: typeof FileSystemPathPointer;
+type data_d_GzipFileSystemPathPointer = GzipFileSystemPathPointer;
+declare const data_d_GzipFileSystemPathPointer: typeof GzipFileSystemPathPointer;
+type data_d_LazyLoader<T = unknown> = LazyLoader<T>;
+declare const data_d_LazyLoader: typeof LazyLoader;
+type data_d_OpenOnDemandZipFile = OpenOnDemandZipFile;
+declare const data_d_OpenOnDemandZipFile: typeof OpenOnDemandZipFile;
+type data_d_PathPointer = PathPointer;
+declare const data_d_PathPointer: typeof PathPointer;
+type data_d_SeekableUnicodeStreamReader = SeekableUnicodeStreamReader;
+declare const data_d_SeekableUnicodeStreamReader: typeof SeekableUnicodeStreamReader;
+declare const data_d_clearCache: typeof clearCache;
+declare const data_d_clear_cache: typeof clear_cache;
+declare const data_d_dataPath: typeof dataPath;
+declare const data_d_find: typeof find;
+declare const data_d_gzipOpenUnicode: typeof gzipOpenUnicode;
+declare const data_d_gzip_open_unicode: typeof gzip_open_unicode;
+declare const data_d_load: typeof load;
+declare const data_d_normalizeResourceName: typeof normalizeResourceName;
+declare const data_d_normalizeResourceUrl: typeof normalizeResourceUrl;
+declare const data_d_normalize_resource_name: typeof normalize_resource_name;
+declare const data_d_normalize_resource_url: typeof normalize_resource_url;
+declare const data_d_openDatafile: typeof openDatafile;
+declare const data_d_splitResourceUrl: typeof splitResourceUrl;
+declare const data_d_split_resource_url: typeof split_resource_url;
+declare namespace data_d {
+  export {
+    BufferedGzipFile$1 as BufferedGzipFile,
+    data_d_FileSystemPathPointer as FileSystemPathPointer,
+    data_d_GzipFileSystemPathPointer as GzipFileSystemPathPointer,
+    data_d_LazyLoader as LazyLoader,
+    data_d_OpenOnDemandZipFile as OpenOnDemandZipFile,
+    data_d_PathPointer as PathPointer,
+    data_d_SeekableUnicodeStreamReader as SeekableUnicodeStreamReader,
+    ZipFilePathPointer$1 as ZipFilePathPointer,
+    data_d_clearCache as clearCache,
+    data_d_clear_cache as clear_cache,
+    data_d_dataPath as dataPath,
+    data_d_find as find,
+    data_d_gzipOpenUnicode as gzipOpenUnicode,
+    data_d_gzip_open_unicode as gzip_open_unicode,
+    data_d_load as load,
+    data_d_normalizeResourceName as normalizeResourceName,
+    data_d_normalizeResourceUrl as normalizeResourceUrl,
+    data_d_normalize_resource_name as normalize_resource_name,
+    data_d_normalize_resource_url as normalize_resource_url,
+    data_d_openDatafile as openDatafile,
+    open_datafile$1 as open_datafile,
+    retrieve$1 as retrieve,
+    showCfg$1 as showCfg,
+    data_d_splitResourceUrl as splitResourceUrl,
+    data_d_split_resource_url as split_resource_url,
+  };
 }
 
 /**
@@ -2862,6 +4627,8 @@ declare class StanfordParser {
     rawParse(_sentence: string): unknown;
 }
 declare class TransitionParser {
+    static readonly ARC_STANDARD = "arc-standard";
+    static readonly ARC_EAGER = "arc-eager";
     constructor(..._args: unknown[]);
     parse(_tokens: string[]): unknown;
 }
@@ -2880,6 +4647,17 @@ declare class Boxer {
 }
 declare function cooperStore(_semrep: unknown, _store?: unknown): unknown;
 declare function lfgParse(_sentence: string, _grammar?: unknown): unknown;
+/** Honest stub: CooperStore requires the cooper-storage chart machinery (nltk.parse.featurechart.InstantiateVarsChart). */
+declare class CooperStore {
+    constructor(..._args: unknown[]);
+}
+/** Honest stub: FStructure LFG parsing depends on the MaltParser dependency pipeline. */
+declare class FStructure {
+    static read_depgraph(..._args: unknown[]): never;
+    constructor(..._args: unknown[]);
+}
+/** Honest stub: parse_with_bindops requires a feature-grammar parser with binding ops. */
+declare function parse_with_bindops(..._args: unknown[]): never;
 
 declare function prettyPrint(tree: ParseTree): string;
 declare class TreePrettyPrinter {
@@ -2921,7 +4699,7 @@ declare class Paice {
 }
 
 declare const MAX_ALIGN_INPUT_LEN = 512;
-type Alignment = Array<[string, string]>;
+type Alignment$1 = Array<[string, string]>;
 /** Score of an indel of P. (Kondrak 2002: 54) */
 declare function sigmaSkip(_p: string): number;
 /** Score of a substitution of P with Q. (Kondrak 2002: 54) */
@@ -2938,7 +4716,7 @@ declare function diff(p: string, q: string, f: string): number;
  * @param epsilon adjusts the threshold score for near-optimal alignments (0..1)
  * @returns alignments of str1 and str2 — each is a list of [segment1, segment2]
  */
-declare function align(str1: string, str2: string, epsilon?: number): Alignment[];
+declare function align(str1: string, str2: string, epsilon?: number): Alignment$1[];
 
 /**
  * ARLSTem — light Arabic stemmer (port of nltk.stem.arlstem).
@@ -3053,6 +4831,10 @@ declare function exactMatch(hypothesis: string[], reference: string[]): [MatchPa
  */
 declare function stemMatch(hypothesis: string[], reference: string[], stemmer?: MeteorStemmer): [MatchPair[], EnumPair[], EnumPair[]];
 /**
+ * WordNet-synonym match. Requires a loaded WordNet instance.
+ */
+declare function wordnetsynMatch(hypothesis: string[], reference: string[], wordnet: WordNet): [MatchPair[], EnumPair[], EnumPair[]];
+/**
  * Align words via sequential exact → stem → WordNet-synonym matching.
  */
 declare function alignWords(hypothesis: string[], reference: string[], options?: {
@@ -3105,6 +4887,8 @@ declare function sentenceRibes(references: string[][], hypothesis: string[], alp
 /**
  * Corpus-level RIBES — macro-average of per-sentence best scores.
  */
+/** `ribes_score.position_of_ngram` — index of the first `ngram` occurrence, or -1. */
+declare function position_of_ngram(ngram: readonly string[], sentence: readonly string[]): number | null;
 declare function corpusRibes(listOfReferences: string[][][], hypotheses: string[][], alpha?: number, beta?: number): number;
 
 /**
@@ -3162,66 +4946,6 @@ declare class TextTilingTokenizer {
 }
 
 /**
- * TnT — Trigrams'n'Tags statistical POS tagger (port of nltk.tag.tnt).
- *
- * Second-order HMM per Brants (2000): deleted-interpolation transition
- * smoothing over tag unigram/bigram/trigram tiers, suffix-model unknown
- * words with successive abstraction + Bayesian inversion, beam-pruned
- * Viterbi decoding over (prev1, current) state pairs.
- */
-interface TntOptions {
-    /** Beam threshold N (Brants default 1000). */
-    N?: number;
-    /** Include capitalization in the tag state. */
-    C?: boolean;
-    /** External unknown-word tagger; overrides the built-in suffix model. */
-    unk?: {
-        tag(tokens: string[]): Array<[string, string]>;
-        train(data: unknown): void;
-    };
-}
-declare class TnT {
-    private readonly beamThreshold;
-    private readonly useCap;
-    private readonly unk?;
-    private unkTrained;
-    known: number;
-    unknown: number;
-    private tagUnigrams;
-    private tagBigrams;
-    private tagTrigrams;
-    private wordTagFreqs;
-    private lambda1;
-    private lambda2;
-    private lambda3;
-    private numTagTokens;
-    private transLogpUnigram;
-    private transLogpBigram;
-    private transLogpTrigram;
-    private tagPriorProbs;
-    private theta;
-    private suffixTrieByCap;
-    private candidateTagsCache;
-    constructor(options?: TntOptions);
-    /** Train on tagged sentences [[word, tag], ...]. Rebuilds the model from scratch. */
-    train(data: Array<Array<[string, string]>>): void;
-    private log2BeamThreshold;
-    private computeLambda;
-    private buildTransitionLogpCache;
-    private buildSuffixModel;
-    /** Brants's suffix-model scores for an unseen word (Bayes-inverted). */
-    unknownTagScores(word: string): Map<string, number>;
-    /**
-     * Tag one tokenized sentence.
-     */
-    tag(tokens: string[]): Array<[string, string]>;
-    /** Tag a list of sentences. */
-    tagdata(data: string[][]): Array<Array<[string, string]>>;
-    private tagWord;
-    private expandStates;
-}
-
-/**
  * Sonority-sequencing syllabifier (port of nltk.tokenize.sonority_sequencing.SyllableTokenizer).
  *
  * Splits a word into syllables via the Sonority Sequencing Principle.
@@ -3249,9 +4973,76 @@ declare const LanguageIndependent: {
     readonly AVERAGE_CHARACTERS: 1;
     readonly VARIANCE_CHARACTERS: 6.8;
 };
+declare function erfcc(x: number): number;
+declare function norm_cdf(x: number): number;
+declare function norm_logsf(x: number): number;
+/** `gale_church.split_at` — split a token stream on a delimiter value. */
+declare function split_at<T>(it: Iterable<T>, splitValue: T): Generator<T[]>;
+/** `gale_church.parse_token_stream` — token stream → per-block sentence-length lists. */
+declare function parse_token_stream(stream: Iterable<string>, soft_delimiter: string, hard_delimiter: string): number[][];
 declare function alignLogProb(i: number, j: number, sourceSentsLens: number[], targetSentsLens: number[], alignment: [number, number], params?: typeof LanguageIndependent): number;
 declare function trace(backlinks: Map<string, [number, number] | null>, sourceSentsLens: number[], targetSentsLens: number[]): Array<[number, number]>;
 declare function alignBlocks(sourceSentsLens: number[], targetSentsLens: number[], params?: typeof LanguageIndependent): Array<[number, number]>;
+/** `gale_church.align_texts` — align block-segmented texts; per-block `align_blocks`. */
+declare function align_texts(source_blocks: number[][], target_blocks: number[][], params?: typeof LanguageIndependent): Array<[number, number]>[];
+declare const splitAt: typeof split_at;
+declare const parseTokenStream: typeof parse_token_stream;
+declare const alignTexts: typeof align_texts;
+declare const align_blocks: typeof alignBlocks;
+declare const align_log_prob: typeof alignLogProb;
+
+/** `nltk.translate.api.Alignment` — a set of (i, j, ...) alignment tuples. */
+declare class Alignment implements Iterable<number[]> {
+    private readonly pairs;
+    private _index;
+    private readonly _len;
+    constructor(pairs: Iterable<readonly number[]>);
+    static fromstring(s: string): Alignment;
+    /** `a[key]` — alignments originating from left index `key`. */
+    get(key: number): number[][];
+    invert(): Alignment;
+    range(positions?: Iterable<number>): number[];
+    get size(): number;
+    issubset(other: Alignment): boolean;
+    intersection(other: Alignment): Alignment;
+    [Symbol.iterator](): Iterator<number[]>;
+    repr(): string;
+    toString(): string;
+    private buildIndex;
+}
+/** `nltk.translate.api.AlignedSent` — two sentences plus their `Alignment`. */
+declare class AlignedSent {
+    private readonly _words;
+    private readonly _mots;
+    readonly alignment: Alignment;
+    constructor(_words: readonly string[], _mots: readonly string[], alignment?: Alignment);
+    words(): readonly string[];
+    mots(): readonly string[];
+    invert(): AlignedSent;
+    repr(): string;
+    toString(): string;
+    /** Graphviz dot output; the SVG path requires the external `dot` binary. */
+    toDot(): string;
+    reprSvg(): string;
+}
+
+/** `nltk.translate.metrics.alignment_error_rate` — AER of `hypothesis` vs gold `reference`. */
+declare function alignment_error_rate(reference: Alignment, hypothesis: Alignment, possible?: Alignment): number;
+
+/**
+ * LEPOR score (port of nltk.translate.lepor).
+ *
+ * Han et al. (2012) "LEPOR: A Robust Evaluation Metric for Machine Translation
+ * with Augmented Factors"  https://aclanthology.org/C12-2044
+ * All 6 functions are a verbatim port of the NLTK implementation.
+ */
+declare function lengthPenalty(reference: string[], hypothesis: string[]): number;
+declare function alignment(refTokens: string[], hypTokens: string[]): number[];
+declare function ngramPositionalPenalty(refTokens: string[], hypTokens: string[]): [number, number];
+declare function harmonic(matchCount: number, referenceLength: number, hypothesisLength: number, alpha: number, beta: number): number;
+type TokenizerFn = (s: string) => string[];
+declare function sentenceLepor(references: Array<string | string[]>, hypothesis: string | string[], alpha?: number, beta?: number, tokenizer?: TokenizerFn | null): number[];
+declare function corpusLepor(references: Array<Array<string | string[]>>, hypotheses: Array<string | string[]>, alpha?: number, beta?: number, tokenizer?: TokenizerFn | null): number[][];
 
 /**
  * Phrase extraction from word alignments (port of nltk.translate.phrase_based).
@@ -3260,6 +5051,253 @@ declare const MAX_PHRASE_EXTRACTION_DEFAULT_LEN = 100;
 type PhrasePair = [[number, number], [number, number], string, string];
 declare function phraseExtraction(srctext: string, trgtext: string, alignment: Array<[number, number]>, maxPhraseLength?: number): PhrasePair[];
 declare function extract(srctext: string, trgtext: string, alignment: Array<[number, number]>, maxPhraseLength?: number): PhrasePair[];
+
+/**
+ * Stack decoder (port of nltk.translate.stack_decoder).
+ *
+ * Phrase-based stack decoder for machine translation — verbatim port of
+ * NLTK's stack_decoder.py (515 LOC). Includes PhraseTable + helpers so
+ * the decoder is self-contained without a separate api import.
+ */
+/** `nltk.translate.api.PhraseTableEntry` — namedtuple(trg_phrase, log_prob). */
+declare class PhraseTableEntry {
+    readonly trgPhrase: readonly string[];
+    readonly logProb: number;
+    constructor(trgPhrase: readonly string[], logProb: number);
+    static _make(it: readonly [readonly string[], number]): PhraseTableEntry;
+    _asdict(): {
+        trgPhrase: readonly string[];
+        logProb: number;
+    };
+    _replace(opts: {
+        trgPhrase?: readonly string[];
+        logProb?: number;
+    }): PhraseTableEntry;
+    get 0(): readonly string[];
+    get 1(): number;
+    count(): number;
+    index(): number;
+    toString(): string;
+}
+declare class PhraseTable {
+    private readonly srcPhrases;
+    private key;
+    translationsFor(srcPhrase: readonly string[]): PhraseTableEntry[];
+    translations_for: (srcPhrase: readonly string[]) => PhraseTableEntry[];
+    add(srcPhrase: readonly string[], trgPhrase: readonly string[], logProb: number): void;
+    has(srcPhrase: readonly string[]): boolean;
+    contains: (srcPhrase: readonly string[]) => boolean;
+}
+interface StackDecoderLanguageModel {
+    probability(phrase: readonly string[]): number;
+    probabilityChange(hypothesis: Hypothesis, phrase: readonly string[]): number;
+}
+declare class Hypothesis {
+    rawScore: number;
+    srcPhraseSpan: readonly [number, number] | readonly [];
+    trgPhrase: readonly string[];
+    previous: Hypothesis | null;
+    futureScore: number;
+    constructor(opts?: {
+        rawScore?: number;
+        srcPhraseSpan?: readonly [number, number] | readonly [];
+        trgPhrase?: readonly string[];
+        previous?: Hypothesis | null;
+        futureScore?: number;
+    });
+    score(): number;
+    translatedPositions(): number[];
+    totalTranslatedWords(): number;
+    total_translated_words: () => number;
+    translated_positions: () => number[];
+    untranslatedSpans(sentenceLength: number): Array<[number, number]>;
+    untranslated_spans: (sentenceLength: number) => Array<[number, number]>;
+    translationSoFar(): string[];
+    translation_so_far: () => string[];
+    private buildTranslation;
+    score_method: () => number;
+}
+declare class StackDecoder {
+    phraseTable: PhraseTable;
+    languageModel: StackDecoderLanguageModel;
+    wordPenalty: number;
+    beamThreshold: number;
+    stackSize: number;
+    private _distortionFactor;
+    private _logDistortionFactor;
+    constructor(phraseTable: PhraseTable, languageModel: StackDecoderLanguageModel);
+    get distortionFactor(): number;
+    set distortionFactor(d: number);
+    get distortion_factor(): number;
+    set distortion_factor(d: number);
+    private computeLogDistortion;
+    translate(srcSentence: string[]): string[];
+    findAllSrcPhrases(srcSentence: readonly string[]): number[][];
+    find_all_src_phrases: (srcSentence: readonly string[]) => number[][];
+    computeFutureScores(srcSentence: readonly string[]): Map<number, Map<number, number>>;
+    compute_future_scores: (srcSentence: readonly string[]) => Map<number, Map<number, number>>;
+    futureScore(hypothesis: Hypothesis, futureScoreTable: Map<number, Map<number, number>>, sentenceLength: number): number;
+    future_score: (hypothesis: Hypothesis, futureScoreTable: Map<number, Map<number, number>>, sentenceLength: number) => number;
+    expansionScore(hypothesis: Hypothesis, translationOption: PhraseTableEntry, srcPhraseSpan: readonly [number, number]): number;
+    expansion_score: (hypothesis: Hypothesis, translationOption: PhraseTableEntry, srcPhraseSpan: readonly [number, number]) => number;
+    distortionScore(hypothesis: Hypothesis, nextSpan: readonly [number, number]): number;
+    distortion_score: (hypothesis: Hypothesis, nextSpan: readonly [number, number]) => number;
+    static validPhrases(allPhrasesFrom: number[][], hypothesis: Hypothesis): Array<[number, number]>;
+    static valid_phrases: typeof StackDecoder.validPhrases;
+}
+
+declare class WordNetError extends Error {
+    constructor(message: string);
+}
+/** `{n|v: {0: rootCount, offset: count}}` as returned by `WordNetICCorpusReader.ic`. */
+type WordNetIcDict = Record<string, Record<number, number>>;
+/** NLTK `Lemma` — a specific morphological sense of a word inside a synset. */
+declare class Lemma {
+    private readonly reader;
+    private readonly _synset;
+    private readonly _name;
+    private readonly _senseKey;
+    constructor(reader: WordNetReader, _synset: Synset, _name: string, _senseKey: string);
+    name(): string;
+    synset(): Synset;
+    key(): string;
+    lang(): string;
+    count(): number;
+    antonyms(): Lemma[];
+    derivationally_related_forms(): Lemma[];
+    pertainyms(): Lemma[];
+    frame_ids(): number[];
+    frame_strings(): string[];
+    syntactic_marker(): null;
+    hypernyms(): Synset[];
+    instance_hypernyms(): Synset[];
+    hyponyms(): Synset[];
+    instance_hyponyms(): Synset[];
+    member_holonyms(): Synset[];
+    substance_holonyms(): Synset[];
+    part_holonyms(): Synset[];
+    member_meronyms(): Synset[];
+    substance_meronyms(): Synset[];
+    part_meronyms(): Synset[];
+    topic_domains(): Synset[];
+    usage_domains(): Synset[];
+    region_domains(): Synset[];
+    in_topic_domains(): Synset[];
+    in_usage_domains(): Synset[];
+    in_region_domains(): Synset[];
+    similar_tos(): Synset[];
+    also_sees(): Synset[];
+    verb_groups(): Synset[];
+    attributes(): Synset[];
+    entailments(): Synset[];
+    causes(): Synset[];
+    equals(other: Lemma): boolean;
+    toString(): string;
+}
+declare class Synset {
+    private readonly reader;
+    readonly row: WordNetSynset;
+    protected _name: string | null;
+    constructor(reader: WordNetReader, row: WordNetSynset);
+    name(): string;
+    pos(): string;
+    offset(): number;
+    lexname(): string;
+    definition(): string;
+    examples(): string[];
+    lemma_names(): string[];
+    lemmas(): Lemma[];
+    private related;
+    hypernyms(): Synset[];
+    instance_hypernyms(): Synset[];
+    hyponyms(): Synset[];
+    instance_hyponyms(): Synset[];
+    member_holonyms(): Synset[];
+    substance_holonyms(): Synset[];
+    part_holonyms(): Synset[];
+    member_meronyms(): Synset[];
+    substance_meronyms(): Synset[];
+    part_meronyms(): Synset[];
+    topic_domains(): Synset[];
+    in_topic_domains(): Synset[];
+    usage_domains(): Synset[];
+    in_usage_domains(): Synset[];
+    region_domains(): Synset[];
+    in_region_domains(): Synset[];
+    similar_tos(): Synset[];
+    also_sees(): Synset[];
+    verb_groups(): Synset[];
+    attributes(): Synset[];
+    entailments(): Synset[];
+    causes(): Synset[];
+    frame_ids(): number[];
+    frame_strings(): string[];
+    closure<T>(rel: (s: Synset) => Iterable<T>, depth?: number): T[];
+    hypernym_paths(): Synset[][];
+    root_hypernyms(): Synset[];
+    common_hypernyms(other: Synset): Synset[];
+    lowest_common_hypernyms(other: Synset, simulateRoot?: boolean, useMinDepth?: boolean): Synset[];
+    hypernymDistances(distance?: number): Array<[Synset, number]>;
+    hypernym_distances(distance?: number, simulateRoot?: boolean): Set<[Synset, number]>;
+    max_depth(): number;
+    min_depth(): number;
+    shortest_path_distance(other: Synset, simulateRoot?: boolean): number | null;
+    private _distanceMap;
+    private _shortestHypernymPath;
+    path_similarity(other: Synset, _verbose?: boolean, simulateRoot?: boolean): number | null;
+    lch_similarity(other: Synset, _verbose?: boolean, simulateRoot?: boolean): number | null;
+    wup_similarity(other: Synset, _verbose?: boolean, simulateRoot?: boolean): number | null;
+    private needsRoot;
+    res_similarity(other: Synset, ic: WordNetIcDict, verbose?: boolean): number;
+    jcn_similarity(other: Synset, ic: WordNetIcDict, verbose?: boolean): number;
+    lin_similarity(other: Synset, ic: WordNetIcDict, verbose?: boolean): number;
+    tree(rel?: (s: Synset) => Synset[], cutmark?: number): unknown;
+    equals(other: Synset): boolean;
+    lt(other: Synset): boolean;
+    toString(): string;
+}
+declare class WordNetReader {
+    private readonly wn;
+    private readonly synsetCache;
+    private readonly senseNumbers;
+    private readonly lexnames;
+    private readonly depthCache;
+    private _maxDepth;
+    constructor(wn: WordNet);
+    private computeSenseNumbers;
+    senseNumber(synset: Synset): number;
+    senseNumberFor(synset: Synset, lemma: string): number;
+    lexname(synset: Synset): string;
+    depthOf(synset: Synset, which: "max" | "min"): number;
+    synset(idOrName: string): Synset | null;
+    private rowByName;
+    lemma(synset: Synset, name: string): Lemma;
+    private lexfileId;
+    lemmaFromKey(key: string): Lemma | null;
+    synsetsByIds(ids: string[]): Synset[];
+    synsets(lemma: string, pos?: WordNetPos): Synset[];
+    all_synsets(pos?: WordNetPos): Synset[];
+    lemmaFromName(lemmaName: string, synset: Synset): Lemma;
+    lemmas(lemma: string, pos?: WordNetPos): Lemma[];
+    all_lemma_names(pos?: WordNetPos): string[];
+    maxDepth(pos: WordNetPos): number;
+}
+declare function wordnetReader(wn: WordNet): WordNetReader;
+declare function information_content(synset: Synset, ic: WordNetIcDict): number;
+/** `nltk.corpus.reader.wordnet` module-level similarity delegators. */
+declare function jcn_similarity(synset1: Synset, synset2: Synset, ic: WordNetIcDict, verbose?: boolean): number;
+declare function lin_similarity(synset1: Synset, synset2: Synset, ic: WordNetIcDict, verbose?: boolean): number;
+declare function path_similarity(synset1: Synset, synset2: Synset, verbose?: boolean, simulateRoot?: boolean): number | null;
+declare function lch_similarity(synset1: Synset, synset2: Synset, verbose?: boolean, simulateRoot?: boolean): number | null;
+declare function wup_similarity(synset1: Synset, synset2: Synset, verbose?: boolean, simulateRoot?: boolean): number | null;
+declare function res_similarity(synset1: Synset, synset2: Synset, ic: WordNetIcDict, verbose?: boolean): number;
+/** `WordNetICCorpusReader` — loads `ic-*.dat` information-content files. */
+declare class WordNetICCorpusReader {
+    private readonly root;
+    readonly fileids: string | readonly string[];
+    constructor(root: string, fileids?: string | readonly string[]);
+    ic(icfile: string): WordNetIcDict;
+}
 
 /**
  * POS tagset mapping (port of nltk.tag.mapping).
@@ -3285,6 +5323,26 @@ type FeatureTreeLike = {
 };
 declare function parseSents(inputs: string[], grammar: unknown, _trace?: number): FeatureTreeLike[][];
 declare function rootSemrep(tree: FeatureTreeLike, semkey?: string): unknown;
+declare const parse_sents: typeof parseSents;
+declare const root_semrep: typeof rootSemrep;
+/** Port of nltk.sem.util.read_sents: read non-blank, non-comment lines from a file. */
+declare function read_sents(filename: string, encoding?: string): string[];
+declare const readSents: typeof read_sents;
+/** Port of nltk.sem.util.interpret_sents (partial: depends on the stub parseSents). */
+declare function interpret_sents(inputs: string[], grammar: unknown, semkey?: string, trace?: number): Array<Array<[FeatureTreeLike, unknown]>>;
+declare const interpretSents: typeof interpret_sents;
+/** Port of nltk.sem.util.evaluate_sents (partial: depends on the stub parseSents). */
+declare function evaluate_sents(inputs: string[], grammar: unknown, model: Model, assignment: Assignment, trace?: number): Array<Array<[FeatureTreeLike, unknown, unknown]>>;
+declare const evaluateSents: typeof evaluate_sents;
+/** Port of nltk.sem.util.demo_model0: build NLTK's demo model + assignment. */
+declare function demo_model0(): {
+    m0: Model;
+    g0: Assignment;
+};
+declare const demoModel0: typeof demo_model0;
+/** Port of nltk.sem.util.demo_legacy_grammar (lowercase 'sem' feature check). */
+declare function demo_legacy_grammar(): Array<[FeatureTreeLike, unknown]>;
+declare const demoLegacyGrammar: typeof demo_legacy_grammar;
 
 /**
  * TBL error analysis (port of nltk.tbl.erroranalysis).
@@ -3292,27 +5350,71 @@ declare function rootSemrep(tree: FeatureTreeLike, semkey?: string): unknown;
  * Returns a human-readable list of tagging errors comparing a gold corpus
  * to a tagger's output.
  */
-type TaggedToken = [word: string, tag: string];
-type TaggedSentence = TaggedToken[];
+type TaggedToken$1 = readonly [word: string, tag: string];
 /**
  * Returns lines describing every tagging mismatch, plus a header line.
  * Port of nltk.tbl.erroranalysis.error_list.
  */
-declare function errorList(trainSents: TaggedSentence[], testSents: TaggedSentence[]): string[];
+declare function errorList(trainSents: ReadonlyArray<readonly TaggedToken$1[]>, testSents: ReadonlyArray<readonly TaggedToken$1[]>): string[];
 
 /**
  * TBL demo helpers (port of nltk.tbl.demo).
  *
- * NLTK's demo trains a Brill tagger on treebank; we expose the same entry
- * points as API stubs that delegate to BrillTaggerTrainer when available,
- * so the module counts as covered for parity without requiring the corpus.
+ * `postag` is a faithful port of the demo driver: it prepares the data split,
+ * trains a UnigramTagger baseline over a RegexpTagger backoff, runs
+ * BrillTaggerTrainer and reports accuracy. Corpus-bound options (treebank
+ * data, pickle caching/serialization, matplotlib learning curves, incremental
+ * stats) throw an unsupported error rather than silently changing behavior.
  */
 
 type DemoTaggedSentence = [string, string][];
-declare function demo$7(options?: {
+/** nltk.tbl.demo.corpus_size — (num sequences, total tokens). */
+declare function corpusSize(seqs: ReadonlyArray<readonly unknown[]>): [number, number];
+
+interface PostagOptions {
+    templates?: readonly Template[];
+    taggedData?: readonly GoldSentence[];
+    numSents?: number;
+    maxRules?: number;
+    minScore?: number;
+    minAcc?: number | null;
+    train?: number;
+    trace?: number;
+    randomize?: boolean;
     ruleformat?: string;
-    templates?: unknown[];
-}): DemoTaggedSentence[][];
+    incrementalStats?: boolean;
+    templateStats?: boolean;
+    errorOutput?: string | null;
+    serializeOutput?: string | null;
+    learningCurveOutput?: string | null;
+    learningCurveTake?: number;
+    baselineBackoffTagger?: SequentialBackoffTagger | null;
+    separateBaselineData?: boolean;
+    cacheBaselineTagger?: string | null;
+}
+interface PostagResult {
+    tagger: BrillTagger;
+    baselineAccuracy: number | null;
+    brillAccuracy: number | null;
+    taggedTest: DemoTaggedSentence[];
+}
+/** nltk.tbl.demo.postag — Brill tagger demonstration driver. */
+declare function postag(options?: PostagOptions): PostagResult;
+/** nltk.tbl.demo.demo* — each runs postag with a fixed option set. They
+ * still require tagged_data/treebank, so the unconfigured call throws the
+ * same unsupported error as postag. */
+declare function demo$e(options?: PostagOptions): PostagResult;
+declare function demoReprRuleFormat(options?: PostagOptions): PostagResult;
+declare function demoStrRuleFormat(options?: PostagOptions): PostagResult;
+declare function demoVerboseRuleFormat(options?: PostagOptions): PostagResult;
+declare function demoMultipositionFeature(options?: PostagOptions): PostagResult;
+declare function demoMultifeatureTemplate(options?: PostagOptions): PostagResult;
+declare function demoGeneratedTemplates(options?: PostagOptions): PostagResult;
+declare function demoTemplateStatistics(options?: PostagOptions): PostagResult;
+declare function demoErrorAnalysis(options?: PostagOptions): PostagResult;
+declare function demoSerializeTagger(options?: PostagOptions): PostagResult;
+declare function demoHighAccuracyRules(options?: PostagOptions): PostagResult;
+declare function demoLearningCurve(options?: PostagOptions): PostagResult;
 
 /**
  * NIST tokenizer (port of nltk.tokenize.nist.NISTTokenizer).
@@ -3443,117 +5545,59 @@ declare class SentimentAnalyzer {
 }
 
 /**
- * LEPOR score (port of nltk.translate.lepor).
- *
- * Han et al. (2012) "LEPOR: A Robust Evaluation Metric for Machine Translation
- * with Augmented Factors"  https://aclanthology.org/C12-2044
- * All 6 functions are a verbatim port of the NLTK implementation.
+ * Port of nltk.sem.relextract — Relation Extraction (539 LOC).
+ * Pure algorithmic, no external corpora deps at runtime.
+ * APIs are provided in both snake_case (faithful to NLTK) and camelCase.
  */
-declare function lengthPenalty(reference: string[], hypothesis: string[]): number;
-declare function alignment(refTokens: string[], hypTokens: string[]): number[];
-declare function ngramPositionalPenalty(refTokens: string[], hypTokens: string[]): [number, number];
-type TokenizerFn = (s: string) => string[];
-declare function sentenceLepor(references: Array<string | string[]>, hypothesis: string | string[], alpha?: number, beta?: number, tokenizer?: TokenizerFn | null): number[];
-declare function corpusLepor(references: Array<Array<string | string[]>>, hypotheses: Array<string | string[]>, alpha?: number, beta?: number, tokenizer?: TokenizerFn | null): number[][];
-
-/**
- * Stack decoder (port of nltk.translate.stack_decoder).
- *
- * Phrase-based stack decoder for machine translation — verbatim port of
- * NLTK's stack_decoder.py (515 LOC). Includes PhraseTable + helpers so
- * the decoder is self-contained without a separate api import.
- */
-type PhraseTableEntry = {
-    trgPhrase: string[];
-    logProb: number;
-};
-declare class PhraseTable {
-    private readonly srcPhrases;
-    private key;
-    translationsFor(srcPhrase: readonly string[]): PhraseTableEntry[];
-    translations_for: (srcPhrase: readonly string[]) => PhraseTableEntry[];
-    add(srcPhrase: readonly string[], trgPhrase: readonly string[], logProb: number): void;
-    has(srcPhrase: readonly string[]): boolean;
-    contains: (srcPhrase: readonly string[]) => boolean;
-}
-interface StackDecoderLanguageModel {
-    probability(phrase: readonly string[]): number;
-    probabilityChange(hypothesis: Hypothesis, phrase: readonly string[]): number;
-}
-declare class Hypothesis {
-    rawScore: number;
-    srcPhraseSpan: readonly [number, number] | readonly [];
-    trgPhrase: readonly string[];
-    previous: Hypothesis | null;
-    futureScore: number;
-    constructor(opts?: {
-        rawScore?: number;
-        srcPhraseSpan?: readonly [number, number] | readonly [];
-        trgPhrase?: readonly string[];
-        previous?: Hypothesis | null;
-        futureScore?: number;
-    });
-    score(): number;
-    translatedPositions(): number[];
-    totalTranslatedWords(): number;
-    total_translated_words: () => number;
-    translated_positions: () => number[];
-    untranslatedSpans(sentenceLength: number): Array<[number, number]>;
-    untranslated_spans: (sentenceLength: number) => Array<[number, number]>;
-    translationSoFar(): string[];
-    translation_so_far: () => string[];
-    private buildTranslation;
-    score_method: () => number;
-}
-declare class StackDecoder {
-    phraseTable: PhraseTable;
-    languageModel: StackDecoderLanguageModel;
-    wordPenalty: number;
-    beamThreshold: number;
-    stackSize: number;
-    private _distortionFactor;
-    private _logDistortionFactor;
-    constructor(phraseTable: PhraseTable, languageModel: StackDecoderLanguageModel);
-    get distortionFactor(): number;
-    set distortionFactor(d: number);
-    get distortion_factor(): number;
-    set distortion_factor(d: number);
-    private computeLogDistortion;
-    translate(srcSentence: string[]): string[];
-    findAllSrcPhrases(srcSentence: readonly string[]): number[][];
-    find_all_src_phrases: (srcSentence: readonly string[]) => number[][];
-    computeFutureScores(srcSentence: readonly string[]): Map<number, Map<number, number>>;
-    compute_future_scores: (srcSentence: readonly string[]) => Map<number, Map<number, number>>;
-    futureScore(hypothesis: Hypothesis, futureScoreTable: Map<number, Map<number, number>>, sentenceLength: number): number;
-    future_score: (hypothesis: Hypothesis, futureScoreTable: Map<number, Map<number, number>>, sentenceLength: number) => number;
-    expansionScore(hypothesis: Hypothesis, translationOption: PhraseTableEntry, srcPhraseSpan: readonly [number, number]): number;
-    expansion_score: (hypothesis: Hypothesis, translationOption: PhraseTableEntry, srcPhraseSpan: readonly [number, number]) => number;
-    distortionScore(hypothesis: Hypothesis, nextSpan: readonly [number, number]): number;
-    distortion_score: (hypothesis: Hypothesis, nextSpan: readonly [number, number]) => number;
-    static validPhrases(allPhrasesFrom: number[][], hypothesis: Hypothesis): Array<[number, number]>;
-    static valid_phrases: typeof StackDecoder.validPhrases;
-}
-
+declare const NE_CLASSES: Record<string, string[]>;
+declare const short2long: Record<string, string>;
+declare const long2short: Record<string, string>;
+declare function class_abbrev(type: string): string;
 type TaggedWord = [string, string];
 type JoinItem = string | TaggedWord;
+declare function descape_entity(m: RegExpMatchArray): string;
+declare function list2sym(lst: JoinItem[]): string;
 interface NeTree {
     label(): string;
     leaves(): JoinItem[];
 }
-type ChunkTree = Array<string | TaggedWord | NeTree>;
+type ChunkTree$1 = Array<string | TaggedWord | NeTree>;
+type SemiRel = [JoinItem[], NeTree | null];
 type RelDict = Record<string, string>;
 type IeDocument = {
-    text: ChunkTree;
-    headline: ChunkTree;
+    text: ChunkTree$1;
+    headline: ChunkTree$1;
     docno?: string;
 };
-declare function extractRels(subjClass: string, objClass: string, doc: ChunkTree | IeDocument, opts?: {
+declare function tree2semi_rel(tree: ChunkTree$1): SemiRel[];
+declare function semi_rel2reldict(pairs: SemiRel[], window?: number, trace?: boolean): RelDict[];
+declare function extractRels(subjClass: string, objClass: string, doc: ChunkTree$1 | IeDocument, opts?: {
     corpus?: string;
     pattern?: RegExp;
     window?: number;
 }): RelDict[];
+declare function rtuple(reldict: RelDict, lcon?: boolean, rcon?: boolean): string;
 declare function clause(reldict: RelDict, relsym: string): string;
+declare function in_demo(_trace?: number, _sql?: boolean): void;
+declare function roles_demo(_trace?: number): void;
+declare function ieer_headlines(): void;
+declare function conllned(_trace?: number): void;
+declare function conllesp(): void;
+declare function ne_chunked(): void;
 
+/**
+ * Port of nltk.sem.linearlogic — linear logic fragment used by glue semantics.
+ *
+ * Mirrors NLTK's sem/linearlogic.py: AtomicExpression (Constant/Variable),
+ * ImpExpression, ApplicationExpression, BindingDict, and a simple parser.
+ * Used internally by sem_glue; also re-exported for completeness.
+ */
+declare class VariableBindingException extends Error {
+    constructor(msg: string);
+}
+declare class LinearLogicApplicationException extends Error {
+    constructor(msg: string);
+}
 declare class BindingDict$1 {
     /** key: variable name, value: AtomicExpression */
     d: Map<string, AtomicExpression>;
@@ -3648,6 +5692,20 @@ declare class GlueFormula$1 {
  * Port of nltk.sem.hole — Hole Semantics (Blackburn & Bos, Representation and Inference for Natural Language)
  */
 
+declare const Constants: {
+    ALL: string;
+    EXISTS: string;
+    NOT: string;
+    AND: string;
+    OR: string;
+    IMP: string;
+    IFF: string;
+    PRED: string;
+    LEQ: string;
+    HOLE: string;
+    LABEL: string;
+    MAP: Record<string, (a: unknown, b: unknown) => Expression$1>;
+};
 declare class Constraint {
     lhs: Expression$1;
     rhs: Expression$1;
@@ -3677,6 +5735,9 @@ declare class HoleSemantics {
     formulaTree(plugging: Map<string, Expression$1>): Expression$1;
     private _formulaTree;
 }
+declare function holeReadings(sentence: string, _grammarFilename?: string, _verbose?: boolean): Expression$1[];
+/** Helper to run hole semantics pipeline from a pre-parsed USR expression */
+declare function holeReadingsFromUsr(usr: Expression$1): Expression$1[];
 
 /**
  * Port of nltk.sem.glue + nltk.sem.linearlogic — Glue Semantics framework.
@@ -3687,7 +5748,7 @@ declare class HoleSemantics {
  * helpful errors with a corpus-missing message.
  */
 
-declare class Counter$1 {
+declare class Counter {
     private n;
     get(): number;
     peek(): number;
@@ -3705,7 +5766,7 @@ declare class GlueFormula {
     makeVariableExpression(name: string): AbstractVariableExpression;
     makeLambdaExpression(variable: Variable, term: Expression$1): Expression$1;
     lambdaAbstract(other: GlueFormula): GlueFormula;
-    compile(counter?: Counter$1): GlueFormula[];
+    compile(counter?: Counter): GlueFormula[];
     simplify(): GlueFormula;
     equals(other: GlueFormula): boolean;
     toString(): string;
@@ -3733,12 +5794,12 @@ declare class GlueDict {
     loadFromString(contents: string): void;
     hasSemtype(sem: string): boolean;
     getSemtype(sem: string): Map<string, string[][]> | undefined;
-    toGlueFormulaList(depgraph: DepGraphLike, node?: DepNode | null, counter?: Counter$1 | null, _verbose?: boolean): GlueFormula[];
-    lookup(node: DepNode, depgraph: DepGraphLike, counter: Counter$1): GlueFormula[];
+    toGlueFormulaList(depgraph: DepGraphLike, node?: DepNode | null, counter?: Counter | null, _verbose?: boolean): GlueFormula[];
+    lookup(node: DepNode, depgraph: DepGraphLike, counter: Counter): GlueFormula[];
     addMissingDependencies(node: DepNode, depgraph: DepGraphLike): void;
     private lookupSemtypeOption;
     getSemtypes(node: DepNode): string[];
-    getGlueFormulasFromSemtypeEntry(lookup: string[][], word: string, node: DepNode, depgraph: DepGraphLike, counter: Counter$1): GlueFormula[];
+    getGlueFormulasFromSemtypeEntry(lookup: string[][], word: string, node: DepNode, depgraph: DepGraphLike, counter: Counter): GlueFormula[];
     getMeaningFormula(generic: string, word: string): string;
     initializeLabels(expr: Expression, node: DepNode, depgraph: DepGraphLike, uniqueIndex: number): Expression;
     findLabelName(name: string, node: DepNode, depgraph: DepGraphLike, uniqueIndex: number): string;
@@ -3769,6 +5830,14 @@ declare class Glue {
     gflToCompiled(gfl: GlueFormula[]): GlueFormula[];
     getPosTagger(): unknown;
 }
+declare class DrtGlueFormula extends GlueFormula {
+    constructor(meaning: string | Expression$1, glue: string | Expression, indices?: Set<number>);
+    makeVariableExpression(name: string): AbstractVariableExpression;
+    makeLambdaExpression(variable: Variable, term: Expression$1): Expression$1;
+}
+declare class DrtGlueDict extends GlueDict {
+    getGlueFormulaFactory(): GlueFormulaFactory;
+}
 declare class DrtGlue extends Glue {
     constructor(opts?: {
         semtypeFile?: string;
@@ -3779,11 +5848,49 @@ declare class DrtGlue extends Glue {
     getGlueDict(): GlueDict;
 }
 
+interface RelationMeta {
+    rel_name: string;
+    closures: string[];
+    schema: string[];
+    filename: string;
+}
+declare const items: string[];
+declare const rels: RelationMeta[];
+declare class Concept {
+    prefLabel: string;
+    arity: number;
+    altLabels: string[];
+    closures: string[];
+    private _extension;
+    extension: Array<string | [string, string]>;
+    constructor(prefLabel: string, arity: number, altLabels?: string[], closures?: string[], extension?: Set<string | [string, string]>);
+    toString(): string;
+    augment(data: string | [string, string]): Set<string | [string, string]>;
+    private makeGraph;
+    private transclose;
+    private makePairs;
+    close(): void;
+    get innerExtension(): Set<string | [string, string]>;
+}
+declare function unaryConcept(label: string, subj: number, records: string[][]): Concept;
+declare function binaryConcept(label: string, closures: string[], subj: number, obj: number, records: string[][]): Concept;
+declare function clause2concepts(filename: string, relName: string, schema: string[], closures?: string[], records?: string[][]): Concept[];
+declare function processBundle(bundles: RelationMeta[], preloaded?: Map<string, string[][]>): Record<string, Concept>;
+declare function makeValuation(concepts: Concept[] | Record<string, Concept>, read?: boolean, lexicon?: boolean): Array<[string, Array<string | [string, string]>]> | Map<string, unknown>;
+declare function labelIndivs(valuation: Map<string, unknown>, lexicon?: boolean): Map<string, unknown>;
+declare function makeLex(symbols: Set<string> | string[]): string[];
+declare function concepts(itemsParam?: string | string[]): Concept[];
+declare function valDump(_rels: RelationMeta[], _db: string): never;
+declare function valLoad(_db: string): never;
+declare function cities2table(_filename: string, _relName: string, _dbname: string, _verbose?: boolean, _setup?: boolean): never;
+declare function sqlQuery(_dbname: string, _query: string): never;
 declare class Chat80CorpusReader {
     constructor(_root?: string, _files?: string[]);
     sqlQuery(_query: string): unknown[];
     query(_q: string): unknown[];
 }
+declare function sqlDemo(): void;
+declare function main(): void;
 
 /**
  * Port of nltk.sem.drt_glue_demo — GUI demo for Glue Semantics with DRT.
@@ -3796,7 +5903,7 @@ declare class Chat80CorpusReader {
  * alternative.
  */
 
-declare class DrsWidget {
+declare class DrsWidget$1 {
     drs: unknown;
     canvas: unknown;
     bbox: [number, number, number, number];
@@ -3813,7 +5920,7 @@ declare class DrtGlueDemo {
     curExample: number;
     readings: unknown[];
     drs: unknown;
-    drsWidget: DrsWidget | null;
+    drsWidget: DrsWidget$1 | null;
     error: unknown;
     showGrammar: boolean;
     size: number;
@@ -4068,6 +6175,10 @@ declare function quick<T>(a: T[]): number;
  * Port of nltk.misc.wordfinder — word search grid generator.
  */
 declare function revword(word: string): string;
+/** nltk.misc.wordfinder.step — signature keeps the unused x,y params verbatim. */
+declare function step(word: string, x: number, xf: (i: number) => number, y: number, yf: (i: number) => number, grid: string[][]): boolean;
+/** nltk.misc.wordfinder.check — direction 1-4 placement test; returns undefined (not false) for unknown dirs like nltk returns None. */
+declare function check(word: string, dir: number, x: number, y: number, grid: string[][], rows: number, cols: number): boolean | undefined;
 interface WordFinderResult {
     grid: string[][];
     used: string[];
@@ -4077,10 +6188,10 @@ declare function wordfinder(words: string[], rows?: number, cols?: number, attem
 declare function word_finder(): never;
 
 /**
- * Shim for nltk.misc.babelfish — Babelfish online translation (service discontinued).
- * Preserves API; throws helpful error. Port of nltk/misc/babelfish.py.
+ * Port of nltk.misc.babelfish — Babelfish online translation (service discontinued).
+ * nltk's babelize_shell() only prints a notice; ported verbatim.
  */
-declare function babelizeShell(): never;
+declare function babelizeShell(): void;
 /** Alias matching Python snake_case */
 declare const babelize_shell: typeof babelizeShell;
 
@@ -4113,54 +6224,89 @@ declare const unique_ancestors: typeof uniqueAncestors;
 declare function buildTgrepParser(_setParseActions?: boolean): never;
 declare const _build_tgrep_parser: typeof buildTgrepParser;
 
-/**
- * Shim for nltk.toolbox — Toolbox / Standard Format Marker (SFM) reader.
- *
- * Toolbox SFM parsing (StandardFormat, ToolboxData, ToolboxSettings, chunk_parse)
- * is file/encoding/corpus dependent. This shim preserves the public API with
- * typed signatures and throws a helpful error for corpus/file paths, while
- * providing a pure in-memory SFM string parser so programmatic use without
- * files can proceed.
- */
-interface SFMField {
-    marker: string;
-    value: string;
+/** Minimal xml.etree.ElementTree.Element substitute for toolbox trees. */
+declare class ToolboxElement {
+    tag: string;
+    text: string | null;
+    children: ToolboxElement[];
+    constructor(tag: string, text?: string | null, children?: ToolboxElement[]);
+    get length(): number;
+    get(i: number): ToolboxElement | undefined;
+    [Symbol.iterator](): Iterator<ToolboxElement>;
+    find(path: string): ToolboxElement | null;
+    findall(path: string): ToolboxElement[];
+    append(child: ToolboxElement): void;
+    getiterator(): ToolboxElement[];
+    set childrenReplace(children: ToolboxElement[]);
 }
-/** Pure helper: parse SFM string into fields without file I/O. */
-declare function parseSFMString(s: string): SFMField[];
+/** nltk.toolbox.StandardFormat — sequential reader for SFM files/strings. */
 declare class StandardFormat {
     protected _encoding: string | null;
-    protected _content: string | null;
-    constructor(filename?: string, encoding?: string);
-    open(sfmFile: string): void;
-    openString(s: string): void;
+    protected _file: Iterator<string> | null;
+    line_num: number;
+    constructor(filename?: string | PathPointer | null, encoding?: string | null);
+    open(sfm_file: string | PathPointer): void;
     open_string(s: string): void;
-    rawFields(): Iterable<[string, string]>;
-    fields(opts?: {
+    raw_fields(): Generator<[string | null, string]>;
+    fields(options?: {
         strip?: boolean;
         unwrap?: boolean;
-    }): Iterable<[string, string]>;
-    raw_fields(): Iterable<[string, string]>;
+        encoding?: string | null;
+        errors?: string;
+        unicode_fields?: string[] | null;
+    }): Generator<[string | null, string]>;
+    close(): void;
 }
+/** nltk.toolbox.ToolboxData — records all markers at the same level. */
 declare class ToolboxData extends StandardFormat {
-    parse(_grammar?: string, _kwargs?: Record<string, unknown>): unknown;
-    toSFMString(_tree?: unknown): string;
+    parse(options?: {
+        grammar?: string | null;
+        key?: string | null;
+    } & Record<string, unknown>): ToolboxElement;
+    private _record_parse;
+    private _tree2etree;
+    private _chunk_parse;
 }
+/** nltk.toolbox.to_sfm_string — tree → SFM text. */
+declare function to_sfm_string(tree: ToolboxElement, options?: {
+    encoding?: string | null;
+    errors?: string;
+    unicode_fields?: Set<string> | null;
+}): string;
+/** nltk.toolbox.ToolboxSettings — nested-block settings file. */
 declare class ToolboxSettings extends StandardFormat {
-    parse(_kwargs?: Record<string, unknown>): unknown;
+    constructor();
+    parse(kwargs?: Record<string, unknown>): ToolboxElement;
 }
-declare function toSFMString(_tree: unknown, _encoding?: string): string;
-declare const to_sfm_string: typeof toSFMString;
-declare function toSettingsString(_tree: unknown, _encoding?: string): string;
-declare const to_settings_string: typeof toSettingsString;
-declare function removeBlanks(_elem: unknown): void;
-declare const remove_blanks: typeof removeBlanks;
-declare function addDefaultFields(_elem: unknown, _defaultFields: unknown): void;
-declare const add_default_fields: typeof addDefaultFields;
-declare function sortFields(_elem: unknown, _fieldOrders: unknown): void;
-declare const sort_fields: typeof sortFields;
-declare function addBlankLines(_tree: unknown, _blanksBefore: unknown, _blanksBetween: unknown): void;
-declare const add_blank_lines: typeof addBlankLines;
+/** nltk.toolbox.to_settings_string — settings tree → text. */
+declare function to_settings_string(tree: {
+    getroot?: () => ToolboxElement;
+} | ToolboxElement): string;
+/** nltk.toolbox.remove_blanks — strip empty elements in place. */
+declare function remove_blanks(elem: ToolboxElement): void;
+/** nltk.toolbox.add_default_fields — add blank elements in place. */
+declare function add_default_fields(elem: ToolboxElement, default_fields: Record<string, string[]>): void;
+/** nltk.toolbox.sort_fields — sort children by field_orders in place. */
+declare function sort_fields(elem: ToolboxElement, field_orders: Record<string, string[]>): void;
+/** nltk.toolbox.add_blank_lines — append '\n' to last descendant of preceding element. */
+declare function add_blank_lines(tree: ToolboxElement, blanks_before: Record<string, string[]>, blanks_between: Record<string, string[]>): void;
+/** (marker, value) field tuple yielded by StandardFormat.fields(). */
+type SFMField = [marker: string | null, value: string];
+/** Parse a standard-format-marker string into a toolbox_data element tree. */
+declare function parseSFMString(s: string, key?: string | null): ToolboxElement;
+/** camelCase alias for to_sfm_string(). */
+declare function toSFMString(tree: ToolboxElement, options?: {
+    encoding?: string | null;
+    errors?: string;
+    unicode_fields?: Set<string> | null;
+}): string;
+/** camelCase alias for to_settings_string(). */
+declare function toSettingsString(tree: ToolboxElement): string;
+/** camelCase aliases for the tree helpers. */
+declare const removeBlanks: typeof remove_blanks;
+declare const addDefaultFields: typeof add_default_fields;
+declare const sortFields: typeof sort_fields;
+declare const addBlankLines: typeof add_blank_lines;
 
 /**
  * CCG API — port of nltk/ccg/api.py
@@ -4168,16 +6314,16 @@ declare const add_blank_lines: typeof addBlankLines;
  */
 type DirectionChar = "/" | "\\";
 type Restriction = "." | "," | "_" | "";
-interface AbstractCCGCategory {
-    isPrimitive(): boolean;
-    isFunction(): boolean;
-    isVar(): boolean;
-    substitute(subs: Array<[AbstractCCGCategory, AbstractCCGCategory]>): AbstractCCGCategory;
+declare abstract class AbstractCCGCategory {
+    abstract isPrimitive(): boolean;
+    abstract isFunction(): boolean;
+    abstract isVar(): boolean;
+    abstract substitute(subs: Array<[AbstractCCGCategory, AbstractCCGCategory]>): AbstractCCGCategory;
     /** null = cannot unify, [] = no subs needed */
-    canUnify(other: AbstractCCGCategory): Array<[AbstractCCGCategory, AbstractCCGCategory]> | null;
-    toString(): string;
-    equals(other: unknown): boolean;
-    comparisonKey(): unknown;
+    abstract canUnify(other: AbstractCCGCategory): Array<[AbstractCCGCategory, AbstractCCGCategory]> | null;
+    abstract toString(): string;
+    abstract equals(other: unknown): boolean;
+    abstract comparisonKey(): unknown;
 }
 declare class CCGVar implements AbstractCCGCategory {
     private static _maxID;
@@ -4246,6 +6392,9 @@ type CCGCategory = PrimitiveCategory | FunctionalCategory | CCGVar;
 
 declare function parseSubscripts(subscr: string | null | undefined): string[];
 declare function parseApplication(app: string[]): Direction;
+declare function matchBrackets(s: string): [string, string];
+declare function nextCategory(s: string): [string, string];
+declare function parsePrimitiveCategory(chunks: RegExpMatchArray | (string | null | undefined)[], primitives: Set<string>, families: Map<string, [AbstractCCGCategory, CCGVar | null]>, v: CCGVar | null): [AbstractCCGCategory, CCGVar | null];
 declare function augParseCategory(line: string, primitives: Set<string>, families: Map<string, [AbstractCCGCategory, CCGVar | null]>, v?: CCGVar | null): [AbstractCCGCategory, CCGVar | null];
 /** Parse a category string like "S\\NP/NP" given primitives/families. */
 declare function parseCategory(catStr: string, primitives?: string[], families?: Map<string, [AbstractCCGCategory, CCGVar | null]>): AbstractCCGCategory;
@@ -4261,18 +6410,18 @@ declare class CCGCat {
  * Forward/backward application, composition, type-raising, substitution.
  */
 
-interface UndirectedBinaryCombinator {
-    canCombine(func: AbstractCCGCategory, arg: AbstractCCGCategory): boolean;
-    combine(func: AbstractCCGCategory, arg: AbstractCCGCategory): Iterable<AbstractCCGCategory>;
-    toString(): string;
+declare abstract class UndirectedBinaryCombinator {
+    abstract canCombine(func: AbstractCCGCategory, arg: AbstractCCGCategory): boolean;
+    abstract combine(func: AbstractCCGCategory, arg: AbstractCCGCategory): Iterable<AbstractCCGCategory>;
+    abstract toString(): string;
 }
-interface DirectedBinaryCombinator {
-    canCombine(left: AbstractCCGCategory, right: AbstractCCGCategory): boolean;
-    combine(left: AbstractCCGCategory, right: AbstractCCGCategory): Iterable<AbstractCCGCategory>;
-    toString(): string;
+declare abstract class DirectedBinaryCombinator {
+    abstract canCombine(left: AbstractCCGCategory, right: AbstractCCGCategory): boolean;
+    abstract combine(left: AbstractCCGCategory, right: AbstractCCGCategory): Iterable<AbstractCCGCategory>;
+    abstract toString(): string;
 }
-declare class ForwardCombinator implements DirectedBinaryCombinator {
-    private readonly comb;
+declare class ForwardCombinator extends DirectedBinaryCombinator {
+    readonly comb: UndirectedBinaryCombinator;
     private readonly pred;
     private readonly suffix;
     constructor(comb: UndirectedBinaryCombinator, pred: (l: AbstractCCGCategory, r: AbstractCCGCategory) => boolean, suffix?: string);
@@ -4280,8 +6429,8 @@ declare class ForwardCombinator implements DirectedBinaryCombinator {
     combine(l: AbstractCCGCategory, r: AbstractCCGCategory): Iterable<AbstractCCGCategory>;
     toString(): string;
 }
-declare class BackwardCombinator implements DirectedBinaryCombinator {
-    private readonly comb;
+declare class BackwardCombinator extends DirectedBinaryCombinator {
+    readonly comb: UndirectedBinaryCombinator;
     private readonly pred;
     private readonly suffix;
     constructor(comb: UndirectedBinaryCombinator, pred: (l: AbstractCCGCategory, r: AbstractCCGCategory) => boolean, suffix?: string);
@@ -4298,6 +6447,7 @@ declare function forwardOnly(left: AbstractCCGCategory): boolean;
 declare function backwardOnly(_left: AbstractCCGCategory, right: AbstractCCGCategory): boolean;
 declare function bothForward(l: AbstractCCGCategory, r: AbstractCCGCategory): boolean;
 declare function bothBackward(l: AbstractCCGCategory, r: AbstractCCGCategory): boolean;
+declare function crossedDirs(l: AbstractCCGCategory, r: AbstractCCGCategory): boolean;
 declare const ForwardApplication: ForwardCombinator;
 declare const BackwardApplication: BackwardCombinator;
 declare class UndirectedComposition implements UndirectedBinaryCombinator {
@@ -4305,6 +6455,7 @@ declare class UndirectedComposition implements UndirectedBinaryCombinator {
     combine(func: AbstractCCGCategory, arg: AbstractCCGCategory): Iterable<AbstractCCGCategory>;
     toString(): string;
 }
+declare function backwardBxConstraint(l: AbstractCCGCategory, r: AbstractCCGCategory): boolean;
 declare const ForwardComposition: ForwardCombinator;
 declare const BackwardComposition: BackwardCombinator;
 declare const BackwardBx: BackwardCombinator;
@@ -4313,6 +6464,8 @@ declare class UndirectedSubstitution implements UndirectedBinaryCombinator {
     combine(func: AbstractCCGCategory, arg: AbstractCCGCategory): Iterable<AbstractCCGCategory>;
     toString(): string;
 }
+declare function forwardSConstraint(l: AbstractCCGCategory, r: AbstractCCGCategory): boolean;
+declare function backwardSxConstraint(l: AbstractCCGCategory, r: AbstractCCGCategory): boolean;
 declare const ForwardSubstitution: ForwardCombinator;
 declare const BackwardSx: BackwardCombinator;
 declare function innermostFunction(cat: AbstractCCGCategory): FunctionalCategory;
@@ -4321,6 +6474,8 @@ declare class UndirectedTypeRaise implements UndirectedBinaryCombinator {
     combine(func: AbstractCCGCategory, arg: AbstractCCGCategory): Iterable<AbstractCCGCategory>;
     toString(): string;
 }
+declare function forwardTConstraint(_l: AbstractCCGCategory, r: AbstractCCGCategory): boolean;
+declare function backwardTConstraint(l: AbstractCCGCategory, _r: AbstractCCGCategory): boolean;
 declare const ForwardT: ForwardCombinator;
 declare const BackwardT: BackwardCombinator;
 
@@ -4345,53 +6500,98 @@ declare class CCGLexicon {
     toString(): string;
 }
 declare function fromString(lexStr: string, includeSemantics?: boolean): CCGLexicon;
-/** @deprecated use fromString */
-declare function parseLexicon(lexStr: string): CCGLexicon;
+declare const fromstring: typeof fromString;
+declare const parseLexicon: (...args: any[]) => any;
 declare const openccgTinytiny: CCGLexicon;
 
 /**
  * CCG Chart parser — port of nltk/ccg/chart.py
  */
 
+declare class ParseTreeBudget {
+    private remaining;
+    constructor(limit: number);
+    spend(): void;
+}
 declare class CCGEdge {
     readonly span: [number, number];
     readonly categ: AbstractCCGCategory;
     readonly rule: DirectedBinaryCombinator | string;
     constructor(span: [number, number], categ: AbstractCCGCategory, rule: DirectedBinaryCombinator | string);
+    lhs(): AbstractCCGCategory;
     start(): number;
     end(): number;
-    lhs(): AbstractCCGCategory;
+    length(): number;
+    rhs(): never[];
+    dot(): number;
+    is_complete(): boolean;
+    isComplete(): boolean;
+    is_incomplete(): boolean;
+    isIncomplete(): boolean;
+    nextsym(): null;
 }
 declare class CCGLeafEdge {
     readonly pos: number;
     readonly token: Token;
     readonly leaf: string;
     constructor(pos: number, token: Token, leaf: string);
+    lhs(): AbstractCCGCategory;
+    span(): [number, number];
     start(): number;
     end(): number;
-    span(): [number, number];
-    lhs(): AbstractCCGCategory;
+    length(): number;
+    rhs(): string;
+    dot(): number;
+    is_complete(): boolean;
+    isComplete(): boolean;
+    is_incomplete(): boolean;
+    isIncomplete(): boolean;
+    nextsym(): null;
     categ(): AbstractCCGCategory;
 }
 type AnyEdge = CCGEdge | CCGLeafEdge;
+/**
+ * Parse-tree node produced by CCGChart.parses. Mirrors the nltk.Tree structure
+ * built by CCGChart._trees: internal labels are (Token, rule-string) tuples and
+ * word labels are Token objects; leaves are word strings.
+ */
+declare class CCGTree {
+    readonly label: [Token, string] | Token;
+    readonly children: Array<CCGTree | string>;
+    constructor(label: [Token, string] | Token, children: Array<CCGTree | string>);
+    [Symbol.iterator](): IterableIterator<CCGTree | string>;
+    get(index: number): CCGTree | string;
+    pos(): Array<[string, [Token, string] | Token]>;
+    leaves(): string[];
+    toString(): string;
+}
 interface ChartRule {
     apply(chart: CCGChart, lexicon: CCGLexicon, left: AnyEdge, right: AnyEdge): Iterable<AnyEdge>;
     toString(): string;
 }
 declare class BinaryCombinatorRule implements ChartRule {
     private readonly combinator;
+    static readonly NUMEDGES = 2;
     constructor(combinator: DirectedBinaryCombinator);
     apply(chart: CCGChart, _lex: CCGLexicon, left: AnyEdge, right: AnyEdge): Iterable<AnyEdge>;
+    apply_everywhere(chart: CCGChart, lex: CCGLexicon): Iterable<AnyEdge>;
+    applyEverywhere(chart: CCGChart, lex: CCGLexicon): Iterable<AnyEdge>;
     toString(): string;
 }
 declare class ForwardTypeRaiseRule implements ChartRule {
+    static readonly NUMEDGES = 2;
     private readonly comb;
     apply(chart: CCGChart, _lex: CCGLexicon, left: AnyEdge, right: AnyEdge): Iterable<AnyEdge>;
+    apply_everywhere(chart: CCGChart, lex: CCGLexicon): Iterable<AnyEdge>;
+    applyEverywhere(chart: CCGChart, lex: CCGLexicon): Iterable<AnyEdge>;
     toString(): string;
 }
 declare class BackwardTypeRaiseRule implements ChartRule {
+    static readonly NUMEDGES = 2;
     private readonly comb;
     apply(chart: CCGChart, _lex: CCGLexicon, left: AnyEdge, right: AnyEdge): Iterable<AnyEdge>;
+    apply_everywhere(chart: CCGChart, lex: CCGLexicon): Iterable<AnyEdge>;
+    applyEverywhere(chart: CCGChart, lex: CCGLexicon): Iterable<AnyEdge>;
     toString(): string;
 }
 declare const ApplicationRuleSet: ChartRule[];
@@ -4401,26 +6601,47 @@ declare const TypeRaiseRuleSet: ChartRule[];
 declare const DefaultRuleSet: ChartRule[];
 declare class CCGChart {
     readonly tokens: string[];
-    private edges;
-    private edgeSet;
-    private childrenMap;
+    private _edges;
+    private cplMap;
     constructor(tokens: string[]);
+    num_leaves(): number;
     numLeaves(): number;
+    num_edges(): number;
     leaf(i: number): string;
+    leaves(): string[];
+    edges(): AnyEdge[];
+    initialize(): void;
+    iteredges(span?: [number, number]): Generator<AnyEdge>;
+    private comparisonKey;
     insert(edge: AnyEdge, children: AnyEdge[]): boolean;
-    select(span?: [number, number]): AnyEdge[];
+    insert_with_backpointer(edge: AnyEdge, _child: AnyEdge, backpointers: AnyEdge[]): boolean;
+    select(span?: [number, number]): Generator<AnyEdge>;
+    child_pointer_lists(edge: AnyEdge): AnyEdge[][];
     childPointerLists(edge: AnyEdge): AnyEdge[][];
-    parses(start: AbstractCCGCategory): AnyEdge[];
+    private _trees;
+    trees(edge: AnyEdge, budget?: ParseTreeBudget): Generator<CCGTree>;
+    parses(start: AbstractCCGCategory): Generator<CCGTree>;
 }
 declare class CCGChartParser {
-    private readonly lexicon;
+    private readonly lexicon_;
     private readonly rules;
     private readonly trace;
-    constructor(lexicon: CCGLexicon, rules: ChartRule[], trace?: number);
-    lexicon_(): CCGLexicon;
-    parse(tokens: string[]): AnyEdge[];
+    constructor(lexicon_: CCGLexicon, rules: ChartRule[], trace?: number);
+    lexicon(): CCGLexicon;
+    grammar(): never;
+    parse(tokens: Iterable<string>): Generator<CCGTree>;
+    parse_sents(sents: Iterable<Iterable<string>>): Generator<CCGTree[]>;
+    parseSents(sents: Iterable<Iterable<string>>): Generator<CCGTree[]>;
+    parse_all(tokens: Iterable<string>): CCGTree[];
+    parseAll(tokens: Iterable<string>): CCGTree[];
+    parse_one(tokens: Iterable<string>): CCGTree | null;
+    parseOne(tokens: Iterable<string>): CCGTree | null;
 }
-declare function computeSemantics(children: Token[], edge: CCGEdge): unknown;
+declare function computeSemantics(children: CCGTree[], edge: CCGEdge): Expression$1 | null;
+declare function printCCGDerivation(tree: CCGTree): void;
+declare function printCCGTree(lwidth: number, tree: CCGTree | string): number;
+declare const lex: CCGLexicon;
+declare function demo$d(): void;
 
 declare function barendregtNormalize(expr: Expression$1 | null, counters?: Map<string, number>): Expression$1 | null;
 declare function computeFunctionSemantics(func: Expression$1 | null, arg: Expression$1 | null): Expression$1 | null;
@@ -4512,17 +6733,86 @@ declare class ModelBuilderCommandDecorator extends TheoremToolCommandDecorator i
     protected _decorateModel(valuationStr: string, format?: string | null): unknown;
     getModelBuilder(): ModelBuilder;
 }
+/** Port of nltk.inference.api.TheoremToolThread (threading.Thread subclass in
+ * NLTK). JavaScript has no preemptive threads, so start() executes run()
+ * synchronously; because theorem commands here are synchronous this preserves
+ * NLTK's observable semantics: run() stores the command result or, on error,
+ * prints the exception and leaves result null ("completed abnormally"). */
+declare class TheoremToolThread {
+    _command: () => boolean;
+    _result: boolean | null;
+    _verbose: boolean;
+    _name: string | null;
+    _alive: boolean;
+    _daemon: boolean;
+    constructor(command: () => boolean, verbose: boolean, name?: string | null);
+    run(): void;
+    start(): void;
+    isAlive(): boolean;
+    is_alive(): boolean;
+    /** threading.Thread shims — no-ops/state in the synchronous JS port. */
+    getName(): string | null;
+    setName(name: string): void;
+    isDaemon(): boolean;
+    setDaemon(daemonic: boolean): void;
+    join(_timeout?: number): void;
+    get result(): boolean | null;
+}
+/** Port of nltk.inference.api.ParallelProverBuilder — runs prover and model
+ * builder in parallel; whichever finishes first supplies the result. Here the
+ * commands are synchronous so the prover thread always completes first; a
+ * throwing prover yields result null and the model builder's (negated) result
+ * is used, matching NLTK's thread-caught-exception path. */
+declare class ParallelProverBuilder extends Prover {
+    _prover: Prover;
+    _modelbuilder: ModelBuilder;
+    constructor(prover: Prover, modelbuilder: ModelBuilder);
+    _prove(goal?: Expression$1 | null, assumptions?: Expression$1[] | null, verbose?: boolean): [boolean, string];
+    _buildModel(goal?: Expression$1 | null, assumptions?: Expression$1[] | null, verbose?: boolean): [boolean, string];
+    buildModel(goal?: Expression$1 | null, assumptions?: Expression$1[] | null, verbose?: boolean): boolean;
+    _run(goal: Expression$1 | null, assumptions: Expression$1[] | null, verbose: boolean): boolean;
+}
+/** Port of nltk.inference.api.ParallelProverBuilderCommand — multiple
+ * inheritance (BaseProverCommand, BaseModelBuilderCommand) flattened to a
+ * BaseProverCommand subclass holding an extra _modelbuilder. */
+declare class ParallelProverBuilderCommand extends BaseProverCommand {
+    _modelbuilder: ModelBuilder;
+    protected _model: unknown;
+    constructor(prover: Prover, modelbuilder: ModelBuilder, goal?: Expression$1 | null, assumptions?: Expression$1[] | null);
+    prove(verbose?: boolean): boolean;
+    buildModel(verbose?: boolean): boolean;
+    _run(verbose: boolean): boolean;
+    getModelBuilder(): ModelBuilder;
+    /** ``model()`` from NLTK's BaseModelBuilderCommand (PPBC multiply-inherits
+     * it there; TS has single inheritance so the method is repeated). */
+    model(format?: string | null): unknown;
+    protected _decorateModel(valuationStr: string, _format?: string | null): unknown;
+}
 
 /**
  * Port of nltk.inference.resolution — first-order resolution theorem prover.
  * Faithful to nltk: clausify via skolemize, Clause unification, saturation.
  */
 
-declare class ProverParseError$1 extends Error {
+declare class ProverParseError$2 extends Error {
     constructor(msg?: string);
 }
 declare class BindingException extends Error {
     constructor(arg: unknown);
+}
+/** Port of nltk.inference.resolution.UnificationException (defined but never
+ * raised in NLTK 3.10.3 — carried for parity). */
+declare class UnificationException extends Error {
+    constructor(a: Expression$1, b: Expression$1);
+}
+/** Port of nltk.inference.resolution.DebugObject — indented debug printer
+ * supporting `debug + n` indent adjustment. */
+declare class DebugObject {
+    enabled: boolean;
+    indent: number;
+    constructor(enabled?: boolean, indent?: number);
+    add(i: number): DebugObject;
+    line(line: string): void;
 }
 declare class BindingDict {
     d: Map<string, Expression$1>;
@@ -4539,6 +6829,14 @@ declare class Clause extends Array<Expression$1> {
     _isTautology: boolean | null;
     _parents: [number, number] | null;
     constructor(data?: Expression$1[] | number);
+    append(x: Expression$1): void;
+    clear(): void;
+    copy(): Expression$1[];
+    count(x: Expression$1): number;
+    extend(xs: Iterable<Expression$1>): void;
+    index(x: Expression$1, start?: number, stop?: number): number;
+    insert(i: number, x: Expression$1): void;
+    remove(x: Expression$1): void;
     static from(data: Expression$1[]): Clause;
     unify(other: Clause, bindings?: BindingDict, used?: [Expression$1[], Expression$1[]], skipped?: [Expression$1[], Expression$1[]], debug?: boolean, deadline?: number | null): Clause[];
     isSubsetOf(other: Clause): boolean;
@@ -4566,12 +6864,24 @@ declare class ResolutionProverCommand extends BaseProverCommand {
     static decorateClauses(clauses: Clause[]): string;
     decorateProof(proofString: string, _simplify?: boolean): string;
 }
+/** Port of nltk.inference.resolution.resolution_test. */
+declare function resolution_test(e: string): void;
+declare const resolutionTest: typeof resolution_test;
+/** Port of nltk.inference.resolution.testResolutionProver. */
+declare function testResolutionProver(): void;
+/** Port of nltk.inference.resolution.test_clausify — prints clausify()
+ * results for the pinned inputs (Python list reprs rendered with str()). */
+declare function test_clausify(): void;
+declare const testClausify: typeof test_clausify;
+/** Port of nltk.inference.resolution.demo. */
+declare function demo$c(): void;
+declare const resolutionDemo: typeof demo$c;
 
 /**
  * Port of nltk.inference.tableau — tableau-based FOL theorem prover.
  */
 
-declare class ProverParseError extends Error {
+declare class ProverParseError$1 extends Error {
     constructor(msg?: string);
 }
 declare const Categories: {
@@ -4597,6 +6907,14 @@ declare const Categories: {
     readonly EXISTS: 19;
     readonly ALL: 20;
 };
+declare class Debug {
+    verbose: boolean;
+    indent: number;
+    lines: string[];
+    constructor(verbose: boolean, indent?: number, lines?: string[] | null);
+    add(n: number): Debug;
+    line(data: unknown, indent?: number): void;
+}
 declare class Agenda {
     sets: Set<[Expression$1, Expression$1 | null]>[];
     constructor();
@@ -4616,6 +6934,8 @@ declare class TableauProver extends Prover {
     TIMEOUT: number;
     MAX_TABLEAU_DEPTH: number;
     private _deadline;
+    /** NLTK snake_case spelling of the static ``is_atom`` (see ``isAtom``). */
+    static is_atom(e: Expression$1): boolean;
     _prove(goal: Expression$1 | null, assumptions: Expression$1[] | null, verbose?: boolean): [boolean, string];
     private attemptProof;
     private proofAtom;
@@ -4644,6 +6964,16 @@ declare class TableauProver extends Prover {
 declare class TableauProverCommand extends BaseProverCommand {
     constructor(goal?: Expression$1 | null, assumptions?: Expression$1[] | null, prover?: TableauProver | null);
 }
+/** Port of nltk.inference.tableau.tableau_test. */
+declare function tableau_test(c: string, ps?: string[] | null, verbose?: boolean): void;
+declare const tableauTest: typeof tableau_test;
+/** Port of nltk.inference.tableau.testTableauProver. */
+declare function testTableauProver(): void;
+/** Port of nltk.inference.tableau.testHigherOrderTableauProver. */
+declare function testHigherOrderTableauProver(): void;
+/** Port of nltk.inference.tableau.demo. */
+declare function demo$b(): void;
+declare const tableauDemo: typeof demo$b;
 
 /**
  * Shim for nltk.inference.prover9 — requires external Prover9/prooftrans binaries.
@@ -4692,7 +7022,32 @@ declare class Prover9Command extends Prover9CommandParent {
     proof(_simplify?: boolean): string;
     decorateProof(_proofString: string, _simplify?: boolean): string;
 }
+/** Port of nltk.inference.prover9.convert_to_prover9 — pure string
+ * transformation (no binary needed). Elements that fail conversion print the
+ * diagnostic then re-raise, like NLTK. */
 declare function convertToProver9(input: Expression$1 | Expression$1[]): string | string[];
+/** Port of nltk.inference.prover9.spacer. */
+declare function spacer$2(num?: number): void;
+/** Port of nltk.inference.prover9.test_convert_to_prover9 (pure — no binary). */
+declare function test_convert_to_prover9(expr: string[]): void;
+declare const testConvertToProver9: typeof test_convert_to_prover9;
+/** Port of nltk.inference.prover9.test_config — propagates the
+ * external-binary error from prove() like NLTK without the binary. */
+declare function test_config(): void;
+declare const testConfig: typeof test_config;
+/** Port of nltk.inference.prover9.test_prove — propagates the
+ * external-binary error from prove() like NLTK without the binary. */
+declare function test_prove(args: Array<[string, string[]]>): void;
+declare const testProve: typeof test_prove;
+/** Module-level demo argument lists (NLTK prover9.py module state).
+ * NLTK names the second list ``arguments`` — a reserved word in JS modules,
+ * so it is exported as ``arguments_``. */
+declare const arguments_: Array<[string, string[]]>;
+declare const expressions: string[];
+/** Port of nltk.inference.prover9.demo — prints the section headers then hits
+ * the external-binary wall in test_config, as NLTK does without prover9. */
+declare function demo$a(): void;
+declare const prover9Demo: typeof demo$a;
 
 /**
  * Shim for nltk.inference.mace — requires external Mace4 / interpformat binaries.
@@ -4702,6 +7057,13 @@ declare class MaceCommand extends BaseModelBuilderCommand {
     _interpformatBin: string | null;
     constructor(goal?: Expression$1 | null, assumptions?: Expression$1[] | null, maxModels?: number, modelBuilder?: ModelBuilder | null);
     get valuation(): unknown;
+    /** Port of MaceCommand._make_relation_set — convert a Mace4-style relation
+     * table into a set of tuples. */
+    static _makeRelationSet(numEntities: number, values: number[]): Set<string[]>;
+    static _make_relation_set(numEntities: number, values: number[]): Set<string[]>;
+    static _makeRelationTuple(position: number, values: number[], numEntities: number): string[];
+    static _makeModelVar(value: number): string;
+    static _make_model_var(value: number): string;
     buildModel(_verbose?: boolean): boolean;
     model(_format?: string | null): unknown;
     printAssumptions(_outputFormat?: string): void;
@@ -4715,6 +7077,30 @@ declare class Mace extends ModelBuilder {
     prover9Input(_goal: Expression$1 | null, _assumptions: Expression$1[]): string;
     binaryLocations(): string[];
 }
+/** Port of nltk.inference.mace.decode_result. */
+declare function decode_result(found: boolean | null): string;
+declare const decodeResult: typeof decode_result;
+/** Port of nltk.inference.mace.spacer. */
+declare function spacer$1(num?: number): void;
+/** Port of nltk.inference.mace.test_make_relation_set (pure — no binary). */
+declare function test_make_relation_set(): void;
+declare const testMakeRelationSet: typeof test_make_relation_set;
+/** Port of nltk.inference.mace.test_build_model — constructs a MaceCommand
+ * and calls build_model(); without the Mace4 binary the build_model call
+ * propagates the external-binary error, as NLTK does without the binary. */
+declare function test_build_model(_arguments?: unknown): void;
+declare const testBuildModel: typeof test_build_model;
+/** Port of nltk.inference.mace.test_model_found — propagates the
+ * external-binary error from build_model like NLTK does without Mace4. */
+declare function test_model_found(args: Array<[string, string[]]>): void;
+declare const testModelFound: typeof test_model_found;
+/** Port of nltk.inference.mace.test_transform_output — propagates the
+ * external-binary error from build_model/model like NLTK without Mace4. */
+declare function test_transform_output(argumentPair: [string, string[]]): void;
+declare const testTransformOutput: typeof test_transform_output;
+/** NLTK demo driver — binary-bound end to end; kept as a real function that
+ * propagates the external-binary error at its first model build. */
+declare function demo$9(): void;
 
 /**
  * Port of nltk.inference.discourse — discourse processing / consistency checking.
@@ -4769,6 +7155,52 @@ declare class DiscourseTester {
     background(): void;
     multiply(threadList: string[][], readings: string[]): string[][];
 }
+/** Port of nltk.inference.discourse.spacer. */
+declare function spacer(num?: number): void;
+/** Port of nltk.inference.discourse.load_fol (duplicated from nltk.sem.util):
+ * convert a file of first-order formulas into a list of Expression objects.
+ * Blank lines and '#'-prefixed comments are skipped; a bad line raises a
+ * ValueError-shaped error naming the line number. */
+declare function load_fol(s: string): Expression$1[];
+declare const loadFol: typeof load_fol;
+/** Grammar loading requires nltk.data.load + corpus resources — unsupported. */
+declare function load_parser(_grammarUrl: string, _trace?: number, _parser?: unknown, _chartClass?: unknown, _beamSize?: number, _loadArgs?: unknown): never;
+declare const loadParser: typeof load_parser;
+/** Resource dumping requires nltk.data.load — unsupported. */
+declare function show_cfg(_resourceUrl: string, _escape?: string): never;
+declare const showCfg: typeof show_cfg;
+declare class AnaphoraResolutionException extends Error {
+    constructor(message: string);
+}
+/** Port of nltk.sem.drt.PossibleAntecedents — a list that is also a
+ * DrtExpression/Expression so it can sit on either side of an equality. */
+declare class PossibleAntecedents extends Array<Expression$1> {
+    free(): Set<Variable>;
+    replace(variable: Variable, expression: Expression$1, _replaceBound?: boolean, _alphaConvert?: boolean): PossibleAntecedents;
+    toString(): string;
+    str(): string;
+}
+declare const MAX_ANAPHORA_OPERATIONS = 1000000;
+declare class AnaphoraBudget {
+    remaining: number;
+    limit: number;
+    constructor(limit: number);
+    spend(): void;
+}
+/** Port of nltk.sem.drt.resolve_anaphora (re-exported via
+ * nltk.inference.discourse.resolve_anaphora). The class checks cover both the
+ * FOL hierarchy and our flattened DRT hierarchy (Python multiple inheritance
+ * collapses to separate Drt* classes here). */
+declare function resolve_anaphora(expression: Expression$1, trail?: Expression$1[], budget?: AnaphoraBudget): Expression$1 | undefined;
+declare const resolveAnaphora: typeof resolve_anaphora;
+/** Port of nltk.inference.discourse.discourse_demo. */
+declare function discourse_demo(readingCommand?: ReadingCommand): void;
+declare const discourseDemo: typeof discourse_demo;
+/** Port of nltk.inference.discourse.drt_discourse_demo. */
+declare function drt_discourse_demo(readingCommand?: ReadingCommand): void;
+declare const drtDiscourseDemo: typeof drt_discourse_demo;
+/** Port of nltk.inference.discourse.demo. */
+declare function demo$8(): void;
 
 /** translate — package barrel (NLTK translate/__init__.py parity shim). Submodules hold the implementation. */
 declare const TRANSLATE_PACKAGE = "translate";
@@ -4802,15 +7234,230 @@ declare class FeatStruct extends Map<string, unknown> {
 declare function parseFeatStruct(s: string): FeatStruct;
 
 declare function helpInfo(): string;
-declare function demo$6(): never;
 
+/** nltk.downloader.Package — index.xml package entry. */
+declare class Package {
+    id: string;
+    name: string;
+    subdir: string;
+    url: string;
+    size: number;
+    unzipped_size: number;
+    checksum: string | null;
+    svn_revision: string | number | null;
+    copyright: string;
+    contact: string;
+    license: string;
+    author: string;
+    unzip: boolean;
+    filename: string;
+    [key: string]: unknown;
+    constructor(kw: Record<string, unknown> & {
+        id: string;
+        url: string;
+        children?: unknown;
+    });
+    static fromxml(xml: string | {
+        attrib: Record<string, string>;
+    }): Package;
+    toString(): string;
+}
+/** nltk.downloader.Collection — index.xml collection entry. */
+declare class Collection {
+    id: string;
+    name: string;
+    children: string[];
+    packages: Package[] | null;
+    [key: string]: unknown;
+    constructor(kw: Record<string, unknown> & {
+        id: string;
+        children: string[];
+    });
+    static fromxml(xml: string | {
+        attrib: Record<string, string>;
+        itemRefs: string[];
+    }): Collection;
+    toString(): string;
+}
+/** nltk.downloader message-passing objects. */
+declare class DownloaderMessage {
+}
+declare class StartCollectionMessage extends DownloaderMessage {
+    collection: Collection;
+    constructor(collection: Collection);
+}
+declare class FinishCollectionMessage extends DownloaderMessage {
+    collection: Collection;
+    constructor(collection: Collection);
+}
+declare abstract class PackageMessage extends DownloaderMessage {
+    package: Package;
+    constructor(pkg: Package);
+}
+declare class StartPackageMessage extends PackageMessage {
+}
+declare class FinishPackageMessage extends PackageMessage {
+}
+declare class StartDownloadMessage extends PackageMessage {
+}
+declare class FinishDownloadMessage extends PackageMessage {
+}
+declare class StartUnzipMessage extends PackageMessage {
+}
+declare class FinishUnzipMessage extends PackageMessage {
+}
+declare class UpToDateMessage extends PackageMessage {
+}
+declare class StaleMessage extends PackageMessage {
+}
+declare class ErrorMessage extends DownloaderMessage {
+    package: Package;
+    message: string;
+    constructor(pkg: Package, message: unknown);
+}
+declare class ProgressMessage extends DownloaderMessage {
+    progress: number;
+    constructor(progress: number);
+}
+declare class SelectDownloadDirMessage extends DownloaderMessage {
+    download_dir: string;
+    constructor(download_dir: string);
+}
+/** nltk.downloader.md5_hexdigest / sha256_hexdigest. */
+declare function md5_hexdigest(file: string | {
+    path: string;
+} | Uint8Array): string;
+declare function sha256_hexdigest(file: string | {
+    path: string;
+} | Uint8Array): string;
+/** nltk.downloader.unzip — extract a package zip into a directory. */
+declare function unzip(filename: string, root: string, verbose?: boolean): void;
+/** nltk.downloader.Downloader — network data-server client (unsupported). */
 declare class Downloader {
-    download(_pkg: string): never;
+    constructor(_server_index_url?: string | null, _download_dir?: string | null);
 }
+declare class DownloaderGUI {
+    constructor();
+}
+declare class DownloaderShell {
+    constructor();
+}
+declare function download(..._a: unknown[]): never;
+declare function download_gui(..._a: unknown[]): never;
+declare function download_shell(..._a: unknown[]): never;
+declare function update(..._a: unknown[]): never;
+declare function build_index(..._a: unknown[]): never;
 
-declare class NonmonotonicProver {
-    prove(): never;
+/**
+ * Port of nltk.inference.nonmonotonic — nonmonotonic reasoning decorators
+ * (closed domain, closed world, unique names).
+ *
+ * The assumption/goal transformations are pure FOL and fully ported. The
+ * final prove() call still delegates to the decorated ProverCommand (and
+ * UniqueNamesProver.assumptions() itself calls Prover9), so binary-bound
+ * paths propagate the external-binary error as NLTK does without the binary.
+ */
+
+/** Port of nltk.inference.nonmonotonic.ProverParseError — a third ProverParseError
+ * class distinct from the ones in resolution.py and tableau.py (NLTK defines a
+ * separate class in each module). */
+declare class ProverParseError extends Error {
+    constructor(message?: string);
 }
+/** Port of nltk.inference.nonmonotonic.get_domain. */
+declare function get_domain(goal: Expression$1 | null, assumptions: Expression$1[]): Set<Variable>;
+declare const getDomain: typeof get_domain;
+/** Port of nltk.inference.nonmonotonic.ClosedDomainProver — adds domain
+ * closure assumptions before proving. */
+declare class ClosedDomainProver extends ProverCommandDecorator {
+    assumptions(): Expression$1[];
+    goal(): Expression$1 | null;
+    /**
+     * Apply the closed domain assumption to the expression
+     *
+     * - Domain = union([e.free()|e.constants() for e in all_expressions])
+     * - translate "exists x.P" to "(z=d1 | z=d2 | ... ) & P.replace(x,z)" OR
+     *             "P.replace(x, d1) | P.replace(x, d2) | ..."
+     * - translate "all x.P" to "P.replace(x, d1) & P.replace(x, d2) & ..."
+     */
+    replace_quants(ex: Expression$1, domain: Set<Variable>): Expression$1;
+    replaceQuants(ex: Expression$1, domain: Set<Variable>): Expression$1;
+}
+/** Port of nltk.inference.nonmonotonic.UniqueNamesProver — adds unique names
+ * assumptions before proving. The inner Prover9 prove() call propagates the
+ * external-binary error when the domain has 2+ elements, as NLTK does
+ * without the binary. */
+declare class UniqueNamesProver extends ProverCommandDecorator {
+    /**
+     * - Domain = union([e.free()|e.constants() for e in all_expressions])
+     * - if "d1 = d2" cannot be proven from the premises, then add "d1 != d2"
+     */
+    assumptions(): Expression$1[];
+}
+/** Port of nltk.inference.nonmonotonic.SetHolder — a list of sets of
+ * Variables where getitem returns the set containing the item, creating it
+ * if absent. Python's ``holder[item]`` becomes ``holder.get(item)`` here. */
+declare class SetHolder extends Array<Set<Variable>> {
+    get(item: Variable): Set<Variable>;
+    append(x: Set<Variable>): void;
+    clear(): void;
+    copy(): Set<Variable>[];
+    count(x: Set<Variable>): number;
+    extend(xs: Iterable<Set<Variable>>): void;
+    index(x: Set<Variable>, start?: number, stop?: number): number;
+    insert(i: number, x: Set<Variable>): void;
+    remove(x: Set<Variable>): void;
+}
+/** Port of nltk.inference.nonmonotonic.PredHolder — dictionary payload for
+ * ClosedWorldProver predicate completion. */
+declare class PredHolder {
+    signatures: Expression$1[][];
+    properties: Array<[Variable[], Expression$1]>;
+    signature_len: number | null;
+    constructor();
+    append_sig(newSig: Expression$1[]): void;
+    appendSig(newSig: Expression$1[]): void;
+    append_prop(newProp: [Variable[], Expression$1]): void;
+    appendProp(newProp: [Variable[], Expression$1]): void;
+    validate_sig_len(newSig: readonly unknown[]): void;
+    validateSigLen(newSig: readonly unknown[]): void;
+    toString(): string;
+}
+/** Port of nltk.inference.nonmonotonic.ClosedWorldProver — completes
+ * predicates before proving (predicate completion). */
+declare class ClosedWorldProver extends ProverCommandDecorator {
+    assumptions(): Expression$1[];
+    _make_unique_signature(predHolder: PredHolder): Variable[];
+    _makeUniqueSignature(predHolder: PredHolder): Variable[];
+    _make_antecedent(predicate: AbstractVariableExpression, signature: Variable[]): Expression$1;
+    _makeAntecedent(predicate: AbstractVariableExpression, signature: Variable[]): Expression$1;
+    _make_predicate_dict(assumptions: Expression$1[]): Map<AbstractVariableExpression, PredHolder>;
+    _makePredicateDict(assumptions: Expression$1[]): Map<AbstractVariableExpression, PredHolder>;
+    private _mapPredicates;
+}
+/** Port of nltk.inference.nonmonotonic.print_proof — runs Prover9 and the
+ * combined UniqueNames+ClosedWorld prover; propagates the external-binary
+ * error as NLTK does without the binary. */
+declare function print_proof(goal: string, premises: Expression$1[]): void;
+declare const printProof: typeof print_proof;
+/** Port of nltk.inference.nonmonotonic.closed_domain_demo. */
+declare function closed_domain_demo(): void;
+declare const closedDomainDemo: typeof closed_domain_demo;
+/** Port of nltk.inference.nonmonotonic.unique_names_demo. */
+declare function unique_names_demo(): void;
+declare const uniqueNamesDemo: typeof unique_names_demo;
+/** Port of nltk.inference.nonmonotonic.closed_world_demo. */
+declare function closed_world_demo(): void;
+declare const closedWorldDemo: typeof closed_world_demo;
+/** Port of nltk.inference.nonmonotonic.combination_prover_demo. */
+declare function combination_prover_demo(): void;
+declare const combinationProverDemo: typeof combination_prover_demo;
+/** Port of nltk.inference.nonmonotonic.default_reasoning_demo. */
+declare function default_reasoning_demo(): void;
+declare const defaultReasoningDemo: typeof default_reasoning_demo;
+/** Port of nltk.inference.nonmonotonic.demo. */
+declare function demo$7(): void;
+declare const nonmonotonicDemo: typeof demo$7;
 
 declare function chartparser(..._args: unknown[]): never;
 declare function chunkparser(..._args: unknown[]): never;
@@ -5065,6 +7712,59 @@ declare namespace app_wordnet_app_d {
   };
 }
 
+type ChatPairs = [pattern: string, responses: string[]][];
+type ChatReflections = Record<string, string>;
+/** nltk.chat.util.reflections — first/second-person substitutions. */
+declare const reflections$2: ChatReflections;
+/** nltk.chat.eliza pair table. */
+declare const eliza_pairs: ChatPairs;
+/** nltk.chat.iesha pair table. */
+declare const iesha_pairs: ChatPairs;
+/** nltk.chat.rude pair table. */
+declare const rude_pairs: ChatPairs;
+/** nltk.chat.suntsu pair table. */
+declare const suntsu_pairs: ChatPairs;
+/** nltk.chat.zen pair table. */
+declare const zen_pairs: ChatPairs;
+/** nltk.chat.util.Chat — pattern-match chatbot. */
+declare class Chat$1 {
+    private _pairs;
+    private _reflections;
+    private _regex;
+    private _rng;
+    constructor(pairs: ChatPairs | Iterable<readonly [string, readonly string[]]>, refl?: ChatReflections, rng?: () => number);
+    private _substitute;
+    private _wildcards;
+    /** Chat.respond — first matching pattern, random response, %N wildcard
+     * substitution through reflections. */
+    respond(str: string): string | undefined;
+    /** Chat.converse — interactive loop. `input` supplies successive user lines;
+     * return undefined/null to signal EOF (Python EOFError prints the quit word). */
+    converse(quit?: string, input?: () => string | null | undefined, output?: (s: string) => void): void;
+}
+/** nltk.chat.eliza.eliza_chat — banner + converse; input injectable (adapted). */
+declare function eliza_chat$1(input?: () => string | null | undefined, output?: (s: string) => void): void;
+/** nltk.chat.iesha.iesha_chat */
+declare function iesha_chat$1(input?: () => string | null | undefined, output?: (s: string) => void): void;
+/** nltk.chat.rude.rude_chat */
+declare function rude_chat$1(input?: () => string | null | undefined, output?: (s: string) => void): void;
+/** nltk.chat.suntsu.suntsu_chat */
+declare function suntsu_chat$1(input?: () => string | null | undefined, output?: (s: string) => void): void;
+/** nltk.chat.zen.zen_chat */
+declare function zen_chat$1(input?: () => string | null | undefined, output?: (s: string) => void): void;
+
+type chat_d_ChatPairs = ChatPairs;
+type chat_d_ChatReflections = ChatReflections;
+declare const chat_d_eliza_pairs: typeof eliza_pairs;
+declare const chat_d_iesha_pairs: typeof iesha_pairs;
+declare const chat_d_rude_pairs: typeof rude_pairs;
+declare const chat_d_suntsu_pairs: typeof suntsu_pairs;
+declare const chat_d_zen_pairs: typeof zen_pairs;
+declare namespace chat_d {
+  export { Chat$1 as Chat, eliza_chat$1 as eliza_chat, chat_d_eliza_pairs as eliza_pairs, iesha_chat$1 as iesha_chat, chat_d_iesha_pairs as iesha_pairs, reflections$2 as reflections, rude_chat$1 as rude_chat, chat_d_rude_pairs as rude_pairs, suntsu_chat$1 as suntsu_chat, chat_d_suntsu_pairs as suntsu_pairs, zen_chat$1 as zen_chat, chat_d_zen_pairs as zen_pairs };
+  export type { chat_d_ChatPairs as ChatPairs, chat_d_ChatReflections as ChatReflections };
+}
+
 /** NLTK chat.util — lightweight Chat shim (full logic requires NLTK corpora patterns). */
 declare const reflections$1: Record<string, string>;
 declare class Chat {
@@ -5084,43 +7784,18 @@ declare namespace chat_util_d {
   };
 }
 
-declare function eliza_chat$1(..._a: unknown[]): never;
-declare function iesha_chat$1(..._a: unknown[]): never;
-declare function rude_chat$1(..._a: unknown[]): never;
-declare function suntsu_chat$1(..._a: unknown[]): never;
-declare function zen_chat$1(..._a: unknown[]): never;
-declare function chatbots(..._a: unknown[]): never;
-declare const bots: never[];
-
-type chat_d_Chat = Chat;
-declare const chat_d_Chat: typeof Chat;
-declare const chat_d_bots: typeof bots;
-declare const chat_d_chatbots: typeof chatbots;
-declare namespace chat_d {
-  export {
-    chat_d_Chat as Chat,
-    chat_d_bots as bots,
-    chat_d_chatbots as chatbots,
-    eliza_chat$1 as eliza_chat,
-    iesha_chat$1 as iesha_chat,
-    rude_chat$1 as rude_chat,
-    suntsu_chat$1 as suntsu_chat,
-    zen_chat$1 as zen_chat,
-  };
-}
-
 /** NLTK chat.eliza — Eliza chatbot (interactive demo). */
 
 declare const pairs$4: ReadonlyArray<readonly [string, ReadonlyArray<string>]>;
 declare const eliza_chatbot: Chat;
 declare function eliza_chat(..._a: unknown[]): never;
-declare function demo$5(..._a: unknown[]): never;
+declare function demo$6(..._a: unknown[]): never;
 
 declare const chat_eliza_d_eliza_chat: typeof eliza_chat;
 declare const chat_eliza_d_eliza_chatbot: typeof eliza_chatbot;
 declare namespace chat_eliza_d {
   export {
-    demo$5 as demo,
+    demo$6 as demo,
     chat_eliza_d_eliza_chat as eliza_chat,
     chat_eliza_d_eliza_chatbot as eliza_chatbot,
     pairs$4 as pairs,
@@ -5134,14 +7809,14 @@ declare const reflections: Record<string, string>;
 declare const pairs$3: ReadonlyArray<readonly [string, ReadonlyArray<string>]>;
 declare const iesha_chatbot: Chat;
 declare function iesha_chat(..._a: unknown[]): never;
-declare function demo$4(..._a: unknown[]): never;
+declare function demo$5(..._a: unknown[]): never;
 
 declare const chat_iesha_d_iesha_chat: typeof iesha_chat;
 declare const chat_iesha_d_iesha_chatbot: typeof iesha_chatbot;
 declare const chat_iesha_d_reflections: typeof reflections;
 declare namespace chat_iesha_d {
   export {
-    demo$4 as demo,
+    demo$5 as demo,
     chat_iesha_d_iesha_chat as iesha_chat,
     chat_iesha_d_iesha_chatbot as iesha_chatbot,
     pairs$3 as pairs,
@@ -5154,13 +7829,13 @@ declare namespace chat_iesha_d {
 declare const pairs$2: ReadonlyArray<readonly [string, ReadonlyArray<string>]>;
 declare const rude_chatbot: Chat;
 declare function rude_chat(..._a: unknown[]): never;
-declare function demo$3(..._a: unknown[]): never;
+declare function demo$4(..._a: unknown[]): never;
 
 declare const chat_rude_d_rude_chat: typeof rude_chat;
 declare const chat_rude_d_rude_chatbot: typeof rude_chatbot;
 declare namespace chat_rude_d {
   export {
-    demo$3 as demo,
+    demo$4 as demo,
     pairs$2 as pairs,
     reflections$1 as reflections,
     chat_rude_d_rude_chat as rude_chat,
@@ -5173,13 +7848,13 @@ declare namespace chat_rude_d {
 declare const pairs$1: ReadonlyArray<readonly [string, ReadonlyArray<string>]>;
 declare const suntsu_chatbot: Chat;
 declare function suntsu_chat(..._a: unknown[]): never;
-declare function demo$2(..._a: unknown[]): never;
+declare function demo$3(..._a: unknown[]): never;
 
 declare const chat_suntsu_d_suntsu_chat: typeof suntsu_chat;
 declare const chat_suntsu_d_suntsu_chatbot: typeof suntsu_chatbot;
 declare namespace chat_suntsu_d {
   export {
-    demo$2 as demo,
+    demo$3 as demo,
     pairs$1 as pairs,
     reflections$1 as reflections,
     chat_suntsu_d_suntsu_chat as suntsu_chat,
@@ -5193,7 +7868,7 @@ declare const responses: ReadonlyArray<readonly [string, ReadonlyArray<string>]>
 declare const pairs: readonly (readonly [string, readonly string[]])[];
 declare const zen_chatbot: Chat;
 declare function zen_chat(..._a: unknown[]): never;
-declare function demo$1(..._a: unknown[]): never;
+declare function demo$2(..._a: unknown[]): never;
 
 declare const chat_zen_d_pairs: typeof pairs;
 declare const chat_zen_d_responses: typeof responses;
@@ -5201,7 +7876,7 @@ declare const chat_zen_d_zen_chat: typeof zen_chat;
 declare const chat_zen_d_zen_chatbot: typeof zen_chatbot;
 declare namespace chat_zen_d {
   export {
-    demo$1 as demo,
+    demo$2 as demo,
     chat_zen_d_pairs as pairs,
     reflections$1 as reflections,
     chat_zen_d_responses as responses,
@@ -5369,10 +8044,10 @@ declare class SpaceWidget extends CanvasWidget {
 }
 declare class ScrollWatcherWidget extends CanvasWidget {
 }
-declare class CanvasFrame {
+declare class CanvasFrame$1 {
     constructor(..._a: unknown[]);
 }
-declare class ShowText {
+declare class ShowText$1 {
     constructor(..._a: unknown[]);
 }
 declare class EntryDialog {
@@ -5384,7 +8059,7 @@ declare class ColorizedList {
 declare class MutableOptionMenu {
     constructor(..._a: unknown[]);
 }
-declare function demo(): never;
+declare function demo$1(): never;
 
 type draw_util_d_AbstractContainerWidget = AbstractContainerWidget;
 declare const draw_util_d_AbstractContainerWidget: typeof AbstractContainerWidget;
@@ -5392,8 +8067,6 @@ type draw_util_d_BoxWidget = BoxWidget;
 declare const draw_util_d_BoxWidget: typeof BoxWidget;
 type draw_util_d_BracketWidget = BracketWidget;
 declare const draw_util_d_BracketWidget: typeof BracketWidget;
-type draw_util_d_CanvasFrame = CanvasFrame;
-declare const draw_util_d_CanvasFrame: typeof CanvasFrame;
 type draw_util_d_CanvasWidget = CanvasWidget;
 declare const draw_util_d_CanvasWidget: typeof CanvasWidget;
 type draw_util_d_ColorizedList = ColorizedList;
@@ -5410,8 +8083,6 @@ type draw_util_d_ScrollWatcherWidget = ScrollWatcherWidget;
 declare const draw_util_d_ScrollWatcherWidget: typeof ScrollWatcherWidget;
 type draw_util_d_SequenceWidget = SequenceWidget;
 declare const draw_util_d_SequenceWidget: typeof SequenceWidget;
-type draw_util_d_ShowText = ShowText;
-declare const draw_util_d_ShowText: typeof ShowText;
 type draw_util_d_SpaceWidget = SpaceWidget;
 declare const draw_util_d_SpaceWidget: typeof SpaceWidget;
 type draw_util_d_StackWidget = StackWidget;
@@ -5420,13 +8091,12 @@ type draw_util_d_SymbolWidget = SymbolWidget;
 declare const draw_util_d_SymbolWidget: typeof SymbolWidget;
 type draw_util_d_TextWidget = TextWidget;
 declare const draw_util_d_TextWidget: typeof TextWidget;
-declare const draw_util_d_demo: typeof demo;
 declare namespace draw_util_d {
   export {
     draw_util_d_AbstractContainerWidget as AbstractContainerWidget,
     draw_util_d_BoxWidget as BoxWidget,
     draw_util_d_BracketWidget as BracketWidget,
-    draw_util_d_CanvasFrame as CanvasFrame,
+    CanvasFrame$1 as CanvasFrame,
     draw_util_d_CanvasWidget as CanvasWidget,
     draw_util_d_ColorizedList as ColorizedList,
     draw_util_d_EntryDialog as EntryDialog,
@@ -5435,12 +8105,12 @@ declare namespace draw_util_d {
     draw_util_d_ParenWidget as ParenWidget,
     draw_util_d_ScrollWatcherWidget as ScrollWatcherWidget,
     draw_util_d_SequenceWidget as SequenceWidget,
-    draw_util_d_ShowText as ShowText,
+    ShowText$1 as ShowText,
     draw_util_d_SpaceWidget as SpaceWidget,
     draw_util_d_StackWidget as StackWidget,
     draw_util_d_SymbolWidget as SymbolWidget,
     draw_util_d_TextWidget as TextWidget,
-    draw_util_d_demo as demo,
+    demo$1 as demo,
   };
 }
 
@@ -5478,51 +8148,52 @@ declare namespace twitter_d {
   };
 }
 
-declare class LocalTimezoneOffsetWithUTC {
+declare class LocalTimezoneOffsetWithUTC$1 {
     STDOFFSET: number;
     DSTOFFSET: number;
     utcoffset(_dt?: unknown): number;
     toString(): string;
 }
-declare const LOCAL: LocalTimezoneOffsetWithUTC;
-declare class BasicTweetHandler {
+declare const LOCAL: LocalTimezoneOffsetWithUTC$1;
+declare class BasicTweetHandler$1 {
     limit: number;
     counter: number;
     constructor(limit?: number);
     handle(_tweet: unknown): void;
     onExit(): void;
 }
-declare class TweetHandlerI extends BasicTweetHandler {
+declare class TweetHandlerI$1 extends BasicTweetHandler$1 {
 }
 
-type twitter_api_d_BasicTweetHandler = BasicTweetHandler;
-declare const twitter_api_d_BasicTweetHandler: typeof BasicTweetHandler;
 declare const twitter_api_d_LOCAL: typeof LOCAL;
-type twitter_api_d_LocalTimezoneOffsetWithUTC = LocalTimezoneOffsetWithUTC;
-declare const twitter_api_d_LocalTimezoneOffsetWithUTC: typeof LocalTimezoneOffsetWithUTC;
-type twitter_api_d_TweetHandlerI = TweetHandlerI;
-declare const twitter_api_d_TweetHandlerI: typeof TweetHandlerI;
 declare namespace twitter_api_d {
   export {
-    twitter_api_d_BasicTweetHandler as BasicTweetHandler,
+    BasicTweetHandler$1 as BasicTweetHandler,
     twitter_api_d_LOCAL as LOCAL,
-    twitter_api_d_LocalTimezoneOffsetWithUTC as LocalTimezoneOffsetWithUTC,
-    twitter_api_d_TweetHandlerI as TweetHandlerI,
+    LocalTimezoneOffsetWithUTC$1 as LocalTimezoneOffsetWithUTC,
+    TweetHandlerI$1 as TweetHandlerI,
   };
 }
 
-declare const HIER_SEPARATOR = ".";
-declare function extractFields(tweet: Record<string, unknown>, fields: string[]): unknown[];
-declare function json2csv(_tweets: unknown, _fields: string[], _options?: unknown): never;
+/** nltk.twitter.common.extract_fields — pull (possibly nested) field values. */
+declare function extract_fields(tweet: Record<string, unknown>, fields: string[]): unknown[];
+/** nltk.twitter.common.json2csv — line-separated tweet JSON → CSV rows. */
+declare function json2csv(fp: Iterable<string> | string, outfile: string, fields: string[], encoding?: string, errors?: string, gzip_compress?: boolean): void;
+/** nltk.twitter.common.get_header_field_list */
+declare function get_header_field_list(main_fields: string[], entity_type: string, entity_fields: string[]): string[];
+/** nltk.twitter.common.json2csv_entities — one CSV row per entity. */
+declare function json2csv_entities(tweets_file: Iterable<string> | string, outfile: string, main_fields: string[], entity_type: string, entity_fields: string[], encoding?: string, errors?: string, gzip_compress?: boolean): void;
 
-declare const twitter_common_d_HIER_SEPARATOR: typeof HIER_SEPARATOR;
-declare const twitter_common_d_extractFields: typeof extractFields;
+declare const twitter_common_d_extract_fields: typeof extract_fields;
+declare const twitter_common_d_get_header_field_list: typeof get_header_field_list;
 declare const twitter_common_d_json2csv: typeof json2csv;
+declare const twitter_common_d_json2csv_entities: typeof json2csv_entities;
 declare namespace twitter_common_d {
   export {
-    twitter_common_d_HIER_SEPARATOR as HIER_SEPARATOR,
-    twitter_common_d_extractFields as extractFields,
+    twitter_common_d_extract_fields as extract_fields,
+    twitter_common_d_get_header_field_list as get_header_field_list,
     twitter_common_d_json2csv as json2csv,
+    twitter_common_d_json2csv_entities as json2csv_entities,
   };
 }
 
@@ -5680,8 +8351,27 @@ declare class LazyIteratorList<T> extends AbstractLazySequence<T> {
     get length(): number;
     get(index: number): T;
 }
-declare class Trie extends Map<string, unknown> {
-    insert(word: string, value?: unknown): void;
+/** Port of nltk.collections.Trie — a dict-subclass trie where ``self[key]``
+ * auto-vivifies a subtrie via ``__missing__`` and a complete string stores
+ * ``{Trie.LEAF: None}`` at its node. dict methods are inherited in Python;
+ * here they are explicit Map-compatible members. Preserves the
+ * ``dict.copy() -> dict`` quirk: copy() returns a plain Map, not a Trie.
+ */
+declare class Trie extends Map<unknown, unknown> {
+    static readonly LEAF = true;
+    constructor(strings?: Iterable<string> | null);
+    private missing;
+    insert(string: string): void;
+    get(key: unknown, defaultValue?: unknown): unknown;
+    /** Quirk preserved: nltk's Trie.copy() resolves to dict.copy(), which
+     * returns a plain dict (shallow), not a Trie. */
+    copy(): Map<unknown, unknown>;
+    static fromkeys(iterable: Iterable<unknown>, value?: unknown): Trie;
+    pop(key: unknown, defaultValue?: unknown): unknown;
+    popitem(): [unknown, unknown];
+    setdefault(key: unknown, defaultValue?: unknown): unknown;
+    update(other: Iterable<[unknown, unknown]> | Map<unknown, unknown> | Record<string, unknown>): void;
+    items(): MapIterator<[unknown, unknown]>;
     hasWord(word: string): boolean;
 }
 
@@ -5718,228 +8408,35 @@ declare namespace collections_d {
 }
 
 declare function addPy3Data(_path: string): void;
-declare const add_py3_data: typeof addPy3Data;
+declare const add_py3_data$1: typeof addPy3Data;
 declare function py3Data<T extends (...args: unknown[]) => unknown>(initFunc: T): T;
-declare const py3_data: typeof py3Data;
+declare const py3_data$1: typeof py3Data;
 
 declare const compat_d_addPy3Data: typeof addPy3Data;
-declare const compat_d_add_py3_data: typeof add_py3_data;
 declare const compat_d_py3Data: typeof py3Data;
-declare const compat_d_py3_data: typeof py3_data;
 declare namespace compat_d {
   export {
     compat_d_addPy3Data as addPy3Data,
-    compat_d_add_py3_data as add_py3_data,
+    add_py3_data$1 as add_py3_data,
     compat_d_py3Data as py3Data,
-    compat_d_py3_data as py3_data,
+    py3_data$1 as py3_data,
   };
 }
 
-declare class PathPointer {
-    toString(): string;
-}
-declare class FileSystemPathPointer extends PathPointer {
-    path: string;
-    constructor(path: string);
-}
-declare class BufferedGzipFile {
-    constructor(..._a: unknown[]);
-}
-declare class GzipFileSystemPathPointer extends FileSystemPathPointer {
-}
-declare class ZipFilePathPointer extends PathPointer {
-    zipfile: string;
-    entry: string;
-    constructor(zipfile: string, entry: string);
-}
-declare class LazyLoader {
-    constructor(..._a: unknown[]);
-}
-declare class OpenOnDemandZipFile {
-    constructor(..._a: unknown[]);
-}
-declare class SeekableUnicodeStreamReader {
-    constructor(..._a: unknown[]);
-}
-declare function find(..._a: unknown[]): never;
-declare function retrieve(..._a: unknown[]): never;
-declare function load(..._a: unknown[]): never;
-declare function showCfg(..._a: unknown[]): never;
-declare function clearCache(): void;
-declare const clear_cache: typeof clearCache;
-declare function openDatafile(..._a: unknown[]): never;
-declare const open_datafile: typeof openDatafile;
-declare function splitResourceUrl(..._a: unknown[]): never;
-declare function normalizeResourceUrl(..._a: unknown[]): never;
-declare function normalizeResourceName(..._a: unknown[]): never;
-declare function gzipOpenUnicode(..._a: unknown[]): never;
-
-type data_d_BufferedGzipFile = BufferedGzipFile;
-declare const data_d_BufferedGzipFile: typeof BufferedGzipFile;
-type data_d_FileSystemPathPointer = FileSystemPathPointer;
-declare const data_d_FileSystemPathPointer: typeof FileSystemPathPointer;
-type data_d_GzipFileSystemPathPointer = GzipFileSystemPathPointer;
-declare const data_d_GzipFileSystemPathPointer: typeof GzipFileSystemPathPointer;
-type data_d_LazyLoader = LazyLoader;
-declare const data_d_LazyLoader: typeof LazyLoader;
-type data_d_OpenOnDemandZipFile = OpenOnDemandZipFile;
-declare const data_d_OpenOnDemandZipFile: typeof OpenOnDemandZipFile;
-type data_d_PathPointer = PathPointer;
-declare const data_d_PathPointer: typeof PathPointer;
-type data_d_SeekableUnicodeStreamReader = SeekableUnicodeStreamReader;
-declare const data_d_SeekableUnicodeStreamReader: typeof SeekableUnicodeStreamReader;
-type data_d_ZipFilePathPointer = ZipFilePathPointer;
-declare const data_d_ZipFilePathPointer: typeof ZipFilePathPointer;
-declare const data_d_clearCache: typeof clearCache;
-declare const data_d_clear_cache: typeof clear_cache;
-declare const data_d_find: typeof find;
-declare const data_d_gzipOpenUnicode: typeof gzipOpenUnicode;
-declare const data_d_load: typeof load;
-declare const data_d_normalizeResourceName: typeof normalizeResourceName;
-declare const data_d_normalizeResourceUrl: typeof normalizeResourceUrl;
-declare const data_d_openDatafile: typeof openDatafile;
-declare const data_d_open_datafile: typeof open_datafile;
-declare const data_d_retrieve: typeof retrieve;
-declare const data_d_showCfg: typeof showCfg;
-declare const data_d_splitResourceUrl: typeof splitResourceUrl;
-declare namespace data_d {
-  export {
-    data_d_BufferedGzipFile as BufferedGzipFile,
-    data_d_FileSystemPathPointer as FileSystemPathPointer,
-    data_d_GzipFileSystemPathPointer as GzipFileSystemPathPointer,
-    data_d_LazyLoader as LazyLoader,
-    data_d_OpenOnDemandZipFile as OpenOnDemandZipFile,
-    data_d_PathPointer as PathPointer,
-    data_d_SeekableUnicodeStreamReader as SeekableUnicodeStreamReader,
-    data_d_ZipFilePathPointer as ZipFilePathPointer,
-    data_d_clearCache as clearCache,
-    data_d_clear_cache as clear_cache,
-    data_d_find as find,
-    data_d_gzipOpenUnicode as gzipOpenUnicode,
-    data_d_load as load,
-    data_d_normalizeResourceName as normalizeResourceName,
-    data_d_normalizeResourceUrl as normalizeResourceUrl,
-    data_d_openDatafile as openDatafile,
-    data_d_open_datafile as open_datafile,
-    data_d_retrieve as retrieve,
-    data_d_showCfg as showCfg,
-    data_d_splitResourceUrl as splitResourceUrl,
-  };
-}
-
-declare function decorator(caller: (fn: unknown, ...args: unknown[]) => unknown): (fn: (...args: unknown[]) => unknown) => (...args: unknown[]) => unknown;
-declare function decoratorFactory<T>(cls: new (...a: unknown[]) => T): (fn: unknown) => unknown;
+declare function decorator$1(caller: (fn: unknown, ...args: unknown[]) => unknown): (fn: (...args: unknown[]) => unknown) => (...args: unknown[]) => unknown;
+declare function decoratorFactory<T>(_cls: new (...a: unknown[]) => T): (fn: unknown) => unknown;
 declare function memoize<T extends (...args: unknown[]) => unknown>(fn: T): T;
 declare const getattr_: (obj: Record<string, unknown>, name: string, defaultThunk: () => unknown) => unknown;
 
-declare const decorators_d_decorator: typeof decorator;
 declare const decorators_d_decoratorFactory: typeof decoratorFactory;
 declare const decorators_d_getattr_: typeof getattr_;
 declare const decorators_d_memoize: typeof memoize;
 declare namespace decorators_d {
   export {
-    decorators_d_decorator as decorator,
+    decorator$1 as decorator,
     decorators_d_decoratorFactory as decoratorFactory,
     decorators_d_getattr_ as getattr_,
     decorators_d_memoize as memoize,
-  };
-}
-
-declare function configJava(..._a: unknown[]): never;
-declare const config_java: typeof configJava;
-declare function java(..._a: unknown[]): never;
-declare class UntrustedJarError extends Error {
-}
-declare class ReadError extends Error {
-}
-declare function readStr(..._a: unknown[]): never;
-declare const read_str: typeof readStr;
-declare function readInt(..._a: unknown[]): never;
-declare const read_int: typeof readInt;
-declare function readNumber(..._a: unknown[]): never;
-declare const read_number: typeof readNumber;
-declare function overridden(_method: unknown): boolean;
-declare function deprecated(_message: string): (_t: unknown, _k: string, d: PropertyDescriptor) => PropertyDescriptor;
-declare class Deprecated {
-    message: string;
-    constructor(message: string);
-}
-declare class Counter {
-    constructor(..._a: unknown[]);
-}
-declare function findFile(..._a: unknown[]): never;
-declare const find_file: typeof findFile;
-declare function findDir(..._a: unknown[]): never;
-declare const find_dir: typeof findDir;
-declare function findBinary(..._a: unknown[]): never;
-declare const find_binary: typeof findBinary;
-declare function findJar(..._a: unknown[]): never;
-declare const find_jar: typeof findJar;
-declare function sliceBounds(_seq: unknown, _slice: unknown): [number, number];
-declare const slice_bounds: typeof sliceBounds;
-declare function isWritable(_path: string): boolean;
-declare const is_writable: typeof isWritable;
-
-type internals_d_Counter = Counter;
-declare const internals_d_Counter: typeof Counter;
-type internals_d_Deprecated = Deprecated;
-declare const internals_d_Deprecated: typeof Deprecated;
-type internals_d_ReadError = ReadError;
-declare const internals_d_ReadError: typeof ReadError;
-type internals_d_UntrustedJarError = UntrustedJarError;
-declare const internals_d_UntrustedJarError: typeof UntrustedJarError;
-declare const internals_d_configJava: typeof configJava;
-declare const internals_d_config_java: typeof config_java;
-declare const internals_d_deprecated: typeof deprecated;
-declare const internals_d_findBinary: typeof findBinary;
-declare const internals_d_findDir: typeof findDir;
-declare const internals_d_findFile: typeof findFile;
-declare const internals_d_findJar: typeof findJar;
-declare const internals_d_find_binary: typeof find_binary;
-declare const internals_d_find_dir: typeof find_dir;
-declare const internals_d_find_file: typeof find_file;
-declare const internals_d_find_jar: typeof find_jar;
-declare const internals_d_isWritable: typeof isWritable;
-declare const internals_d_is_writable: typeof is_writable;
-declare const internals_d_java: typeof java;
-declare const internals_d_overridden: typeof overridden;
-declare const internals_d_readInt: typeof readInt;
-declare const internals_d_readNumber: typeof readNumber;
-declare const internals_d_readStr: typeof readStr;
-declare const internals_d_read_int: typeof read_int;
-declare const internals_d_read_number: typeof read_number;
-declare const internals_d_read_str: typeof read_str;
-declare const internals_d_sliceBounds: typeof sliceBounds;
-declare const internals_d_slice_bounds: typeof slice_bounds;
-declare namespace internals_d {
-  export {
-    internals_d_Counter as Counter,
-    internals_d_Deprecated as Deprecated,
-    internals_d_ReadError as ReadError,
-    internals_d_UntrustedJarError as UntrustedJarError,
-    internals_d_configJava as configJava,
-    internals_d_config_java as config_java,
-    internals_d_deprecated as deprecated,
-    internals_d_findBinary as findBinary,
-    internals_d_findDir as findDir,
-    internals_d_findFile as findFile,
-    internals_d_findJar as findJar,
-    internals_d_find_binary as find_binary,
-    internals_d_find_dir as find_dir,
-    internals_d_find_file as find_file,
-    internals_d_find_jar as find_jar,
-    internals_d_isWritable as isWritable,
-    internals_d_is_writable as is_writable,
-    internals_d_java as java,
-    internals_d_overridden as overridden,
-    internals_d_readInt as readInt,
-    internals_d_readNumber as readNumber,
-    internals_d_readStr as readStr,
-    internals_d_read_int as read_int,
-    internals_d_read_number as read_number,
-    internals_d_read_str as read_str,
-    internals_d_sliceBounds as sliceBounds,
-    internals_d_slice_bounds as slice_bounds,
   };
 }
 
@@ -6086,15 +8583,13 @@ declare namespace cli_d {
 }
 
 /** corpus.europarl_raw — shim (requires Europarl corpus data). */
-declare class EuroparlCorpusReader {
+declare class EuroparlCorpusReader$1 {
     constructor(..._a: unknown[]);
 }
 
-type corpus_europarl_raw_d_EuroparlCorpusReader = EuroparlCorpusReader;
-declare const corpus_europarl_raw_d_EuroparlCorpusReader: typeof EuroparlCorpusReader;
 declare namespace corpus_europarl_raw_d {
   export {
-    corpus_europarl_raw_d_EuroparlCorpusReader as EuroparlCorpusReader,
+    EuroparlCorpusReader$1 as EuroparlCorpusReader,
   };
 }
 
@@ -6111,5 +8606,1821 @@ declare class PorterStemmer {
     stem(token: string, to_lowercase?: boolean): string;
 }
 
-export { MAX_ALIGN_INPUT_LEN as ALINE_MAX_INPUT_LEN, APP, ARLSTem, ARLSTem2, Agenda, AlignmentInfo, AllExpression, AnnotationTask, ApplicationExpression$1 as ApplicationExpression, ApplicationRuleSet, BLOCK_COMPARISON, BackwardApplication, BackwardBx, BackwardCombinator, BackwardComposition, BackwardSx, BackwardT, BackwardTypeRaiseRule, BaseModelBuilderCommand, BaseProverCommand, BaseTheoremToolCommand, BigramAssocMeasures, BigramCollocationFinder, BigramTagger, BinaryCombinatorRule, BindingDict, BindingException, BllipParser, Boxer, BrillTagger, BrillTaggerTrainer, CCGCat, CCGChart, CCGChartParser, CCGEdge, CCGLeafEdge, CCGLexicon, CCGVar, CFG, CRFTagger, Categories, CfgReadingCommand, ChartParser, Chat80CorpusReader, CistemStemmer, Clause, ClusterI, CompositionRuleSet, ConcordanceIndex, ConditionalExponentialTextClassifier, ConditionalProbDist, ConstantExpression$1 as ConstantExpression, ContextIndex, ContextTagger, CoreNLPParser, CorpusReader, CrossValidationProbDist, DEFAULT_NE_GRAMMAR, DRS, DecisionTreeClassifier, DecisionTreeTextClassifier, DefaultRuleSet, DefaultTagger, Dendrogram, DendrogramNode, DictionaryProbDist, Direction, DiscourseTester, Downloader, DrtAbstractVariableExpression, DrtApplicationExpression, DrtConcatenation, DrtConstantExpression, DrtEqualityExpression, DrtEventVariableExpression, DrtFunctionVariableExpression, DrtGlueDemo, DrtGlueReadingCommand, DrtIndividualVariableExpression, DrtLambdaExpression, DrtNegatedExpression, DrtOrExpression, DrtParser, DrtProposition, DrtTokens, DrtVariableExpression, EMClusterer, EarleyChartParser, EventVariableExpression, ExistsExpression, ExpectedMoreTokensException, Expression$1 as Expression, FeatStruct, FeatureCFG, FeatureChartParser, FeatureEarleyChartParser, type FeatureMaxentOptions, type FeatureSet, type FeatureTreeOptions, ForwardApplication, ForwardCombinator, ForwardComposition, ForwardSubstitution, ForwardT, ForwardTypeRaiseRule, FreqDist, FunctionVariableExpression, FunctionalCategory, GAACClusterer, GAACluster, GAAClusterer, LanguageIndependent as GaleChurchLanguageIndependent, Glue, GlueDict, HeldoutProbDist, HiddenMarkovModelTagger, HiddenMarkovModelTrainer, HoleSemantics, HunPosTagger, Counts as IBMCounts, IBMModel1, IBMModel2, IBMModel3, IBMModel4, IBMModel5, MIN_PROB as IBM_MIN_PROB, ISRIStemmer, ISRI_STOP_WORDS, ImmutableTree, ImpExpression, IndividualVariableExpression, IotaExpression, KMeansClusterer, KneserNeyProbDist, type LabeledFeatureset, LambdaExpression, LancasterStemmer, LeftCornerChartParser, LegalitySyllableTokenizer, Atom as LinearAtom, GlueFormula$1 as LinearGlueFormula, LinearLogicParser, LinearSvmTextClassifier, LogicalExpressionException, LogisticTextClassifier, MAX_ALIGN_BLOCKS, MAX_GENERATE_OPERATIONS, MAX_PHRASE_EXTRACTION_DEFAULT_LEN, Mace, MaceCommand, MaltParser, MaxEntTextClassifier, MaxentClassifier, MegamMaxentClassifier, MinimalSet, ModelBuilder, ModelBuilderCommand, ModelBuilderCommandDecorator, NISTTokenizer, NaiveBayesClassifier, NaiveBayesTextClassifier, NativeFreqDistStream, NegatedExpression, NgramTagger, NonmonotonicProver, PCFG, Paice, ParExpression, ParentedTree, PerceptronTagger, PerceptronTextClassifier, PorterStemmer, Pos, type PositiveFeatureOptions, PositiveNaiveBayesClassifier, PositiveNaiveBayesTextClassifier, PrimitiveCategory, type ProbDistLike, Prover, Prover9, Prover9Command, Prover9CommandParent, Prover9Exception, Prover9FatalException, Prover9LimitExceededException, Prover9Parent, ProverCommand, ProverCommandDecorator, QuadgramAssocMeasures, QuadgramCollocationFinder, RSLPStemmer, ReadingCommand, RecursiveDescentParser, RegexpStemmer, RegexpTagger, ReppTokenizer, ResolutionProver, ResolutionProverCommand, ProverParseError$1 as ResolutionProverParseError, RteClassifier, RustDecisionTreeClassifier, RustMaxentClassifier, RustNaiveBayesClassifier, SEM_PACKAGE, SExprTokenizer, SNOWBALL_LANGUAGES, STEM_PACKAGE, LogicParser as SemLogicParser, SennaChunkTagger, SennaClassifier, SennaNERTagger, SennaTagger, SentimentAnalyzer, SentimentIntensityAnalyzer, SequentialBackoffTagger, ShiftReduceParser, SklearnClassifier, type SNOWBALL_LANGUAGES as SnowballLanguages, SnowballStemmer, StackDecoder, StandardFormat, StanfordNERTagger, StanfordPOSTagger, StanfordParser, StanfordSegmenter, StanfordTokenizer, SubstitutionRuleSet, SvmClassifier, SyllableTokenizer, TAG_PACKAGE, TBL_PACKAGE, TRANSLATE_PACKAGE, HC as TT_HC, LC as TT_LC, TableauProver, TableauProverCommand, ProverParseError as TableauProverParseError, TadmMaxentClassifier, TblFeature, TblRule, Template, Text, TextCat, TextFeatureVectorizer, TextTilingTokenizer, TheoremToolCommand, TheoremToolCommandDecorator, TnT, Token, Tokens, ToolboxData, ToolboxSettings, TransitionParser, TreePrettyPrinter, TrigramAssocMeasures, TrigramCollocationFinder, TrigramTagger, TypeRaiseRuleSet, UndefinedError, UndirectedComposition, UndirectedFunctionApplication, UndirectedSubstitution, UndirectedTypeRaise, UnexpectedTokenException, UnigramTagger, VOCABULARY_INTRODUCTION, Variable, VectorSpaceClusterer, ViterbiParser, WasmNltk, WekaClassifier, Word, WordNet, WordNetLemmatizer, _build_tgrep_parser, _internal, addBlankLines, addDefaultFields, add_blank_lines, add_default_fields, alignBlocks, alignLogProb, alignWords, alignBlocks as align_blocks, alignLogProb as align_log_prob, alignWords as align_words, align as alineAlign, delta as alineDelta, diff as alineDiff, align as aline_align, delta as aline_delta, diff as aline_diff, ancestors, app_chartparser_app_d as app_chartparser_app_ns, app_chunkparser_app_d as app_chunkparser_app_ns, app_collocations_app_d as app_collocations_app_ns, app_concordance_app_d as app_concordance_app_ns, app_nemo_app_d as app_nemo_app_ns, app_d as app_ns, app_rdparser_app_d as app_rdparser_app_ns, app_srparser_app_d as app_srparser_app_ns, app_wordfreq_app_d as app_wordfreq_app_ns, app_wordnet_app_d as app_wordnet_app_ns, augParseCategory, augParseCategory as aug_parse_category, averageObservedAgreement, averageObservedAgreement as average_observed_agreement, babelizeShell, babelize_shell, backwardOnly, backwardOnly as backward_only, barendregtNormalize, barendregtNormalize as barendregt_normalize, bigramWindowStatsAscii, bigramWindowStatsAsciiIds, bigramWindowStatsAscii as bigram_window_stats_ascii, bigramWindowStatsAsciiIds as bigram_window_stats_ascii_ids, book, bothBackward, bothForward, bothBackward as both_backward, bothForward as both_forward, bracketToTree, bracketToTree as bracket_to_tree, bubble, buildTemplates, buildTgrepParser, buildTemplates as build_templates, buildTgrepParser as build_tgrep_parser, chartParse, chartParse as chart_parse, chat_eliza_d as chat_eliza_ns, chat_iesha_d as chat_iesha_ns, chat_d as chat_ns, chat_rude_d as chat_rude_ns, chat_suntsu_d as chat_suntsu_ns, chat_util_d as chat_util_ns, chat_zen_d as chat_zen_ns, chunkIobIdsNative, chunkTreeToIob, chunkIobIdsNative as chunk_iob_ids_native, chunkTreeToIob as chunk_tree_to_iob, cistemStem, cistemStem as cistem_stem, clausify, clearTemplateRegistry, clearTemplateRegistry as clear_template_registry, cli_d as cli_ns, collapseUnaryChains, collapseUnaryChains as collapse_unary_chains, collections_d as collections_ns, compat_d as compat_ns, computeAsciiMetrics, computeCompositionSemantics, computeFunctionSemantics, computeSemantics, computeSubstitutionSemantics, computeTypeRaisedSemantics, computeAsciiMetrics as compute_ascii_metrics, computeCompositionSemantics as compute_composition_semantics, computeFunctionSemantics as compute_function_semantics, computeSemantics as compute_semantics, computeSubstitutionSemantics as compute_substitution_semantics, computeTypeRaisedSemantics as compute_type_raised_semantics, convertToProver9, convertToProver9 as convert_to_prover9, cooperStore, cooperStore as cooper_store, copyVector, copyVector as copy_vector, corpusGleu, corpusLepor, corpusRibes, corpus_europarl_raw_d as corpus_europarl_raw_ns, corpusGleu as corpus_gleu, corpusLepor as corpus_lepor, corpusRibes as corpus_ribes, cosineDistance, cosineDistance as cosine_distance, countNgramsAscii, countNormalizedTokensAscii, countNormalizedTokensAsciiScalar, countTokensAscii, countTokensAsciiScalar, countUniqueNgramsAscii, countUniqueTokensAscii, countNgramsAscii as count_ngrams_ascii, countNormalizedTokensAscii as count_normalized_tokens_ascii, countNormalizedTokensAsciiScalar as count_normalized_tokens_ascii_scalar, countTokensAscii as count_tokens_ascii, countTokensAsciiScalar as count_tokens_ascii_scalar, countUniqueNgramsAscii as count_unique_ngrams_ascii, countUniqueTokensAscii as count_unique_tokens_ascii, cykRecognizeIdsNative, cykRecognizeIdsNative as cyk_recognize_ids_native, data_d as data_ns, decorators_d as decorators_ns, demo$6 as demo, dependencyEvaluate, dependencyParse, dependencyParseText, dependencyEvaluate as dependency_evaluate, dependencyParse as dependency_parse, dependencyParseText as dependency_parse_text, dotProduct, dotProduct as dot_product, downloadCorpusRegistry, downloadCorpusRegistry as download_corpus_registry, draw_cfg_d as draw_cfg_ns, draw_dispersion_d as draw_dispersion_ns, draw_d as draw_ns, draw_table_d as draw_table_ns, draw_tree_d as draw_tree_ns, draw_util_d as draw_util_ns, earleyParse, earleyRecognize, earleyParse as earley_parse, earleyRecognize as earley_recognize, errorList, errorList as error_list, euclideanDistance, euclideanDistance as euclidean_distance, evaluateLanguageModelIdsNative, evaluateLanguageModelIdsNative as evaluate_language_model_ids_native, everygramsAsciiNative, everygramsAsciiNative as everygrams_ascii_native, exactMatch, exactMatch as exact_match, extractRels, extractRels as extract_rels, featureChartParse, featureEarleyParse, featureChartParse as feature_chart_parse, featureEarleyParse as feature_earley_parse, findIncreasingSequences, findIncreasingSequences as find_increasing_sequences, flattenSparseBatch, flattenSparseBatch as flatten_sparse_batch, forwardOnly, forwardOnly as forward_only, fromString, fromString as from_string, trace as galeChurchTrace, trace as gale_church_trace, generate, generateChomsky, generateSentences, generate_chomsky, generateSentences as generate_sentences, growDiagFinalAnd, growDiagFinalAnd as grow_diag_final_and, helpInfo, helpInfo as help_info, hmmViterbiIdsNative, hmmViterbiIdsNative as hmm_viterbi_ids_native, factorial as ibmFactorial, factorial as ibm_factorial, innermostFunction, innermostFunction as innermost_function, internals_d as internals_ns, invertDict, invertDict as invert_dict, is_eventvar, is_funcvar, is_indvar, jsontags_d as jsontags_ns, kendallTau, kendallTau as kendall_tau, kmeansFitEuclideanNative, kmeansFitEuclideanNative as kmeans_fit_euclidean_native, langnames_d as langnames_ns, lazyimport_d as lazyimport_ns, leadins, leftCornerParse, leftCornerParse as left_corner_parse, legalityTokenize, legalityTokenize as legality_tokenize, lengthPenalty, lengthPenalty as length_penalty, alignment as leporAlignment, alignment as lepor_alignment, lesk, lfgParse, lfgParse as lfg_parse, linearScoresSparseIdsNative, linearTextTrainNative, linearTrainSparseIdsNative, linearScoresSparseIdsNative as linear_scores_sparse_ids_native, linearTextTrainNative as linear_text_train_native, linearTrainSparseIdsNative as linear_train_sparse_ids_native, loadBundledMiniCorpus, loadConditionalExponentialTextClassifier, loadCorpusBundleFromIndex, loadCorpusRegistryManifest, loadDecisionTreeTextClassifier, loadLinearSvmTextClassifier, loadLogisticTextClassifier, loadMaxEntTextClassifier, loadNaiveBayesTextClassifier, loadPerceptronTaggerModel, loadPerceptronTextClassifier, loadPositiveNaiveBayesTextClassifier, loadWordNet, loadWordNetExtended, loadWordNetMini, loadWordNetPacked, loadBundledMiniCorpus as load_bundled_mini_corpus, loadConditionalExponentialTextClassifier as load_conditional_exponential_text_classifier, loadCorpusBundleFromIndex as load_corpus_bundle_from_index, loadCorpusRegistryManifest as load_corpus_registry_manifest, loadDecisionTreeTextClassifier as load_decision_tree_text_classifier, loadLinearSvmTextClassifier as load_linear_svm_text_classifier, loadLogisticTextClassifier as load_logistic_text_classifier, loadMaxEntTextClassifier as load_max_ent_text_classifier, loadNaiveBayesTextClassifier as load_naive_bayes_text_classifier, loadPerceptronTaggerModel as load_perceptron_tagger_model, loadPerceptronTextClassifier as load_perceptron_text_classifier, loadPositiveNaiveBayesTextClassifier as load_positive_naive_bayes_text_classifier, loadWordNet as load_word_net, loadWordNetExtended as load_word_net_extended, loadWordNetMini as load_word_net_mini, loadWordNetPacked as load_word_net_packed, makeVariableExpression, makeVariableExpression as make_variable_expression, mapTag, mapTreeLabels, mapTag as map_tag, mapTreeLabels as map_tree_labels, meanVector, meanVector as mean_vector, memoize$1 as memoize, merge, meteorScore, meteorScore as meteor_score, mostGeneralUnification, mostGeneralUnification as most_general_unification, naiveBayesLogScoresIdsNative, naiveBayesLogScoresIdsNative as naive_bayes_log_scores_ids_native, nativeLibraryPath, nativeTokenizerAvailable, nativeLibraryPath as native_library_path, neChunk, neChunkIob, neChunk as ne_chunk, neChunkIob as ne_chunk_iob, nextUniqueCounterValue, nextUniqueCounterValue as next_unique_counter_value, ngramFreqDistHashAscii, ngramPositionalPenalty, ngramFreqDistHashAscii as ngram_freq_dist_hash_ascii, ngramPositionalPenalty as ngram_positional_penalty, ngramsAsciiNative, ngramsAsciiNative as ngrams_ascii_native, nistInternationalTokenize, nistTokenize, nistInternationalTokenize as nist_international_tokenize, nistTokenize as nist_tokenize, normalizeTokens, normalizeTokensAsciiNative, normalizeVector, normalizeTokens as normalize_tokens, normalizeTokensAsciiNative as normalize_tokens_ascii_native, normalizeVector as normalize_vector, objects, openccgTinytiny, openccgTinytiny as openccg_tinytiny, p9ReturnCodes, p9ReturnCodes as p9_return_codes, pairwise, parseApplication, parseBrownTagged, parseCategory, parseCfgGrammar, parseConllChunked, parseConllTagged, parseFeatStruct, parseFeatureCfgGrammar, parseLexicon, parsePcfgGrammar, parseSFMString, parseSents, parseSubscripts, parseTextWithCfg, parseTextWithEarley, parseTextWithFeatureCfg, parseTextWithFeatureEarley, parseTextWithLeftCorner, parseTextWithPcfg, parseTextWithRecursiveDescent, parseApplication as parse_application, parseBrownTagged as parse_brown_tagged, parseCategory as parse_category, parseCfgGrammar as parse_cfg_grammar, parseConllChunked as parse_conll_chunked, parseConllTagged as parse_conll_tagged, parseFeatStruct as parse_feat_struct, parseFeatureCfgGrammar as parse_feature_cfg_grammar, parseLexicon as parse_lexicon, parsePcfgGrammar as parse_pcfg_grammar, parseSents as parse_sents, parseSFMString as parse_sfm_string, parseSubscripts as parse_subscripts, parseTextWithCfg as parse_text_with_cfg, parseTextWithEarley as parse_text_with_earley, parseTextWithFeatureCfg as parse_text_with_feature_cfg, parseTextWithFeatureEarley as parse_text_with_feature_earley, parseTextWithLeftCorner as parse_text_with_left_corner, parseTextWithPcfg as parse_text_with_pcfg, parseTextWithRecursiveDescent as parse_text_with_recursive_descent, perceptronPredictBatchNative, perceptronPredictBatchNative as perceptron_predict_batch_native, extract as phraseExtract, phraseExtraction, extract as phrase_extract, phraseExtraction as phrase_extraction, porterStemAscii, porterStemAsciiTokens, porterStemAscii as porter_stem_ascii, porterStemAsciiTokens as porter_stem_ascii_tokens, posTag, posTagAsciiNative, posTagPerceptronAscii, pos_tag, posTagAsciiNative as pos_tag_ascii_native, posTagPerceptronAscii as pos_tag_perceptron_ascii, preparePerceptronTaggerModel, preparePerceptronTaggerModel as prepare_perceptron_tagger_model, prettyPrint, prettyPrint as pretty_print, probabilisticChartParse, probabilisticChartParse as probabilistic_chart_parse, quick, recursiveDescentParse, recursiveDescentParse as recursive_descent_parse, regexpChunkParse, regexpChunkParse as regexp_chunk_parse, clause as relextractClause, clause as relextract_clause, removeBlanks, remove_blanks, resetUniqueVariableCounter, resetUniqueVariableCounter as reset_unique_variable_counter, revword, rootSemrep, rootSemrep as root_semrep, rslpStem, rslpStem as rslp_stem, rteClassify, rteClassify as rte_classify, selection, sem_package, sentenceGleu, sentenceLepor, sentenceRibes, sentenceTokenizePunktAsciiNative, sentenceGleu as sentence_gleu, sentenceLepor as sentence_lepor, sentenceRibes as sentence_ribes, sentenceTokenizePunktAsciiNative as sentence_tokenize_punkt_ascii_native, sexprTokenize, sexprTokenize as sexpr_tokenize, sigmaExp, sigmaSkip, sigmaSub, sigmaExp as sigma_exp, sigmaSkip as sigma_skip, sigmaSub as sigma_sub, singleMeteorScore, singleMeteorScore as single_meteor_score, skipgramsAsciiNative, skipgramsAsciiNative as skipgrams_ascii_native, skolemize, snowballStem, snowballStem as snowball_stem, socialTokenizerNative, sonorityTokenize, sonorityTokenize as sonority_tokenize, sortFields, sort_fields, spearmanRho, spearmanRho as spearman_rho, standardTemplates, standardTemplates as standard_templates, stemMatch, stemMatch as stem_match, stem_package, subjects, sumVectors, sumVectors as sum_vectors, synsetDefinition, synsetDefinition as synset_definition, tabdata_d as tabdata_ns, tag_package, tagsetMapping, tagsetMapping as tagset_mapping, demo$7 as tblDemo, demo$7 as tbl_demo, tbl_package, tgrepCompile, tgrepNodes, tgrepPositions, tgrepTokenize, tgrep_compile, tgrep_nodes, tgrep_positions, tgrep_tokenize, toSFMString, toSettingsString, to_settings_string, to_sfm_string, tokenFreqDistHashAscii, tokenFreqDistIdsAscii, tokenFreqDistHashAscii as token_freq_dist_hash_ascii, tokenFreqDistIdsAscii as token_freq_dist_ids_ascii, tokenizeAsciiNative, tokenizeAsciiNative as tokenize_ascii_native, tokenizerRequestNative, topPmiBigramsAscii, topPmiBigramsAscii as top_pmi_bigrams_ascii, trainConditionalExponentialTextClassifier, trainDecisionTreeTextClassifier, trainLinearSvmTextClassifier, trainLogisticTextClassifier, trainMaxEntTextClassifier, trainNaiveBayesTextClassifier, trainPerceptronTextClassifier, trainPositiveNaiveBayesTextClassifier, trainConditionalExponentialTextClassifier as train_conditional_exponential_text_classifier, trainDecisionTreeTextClassifier as train_decision_tree_text_classifier, trainLinearSvmTextClassifier as train_linear_svm_text_classifier, trainLogisticTextClassifier as train_logistic_text_classifier, trainMaxEntTextClassifier as train_max_ent_text_classifier, trainNaiveBayesTextClassifier as train_naive_bayes_text_classifier, trainPerceptronTextClassifier as train_perceptron_text_classifier, trainPositiveNaiveBayesTextClassifier as train_positive_naive_bayes_text_classifier, translate_package, treeDepth, treeLeaves, treeToBracket, treeDepth as tree_depth, treeLeaves as tree_leaves, treeToBracket as tree_to_bracket, treepositionsNoLeaves, treepositions_no_leaves, smooth as ttSmooth, smooth as tt_smooth, twitter_api_d as twitter_api_ns, twitter_common_d as twitter_common_ns, twitter_d as twitter_ns, twitter_twitter_demo_d as twitter_twitter_demo_ns, twitter_twitterclient_d as twitter_twitterclient_ns, twitter_util_d as twitter_util_ns, uniqueAncestors, uniqueVariable, unique_ancestors, uniqueVariable as unique_variable, untag, untagSents, untagSents as untag_sents, vectorAdd, vectorDiv, vectorNorm, vectorScale, vectorSub, vectorAdd as vector_add, vectorDiv as vector_div, vectorNorm as vector_norm, vectorScale as vector_scale, vectorSub as vector_sub, verbs, wordRankAlignment, word_finder, wordRankAlignment as word_rank_alignment, wordfinder, wordnetMorphyAsciiNative, wordnetMorphyAsciiNative as wordnet_morphy_ascii_native, zeroVector, zeroVector as zero_vector };
-export type { AbstractCCGCategory, AgreementDistanceFn, AlignedSentInput, AlignmentPair, AnnotationLabel, AnnotationTriple, AnyEdge, BigramScoreFn, BrillSentence, BrillToken, BrillTrainerOptions, BrillTrainingStats, CCGCategory, CfgGrammar, CfgProduction, ChartRule, ChunkElement, ChunkNode, ChunkedSentence, ChunkedToken, ConcordanceLine, Condition, ConditionalExponentialExample, ConditionalExponentialSerialized, CorpusFile, CorpusMiniIndex, CorpusRegistryEntry, CorpusRegistryManifest, TaggedSentence$1 as CorpusTaggedSentence, TaggedToken$2 as CorpusTaggedToken, DecisionTreeExample, DecisionTreeSerialized, DependencyArc, DependencyEvalNode, DependencyParse, DirectedBinaryCombinator, DirectionChar, DiscourseTesterOptions, DistanceFn, Drs, EMOptions, FeatureCfgGrammar, FeatureMap, FeatureProduction, FeatureSpec, FeatureSymbol, GoldSentence, HiddenMarkovModelTrainerOptions, Estimator as HmmEstimator, Scorer as IBMScore, InitialTaggerLike, IobRow, KMeansOptions, LanguageDistance, LinearModelExample, LinearSvmSerialized, LogisticSerialized, MaxEntExample, MaxEntPrediction, MaxEntSerialized, MeteorOptions, MeteorStemmer, NaiveBayesExample, NaiveBayesPrediction, NaiveBayesSerialized, NativeLinearTextModel, NativeLinearTrainingAlgorithm, NativeLmModelType, NeChunkOptions, NeIobTuple, NgramTaggerOptions, ParseTree, PcfgGrammar, PcfgProduction, PerceptronExample, PerceptronSerialized, PositiveNaiveBayesSerialized, ProbDist, ProbabilisticParse, QuadgramScoreFn, Restriction, RuleEffect, SFMField, TaggedToken$1 as SeqTaggedToken, SparseVector, StreamBigramFreq, StreamConditionalFreq, TGrepPattern, TGrepPredicate, TagContext, TaggedToken$3 as TaggedToken, TaggerModel, TextCatOptions, TreePosition$1 as TreePosition, TreePositionsOrder, TrigramScoreFn, UndirectedBinaryCombinator, UntaggedSentence, VaderOptions, VaderPolarity, Vector, VectorizerOptions, VectorizerSerialized, WordFinderResult, WordNetLookupQuery, WordNetLookupResult, WordNetMiniPayload, WordNetPos, WordNetSynset, Synset as WsdSynset };
+type TaggedToken = {
+    token: string;
+    tag: string;
+};
+type ChunkTree = {
+    label: string;
+    children: Array<ChunkTree | TaggedToken>;
+};
+type Piece = ChunkTree | TaggedToken;
+declare function tagPattern2rePattern(tagPattern: string): string;
+declare const tag_pattern2re_pattern: typeof tagPattern2rePattern;
+declare class ChunkString {
+    private readonly rootLabel;
+    private readonly pieces;
+    private readonly debug;
+    static readonly IN_CHUNK_PATTERN = "(?=[^{]*\\})";
+    static readonly IN_STRIP_PATTERN = "(?=[^}]*(\\{|$))";
+    private _str;
+    constructor(rootLabel: string, pieces: Piece[], debug?: number);
+    get str(): string;
+    private _verify;
+    to_chunkstruct(chunkLabel?: string): ChunkTree;
+    toChunkstruct(chunkLabel?: string): ChunkTree;
+    xform(regexp: RegExp | string, repl: string): void;
+    toString(): string;
+}
+declare class RegexpChunkRule {
+    readonly regexp: RegExp;
+    readonly repl: string;
+    private readonly _descr;
+    constructor(regexp: RegExp, repl: string, _descr: string);
+    apply(chunkstr: ChunkString): void;
+    descr(): string;
+    static fromstring(s: string): RegexpChunkRule;
+    toString(): string;
+}
+declare class ChunkRule extends RegexpChunkRule {
+    readonly pattern: string;
+    constructor(pattern: string, descr: string);
+    toString(): string;
+}
+declare class StripRule extends RegexpChunkRule {
+    readonly pattern: string;
+    constructor(pattern: string, descr: string);
+}
+declare class UnChunkRule extends RegexpChunkRule {
+    readonly pattern: string;
+    constructor(pattern: string, descr: string);
+}
+declare class MergeRule extends RegexpChunkRule {
+    readonly leftTagPattern: string;
+    readonly rightTagPattern: string;
+    constructor(leftTagPattern: string, rightTagPattern: string, descr: string);
+}
+declare class SplitRule extends RegexpChunkRule {
+    readonly leftTagPattern: string;
+    readonly rightTagPattern: string;
+    constructor(leftTagPattern: string, rightTagPattern: string, descr: string);
+}
+declare class ExpandLeftRule extends RegexpChunkRule {
+    readonly leftTagPattern: string;
+    readonly rightTagPattern: string;
+    constructor(leftTagPattern: string, rightTagPattern: string, descr: string);
+}
+declare class ExpandRightRule extends RegexpChunkRule {
+    readonly leftTagPattern: string;
+    readonly rightTagPattern: string;
+    constructor(leftTagPattern: string, rightTagPattern: string, descr: string);
+}
+declare class ChunkRuleWithContext extends RegexpChunkRule {
+    readonly leftTagPattern: string;
+    readonly tagPattern: string;
+    readonly rightTagPattern: string;
+    constructor(leftTagPattern: string, tagPattern: string, rightTagPattern: string, descr: string);
+}
+type IobRow = {
+    token: string;
+    tag: string;
+    iob: string;
+};
+declare function tree2conlltags(tree: ChunkTree): IobRow[];
+declare function conlltags2tree(rows: IobRow[], chunkLabel?: string, rootLabel?: string): ChunkTree;
+declare class ChunkScore {
+    private readonly chunkLabel;
+    private _correct;
+    private _guessed;
+    private _tp;
+    private _fp;
+    private _fn;
+    private _tagsCorrect;
+    private _tagsTotal;
+    private _measuresNeedUpdate;
+    constructor(chunkLabel?: string);
+    private _chunksets;
+    score(correct: ChunkTree, guessed: ChunkTree): void;
+    private _count;
+    private _updateMeasures;
+    accuracy(): number;
+    precision(): number;
+    recall(): number;
+    f_measure(alpha?: number): number;
+    fMeasure(alpha?: number): number;
+    missed(): Piece[];
+    incorrect(): Piece[];
+    correct(): Piece[];
+    guessed(): Piece[];
+    chunked(): Piece[];
+    get length(): number;
+    repr(): string;
+    toString(): string;
+}
+declare class RegexpChunkParser {
+    private readonly _rules;
+    private readonly chunkLabel;
+    private readonly rootLabel;
+    protected readonly _trace: number;
+    constructor(_rules: RegexpChunkRule[], chunkLabel?: string, rootLabel?: string, trace?: number);
+    rules(): RegexpChunkRule[];
+    private _apply;
+    parse(chunkStruct: ChunkTree | TaggedToken[], trace?: number): ChunkTree;
+    parse_one(chunkStruct: ChunkTree | TaggedToken[]): ChunkTree;
+    parseOne(chunkStruct: ChunkTree | TaggedToken[]): ChunkTree;
+    parse_all(chunkStruct: ChunkTree | TaggedToken[]): ChunkTree[];
+    parseAll(chunkStruct: ChunkTree | TaggedToken[]): ChunkTree[];
+    parse_sents(sents: Iterable<ChunkTree | TaggedToken[]>): ChunkTree[];
+    parseSents(sents: Iterable<ChunkTree | TaggedToken[]>): ChunkTree[];
+    evaluate(gold: ChunkTree[]): ChunkScore;
+    accuracy(gold: ChunkTree[]): ChunkScore;
+}
+declare class RegexpParser {
+    private readonly _trace;
+    private readonly _grammar;
+    private readonly _loop;
+    private readonly _stages;
+    constructor(grammar: string | RegexpChunkParser[], rootLabel?: string, loop?: number, trace?: number);
+    private _readGrammar;
+    private _addStage;
+    grammar(): string;
+    parse(chunkStruct: ChunkTree | TaggedToken[], trace?: number): ChunkTree;
+    parse_one(chunkStruct: ChunkTree | TaggedToken[]): ChunkTree;
+    parseOne(chunkStruct: ChunkTree | TaggedToken[]): ChunkTree;
+    parse_all(chunkStruct: ChunkTree | TaggedToken[]): ChunkTree[];
+    parseAll(chunkStruct: ChunkTree | TaggedToken[]): ChunkTree[];
+    parse_sents(sents: Iterable<ChunkTree | TaggedToken[]>): ChunkTree[];
+    parseSents(sents: Iterable<ChunkTree | TaggedToken[]>): ChunkTree[];
+    evaluate(gold: ChunkTree[]): ChunkScore;
+    accuracy(gold: ChunkTree[]): ChunkScore;
+}
+
+/** CPython `random.Random(seed)` - MT19937 with init_by_array keying for int seeds. */
+declare class PythonRandom {
+    private mt;
+    private index;
+    constructor(seed?: number | PythonRandom);
+    private gen;
+    /** CPython `random()`: 53-bit float from two 32-bit draws. */
+    random(): number;
+}
+declare class Vocabulary {
+    readonly counts: FreqDist<string>;
+    readonly unkLabel: string;
+    private readonly _cutoff;
+    private _len;
+    constructor(counts?: Iterable<string> | FreqDist<string> | Record<string, number>, unkCutoff?: number, unkLabel?: string);
+    get unk_label(): string;
+    get cutoff(): number;
+    get length(): number;
+    update(items?: Iterable<string> | FreqDist<string> | Record<string, number>): void;
+    private lookupOne;
+    lookup(words: unknown): unknown;
+    lookupStr(words: string | Iterable<unknown>): string | unknown[];
+    get(item: string): number;
+    contains(item: string): boolean;
+    [Symbol.iterator](): Generator<string>;
+    equals(other: Vocabulary): boolean;
+    toString(): string;
+}
+declare class NgramCounter {
+    private readonly _counts;
+    readonly unigrams: FreqDist<string>;
+    private _distinct;
+    constructor(ngramText?: Iterable<Iterable<string[]>>);
+    private orderCounts;
+    update(ngramText: Iterable<Iterable<string[]>>): void;
+    private noteNew;
+    N(): number;
+    /** `counter[n]` -> ConditionalFreqDist (n>=2) or unigram FreqDist (n=1); `counter['w']` -> unigram count; `counter[[ctx...]]` -> context FreqDist. */
+    get(item: number): ConditionalFreqDist<string[], string> | FreqDist<string>;
+    get(item: string): number;
+    get(item: string[]): FreqDist<string>;
+    contextDist(context: string[]): FreqDist<string>;
+    get ngramOrderCount(): number;
+    toString(): string;
+}
+declare abstract class Smoothing {
+    protected readonly vocab: Vocabulary;
+    protected readonly counts: NgramCounter;
+    constructor(vocab: Vocabulary, counts: NgramCounter);
+    protected ctxDist(context: string[]): FreqDist<string>;
+    abstract unigram_score(word: string): number;
+    abstract alpha_gamma(word: string, context: string[]): [number, number];
+}
+declare class WittenBell extends Smoothing {
+    alpha_gamma(word: string, context: string[]): [number, number];
+    private gammaOf;
+    unigram_score(word: string): number;
+}
+declare class AbsoluteDiscounting extends Smoothing {
+    readonly discount: number;
+    constructor(vocab: Vocabulary, counts: NgramCounter, discount?: number);
+    alpha_gamma(word: string, context: string[]): [number, number];
+    private gammaOf;
+    unigram_score(word: string): number;
+}
+declare class KneserNey extends Smoothing {
+    private readonly _order;
+    readonly discount: number;
+    constructor(vocab: Vocabulary, counts: NgramCounter, _order: number, discount?: number);
+    unigram_score(word: string): number;
+    alpha_gamma(word: string, context: string[]): [number, number];
+    private continuationCounts;
+}
+declare abstract class LanguageModel {
+    readonly order: number;
+    readonly vocab: Vocabulary;
+    readonly counts: NgramCounter;
+    constructor(order: number, vocabulary?: Vocabulary, counter?: NgramCounter);
+    fit(text: Iterable<Iterable<string[]>>, vocabularyText?: Iterable<string>): void;
+    score(word: string, context?: string[] | null): number;
+    abstract unmasked_score(word: string, context: string[] | null): number;
+    logscore(word: string, context?: string[] | null): number;
+    context_counts(context: string[] | null): FreqDist<string>;
+    contextCounts(context: string[] | null): FreqDist<string>;
+    entropy(textNgrams: Iterable<string[]>): number;
+    perplexity(textNgrams: Iterable<string[]>): number;
+    generate(num_words?: number, text_seed?: Iterable<string>, random_seed?: number | PythonRandom): string | string[];
+}
+declare class MLE extends LanguageModel {
+    unmasked_score(word: string, context: string[] | null): number;
+}
+declare class Lidstone extends LanguageModel {
+    readonly gamma: number;
+    constructor(gamma: number, order: number, vocabulary?: Vocabulary, counter?: NgramCounter);
+    unmasked_score(word: string, context: string[] | null): number;
+}
+declare class Laplace extends Lidstone {
+    constructor(order: number, vocabulary?: Vocabulary, counter?: NgramCounter);
+}
+declare class StupidBackoff extends LanguageModel {
+    readonly alpha: number;
+    constructor(alpha: number | undefined, order: number, vocabulary?: Vocabulary, counter?: NgramCounter);
+    unmasked_score(word: string, context: string[] | null): number;
+}
+declare class InterpolatedLanguageModel extends LanguageModel {
+    protected readonly estimator: Smoothing;
+    constructor(smoothingCls: new (vocab: Vocabulary, counts: NgramCounter, ...args: never[]) => Smoothing, order: number, vocabulary?: Vocabulary, counter?: NgramCounter, buildEstimator?: (vocab: Vocabulary, counts: NgramCounter) => Smoothing);
+    unmasked_score(word: string, context: string[] | null): number;
+}
+declare class WittenBellInterpolated extends InterpolatedLanguageModel {
+    constructor(order: number, vocabulary?: Vocabulary, counter?: NgramCounter);
+}
+declare class AbsoluteDiscountingInterpolated extends InterpolatedLanguageModel {
+    readonly discount: number;
+    constructor(order: number, discount?: number, vocabulary?: Vocabulary, counter?: NgramCounter);
+}
+declare class KneserNeyInterpolated extends InterpolatedLanguageModel {
+    readonly discount: number;
+    constructor(order: number, discount?: number, vocabulary?: Vocabulary, counter?: NgramCounter);
+}
+
+/**
+ * Real Snowball (Porter2-family) stemmers, ported line-for-line from
+ * NLTK's nltk/stem/snowball.py (the upstream NLTK 3.10.3 source), which itself
+ * is a Python translation of the Snowball spec at http://snowball.tartarus.org/.
+ *
+ * Supported languages: danish, dutch, english, french, german, italian,
+ * norwegian, portuguese, romanian, russian, spanish, swedish.
+ *
+ * Behavior notes:
+ * - Each language stemmer lowercases its input first (exactly like NLTK;
+ *   the Russian stemmer does NOT lowercase, matching NLTK).
+ * - Unsupported languages throw an Error mirroring NLTK's ValueError:
+ *   "The language '<language>' is not supported."
+ */
+declare function suffixReplace(original: string, old: string, neu: string): string;
+declare function prefix_replace(original: string, old: string, neu: string): string;
+
+type Iter<T> = Iterable<T>;
+/** nltk.util.usage — print the public methods of an object/class. */
+declare function usage(obj: unknown): void;
+/** nltk.util.in_idle — false outside CPython IDLE. */
+declare function in_idle(): boolean;
+/** nltk.util.pr — pretty print a slice of a data sequence. */
+declare function pr<T>(data: Iter<T>, start?: number, end?: number): void;
+/** nltk.util.print_string — print a string wrapped on whitespace. */
+declare function print_string(s: string, width?: number): void;
+/** nltk.util.tokenwrap — join tokens and wrap on whitespace. */
+declare function tokenwrap(tokens: readonly string[], separator?: string, width?: number): string;
+/** nltk.util.cut_string — width-bounded cut aware of combining marks. */
+declare function cut_string(s: string, width?: number): string;
+/** nltk.util.Index — defaultdict(list) built from pairs. */
+declare class Index<K, V> extends Map<K, V[]> {
+    constructor(pairs: Iterable<readonly [K, V]>);
+}
+/** nltk.util.re_show — print string with matched substrings marked. */
+declare function re_show(regexp: string, string: string, left?: string, right?: string): void;
+/** nltk.util.filestring — read a path or file-like into a string. */
+declare function filestring(f: string | {
+    read(): string;
+}, allowedDir?: string): string;
+/** nltk.util.breadth_first — BFS generator (no cycle check). */
+declare function breadth_first<T>(tree: T, children?: (node: T) => Iterable<T>, maxdepth?: number): Generator<T>;
+/** nltk.util.edge_closure — BFS edge generator discarding cycles. */
+declare function edge_closure<T>(tree: T, children?: (node: T) => Iterable<T>, maxdepth?: number, verbose?: boolean): Generator<readonly [T, T]>;
+/** nltk.util.edges2dot — render edges in DOT language. */
+declare function edges2dot<T>(edges: Iterable<readonly [T, T]>, shapes?: Record<string, string>, attr?: Record<string, string>): string;
+/** nltk.util.unweighted_minimum_spanning_dict — BFS MST as adjacency map. */
+declare function unweighted_minimum_spanning_dict<T>(tree: T, children?: (node: T) => Iterable<T>): Map<T, T[]>;
+/** nltk.util.unweighted_minimum_spanning_digraph — MST rendered in DOT. */
+declare function unweighted_minimum_spanning_digraph<T>(tree: T, children?: (node: T) => Iterable<T>, shapes?: Record<string, string>, attr?: Record<string, string>): string;
+/** nltk.util.acyclic_breadth_first — BFS discarding cycles. */
+declare function acyclic_breadth_first<T>(tree: T, children?: (node: T) => Iterable<T>, maxdepth?: number, verbose?: boolean): Generator<T>;
+type Nested<T> = T | Nested<T>[];
+/** nltk.util.acyclic_depth_first — nested-list DFS discarding all cycles. */
+declare function acyclic_depth_first<T>(tree: T, children?: (node: T) => Iterable<T>, depth?: number, cutMark?: string, traversed?: Set<T>, verbose?: boolean): Nested<T | string>[];
+/** nltk.util.acyclic_branches_depth_first — DFS discarding within-branch cycles only. */
+declare function acyclic_branches_depth_first<T>(tree: T, children?: (node: T) => Iterable<T>, depth?: number, cutMark?: string, traversed?: Set<T>, verbose?: boolean): Nested<T | string>[];
+/** nltk.util.acyclic_dic2tree — adjacency dict to nested list tree. */
+declare function acyclic_dic2tree<T>(node: T, dic: Map<T, T[]> | Record<string, T[]>): Nested<T>[];
+/** nltk.util.unweighted_minimum_spanning_tree — BFS MST as nested lists. */
+declare function unweighted_minimum_spanning_tree<T>(tree: T, children?: (node: T) => Iterable<T>): Nested<T>[];
+/** nltk.util.guess_encoding — decode bytes trying utf-8 then latin-1. */
+declare function guess_encoding(data: Uint8Array): [string, string];
+/** nltk.util.unique_list — dedupe preserving order. */
+declare function unique_list<T>(xs: Iterable<T>): T[];
+/** nltk.util.invert_dict — invert dict, collecting iterable values into lists. */
+declare function invert_dict<K, V>(d: Map<K, V | Iterable<V>> | Record<string, V | Iterable<V>>): Map<unknown, unknown>;
+/** nltk.util.clean_html — raises in NLTK; mirrored. */
+declare function clean_html(_html: string): never;
+/** nltk.util.clean_url — raises in NLTK; mirrored. */
+declare function clean_url(_url: string): never;
+/** nltk.util.flatten — flatten mixed nested arrays. */
+declare function flatten<T>(...args: unknown[]): T[];
+/** nltk.util.pad_sequence — pad a sequence for ngram extraction. */
+declare function pad_sequence<T>(sequence: Iterable<T>, n: number, options?: {
+    pad_left?: boolean;
+    pad_right?: boolean;
+    left_pad_symbol?: T;
+    right_pad_symbol?: T;
+}): Generator<T>;
+declare const MAX_EVERYGRAMS_DEFAULT_LEN = 256;
+/** nltk.util.everygrams — all ngrams from min_len to max_len. */
+declare function everygrams<T>(sequence: Iterable<T>, minLen?: number, maxLen?: number, kwargs?: {
+    pad_left?: boolean;
+    pad_right?: boolean;
+    left_pad_symbol?: T;
+    right_pad_symbol?: T;
+}): Generator<T[]>;
+declare const SKIPGRAM_SENTINEL: unique symbol;
+/** nltk.util.skipgrams — ngrams allowing up to k skipped tokens. */
+declare function skipgrams<T>(sequence: Iterable<T>, n: number, k: number, kwargs?: {
+    pad_left?: boolean;
+    pad_right?: boolean;
+    left_pad_symbol?: T;
+    right_pad_symbol?: T;
+}): Generator<(T | typeof SKIPGRAM_SENTINEL)[]>;
+/** nltk.util.binary_search_file — find the line whose first word is key in a sorted file. */
+declare function binary_search_file(path: string, key: string, cache?: Map<number, [number, string]>, cacheDepth?: number): string | null;
+declare function set_proxy(proxy: string | null, user?: string | null, _password?: string): void;
+/** nltk.util.elementtree_indent — indent an {text, tail, children} element tree. */
+declare function elementtree_indent(elem: {
+    text?: string | null;
+    tail?: string | null;
+    children?: {
+        text?: string | null;
+        tail?: string | null;
+        children?: unknown[];
+    }[];
+}, level?: number): void;
+/** nltk.util.choose — binomial coefficient nCk. */
+declare function choose(n: number, k: number): number;
+/** nltk.internals.raise_unorderable_types — ordering guard used by chart rules. */
+declare function raise_unorderable_types(ordering: string, a: unknown, b: unknown): never;
+/** nltk.util.deprecated — decorator marking a callable deprecated (JS adaptation: wraps with a console.warn). */
+declare function deprecated<T extends (...args: never[]) => unknown>(message: string, fn: T): T;
+/** nltk.util.parallelize_preprocess — sequential fallback when processes <= 1 (JS runs single-process). */
+declare function parallelize_preprocess<T, U>(func: (x: T) => U, iterator: Iterable<T>, _processes?: number, _progressBar?: boolean): Generator<U>;
+type SliceLike = {
+    start?: number | null;
+    stop?: number | null;
+    step?: number | null;
+};
+type Indexable = {
+    length: number;
+    [index: number]: unknown;
+} | readonly unknown[];
+/** nltk.internals.slice_bounds — resolve a slice to (start, stop[, step]) bounds. */
+declare function slice_bounds(sequence: Indexable, sliceObj: SliceLike, allowStep?: boolean): [number, number] | [number, number, number];
+
+/** Shared interactive-demo stub — NLTK demos are interactive scripts. */
+declare function demo(): never;
+
+/** nltk.tag.perceptron.open_datafile — opens a file inside an nltk_data resource. */
+declare function open_datafile(path: PathPointer, fileName?: string, encoding?: string | null): SeekableUnicodeStreamReader;
+/** nltk.classify.maxent.call_megam — requires the external megam binary. */
+declare function call_megam(_args: string[]): never;
+/** nltk.classify.maxent.call_tadm — requires the external tadm binary. */
+declare function call_tadm(_args: string[]): never;
+/** nltk.classify.maxent.train_maxent_classifier_with_megam — external binary path. */
+declare function train_maxent_classifier_with_megam(): never;
+
+/** nltk.tokenize.punkt.allowlisted_pickle_load — JSON-adapted params loader lands with the punkt object model. */
+declare function allowlisted_pickle_load(_path: string): never;
+/** nltk.tokenize.punkt.punkt_pickle_load — pickle entry point. */
+declare function punkt_pickle_load(_path: string): never;
+/** nltk.picklesec.pickle_load — CPython pickle deserialization entry point. */
+declare function pickle_load(_file: unknown): never;
+/** nltk.parse.chart.demo_grammar — lands with the chart demo batch. */
+declare function demo_grammar(): never;
+/** nltk.chunk.regexp.demo_eval — interactive demo. */
+declare function demo_eval(): never;
+
+declare class Fraction {
+    readonly numerator: bigint;
+    readonly denominator: bigint;
+    constructor(numerator?: number | bigint | Fraction | string, denominator?: number | bigint);
+    private static _fromString;
+    private static _fromFloat;
+    static from_float(f: number): Fraction;
+    static from_decimal(dec: number | bigint): Fraction;
+    static from_number(num: number | bigint | Fraction): Fraction;
+    private _binop;
+    add(other: Fraction | number | bigint): Fraction;
+    sub(other: Fraction | number | bigint): Fraction;
+    mul(other: Fraction | number | bigint): Fraction;
+    truediv(other: Fraction | number | bigint): Fraction;
+    neg(): Fraction;
+    abs(): Fraction;
+    eq(other: Fraction | number | bigint): boolean;
+    compare(other: Fraction | number | bigint): number;
+    is_integer(): boolean;
+    as_integer_ratio(): [bigint, bigint];
+    conjugate(): Fraction;
+    limit_denominator(maxDenominator?: number | bigint): Fraction;
+    toNumber(): number;
+    valueOf(): number;
+    toString(): string;
+}
+
+type Subst = [RegExp, string];
+declare class NLTKWordTokenizer {
+    static readonly STARTING_QUOTES: Subst[];
+    static readonly ENDING_QUOTES: Subst[];
+    static readonly PUNCTUATION: Subst[];
+    static readonly PARENS_BRACKETS: Subst;
+    static readonly CONVERT_PARENTHESES: Subst[];
+    static readonly DOUBLE_DASHES: Subst;
+    static readonly CONTRACTIONS2: RegExp[];
+    static readonly CONTRACTIONS3: RegExp[];
+    static readonly CONTRACTIONS4: RegExp[];
+    tokenize(text: string, convertParentheses?: boolean, returnStr?: boolean): string[] | string;
+    tokenize(text: string, convert_parentheses?: boolean, return_str?: boolean): string[] | string;
+    span_tokenize(text: string): Generator<[number, number]>;
+    spanTokenize(text: string): Generator<[number, number]>;
+    tokenize_sents(strings: readonly string[]): string[][];
+    span_tokenize_sents(strings: readonly string[]): Generator<[number, number][]>;
+}
+
+declare class SemError extends Error {
+    constructor(message: string);
+}
+declare class Undefined extends SemError {
+    constructor(message: string);
+}
+/** Port of nltk.sem.evaluate.trace: print "Calling <fn> with <args>" then return f(*args). */
+declare function sem_trace<A extends unknown[], R>(f: (...args: A) => R, ...args: A): R;
+/** Port of nltk.sem.evaluate.is_rel. */
+declare function is_rel(s: Set<unknown>): boolean;
+/** Port of nltk.sem.evaluate.set2rel. */
+declare function set2rel(s: Set<unknown>): Set<unknown[]>;
+/** Port of nltk.sem.evaluate.arity. */
+declare function arity(rel: Set<unknown[]>): number;
+/** Port of nltk.sem.evaluate.read_valuation. */
+declare function read_valuation(s: string, encoding?: string): Valuation;
+declare const readValuation: typeof read_valuation;
+
+declare class UnparseableInputException extends Error {
+    constructor(message: string);
+}
+declare class AbstractBoxerDrs {
+    constructor();
+}
+declare class BoxerCard {
+    constructor();
+}
+declare class BoxerDrs {
+    constructor();
+}
+declare class BoxerDrsParser {
+    constructor();
+}
+declare class BoxerEq {
+    constructor();
+}
+declare class BoxerIndexed {
+    constructor();
+}
+declare class BoxerNamed {
+    constructor();
+}
+declare class BoxerNot {
+    constructor();
+}
+declare class BoxerOr {
+    constructor();
+}
+declare class BoxerOutputDrsParser {
+    constructor();
+}
+declare class BoxerPred {
+    constructor();
+}
+declare class BoxerProp {
+    constructor();
+}
+declare class BoxerRel {
+    constructor();
+}
+declare class BoxerWhq {
+    constructor();
+}
+declare class NltkDrtBoxerDrsInterpreter {
+    constructor();
+}
+declare class PassthroughBoxerDrsInterpreter {
+    constructor();
+}
+declare function find_binary_iter(_name: string): never;
+declare class DrsDrawer {
+    constructor();
+}
+declare class CanvasFrame {
+    constructor();
+}
+declare class DrsWidget {
+    constructor();
+}
+declare class ShowText {
+    constructor();
+}
+declare function test_draw(): never;
+declare function decorator(): never;
+declare function foldemo(): never;
+declare function folmodel(): never;
+declare function propdemo(): never;
+declare function satdemo(): never;
+declare function demo_read_depgraph(): never;
+
+declare class DependencyGraphError extends Error {
+    constructor(message: string);
+}
+interface DependencyNode {
+    address: number;
+    word: string | null;
+    lemma: string | null;
+    ctag: string | null;
+    tag: string | null;
+    feats: string | null;
+    head: number | null;
+    rel: string;
+    deps: Record<string, number[]>;
+}
+type CellExtractor = (cells: string[]) => {
+    number: number;
+    word: string;
+    lemma?: string;
+    ctag?: string;
+    tag?: string;
+    feats?: string;
+    head: number | null;
+    rel: string;
+};
+declare class DependencyGraph {
+    nodes: DependencyNode[];
+    root: DependencyNode | null;
+    stream: string[];
+    cellSeparator: string;
+    topRelationLabel: string;
+    constructor(treeStr?: string, options?: {
+        cellExtractor?: CellExtractor;
+        zeroBased?: boolean;
+        cellSeparator?: string;
+        topRelationLabel?: string;
+    });
+    /** Port of DependencyGraph.load. */
+    load(data: string | string[], options?: {
+        cellExtractor?: CellExtractor;
+        cellSeparator?: string;
+        zeroBased?: boolean;
+    }): void;
+    private makeRootNode;
+    get nodelist(): DependencyNode[];
+    /** Port of DependencyGraph.to_conll: styles 3, 4 and 10. */
+    to_conll(style?: 3 | 4 | 10): string;
+    /** Port of DependencyGraph.triples: ((head word, ctag), rel, [(dep word, ctag)]). */
+    triples(node?: DependencyNode | number): Generator<[[string | null, string | null], string, Array<[string | null, string | null]>]>;
+    /** Port of DependencyGraph.add_arc. */
+    add_arc(headAddress: number, modAddress: number): void;
+    /** Port of DependencyGraph.remove_by_address. */
+    remove_by_address(address: number): void;
+    /**
+     * Port of DependencyGraph.contains_cycle. NLTK quirk: for conll-loaded
+     * graphs ``deps`` is a rel->addresses mapping, and the DFS iterates the
+     * mapping (yielding rel names, not addresses); rel names are filtered by
+     * the node-membership guard, so no cycle is ever reported. Only graphs
+     * built with list-style deps can yield a cycle path. Returns the path
+     * (possibly empty) like NLTK's list/None truthiness contract.
+     */
+    contains_cycle(): number[] | false;
+    /** DFS over deps keys; see contains_cycle note for the dict-iteration quirk. */
+    getCyclePath(): number[] | false;
+    /** Port of DependencyGraph.connect_graph (attach cycle roots to node 0). */
+    connect_graph(): void;
+}
+
+/** Ports of nltk.parse.util CONLL conversion helpers. */
+/** Port of nltk.parse.util.taggedsent_to_conll: yields CONLL lines for one tagged sentence. */
+declare function taggedsent_to_conll(sentence: Iterable<[string, string]>): Generator<string>;
+declare const taggedSentToConll: typeof taggedsent_to_conll;
+/** Port of nltk.parse.util.taggedsents_to_conll: emits a blank line after each sentence. */
+declare function taggedsents_to_conll(sentences: Iterable<Iterable<[string, string]>>): Generator<string>;
+declare const taggedSentsToConll: typeof taggedsents_to_conll;
+
+declare const ARC_STANDARD = "arc-standard";
+declare const ARC_EAGER = "arc-eager";
+/** nltk.parse.transitionparser.Configuration — stack/buffer/arcs triple. */
+declare class Configuration {
+    stack: number[];
+    buffer: number[];
+    arcs: Array<[number, string, number]>;
+    private readonly tokens;
+    private readonly maxAddress;
+    constructor(depGraph: DependencyGraph);
+    get max_address(): number;
+    private checkInformative;
+    private arcDeps;
+    /** Port of Configuration.extract_features (Kubler/McDonald/Nivre table 3.2). */
+    extract_features(): string[];
+    extractFeatures(): string[];
+    toString(): string;
+}
+/** nltk.parse.transitionparser.Transition — arc-standard / arc-eager operators. */
+declare class Transition {
+    static readonly LEFT_ARC = "LEFTARC";
+    static readonly RIGHT_ARC = "RIGHTARC";
+    static readonly SHIFT = "SHIFT";
+    static readonly REDUCE = "REDUCE";
+    static readonly ARC_STANDARD = "arc-standard";
+    static readonly ARC_EAGER = "arc-eager";
+    private readonly algo;
+    constructor(algOption: string);
+    /** Mutates conf; returns -1 when the precondition fails (NLTK returns -1/None). */
+    left_arc(conf: Configuration, relation: string): -1 | undefined;
+    leftArc(conf: Configuration, relation: string): -1 | undefined;
+    right_arc(conf: Configuration, relation: string): -1 | undefined;
+    rightArc(conf: Configuration, relation: string): -1 | undefined;
+    reduce(conf: Configuration): -1 | undefined;
+    shift(conf: Configuration): -1 | undefined;
+}
+/** nltk.parse.projectivedependencyparser.DependencySpan. */
+declare class DependencySpan {
+    private readonly startIndex;
+    private readonly endIndex;
+    private readonly headIndex;
+    private readonly arcs;
+    private readonly tags;
+    constructor(startIndex: number, endIndex: number, headIndex: number, arcs: readonly number[], tags: readonly string[]);
+    head_index(): number;
+    get start_index(): number;
+    get end_index(): number;
+    get span_arcs(): readonly number[];
+    get span_tags(): readonly string[];
+    /** The (start, end, head, tuple(arcs)) comparison key Python orders on. */
+    comparisonTuple(): readonly [number, number, number, readonly number[]];
+    /** Python __eq__ on the comparison key. */
+    equals(other: unknown): boolean;
+    /** Python __lt__ on the comparison key. */
+    lessThan(other: DependencySpan): boolean;
+    /** Deterministic identity used by ChartCell's Python set semantics. */
+    comparisonKey(): string;
+    repr(): string;
+    toString(): string;
+}
+/** nltk.parse.projectivedependencyparser.ChartCell — dedups by span key like a Python set. */
+declare class ChartCell {
+    private readonly x;
+    private readonly y;
+    private readonly entries;
+    constructor(x: number, y: number);
+    add(span: DependencySpan): void;
+    get size(): number;
+    values(): DependencySpan[];
+    toString(): string;
+}
+/** nltk.parse.nonprojectivedependencyparser.DependencyScorerI — abstract interface. */
+declare class DependencyScorerI {
+    constructor();
+    train(_graphs: Iterable<DependencyGraph>): void;
+    score(_graph: DependencyGraph): number[][][];
+}
+/** nltk.parse.nonprojectivedependencyparser.DemoScorer — fixed Keith Hall matrix. */
+declare class DemoScorer extends DependencyScorerI {
+    train(_graphs: Iterable<DependencyGraph>): void;
+    score(_graph: DependencyGraph): number[][][];
+}
+/** nltk.parse.nonprojectivedependencyparser.NaiveBayesDependencyScorer. */
+declare class NaiveBayesDependencyScorer extends DependencyScorerI {
+    private classifier;
+    train(graphs: Iterable<DependencyGraph>): void;
+    score(graph: DependencyGraph): number[][][];
+}
+/** nltk.parse.pchart.ProbabilisticTreeEdge — TreeEdge carrying an edge probability. */
+declare class ProbabilisticTreeEdge extends TreeEdge {
+    private readonly probValue;
+    constructor(prob: number, span: [number, number], lhs: GrammarSymbol, rhs: readonly GrammarSymbol[], dot?: number);
+    prob(): number;
+    key(): string;
+    static from_production(production: Production, index: number, p?: number): ProbabilisticTreeEdge;
+    static fromProduction(production: Production, index: number, p?: number): ProbabilisticTreeEdge;
+    move_dot_forward(newEnd: number): ProbabilisticTreeEdge;
+}
+/** nltk.parse.pchart.ProbabilisticLeafEdge — prob() is always 1.0. */
+declare class ProbabilisticLeafEdge extends LeafEdge {
+    prob(): number;
+}
+/**
+ * nltk.parse.pchart.ProbabilisticTree / nltk.parse.viterbi.ProbabilisticTree —
+ * Tree + ProbabilisticMixIn; constructor follows the runtime-first Tree
+ * adaptation (runtime, node, children, then {prob|logprob}).
+ */
+declare class ProbabilisticTree<L = string> extends Tree<L> {
+    private probSlot;
+    private logprobSlot;
+    constructor(runtime: ParsingRuntime, node: string, children?: Iterable<Tree<L> | L>, probKwargs?: {
+        prob?: number;
+        logprob?: number;
+    });
+    set_prob(prob: number): void;
+    setProb(prob: number): void;
+    set_logprob(logprob: number): void;
+    setLogprob(logprob: number): void;
+    prob(): number | null;
+    logprob(): number | null;
+    static convert<L>(runtime: ParsingRuntime, value: Tree<L> | L): ProbabilisticTree<L> | L;
+}
+/** nltk.parse.util.extract_test_sentences — pure string parser. */
+declare function extract_test_sentences(input: string | Uint8Array, commentChars?: string, encoding?: string): Array<[string[], boolean | number | null]>;
+declare function extractTestSentences(input: string | Uint8Array, commentChars?: string, encoding?: string): Array<[string[], boolean | number | null]>;
+
+declare class CoreNLPServerError extends Error {
+    constructor(message: string);
+}
+declare class FeatStructNonterminal {
+    constructor();
+}
+declare class FeatureChart {
+    constructor();
+}
+declare class FeatureIncrementalChart {
+    constructor();
+}
+declare class FeatureTreeEdge {
+    constructor();
+}
+declare class InstantiateVarsChart {
+    constructor();
+}
+declare class FeatureFundamentalRule {
+    constructor();
+}
+declare class FeatureSingleEdgeFundamentalRule {
+    constructor();
+}
+declare class FeatureBottomUpPredictRule {
+    constructor();
+}
+declare class FeatureBottomUpPredictCombineRule {
+    constructor();
+}
+declare class FeatureTopDownInitRule {
+    constructor();
+}
+declare class FeatureTopDownPredictRule {
+    constructor();
+}
+declare class FeatureEmptyPredictRule {
+    constructor();
+}
+declare class FeatureScannerRule {
+    constructor();
+}
+declare class FeaturePredictorRule {
+    constructor();
+}
+declare class FeatureCompleterRule {
+    constructor();
+}
+declare class FeatureCompleteFundamentalRule {
+    constructor();
+}
+declare class FeatureBottomUpChartParser {
+    constructor();
+}
+declare class FeatureBottomUpLeftCornerChartParser {
+    constructor();
+}
+declare class FeatureTopDownChartParser {
+    constructor();
+}
+declare class FeatureIncrementalChartParser {
+    constructor();
+}
+declare class FeatureIncrementalBottomUpChartParser {
+    constructor();
+}
+declare class FeatureIncrementalBottomUpLeftCornerChartParser {
+    constructor();
+}
+declare class FeatureIncrementalTopDownChartParser {
+    constructor();
+}
+declare class FeatureGrammar {
+    constructor();
+}
+declare function find_variables(): never;
+declare function unify(): never;
+declare class IncrementalChart {
+    constructor();
+}
+declare class IncrementalChartParser {
+    constructor();
+}
+declare class IncrementalBottomUpChartParser {
+    constructor();
+}
+declare class IncrementalBottomUpLeftCornerChartParser {
+    constructor();
+}
+declare class IncrementalLeftCornerChartParser {
+    constructor();
+}
+declare class IncrementalTopDownChartParser {
+    constructor();
+}
+declare class PredictorRule {
+    constructor();
+}
+declare class ScannerRule {
+    constructor();
+}
+declare class CompleterRule {
+    constructor();
+}
+declare class CompleteFundamentalRule {
+    constructor();
+}
+declare class FilteredCompleteFundamentalRule {
+    constructor();
+}
+declare class ProbabilisticFundamentalRule {
+    constructor();
+}
+declare class SingleEdgeProbabilisticFundamentalRule {
+    constructor();
+}
+declare class ProbabilisticBottomUpInitRule {
+    constructor();
+}
+declare class ProbabilisticBottomUpPredictRule {
+    constructor();
+}
+declare class BottomUpProbabilisticChartParser {
+    constructor();
+}
+declare class InsideChartParser {
+    constructor();
+}
+declare class LongestChartParser {
+    constructor();
+}
+declare class RandomChartParser {
+    constructor();
+}
+declare class UnsortedChartParser {
+    constructor();
+}
+declare class ProjectiveDependencyParser {
+    constructor();
+}
+declare class ProbabilisticProjectiveDependencyParser {
+    constructor();
+}
+declare class NonprojectiveDependencyParser {
+    constructor();
+}
+declare class ProbabilisticNonprojectiveParser {
+    constructor();
+}
+declare class TestGrammar {
+    constructor();
+}
+
+declare class SteppingRecursiveDescentParser {
+    constructor();
+}
+declare class SteppingShiftReduceParser {
+    constructor();
+}
+declare class CoreNLPServer {
+    constructor();
+}
+declare class CoreNLPDependencyParser {
+    constructor();
+}
+declare class GenericCoreNLPParser {
+    constructor();
+}
+
+/** Real nltk.data.ZipFilePathPointer (re-exported to keep reviewed provenance). */
+declare class ZipFilePathPointer extends ZipFilePathPointer$1 {
+}
+declare function find_jar_iter(): never;
+declare function try_port(): never;
+declare function transform(): never;
+declare function find_dir(): never;
+declare function find_jars_within_path(): never;
+declare function find_malt_model(): never;
+declare function find_maltparser(): never;
+declare function malt_regex_tagger(): never;
+declare function run_profile(): never;
+declare function conll_demo(): never;
+declare function conll_file_demo(): never;
+declare function cycle_finding_demo(): never;
+declare function dot2img(): never;
+declare function malt_demo(): never;
+declare function hall_demo(): never;
+declare function nonprojective_conll_parse_demo(): never;
+declare function rule_based_demo(): never;
+declare function arity_parse_demo(): never;
+declare function projective_prob_parse_demo(): never;
+declare function projective_rule_parse_demo(): never;
+
+type EncodingSpec = string | null | Record<string, string> | Array<[string, string]>;
+declare class CorpusReader {
+    protected _fileids: string[];
+    protected _root: PathPointer;
+    protected _readme: string;
+    protected _license: string;
+    protected _citation: string;
+    protected _encoding: EncodingSpec;
+    protected _tagset: string | null;
+    constructor(root: string | PathPointer, fileids: string | string[], encoding?: EncodingSpec, tagset?: string | null);
+    repr(): string;
+    toString(): string;
+    ensure_loaded(): void;
+    ensureLoaded(): void;
+    readme(): string;
+    license(): string;
+    citation(): string;
+    fileids(): string[];
+    abspath(fileid: string): PathPointer;
+    abspaths(fileids?: string | string[] | null, includeEncoding?: boolean, includeFileid?: boolean): PathPointer[] | Array<[PathPointer, string | null]> | Array<[PathPointer, string | null, string]>;
+    raw(fileids?: string | string[] | null): string;
+    open(file: string): SeekableUnicodeStreamReader;
+    encoding(file: string): string | null;
+    get root(): PathPointer;
+}
+interface CategorizedInit {
+    cat_pattern?: string;
+    cat_map?: Record<string, string[]>;
+    cat_file?: string;
+    cat_delimiter?: string;
+}
+declare class CategorizedCorpusReaderBase extends CorpusReader {
+    _catPattern: string | null;
+    _catMap: Record<string, string[]> | null;
+    _catFile: string | null;
+    _catDelimiter: string | null;
+    private _f2c;
+    private _c2f;
+    protected _initCategories(): void;
+    categories(fileids?: string | string[] | null): string[];
+    fileids(categories?: string | string[] | null): string[];
+    _resolve(fileids: string | string[] | null | undefined, categories: string | string[] | null | undefined): string | string[] | null | undefined;
+    rawWithCategories(fileids?: string | string[] | null, categories?: string | string[] | null): string;
+}
+declare class CategorizedCorpusReader extends CategorizedCorpusReaderBase {
+    constructor(root: string | PathPointer, fileids: string | string[], encoding?: EncodingSpec, tagset?: string | null, catInit?: CategorizedInit);
+}
+declare class SyntaxCorpusReader extends CorpusReader {
+    protected _parse(_s: string): unknown;
+    protected _word(_s: string): unknown;
+    protected _tag(_s: string, _tagset?: string | null): unknown;
+    protected _read_block(_stream: SeekableUnicodeStreamReader): unknown[];
+    protected _read_parsed_sent_block(stream: SeekableUnicodeStreamReader): unknown[];
+    protected _read_tagged_sent_block(stream: SeekableUnicodeStreamReader, tagset?: string | null): unknown[];
+    protected _read_sent_block(stream: SeekableUnicodeStreamReader): unknown[];
+    protected _read_word_block(stream: SeekableUnicodeStreamReader): unknown[];
+    protected _read_tagged_word_block(stream: SeekableUnicodeStreamReader, tagset?: string | null): unknown[];
+    parsed_sents(fileids?: string | string[] | null): unknown;
+    parsedSents(fileids?: string | string[] | null): unknown;
+    tagged_sents(fileids?: string | string[] | null, tagset?: string | null): unknown;
+    taggedSents(fileids?: string | string[] | null, tagset?: string | null): unknown;
+    sents(fileids?: string | string[] | null): unknown;
+    tagged_words(fileids?: string | string[] | null, tagset?: string | null): unknown;
+    taggedWords(fileids?: string | string[] | null, tagset?: string | null): unknown;
+    words(fileids?: string | string[] | null): unknown;
+}
+/** nltk.corpus.util.LazyCorpusLoader — defers corpus construction to first use. */
+declare class LazyCorpusLoader {
+    private readonly name;
+    private readonly readerCls;
+    private readonly kwargs;
+    private loaded;
+    private readonly subdir;
+    constructor(name: string, readerCls: new (root: PathPointer, ...args: unknown[]) => CorpusReader, args?: unknown[], kwargs?: Record<string, unknown>);
+    private _args;
+    private load;
+    /** Forwarded calls: materialize on first use, then delegate to the reader. */
+    ensure_loaded(): void;
+    ensureLoaded(): void;
+    fileids(...args: unknown[]): unknown;
+    raw(...args: unknown[]): unknown;
+    words(...args: unknown[]): unknown;
+    sents(...args: unknown[]): unknown;
+    paras(...args: unknown[]): unknown;
+    call(method: string, args?: unknown[]): unknown;
+    get(): CorpusReader;
+    repr(): string;
+}
+
+type BlockReader<T> = (stream: SeekableUnicodeStreamReader) => T[];
+/** nltk.corpus.reader.util.StreamBackedCorpusView — lazily read token blocks. */
+declare class StreamBackedCorpusView<T = unknown> extends AbstractLazySequence<T> {
+    protected _fileid: string | PathPointer;
+    protected _encoding: string | null;
+    protected _stream: SeekableUnicodeStreamReader | null;
+    protected _toknum: number[];
+    protected _filepos: number[];
+    protected _len: number | null;
+    protected _eofpos: number;
+    protected _cache: [number, number, T[] | null];
+    _current_toknum: number | null;
+    _current_blocknum: number | null;
+    read_block: (stream: SeekableUnicodeStreamReader) => T[];
+    constructor(fileid: string | PathPointer, blockReader?: BlockReader<T>, startpos?: number, encoding?: string | null);
+    get fileid(): string | PathPointer;
+    protected _open(): void;
+    close(): void;
+    get length(): number;
+    get(index: number): T;
+    /** Slice access (adaptation of __getitem__ slice -> LazySubsequence). */
+    slice(start?: number, stop?: number): T[] | LazySubsequence<T>;
+    iterate_from(startTok: number): Generator<T>;
+    /** Concatenation helpers (adaptation of __add__/__mul__). */
+    add(other: unknown): unknown;
+    mul(count: number): unknown;
+}
+/** nltk.corpus.reader.util.concat — pick the right concatenation for doc types. */
+declare function concat(docs: unknown[]): unknown;
+/** 20 lines at a time, whitespace split. */
+declare function read_whitespace_block(stream: SeekableUnicodeStreamReader): string[];
+/** 20 lines at a time, wordpunct_tokenize. */
+declare function read_wordpunct_block(stream: SeekableUnicodeStreamReader): string[];
+/** 20 lines at a time, one token per line. */
+declare function read_line_block(stream: SeekableUnicodeStreamReader): string[];
+/** One paragraph (blank-line-separated) per block. */
+declare function read_blankline_block(stream: SeekableUnicodeStreamReader): string[];
+/** Aligned-corpus block: skips '=' lines and comment/blank lines, ends at \d+-\d+. */
+declare function read_alignedsent_block(stream: SeekableUnicodeStreamReader): string[];
+/** Tokens bounded by start_re / end_re line patterns. */
+declare function read_regexp_block(stream: SeekableUnicodeStreamReader, startRe: string | RegExp, endRe?: string | RegExp): string[];
+/** Read s-expressions one per block, doubling the read size as needed. */
+declare function read_sexpr_block(stream: SeekableUnicodeStreamReader, blockSize?: number, commentChar?: string): string[];
+/** nltk.corpus.reader.util.find_corpus_fileids — expand a regexp over a corpus root. */
+declare function find_corpus_fileids(root: PathPointer, regexp: string): string[];
+
+interface TextTokenizerLike {
+    tokenize(text: string): string[];
+}
+declare class PlaintextCorpusReader extends CorpusReader {
+    static CorpusView: typeof StreamBackedCorpusView;
+    protected _word_tokenizer: TextTokenizerLike;
+    protected _sent_tokenizer: TextTokenizerLike | null;
+    protected _para_block_reader: BlockReader<string>;
+    constructor(root: string | PathPointer, fileids: string | string[], wordTokenizer?: TextTokenizerLike, sentTokenizer?: TextTokenizerLike | null, paraBlockReader?: BlockReader<string>, encoding?: EncodingSpec);
+    protected sentTokenizer(): TextTokenizerLike;
+    protected _read_word_block(stream: SeekableUnicodeStreamReader): string[];
+    protected _read_sent_block(stream: SeekableUnicodeStreamReader): string[][];
+    protected _read_para_block(stream: SeekableUnicodeStreamReader): string[][][];
+    words(fileids?: string | string[] | null): unknown;
+    sents(fileids?: string | string[] | null): unknown;
+    paras(fileids?: string | string[] | null): unknown;
+}
+declare class CategorizedPlaintextCorpusReader extends CategorizedCorpusReaderBase {
+    private readonly _plain;
+    constructor(root: string | PathPointer, fileids: string | string[], wordTokenizer?: TextTokenizerLike, sentTokenizer?: TextTokenizerLike | null, paraBlockReader?: BlockReader<string>, encoding?: EncodingSpec, catInit?: CategorizedInit);
+    words(fileids?: string | string[] | null, categories?: string | string[] | null): unknown;
+    sents(fileids?: string | string[] | null, categories?: string | string[] | null): unknown;
+    paras(fileids?: string | string[] | null, categories?: string | string[] | null): unknown;
+}
+declare class PortugueseCategorizedPlaintextCorpusReader extends CategorizedPlaintextCorpusReader {
+    constructor(root: string | PathPointer, fileids: string | string[], catInit?: CategorizedInit, encoding?: EncodingSpec);
+}
+declare class EuroparlCorpusReader extends PlaintextCorpusReader {
+    protected _read_word_block(stream: SeekableUnicodeStreamReader): string[];
+    protected _read_sent_block(stream: SeekableUnicodeStreamReader): string[][];
+    protected _read_para_block(stream: SeekableUnicodeStreamReader): string[][][];
+    chapters(fileids?: string | string[] | null): unknown;
+    paras(_fileids?: string | string[] | null): unknown;
+}
+declare class WordListCorpusReader extends CorpusReader {
+    words(fileids?: string | string[] | null, ignoreLinesStartswith?: string): string[];
+}
+declare class SwadeshCorpusReader extends WordListCorpusReader {
+    entries(fileids?: string[] | null): string[][];
+}
+declare class NonbreakingPrefixesCorpusReader extends WordListCorpusReader {
+    static readonly available_langs: Record<string, string>;
+    readonly available_langs: Record<string, string>;
+    words(lang?: string | null, fileids?: string | string[] | null, ignoreLinesStartswith?: string): string[];
+}
+declare class UnicharsCorpusReader extends WordListCorpusReader {
+    static readonly available_categories: string[];
+    readonly available_categories: string[];
+    chars(category?: string | null, fileids?: string | string[] | null): string[];
+}
+declare class MWAPPDBCorpusReader extends WordListCorpusReader {
+    static readonly mwa_ppdb_xxxl_file = "ppdb-1.0-xxxl-lexical.extended.synonyms.uniquepairs";
+    entries(fileids?: string | string[] | null): string[][];
+}
+declare function read_cmudict_block(stream: SeekableUnicodeStreamReader): Array<[string, string[]]>;
+declare class CMUDictCorpusReader extends CorpusReader {
+    entries(): unknown;
+    words(): string[];
+    dict(): Map<string, string[][]>;
+}
+declare class TaggedCorpusView extends StreamBackedCorpusView<unknown> {
+    private _tagged;
+    private _group_by_sent;
+    private _group_by_para;
+    private _sep;
+    private _word_tokenizer;
+    private _sent_tokenizer;
+    private _para_block_reader;
+    private _tag_mapping_function;
+    constructor(corpusFile: string | PathPointer, encoding: string | null, tagged: boolean, groupBySent: boolean, groupByPara: boolean, sep: string, wordTokenizer: TextTokenizerLike, sentTokenizer: TextTokenizerLike, paraBlockReader: BlockReader<string>, tagMappingFunction?: ((t: string) => string) | null);
+    private readBlockImpl;
+}
+declare class TaggedCorpusReader extends CorpusReader {
+    protected _sep: string;
+    protected _word_tokenizer: TextTokenizerLike;
+    protected _sent_tokenizer: TextTokenizerLike;
+    protected _para_block_reader: BlockReader<string>;
+    constructor(root: string | PathPointer, fileids: string | string[], sep?: string, wordTokenizer?: TextTokenizerLike, sentTokenizer?: TextTokenizerLike, paraBlockReader?: BlockReader<string>, encoding?: EncodingSpec, tagset?: string | null);
+    private tagMapping;
+    private view;
+    words(fileids?: string | string[] | null): unknown;
+    sents(fileids?: string | string[] | null): unknown;
+    paras(fileids?: string | string[] | null): unknown;
+    tagged_words(fileids?: string | string[] | null, tagset?: string | null): unknown;
+    taggedWords(fileids?: string | string[] | null, tagset?: string | null): unknown;
+    tagged_sents(fileids?: string | string[] | null, tagset?: string | null): unknown;
+    taggedSents(fileids?: string | string[] | null, tagset?: string | null): unknown;
+    tagged_paras(fileids?: string | string[] | null, tagset?: string | null): unknown;
+    taggedParas(fileids?: string | string[] | null, tagset?: string | null): unknown;
+}
+declare class CategorizedTaggedCorpusReader extends TaggedCorpusReader {
+    constructor(root: string | PathPointer, fileids: string | string[], sep?: string, wordTokenizer?: TextTokenizerLike, sentTokenizer?: TextTokenizerLike, paraBlockReader?: BlockReader<string>, encoding?: EncodingSpec, tagset?: string | null, catInit?: CategorizedInit);
+    private _cat;
+    categories(fileids?: string | string[] | null): string[];
+    fileids(categories?: string | string[] | null): string[];
+    protected resolve(fileids: string | string[] | null | undefined, categories: string | string[] | null | undefined): string | string[] | null | undefined;
+    tagged_words_cats(fileids?: string | string[] | null, categories?: string | string[] | null, tagset?: string | null): unknown;
+    tagged_sents_cats(fileids?: string | string[] | null, categories?: string | string[] | null, tagset?: string | null): unknown;
+    tagged_paras_cats(fileids?: string | string[] | null, categories?: string | string[] | null, tagset?: string | null): unknown;
+}
+declare class MacMorphoCorpusReader extends TaggedCorpusReader {
+    constructor(root: string | PathPointer, fileids: string | string[], encoding?: EncodingSpec, tagset?: string | null);
+}
+declare class TimitTaggedCorpusReader extends TaggedCorpusReader {
+    constructor(root: string | PathPointer, fileids: string | string[], encoding?: EncodingSpec, tagset?: string | null);
+    paras(): unknown;
+    tagged_paras(): unknown;
+}
+/** nltk.corpus.reader.timit.read_timit_block — one sentence per block. */
+declare function read_timit_block(stream: SeekableUnicodeStreamReader): string[];
+declare class DependencyCorpusView extends StreamBackedCorpusView<unknown> {
+    static readonly _DOCSTART = "-DOCSTART- -DOCSTART- O\n";
+    private _tagged;
+    private _dependencies;
+    private _group_by_sent;
+    constructor(corpusFile: string | PathPointer, tagged: boolean, groupBySent: boolean, dependencies: boolean, _chunkTypes?: unknown, encoding?: string | null);
+    private readBlockImpl;
+}
+declare class DependencyCorpusReader extends SyntaxCorpusReader {
+    private views;
+    words(fileids?: string | string[] | null): unknown;
+    tagged_words(fileids?: string | string[] | null): unknown;
+    sents(fileids?: string | string[] | null): unknown;
+    tagged_sents(fileids?: string | string[] | null): unknown;
+    parsed_sents(fileids?: string | string[] | null): unknown;
+}
+declare class AlignedSentCorpusView extends StreamBackedCorpusView<unknown> {
+    private _aligned;
+    private _group_by_sent;
+    private _word_tokenizer;
+    private _sent_tokenizer;
+    private _alignedsent_block_reader;
+    constructor(corpusFile: string | PathPointer, encoding: string | null, aligned: boolean, groupBySent: boolean, wordTokenizer: TextTokenizerLike, sentTokenizer: TextTokenizerLike, alignedsentBlockReader: BlockReader<string>);
+    private readBlockImpl;
+}
+declare class AlignedCorpusReader extends CorpusReader {
+    constructor(root: string | PathPointer, fileids: string | string[], sep?: string, wordTokenizer?: TextTokenizerLike, sentTokenizer?: TextTokenizerLike, alignedsentBlockReader?: BlockReader<string> | null, encoding?: EncodingSpec);
+    protected _sep: string;
+    protected _word_tokenizer: TextTokenizerLike;
+    protected _sent_tokenizer: TextTokenizerLike;
+    protected _alignedsent_block_reader: BlockReader<string> | null;
+    words(fileids?: string | string[] | null): unknown;
+    sents(fileids?: string | string[] | null): unknown;
+    aligned_sents(fileids?: string | string[] | null): unknown;
+    alignedSents(fileids?: string | string[] | null): unknown;
+}
+
+type SimpleTreeChild = SimpleTree | string | [string, string | null];
+declare class SimpleTree {
+    label: string;
+    children: SimpleTreeChild[];
+    constructor(label: string, children?: Iterable<SimpleTreeChild>);
+    /** nltk.tree.Tree.fromstring — parse a bracketed tree string. */
+    static fromstring(s: string, options?: {
+        remove_empty_top_bracketing?: boolean;
+        brackets?: string;
+    }): SimpleTree;
+    get length(): number;
+    get(i: number): SimpleTreeChild;
+    [Symbol.iterator](): Iterator<SimpleTreeChild>;
+    leaves(): Array<string | [string, string | null]>;
+    /** NLTK Tree.pos(): (leaf, preterminal-label) pairs. */
+    pos(): Array<[string, string | null]>;
+    height(): number;
+    flatten(): SimpleTree;
+    repr(): string;
+    toString(): string;
+}
+/** nltk.chunk.tagstr2tree — bracketed tagged text → Tree. */
+declare function tagstr2tree(s: string, chunkLabel?: string, rootLabel?: string, sep?: string | null, sourceTagset?: string | null, targetTagset?: string | null): SimpleTree;
+
+declare class BracketParseCorpusReader extends SyntaxCorpusReader {
+    protected _comment_char: string | null;
+    protected _detect_blocks: string;
+    constructor(root: string | PathPointer, fileids: string | string[], commentChar?: string | null, detectBlocks?: string, encoding?: EncodingSpec, tagset?: string | null);
+    protected _read_block(stream: SeekableUnicodeStreamReader): string[];
+    protected _normalize(t: string): string;
+    protected _parse(t: string): SimpleTree;
+    protected _word(t: string): Array<string | [string, string | null]>;
+    protected _tag(t: string, tagset?: string | null): Array<[string, string | null]>;
+    protected _read_word_block(stream: SeekableUnicodeStreamReader): unknown[];
+    parsed_words(fileids?: string | string[] | null): unknown;
+    parsed_sents(fileids?: string | string[] | null): unknown;
+    parsed_paras(fileids?: string | string[] | null): unknown;
+    parsedWords(fileids?: string | string[] | null): unknown;
+    parsedSents(fileids?: string | string[] | null): unknown;
+    parsedParas(fileids?: string | string[] | null): unknown;
+    protected _read_parsed_word_block(stream: SeekableUnicodeStreamReader): unknown[];
+    corpus_sents(fileids?: string | string[] | null): unknown;
+    corpusSents(fileids?: string | string[] | null): unknown;
+}
+declare class CategorizedBracketParseCorpusReader extends CategorizedCorpusReader {
+    private _br;
+    categories(fileids?: string | string[] | null): string[];
+    private bracket;
+    tagged_sents(fileids?: string | string[] | null, categories?: string | string[] | null, tagset?: string | null): unknown;
+    parsed_sents(fileids?: string | string[] | null, categories?: string | string[] | null): unknown;
+}
+declare class ChunkedCorpusView extends StreamBackedCorpusView<unknown> {
+    private _words;
+    private _sents;
+    private _paras;
+    private _etag;
+    private _str2chunktree;
+    private _sent_tokenizer;
+    private _para_block_reader;
+    private _tagset;
+    constructor(corpusFile: string | PathPointer, encoding: string | null, _words: boolean, _sents: boolean, _paras: boolean, _etag: boolean, _str2chunktree: (s: string) => SimpleTree, _sent_tokenizer: TextTokenizerLike, _para_block_reader: BlockReader<string>, _tagset?: string | null);
+    private readBlockImpl;
+}
+declare class ChunkedCorpusReader extends CorpusReader {
+    protected extension: string;
+    protected _cv_args: [(s: string) => SimpleTree, TextTokenizerLike, BlockReader<string>, string | null];
+    constructor(root: string | PathPointer, fileids: string | string[], extension?: string, str2chunktree?: (s: string) => SimpleTree, sentTokenizer?: TextTokenizerLike, paraBlockReader?: BlockReader<string>, encoding?: EncodingSpec, tagset?: string | null);
+    private view;
+    words(fileids?: string | string[] | null): unknown;
+    sents(fileids?: string | string[] | null): unknown;
+    paras(fileids?: string | string[] | null): unknown;
+    tagged_words(fileids?: string | string[] | null, _tagset?: string | null): unknown;
+    tagged_sents(fileids?: string | string[] | null, _tagset?: string | null): unknown;
+    tagged_paras(fileids?: string | string[] | null, _tagset?: string | null): unknown;
+    chunked_words(fileids?: string | string[] | null): unknown;
+    chunked_sents(fileids?: string | string[] | null, _tagset?: string | null): unknown;
+    chunked_paras(fileids?: string | string[] | null, _tagset?: string | null): unknown;
+    chunkedSents(fileids?: string | string[] | null, tagset?: string | null): unknown;
+    taggedSents(fileids?: string | string[] | null, tagset?: string | null): unknown;
+    taggedWords(fileids?: string | string[] | null, tagset?: string | null): unknown;
+    raw(fileids?: string | string[] | null): string;
+}
+declare class ConllChunkCorpusReader extends CorpusReader {
+    private chunkTypes;
+    private rootLabel;
+    private tagset;
+    private separator;
+    constructor(root: string | PathPointer, fileids: string | string[], chunkTypes?: string[], rootLabel?: string, tagset?: string | null, encoding?: EncodingSpec, separator?: string | null);
+    chunked_sents(fileids?: string | string[] | null, chunkTypes?: string[]): unknown;
+    private readChunkedBlock;
+    iob_words(fileids?: string | string[] | null): unknown;
+    private readIobBlock;
+}
+/** nltk.chunk.conllstr2tree — CoNLL IOB grid → chunk tree. */
+declare function conllstr2tree(s: string, chunkTypes?: string[], rootLabel?: string, separator?: string | null): SimpleTree;
+declare class CategorizedSentencesCorpusReader extends CategorizedCorpusReader {
+    private _tok;
+    private _sentTokenizer;
+    constructor(root: string | PathPointer, fileids: string | string[], wordTokenizer?: RegexpTokenizer | null, sentTokenizer?: TextTokenizerLike | null, encoding?: EncodingSpec, catInit?: CategorizedInit);
+    words(fileids?: string | string[] | null, categories?: string | string[] | null): unknown;
+    sents(fileids?: string | string[] | null, categories?: string | string[] | null): unknown;
+    private readWordBlock;
+    private readSentBlock;
+}
+declare class IgnoreReadmeCorpusView extends StreamBackedCorpusView<string> {
+    constructor(corpusFile: string | PathPointer, encoding: string | null);
+}
+declare class OpinionLexiconCorpusReader extends CorpusReader {
+    words(fileids?: string | string[] | null): unknown;
+    positive(): string;
+    negative(): string;
+}
+declare class SentiSynset {
+    readonly synset_name: string;
+    readonly pos: string;
+    readonly id: number;
+    readonly terms: string[];
+    readonly gloss: string;
+    readonly pos_score: number;
+    readonly neg_score: number;
+    readonly obj_score: number;
+    constructor(synset_name: string, pos: string, id: number, posScore: number, negScore: number, terms: string[], gloss: string);
+    get posScore(): number;
+    get negScore(): number;
+    get objScore(): number;
+    get synsetName(): string;
+    repr(): string;
+}
+declare class SentiWordNetCorpusReader extends CorpusReader {
+    private _db;
+    senti_synset(synsetOrName: {
+        name?: () => string;
+    } | string, _lang?: string): SentiSynset | null;
+    senti_synsets(): SentiSynset[];
+    private getSentiSynset;
+    private parseFile;
+    all_senti_synsets(): SentiSynset[];
+}
+declare class UdhrCorpusReader extends CorpusReader {
+    private static readonly SKIP;
+    raw(fileids?: string | string[] | null): string;
+    words(fileids?: string | string[] | null): string[];
+    langs(): string[];
+}
+declare class StringCategoryCorpusReader extends CorpusReader {
+    private _delimiter;
+    constructor(root: string | PathPointer, fileids: string | string[], encoding?: EncodingSpec, _delimiter?: string);
+    tuples(fileids?: string | string[] | null): unknown;
+    rawTuples(fileids?: string | string[] | null): unknown;
+    private readTupleBlock;
+    strings(fileids?: string | string[] | null): unknown;
+}
+
+declare const ENFORCE = true;
+/** nltk.pathsec.is_private_dir — dir is safe to trust as a data root. */
+declare function is_private_dir(path: string): boolean;
+/**
+ * nltk.pathsec.validate_path — ensure file access is restricted to allowed
+ * data directories.  Throws PermissionError in ENFORCE mode.
+ */
+declare function validate_path(pathInput: string | number | {
+    path: string;
+} | null | undefined, context?: string, requiredRoot?: string | null): void;
+/** nltk.pathsec.open — secure wrapper for file opens. Returns raw bytes. */
+declare function pathsec_open(file: string | {
+    path: string;
+}, mode?: string, context?: string, requiredRoot?: string | null): Uint8Array;
+/** nltk.pathsec.validate_zip_archive — reject unsafe zip members. */
+declare function validate_zip_archive(names: string[], context?: string): void;
+declare const zip_member_is_unsafe: (name: string) => boolean;
+
+declare class AlpinoCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class AttrDict {
+    constructor(..._a: unknown[]);
+}
+declare class BCP47CorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class BNCCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class BNCSentence {
+    constructor(..._a: unknown[]);
+}
+declare class BNCWordView {
+    constructor(..._a: unknown[]);
+}
+declare class BufferedGzipFile {
+    constructor(..._a: unknown[]);
+}
+declare class CHILDESCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class CategorizedMarkdownCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class ChasenCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class ChasenCorpusView {
+    constructor(..._a: unknown[]);
+}
+declare class CodeBlock {
+    constructor(..._a: unknown[]);
+}
+declare class ComparativeSentencesCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class Comparison {
+    constructor(..._a: unknown[]);
+}
+declare class ConcatenatedCorpusView {
+    constructor(..._a: unknown[]);
+}
+declare class ConllCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class ConllSRLInstance {
+    constructor(..._a: unknown[]);
+}
+declare class ConllSRLInstanceList {
+    constructor(..._a: unknown[]);
+}
+declare class CrubadanCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class Deprecated {
+    constructor(..._a: unknown[]);
+}
+declare class ElementWrapper {
+    constructor(..._a: unknown[]);
+}
+declare class FramenetCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class FramenetError {
+    constructor(..._a: unknown[]);
+}
+declare class Future {
+    constructor(..._a: unknown[]);
+}
+declare class IEERCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class IEERDocument {
+    constructor(..._a: unknown[]);
+}
+declare class IPIPANCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class IPIPANCorpusView {
+    constructor(..._a: unknown[]);
+}
+declare class Image {
+    constructor(..._a: unknown[]);
+}
+declare class IndianCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class IndianCorpusView {
+    constructor(..._a: unknown[]);
+}
+declare class KNBCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class LinThesaurusCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class Link {
+    constructor(..._a: unknown[]);
+}
+declare class List {
+    constructor(..._a: unknown[]);
+}
+declare class MTECorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class MTECorpusView {
+    constructor(..._a: unknown[]);
+}
+declare class MTEFileReader {
+    constructor(..._a: unknown[]);
+}
+declare class MTETagConverter {
+    constructor(..._a: unknown[]);
+}
+declare class MarkdownBlock {
+    constructor(..._a: unknown[]);
+}
+declare class MarkdownCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class MarkdownSection {
+    constructor(..._a: unknown[]);
+}
+declare class Meaning {
+    constructor(..._a: unknown[]);
+}
+declare class NKJPCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class NKJPCorpus_Header_View {
+    constructor(..._a: unknown[]);
+}
+declare class NKJPCorpus_Morph_View {
+    constructor(..._a: unknown[]);
+}
+declare class NKJPCorpus_Segmentation_View {
+    constructor(..._a: unknown[]);
+}
+declare class NKJPCorpus_Text_View {
+    constructor(..._a: unknown[]);
+}
+declare class NPSChatCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class NombankChainTreePointer {
+    constructor(..._a: unknown[]);
+}
+declare class NombankCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class NombankInstance {
+    constructor(..._a: unknown[]);
+}
+declare class NombankPointer {
+    constructor(..._a: unknown[]);
+}
+declare class NombankSplitTreePointer {
+    constructor(..._a: unknown[]);
+}
+declare class NombankTreePointer {
+    constructor(..._a: unknown[]);
+}
+declare class PPAttachment {
+    constructor(..._a: unknown[]);
+}
+declare class PPAttachmentCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class PanLexLiteCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class PanlexLanguage {
+    constructor(..._a: unknown[]);
+}
+declare class PanlexSwadeshCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class Pl196xCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class PrettyDict {
+    constructor(..._a: unknown[]);
+}
+declare class PrettyLazyConcatenation {
+    constructor(..._a: unknown[]);
+}
+declare class PrettyLazyIteratorList {
+    constructor(..._a: unknown[]);
+}
+declare class PrettyLazyMap {
+    constructor(..._a: unknown[]);
+}
+declare class PrettyList {
+    constructor(..._a: unknown[]);
+}
+declare class PropbankChainTreePointer {
+    constructor(..._a: unknown[]);
+}
+declare class PropbankCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class PropbankInflection {
+    constructor(..._a: unknown[]);
+}
+declare class PropbankInstance {
+    constructor(..._a: unknown[]);
+}
+declare class PropbankPointer {
+    constructor(..._a: unknown[]);
+}
+declare class PropbankSplitTreePointer {
+    constructor(..._a: unknown[]);
+}
+declare class PropbankTreePointer {
+    constructor(..._a: unknown[]);
+}
+declare class ProsConsCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class RTECorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class RTEPair {
+    constructor(..._a: unknown[]);
+}
+declare class ReadError {
+    constructor(..._a: unknown[]);
+}
+declare class Review {
+    constructor(..._a: unknown[]);
+}
+declare class ReviewLine {
+    constructor(..._a: unknown[]);
+}
+declare class ReviewsCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class SemcorCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class SemcorSentence {
+    constructor(..._a: unknown[]);
+}
+declare class SemcorWordView {
+    constructor(..._a: unknown[]);
+}
+declare class SensevalCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class SensevalCorpusView {
+    constructor(..._a: unknown[]);
+}
+declare class SensevalInstance {
+    constructor(..._a: unknown[]);
+}
+declare class SinicaTreebankCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class SpeakerInfo {
+    constructor(..._a: unknown[]);
+}
+declare class SpecialList {
+    constructor(..._a: unknown[]);
+}
+declare class SwitchboardCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class SwitchboardTurn {
+    constructor(..._a: unknown[]);
+}
+declare class TEICorpusView {
+    constructor(..._a: unknown[]);
+}
+declare class TimitCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class ToolboxCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class TwitterCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class UntrustedJarError {
+    constructor(..._a: unknown[]);
+}
+declare class VerbnetCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class XMLCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class XMLCorpusView {
+    constructor(..._a: unknown[]);
+}
+declare class XML_Tool {
+    constructor(..._a: unknown[]);
+}
+declare class YCOECorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class YCOEParseCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class YCOETaggedCorpusReader {
+    constructor(..._a: unknown[]);
+}
+declare class ZipFile {
+    constructor(..._a: unknown[]);
+}
+declare class comma_separated_string_args {
+    constructor(..._a: unknown[]);
+}
+declare class error {
+    constructor(..._a: unknown[]);
+}
+declare class find_file_iter {
+    constructor(..._a: unknown[]);
+}
+declare class import_from_stdlib {
+    constructor(..._a: unknown[]);
+}
+declare class is_writable {
+    constructor(..._a: unknown[]);
+}
+declare class mimic_wrap {
+    constructor(..._a: unknown[]);
+}
+declare class norm {
+    constructor(..._a: unknown[]);
+}
+declare class read_int {
+    constructor(..._a: unknown[]);
+}
+declare class read_number {
+    constructor(..._a: unknown[]);
+}
+declare class read_parse_blankline_block {
+    constructor(..._a: unknown[]);
+}
+declare class read_str {
+    constructor(..._a: unknown[]);
+}
+declare class restricted_pickle_load {
+    constructor(..._a: unknown[]);
+}
+declare class retrieve {
+    constructor(..._a: unknown[]);
+}
+declare class safe_parse {
+    constructor(..._a: unknown[]);
+}
+declare class sinica_parse {
+    constructor(..._a: unknown[]);
+}
+declare class switch_chunker {
+    constructor(..._a: unknown[]);
+}
+declare class switch_p_tagger {
+    constructor(..._a: unknown[]);
+}
+declare class switch_punkt {
+    constructor(..._a: unknown[]);
+}
+declare class switch_t_tagger {
+    constructor(..._a: unknown[]);
+}
+declare class tagged_treebank_para_block_reader {
+    constructor(..._a: unknown[]);
+}
+declare class test {
+    constructor(..._a: unknown[]);
+}
+declare class urlopen {
+    constructor(..._a: unknown[]);
+}
+declare class validate_network_url {
+    constructor(..._a: unknown[]);
+}
+declare class xpath {
+    constructor(..._a: unknown[]);
+}
+
+declare function getinfo(..._a: unknown[]): never;
+declare function new_wrapper(..._a: unknown[]): never;
+declare class HFDatasetPathPointer {
+    constructor(..._a: unknown[]);
+}
+declare function hf_download(..._a: unknown[]): never;
+declare function hf_load_data(..._a: unknown[]): never;
+declare function toolbox_demo(..._a: unknown[]): never;
+declare function chatbots(..._a: unknown[]): never;
+declare function chat_demo(..._a: unknown[]): never;
+declare function outf_writer_compat(..._a: unknown[]): never;
+declare class TweetHandlerI {
+    constructor(..._a: unknown[]);
+}
+declare class BasicTweetHandler {
+    constructor(..._a: unknown[]);
+}
+declare class LocalTimezoneOffsetWithUTC {
+    constructor(..._a: unknown[]);
+}
+
+/** nltk.compat.add_py3_data — insert '/PY3' after a known legacy path segment. */
+declare function add_py3_data(path: string): string;
+/** nltk.compat.py3_data — decorator rewriting the second arg through add_py3_data. */
+declare function py3_data<F extends (...args: never[]) => unknown>(init_func: F): F;
+
+export { MAX_ALIGN_INPUT_LEN as ALINE_MAX_INPUT_LEN, ANY_TYPE, APP, ARC_EAGER, ARC_STANDARD, ARLSTem, ARLSTem2, AbsoluteDiscounting, AbsoluteDiscountingInterpolated, AbstractBoxerDrs, AbstractCCGCategory, AbstractChartRule, AbstractLazySequence, AbstractVariableExpression, AffixTagger, Agenda, AlignedCorpusReader, AlignedSent, AlignedSentCorpusView, Alignment, AlignmentInfo, AllExpression, AlpinoCorpusReader, AnaphoraBudget, AnaphoraResolutionException, AndExpression, AnnotationTask, AnyType, ApplicationExpression$1 as ApplicationExpression, ApplicationRuleSet, ArabicStemmer, Assignment, AttrDict, AveragedPerceptron, BCP47CorpusReader, BLOCK_COMPARISON, BNCCorpusReader, BNCSentence, BNCWordView, BU_LC_STRATEGY, BU_STRATEGY, BackwardApplication, BackwardBx, BackwardCombinator, BackwardComposition, BackwardSx, BackwardT, BackwardTypeRaiseRule, BaseModelBuilderCommand, BaseProverCommand, BaseTheoremToolCommand, BasicTweetHandler, BasicType, BigramAssocMeasures, BigramCollocationFinder, BigramTagger, BinaryCombinatorRule, BinaryExpression, BinaryMaxentFeatureEncoding, BindingDict, BindingException, BllipParser, BooleanExpression, BottomUpChartParser, BottomUpLeftCornerChartParser, BottomUpPredictCombineRule, BottomUpPredictRule, BottomUpProbabilisticChartParser, Boxer, BoxerCard, BoxerDrs, BoxerDrsParser, BoxerEq, BoxerIndexed, BoxerNamed, BoxerNot, BoxerOr, BoxerOutputDrsParser, BoxerPred, BoxerProp, BoxerRel, BoxerWhq, BracketParseCorpusReader, BrillTagger, BrillTaggerTrainer, BrillTemplateI, BufferedGzipFile, CCGCat, CCGChart, CCGChartParser, CCGEdge, CCGLeafEdge, CCGLexicon, CCGTree, CCGVar, CFG, CHILDESCorpusReader, CMUDictCorpusReader, CRFTagger, CachedTopDownPredictRule, CanvasFrame, Categories, CategorizedBracketParseCorpusReader, CategorizedCorpusReader, CategorizedCorpusReaderBase, CategorizedMarkdownCorpusReader, CategorizedPlaintextCorpusReader, CategorizedSentencesCorpusReader, CategorizedTaggedCorpusReader, type CfgGrammar, CfgReadingCommand, Chart, ChartCell, ChartParser, AbstractChartRule as ChartRuleI, ChasenCorpusReader, ChasenCorpusView, Chat$1 as Chat, Chat80CorpusReader, ChunkRule, ChunkRuleWithContext, ChunkScore, ChunkString, ChunkedCorpusReader, ChunkedCorpusView, CistemStemmer as Cistem, CistemStemmer, ClassifierBasedPOSTagger, ClassifierBasedTagger, ClassifierI, Clause, ClosedDomainProver, ClosedWorldProver, ClusterI, CodeBlock, Collection, ComparativeSentencesCorpusReader, Comparison, CompleteFundamentalRule, CompleterRule, ComplexType, CompositionRuleSet, ConcatenatedCorpusView, Concept, ConcordanceIndex, ConditionalExponentialClassifier, ConditionalExponentialTextClassifier, ConditionalFreqDist, ConditionalProbDist, Configuration, ConfusionMatrix, ConllChunkCorpusReader, ConllCorpusReader, ConllSRLInstance, ConllSRLInstanceList, ConstantExpression$1 as ConstantExpression, Constants, Constraint, ContextIndex, ContextTagger, CooperStore, CoreNLPDependencyParser, CoreNLPParser, CoreNLPServer, CoreNLPServerError, CorpusReader$1 as CorpusReader, Counter$1 as Counter, Counts, CrossValidationProbDist, CrubadanCorpusReader, CutoffChecker, DEFAULT_NE_GRAMMAR, DRS, DanishStemmer, DebugObject, DecisionTreeClassifier, DecisionTreeTextClassifier, DefaultRuleSet, DefaultTagger, DemoScorer, Dendrogram, DendrogramNode, DependencyCorpusReader, DependencyCorpusView, DependencyEvaluator, DependencyGraph, DependencyGraphError, DependencyScorerI, DependencySpan, Deprecated, DictionaryProbDist, DirectedBinaryCombinator, Direction, DiscourseTester, Downloader, ErrorMessage as DownloaderErrorMessage, DownloaderGUI, DownloaderMessage, ProgressMessage as DownloaderProgressMessage, DownloaderShell, DrsDrawer, DrsWidget, DrtAbstractVariableExpression, DrtApplicationExpression, DrtBinaryExpression, DrtConcatenation, DrtConstantExpression, DrtEqualityExpression, DrtEventVariableExpression, DrtExpression, DrtFunctionVariableExpression, DrtGlue, DrtGlueDemo, DrtGlueDict, DrtGlueFormula, DrtGlueReadingCommand, DrtIndividualVariableExpression, DrtLambdaExpression, DrtNegatedExpression, DrtOrExpression, DrtParser, DrtParserFromString, DrtProposition, DrtTokens, DrtVariableExpression, DutchStemmer, EMClusterer, ENFORCE, ENTITY_TYPE, EVENT_TYPE, EarleyChartParser, EdgeI, ElementWrapper, EmptyPredictRule, EnglishStemmer, EntityType, EqualityExpression, ErrorMessage, EuroparlCorpusReader, EventType, EventVariableExpression, ExistsExpression, ExpandLeftRule, ExpandRightRule, ExpectedMoreTokensException, Expression$1 as Expression, FStructure, FeatStruct, FeatStructNonterminal, TblFeature as Feature, FeatureBottomUpChartParser, FeatureBottomUpLeftCornerChartParser, FeatureBottomUpPredictCombineRule, FeatureBottomUpPredictRule, FeatureCFG, FeatureChart, FeatureChartParser, FeatureCompleteFundamentalRule, FeatureCompleterRule, FeatureEarleyChartParser, FeatureEmptyPredictRule, FeatureFundamentalRule, FeatureGrammar, FeatureIncrementalBottomUpChartParser, FeatureIncrementalBottomUpLeftCornerChartParser, FeatureIncrementalChart, FeatureIncrementalChartParser, FeatureIncrementalTopDownChartParser, type FeatureMaxentOptions, FeaturePredictorRule, FeatureScannerRule, type FeatureSet, FeatureSingleEdgeFundamentalRule, FeatureTopDownChartParser, FeatureTopDownInitRule, FeatureTopDownPredictRule, FeatureTreeEdge, type FeatureTreeOptions, FeaturesetTaggerI, FileSystemPathPointer, FilteredBottomUpPredictCombineRule, FilteredCompleteFundamentalRule, FilteredSingleEdgeFundamentalRule, FinishCollectionMessage, FinishDownloadMessage, FinishPackageMessage, FinishUnzipMessage, FinnishStemmer, ForwardApplication, ForwardCombinator, ForwardComposition, ForwardSubstitution, ForwardT, ForwardTypeRaiseRule, Fraction, FramenetCorpusReader, FramenetError, FrenchStemmer, FreqDist, FunctionBackedMaxentFeatureEncoding, FunctionVariableExpression, FunctionalCategory, FundamentalRule, Future, GAACClusterer, GAACluster, GAAClusterer, GISEncoding, LanguageIndependent as GaleChurchLanguageIndependent, GenericCoreNLPParser, GermanStemmer, Glue, GlueDict, GlueFormula, type GrammarSymbol, GzipFileSystemPathPointer, HFDatasetPathPointer, HeldoutProbDist, HiddenMarkovModelTagger, HiddenMarkovModelTrainer, HoleSemantics, HoleSemantics as HoleSemanticsClass, HunPosTagger, HungarianStemmer, HunposTagger, Counts as IBMCounts, IBMModelBase as IBMModel, IBMModel1, IBMModel2, IBMModel3, IBMModel4, IBMModel5, MIN_PROB as IBM_MIN_PROB, IEERCorpusReader, IEERDocument, IPIPANCorpusReader, IPIPANCorpusView, ISRIStemmer, ISRI_STOP_WORDS, IffExpression, IgnoreReadmeCorpusView, IllegalTypeException, Image, ImmutableProbabilisticMixIn, ImmutableTree, ImpExpression, InconsistentTypeHierarchyException, IncrementalBottomUpChartParser, IncrementalBottomUpLeftCornerChartParser, IncrementalChart, IncrementalChartParser, IncrementalLeftCornerChartParser, IncrementalTopDownChartParser, Index, IndianCorpusReader, IndianCorpusView, IndividualVariableExpression, InsideChartParser, InstantiateVarsChart, InterpolatedLanguageModel, IotaExpression, ItalianStemmer, KMeansClusterer, KNBCorpusReader, KneserNey, KneserNeyInterpolated, KneserNeyProbDist, LC_STRATEGY, type LabeledFeatureset, LambdaExpression, LancasterStemmer, LanguageIndependent, LanguageModel, Laplace, LazyConcatenation, LazyCorpusLoader, LazyEnumerate, LazyIteratorList, LazyLoader, LazyMap, LazySubsequence, LazyZip, LeafEdge, LeafInitRule, LeftCornerChartParser, LegalitySyllableTokenizer, Lemma, Lidstone, LinThesaurusCorpusReader, Atom as LinearAtom, AtomicExpression as LinearAtomicExpression, GlueFormula$1 as LinearGlueFormula, LinearLogicApplicationException, LinearLogicParser, LinearSvmTextClassifier, Link, List, LocalTimezoneOffsetWithUTC, ImpExpression$1 as LogicImpExpression, LogicParser, LogicalExpressionException, LogisticTextClassifier, LongestChartParser, MAX_ALIGN_BLOCKS, MAX_ANAPHORA_OPERATIONS, MAX_EVERYGRAMS_DEFAULT_LEN, MAX_GENERATE_OPERATIONS, MAX_PARSE_TREES, MAX_PHRASE_EXTRACTION_DEFAULT_LEN, MAX_SIMPLIFY_SIZE, MLE, MTECorpusReader, MTECorpusView, MTEFileReader, MTETagConverter, MWAPPDBCorpusReader, MacMorphoCorpusReader, Mace, MaceCommand, MaltParser, MarkdownBlock, MarkdownCorpusReader, MarkdownSection, MaxEntTextClassifier, MaxentClassifier, type MaxentEncodingOptions, MaxentFeatureEncodingI, type MaxentFeatureMapping, type MaxentMappingValue, Meaning, MegamMaxentClassifier, MergeRule, MinimalSet, Model, Model2Counts, Model3Counts, Model4Counts, Model5Counts, ModelBuilder, ModelBuilderCommand, ModelBuilderCommandDecorator, NE_CLASSES, NISTTokenizer, NKJPCorpusReader, NKJPCorpus_Header_View, NKJPCorpus_Morph_View, NKJPCorpus_Segmentation_View, NKJPCorpus_Text_View, CorpusReader as NLTKCorpusReader, NLTKWordTokenizer, NPSChatCorpusReader, NaiveBayesClassifier, NaiveBayesDependencyScorer, NaiveBayesTextClassifier, NativeFreqDistStream, NegatedExpression, NgramCounter, NgramTagger, NltkDrtBoxerDrsInterpreter, NombankChainTreePointer, NombankCorpusReader, NombankInstance, NombankPointer, NombankSplitTreePointer, NombankTreePointer, NonbreakingPrefixesCorpusReader, ProverParseError as NonmonotonicProverParseError, NonprojectiveDependencyParser, Nonterminal, NorwegianStemmer, OpenOnDemandZipFile, OpinionLexiconCorpusReader, OrExpression, OrderedDict, PCFG, PPAttachment, PPAttachmentCorpusReader, Package, Paice, PanLexLiteCorpusReader, PanlexLanguage, PanlexSwadeshCorpusReader, ParExpression, ParallelProverBuilder, ParallelProverBuilderCommand, ParentedTree, type ParseTree, ParserI, ParsingRuntime, PassthroughBoxerDrsInterpreter, PathPointer, type PcfgGrammar, PerceptronTagger, PerceptronTextClassifier, PhraseTable, PhraseTableEntry, Pl196xCorpusReader, PlaintextCorpusReader, PorterStemmer, PortugueseCategorizedPlaintextCorpusReader, PortugueseStemmer, Pos, type PositiveFeatureOptions, PositiveNaiveBayesClassifier, PositiveNaiveBayesTextClassifier, PossibleAntecedents, PredHolder, PredictorRule, PrettyDict, PrettyLazyConcatenation, PrettyLazyIteratorList, PrettyLazyMap, PrettyList, PrimitiveCategory, type ProbDistLike, ProbabilisticBottomUpInitRule, ProbabilisticBottomUpPredictRule, ProbabilisticFundamentalRule, ProbabilisticLeafEdge, ProbabilisticMixIn, ProbabilisticNonprojectiveParser, type ProbabilisticParse, ProbabilisticProjectiveDependencyParser, ProbabilisticTree, ProbabilisticTreeEdge, Production, ProgressMessage, ProjectiveDependencyParser, PropbankChainTreePointer, PropbankCorpusReader, PropbankInflection, PropbankInstance, PropbankPointer, PropbankSplitTreePointer, PropbankTreePointer, ProsConsCorpusReader, Prover, Prover9, Prover9Command, Prover9CommandParent, Prover9Exception, Prover9FatalException, Prover9LimitExceededException, Prover9Parent, ProverCommand, ProverCommandDecorator, PunktBaseClass, PunktLanguageVars, PunktParameters, PunktSentenceTokenizer, PunktToken, PunktTokenizer, PunktTrainer, PythonRandom, QuadgramAssocMeasures, QuadgramCollocationFinder, QuantifiedExpression, RSLPStemmer, RTECorpusReader, RTEPair, RandomChartParser, ReadError, ReadingCommand, RecursiveDescentParser, RegexpChunkParser, RegexpChunkRule, RegexpParser, RegexpStemmer, RegexpTagger, RegexpTokenizer, ReppTokenizer, ResolutionProver, ResolutionProverCommand, ProverParseError$2 as ResolutionProverParseError, Review, ReviewLine, ReviewsCorpusReader, RomanianStemmer, RteClassifier, TblRule as Rule, RussianStemmer, RustDecisionTreeClassifier, RustMaxentClassifier, RustNaiveBayesClassifier, SEM_PACKAGE, SExprTokenizer, SNOWBALL_LANGUAGES, STEM_PACKAGE, ScannerRule, SeekableUnicodeStreamReader, SelectDownloadDirMessage, SemError, LogicParser as SemLogicParser, SemcorCorpusReader, SemcorSentence, SemcorWordView, Senna, SennaChunkTagger, SennaClassifier, SennaNERTagger, SennaTagger, SensevalCorpusReader, SensevalCorpusView, SensevalInstance, SentiSynset, SentiText, SentiWordNetCorpusReader, SentimentAnalyzer, SentimentIntensityAnalyzer, SequentialBackoffTagger, SetHolder, ShiftReduceParser, ShowText, SimpleTree, SingleEdgeFundamentalRule, SingleEdgeProbabilisticFundamentalRule, SinicaTreebankCorpusReader, SklearnClassifier, Slots, Smoothing, type SNOWBALL_LANGUAGES as SnowballLanguages, SnowballStemmer, SpanishStemmer, SpeakerInfo, SpecialList, SplitRule, StackDecoder, StaleMessage, StandardFormat, StanfordNERTagger, StanfordPOSTagger, StanfordParser, StanfordSegmenter, StanfordTagger, StanfordTokenizer, StartCollectionMessage, StartDownloadMessage, StartPackageMessage, StartUnzipMessage, StemmerI, SteppingChartParser, SteppingRecursiveDescentParser, SteppingShiftReduceParser, StreamBackedCorpusView, StringCategoryCorpusReader, StripRule, StupidBackoff, SubstituteBindingsI, SubstitutionRuleSet, SvmClassifier, SwadeshCorpusReader, SwedishStemmer, SwitchboardCorpusReader, SwitchboardTurn, SyllableTokenizer, Synset, SyntaxCorpusReader, TAG_PACKAGE, TBL_PACKAGE, TD_STRATEGY, TEICorpusView, TRANSLATE_PACKAGE, TRUTH_TYPE, HC as TT_HC, LC as TT_LC, Debug as TableauDebug, TableauProver, TableauProverCommand, ProverParseError$1 as TableauProverParseError, TadmEventMaxentFeatureEncoding, TadmMaxentClassifier, TagRule, TaggedCorpusReader, TaggedCorpusView, TaggerI, TblFeature, TblRule, Template, TestGrammar, Text, TextCat, TextCollection, TextFeatureVectorizer, TextTilingTokenizer, TheoremToolCommand, TheoremToolCommandDecorator, TheoremToolThread, TimitCorpusReader, TimitTaggedCorpusReader, TnT, Token, TokenSearcher, TokenizerI, Tokens, ToolboxCorpusReader, ToolboxData, ToolboxElement, ToolboxSettings, TopDownChartParser, TopDownInitRule, TopDownPredictRule, Transition, TransitionParser, Tree, TreeEdge, TreePrettyPrinter, Trie, TrigramAssocMeasures, TrigramCollocationFinder, TrigramTagger, TruthValueType, TweetHandlerI, TwitterCorpusReader, Type, TypeException, TypeRaiseRuleSet, TypeResolutionException, UdhrCorpusReader, UnChunkRule, Undefined, UndefinedError, UndirectedBinaryCombinator, UndirectedComposition, UndirectedFunctionApplication, UndirectedSubstitution, UndirectedTypeRaise, UnexpectedTokenException, UnicharsCorpusReader, UnificationException, UnigramTagger, UniqueNamesProver, UnparseableInputException, UnsortedChartParser, UntrustedJarError, UpToDateMessage, VOCABULARY_INTRODUCTION, VaderConstants, Valuation, Variable, VariableBinderExpression, VariableBindingException, VariableExpression$1 as VariableExpression, VectorSpaceClusterer, VerbnetCorpusReader, ViterbiParser, Vocabulary, WasmNltk, WekaClassifier, WittenBell, WittenBellInterpolated, Word, WordListCorpusReader, WordNet, WordNetReader as WordNetCorpusReader, WordNetError, WordNetICCorpusReader, WordNetLemmatizer, WordNetReader, XMLCorpusReader, XMLCorpusView, XML_Tool, YCOECorpusReader, YCOEParseCorpusReader, YCOETaggedCorpusReader, ZipFile, ZipFilePathPointer, OpenOnDemandZipFile as ZipFileReader, _build_tgrep_parser, _internal, acyclic_branches_depth_first, acyclic_breadth_first, acyclic_depth_first, acyclic_dic2tree, addBlankLines, addDefaultFields, add_blank_lines, add_default_fields, add_py3_data, alignBlocks, alignLogProb, alignTexts, alignWords, align_blocks, align_log_prob, align_texts, alignWords as align_words, alignment, alignment_error_rate, align as alineAlign, delta as alineDelta, diff as alineDiff, align as aline_align, delta as aline_delta, diff as aline_diff, allowlisted_pickle_load, ancestors, app_chartparser_app_d as app_chartparser_app_ns, app_chunkparser_app_d as app_chunkparser_app_ns, app_collocations_app_d as app_collocations_app_ns, app_concordance_app_d as app_concordance_app_ns, app_nemo_app_d as app_nemo_app_ns, app_d as app_ns, app_rdparser_app_d as app_rdparser_app_ns, app_srparser_app_d as app_srparser_app_ns, app_wordfreq_app_d as app_wordfreq_app_ns, app_wordnet_app_d as app_wordnet_app_ns, arguments_, arity, arity_parse_demo, augParseCategory, augParseCategory as aug_parse_category, averageObservedAgreement, averageObservedAgreement as average_observed_agreement, babelizeShell, babelize_shell, backwardBxConstraint, backwardOnly, backwardSxConstraint, backwardTConstraint, backwardBxConstraint as backward_bx_constraint, backwardOnly as backward_only, backwardSxConstraint as backward_sx_constraint, backwardTConstraint as backward_t_constraint, barendregtNormalize, barendregtNormalize as barendregt_normalize, basicSentChop, basic_sent_chop, bigramWindowStatsAscii, bigramWindowStatsAsciiIds, bigramWindowStatsAscii as bigram_window_stats_ascii, bigramWindowStatsAsciiIds as bigram_window_stats_ascii_ids, binaryConcept, binaryConcept as binary_concept, binary_search_file, binding_ops, book, boolean_ops, bothBackward, bothForward, bothBackward as both_backward, bothForward as both_forward, bracketToTree, bracketToTree as bracket_to_tree, breadth_first, brill24, bubble, buildTemplates, buildTgrepParser, build_index, buildTemplates as build_templates, buildTgrepParser as build_tgrep_parser, calculate_deltas, calculate_empirical_fcount, calculate_estimated_fcount, calculate_nfmap, call_megam, call_tadm, demo$d as ccgDemo, fromString as ccgFromstring, demo$d as ccg_demo, fromstring as ccg_fromstring, items as chat80_items, main as chat80_main, rels as chat80_rels, chat_demo, chat_eliza_d as chat_eliza_ns, chat_iesha_d as chat_iesha_ns, chat_d as chat_ns, chat_rude_d as chat_rude_ns, chat_suntsu_d as chat_suntsu_ns, chat_util_d as chat_util_ns, chat_zen_d as chat_zen_ns, chatbots, check, choose, chunkIobIdsNative, chunkTreeToIob, chunkIobIdsNative as chunk_iob_ids_native, chunkTreeToIob as chunk_tree_to_iob, cistemStem, cistemStem as cistem_stem, cities2table, class_abbrev, classify_accuracy, classify_log_likelihood, clause, clause2concepts, clausify, clean_html, clean_url, clearTemplateRegistry, clear_cache, clearTemplateRegistry as clear_template_registry, cli_d as cli_ns, closedDomainDemo, closedWorldDemo, closed_domain_demo, closed_world_demo, collapseUnaryChains, collapseUnaryChains as collapse_unary_chains, collections_d as collections_ns, combinationProverDemo, combination_prover_demo, comma_separated_string_args, compat_d as compat_ns, computeAsciiMetrics, computeCompositionSemantics, computeFunctionSemantics, computeSemantics, computeSubstitutionSemantics, computeTypeRaisedSemantics, computeAsciiMetrics as compute_ascii_metrics, computeCompositionSemantics as compute_composition_semantics, computeFunctionSemantics as compute_function_semantics, computeSemantics as compute_semantics, computeSubstitutionSemantics as compute_substitution_semantics, computeTypeRaisedSemantics as compute_type_raised_semantics, concepts, config_java, conll_demo, conll_file_demo, conllesp, conllned, conllstr2tree, conlltags2tree, convertToProver9, convertToProver9 as convert_to_prover9, cooperStore, cooperStore as cooper_store, copyVector, copyVector as copy_vector, corpusGleu, corpusLepor, corpusRibes, corpusSize, concat as corpus_concat, corpus_europarl_raw_d as corpus_europarl_raw_ns, corpusGleu as corpus_gleu, corpusLepor as corpus_lepor, corpusRibes as corpus_ribes, corpusSize as corpus_size, cosineDistance, cosineDistance as cosine_distance, countNgramsAscii, countNormalizedTokensAscii, countNormalizedTokensAsciiScalar, countTokensAscii, countTokensAsciiScalar, countUniqueNgramsAscii, countUniqueTokensAscii, countNgramsAscii as count_ngrams_ascii, countNormalizedTokensAscii as count_normalized_tokens_ascii, countNormalizedTokensAsciiScalar as count_normalized_tokens_ascii_scalar, countTokensAscii as count_tokens_ascii, countTokensAsciiScalar as count_tokens_ascii_scalar, countUniqueNgramsAscii as count_unique_ngrams_ascii, countUniqueTokensAscii as count_unique_tokens_ascii, crossedDirs, crossedDirs as crossed_dirs, cut_string, cycle_finding_demo, cykRecognizeIdsNative, cykRecognizeIdsNative as cyk_recognize_ids_native, data_d as data_ns, decodeResult, decode_result, decorator, decorators_d as decorators_ns, defaultReasoningDemo, default_reasoning_demo, demo, demoErrorAnalysis, demoException, demoGeneratedTemplates, demoHighAccuracyRules, demoLearningCurve, demoLegacyGrammar, demoModel0, demoMultifeatureTemplate, demoMultipositionFeature, demoReprRuleFormat, demoSerializeTagger, demoStrRuleFormat, demoTemplateStatistics, demoVerboseRuleFormat, demo_bw, demoErrorAnalysis as demo_error_analysis, demo_errors, demo_eval, demoException as demo_exception, demoGeneratedTemplates as demo_generated_templates, demo_grammar, demoHighAccuracyRules as demo_high_accuracy_rules, demoLearningCurve as demo_learning_curve, demo_legacy_grammar, demo_model0, demoMultifeatureTemplate as demo_multifeature_template, demoMultipositionFeature as demo_multiposition_feature, demo_pos, demo_pos_bw, demo_read_depgraph, demoReprRuleFormat as demo_repr_rule_format, demoSerializeTagger as demo_serialize_tagger, demoStrRuleFormat as demo_str_rule_format, demoTemplateStatistics as demo_template_statistics, demoVerboseRuleFormat as demo_verbose_rule_format, dependencyEvaluate, dependencyParse, dependencyParseText, dependencyEvaluate as dependency_evaluate, dependencyParse as dependency_parse, dependencyParseText as dependency_parse_text, deprecated, descape_entity, describeTemplateSets, describe_template_sets, discourseDemo, demo$8 as discourseModuleDemo, discourse_demo, demo$8 as discourse_module_demo, dot2img, dotProduct, dotProduct as dot_product, download, downloadCorpusRegistry, downloadCorpusRegistry as download_corpus_registry, download_gui, download_shell, download as downloader_download, unzip as downloader_unzip, update as downloader_update, draw_cfg_d as draw_cfg_ns, draw_dispersion_d as draw_dispersion_ns, draw_d as draw_ns, draw_table_d as draw_table_ns, draw_tree_d as draw_tree_ns, draw_util_d as draw_util_ns, drtDiscourseDemo, drt_discourse_demo, edge_closure, edges2dot, elementtree_indent, eliza_chat$1 as eliza_chat, eliza_pairs, equality_preds, erfcc, error, errorList, errorList as error_list, euclideanDistance, euclideanDistance as euclidean_distance, evaluateLanguageModelIdsNative, evaluateSents, evaluateLanguageModelIdsNative as evaluate_language_model_ids_native, evaluate_sents, everygrams, everygramsAsciiNative, everygramsAsciiNative as everygrams_ascii_native, exactMatch, exactMatch as exact_match, expressions, extract, extractRels, extractTestSentences, extract_fields, extractRels as extract_rels, extract_test_sentences, f, factorial, featureChartParse, featureEarleyParse, featureChartParse as feature_chart_parse, featureEarleyParse as feature_earley_parse, filestring, find, findIncreasingSequences, findBinary as find_binary, find_binary_iter, find_corpus_fileids, find_dir, find_file, find_file_iter, findIncreasingSequences as find_increasing_sequences, find_jar, find_jar_iter, find_jars_within_path, find_malt_model, find_maltparser, find_variables, flatten, flattenSparseBatch, flattenSparseBatch as flatten_sparse_batch, fntbl37, foldemo, folmodel, format_debug_decision, forwardOnly, forwardSConstraint, forwardTConstraint, forwardOnly as forward_only, forwardSConstraint as forward_s_constraint, forwardTConstraint as forward_t_constraint, fromString, fromString as from_string, fromstring$1 as fromstring, trace as galeChurchTrace, trace as gale_church_trace, generate, generateChomsky, generateSentences, generate_chomsky, generateSentences as generate_sentences, getDomain, get_domain, get_header_field_list, getinfo, growDiagFinalAnd, growDiagFinalAnd as grow_diag_final_and, guess_encoding, gzipOpenUnicode as gzip_open_unicode, hall_demo, harmonic, helpInfo, helpInfo as help_info, hf_download, hf_load_data, demo$g as hmmDemo, hmmViterbiIdsNative, hmmViterbiIdsNative as hmm_viterbi_ids_native, holeReadings, holeReadingsFromUsr, holeReadings as hole_readings, factorial as ibmFactorial, factorial as ibm_factorial, ieer_headlines, iesha_chat$1 as iesha_chat, iesha_pairs, import_from_stdlib, in_demo, in_idle, information_content, innermostFunction, innermostFunction as innermost_function, internals_d as internals_ns, interpretSents, interpret_sents, invertDict, invert_dict, is_eventvar, is_funcvar, is_indvar, is_private_dir, is_rel, is_writable, java, jcn_similarity, json2csv, json2csv_entities, jsontags_d as jsontags_ns, kendallTau, kendallTau as kendall_tau, kmeansFitEuclideanNative, kmeansFitEuclideanNative as kmeans_fit_euclidean_native, labelIndivs, labelIndivs as label_indivs, langnames_d as langnames_ns, lazyimport_d as lazyimport_ns, lch_similarity, leadins, legalityTokenize, legalityTokenize as legality_tokenize, lengthPenalty, lengthPenalty as length_penalty, alignment as leporAlignment, alignment as lepor_alignment, lesk, lex, lfgParse, lfgParse as lfg_parse, lin_similarity, linearScoresSparseIdsNative, linearTextTrainNative, linearTrainSparseIdsNative, linearScoresSparseIdsNative as linear_scores_sparse_ids_native, linearTextTrainNative as linear_text_train_native, linearTrainSparseIdsNative as linear_train_sparse_ids_native, list2sym, load, loadBundledMiniCorpus, loadConditionalExponentialTextClassifier, loadCorpusBundleFromIndex, loadCorpusRegistryManifest, loadDecisionTreeTextClassifier, loadFol, loadLinearSvmTextClassifier, loadLogisticTextClassifier, loadMaxEntTextClassifier, loadNaiveBayesTextClassifier, loadParser, loadPerceptronTaggerModel, loadPerceptronTextClassifier, loadPositiveNaiveBayesTextClassifier, loadPunktParams, loadWordNet, loadWordNetExtended, loadWordNetMini, loadWordNetPacked, loadBundledMiniCorpus as load_bundled_mini_corpus, loadConditionalExponentialTextClassifier as load_conditional_exponential_text_classifier, loadCorpusBundleFromIndex as load_corpus_bundle_from_index, loadCorpusRegistryManifest as load_corpus_registry_manifest, loadDecisionTreeTextClassifier as load_decision_tree_text_classifier, load_fol, loadLinearSvmTextClassifier as load_linear_svm_text_classifier, loadLogisticTextClassifier as load_logistic_text_classifier, loadMaxEntTextClassifier as load_max_ent_text_classifier, load_maxent_params, loadNaiveBayesTextClassifier as load_naive_bayes_text_classifier, load_parser, loadPerceptronTaggerModel as load_perceptron_tagger_model, loadPerceptronTextClassifier as load_perceptron_text_classifier, load_pos, loadPositiveNaiveBayesTextClassifier as load_positive_naive_bayes_text_classifier, load_punkt_params, loadWordNet as load_word_net, loadWordNetExtended as load_word_net_extended, loadWordNetMini as load_word_net_mini, loadWordNetPacked as load_word_net_packed, logsumexp2, long2short, longestTargetSentenceLength as longest_target_sentence_length, demo$9 as maceDemo, spacer$1 as maceSpacer, demo$9 as mace_demo, spacer$1 as mace_spacer, makeLex, makeValuation, makeVariableExpression, makeLex as make_lex, makeValuation as make_valuation, makeVariableExpression as make_variable_expression, malt_demo, malt_regex_tagger, mapTag, mapTreeLabels, mapTag as map_tag, mapTreeLabels as map_tree_labels, matchBrackets, matchBrackets as match_brackets, maxent_pos_tagger, md5_hexdigest, meanVector, meanVector as mean_vector, memoize$1 as memoize, merge, meteorScore, meteorScore as meteor_score, mimic_wrap, mostGeneralUnification, mostGeneralUnification as most_general_unification, naiveBayesLogScoresIdsNative, naiveBayesLogScoresIdsNative as naive_bayes_log_scores_ids_native, nativeLibraryPath, nativeTokenizerAvailable, nativeLibraryPath as native_library_path, nativeTokenizerAvailable as native_tokenizer_available, neChunk, neChunkIob, neChunk as ne_chunk, neChunkIob as ne_chunk_iob, ne_chunked, new_wrapper, nextCategory, nextUniqueCounterValue, nextCategory as next_category, nextUniqueCounterValue as next_unique_counter_value, ngramFreqDistHashAscii, ngramPositionalPenalty, ngramFreqDistHashAscii as ngram_freq_dist_hash_ascii, ngramPositionalPenalty as ngram_positional_penalty, ngramsAsciiNative, ngramsAsciiNative as ngrams_ascii_native, nistInternationalTokenize, nistTokenize, nistInternationalTokenize as nist_international_tokenize, nistTokenize as nist_tokenize, nltkdemo18, nltkdemo18plus, nonmonotonicDemo, nonmonotonicDemo as nonmonotonic_demo, nonprojective_conll_parse_demo, norm, norm_cdf, norm_logsf, normalizeTokens, normalizeTokensAsciiNative, normalizeVector, normalize_resource_name, normalizeResourceUrl as normalize_resource_url, normalizeTokens as normalize_tokens, normalizeTokensAsciiNative as normalize_tokens_ascii_native, normalizeVector as normalize_vector, objects, open_datafile, openccgTinytiny, openccgTinytiny as openccg_tinytiny, outf_writer_compat, overridden, p9ReturnCodes, p9ReturnCodes as p9_return_codes, pad_sequence, pairwise, parallelize_preprocess, parseApplication, parseBrownTagged, parseCategory, parseConllChunked, parseConllTagged, parseFeatStruct, parseFeatureCfgGrammar, parseLexicon, parsePrimitiveCategory, parseSFMString, parseSents, parseSubscripts, parseTextWithFeatureCfg, parseTextWithFeatureEarley, parseTokenStream, parseApplication as parse_application, parseBrownTagged as parse_brown_tagged, parseCategory as parse_category, parseConllChunked as parse_conll_chunked, parseConllTagged as parse_conll_tagged, parseFeatStruct as parse_feat_struct, parseFeatureCfgGrammar as parse_feature_cfg_grammar, parseLexicon as parse_lexicon, parse_megam_weights, parsePrimitiveCategory as parse_primitive_category, parse_sents, parseSFMString as parse_sfm_string, parseSubscripts as parse_subscripts, parse_tadm_weights, parseTextWithFeatureCfg as parse_text_with_feature_cfg, parseTextWithFeatureEarley as parse_text_with_feature_earley, parse_token_stream, parse_with_bindops, path_similarity, pathsec_open, perceptronPredictBatchNative, perceptronPredictBatchNative as perceptron_predict_batch_native, extract as phraseExtract, phraseExtraction, extract as phrase_extract, phraseExtraction as phrase_extraction, pickle_load, porterStemAscii, porterStemAsciiTokens, porterStemAscii as porter_stem_ascii, porterStemAsciiTokens as porter_stem_ascii_tokens, posTag, posTagAsciiNative, posTagPerceptronAscii, posTagSents, pos_tag, posTagAsciiNative as pos_tag_ascii_native, posTagPerceptronAscii as pos_tag_perceptron_ascii, pos_tag_sents, position_of_ngram, postag, pr, prefix_replace, preparePerceptronTaggerModel, preparePerceptronTaggerModel as prepare_perceptron_tagger_model, prettyPrint, prettyPrint as pretty_print, printCCGDerivation, printCCGTree, printProof, printCCGDerivation as print_ccg_derivation, printCCGTree as print_ccg_tree, print_proof, print_string, printtype, processBundle, processBundle as process_bundle, projective_prob_parse_demo, projective_rule_parse_demo, propdemo, prover9Demo, spacer$2 as prover9Spacer, prover9Demo as prover9_demo, spacer$2 as prover9_spacer, punkt_pickle_load, py3_data, quick, raise_unorderable_types, re_show, readLogic, readSents, readType, readValuation, read_alignedsent_block, read_blankline_block, read_cmudict_block, read_int, read_line_block, read_logic, read_number, read_parse_blankline_block, read_regexp_block, read_sents, read_sexpr_block, read_str, read_timit_block, read_type, read_valuation, read_whitespace_block, read_wordpunct_block, reflections$2 as reflections, regexpChunkParse, regexpChunkParse as regexp_chunk_parse, clause as relextractClause, clause as relextract_clause, removeBlanks, remove_blanks, res_similarity, resetUniqueVariableCounter, resetUniqueVariableCounter as reset_unique_variable_counter, resolutionDemo, resolutionTest, resolutionDemo as resolution_demo, resolution_test, resolveAnaphora, resolve_anaphora, restricted_pickle_load, retrieve, revword, roles_demo, rootSemrep, root_semrep, rslpStem, rslpStem as rslp_stem, rteClassify, rteClassify as rte_classify, rtuple, rude_chat$1 as rude_chat, rude_pairs, rule_based_demo, run_profile, safe_parse, satdemo, savePunktParams, save_maxent_params, save_punkt_params, selection, semLogicDemo, semLogicDemoErrors, semLogicDemo as sem_logic_demo, semLogicDemoErrors as sem_logic_demo_errors, sem_package, sem_trace, semi_rel2reldict, sentenceGleu, sentenceLepor, sentenceRibes, sentenceTokenizePunktAsciiNative, sentenceGleu as sentence_gleu, sentenceLepor as sentence_lepor, sentenceRibes as sentence_ribes, sentenceTokenizePunktAsciiNative as sentence_tokenize_punkt_ascii_native, set2rel, set_proxy, sexprTokenize, sexprTokenize as sexpr_tokenize, sha256_hexdigest, short2long, showCfg, show_cfg, sigmaExp, sigmaSkip, sigmaSub, sigmaExp as sigma_exp, sigmaSkip as sigma_skip, sigmaSub as sigma_sub, singleMeteorScore, singleMeteorScore as single_meteor_score, sinica_parse, skipgrams, skipgramsAsciiNative, skipgramsAsciiNative as skipgrams_ascii_native, skolemFunction, skolem_function, skolemize, slice_bounds, snowballStem, snowballStem as snowball_stem, socialTokenizerNative, socialTokenizerNative as social_tokenizer_native, sonorityTokenize, sonorityTokenize as sonority_tokenize, sortFields, sort_fields, spacer, spearmanRho, spearmanRho as spearman_rho, splitAt, split_at, split_resource_url, sqlDemo, sqlQuery, sqlDemo as sql_demo, sqlQuery as sql_query, standardTemplates, standardTemplates as standard_templates, stemMatch, stemMatch as stem_match, stem_package, step, str2tuple, subjects, suffixReplace as suffix_replace, sumVectors, sumVectors as sum_vectors, suntsu_chat$1 as suntsu_chat, suntsu_pairs, switch_chunker, switch_p_tagger, switch_punkt, switch_t_tagger, synsetDefinition, synsetDefinition as synset_definition, tabdata_d as tabdata_ns, tableauDemo, tableauTest, tableauDemo as tableau_demo, tableau_test, tagPattern2rePattern, tag_package, tag_pattern2re_pattern, taggedSentToConll, taggedSentsToConll, tagged_treebank_para_block_reader, taggedsent_to_conll, taggedsents_to_conll, tagsetMapping, tagsetMapping as tagset_mapping, tagstr2tree, demo$e as tblDemo, demo$e as tbl_demo, tbl_package, test, testBuildModel, testClausify, testConfig, testConvertToProver9, testHigherOrderTableauProver, testMakeRelationSet, testModelFound, testProve, testResolutionProver, testTableauProver, testTransformOutput, test_build_model, test_clausify, test_config, test_convert_to_prover9, test_draw, testHigherOrderTableauProver as test_higher_order_tableau_prover, test_make_relation_set, test_model_found, test_prove, testResolutionProver as test_resolution_prover, testTableauProver as test_tableau_prover, test_transform_output, tgrepCompile, tgrepNodes, tgrepPositions, tgrepTokenize, tgrep_compile, tgrep_nodes, tgrep_positions, tgrep_tokenize, demo$f as tntDemo, toCnf, toCnf as toCnfInternal, toSFMString, toSettingsString, toCnf as to_cnf, to_settings_string, to_sfm_string, tokenFreqDistHashAscii, tokenFreqDistIdsAscii, tokenFreqDistHashAscii as token_freq_dist_hash_ascii, tokenFreqDistIdsAscii as token_freq_dist_ids_ascii, tokenizeAsciiNative, tokenizeAsciiNative as tokenize_ascii_native, tokenizerRequestNative, tokenizerRequestNative as tokenizer_request_native, tokenwrap, toolbox_demo, topPmiBigramsAscii, topPmiBigramsAscii as top_pmi_bigrams_ascii, trace, trainConditionalExponentialTextClassifier, trainDecisionTreeTextClassifier, trainLinearSvmTextClassifier, trainLogisticTextClassifier, trainMaxEntTextClassifier, trainNaiveBayesTextClassifier, trainPerceptronTextClassifier, trainPositiveNaiveBayesTextClassifier, trainConditionalExponentialTextClassifier as train_conditional_exponential_text_classifier, trainDecisionTreeTextClassifier as train_decision_tree_text_classifier, trainLinearSvmTextClassifier as train_linear_svm_text_classifier, trainLogisticTextClassifier as train_logistic_text_classifier, trainMaxEntTextClassifier as train_max_ent_text_classifier, train_maxent_classifier_with_gis, train_maxent_classifier_with_iis, train_maxent_classifier_with_megam, trainNaiveBayesTextClassifier as train_naive_bayes_text_classifier, trainPerceptronTextClassifier as train_perceptron_text_classifier, trainPositiveNaiveBayesTextClassifier as train_positive_naive_bayes_text_classifier, transform, translate_package, tree2conlltags, tree2semi_rel, treeDepth, treeLeaves, treeToBracket, treeDepth as tree_depth, treeLeaves as tree_leaves, treeToBracket as tree_to_bracket, treepositionsNoLeaves, treepositions_no_leaves, try_port, smooth as ttSmooth, smooth as tt_smooth, tuple2str, twitter_api_d as twitter_api_ns, twitter_common_d as twitter_common_ns, twitter_d as twitter_ns, twitter_twitter_demo_d as twitter_twitter_demo_ns, twitter_twitterclient_d as twitter_twitterclient_ns, twitter_util_d as twitter_util_ns, typecheck, unaryConcept, unaryConcept as unary_concept, unify, uniqueAncestors, uniqueNamesDemo, uniqueVariable, unique_ancestors, unique_list, unique_names_demo, unique_variable, untag, untagSents, untagSents as untag_sents, unweighted_minimum_spanning_dict, unweighted_minimum_spanning_digraph, unweighted_minimum_spanning_tree, unzip, update, urlopen, usage, valDump, valLoad, valDump as val_dump, valLoad as val_load, validate_network_url, validate_path, validate_zip_archive, vectorAdd, vectorDiv, vectorNorm, vectorScale, vectorSub, vectorAdd as vector_add, vectorDiv as vector_div, vectorNorm as vector_norm, vectorScale as vector_scale, vectorSub as vector_sub, verbs, wordRankAlignment, word_finder, wordRankAlignment as word_rank_alignment, wordfinder, wordnetMorphyAsciiNative, wordnetReader, wordnetMorphyAsciiNative as wordnet_morphy_ascii_native, wordnetReader as wordnet_reader, wordnetsynMatch, wordnetsynMatch as wordnetsyn_match, write_megam_file, write_tadm_file, wup_similarity, xpath, zen_chat$1 as zen_chat, zen_pairs, zeroVector, zeroVector as zero_vector, zip_member_is_unsafe };
+export type { AgreementDistanceFn, AlignedSentInput, AlignmentPair, AnnotationLabel, AnnotationTriple, AnyEdge, BigramScoreFn, BlockReader, BrillSentence, BrillToken, BrillTrainerOptions, BrillTrainingStats, CCGCategory, CategorizedInit, ChartParserOptions, ChartRule, ChunkElement, ChunkNode, ChunkTree, ChunkedSentence, ChunkedToken, ConcordanceLine, Condition, ConditionalExponentialExample, ConditionalExponentialSerialized, CorpusFile, CorpusMiniIndex, CorpusRegistryEntry, CorpusRegistryManifest, TaggedSentence as CorpusTaggedSentence, TaggedToken$2 as CorpusTaggedToken, DecisionTreeExample, DecisionTreeSerialized, DependencyArc, DependencyEvalNode, DependencyParse, DirectionChar, DiscourseTesterOptions, DistanceFn, Drs, EMOptions, EncodingSpec, FeatureCfgGrammar, FeatureMap, FeatureProduction, FeatureSpec, FeatureSymbol, GoldSentence, HiddenMarkovModelTrainerOptions, Estimator as HmmEstimator, Scorer as IBMScore, InitialTaggerLike, IobRow$1 as IobRow, KMeansOptions, LanguageDistance, LinearModelExample, LinearSvmSerialized, LogisticSerialized, MaxEntExample, MaxEntPrediction, MaxEntSerialized, MaxentEncodedVector, MaxentEncodingLike, MaxentParams, MaxentStreamLike, MaxentTrainOptions, MeteorOptions, MeteorStemmer, NaiveBayesExample, NaiveBayesPrediction, NaiveBayesSerialized, NativeLinearTextModel, NativeLinearTrainingAlgorithm, NativeLmModelType, NeChunkOptions, NeIobTuple, NgramTaggerOptions, PerceptronExample, PerceptronSerialized, PositiveNaiveBayesSerialized, ProbDist, QuadgramScoreFn, Restriction, RuleEffect, SFMField, TaggedToken$3 as SeqTaggedToken, SparseVector, StreamBigramFreq, StreamConditionalFreq, TGrepPattern, TGrepPredicate, TadmMapping, TagContext, TaggedToken$5 as TaggedToken, TaggerModel, TextCatOptions, TextTokenizerLike, TreePosition$1 as TreePosition, TreePositionsOrder, TrigramScoreFn, UntaggedSentence, VaderOptions, VaderPolarity, Vector, VectorizerOptions, VectorizerSerialized, WordFinderResult, WordNetIcDict, WordNetLookupQuery, WordNetLookupResult, WordNetMiniPayload, WordNetPos, WordNetSynset, Synset$1 as WsdSynset };

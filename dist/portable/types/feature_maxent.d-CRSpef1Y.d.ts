@@ -1,4 +1,4 @@
-import { W as WasmNltk } from './wasm.d-DQjev3Ji.js';
+import { W as WasmNltk } from './wasm.d-vEZU3EsV.js';
 import { FeatureValue } from '../feature_types.js';
 
 /** Preserve Python float-vs-int identity, including integral floats (1.0). */
@@ -95,8 +95,20 @@ declare class FreqDist<S> implements Iterable<S> {
     subtract(other: FreqDist<S>): FreqDist<S>;
     union(other: FreqDist<S>): FreqDist<S>;
     intersection(other: FreqDist<S>): FreqDist<S>;
+    setdefault(sample: S, count: number): void;
+    pop(sample: S, defaultValue?: number): number | undefined;
+    popitem(): [S, number] | undefined;
+    elements(): IterableIterator<S>;
     isSubsetOf(other: FreqDist<S>): boolean;
     isSupersetOf(other: FreqDist<S>): boolean;
+    lt(other: FreqDist<S>): boolean;
+    gt(other: FreqDist<S>): boolean;
+    cumulativeFrequencies(samples: Iterable<S>): Generator<number>;
+    tabulate(count?: number, options?: {
+        samples?: S[];
+        cumulative?: boolean;
+        writer?: (line: string) => void;
+    }): void;
     equals(other: FreqDist<S>): boolean;
     pformat(maxlen?: number): string;
     pprint(maxlen?: number, writer?: (line: string) => void): void;
@@ -148,11 +160,21 @@ declare function sumLogs(logs: number[]): number;
 declare function logLikelihood<T>(testPdist: ProbDistLike<T>, actualPdist: ProbDistLike<T>): number;
 declare function entropy<T>(pdist: ProbDistLike<T>): number;
 declare abstract class ProbDistI<T> implements ProbDistLike<T> {
+    /** NLTK ``SUM_TO_ONE`` — overridden by distributions that don't. */
+    static readonly SUM_TO_ONE: boolean;
     abstract prob(sample: T): number;
     abstract max(): T;
     abstract samples(): Iterable<T>;
     logprob(sample: T): number;
     logProb(sample: T): number;
+    /** NLTK ``ProbDistI.discount``: base distributions don't discount. */
+    discount(): number;
+    /**
+     * NLTK ``generate``: weighted reservoir — draw p ~ U(0,1), walk samples
+     * subtracting prob until p <= 0; trailing rounding slack (< 0.0001)
+     * returns the last sample; otherwise warn (SUM_TO_ONE) and draw uniformly.
+     */
+    generate(random?: () => number): T;
 }
 declare class DictionaryProbDist<T> extends ProbDistI<T> {
     #private;
@@ -173,6 +195,8 @@ declare class MLEProbDist<T> extends ProbDistI<T> {
     toString(): string;
 }
 declare class LidstoneProbDist<T> extends ProbDistI<T> {
+    /** NLTK: Lidstone only sums to one when bins cover every possible sample. */
+    static readonly SUM_TO_ONE = false;
     protected readonly freqDistValue: FreqDist<T>;
     protected gammaValue: number;
     protected readonly totalCount: number;
@@ -207,6 +231,8 @@ declare class WittenBellProbDist<T> extends ProbDistI<T> {
 }
 declare class SimpleGoodTuringProbDist<T> extends ProbDistI<T> {
     #private;
+    /** NLTK: smoothed mass does not sum to one. */
+    static readonly SUM_TO_ONE = false;
     constructor(freqdist: FreqDist<T>, bins?: number);
     smoothedNr(r: number): number;
     smoothed_nr(r: number): number;
@@ -232,6 +258,29 @@ declare class MutableProbDist<T> extends ProbDistI<T> {
     logprob(sample: T): number;
     max(): T;
     samples(): IterableIterator<T>;
+}
+declare class RandomProbDist<T> extends ProbDistI<T> {
+    #private;
+    /**
+     * Generates a random probability distribution whereby each sample
+     * will be between 0 and 1 with equal probability (uniform random
+     * distribution — also called a continuous uniform distribution).
+     * `random` is an injectable U(0,1) source (NLTK uses `random.random()`).
+     */
+    constructor(samples: Iterable<T>, random?: () => number);
+    /**
+     * The key function that creates a randomized initial distribution
+     * that still sums to 1.  Returned as a Map so it can be passed to
+     * MutableProbDist with identical syntax to UniformProbDist.
+     * NLTK quirk: `samples` is de-duplicated via `set()` before drawing.
+     */
+    static unirand<T>(samples: Iterable<T>, random?: () => number): Map<string, {
+        sample: T;
+        value: number;
+    }>;
+    max(): T;
+    prob(sample: T): number;
+    samples(): Iterable<T>;
 }
 declare abstract class ConditionalProbDistI<C, T> {
     abstract get(condition: C): ProbDistLike<T>;
@@ -340,5 +389,5 @@ declare class RustMaxentClassifier {
     dispose(): void;
 }
 
-export { BinaryMaxentFeatureEncoding as B, ConditionalProbDist as C, DictionaryProbDist as D, ELEProbDist as E, FreqDist as F, LaplaceProbDist as L, RustMaxentClassifier as R, SimpleGoodTuringProbDist as S, TypedMaxentFeatureEncoding as T, UniformProbDist as U, WittenBellProbDist as W, ConditionalFreqDist as c, ConditionalProbDistI as e, DictionaryConditionalProbDist as f, LidstoneProbDist as i, MLEProbDist as j, MutableProbDist as k, PYTHON_BOOL as l, PYTHON_FLOAT as m, PYTHON_INT as n, ProbDistI as p, addLogs as q, entropy as r, logLikelihood as s, pythonFloat as t, sumLogs as u };
-export type { MaxentEncodingExample as M, ProbDistLike as P, FeatureMaxentOptions as a, MaxentFeatureset as b, ConditionalFreqDistInput as d, FeatureMaxentSerialized as g, FreqDistInput as h, ProbDistFactory as o, CustomFeatureMaxentSerialized as v, DefaultFeatureMaxentSerialized as w, MaxentEncodingSerialized as x };
+export { BinaryMaxentFeatureEncoding as B, ConditionalProbDist as C, DictionaryProbDist as D, ELEProbDist as E, FreqDist as F, LaplaceProbDist as L, RustMaxentClassifier as R, SimpleGoodTuringProbDist as S, TypedMaxentFeatureEncoding as T, UniformProbDist as U, WittenBellProbDist as W, ConditionalFreqDist as f, ConditionalProbDistI as h, DictionaryConditionalProbDist as i, LidstoneProbDist as l, MLEProbDist as m, MutableProbDist as n, PYTHON_BOOL as o, PYTHON_FLOAT as p, PYTHON_INT as q, ProbDistI as s, RandomProbDist as t, addLogs as u, entropy as v, logLikelihood as w, pythonFloat as x, sumLogs as y };
+export type { DefaultFeatureMaxentSerialized as A, MaxentEncodingSerialized as G, MaxentFeatureset as M, ProbDistLike as P, MaxentEncodingExample as a, MaxentFeatureMapping as b, MaxentEncodingOptions as c, MaxentMappingValue as d, FeatureMaxentOptions as e, ConditionalFreqDistInput as g, FeatureMaxentSerialized as j, FreqDistInput as k, ProbDistFactory as r, CustomFeatureMaxentSerialized as z };
