@@ -95629,29 +95629,31 @@
    "exports": [
     "ElementWrapper"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "ElementWrapper"
+     "file": "src/corpus_readers4.ts",
+     "anchor": "export class ElementWrapper"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "ElementWrapper: data/internal surface not yet ported; honest stub throws."
+     "Wraps the internal XMLElement rather than xml.etree.ElementTree.Element; repr parity pinned via FrameNet evidence."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ElementWrapper: not implemented."
+     "repr/children pinned through FrameNet differential; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.internals.ElementWrapper not yet ported."
+   "notes": "Real ElementWrapper over internal ElementTree clone."
   },
   {
    "target": "nltk.internals.ReadError",
