@@ -66200,8 +66200,8 @@
    "exports": [
     "pathsec_open"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/pathsec.ts",
@@ -66209,20 +66209,22 @@
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "pathsec_open: corpus reader surface not yet ported; honest stub throws."
+     "Returns raw bytes (Uint8Array) rather than a stream object; containment/traversal checks identical."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "pathsec-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "pathsec_open: not implemented in the TS runtime."
+     "Containment/traversal rejection oracle-pinned; see pathsec-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.crubadan.pathsec_open not yet ported (corpus-family stub)."
+   "notes": "pathsec.open alias; bytes-returning adaptation."
   },
   {
    "target": "nltk.corpus.reader.dependency.AbstractLazySequence",
@@ -69995,8 +69997,8 @@
    "exports": [
     "pathsec_open"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/pathsec.ts",
@@ -70004,20 +70006,22 @@
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "pathsec_open: corpus reader surface not yet ported; honest stub throws."
+     "Returns raw bytes (Uint8Array) rather than a stream object; containment/traversal checks identical."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "pathsec-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "pathsec_open: not implemented in the TS runtime."
+     "Containment/traversal rejection oracle-pinned; see pathsec-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.lin.pathsec_open not yet ported (corpus-family stub)."
+   "notes": "pathsec.open alias; bytes-returning adaptation."
   },
   {
    "target": "nltk.corpus.reader.markdown.CategorizedCorpusReader",
@@ -72686,8 +72690,8 @@
    "exports": [
     "pathsec_open"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/pathsec.ts",
@@ -72695,20 +72699,22 @@
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "pathsec_open: corpus reader surface not yet ported; honest stub throws."
+     "Returns raw bytes (Uint8Array) rather than a stream object; containment/traversal checks identical."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "pathsec-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "pathsec_open: not implemented in the TS runtime."
+     "Containment/traversal rejection oracle-pinned; see pathsec-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nps_chat.pathsec_open not yet ported (corpus-family stub)."
+   "notes": "pathsec.open alias; bytes-returning adaptation."
   },
   {
    "target": "nltk.corpus.reader.nps_chat.read_alignedsent_block",
@@ -74448,8 +74454,8 @@
    "exports": [
     "pathsec_open"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/pathsec.ts",
@@ -74457,20 +74463,22 @@
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "pathsec_open: corpus reader surface not yet ported; honest stub throws."
+     "Returns raw bytes (Uint8Array) rather than a stream object; containment/traversal checks identical."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "pathsec-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "pathsec_open: not implemented in the TS runtime."
+     "Containment/traversal rejection oracle-pinned; see pathsec-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.pl196x.pathsec_open not yet ported (corpus-family stub)."
+   "notes": "pathsec.open alias; bytes-returning adaptation."
   },
   {
    "target": "nltk.corpus.reader.pl196x.read_alignedsent_block",
@@ -82339,8 +82347,8 @@
    "exports": [
     "pathsec_open"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/pathsec.ts",
@@ -82348,20 +82356,22 @@
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "pathsec_open: corpus reader surface not yet ported; honest stub throws."
+     "Returns raw bytes (Uint8Array) rather than a stream object; containment/traversal checks identical."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "pathsec-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "pathsec_open: not implemented in the TS runtime."
+     "Containment/traversal rejection oracle-pinned; see pathsec-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.rte.pathsec_open not yet ported (corpus-family stub)."
+   "notes": "pathsec.open alias; bytes-returning adaptation."
   },
   {
    "target": "nltk.corpus.reader.rte.read_alignedsent_block",
@@ -93740,8 +93750,8 @@
    "exports": [
     "pathsec_open"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/pathsec.ts",
@@ -93749,20 +93759,22 @@
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "pathsec_open: corpus reader surface not yet ported; honest stub throws."
+     "Returns raw bytes (Uint8Array) rather than a stream object; containment/traversal checks identical."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "pathsec-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "pathsec_open: not implemented in the TS runtime."
+     "Containment/traversal rejection oracle-pinned; see pathsec-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.xmldocs.pathsec_open not yet ported (corpus-family stub)."
+   "notes": "pathsec.open alias; bytes-returning adaptation."
   },
   {
    "target": "nltk.corpus.reader.xmldocs.read_alignedsent_block",
