@@ -2472,6 +2472,39 @@
    "anchor": "corpus readers batch A vs NLTK 3.10.3 oracle",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: ConllCorpusReader words/pos/chunk/tree/srl + SRL instances, AlpinoCorpusReader words/tagged/parsed incl. malformed-tree fallback, SinicaTreebankCorpusReader + sinica_parse, KNBCorpusReader words/tagged/parsed + defaultdict.append AttributeError quirk, ChasenCorpusReader, LinThesaurusCorpusReader similarity/synonyms, ToolboxCorpusReader words/entries/fields/xml, YCOECorpusReader documents/words/tagged/parsed, SwitchboardCorpusReader words/turns/discourses."
+  },
+  {
+   "id": "corpus-readers4-differential",
+   "kind": "differential",
+   "files": [
+    "test/corpus_readers4.test.ts",
+    "test/corpus_readers4_oracle.py"
+   ],
+   "anchor": "corpus_readers4 (XML readers) vs NLTK 3.10.3",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: XMLCorpusReader/View/XML_Tool/xpath, BNC reader+sentence+word view, CHILDES, VerbNet, MTE reader+views+tag converter, IPIPAN (incl. binary-stream TypeError quirk), NKJP views (bare-Exception quirk), NPSChat, FrameNet frame/LU/docs/relations/semtypes, ElementWrapper, framenetProj."
+  },
+  {
+   "id": "corpus-readers5-differential",
+   "kind": "differential",
+   "files": [
+    "test/corpus_readers5.test.ts",
+    "test/corpus_readers5_oracle.py"
+   ],
+   "anchor": "corpus readers batch E vs NLTK 3.10.3 oracle",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: PropBank reader/instance/inflection/pointers (chain+split), NomBank family incl. defaultdict-append quirk and roleset normalization, SemCor modes+views+ms-ValueError+lazy-arity TypeError, Senseval _fixXML/_entry, RTE pairs+norm KeyError."
+  },
+  {
+   "id": "corpus-readers6-differential",
+   "kind": "differential",
+   "files": [
+    "test/corpus_readers6.test.ts",
+    "test/corpus_readers6_oracle.py"
+   ],
+   "anchor": "corpus_readers6",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: Timit reader+SpeakerInfo (utteranceids spkrid bug, string-root quirk), PanLexLite+PanlexLanguage (skipped CorpusReader.__init__ AttributeError), PanlexSwadesh, Pl196x (textids-only ValueError), BCP47, Crubadan, TEICorpusView, Markdown readers+section/block values, AttrDict/Future/SpecialList/PrettyDict/PrettyList/PrettyLazy* repr+iter, norm, comma_separated_string_args, read_parse_blankline_block, read_timit_block, safe_parse/safe_fromstring."
   }
  ],
  "signatureBindings": [
@@ -50262,58 +50295,62 @@
    "exports": [
     "BCP47CorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "BCP47CorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "BCP47CorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BCP47CorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.BCP47CorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.BNCCorpusReader",
    "exports": [
     "BNCCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "BNCCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "BNCCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BNCCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.BNCCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.BracketParseCorpusReader",
@@ -50352,29 +50389,31 @@
    "exports": [
     "CHILDESCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "CHILDESCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "CHILDESCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CHILDESCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.CHILDESCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.CMUDictCorpusReader",
@@ -50753,29 +50792,31 @@
    "exports": [
     "CrubadanCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "CrubadanCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "CrubadanCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CrubadanCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.CrubadanCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.DependencyCorpusReader",
@@ -50842,29 +50883,31 @@
    "exports": [
     "FramenetCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "FramenetCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "FramenetCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "FramenetCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.FramenetCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.IEERCorpusReader",
@@ -50902,29 +50945,31 @@
    "exports": [
     "IPIPANCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "IPIPANCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "IPIPANCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IPIPANCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.IPIPANCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.IndianCorpusReader",
@@ -51055,29 +51100,31 @@
    "exports": [
     "MTECorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "MTECorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "MTECorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "MTECorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.MTECorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.MWAPPDBCorpusReader",
@@ -51142,87 +51189,93 @@
    "exports": [
     "NKJPCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "NKJPCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NKJPCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NKJPCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.NKJPCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.NPSChatCorpusReader",
    "exports": [
     "NPSChatCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "NPSChatCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NPSChatCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NPSChatCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.NPSChatCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.NombankCorpusReader",
    "exports": [
     "NombankCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "NombankCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NombankCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NombankCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.NombankCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.NonbreakingPrefixesCorpusReader",
@@ -51318,87 +51371,93 @@
    "exports": [
     "PanLexLiteCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "PanLexLiteCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PanLexLiteCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PanLexLiteCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.PanLexLiteCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.PanlexSwadeshCorpusReader",
    "exports": [
     "PanlexSwadeshCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "PanlexSwadeshCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PanlexSwadeshCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PanlexSwadeshCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.PanlexSwadeshCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.Pl196xCorpusReader",
    "exports": [
     "Pl196xCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "Pl196xCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Pl196xCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Pl196xCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.Pl196xCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.PlaintextCorpusReader",
@@ -51466,29 +51525,31 @@
    "exports": [
     "PropbankCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "PropbankCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PropbankCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PropbankCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.PropbankCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.ProsConsCorpusReader",
@@ -51526,29 +51587,31 @@
    "exports": [
     "RTECorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "RTECorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "RTECorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "RTECorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.RTECorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.RegexpTokenizer",
@@ -51615,58 +51678,62 @@
    "exports": [
     "SemcorCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "SemcorCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SemcorCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SemcorCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.SemcorCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.SensevalCorpusReader",
    "exports": [
     "SensevalCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "SensevalCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SensevalCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SensevalCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.SensevalCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.SentiSynset",
@@ -51883,29 +51950,31 @@
    "exports": [
     "TEICorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "TEICorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "TEICorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TEICorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.TEICorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.TaggedCorpusReader",
@@ -51944,29 +52013,31 @@
    "exports": [
     "TimitCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "TimitCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "TimitCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TimitCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.TimitCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.TimitTaggedCorpusReader",
@@ -52122,29 +52193,31 @@
    "exports": [
     "VerbnetCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "VerbnetCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "VerbnetCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "VerbnetCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.VerbnetCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.WordListCorpusReader",
@@ -52241,29 +52314,31 @@
    "exports": [
     "XMLCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.XMLCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.YCOECorpusReader",
@@ -52455,58 +52530,62 @@
    "exports": [
     "BCP47CorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "BCP47CorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "BCP47CorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BCP47CorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.BCP47CorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.BNCCorpusReader",
    "exports": [
     "BNCCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "BNCCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "BNCCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BNCCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.BNCCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.BracketParseCorpusReader",
@@ -52545,29 +52624,31 @@
    "exports": [
     "CHILDESCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "CHILDESCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "CHILDESCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CHILDESCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.CHILDESCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.CMUDictCorpusReader",
@@ -52946,29 +53027,31 @@
    "exports": [
     "CrubadanCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "CrubadanCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "CrubadanCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CrubadanCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.CrubadanCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.DependencyCorpusReader",
@@ -53035,29 +53118,31 @@
    "exports": [
     "FramenetCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "FramenetCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "FramenetCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "FramenetCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.FramenetCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.IEERCorpusReader",
@@ -53095,29 +53180,31 @@
    "exports": [
     "IPIPANCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "IPIPANCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "IPIPANCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IPIPANCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.IPIPANCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.IndianCorpusReader",
@@ -53248,29 +53335,31 @@
    "exports": [
     "MTECorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "MTECorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "MTECorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "MTECorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.MTECorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.MWAPPDBCorpusReader",
@@ -53335,87 +53424,93 @@
    "exports": [
     "NKJPCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "NKJPCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NKJPCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NKJPCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.NKJPCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.NPSChatCorpusReader",
    "exports": [
     "NPSChatCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "NPSChatCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NPSChatCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NPSChatCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.NPSChatCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.NombankCorpusReader",
    "exports": [
     "NombankCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "NombankCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NombankCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NombankCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.NombankCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.NonbreakingPrefixesCorpusReader",
@@ -53511,87 +53606,93 @@
    "exports": [
     "PanLexLiteCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "PanLexLiteCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PanLexLiteCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PanLexLiteCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.PanLexLiteCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.PanlexSwadeshCorpusReader",
    "exports": [
     "PanlexSwadeshCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "PanlexSwadeshCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PanlexSwadeshCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PanlexSwadeshCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.PanlexSwadeshCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.Pl196xCorpusReader",
    "exports": [
     "Pl196xCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "Pl196xCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Pl196xCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Pl196xCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.Pl196xCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.PlaintextCorpusReader",
@@ -53659,29 +53760,31 @@
    "exports": [
     "PropbankCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "PropbankCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PropbankCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PropbankCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.PropbankCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.ProsConsCorpusReader",
@@ -53719,29 +53822,31 @@
    "exports": [
     "RTECorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "RTECorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "RTECorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "RTECorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.RTECorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.ReviewsCorpusReader",
@@ -53779,58 +53884,62 @@
    "exports": [
     "SemcorCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "SemcorCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SemcorCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SemcorCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.SemcorCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.SensevalCorpusReader",
    "exports": [
     "SensevalCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "SensevalCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SensevalCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SensevalCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.SensevalCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.SentiSynset",
@@ -54047,29 +54156,31 @@
    "exports": [
     "TEICorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "TEICorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "TEICorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TEICorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.TEICorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.TaggedCorpusReader",
@@ -54108,29 +54219,31 @@
    "exports": [
     "TimitCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "TimitCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "TimitCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TimitCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.TimitCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.TimitTaggedCorpusReader",
@@ -54286,29 +54399,31 @@
    "exports": [
     "VerbnetCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "VerbnetCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "VerbnetCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "VerbnetCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.VerbnetCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.WordListCorpusReader",
@@ -54405,29 +54520,31 @@
    "exports": [
     "XMLCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.europarl_raw.XMLCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.europarl_raw.YCOECorpusReader",
@@ -54590,58 +54707,62 @@
    "exports": [
     "BCP47CorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "BCP47CorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "BCP47CorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BCP47CorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.BCP47CorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.BNCCorpusReader",
    "exports": [
     "BNCCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "BNCCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "BNCCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BNCCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.BNCCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.BracketParseCorpusReader",
@@ -54680,29 +54801,31 @@
    "exports": [
     "CHILDESCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "CHILDESCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "CHILDESCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CHILDESCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.CHILDESCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.CMUDictCorpusReader",
@@ -55081,29 +55204,31 @@
    "exports": [
     "CrubadanCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "CrubadanCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "CrubadanCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CrubadanCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.CrubadanCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.DependencyCorpusReader",
@@ -55170,29 +55295,31 @@
    "exports": [
     "FramenetCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "FramenetCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "FramenetCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "FramenetCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.FramenetCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.IEERCorpusReader",
@@ -55230,29 +55357,31 @@
    "exports": [
     "IPIPANCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "IPIPANCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "IPIPANCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IPIPANCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.IPIPANCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.IndianCorpusReader",
@@ -55352,29 +55481,31 @@
    "exports": [
     "MTECorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "MTECorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "MTECorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "MTECorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.MTECorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.MWAPPDBCorpusReader",
@@ -55439,87 +55570,93 @@
    "exports": [
     "NKJPCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "NKJPCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NKJPCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NKJPCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.NKJPCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.NPSChatCorpusReader",
    "exports": [
     "NPSChatCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "NPSChatCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NPSChatCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NPSChatCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.NPSChatCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.NombankCorpusReader",
    "exports": [
     "NombankCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "NombankCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NombankCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NombankCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.NombankCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.NonbreakingPrefixesCorpusReader",
@@ -55615,87 +55752,93 @@
    "exports": [
     "PanLexLiteCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "PanLexLiteCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PanLexLiteCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PanLexLiteCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.PanLexLiteCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.PanlexSwadeshCorpusReader",
    "exports": [
     "PanlexSwadeshCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "PanlexSwadeshCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PanlexSwadeshCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PanlexSwadeshCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.PanlexSwadeshCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.Pl196xCorpusReader",
    "exports": [
     "Pl196xCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "Pl196xCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Pl196xCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Pl196xCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.Pl196xCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.PlaintextCorpusReader",
@@ -55763,29 +55906,31 @@
    "exports": [
     "PropbankCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "PropbankCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PropbankCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PropbankCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.PropbankCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.ProsConsCorpusReader",
@@ -55823,29 +55968,31 @@
    "exports": [
     "RTECorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "RTECorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "RTECorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "RTECorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.RTECorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.ReviewsCorpusReader",
@@ -55883,58 +56030,62 @@
    "exports": [
     "SemcorCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "SemcorCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SemcorCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SemcorCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.SemcorCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.SensevalCorpusReader",
    "exports": [
     "SensevalCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "SensevalCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SensevalCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SensevalCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.SensevalCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.SentiSynset",
@@ -56151,29 +56302,31 @@
    "exports": [
     "TEICorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "TEICorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "TEICorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TEICorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.TEICorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.TaggedCorpusReader",
@@ -56212,29 +56365,31 @@
    "exports": [
     "TimitCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "TimitCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "TimitCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TimitCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.TimitCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.TimitTaggedCorpusReader",
@@ -56390,29 +56545,31 @@
    "exports": [
     "VerbnetCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "VerbnetCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "VerbnetCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "VerbnetCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.VerbnetCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.WordListCorpusReader",
@@ -56509,29 +56666,31 @@
    "exports": [
     "XMLCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.XMLCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.YCOECorpusReader",
@@ -57665,29 +57824,31 @@
    "exports": [
     "BCP47CorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "BCP47CorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "BCP47CorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BCP47CorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.bcp47.BCP47CorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.bcp47.CorpusReader",
@@ -57726,174 +57887,186 @@
    "exports": [
     "safe_parse"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "safe_parse"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "safe_parse: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "safe_parse: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.bcp47.safe_parse not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.bnc.BNCCorpusReader",
    "exports": [
     "BNCCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "BNCCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "BNCCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BNCCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.bnc.BNCCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.bnc.BNCSentence",
    "exports": [
     "BNCSentence"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "BNCSentence"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "BNCSentence: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BNCSentence: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.bnc.BNCSentence not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.bnc.BNCWordView",
    "exports": [
     "BNCWordView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "BNCWordView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "BNCWordView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BNCWordView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.bnc.BNCWordView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.bnc.XMLCorpusReader",
    "exports": [
     "XMLCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.bnc.XMLCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.bnc.XMLCorpusView",
    "exports": [
     "XMLCorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.bnc.XMLCorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.bnc.concat",
@@ -60470,29 +60643,31 @@
    "exports": [
     "CHILDESCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "CHILDESCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "CHILDESCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CHILDESCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.childes.CHILDESCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.childes.LazyConcatenation",
@@ -60557,29 +60732,31 @@
    "exports": [
     "XMLCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.childes.XMLCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.childes.concat",
@@ -65934,29 +66111,31 @@
    "exports": [
     "CrubadanCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "CrubadanCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "CrubadanCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CrubadanCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.crubadan.CrubadanCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.crubadan.FreqDist",
@@ -67768,116 +67947,124 @@
    "exports": [
     "AttrDict"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "AttrDict"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "AttrDict: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "AttrDict: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.framenet.AttrDict not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.framenet.FramenetCorpusReader",
    "exports": [
     "FramenetCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "FramenetCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "FramenetCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "FramenetCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.framenet.FramenetCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.framenet.FramenetError",
    "exports": [
     "FramenetError"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "FramenetError"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "FramenetError: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "FramenetError: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.framenet.FramenetError not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.framenet.Future",
    "exports": [
     "Future"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "Future"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Future: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Future: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.framenet.Future not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.framenet.LazyConcatenation",
@@ -67971,232 +68158,248 @@
    "exports": [
     "PrettyDict"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "PrettyDict"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PrettyDict: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PrettyDict: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.framenet.PrettyDict not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.framenet.PrettyLazyConcatenation",
    "exports": [
     "PrettyLazyConcatenation"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "PrettyLazyConcatenation"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PrettyLazyConcatenation: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PrettyLazyConcatenation: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.framenet.PrettyLazyConcatenation not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.framenet.PrettyLazyIteratorList",
    "exports": [
     "PrettyLazyIteratorList"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "PrettyLazyIteratorList"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PrettyLazyIteratorList: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PrettyLazyIteratorList: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.framenet.PrettyLazyIteratorList not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.framenet.PrettyLazyMap",
    "exports": [
     "PrettyLazyMap"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "PrettyLazyMap"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PrettyLazyMap: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PrettyLazyMap: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.framenet.PrettyLazyMap not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.framenet.PrettyList",
    "exports": [
     "PrettyList"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "PrettyList"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PrettyList: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PrettyList: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.framenet.PrettyList not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.framenet.SpecialList",
    "exports": [
     "SpecialList"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "SpecialList"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SpecialList: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SpecialList: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.framenet.SpecialList not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.framenet.XMLCorpusReader",
    "exports": [
     "XMLCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.framenet.XMLCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.framenet.XMLCorpusView",
    "exports": [
     "XMLCorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.framenet.XMLCorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.framenet.demo",
@@ -69299,58 +69502,62 @@
    "exports": [
     "IPIPANCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "IPIPANCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "IPIPANCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IPIPANCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.ipipan.IPIPANCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.ipipan.IPIPANCorpusView",
    "exports": [
     "IPIPANCorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "IPIPANCorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "IPIPANCorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "IPIPANCorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.ipipan.IPIPANCorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.ipipan.StreamBackedCorpusView",
@@ -69848,232 +70055,248 @@
    "exports": [
     "CategorizedMarkdownCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "CategorizedMarkdownCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "CategorizedMarkdownCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CategorizedMarkdownCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.markdown.CategorizedMarkdownCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.markdown.CodeBlock",
    "exports": [
     "CodeBlock"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "CodeBlock"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "CodeBlock: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CodeBlock: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.markdown.CodeBlock not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.markdown.Image",
    "exports": [
     "Image"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "Image"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Image: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Image: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.markdown.Image not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.markdown.Link",
    "exports": [
     "Link"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "Link"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Link: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Link: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.markdown.Link not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.markdown.List",
    "exports": [
     "List"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "List"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "List: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "List: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.markdown.List not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.markdown.MarkdownBlock",
    "exports": [
     "MarkdownBlock"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "MarkdownBlock"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "MarkdownBlock: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "MarkdownBlock: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.markdown.MarkdownBlock not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.markdown.MarkdownCorpusReader",
    "exports": [
     "MarkdownCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "MarkdownCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "MarkdownCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "MarkdownCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.markdown.MarkdownCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.markdown.MarkdownSection",
    "exports": [
     "MarkdownSection"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "MarkdownSection"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "MarkdownSection: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "MarkdownSection: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.markdown.MarkdownSection not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.markdown.PlaintextCorpusReader",
@@ -70141,29 +70364,31 @@
    "exports": [
     "comma_separated_string_args"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "comma_separated_string_args"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "comma_separated_string_args: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "comma_separated_string_args: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.markdown.comma_separated_string_args not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.markdown.concat",
@@ -70234,29 +70459,31 @@
    "exports": [
     "read_parse_blankline_block"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "read_parse_blankline_block"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "read_parse_blankline_block: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "read_parse_blankline_block: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.markdown.read_parse_blankline_block not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.markdown.sent_tokenize",
@@ -70321,116 +70548,124 @@
    "exports": [
     "MTECorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "MTECorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "MTECorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "MTECorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.mte.MTECorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.mte.MTECorpusView",
    "exports": [
     "MTECorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "MTECorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "MTECorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "MTECorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.mte.MTECorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.mte.MTEFileReader",
    "exports": [
     "MTEFileReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "MTEFileReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "MTEFileReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "MTEFileReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.mte.MTEFileReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.mte.MTETagConverter",
    "exports": [
     "MTETagConverter"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "MTETagConverter"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "MTETagConverter: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "MTETagConverter: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.mte.MTETagConverter not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.mte.TaggedCorpusReader",
@@ -70469,29 +70704,31 @@
    "exports": [
     "XMLCorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.mte.XMLCorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.mte.concat",
@@ -70559,261 +70796,279 @@
    "exports": [
     "xpath"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "xpath"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "xpath: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "xpath: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.mte.xpath not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nkjp.NKJPCorpusReader",
    "exports": [
     "NKJPCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "NKJPCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NKJPCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NKJPCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nkjp.NKJPCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nkjp.NKJPCorpus_Header_View",
    "exports": [
     "NKJPCorpus_Header_View"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "NKJPCorpus_Header_View"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NKJPCorpus_Header_View: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NKJPCorpus_Header_View: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nkjp.NKJPCorpus_Header_View not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nkjp.NKJPCorpus_Morph_View",
    "exports": [
     "NKJPCorpus_Morph_View"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "NKJPCorpus_Morph_View"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NKJPCorpus_Morph_View: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NKJPCorpus_Morph_View: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nkjp.NKJPCorpus_Morph_View not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nkjp.NKJPCorpus_Segmentation_View",
    "exports": [
     "NKJPCorpus_Segmentation_View"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "NKJPCorpus_Segmentation_View"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NKJPCorpus_Segmentation_View: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NKJPCorpus_Segmentation_View: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nkjp.NKJPCorpus_Segmentation_View not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nkjp.NKJPCorpus_Text_View",
    "exports": [
     "NKJPCorpus_Text_View"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "NKJPCorpus_Text_View"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NKJPCorpus_Text_View: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NKJPCorpus_Text_View: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nkjp.NKJPCorpus_Text_View not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nkjp.XMLCorpusReader",
    "exports": [
     "XMLCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nkjp.XMLCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nkjp.XMLCorpusView",
    "exports": [
     "XMLCorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nkjp.XMLCorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nkjp.XML_Tool",
    "exports": [
     "XML_Tool"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XML_Tool"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XML_Tool: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XML_Tool: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nkjp.XML_Tool not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nkjp.concat",
@@ -71062,174 +71317,186 @@
    "exports": [
     "NombankChainTreePointer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "NombankChainTreePointer"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NombankChainTreePointer: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NombankChainTreePointer: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nombank.NombankChainTreePointer not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nombank.NombankCorpusReader",
    "exports": [
     "NombankCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "NombankCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NombankCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NombankCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nombank.NombankCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nombank.NombankInstance",
    "exports": [
     "NombankInstance"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "NombankInstance"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NombankInstance: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NombankInstance: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nombank.NombankInstance not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nombank.NombankPointer",
    "exports": [
     "NombankPointer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "NombankPointer"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NombankPointer: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NombankPointer: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nombank.NombankPointer not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nombank.NombankSplitTreePointer",
    "exports": [
     "NombankSplitTreePointer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "NombankSplitTreePointer"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NombankSplitTreePointer: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NombankSplitTreePointer: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nombank.NombankSplitTreePointer not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nombank.NombankTreePointer",
    "exports": [
     "NombankTreePointer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "NombankTreePointer"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NombankTreePointer: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NombankTreePointer: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nombank.NombankTreePointer not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nombank.PathPointer",
@@ -71935,29 +72202,31 @@
    "exports": [
     "ElementWrapper"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "ElementWrapper"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "ElementWrapper: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ElementWrapper: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nps_chat.ElementWrapper not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nps_chat.FileSystemPathPointer",
@@ -72051,29 +72320,31 @@
    "exports": [
     "NPSChatCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "NPSChatCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "NPSChatCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NPSChatCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nps_chat.NPSChatCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nps_chat.PathPointer",
@@ -72231,58 +72502,62 @@
    "exports": [
     "XMLCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nps_chat.XMLCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nps_chat.XMLCorpusView",
    "exports": [
     "XMLCorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.nps_chat.XMLCorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.nps_chat.ZipFilePathPointer",
@@ -73593,58 +73868,62 @@
    "exports": [
     "Meaning"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "Meaning"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Meaning: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Meaning: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.panlex_lite.Meaning not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.panlex_lite.PanLexLiteCorpusReader",
    "exports": [
     "PanLexLiteCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "PanLexLiteCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PanLexLiteCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PanLexLiteCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.panlex_lite.PanLexLiteCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.pl196x.AbstractLazySequence",
@@ -73890,29 +74169,31 @@
    "exports": [
     "Pl196xCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "Pl196xCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Pl196xCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Pl196xCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.pl196x.Pl196xCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.pl196x.SeekableUnicodeStreamReader",
@@ -74012,58 +74293,62 @@
    "exports": [
     "TEICorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "TEICorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "TEICorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TEICorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.pl196x.TEICorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.pl196x.XMLCorpusReader",
    "exports": [
     "XMLCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.pl196x.XMLCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.pl196x.ZipFilePathPointer",
@@ -77272,203 +77557,217 @@
    "exports": [
     "PropbankChainTreePointer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "PropbankChainTreePointer"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PropbankChainTreePointer: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PropbankChainTreePointer: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.propbank.PropbankChainTreePointer not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.propbank.PropbankCorpusReader",
    "exports": [
     "PropbankCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "PropbankCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PropbankCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PropbankCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.propbank.PropbankCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.propbank.PropbankInflection",
    "exports": [
     "PropbankInflection"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "PropbankInflection"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PropbankInflection: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PropbankInflection: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.propbank.PropbankInflection not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.propbank.PropbankInstance",
    "exports": [
     "PropbankInstance"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "PropbankInstance"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PropbankInstance: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PropbankInstance: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.propbank.PropbankInstance not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.propbank.PropbankPointer",
    "exports": [
     "PropbankPointer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "PropbankPointer"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PropbankPointer: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PropbankPointer: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.propbank.PropbankPointer not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.propbank.PropbankSplitTreePointer",
    "exports": [
     "PropbankSplitTreePointer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "PropbankSplitTreePointer"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PropbankSplitTreePointer: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PropbankSplitTreePointer: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.propbank.PropbankSplitTreePointer not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.propbank.PropbankTreePointer",
    "exports": [
     "PropbankTreePointer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "PropbankTreePointer"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "PropbankTreePointer: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PropbankTreePointer: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.propbank.PropbankTreePointer not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.propbank.SeekableUnicodeStreamReader",
@@ -81523,29 +81822,31 @@
    "exports": [
     "ElementWrapper"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "ElementWrapper"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "ElementWrapper: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ElementWrapper: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.rte.ElementWrapper not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.rte.FileSystemPathPointer",
@@ -81668,58 +81969,62 @@
    "exports": [
     "RTECorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "RTECorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "RTECorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "RTECorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.rte.RTECorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.rte.RTEPair",
    "exports": [
     "RTEPair"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "RTEPair"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "RTEPair: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "RTEPair: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.rte.RTEPair not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.rte.SeekableUnicodeStreamReader",
@@ -81848,58 +82153,62 @@
    "exports": [
     "XMLCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.rte.XMLCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.rte.XMLCorpusView",
    "exports": [
     "XMLCorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.rte.XMLCorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.rte.ZipFilePathPointer",
@@ -81999,29 +82308,31 @@
    "exports": [
     "norm"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "norm"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "norm: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "norm: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.rte.norm not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.rte.pathsec_open",
@@ -82628,87 +82939,93 @@
    "exports": [
     "SemcorCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "SemcorCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SemcorCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SemcorCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.semcor.SemcorCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.semcor.SemcorSentence",
    "exports": [
     "SemcorSentence"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "SemcorSentence"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SemcorSentence: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SemcorSentence: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.semcor.SemcorSentence not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.semcor.SemcorWordView",
    "exports": [
     "SemcorWordView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "SemcorWordView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SemcorWordView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SemcorWordView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.semcor.SemcorWordView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.semcor.StreamBackedCorpusView",
@@ -82808,58 +83125,62 @@
    "exports": [
     "XMLCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.semcor.XMLCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.semcor.XMLCorpusView",
    "exports": [
     "XMLCorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.semcor.XMLCorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.semcor.ZipFilePathPointer",
@@ -83820,87 +84141,93 @@
    "exports": [
     "SensevalCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "SensevalCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SensevalCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SensevalCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.senseval.SensevalCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.senseval.SensevalCorpusView",
    "exports": [
     "SensevalCorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "SensevalCorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SensevalCorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SensevalCorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.senseval.SensevalCorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.senseval.SensevalInstance",
    "exports": [
     "SensevalInstance"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers5.ts",
      "anchor": "SensevalInstance"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SensevalInstance: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers5-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SensevalInstance: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers5-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.senseval.SensevalInstance not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.senseval.SpaceTokenizer",
@@ -89625,29 +89952,31 @@
    "exports": [
     "SpeakerInfo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "SpeakerInfo"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "SpeakerInfo: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SpeakerInfo: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.timit.SpeakerInfo not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.timit.StreamBackedCorpusView",
@@ -89718,29 +90047,31 @@
    "exports": [
     "TimitCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers6.ts",
      "anchor": "TimitCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "TimitCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TimitCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers6-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.timit.TimitCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.timit.Tree",
@@ -91958,58 +92289,62 @@
    "exports": [
     "VerbnetCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "VerbnetCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "VerbnetCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "VerbnetCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.verbnet.VerbnetCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.verbnet.XMLCorpusReader",
    "exports": [
     "XMLCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.verbnet.XMLCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.wordlist.AbstractLazySequence",
@@ -93013,29 +93348,31 @@
    "exports": [
     "ElementWrapper"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "ElementWrapper"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "ElementWrapper: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ElementWrapper: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.xmldocs.ElementWrapper not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.xmldocs.FileSystemPathPointer",
@@ -93248,58 +93585,62 @@
    "exports": [
     "XMLCorpusReader"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusReader"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusReader: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusReader: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.xmldocs.XMLCorpusReader not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.xmldocs.XMLCorpusView",
    "exports": [
     "XMLCorpusView"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
+     "file": "src/corpus_readers4.ts",
      "anchor": "XMLCorpusView"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "XMLCorpusView: corpus reader surface not yet ported; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers4-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "XMLCorpusView: not implemented in the TS runtime."
+     "Behavior oracle-pinned (NLTK 3.10.3) on synthetic fixtures; see corpus-readers4-differential."
     ]
    },
-   "notes": "Honest gap: nltk.corpus.reader.xmldocs.XMLCorpusView not yet ported (corpus-family stub)."
+   "notes": "Real portable reader implementation; differential-pinned."
   },
   {
    "target": "nltk.corpus.reader.xmldocs.ZipFilePathPointer",
@@ -97505,29 +97846,31 @@
    "exports": [
     "safe_parse"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_gaps.ts",
-     "anchor": "export class safe_parse"
+     "file": "src/corpus_readers6.ts",
+     "anchor": "export function safe_parse"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+     "Returns an ElementTree-shaped wrapper (XmlElementTree) rather than xml.etree.ElementTree; entity rejection pinned."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "corpus-readers6-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope for this runtime."
+     "Entity-forbidden behavior pinned vs NLTK 3.10.3 defusedxml wrapper; see corpus-readers6-differential."
     ]
    },
-   "notes": "defusedxml-backed XML parser; the downloader uses it for index.xml parsing."
+   "notes": "nltk.xmlsec.parse semantics: rejects <!ENTITY declarations; DOCTYPE/comments/PIs skipped."
   },
   {
    "target": "nltk.twitter.common.extract_fields",
