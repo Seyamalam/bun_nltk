@@ -2505,6 +2505,17 @@
    "anchor": "corpus_readers6",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: Timit reader+SpeakerInfo (utteranceids spkrid bug, string-root quirk), PanLexLite+PanlexLanguage (skipped CorpusReader.__init__ AttributeError), PanlexSwadesh, Pl196x (textids-only ValueError), BCP47, Crubadan, TEICorpusView, Markdown readers+section/block values, AttrDict/Future/SpecialList/PrettyDict/PrettyList/PrettyLazy* repr+iter, norm, comma_separated_string_args, read_parse_blankline_block, read_timit_block, safe_parse/safe_fromstring."
+  },
+  {
+   "id": "final-gaps-differential",
+   "kind": "differential",
+   "files": [
+    "test/final_gaps.test.ts",
+    "test/final_gaps_oracle.py"
+   ],
+   "anchor": "final gaps vs NLTK 3.10.3 oracle",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned: Boxer DRS parse/canon/atoms/variables/interpret/occur-index/passthrough/clean/renumber/reparse incl. map(or_) TypeError and timex quirks, chat80 records/cities2table/sqlQuery/sqlDemo/concepts/main -v + English-to-SQL, RD/SR stepping traces/steps/parses all trace levels, TestGrammar accept/reject/show/errors, corenlp transform."
   }
  ],
  "signatureBindings": [
@@ -34970,29 +34981,31 @@
    "exports": [
     "AbstractBoxerDrs"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class AbstractBoxerDrs"
+     "file": "src/sem_boxer.ts",
+     "anchor": "AbstractBoxerDrs"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "AbstractBoxerDrs requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "AbstractBoxerDrs requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "AbstractBoxerDrs requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.Boxer",
@@ -35028,377 +35041,403 @@
    "exports": [
     "BoxerCard"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class BoxerCard"
+     "file": "src/sem_boxer.ts",
+     "anchor": "BoxerCard"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BoxerCard requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BoxerCard requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "BoxerCard requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.BoxerDrs",
    "exports": [
     "BoxerDrs"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class BoxerDrs"
+     "file": "src/sem_boxer.ts",
+     "anchor": "BoxerDrs"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BoxerDrs requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BoxerDrs requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "BoxerDrs requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.BoxerDrsParser",
    "exports": [
     "BoxerDrsParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class BoxerDrsParser"
+     "file": "src/sem_boxer.ts",
+     "anchor": "BoxerDrsParser"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BoxerDrsParser requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BoxerDrsParser requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "BoxerDrsParser requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.BoxerEq",
    "exports": [
     "BoxerEq"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class BoxerEq"
+     "file": "src/sem_boxer.ts",
+     "anchor": "BoxerEq"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BoxerEq requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BoxerEq requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "BoxerEq requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.BoxerIndexed",
    "exports": [
     "BoxerIndexed"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class BoxerIndexed"
+     "file": "src/sem_boxer.ts",
+     "anchor": "BoxerIndexed"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BoxerIndexed requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BoxerIndexed requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "BoxerIndexed requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.BoxerNamed",
    "exports": [
     "BoxerNamed"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class BoxerNamed"
+     "file": "src/sem_boxer.ts",
+     "anchor": "BoxerNamed"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BoxerNamed requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BoxerNamed requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "BoxerNamed requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.BoxerNot",
    "exports": [
     "BoxerNot"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class BoxerNot"
+     "file": "src/sem_boxer.ts",
+     "anchor": "BoxerNot"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BoxerNot requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BoxerNot requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "BoxerNot requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.BoxerOr",
    "exports": [
     "BoxerOr"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class BoxerOr"
+     "file": "src/sem_boxer.ts",
+     "anchor": "BoxerOr"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BoxerOr requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BoxerOr requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "BoxerOr requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.BoxerOutputDrsParser",
    "exports": [
     "BoxerOutputDrsParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class BoxerOutputDrsParser"
+     "file": "src/sem_boxer.ts",
+     "anchor": "BoxerOutputDrsParser"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BoxerOutputDrsParser requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BoxerOutputDrsParser requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "BoxerOutputDrsParser requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.BoxerPred",
    "exports": [
     "BoxerPred"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class BoxerPred"
+     "file": "src/sem_boxer.ts",
+     "anchor": "BoxerPred"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BoxerPred requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BoxerPred requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "BoxerPred requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.BoxerProp",
    "exports": [
     "BoxerProp"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class BoxerProp"
+     "file": "src/sem_boxer.ts",
+     "anchor": "BoxerProp"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BoxerProp requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BoxerProp requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "BoxerProp requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.BoxerRel",
    "exports": [
     "BoxerRel"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class BoxerRel"
+     "file": "src/sem_boxer.ts",
+     "anchor": "BoxerRel"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BoxerRel requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BoxerRel requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "BoxerRel requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.BoxerWhq",
    "exports": [
     "BoxerWhq"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class BoxerWhq"
+     "file": "src/sem_boxer.ts",
+     "anchor": "BoxerWhq"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BoxerWhq requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BoxerWhq requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "BoxerWhq requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.DRS",
@@ -35724,58 +35763,62 @@
    "exports": [
     "NltkDrtBoxerDrsInterpreter"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class NltkDrtBoxerDrsInterpreter"
+     "file": "src/sem_boxer.ts",
+     "anchor": "NltkDrtBoxerDrsInterpreter"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "NltkDrtBoxerDrsInterpreter requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "NltkDrtBoxerDrsInterpreter requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "NltkDrtBoxerDrsInterpreter requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.PassthroughBoxerDrsInterpreter",
    "exports": [
     "PassthroughBoxerDrsInterpreter"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export class PassthroughBoxerDrsInterpreter"
+     "file": "src/sem_boxer.ts",
+     "anchor": "PassthroughBoxerDrsInterpreter"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "PassthroughBoxerDrsInterpreter requires the external CandC/Boxer pipeline; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "PassthroughBoxerDrsInterpreter requires the external CandC/Boxer pipeline; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "PassthroughBoxerDrsInterpreter requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.boxer.UnexpectedTokenException",
@@ -35958,29 +36001,31 @@
    "exports": [
     "cities2table"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/sem_chat80.ts",
-     "anchor": "export function cities2table"
+     "anchor": "cities2table"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "cities2table: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "cities2table: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "cities2table: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.chat80.clause2concepts",
@@ -36074,8 +36119,8 @@
    "exports": [
     "chat80_main"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/sem_chat80.ts",
@@ -36086,17 +36131,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "main: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "main: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "main: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.chat80.make_lex",
@@ -36190,58 +36237,62 @@
    "exports": [
     "sql_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/sem_chat80.ts",
-     "anchor": "export function sqlDemo"
+     "anchor": "sqlDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "sql_demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "sql_demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "sql_demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.chat80.sql_query",
    "exports": [
     "sql_query"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/sem_chat80.ts",
-     "anchor": "export function sqlQuery"
+     "anchor": "sqlQuery"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "sql_query: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "sql_query: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "sql_query: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.sem.chat80.unary_concept",
@@ -43145,87 +43196,93 @@
    "exports": [
     "SteppingRecursiveDescentParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export class SteppingRecursiveDescentParser"
+     "file": "src/parse_stepping.ts",
+     "anchor": "SteppingRecursiveDescentParser"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "SteppingRecursiveDescentParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SteppingRecursiveDescentParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "SteppingRecursiveDescentParser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.parse.SteppingShiftReduceParser",
    "exports": [
     "SteppingShiftReduceParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export class SteppingShiftReduceParser"
+     "file": "src/parse_stepping.ts",
+     "anchor": "SteppingShiftReduceParser"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "SteppingShiftReduceParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SteppingShiftReduceParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "SteppingShiftReduceParser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.parse.TestGrammar",
    "exports": [
     "TestGrammar"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export class TestGrammar"
+     "file": "src/parse_stepping.ts",
+     "anchor": "TestGrammar"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "TestGrammar depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TestGrammar depends on unported chart/dependency/transition machinery; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "TestGrammar depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.parse.TopDownChartParser",
@@ -43884,29 +43941,31 @@
    "exports": [
     "transform"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function transform"
+     "file": "src/parse_stepping.ts",
+     "anchor": "transform"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "transform: external-binary/server-bound or interactive demo; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "transform: external-binary/server-bound or interactive demo; honest stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "transform: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.parse.corenlp.try_port",
@@ -49098,29 +49157,31 @@
    "exports": [
     "SteppingRecursiveDescentParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export class SteppingRecursiveDescentParser"
+     "file": "src/parse_stepping.ts",
+     "anchor": "SteppingRecursiveDescentParser"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "SteppingRecursiveDescentParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SteppingRecursiveDescentParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "SteppingRecursiveDescentParser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.parse.recursivedescent.Tree",
@@ -49272,29 +49333,31 @@
    "exports": [
     "SteppingShiftReduceParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export class SteppingShiftReduceParser"
+     "file": "src/parse_stepping.ts",
+     "anchor": "SteppingShiftReduceParser"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "SteppingShiftReduceParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "SteppingShiftReduceParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "SteppingShiftReduceParser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.parse.shiftreduce.Tree",
@@ -49898,29 +49961,31 @@
    "exports": [
     "TestGrammar"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export class TestGrammar"
+     "file": "src/parse_stepping.ts",
+     "anchor": "TestGrammar"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "TestGrammar depends on unported chart/dependency/transition machinery; stub throws."
+     "Signature adapted to the TypeScript runtime contract (options-object kwargs, generator returns; bun:sqlite in place of sqlite3 where applicable)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "final-gaps-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "TestGrammar depends on unported chart/dependency/transition machinery; stub throws."
+     "Behavior oracle-pinned (NLTK 3.10.3); see final-gaps-differential."
     ]
    },
-   "notes": "TestGrammar depends on unported chart/dependency/transition machinery; stub throws."
+   "notes": "Real port; differential-pinned."
   },
   {
    "target": "nltk.parse.util.extract_test_sentences",

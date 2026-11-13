@@ -14,23 +14,12 @@ export class UnparseableInputException extends Error {
   constructor(message: string) { super(message); this.name = "UnparseableInputException"; }
 }
 
-const BOXER_WHY = "requires the external CandC/Boxer DRS pipeline, unavailable in the JS runtime";
-export class AbstractBoxerDrs { constructor() { unsupported("AbstractBoxerDrs", BOXER_WHY); } }
-export class BoxerCard { constructor() { unsupported("BoxerCard", BOXER_WHY); } }
-export class BoxerDrs { constructor() { unsupported("BoxerDrs", BOXER_WHY); } }
-export class BoxerDrsParser { constructor() { unsupported("BoxerDrsParser", BOXER_WHY); } }
-export class BoxerEq { constructor() { unsupported("BoxerEq", BOXER_WHY); } }
-export class BoxerIndexed { constructor() { unsupported("BoxerIndexed", BOXER_WHY); } }
-export class BoxerNamed { constructor() { unsupported("BoxerNamed", BOXER_WHY); } }
-export class BoxerNot { constructor() { unsupported("BoxerNot", BOXER_WHY); } }
-export class BoxerOr { constructor() { unsupported("BoxerOr", BOXER_WHY); } }
-export class BoxerOutputDrsParser { constructor() { unsupported("BoxerOutputDrsParser", BOXER_WHY); } }
-export class BoxerPred { constructor() { unsupported("BoxerPred", BOXER_WHY); } }
-export class BoxerProp { constructor() { unsupported("BoxerProp", BOXER_WHY); } }
-export class BoxerRel { constructor() { unsupported("BoxerRel", BOXER_WHY); } }
-export class BoxerWhq { constructor() { unsupported("BoxerWhq", BOXER_WHY); } }
-export class NltkDrtBoxerDrsInterpreter { constructor() { unsupported("NltkDrtBoxerDrsInterpreter", BOXER_WHY); } }
-export class PassthroughBoxerDrsInterpreter { constructor() { unsupported("PassthroughBoxerDrsInterpreter", BOXER_WHY); } }
+export {
+  AbstractBoxerDrs, BoxerCard, BoxerDrs, BoxerDrsParser, BoxerEq, BoxerIndexed,
+  BoxerNamed, BoxerNot, BoxerOr, BoxerOutputDrsParser, BoxerPred, BoxerProp,
+  BoxerRel, BoxerWhq, NltkDrtBoxerDrsInterpreter, PassthroughBoxerDrsInterpreter,
+  parseToDrsDict, parse_to_drs_dict,
+} from "./sem_boxer";
 
 export { findBinaryIter as find_binary_iter } from "./internals";
 

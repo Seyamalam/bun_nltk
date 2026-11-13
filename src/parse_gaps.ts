@@ -34,7 +34,7 @@ export { find_variables, unify } from "./featstruct";
 // Incremental/Earley chart machinery ported to parse_earley.ts; names stay
 // routed through this module so reviewed provenance is stable.
 
-export class TestGrammar { constructor() { unsupported("TestGrammar", "test-grammar loader not yet ported"); } }
+export { TestGrammar } from "./parse_stepping";
 
 // Real ports promoted out of the stub set live in parse_dependency /
 // parse_dep_parsers / parse_pchart; the export names stay routed through
@@ -62,9 +62,7 @@ export {
   CompleterRule, CompleteFundamentalRule, FilteredCompleteFundamentalRule,
 } from "./parse_earley";
 
-const STEP_WHY = "interactive stepping parser UI not applicable to the TS runtime contract";
-export class SteppingRecursiveDescentParser { constructor() { unsupported("SteppingRecursiveDescentParser", STEP_WHY); } }
-export class SteppingShiftReduceParser { constructor() { unsupported("SteppingShiftReduceParser", STEP_WHY); } }
+export { SteppingRecursiveDescentParser, SteppingShiftReduceParser } from "./parse_stepping";
 
 const EXT_WHY = "requires an external binary/server (CoreNLP, MaltParser), unavailable in the JS runtime";
 export class CoreNLPServer { constructor() { unsupported("CoreNLPServer", EXT_WHY); } }
@@ -76,7 +74,7 @@ import { ZipFilePathPointer as DataZipFilePathPointer } from "./data";
 export class ZipFilePathPointer extends DataZipFilePathPointer {}
 export function find_jar_iter(): never { return unsupported("find_jar_iter", EXT_WHY); }
 export function try_port(): never { return unsupported("try_port", EXT_WHY); }
-export function transform(): never { return unsupported("transform", EXT_WHY); }
+export { transform } from "./parse_stepping";
 export function find_dir(): never { return unsupported("find_dir", EXT_WHY); }
 export function find_jars_within_path(): never { return unsupported("find_jars_within_path", EXT_WHY); }
 export function find_malt_model(): never { return unsupported("find_malt_model", EXT_WHY); }

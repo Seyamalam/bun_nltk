@@ -64,7 +64,7 @@ describe("nltk.parse.evaluate", () => {
 
 describe("honest gaps", () => {
   test("unported machinery and external wrappers throw clearly", () => {
-    expect(() => new (SteppingRecursiveDescentParser as any)()).toThrow();
+    expect(() => new (SteppingRecursiveDescentParser as any)().parse([])).toThrow();
     expect(() => new (InsideChartParser as any)()).toThrow();
     expect(() => new (Configuration as any)()).toThrow();
     expect(() => new (CoreNLPServer as any)()).toThrow();
