@@ -8,6 +8,41 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+- **Corpus-reader sweep (~196 mappings promoted)**: real portable
+  implementations for the previously stubbed reader families —
+  `XMLCorpusReader`/`XMLCorpusView`/`XML_Tool`/`xpath` plus a pure
+  ElementTree/ElementPath clone (`src/xmldocs.ts`), BNC, CHILDES, VerbNet,
+  MTE, IPIPAN, NKJP, NPSChat, FrameNet (with `AttrDict`, `Future`,
+  `Pretty*` lazy containers, `ElementWrapper`), PropBank, NomBank, SemCor,
+  Senseval, RTE, Conll, Alpino, KNBC, LinThesaurus, Chasen, Sinica,
+  Switchboard, Toolbox, YCOE, TIMIT, PanLex-Lite (`bun:sqlite`),
+  PL196x, BCP47, Crubadan, and the Markdown corpus value types. All
+  oracle-pinned, including NLTK's own error quirks (IPIPAN binary-stream
+  `TypeError`, NKJP bare `Exception`, TIMIT `utteranceids` `spkrid`
+  filtering bug, KNBC `defaultdict.append` `AttributeError`).
+- **`nltk.sem.boxer` DRS family**: `AbstractBoxerDrs`, `BoxerDrs`,
+  `BoxerCard/Eq/Indexed/Named/Not/Or/Pred/Prop/Rel/Whq`,
+  `BoxerDrsParser`, `BoxerOutputDrsParser`, both interpreters, and
+  `parse_to_drs_dict` — including CPython float-set iteration-order
+  emulation and the `map(operator.or_, …)` three-iterable `TypeError`.
+- **`nltk.sem.chat80`**: real `str2records`, `cities2table`, `sql_query`/
+  `sql_demo` over `bun:sqlite`, `Concept` valuations, and `main -v`
+  OptionParser surface; English→SQL translations oracle-pinned.
+- **`nltk.parse` stepping machinery**: `SteppingRecursiveDescentParser`,
+  `SteppingShiftReduceParser`, `TestGrammar`, and the pure CoreNLP
+  `transform` generator.
+- **`load_parser`/`show_cfg`**: real grammar-resource loading for
+  `.cfg`/`.pcfg`/`.fcfg` with parser/chart-class dispatch, `% start`
+  directive parity, and zip-contained resource support.
+- **Dependency + chart parsers**: `ProjectiveDependencyParser`,
+  `NonprojectiveDependencyParser`, `ProbabilisticNonprojectiveParser`,
+  `InsideChartParser`, `BottomUpProbabilisticChartParser`,
+  Earley/incremental chart parsers, `FeatureChartParser` with the real
+  `FeatStruct` machinery, and `generate()`.
+- **`nltk.data`/`nltk.internals` internals**: `BufferedGzipFile`,
+  `retrieve`, `read_*`/`find_*`/`is_writable`/`overridden`/`Deprecated`,
+  pathsec network half (`validate_network_url`, `urlopen`, `ZipFile`),
+  `pathsec_open` aliases, `cooper_storage`, and `sem.lfg.FStructure`.
 - Complete `nltk.*` compatibility-inventory coverage: **2,983 reviewed mappings
   across 211 discovered modules with 0 unmapped targets**. Every discovered
   Python NLTK 3.10.3 name is now either implemented with pinned differential or
@@ -31,6 +66,13 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Changed
 
+- Lifecycle runtime pin updated to Node `v26.13.1` (host upgrade).
+- Unsupported inventory reduced from ~350 to **166** targets, all now
+  genuinely external: third-party binaries/servers (Stanford, Malt,
+  Bllip, CoreNLP server, SENNA, hunpos, CRFSuite, megam, tadm, Boxer,
+  Prover9/Mace), pickle/shelve loaders, Tk demos, Twisted handlers,
+  scikit-learn/Hugging Face integrations, network downloader, and
+  corpus-bound demos.
 - Package size gate rebaselined from 13 MB to **15 MB** by owner decision
   (2026-11-11): parity implementation growth plus bundled native libraries,
   WASM, models and source raised the tarball to 14,171,205 unpacked bytes
