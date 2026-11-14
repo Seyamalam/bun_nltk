@@ -597,6 +597,7 @@ export { mapTag, tagsetMapping } from "./src/tag_mapping";
 export { parseSents, rootSemrep } from "./src/sem_util";
 export {
   demo as tblDemo,
+  pickleLoad,
   demoReprRuleFormat,
   demoStrRuleFormat,
   demoVerboseRuleFormat,
@@ -608,6 +609,17 @@ export {
   demoSerializeTagger,
   demoHighAccuracyRules,
   demoLearningCurve,
+  demo_repr_rule_format,
+  demo_str_rule_format,
+  demo_verbose_rule_format,
+  demo_multiposition_feature,
+  demo_multifeature_template,
+  demo_generated_templates,
+  demo_template_statistics,
+  demo_error_analysis,
+  demo_serialize_tagger,
+  demo_high_accuracy_rules,
+  demo_learning_curve,
 } from "./src/tbl_demo";
 export { NISTTokenizer, nistInternationalTokenize, nistTokenize } from "./src/tokenize_nist";
 export { generate, generateSentences, MAX_GENERATE_OPERATIONS } from "./src/parse_generate";

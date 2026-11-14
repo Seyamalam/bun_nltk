@@ -1,11 +1,13 @@
 /**
  * TBL demo helpers (port of nltk.tbl.demo).
  *
- * `postag` is a faithful port of the demo driver: it prepares the data split,
- * trains a UnigramTagger baseline over a RegexpTagger backoff, runs
- * BrillTaggerTrainer and reports accuracy. Corpus-bound options (treebank
- * data, pickle caching/serialization, matplotlib learning curves, incremental
- * stats) throw an unsupported error rather than silently changing behavior.
+ * `postag` is a faithful port of the demo driver: it prepares the data split
+ * (treebank by default), trains a UnigramTagger baseline over a RegexpTagger
+ * backoff, runs BrillTaggerTrainer and reports accuracy. Pickle-dependent
+ * options (cache/serialize) and the matplotlib learning curve raise the same
+ * error Python would surface, at the same point in the output stream; the
+ * nltk 3.10.3 upstream bugs in error_output and print_template_statistics
+ * are reproduced rather than fixed.
  */
 import { errorList } from "./tbl_erroranalysis";
 import {
@@ -15,11 +17,16 @@ import {
   TblRule,
   Template,
   Word,
-  clearTemplateRegistry,
 } from "./brill_tagger";
 import type { GoldSentence, UntaggedSentence } from "./brill_tagger";
 import { RegexpTagger, UnigramTagger } from "./sequential_taggers";
 import type { SequentialBackoffTagger } from "./brill_tagger";
+import { PyRandom } from "./py_random";
+import { pyError } from "./internals";
+import { BracketParseCorpusReader } from "./corpus_readers2";
+import { find as dataFind } from "./data";
+import type { PrintSink } from "./ext_pure";
+import { existsSync, writeFileSync } from "node:fs";
 
 export type DemoTaggedSentence = [string, string][];
 
@@ -31,7 +38,6 @@ export { corpusSize as corpus_size };
 
 /** nltk.tag.brill template sets used by the demo driver. */
 export function brill24(): Template[] {
-  clearTemplateRegistry();
   return buildTemplates([
     [["Pos", [-1]]], [["Pos", [1]]], [["Pos", [-2]]], [["Pos", [2]]],
     [["Pos", [-2, -1]]], [["Pos", [1, 2]]], [["Pos", [-3, -2, -1]]], [["Pos", [1, 2, 3]]],
@@ -45,7 +51,6 @@ export function brill24(): Template[] {
 }
 
 export function fntbl37(): Template[] {
-  clearTemplateRegistry();
   return buildTemplates([
     [["Word", [0]], ["Word", [1]], ["Word", [2]]],
     [["Word", [-1]], ["Word", [0]], ["Word", [1]]],
@@ -66,7 +71,6 @@ export function fntbl37(): Template[] {
 }
 
 export function nltkdemo18(): Template[] {
-  clearTemplateRegistry();
   return buildTemplates([
     [["Pos", [-1]]], [["Pos", [1]]], [["Pos", [-2]]], [["Pos", [2]]],
     [["Pos", [-2, -1]]], [["Pos", [1, 2]]], [["Pos", [-3, -2, -1]]], [["Pos", [1, 2, 3]]],
@@ -78,7 +82,6 @@ export function nltkdemo18(): Template[] {
 }
 
 export function nltkdemo18plus(): Template[] {
-  clearTemplateRegistry();
   return buildTemplates([
     ...nltkdemo18Spec(),
     [["Word", [-1]], ["Pos", [1]]], [["Pos", [-1]], ["Word", [1]]],
@@ -113,7 +116,7 @@ function buildTemplates(specs: ReadonlyArray<FeatureSpecList>): Template[] {
 }
 
 /** nltk.tag.brill.describe_template_sets — list the built-in template sets. */
-export function describeTemplateSets(): string {
+export function describeTemplateSets(out: PrintSink = defaultSink): string {
   const lines = [
     "Available template sets:",
     `  brill24: ${brill24().length} templates`,
@@ -122,7 +125,7 @@ export function describeTemplateSets(): string {
     `  nltkdemo18plus: ${nltkdemo18plus().length} templates`,
   ];
   const text = lines.join("\n");
-  console.log(text);
+  print(out, text);
   return text;
 }
 export { describeTemplateSets as describe_template_sets };
@@ -147,8 +150,8 @@ export const REGEXP_TAGGER = new RegexpTagger([
 
 export interface PostagOptions {
   templates?: readonly Template[];
-  taggedData?: readonly GoldSentence[];
-  numSents?: number;
+  taggedData?: readonly GoldSentence[] | null;
+  numSents?: number | null;
   maxRules?: number;
   minScore?: number;
   minAcc?: number | null;
@@ -174,56 +177,56 @@ export interface PostagResult {
   taggedTest: DemoTaggedSentence[];
 }
 
-function shuffle<T>(xs: T[], rand: () => number): T[] {
-  const a = [...xs];
-  for (let i = a.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(rand() * (i + 1));
-    [a[i], a[j]] = [a[j]!, a[i]!];
+const defaultSink: PrintSink = (text) => {
+  process.stdout.write(text);
+};
+
+/** Python print() over a raw chunk sink. */
+const print = (out: PrintSink, s: string): void => out(`${s}\n`);
+
+/** nltk.tbl.demo._demo_prepare_data's `treebank.tagged_sents()` fallback. */
+function treebankTaggedSents(): GoldSentence[] {
+  const root = (dataFind("corpora/treebank/combined") as unknown as { path: string }).path;
+  const reader = new BracketParseCorpusReader(
+    root, "wsj_.*\\.mrg", null, "unindented_paren", "ascii", "wsj",
+  );
+  const sents: GoldSentence[] = [];
+  for (const s of reader.tagged_sents() as Iterable<GoldSentence>) {
+    sents.push(s);
   }
-  return a;
+  return sents;
 }
 
-/** Small deterministic PRNG (mulberry32) for the `randomize` data shuffle.
- * NLTK uses random.seed(len(tagged_data)) — the shuffle order differs but the
- * contract (deterministic per corpus size) is preserved. */
-function mulberry32(seed: number): () => number {
-  let s = seed >>> 0;
-  return () => {
-    s = (s + 0x6d2b79f5) | 0;
-    let t = Math.imul(s ^ (s >>> 15), 1 | s);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
+/** repr() of a python string-or-None (for "Errors for Brill Tagger %r"). */
+function pyReprOrNone(value: string | null): string {
+  if (value === null) return "None";
+  return `'${value.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`;
 }
 
 /** nltk.tbl.demo.postag — Brill tagger demonstration driver. */
-export function postag(options: PostagOptions = {}): PostagResult {
+export function postag(options: PostagOptions = {}, out: PrintSink = defaultSink): PostagResult {
   const baselineBackoffTagger = options.baselineBackoffTagger ?? REGEXP_TAGGER;
   const templates = options.templates ?? brill24();
-  if (options.cacheBaselineTagger != null || options.serializeOutput != null) {
-    throw new Error("postag: cache_baseline_tagger/serialize_output require CPython pickle, which is not supported in the JS runtime");
-  }
-  if (options.learningCurveOutput != null) {
-    throw new Error("postag: learning_curve_output requires matplotlib, which is not supported in the JS runtime");
-  }
-  if (options.incrementalStats || options.templateStats) {
-    throw new Error("postag: incremental_stats/template_stats require batch_tag_incremental (not ported)");
-  }
-  const numSents = options.numSents ?? 1000;
-  const train = options.train ?? 0.8;
+  const trace = options.trace ?? 3;
+  const ruleformat = options.ruleformat ?? "str";
 
-  const taggedData = options.taggedData;
+  // _demo_prepare_data(tagged_data, train, num_sents, randomize, separate)
+  let taggedData = options.taggedData;
   if (taggedData == null) {
-    throw new Error("postag: tagged_data=None requires the treebank corpus reader, which is not bundled in this runtime");
+    print(out, "Loading tagged data from treebank... ");
+    taggedData = treebankTaggedSents();
   }
-  let sents: GoldSentence[] = taggedData.map((s) => s.map(([w, t]) => [w, t] as [string, string]));
-  const take = Math.min(numSents, sents.length);
+  const sents: GoldSentence[] = taggedData.map((s) => s.map(([w, t]) => [w, t] as [string, string]));
+  const wantSents = options.numSents === undefined ? 1000 : options.numSents;
+  // Python: if num_sents is None or len(tagged_data) <= num_sents: num_sents = len(...)
+  const numSents = wantSents === null || sents.length <= wantSents ? sents.length : wantSents;
   if (options.randomize) {
-    sents = shuffle(sents, mulberry32(sents.length));
+    new PyRandom(sents.length).shuffle(sents);
   }
-  const cutoff = Math.floor(take * train);
+  const train = options.train ?? 0.8;
+  const cutoff = Math.trunc(numSents * train);
   let trainingData = sents.slice(0, cutoff);
-  const goldData = sents.slice(cutoff, take);
+  const goldData = sents.slice(cutoff, numSents);
   const testingData: UntaggedSentence[] = goldData.map((sent) => sent.map(([w]) => w));
   let baselineData = trainingData;
   if (options.separateBaselineData) {
@@ -231,123 +234,177 @@ export function postag(options: PostagOptions = {}): PostagResult {
     baselineData = trainingData.slice(0, blCutoff);
     trainingData = trainingData.slice(blCutoff);
   }
-  const trace = options.trace ?? 3;
   {
     const [testseqs, testtokens] = corpusSize(testingData);
     const [trainseqs, traintokens] = corpusSize(trainingData);
     const [blseqs, bltokens] = corpusSize(baselineData);
-    console.log(`Read testing data (${testseqs} sents/${testtokens} wds)`);
-    console.log(`Read training data (${trainseqs} sents/${traintokens} wds)`);
-    console.log(
-      `Read baseline data (${blseqs} sents/${bltokens} wds)${options.separateBaselineData ? "" : " [reused the training set]"}`,
+    print(out, `Read testing data (${testseqs} sents/${testtokens} wds)`);
+    print(out, `Read training data (${trainseqs} sents/${traintokens} wds)`);
+    print(out, 
+      `Read baseline data (${blseqs} sents/${bltokens} wds) ${options.separateBaselineData ? "" : "[reused the training set]"}`,
     );
   }
 
-  const baselineTagger = new UnigramTagger(baselineData, null, baselineBackoffTagger);
-  console.log("Trained baseline tagger");
+  let baselineTagger: UnigramTagger;
+  const cachePath = options.cacheBaselineTagger ?? null;
+  if (cachePath !== null) {
+    if (!existsSync(cachePath)) {
+      baselineTagger = new UnigramTagger(baselineData, null, baselineBackoffTagger);
+      // Python: pickle.dump(baseline_tagger, f) — CPython pickle is not portable.
+      throw pyError("TypeError", `cache_baseline_tagger requires CPython pickle (cannot dump baseline tagger to ${cachePath})`);
+    }
+    // Python: pickle.load — not portable either.
+    throw pyError("TypeError", `cache_baseline_tagger requires CPython pickle (cannot load ${cachePath})`);
+  }
+  baselineTagger = new UnigramTagger(baselineData, null, baselineBackoffTagger);
+  print(out, "Trained baseline tagger");
   let baselineAccuracy: number | null = null;
   if (goldData.length > 0) {
     baselineAccuracy = baselineTagger.accuracy(goldData);
-    console.log(`    Accuracy on test set: ${baselineAccuracy.toFixed(4)}`);
+    print(out, `    Accuracy on test set: ${baselineAccuracy.toFixed(4)}`);
   }
 
-  console.log("Training tbl tagger...");
   const t0 = Date.now();
-  const trainer = new BrillTaggerTrainer(baselineTagger, templates, { trace });
+  const trainer = new BrillTaggerTrainer(baselineTagger, templates, { trace, out, ruleformat });
+  print(out, "Training tbl tagger...");
   const brillTagger = trainer.train(
     trainingData,
     options.maxRules ?? 300,
     options.minScore ?? 3,
     options.minAcc ?? null,
   );
-  console.log(`Trained tbl tagger in ${((Date.now() - t0) / 1000).toFixed(2)} seconds`);
+  print(out, `Trained tbl tagger in ${((Date.now() - t0) / 1000).toFixed(2)} seconds`);
 
   let brillAccuracy: number | null = null;
   if (goldData.length > 0) {
     brillAccuracy = brillTagger.evaluate(goldData);
-    console.log(`    Accuracy on test set: ${brillAccuracy.toFixed(4)}`);
+    print(out, `    Accuracy on test set: ${brillAccuracy.toFixed(4)}`);
   }
 
-  const ruleformat = options.ruleformat ?? "str";
   if (trace === 1) {
-    console.log("\nLearned rules: ");
+    print(out, "\nLearned rules: ");
     brillTagger.rules().forEach((rule: TblRule, i: number) => {
-      console.log(`${String(i + 1).padStart(4)} ${rule.format(ruleformat)}`);
+      print(out, `${String(i + 1).padStart(4)} ${rule.format(ruleformat)}`);
     });
   }
 
-  console.log("Tagging the test data");
-  const taggedTest = brillTagger.tagSents(testingData) as DemoTaggedSentence[];
+  let taggedTest: DemoTaggedSentence[];
+  if (options.incrementalStats) {
+    print(out, "Incrementally tagging the test data, collecting individual rule statistics");
+    const [incrementalTagged, teststats] = brillTagger.batchTagIncremental(testingData, goldData);
+    taggedTest = incrementalTagged as DemoTaggedSentence[];
+    print(out, "    Rule statistics collected");
+    if (!options.separateBaselineData) {
+      print(out, "WARNING: train_stats asked for separate_baseline_data=True; the baseline will be artificially high");
+    }
+    brillTagger.trainStats();
+    if (options.templateStats) {
+      brillTagger.printTemplateStatistics(teststats, true, out);
+    }
+    if (options.learningCurveOutput != null) {
+      // nltk's _demo_plot does `import matplotlib.pyplot` — absent here, same error.
+      throw pyError("ModuleNotFoundError", "No module named 'matplotlib'");
+    }
+  } else {
+    print(out, "Tagging the test data");
+    taggedTest = brillTagger.tagSents(testingData) as DemoTaggedSentence[];
+    if (options.templateStats) {
+      brillTagger.printTemplateStatistics(null, true, out);
+    }
+  }
 
   if (options.errorOutput != null) {
-    const req = (globalThis as { require?: (id: string) => typeof import("node:fs") }).require;
-    if (req === undefined) {
-      throw new Error("postag: error_output requires a filesystem (Node/Bun runtime)");
-    }
-    req("node:fs").writeFileSync(
+    // Python 3.10.3 writes the header line, then crashes concatenating
+    // bytes + str — the file keeps only the header. Same side effect + error.
+    writeFileSync(
       options.errorOutput,
-      `Errors for Brill Tagger ${options.serializeOutput ?? ""}\n\n` +
-        errorList(goldData, taggedTest).join("\n") + "\n",
+      `Errors for Brill Tagger ${pyReprOrNone(options.serializeOutput ?? null)}\n\n`,
+      "utf8",
     );
-    console.log(`Wrote tagger errors including context to ${options.errorOutput}`);
+    errorList(goldData, taggedTest);
+    throw pyError("TypeError", "can't concat str to bytes");
+  }
+
+  if (options.serializeOutput != null) {
+    taggedTest = brillTagger.tagSents(testingData) as DemoTaggedSentence[];
+    // Python: pickle.dump(brill_tagger, f) — CPython pickle is not portable.
+    throw pyError("TypeError", `serialize_output requires CPython pickle (cannot dump BrillTagger to ${options.serializeOutput})`);
   }
 
   return { tagger: brillTagger, baselineAccuracy, brillAccuracy, taggedTest };
 }
 
-function demoCall(opts: PostagOptions = {}): PostagResult {
-  return postag(opts);
+/** nltk.tbl.demo.demo — postag() with all defaults. */
+export function demo(out: PrintSink = defaultSink, options: PostagOptions = {}): PostagResult {
+  return postag(options, out);
 }
-
-/** nltk.tbl.demo.demo* — each runs postag with a fixed option set. They
- * still require tagged_data/treebank, so the unconfigured call throws the
- * same unsupported error as postag. */
-export function demo(options: PostagOptions = {}): PostagResult {
-  return demoCall(options);
+export function demoReprRuleFormat(out: PrintSink = defaultSink, options: PostagOptions = {}): PostagResult {
+  return postag({ ...options, ruleformat: "repr" }, out);
 }
-export function demoReprRuleFormat(options: PostagOptions = {}): PostagResult {
-  return demoCall({ ...options, ruleformat: "repr" });
+export function demoStrRuleFormat(out: PrintSink = defaultSink, options: PostagOptions = {}): PostagResult {
+  return postag({ ...options, ruleformat: "str" }, out);
 }
-export function demoStrRuleFormat(options: PostagOptions = {}): PostagResult {
-  return demoCall({ ...options, ruleformat: "str" });
+export function demoVerboseRuleFormat(out: PrintSink = defaultSink, options: PostagOptions = {}): PostagResult {
+  return postag({ ...options, ruleformat: "verbose" }, out);
 }
-export function demoVerboseRuleFormat(options: PostagOptions = {}): PostagResult {
-  return demoCall({ ...options, ruleformat: "verbose" });
+export function demoMultipositionFeature(out: PrintSink = defaultSink, options: PostagOptions = {}): PostagResult {
+  return postag(
+    { templates: buildTemplates([[["Pos", [-3, -2, -1]]]]), ...options },
+    out,
+  );
 }
-export function demoMultipositionFeature(options: PostagOptions = {}): PostagResult {
-  return demoCall({
-    templates: buildTemplates([[["Pos", [-3, -2, -1]]]]),
-    ...options,
-  });
+export function demoMultifeatureTemplate(out: PrintSink = defaultSink, options: PostagOptions = {}): PostagResult {
+  return postag(
+    { templates: buildTemplates([[["Word", [0]], ["Pos", [-2, -1]]]]), ...options },
+    out,
+  );
 }
-export function demoMultifeatureTemplate(options: PostagOptions = {}): PostagResult {
-  return demoCall({
-    templates: buildTemplates([[["Word", [0]], ["Pos", [-2, -1]]]]),
-    ...options,
-  });
-}
-export function demoGeneratedTemplates(options: PostagOptions = {}): PostagResult {
+export function demoGeneratedTemplates(out: PrintSink = defaultSink, options: PostagOptions = {}): PostagResult {
   const wordtpls = Word.expand([-1, 0, 1], [1, 2], false);
   const tagtpls = Pos.expand([-2, -1, 0, 1], [1, 2], true);
   const templates = options.templates ?? Template.expand([wordtpls, tagtpls], [1, 3]);
-  console.log(`Generated ${templates.length} templates for transformation-based learning`);
-  return demoCall({ ...options, templates, incrementalStats: true, templateStats: true });
+  print(out, `Generated ${templates.length} templates for transformation-based learning`);
+  return postag({ ...options, templates, incrementalStats: true, templateStats: true }, out);
 }
-export function demoTemplateStatistics(options: PostagOptions = {}): PostagResult {
-  return demoCall({ ...options, incrementalStats: true, templateStats: true });
+export function demoTemplateStatistics(out: PrintSink = defaultSink, options: PostagOptions = {}): PostagResult {
+  return postag({ ...options, incrementalStats: true, templateStats: true }, out);
 }
-export function demoErrorAnalysis(options: PostagOptions = {}): PostagResult {
-  return demoCall({ ...options, errorOutput: options.errorOutput ?? "errors.txt" });
+export function demoErrorAnalysis(out: PrintSink = defaultSink, options: PostagOptions = {}): PostagResult {
+  return postag({ ...options, errorOutput: options.errorOutput ?? "errors.txt" }, out);
 }
-export function demoSerializeTagger(options: PostagOptions = {}): PostagResult {
-  return demoCall({ ...options, serializeOutput: options.serializeOutput ?? "tagger.pcl" });
+export function demoSerializeTagger(out: PrintSink = defaultSink, options: PostagOptions = {}): PostagResult {
+  return postag({ ...options, serializeOutput: options.serializeOutput ?? "tagger.pcl" }, out);
 }
-export function demoHighAccuracyRules(options: PostagOptions = {}): PostagResult {
-  return demoCall({ numSents: 3000, minAcc: 0.96, minScore: 10, ...options });
+export function demoHighAccuracyRules(out: PrintSink = defaultSink, options: PostagOptions = {}): PostagResult {
+  return postag({ numSents: 3000, minAcc: 0.96, minScore: 10, ...options }, out);
 }
-export function demoLearningCurve(options: PostagOptions = {}): PostagResult {
-  return demoCall({ incrementalStats: true, separateBaselineData: true, learningCurveOutput: "learningcurve.png", ...options });
+export function demoLearningCurve(out: PrintSink = defaultSink, options: PostagOptions = {}): PostagResult {
+  return postag(
+    { incrementalStats: true, separateBaselineData: true, learningCurveOutput: "learningcurve.png", ...options },
+    out,
+  );
 }
+
+/** nltk.tbl.demo.pickle_load — CPython pickle is not portable. */
+export function pickleLoad(_infile?: unknown): never {
+  throw pyError("TypeError", "pickle_load requires CPython pickle (not portable)");
+}
+export { pickleLoad as pickle_load };
+
+export {
+  demoReprRuleFormat as demo_repr_rule_format,
+  demoStrRuleFormat as demo_str_rule_format,
+  demoVerboseRuleFormat as demo_verbose_rule_format,
+  demoMultipositionFeature as demo_multiposition_feature,
+  demoMultifeatureTemplate as demo_multifeature_template,
+  demoGeneratedTemplates as demo_generated_templates,
+  demoTemplateStatistics as demo_template_statistics,
+  demoErrorAnalysis as demo_error_analysis,
+  demoSerializeTagger as demo_serialize_tagger,
+  demoHighAccuracyRules as demo_high_accuracy_rules,
+  demoLearningCurve as demo_learning_curve,
+};
 
 export { errorList };
 export { Word, Pos, Template, BrillTaggerTrainer, RegexpTagger, UnigramTagger };
+export type { PrintSink };

@@ -4,6 +4,7 @@ import {
   type TaggedToken,
   type UntaggedSentence,
 } from "./sequential_taggers";
+import { pyError } from "./internals";
 
 export type BrillToken = [word: string, tag: string];
 export type BrillSentence = BrillToken[];
@@ -13,14 +14,107 @@ export interface InitialTaggerLike {
   tag(tokens: UntaggedSentence): Array<[string, string | null]>;
 }
 
+/** Faithful Python repr() for strings: picks a quote style that avoids
+ * escaping (double quotes when the value contains ' but not "), escapes
+ * backslash, the delimiter quote, and \n \r \t plus control chars as \xNN. */
 function pyRepr(value: string): string {
-  const escaped = value.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
-  return `'${escaped}'`;
+  const hasSingle = value.includes("'");
+  const hasDouble = value.includes('"');
+  const quote = hasSingle && !hasDouble ? '"' : "'";
+  let out = "";
+  for (const ch of value) {
+    if (ch === "\\") out += "\\\\";
+    else if (ch === quote) out += `\\${ch}`;
+    else if (ch === "\n") out += "\\n";
+    else if (ch === "\r") out += "\\r";
+    else if (ch === "\t") out += "\\t";
+    else {
+      const cp = ch.codePointAt(0)!;
+      out += cp < 0x20 || cp === 0x7f ? `\\x${cp.toString(16).padStart(2, "0")}` : ch;
+    }
+  }
+  return quote + out + quote;
 }
 
 function compareCodePoints(a: string, b: string): number {
   if (a === b) return 0;
   return a < b ? -1 : 1;
+}
+
+/** Python str.expandtabs(tabsize=8). */
+function pyExpandTabs(text: string, tabsize = 8): string {
+  let out = "";
+  let col = 0;
+  for (const ch of text) {
+    if (ch === "\t") {
+      const n = tabsize - (col % tabsize);
+      out += " ".repeat(n);
+      col += n;
+    } else {
+      out += ch;
+      col = ch === "\n" || ch === "\r" ? 0 : col + 1;
+    }
+  }
+  return out;
+}
+
+// CPython textwrap TextWrapper.wordsep_re with break_on_hyphens=True,
+// specialized to the module's whitespace/letter/word-punct classes.
+const WORDSEP_RE =
+  /([ \t\n\v\f\r]+|(?<=[\w!"'&.,?])-{2,}(?=\w)|[^ \t\n\v\f\r]+?(?:-(?:(?<=[^\d\W]{2}-)|(?<=[^\d\W]-[^\d\W]-))(?=[^\d\W]-?[^\d\W])|(?=[ \t\n\v\f\r]|$)|(?<=[\w!"'&.,?])(?=-{2,}\w)))/g;
+
+/** CPython textwrap.fill — TextWrapper defaults (break_long_words=True,
+ * break_on_hyphens=True, drop_whitespace=True, max_lines=None). */
+function pyTextwrapFill(text: string, width: number, initialIndent: string, subsequentIndent: string): string {
+  // _munge_whitespace: expandtabs then translate whitespace -> ' '
+  const munged = pyExpandTabs(text, 8).replace(/[ \t\n\v\f\r]/g, " ");
+  const chunks = munged.split(WORDSEP_RE).filter((c) => c !== "");
+  chunks.reverse();
+  const lines: string[] = [];
+  while (chunks.length) {
+    const curLine: string[] = [];
+    let curLen = 0;
+    const indent = lines.length ? subsequentIndent : initialIndent;
+    const w = width - indent.length;
+    if (chunks[chunks.length - 1]!.trim() === "" && lines.length) {
+      chunks.pop();
+    }
+    while (chunks.length) {
+      const l = chunks[chunks.length - 1]!.length;
+      if (curLen + l <= w) {
+        curLine.push(chunks.pop()!);
+        curLen += l;
+      } else {
+        break;
+      }
+    }
+    if (chunks.length && chunks[chunks.length - 1]!.length > w) {
+      // _handle_long_word (break_long_words=True, break_on_hyphens=True)
+      const spaceLeft = w < 1 ? 1 : w - curLen;
+      if (spaceLeft > 0) {
+        let end = spaceLeft;
+        const chunk = chunks[chunks.length - 1]!;
+        if (chunk.length > spaceLeft) {
+          const hyphen = chunk.slice(0, spaceLeft).lastIndexOf("-");
+          if (hyphen > 0 && /[^-]/.test(chunk.slice(0, hyphen))) {
+            end = hyphen + 1;
+          }
+        }
+        curLine.push(chunk.slice(0, end));
+        chunks[chunks.length - 1] = chunk.slice(end);
+        curLen = curLine.join("").length;
+      } else if (curLine.length === 0) {
+        curLine.push(chunks.pop()!);
+      }
+    }
+    if (curLine.length && curLine[curLine.length - 1]!.trim() === "") {
+      curLine.pop();
+    }
+    if (curLine.length) {
+      lines.push(indent + curLine.join(""));
+    }
+  }
+  return lines.join("\n");
 }
 
 function posKey(sentnum: number, wordnum: number): number {
@@ -429,6 +523,11 @@ export function clearTemplateRegistry(): void {
   ALLTEMPLATES.length = 0;
 }
 
+/** nltk.tbl.template.Template.ALLTEMPLATES — live creation-order registry. */
+export function allTemplates(): readonly Template[] {
+  return ALLTEMPLATES;
+}
+
 function popTemplate(): Template | undefined {
   return ALLTEMPLATES.pop();
 }
@@ -628,6 +727,7 @@ export class BrillTagger {
     if (statistic === undefined) return this.#trainingStats;
     return this.#trainingStats?.[statistic] ?? null;
   }
+  train_stats = this.trainStats;
 
   tag(tokens: UntaggedSentence): BrillSentence {
     const taggedTokens: BrillSentence = this.#initialTagger
@@ -681,11 +781,160 @@ export class BrillTagger {
     }
     return total === 0 ? 0 : correct / total;
   }
+
+  /** nltk.tag.brill.BrillTagger.batch_tag_incremental — apply each rule to
+   * the whole corpus in order, collecting per-rule error deltas. */
+  batchTagIncremental(
+    sequences: ReadonlyArray<UntaggedSentence>,
+    gold: ReadonlyArray<GoldSentence>,
+  ): [BrillSentence[], BrillTestingStats] {
+    const counterrors = (xs: ReadonlyArray<BrillSentence>): number => {
+      let errors = 0;
+      for (let s = 0; s < xs.length; s += 1) {
+        const test = xs[s]!;
+        const ref = gold[s]!;
+        for (let w = 0; w < test.length; w += 1) {
+          if (test[w]![1] !== ref[w]![1]) errors += 1;
+        }
+      }
+      return errors;
+    };
+    const tokencount = sequences.reduce((n, s) => n + s.length, 0);
+    const taggedTokenses: BrillSentence[] = sequences.map((tokens) =>
+      this.#initialTagger.tag(tokens).map(([w, t]) => [w, t ?? ""] as BrillToken),
+    );
+    const initialerrors = counterrors(taggedTokenses);
+    const errors = [initialerrors];
+    for (const rule of this.#rules) {
+      for (const taggedTokens of taggedTokenses) {
+        rule.apply(taggedTokens);
+      }
+      errors.push(counterrors(taggedTokenses));
+    }
+    const finalerrors = errors[errors.length - 1]!;
+    const stats: BrillTestingStats = {
+      tokencount,
+      sequencecount: sequences.length,
+      initialerrors,
+      initialacc: 1 - initialerrors / tokencount,
+      rulescores: errors.slice(1).map((e, i) => errors[i]! - e),
+      finalerrors,
+      finalacc: 1 - finalerrors / tokencount,
+    };
+    return [taggedTokenses, stats];
+  }
+  batch_tag_incremental = this.batchTagIncremental;
+
+  /** nltk.tag.brill.BrillTagger.print_template_statistics */
+  printTemplateStatistics(
+    testStats: BrillTestingStats | null = null,
+    printunused = true,
+    out: (text: string) => void = (s) => process.stdout.write(s),
+  ): void {
+    // `out` is a raw chunk sink (newline-terminated); print wraps it with
+    // Python print() semantics.
+    const print = (s: string): void => out(`${s}\n`);
+    const tids = this.#rules.map((r) => r.templateid);
+    const trainStats = this.#trainingStats!;
+    const trainscores = trainStats.rulescores;
+    const templateCounts = new Map<string, number>();
+    for (const tid of tids) {
+      templateCounts.set(tid, (templateCounts.get(tid) ?? 0) + 1);
+    }
+    const weightedTraincounts = new Map<string, number>();
+    tids.forEach((tid, i) => {
+      weightedTraincounts.set(tid, (weightedTraincounts.get(tid) ?? 0) + trainscores[i]!);
+    });
+    const tottrainscores = trainscores.reduce((a, b) => a + b, 0);
+
+    const detTplsort = (
+      a: readonly [string, number],
+      b: readonly [string, number],
+    ): number => b[1] - a[1] || compareCodePoints(b[0], a[0]);
+
+    const statRow = (
+      label: string,
+      s: { tokencount: number; initialerrors: number; initialacc: number; finalerrors: number; finalacc: number },
+    ): string =>
+      `${label} (${String(s.tokencount).padStart(7)} tokens) initial ${String(s.initialerrors).padStart(5)} ${s.initialacc.toFixed(4)} ` +
+      `final: ${String(s.finalerrors).padStart(5)} ${s.finalacc.toFixed(4)}`;
+
+    const usedtpls = new Set(tids.map((t) => Number(t)));
+    const tplrepr = (tid: string): string => allTemplates()[Number(tid)]!.repr();
+
+    if (testStats === null) {
+      print(
+        `TEMPLATE STATISTICS (TRAIN)  ${templateCounts.size} templates, ${tids.length} rules)`,
+      );
+      print(statRow("TRAIN", trainStats));
+      const head = "#ID | Score (train) |  #Rules     | Template";
+      print(`${head}\n${"-".repeat(head.length)}`);
+      for (const [tid, trainscore] of [...weightedTraincounts].sort(detTplsort)) {
+        print(
+          `${tid} | ${String(trainscore).padStart(5)}   ${(trainscore / tottrainscores).toFixed(3).padStart(5)} |` +
+            `${String(templateCounts.get(tid)!).padStart(4)}   ${(templateCounts.get(tid)! / tids.length).toFixed(3)} | ${tplrepr(tid)}`,
+        );
+      }
+    } else {
+      print(
+        `TEMPLATE STATISTICS (TEST AND TRAIN) (${templateCounts.size} templates, ${tids.length} rules)`,
+      );
+      print(`${statRow("TEST ", testStats)} `);
+      print(`${statRow("TRAIN", trainStats)} `);
+      const weightedTestcounts = new Map<string, number>();
+      tids.forEach((tid, i) => {
+        weightedTestcounts.set(tid, (weightedTestcounts.get(tid) ?? 0) + testStats.rulescores[i]!);
+      });
+      const tottestscores = testStats.rulescores.reduce((a, b) => a + b, 0);
+      const head = "#ID | Score (test) | Score (train) |  #Rules     | Template";
+      print(`${head}\n${"-".repeat(head.length)}`);
+      for (const [tid, testscore] of [...weightedTestcounts].sort(detTplsort)) {
+        const row =
+          `${tid} |${String(testscore).padStart(5)}  ${(testscore / tottestscores).toFixed(3).padStart(6)}` +
+          ` |  ${String(weightedTraincounts.get(tid) ?? 0).padStart(4)}   ${((weightedTraincounts.get(tid) ?? 0) / tottrainscores).toFixed(3)}` +
+          ` |${String(templateCounts.get(tid)!).padStart(4)}   ${(templateCounts.get(tid)! / tids.length).toFixed(3)} | `;
+        void row;
+        // nltk 3.10.3 ends this format string with "{:s}".format(Template),
+        // which raises TypeError — Template lacks __format__ for a non-empty
+        // spec. The first row's construction crashes, so parity means raising
+        // at the same point rather than printing the template repr.
+        throw pyError("TypeError", "unsupported format string passed to Template.__format__");
+      }
+    }
+
+    print("");
+    if (printunused) {
+      const unused = allTemplates()
+        .map((tpl, i) => [i, tpl] as const)
+        .filter(([i]) => !usedtpls.has(i));
+      print(`UNUSED TEMPLATES (${unused.length})`);
+      for (const [tid, tpl] of unused) {
+        print(`${String(tid).padStart(3, "0")} ${tpl.repr()}`);
+      }
+    }
+    print("");
+  }
+  print_template_statistics = this.printTemplateStatistics;
+}
+
+/** nltk.tag.brill.BrillTagger test_stats dict (from batch_tag_incremental). */
+export interface BrillTestingStats {
+  tokencount: number;
+  sequencecount: number;
+  initialerrors: number;
+  initialacc: number;
+  rulescores: number[];
+  finalerrors: number;
+  finalacc: number;
 }
 
 export interface BrillTrainerOptions {
   trace?: number;
   deterministic?: boolean;
+  /** nltk prints trace output to stdout; inject a sink for capture. */
+  out?: (line: string) => void;
+  /** nltk.tag.brill_trainer.BrillTaggerTrainer(ruleformat=...) */
+  ruleformat?: string;
 }
 
 interface TrainerState {
@@ -703,12 +952,19 @@ export class BrillTaggerTrainer {
   readonly #templates: readonly Template[];
   readonly #trace: number;
   readonly #deterministic: boolean;
+  readonly #out: (line: string) => void;
+  readonly #ruleformat: string;
 
   constructor(initialTagger: InitialTaggerLike, templates: readonly Template[], options: BrillTrainerOptions = {}) {
     this.#initialTagger = initialTagger;
     this.#templates = templates;
     this.#trace = options.trace ?? 0;
     this.#deterministic = options.deterministic ?? this.#trace > 0;
+    // options.out is a raw chunk sink (newline-terminated, like pyPrint);
+    // #out wraps it with Python print() semantics.
+    const sink = options.out ?? ((s: string) => process.stdout.write(s));
+    this.#out = (s) => sink(`${s}\n`);
+    this.#ruleformat = options.ruleformat ?? "str";
   }
 
   train(trainSents: ReadonlyArray<GoldSentence>, maxRules = 200, minScore = 2, minAcc: number | null = null): BrillTagger {
@@ -751,12 +1007,24 @@ export class BrillTaggerTrainer {
     const initialacc = 1 - initialerrors / tokencount;
 
     if (this.#trace > 0) {
-      console.log(
-        `TBL train (fast) (seqs: ${testSents.length}; tokens: ${tokencount}; tpls: ${this.#templates.length}; min score: ${minScore}; min acc: ${minAcc})`,
+      this.#out(
+        `TBL train (fast) (seqs: ${testSents.length}; tokens: ${tokencount}; tpls: ${this.#templates.length}; min score: ${minScore}; min acc: ${minAcc === null ? "None" : minAcc})`,
       );
     }
 
+    if (this.#trace > 0) {
+      this.#out("Finding initial useful rules...");
+    }
     this.#initMappings(state, testSents, trainSents);
+    if (this.#trace > 0) {
+      this.#out(`    Found ${state.ruleScores.size} useful rules.`);
+    }
+
+    if (this.#trace > 2) {
+      this.#traceHeader();
+    } else if (this.#trace === 1) {
+      this.#out("Selecting rules...");
+    }
 
     while (rules.length < maxRules) {
       const rule = this.#bestRule(state, trainSents, testSents, minScore, minAcc);
@@ -764,6 +1032,9 @@ export class BrillTaggerTrainer {
       rules.push(rule);
       const score = state.ruleScores.get(rule) ?? 0;
       ruleScoresOut.push(score);
+      if (this.#trace > 1) {
+        this.#traceRule(state, rule);
+      }
       this.#applyRule(state, rule, testSents);
       this.#updateTagPositions(state, rule);
       this.#updateRules(state, rule, trainSents, testSents);
@@ -784,6 +1055,38 @@ export class BrillTaggerTrainer {
     };
 
     return new BrillTagger(this.#initialTagger, rules, stats);
+  }
+
+  /** nltk.tag.brill_trainer.BrillTaggerTrainer._trace_header */
+  #traceHeader(): void {
+    this.#out(
+      "\n" +
+      "           B      |\n" +
+      "   S   F   r   O  |        Score = Fixed - Broken\n" +
+      "   c   i   o   t  |  R     Fixed = num tags changed incorrect -> correct\n" +
+      "   o   x   k   h  |  u     Broken = num tags changed correct -> incorrect\n" +
+      "   r   e   e   e  |  l     Other = num tags changed incorrect -> incorrect\n" +
+      "   e   d   n   r  |  e\n" +
+      "------------------+-------------------------------------------------------",
+    );
+  }
+
+  /** nltk.tag.brill_trainer.BrillTaggerTrainer._trace_rule */
+  #traceRule(state: TrainerState, rule: TblRule): void {
+    const changes = [...(state.positionsByRule.get(rule)?.values() ?? [])];
+    const numFixed = changes.filter((c) => c === 1).length;
+    const numBroken = changes.filter((c) => c === -1).length;
+    const numOther = changes.filter((c) => c === 0).length;
+    const score = state.ruleScores.get(rule) ?? 0;
+    const rulestr = rule.format(this.#ruleformat);
+    if (this.#trace > 2) {
+      this.#out(
+        `${String(score).padStart(4)}${String(numFixed).padStart(4)}${String(numBroken).padStart(4)}${String(numOther).padStart(4)}  | ` +
+          pyTextwrapFill(rulestr, 79, " ".repeat(20), `${" ".repeat(18)}|   `).trim(),
+      );
+    } else {
+      this.#out(rulestr);
+    }
   }
 
   #initMappings(state: TrainerState, testSents: BrillSentence[], trainSents: ReadonlyArray<GoldSentence>): void {

@@ -27,6 +27,14 @@ import {
 import { bots } from "../src/ext_pure";
 import { RegexpParser } from "../src/chunk_nltk";
 import { resetUniqueVariableCounter } from "../src/sem_logic";
+import { clearTemplateRegistry } from "../src/brill_tagger";
+import {
+  demo as tblDemo,
+  demoErrorAnalysis, demoGeneratedTemplates, demoHighAccuracyRules,
+  demoLearningCurve, demoMultifeatureTemplate, demoMultipositionFeature,
+  demoReprRuleFormat, demoSerializeTagger, demoStrRuleFormat,
+  demoTemplateStatistics, demoVerboseRuleFormat,
+} from "../src/tbl_demo";
 import { dataPath } from "../src/data";
 import { gunzipSync } from "node:zlib";
 import { mkdtempSync, readFileSync } from "node:fs";
@@ -87,6 +95,7 @@ function norm(s: string): string {
     // pchart/viterbi summary tables: elapsed seconds column
     .replace(/(Time \(secs\)\s+# Parses   Average P\(parse\)\n-+\n\s*)[\d.]+/g, "$1TIME")
     .replace(/(\|\s*)[\d.]+(\s+\d+\s+[\d.eE+-]+)/g, "$1TIME$2")
+    .replace(/(Trained tbl tagger in )[\d.]+( seconds)/g, "$1TIME$2")
     // em loglikelihood: trailing digits diverge via LAPACK dgetri + libm pow
     // internals (OpenBLAS/glibc vs our scalar port) — truncate to 13 decimals.
     .replace(/(iteration; loglikelihood -?\d+\.\d{13})\d+/g, "$1");
@@ -416,5 +425,79 @@ describe("malt/jar/port helpers", () => {
   test("stanford find_jar missing", () => {
     try { stanfordFindJar("nonexistent-xyz.jar", { envVars: ["NONEXISTENT_XYZ"], searchpath: ["/nonexistent-dir-xyz"] }); expect.unreachable(); }
     catch (e) { expect((e as Error).name).toBe("LookupError"); }
+  });
+});
+
+// ---------- nltk.tbl.demo ----------
+// Oracle resets Template.ALLTEMPLATES before each key (python's registry
+// accumulates process-wide); mirror with clearTemplateRegistry().
+
+function tblRun(f: (out: (s: string) => void) => void): string {
+  clearTemplateRegistry();
+  return run(f);
+}
+function tblErr(f: () => void): { text: string; err: string | null } {
+  clearTemplateRegistry();
+  return errWrap(f);
+}
+
+describe("nltk.tbl.demo", () => {
+  test("demo", () => expect(tblRun((o) => tblDemo(o))).toBe(T("tbl_demo")));
+  test("repr ruleformat", () => expect(tblRun((o) => demoReprRuleFormat(o))).toBe(T("tbl_demo_repr")));
+  test("str ruleformat", () => expect(tblRun((o) => demoStrRuleFormat(o))).toBe(T("tbl_demo_str")));
+  test("verbose ruleformat", () => expect(tblRun((o) => demoVerboseRuleFormat(o))).toBe(T("tbl_demo_verbose")));
+  test("multiposition", () => expect(tblRun((o) => demoMultipositionFeature(o))).toBe(T("tbl_demo_multipos")));
+  test("multifeature", () => expect(tblRun((o) => demoMultifeatureTemplate(o))).toBe(T("tbl_demo_multifeat")));
+  test("template statistics (upstream TypeError)", () => {
+    const c = collect();
+    const r = tblErr(() => demoTemplateStatistics(c.out));
+    expect(norm(c.text())).toBe(T("tbl_demo_template_stats"));
+    expect(r.err).toBe(errName(E("tbl_demo_template_stats")));
+  });
+  test("generated templates (upstream TypeError)", () => {
+    const c = collect();
+    const r = tblErr(() => demoGeneratedTemplates(c.out));
+    expect(norm(c.text())).toBe(T("tbl_demo_generated"));
+    expect(r.err).toBe(errName(E("tbl_demo_generated")));
+  });
+  test("high accuracy rules", () => expect(tblRun((o) => demoHighAccuracyRules(o))).toBe(T("tbl_demo_high_accuracy")));
+  test("learning curve (ModuleNotFoundError)", () => {
+    const c = collect();
+    const r = tblErr(() => demoLearningCurve(c.out));
+    expect(norm(c.text())).toBe(T("tbl_demo_learning_curve"));
+    expect(r.err).toBe(errName(E("tbl_demo_learning_curve")));
+  });
+  test("error analysis (upstream TypeError + header file)", () => {
+    const dir = mkdtempSync(join(tmpdir(), "tblerr-"));
+    const cwd = process.cwd();
+    let r: { text: string; err: string | null };
+    let fileText: string | null = null;
+    try {
+      process.chdir(dir);
+      const c = collect();
+      clearTemplateRegistry();
+      try { demoErrorAnalysis(c.out); r = { text: c.text(), err: null }; }
+      catch (e) { r = { text: c.text(), err: e instanceof Error ? e.name : "Error" }; }
+      try { fileText = readFileSync("errors.txt", "utf8"); } catch { fileText = null; }
+    } finally {
+      process.chdir(cwd);
+    }
+    expect(norm(r!.text)).toBe(T("tbl_demo_error_analysis"));
+    expect(r!.err).toBe(errName(E("tbl_demo_error_analysis")));
+    expect(fileText).toBe(O.out.tbl_demo_error_analysis?.files?.["errors.txt"] ?? null);
+  });
+  test("serialize tagger (pickle gap: identical stdout prefix)", () => {
+    const c = collect();
+    const r = tblErr(() => demoSerializeTagger(c.out));
+    // Python's pickle.dump succeeds (file + "Wrote/Reloaded" lines) then
+    // crashes inside pickle_load — unreachable without CPython pickle. Our
+    // stdout is a strict prefix of the oracle's.
+    expect(r.err).toBe("TypeError");
+    const py = T("tbl_demo_serialize");
+    const ours = norm(c.text());
+    expect(py.startsWith(ours)).toBe(true);
+    expect(py.slice(ours.length)).toBe(
+      "Wrote pickled tagger to tagger.pcl\nReloaded pickled tagger from tagger.pcl\n",
+    );
   });
 });

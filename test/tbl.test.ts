@@ -9,6 +9,7 @@ import {
 } from "../src/brill_tagger";
 import { errorList } from "../src/tbl_erroranalysis";
 import { corpusSize, postag } from "../src/tbl_demo";
+import { dataPath } from "../src/data";
 
 // Pinned against NLTK 3.10.3 (see test/tbl_oracle.py).
 
@@ -186,9 +187,20 @@ describe("tbl demo helpers (nltk.tbl.demo/erroranalysis)", () => {
   });
 
   test("postag unsupported paths throw", () => {
-    expect(() => postag()).toThrow("treebank");
-    expect(() => postag({ taggedData: [], serializeOutput: "x" })).toThrow("pickle");
-    expect(() => postag({ taggedData: [], learningCurveOutput: "x" })).toThrow("matplotlib");
-    expect(() => postag({ taggedData: [], incrementalStats: true })).toThrow("batch_tag_incremental");
+    // tagged_data=None loads the treebank corpus — clear data.path to simulate it missing.
+    const saved = dataPath.splice(0);
+    try {
+      expect(() => postag({}, () => {})).toThrow(/treebank|corpora/);
+    } finally {
+      dataPath.push(...saved);
+    }
+    // pickle-bound options throw at the point CPython would reach.
+    expect(() => postag({ taggedData: [], serializeOutput: "x" }, () => {})).toThrow("pickle");
+    // learning_curve_output is only consulted inside incremental_stats — and
+    // then surfaces the same ModuleNotFoundError Python raises.
+    expect(() => postag({ taggedData: [], learningCurveOutput: "x" }, () => {})).not.toThrow();
+    expect(() => postag({ taggedData: [], incrementalStats: true, learningCurveOutput: "x" }, () => {})).toThrow("matplotlib");
+    // incremental_stats is implemented (batch_tag_incremental) — no throw.
+    expect(() => postag({ taggedData: [], incrementalStats: true }, () => {})).not.toThrow();
   });
 });

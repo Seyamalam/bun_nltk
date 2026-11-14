@@ -314,4 +314,55 @@ run("gaac_demo", _gaac.demo)
 from nltk.misc import wordfinder as _wf
 random.seed(0); run("word_finder_demo", _wf.word_finder)
 
+# ---------------- tbl demos (nltk.tbl.demo) ----------------
+# Template.ALLTEMPLATES accumulates across the process in python — each key
+# resets the registry so outputs equal a fresh-process run.
+from nltk.tbl import demo as _tbl
+from nltk.tbl.template import Template as _Tpl
+
+
+def tblrun(name, f):
+    _Tpl._cleartemplates()
+    run(name, f)
+
+
+tblrun("tbl_demo", _tbl.demo)
+tblrun("tbl_demo_repr", _tbl.demo_repr_rule_format)
+tblrun("tbl_demo_str", _tbl.demo_str_rule_format)
+tblrun("tbl_demo_verbose", _tbl.demo_verbose_rule_format)
+tblrun("tbl_demo_multipos", _tbl.demo_multiposition_feature)
+tblrun("tbl_demo_multifeat", _tbl.demo_multifeature_template)
+tblrun("tbl_demo_template_stats", _tbl.demo_template_statistics)
+tblrun("tbl_demo_generated", _tbl.demo_generated_templates)
+tblrun("tbl_demo_high_accuracy", _tbl.demo_high_accuracy_rules)
+tblrun("tbl_demo_learning_curve", _tbl.demo_learning_curve)
+
+
+def tblfile(name, f, files):
+    _Tpl._cleartemplates()
+    d = tempfile.mkdtemp()
+    cwd = os.getcwd()
+    buf = io.StringIO()
+    try:
+        os.chdir(d)
+        with contextlib.redirect_stdout(buf):
+            f()
+    except Exception as e:
+        errs[name] = f"{type(e).__name__}: {e!r}"[:400]
+    finally:
+        os.chdir(cwd)
+    out[name] = {
+        "text": buf.getvalue(),
+        "ret": None,
+        "files": {
+            p: open(os.path.join(d, p), "rb").read().decode("utf-8", "replace")
+            for p in files
+            if os.path.exists(os.path.join(d, p))
+        },
+    }
+
+
+tblfile("tbl_demo_error_analysis", _tbl.demo_error_analysis, ["errors.txt"])
+tblfile("tbl_demo_serialize", _tbl.demo_serialize_tagger, ["tagger.pcl"])
+
 print(json.dumps({"out": out, "errs": errs}))
