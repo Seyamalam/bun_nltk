@@ -1165,8 +1165,8 @@ export { chatbots, chat_demo } from "./src/misc_gaps";
 export { ToolboxElement } from "./src/toolbox";
 export { toolbox_demo } from "./src/misc_gaps";
 
-// nltk.downloader — offline value layer (Package/Collection/messages,
-// checksums, unzip); network client entry points are unsupported stubs.
+// nltk.downloader — Package/Collection/messages, checksums, unzip, and the
+// real fetch-based Downloader; GUI/shell entry points stay honest stubs.
 export {
   Package,
   Collection,
