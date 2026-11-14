@@ -49,6 +49,12 @@ import {
   DrtVariableExpression,
 } from "./drt";
 import { resolve_anaphora } from "./inference_discourse";
+import { FStructure } from "./sem_lfg";
+import { BracketParseCorpusReader } from "./corpus_readers2";
+import { TnT } from "./tag_tnt";
+import { PorterStemmer } from "./porter_stemmer";
+import { eliza_chat, iesha_chat, rude_chat, suntsu_chat, zen_chat } from "./chat";
+import { PunktTrainer as PunktTrainerNltk, PunktSentenceTokenizer as PunktSentenceTokenizerNltk } from "./punkt_nltk";
 import { demo_model0, evaluate_sents } from "./sem_util";
 import { cooperStoreFromTree, parse_with_bindops } from "./cooper_storage";
 import { find as dataFind } from "./data";
@@ -1988,3 +1994,208 @@ export function prodemoMissing(): never {
   throw pyError("AttributeError", "module 'nltk.sem.evaluate' has no attribute 'prodemo'");
 }
 export const prodemo = prodemoMissing;
+
+/** nltk.sem.lfg.demo_read_depgraph — FStructure.read_depgraph on four graphs. */
+export function demoReadDepgraph(out: PrintSink): void {
+  const graphs = [
+    `Esso       NNP     2       SUB
+said       VBD     0       ROOT
+the        DT      5       NMOD
+Whiting    NNP     5       NMOD
+field      NN      6       SUB
+started    VBD     2       VMOD
+production NN      6       OBJ
+Tuesday    NNP     6       VMOD
+`,
+    `John    NNP     2       SUB
+sees    VBP     0       ROOT
+Mary    NNP     2       OBJ
+`,
+    `a       DT      2       SPEC
+man     NN      3       SUBJ
+walks   VB      0       ROOT
+`,
+    `every   DT      2       SPEC
+girl    NN      3       SUBJ
+chases  VB      0       ROOT
+a       DT      5       SPEC
+dog     NN      3       OBJ
+`,
+  ];
+  for (const g of graphs) {
+    pyPrint(out, `${FStructure.readDepgraph(new DependencyGraph(g))}`);
+  }
+}
+export const demo_read_depgraph = demoReadDepgraph;
+
+/** nltk.tokenize.punkt.demo — train on `text`, print cleaned sentences. */
+export function punktDemo(out: PrintSink, text: string): void {
+  const cleanup = (s: string) => s.replace(/(?:\r|^\s+)/gm, "").replace(/\n/g, " ");
+  const trainer = new PunktTrainerNltk();
+  trainer.INCLUDE_ALL_COLLOCS = true;
+  trainer.train(text);
+  const sbd = new PunktSentenceTokenizerNltk(trainer.get_params());
+  for (const sentence of sbd.sentences_from_text(text)) pyPrint(out, cleanup(sentence));
+}
+export const punkt_demo = punktDemo;
+
+// ---------- corpus-backed demo helpers ----------
+
+/** treebank/combined BracketParseCorpusReader resolved via data.find. */
+function treebankReader(): BracketParseCorpusReader {
+  const root = (dataFind("corpora/treebank/combined") as unknown as { path: string }).path;
+  return new BracketParseCorpusReader(root, "wsj_.*\\.mrg", null, "unindented_paren", "ascii", "wsj");
+}
+
+function treebankTaggedSents(): Array<Array<[string, string]>> {
+  const out: Array<Array<[string, string]>> = [];
+  for (const s of treebankReader().tagged_sents() as Iterable<Array<[string, string]>>) out.push(s);
+  return out;
+}
+
+/** nltk.stem.porter.demo — stem treebank.tagged_words of first 3 fileids. */
+export function porterDemo(out: PrintSink): void {
+  const reader = treebankReader();
+  const stemmer = new PorterStemmer();
+  const orig: string[] = [];
+  const stemmed: string[] = [];
+  const fileids = (reader.fileids() as unknown as string[]).slice(0, 3);
+  for (const fid of fileids) {
+    for (const [word] of reader.tagged_words(fid) as Iterable<[string, string]>) {
+      orig.push(word);
+      stemmed.push(stemmer.stem(word));
+    }
+  }
+  const wrap70 = (s: string) => (s + " ").replace(/(.{1,70})\s/g, "$1\n").replace(/\s+$/, "");
+  const results = wrap70(stemmed.join(" "));
+  const original = wrap70(orig.join(" "));
+  const banner = (t: string) => {
+    const c = t.length >= 70 ? t : " ".repeat(Math.floor((70 - t.length) / 2)) + t + " ".repeat(70 - Math.floor((70 - t.length) / 2) - t.length);
+    return c.replace(/ /g, "*").replace(/-/g, " ");
+  };
+  pyPrint(out, banner("-Original-"));
+  pyPrint(out, original);
+  pyPrint(out, banner("-Results-"));
+  pyPrint(out, results);
+  pyPrint(out, "*".repeat(70));
+}
+export const porter_demo = porterDemo;
+
+/** nltk.tag.tnt._treebank_demo_split — train/test/vocab over treebank sents. */
+function treebankDemoSplit(testSize: number): {
+  trainSents: Array<Array<[string, string]>>; testSents: Array<Array<[string, string]>>; trainVocab: Set<string>;
+} {
+  const sents = treebankTaggedSents();
+  if (!(0 < testSize && testSize < sents.length)) {
+    throw pyError("ValueError", `test_size must be between 1 and ${sents.length - 1}, got ${pyRepr(testSize)}`);
+  }
+  const cut = sents.length - testSize;
+  const trainSents = sents.slice(0, cut);
+  const testSents = sents.slice(cut);
+  const trainVocab = new Set<string>();
+  for (const sent of trainSents) for (const [w] of sent) trainVocab.add(w);
+  return { trainSents, testSents, trainVocab };
+}
+
+/** nltk.tag.tnt._score_tagger. */
+function scoreTagger(tagger: TnT, testSents: Array<Array<[string, string]>>, trainVocab: Set<string>) {
+  let correct = 0, total = 0, seenCorrect = 0, seenTotal = 0, oovCorrect = 0, oovTotal = 0;
+  for (const sent of testSents) {
+    const words = sent.map(([w]) => w);
+    const gold = sent.map(([, t]) => t);
+    const pred = tagger.tag(words).map(([, t]) => t);
+    if (pred.length !== gold.length) {
+      throw pyError("ValueError", `tagger returned ${pred.length} tags for ${gold.length} tokens`);
+    }
+    for (let i = 0; i < words.length; i++) {
+      total++;
+      const hit = pred[i] === gold[i];
+      if (hit) correct++;
+      if (trainVocab.has(words[i]!)) { seenTotal++; if (hit) seenCorrect++; }
+      else { oovTotal++; if (hit) oovCorrect++; }
+    }
+  }
+  return {
+    accuracy: total ? correct / total : null,
+    seen_accuracy: seenTotal ? seenCorrect / seenTotal : null,
+    oov_accuracy: oovTotal ? oovCorrect / oovTotal : null,
+    oov_rate: total ? oovTotal / total : null,
+  };
+}
+
+const formatScore = (s: number | null) => s === null ? "n/a" : s.toFixed(4);
+
+/** nltk.tag.tnt.demo — evaluate TnT on a held-out Treebank slice. */
+export function tntDemo(out: PrintSink, testSize = 1000): void {
+  const { trainSents, testSents, trainVocab } = treebankDemoSplit(testSize);
+  for (const useCap of [false, true]) {
+    const tagger = new TnT({ N: 1000, C: useCap });
+    tagger.train(trainSents);
+    const scores = scoreTagger(tagger, testSents, trainVocab);
+    pyPrint(out, `Capitalization: ${useCap ? "True" : "False"}`);
+    pyPrint(out, `Accuracy:       ${formatScore(scores.accuracy)}`);
+    pyPrint(out, `Seen accuracy:  ${formatScore(scores.seen_accuracy)}`);
+    pyPrint(out, `OOV accuracy:   ${formatScore(scores.oov_accuracy)}`);
+    pyPrint(out, `OOV rate:       ${formatScore(scores.oov_rate)}`);
+    pyPrint(out);
+  }
+}
+export const tnt_demo = tntDemo;
+
+/** nltk.tag.tnt.demo_errors — first `limit` errors from the held-out slice. */
+export function tntDemoErrors(out: PrintSink, limit = 25, testSize = 1000): void {
+  if (limit < 1) {
+    throw pyError("ValueError", `limit must be at least 1, got ${pyRepr(limit)}`);
+  }
+  const { trainSents, testSents, trainVocab } = treebankDemoSplit(testSize);
+  const tagger = new TnT({ N: 1000, C: true });
+  tagger.train(trainSents);
+  let shown = 0;
+  outer:
+  for (const sent of testSents) {
+    const words = sent.map(([w]) => w);
+    const gold = sent.map(([, t]) => t);
+    const pred = tagger.tag(words).map(([, t]) => t);
+    if (pred.length !== gold.length) {
+      throw pyError("ValueError", `tagger returned ${pred.length} tags for ${gold.length} tokens`);
+    }
+    for (let i = 0; i < words.length; i++) {
+      if (pred[i] === gold[i]) continue;
+      const status = trainVocab.has(words[i]!) ? "seen" : "OOV";
+      pyPrint(out, `${pyRepr(words[i])} (${status}): guessed ${pyRepr(pred[i])}, gold ${pyRepr(gold[i])}`);
+      shown++;
+      if (shown >= limit) break outer;
+    }
+  }
+  if (shown === 0) pyPrint(out, "No errors found.");
+}
+export const tnt_demo_errors = tntDemoErrors;
+
+// nltk.chat.*.demo — each demo calls its _chat() entry point; converse is
+// input-injectable so the oracle can pin the EOF path deterministically.
+// Chat demo wrappers — Python `input(">")` writes the prompt to stdout, so the
+// adapted input callback emits the prompt through the same raw sink; `*_chat`
+// output is print-style (one Python print per call) over the raw PrintSink.
+const chatLineFeed = (feed: (() => string | null | undefined) | undefined, out: PrintSink) =>
+  feed === undefined ? undefined : (prompt?: string) => { if (prompt !== undefined) out(prompt); return feed(); };
+
+export function elizaDemo(out: PrintSink, feed?: () => string | null | undefined, rng?: PyRandom): void {
+  eliza_chat(chatLineFeed(feed, out), (s) => out(s + "\n"), rng);
+}
+export function ieshaDemo(out: PrintSink, feed?: () => string | null | undefined, rng?: PyRandom): void {
+  iesha_chat(chatLineFeed(feed, out), (s) => out(s + "\n"), rng);
+}
+export function rudeDemo(out: PrintSink, feed?: () => string | null | undefined, rng?: PyRandom): void {
+  rude_chat(chatLineFeed(feed, out), (s) => out(s + "\n"), rng);
+}
+export function suntsuDemo(out: PrintSink, feed?: () => string | null | undefined, rng?: PyRandom): void {
+  suntsu_chat(chatLineFeed(feed, out), (s) => out(s + "\n"), rng);
+}
+export function zenDemo(out: PrintSink, feed?: () => string | null | undefined, rng?: PyRandom): void {
+  zen_chat(chatLineFeed(feed, out), (s) => out(s + "\n"), rng);
+}
+export const eliza_demo = elizaDemo;
+export const iesha_demo = ieshaDemo;
+export const rude_demo = rudeDemo;
+export const suntsu_demo = suntsuDemo;
+export const zen_demo = zenDemo;

@@ -942,7 +942,10 @@ export {
   earleyDemo, featurechartDemo, featureDemo, pchartDemo, pchart_demo,
   viterbiDemo, viterbi_demo, generateDemo, generate_demo, distanceDemo,
   distance_demo, scoresDemo, scores_demo, sortDemo, sort_demo, emDemo, em_demo,
-  kmeansDemo, kmeans_demo, demoEval, prodemoMissing,
+  kmeansDemo, kmeans_demo, demoEval, prodemoMissing, demoReadDepgraph,
+  punktDemo, punkt_demo, porterDemo, porter_demo, tnt_demo, tntDemoErrors,
+  tnt_demo_errors, elizaDemo, eliza_demo, ieshaDemo, iesha_demo, rudeDemo,
+  rude_demo, suntsuDemo, suntsu_demo, zenDemo, zen_demo,
 } from "./src/demos";
 export type { PrintSink } from "./src/demos";
 

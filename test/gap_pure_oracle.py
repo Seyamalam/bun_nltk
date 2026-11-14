@@ -127,6 +127,13 @@ run("linearlogic_demo", lambda: _ll.demo())
 from nltk.sem import cooper_storage as _cs
 run("cooper_demo", lambda: _cs.demo())
 
+from nltk.sem.lfg import demo_read_depgraph
+run("lfg_demo_read_depgraph", demo_read_depgraph)
+
+from nltk.tokenize.punkt import demo as _punkt_demo
+_punkt_text = "I saw a man. He was tall. Did Mr. Smith go? Yes."
+run("punkt_demo", lambda: _punkt_demo(_punkt_text))
+
 from nltk.sem import util as _util
 run("util_demo_default", lambda: _util.demo())
 _argv = sys.argv
@@ -280,5 +287,25 @@ try:
 except OSError as e:
     out["try_port_occupied"] = {"text": None, "ret": f"OSError: {e.errno}: {e.strerror}"}
 s.close()
+
+
+from nltk.stem.porter import demo as _porter_demo
+run("porter_demo", _porter_demo)
+
+from nltk.tag import tnt as _tnt
+run("tnt_demo", lambda: _tnt.demo())
+run("tnt_demo_errors", lambda: _tnt.demo_errors())
+
+from nltk.chat import eliza as _eliza, iesha as _iesha, rude as _rude, suntsu as _suntsu, zen as _zen
+_stdin = sys.stdin
+try:
+    sys.stdin = io.StringIO("hello\n")
+    random.seed(0); run("chat_eliza_demo", _eliza.demo)
+    random.seed(0); run("chat_iesha_demo", _iesha.demo)
+    random.seed(0); run("chat_rude_demo", _rude.demo)
+    random.seed(0); run("chat_suntsu_demo", _suntsu.demo)
+    random.seed(0); run("chat_zen_demo", _zen.demo)
+finally:
+    sys.stdin = _stdin
 
 print(json.dumps({"out": out, "errs": errs}))

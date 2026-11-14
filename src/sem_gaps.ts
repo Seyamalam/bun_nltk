@@ -36,5 +36,5 @@ export {
   foldemo, foldemo_ , folmodel, folmodel_, propdemo, propdemo_, satdemo, satdemo_,
   prodemo, evaluateDemo, evaluate_demo, drtDemo, drt_demo, linearlogicDemo,
   linearlogic_demo, cooperDemo, cooper_demo, semUtilDemo, util_demo,
+  demo_read_depgraph,
 } from "./demos";
-export function demo_read_depgraph(): never { return unsupported("demo_read_depgraph", DEMO_WHY); }

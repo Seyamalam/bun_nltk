@@ -754,7 +754,7 @@
    "basic_sent_chop": "src/tag_tnt.ts",
    "brill24": "src/tag_brill_templates.ts",
    "demo_bw": "src/hmm_tagger.ts",
-   "demo_errors": "src/tag_tnt.ts",
+   "demo_errors": "src/demos.ts",
    "demo_pos": "src/hmm_tagger.ts",
    "demo_pos_bw": "src/hmm_tagger.ts",
    "describe_template_sets": "src/tag_brill_templates.ts",
@@ -773,7 +773,7 @@
    "pos_tag_sents": "src/tag_util.ts",
    "str2tuple": "src/tag_util.ts",
    "tagset_mapping": "src/tag_mapping.ts",
-   "tntDemo": "src/tag_tnt.ts",
+   "tntDemo": "src/demos.ts",
    "tuple2str": "src/tag_util.ts",
    "untag": "src/hmm_tagger.ts",
    "Assignment": "src/sem_logic.ts",
@@ -871,7 +871,7 @@
    "Constraint": "src/sem_hole.ts",
    "HoleSemantics": "src/sem_hole.ts",
    "hole_readings": "src/sem_hole.ts",
-   "demo_read_depgraph": "src/sem_gaps.ts",
+   "demo_read_depgraph": "src/demos.ts",
    "LinearAtomicExpression": "src/sem_glue.ts",
    "LinearLogicApplicationException": "src/sem_glue.ts",
    "LinearLogicParser": "src/sem_glue.ts",
@@ -1300,7 +1300,25 @@
    "CsvFile": "src/ext_pure.ts",
    "LOCAL": "src/ext_pure.ts",
    "parseTwitterDate": "src/ext_pure.ts",
-   "prodemo": "src/demos.ts"
+   "prodemo": "src/demos.ts",
+   "demoReadDepgraph": "src/demos.ts",
+   "porterDemo": "src/demos.ts",
+   "porter_demo": "src/demos.ts",
+   "punktDemo": "src/demos.ts",
+   "punkt_demo": "src/demos.ts",
+   "tnt_demo": "src/demos.ts",
+   "tntDemoErrors": "src/demos.ts",
+   "tnt_demo_errors": "src/demos.ts",
+   "elizaDemo": "src/demos.ts",
+   "eliza_demo": "src/demos.ts",
+   "ieshaDemo": "src/demos.ts",
+   "iesha_demo": "src/demos.ts",
+   "rudeDemo": "src/demos.ts",
+   "rude_demo": "src/demos.ts",
+   "suntsuDemo": "src/demos.ts",
+   "suntsu_demo": "src/demos.ts",
+   "zenDemo": "src/demos.ts",
+   "zen_demo": "src/demos.ts"
   }
  },
  "modules": [
@@ -12074,31 +12092,35 @@
   {
    "target": "nltk.stem.porter.demo",
    "exports": [
+    "porterDemo",
+    "porter_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function porterDemo("
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Porter stem demo over first three treebank fileids; wrap-70 output oracle-pinned."
   },
   {
    "target": "nltk.stem.regexp.StemmerI",
@@ -13911,31 +13933,35 @@
   {
    "target": "nltk.tokenize.punkt.demo",
    "exports": [
+    "punktDemo",
+    "punkt_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function punktDemo("
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Punkt trainer+tokenizer demo on injected text; oracle-pinned output."
   },
   {
    "target": "nltk.tokenize.punkt.load_punkt_params",
@@ -34174,60 +34200,68 @@
   {
    "target": "nltk.tag.tnt.demo",
    "exports": [
-    "tntDemo"
+    "tntDemo",
+    "tnt_demo",
+    "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_tnt.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function tntDemo("
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Corpus-bound demo (treebank); unsupported without nltk_data."
+   "notes": "TnT tagger demo on treebank train/test split; accuracy lines oracle-pinned."
   },
   {
    "target": "nltk.tag.tnt.demo_errors",
    "exports": [
-    "demo_errors"
+    "demo_errors",
+    "tntDemoErrors",
+    "tnt_demo_errors"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_tnt.ts",
-     "anchor": "export function demo_errors"
+     "file": "src/demos.ts",
+     "anchor": "export function tntDemoErrors("
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Corpus-bound demo; unsupported without nltk_data."
+   "notes": "TnT error listing on held-out treebank slice; oracle-pinned."
   },
   {
    "target": "nltk.tag.util.str2tuple",
@@ -40579,31 +40613,34 @@
   {
    "target": "nltk.sem.lfg.demo_read_depgraph",
    "exports": [
-    "demo_read_depgraph"
+    "demo_read_depgraph",
+    "demoReadDepgraph"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
-     "anchor": "export function demo_read_depgraph"
+     "file": "src/demos.ts",
+     "anchor": "export function demoReadDepgraph("
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo_read_depgraph: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo_read_depgraph: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo_read_depgraph: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "LFG read_depgraph demo over four dep graphs; FStructure output oracle-pinned."
   },
   {
    "target": "nltk.sem.linearlogic.ApplicationExpression",
@@ -96810,31 +96847,36 @@
   {
    "target": "nltk.chat.eliza.demo",
    "exports": [
+    "demo",
+    "elizaDemo",
+    "eliza_demo",
     "chat_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/misc_gaps.ts",
-     "anchor": "export function chat_demo"
+     "file": "src/chat_eliza.ts",
+     "anchor": "export function demo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope for this runtime."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Module __main__ demo wrapper around the interactive chat function."
+   "notes": "Eliza chat demo; banner/prompt/EOF transcript oracle-pinned under seeded PyRandom."
   },
   {
    "target": "nltk.chat.iesha.iesha_chat",
@@ -96868,31 +96910,36 @@
   {
    "target": "nltk.chat.iesha.demo",
    "exports": [
+    "demo",
+    "ieshaDemo",
+    "iesha_demo",
     "chat_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/misc_gaps.ts",
-     "anchor": "export function chat_demo"
+     "file": "src/chat_iesha.ts",
+     "anchor": "export function demo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope for this runtime."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Module __main__ demo wrapper around the interactive chat function."
+   "notes": "Iesha chat demo; banner/prompt/EOF transcript oracle-pinned under seeded PyRandom."
   },
   {
    "target": "nltk.chat.rude.rude_chat",
@@ -96926,31 +96973,36 @@
   {
    "target": "nltk.chat.rude.demo",
    "exports": [
+    "demo",
+    "rudeDemo",
+    "rude_demo",
     "chat_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/misc_gaps.ts",
-     "anchor": "export function chat_demo"
+     "file": "src/chat_rude.ts",
+     "anchor": "export function demo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope for this runtime."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Module __main__ demo wrapper around the interactive chat function."
+   "notes": "Rude chat demo; banner/prompt/EOF transcript oracle-pinned under seeded PyRandom."
   },
   {
    "target": "nltk.chat.suntsu.suntsu_chat",
@@ -96984,31 +97036,36 @@
   {
    "target": "nltk.chat.suntsu.demo",
    "exports": [
+    "demo",
+    "suntsuDemo",
+    "suntsu_demo",
     "chat_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/misc_gaps.ts",
-     "anchor": "export function chat_demo"
+     "file": "src/chat_suntsu.ts",
+     "anchor": "export function demo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope for this runtime."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Module __main__ demo wrapper around the interactive chat function."
+   "notes": "Suntsu chat demo; banner/prompt/EOF transcript oracle-pinned under seeded PyRandom."
   },
   {
    "target": "nltk.chat.zen.zen_chat",
@@ -97042,31 +97099,36 @@
   {
    "target": "nltk.chat.zen.demo",
    "exports": [
+    "demo",
+    "zenDemo",
+    "zen_demo",
     "chat_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/misc_gaps.ts",
-     "anchor": "export function chat_demo"
+     "file": "src/chat_zen.ts",
+     "anchor": "export function demo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope for this runtime."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Module __main__ demo wrapper around the interactive chat function."
+   "notes": "Zen chat demo; banner/prompt/EOF transcript oracle-pinned under seeded PyRandom."
   },
   {
    "target": "nltk.toolbox.StandardFormat",

@@ -1087,3 +1087,6 @@ export function format_debug_decision(d: Record<string, unknown>): string {
   };
   return DEBUG_DECISION_FMT.replace(/\{(\w+)\}/g, (_, k: string) => fill(k));
 }
+
+/** nltk.tokenize.punkt.demo — real trainer demo lives in demos.ts (call-time ref). */
+export { punktDemo as demo } from "./demos";

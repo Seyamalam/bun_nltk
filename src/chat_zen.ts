@@ -1,14 +1,7 @@
-/** NLTK chat.zen — Zen chatbot (interactive demo). */
-import { Chat, reflections } from "./chat_util.ts";
-export { reflections };
-export const responses: ReadonlyArray<readonly [string, ReadonlyArray<string>]> = [];
+/** NLTK chat.zen — Zen chatbot (Python names the pair table `responses`). */
+import { Chat, reflections, zen_pairs, zen_chat } from "./chat";
+export { Chat, reflections, zen_chat };
+export const responses = zen_pairs;
 export const pairs = responses;
 export const zen_chatbot = new Chat(responses, reflections);
-export function zen_chat(..._a: unknown[]): never {
-  throw new Error(
-    "nltk.chat.zen.zen_chat requires interactive terminal I/O — not available in JS runtime (use Chat.respond for programmatic use)",
-  );
-}
-export function demo(..._a: unknown[]): never {
-  throw new Error("nltk.chat.zen.demo requires interactive terminal I/O — not available in JS runtime");
-}
+export function demo(...args: Parameters<typeof zen_chat>): void { zen_chat(...args); }

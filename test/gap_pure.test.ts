@@ -14,6 +14,8 @@ import {
   earleychartDemo, emDemo, evaluateDemo, featurechartDemo, foldemo, folmodel,
   generateDemo, hallDemo, kmeansDemo, linearlogicDemo, nonprojectiveConllParseDemo,
   nppDemo, pchartDemo, pdpDemo, prodemoMissing, projectiveProbParseDemo,
+  demoReadDepgraph, punktDemo, porterDemo, tntDemo, tntDemoErrors,
+  elizaDemo, ieshaDemo, rudeDemo, suntsuDemo, zenDemo,
   projectiveRuleParseDemo, propdemo, recursivedescentDemo, ruleBasedDemo,
   satdemo, scoresDemo, semUtilDemo, shiftreduceDemo, sortDemo, viterbiDemo,
 } from "../src/demos";
@@ -232,6 +234,22 @@ describe("sem demos", () => {
   test("drt", () => expect(run(o => drtDemo(o))).toBe(T("drt_demo")));
   test("linearlogic", () => expect(run(o => linearlogicDemo(o))).toBe(T("linearlogic_demo")));
   test("cooper", () => expect(run(o => cooperDemo(o))).toBe(T("cooper_demo")));
+  test("lfg read_depgraph", () => expect(run(o => demoReadDepgraph(o))).toBe(T("lfg_demo_read_depgraph")));
+  test("punkt demo", () => expect(run(o => punktDemo(o, "I saw a man. He was tall. Did Mr. Smith go? Yes."))).toBe(T("punkt_demo")));
+  test("porter demo", () => expect(run(o => porterDemo(o))).toBe(T("porter_demo")));
+  test("tnt demo", () => expect(run(o => tntDemo(o))).toBe(T("tnt_demo")));
+  test("tnt demo_errors", () => expect(run(o => tntDemoErrors(o))).toBe(T("tnt_demo_errors")));
+  test("chat demos", () => {
+    // The oracle swaps in a single io.StringIO("hello\n") for all five demos:
+    // eliza consumes "hello"; the rest hit EOF on their first input(">").
+    let n = 0;
+    const feed = () => (n++ === 0 ? "hello" : null);
+    expect(run(o => elizaDemo(o, feed, new PyRandom(0)))).toBe(T("chat_eliza_demo"));
+    expect(run(o => ieshaDemo(o, feed, new PyRandom(0)))).toBe(T("chat_iesha_demo"));
+    expect(run(o => rudeDemo(o, feed, new PyRandom(0)))).toBe(T("chat_rude_demo"));
+    expect(run(o => suntsuDemo(o, feed, new PyRandom(0)))).toBe(T("chat_suntsu_demo"));
+    expect(run(o => zenDemo(o, feed, new PyRandom(0)))).toBe(T("chat_zen_demo"));
+  });
 });
 
 describe("util.demo option surface", () => {

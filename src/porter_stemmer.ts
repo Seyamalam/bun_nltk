@@ -27,3 +27,7 @@ export class PorterStemmer {
     return porterNltk(token, this.modeId, to_lowercase);
   }
 }
+
+/** nltk.stem.porter.demo — real treebank demo lives in demos.ts (call-time ref,
+ * safe across the demos→porter_stemmer import edge). */
+export { porterDemo as demo } from "./demos";

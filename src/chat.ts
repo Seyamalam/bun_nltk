@@ -1,5 +1,14 @@
 // nltk.chat — portable chatbots (Eliza-style regex/respond engine).
 // Pair/response tables are copied verbatim from NLTK 3.10.3 nltk.chat.*.
+import { PyRandom } from "./py_random";
+
+/** RNG surface for Chat.respond — Python's `random.choice` draws from the
+ * module-global `random` instance; pass a seeded PyRandom for deterministic
+ * transcripts. A legacy `() => number` is treated as a uniform float source. */
+export type ChatRng = PyRandom | (() => number);
+
+// Stand-in for Python's entropy-seeded module-global `random`.
+const moduleRandom = new PyRandom((((Date.now() >>> 0) ^ (Math.floor(Math.random() * 0x100000000))) >>> 0));
 
 export type ChatPairs = [pattern: string, responses: string[]][];
 export type ChatReflections = Record<string, string>;
@@ -22,6 +31,29 @@ export const reflections: ChatReflections = {
   "yours": "mine",
   "you": "me",
   "me": "you"
+};
+
+/** nltk.chat.iesha.reflections — iesha's own teen-slang substitution table. */
+export const iesha_reflections: ChatReflections = {
+  "am": "r",
+  "was": "were",
+  "i": "u",
+  "i'd": "u'd",
+  "i've": "u'v",
+  "ive": "u'v",
+  "i'll": "u'll",
+  "my": "ur",
+  "are": "am",
+  "you're": "im",
+  "you've": "ive",
+  "you'll": "i'll",
+  "your": "my",
+  "yours": "mine",
+  "you": "me",
+  "u": "me",
+  "ur": "my",
+  "urs": "mine",
+  "me": "u"
 };
 
 /** nltk.chat.eliza pair table. */
@@ -972,12 +1004,14 @@ export class Chat {
   private _pairs: [RegExp, string[]][];
   private _reflections: ChatReflections;
   private _regex: RegExp;
-  private _rng: () => number;
+  private _rng: { randbelow(n: number): number };
 
-  constructor(pairs: ChatPairs | Iterable<readonly [string, readonly string[]]>, refl: ChatReflections = {}, rng: () => number = Math.random) {
+  constructor(pairs: ChatPairs | Iterable<readonly [string, readonly string[]]>, refl: ChatReflections = {}, rng: ChatRng = moduleRandom) {
     this._pairs = [...pairs].map(([x, y]) => [compilePattern(x), [...y]]);
     this._reflections = refl;
-    this._rng = rng;
+    this._rng = typeof rng === "function"
+      ? { randbelow: (n: number) => Math.floor(rng() * n) }
+      : rng;
     const sorted = Object.keys(refl).sort((a, b) => b.length - a.length);
     const esc = sorted.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
     this._regex = new RegExp(`\\b(${esc.join("|")})\\b`, "i");
@@ -1003,7 +1037,7 @@ export class Chat {
     for (const [pattern, responses] of this._pairs) {
       const match = pyMatch(pattern, str);
       if (match) {
-        let resp = responses[Math.floor(this._rng() * responses.length)]!;
+        let resp = responses[this._rng.randbelow(responses.length)]!;
         resp = this._wildcards(resp, match);
         if (resp.endsWith("?.")) resp = resp.slice(0, -2) + ".";
         if (resp.endsWith("??")) resp = resp.slice(0, -2) + "?";
@@ -1013,15 +1047,19 @@ export class Chat {
     return undefined;
   }
 
-  /** Chat.converse — interactive loop. `input` supplies successive user lines;
-   * return undefined/null to signal EOF (Python EOFError prints the quit word). */
-  converse(quit = "quit", input?: () => string | null | undefined, output: (s: string) => void = (s) => console.log(s)): void {
+  /** Chat.converse — interactive loop. `input` supplies successive user lines
+   * and receives the `">"` prompt (Python's `input(">")` writes the prompt to
+   * stdout itself, so prompt emission belongs to the input callback); return
+   * undefined/null to signal EOF (Python EOFError prints the quit word).
+   * `output` receives one Python print per call (a logical line, no newline). */
+  converse(quit = "quit", input?: (prompt?: string) => string | null | undefined, output: (s: string) => void = (s) => console.log(s)): void {
     let userInput = "";
     while (userInput !== quit) {
       userInput = quit;
-      const line = input ? input() : undefined;
+      const line = input ? input(">") : undefined;
       if (line === undefined || line === null) {
-        output(userInput);
+        // EOFError: print(user_input) — the quit word set before the read.
+        output("" + userInput);
       } else {
         userInput = line;
       }
@@ -1029,63 +1067,73 @@ export class Chat {
         while (userInput.endsWith("!") || userInput.endsWith(".")) {
           userInput = userInput.slice(0, -1);
         }
-        output(this.respond(userInput) as string);
+        output("" + this.respond(userInput));
       }
     }
   }
 }
 
-function makeChat(pairs: ChatPairs): Chat {
-  return new Chat(pairs, reflections);
+function makeChat(pairs: ChatPairs, rng?: ChatRng, refl: ChatReflections = reflections): Chat {
+  return rng === undefined ? new Chat(pairs, refl) : new Chat(pairs, refl, rng);
 }
 
-const banner = (name: string, lines: string[], output: (s: string) => void) => {
-  output("*".repeat(75));
-  output(name.padStart(Math.floor((75 + name.length) / 2)).padEnd(75));
-  output("*".repeat(75));
-  for (const l of lines) output(l);
-  output("*".repeat(75));
+type ChatOut = (s: string) => void;
+type ChatInput = (prompt?: string) => string | null | undefined;
+
+// Shared three-line preamble used by eliza/iesha/rude/suntsu.
+const CHAT_PREAMBLE = [
+  "Talk to the program by typing in plain English, using normal upper-",
+  'and lower-case letters and punctuation.  Enter "quit" when done.',
+  "=".repeat(72),
+];
+
+/** Python str.center(width) — extra pad goes left iff marg and width are odd. */
+const pyCenter = (s: string, width: number): string => {
+  const marg = width - s.length;
+  if (marg <= 0) return s;
+  const left = Math.floor(marg / 2) + ((marg & width) & 1);
+  return " ".repeat(left) + s + " ".repeat(marg - left);
 };
 
-/** nltk.chat.eliza.eliza_chat — banner + converse; input injectable (adapted). */
-export function eliza_chat(input?: () => string | null | undefined, output: (s: string) => void = (s) => console.log(s)): void {
-  banner("Eliza Chatbot!", [
-    '* Talk to the program by typing in plain English, using normal upper-',
-    "* and lower-case letters and punctuation.  Indicate the end of a sentence",
-    '* with a period.  Press "Enter" to begin the next input cycle.',
-    "* Type 'quit' when you have had enough.",
-  ], output);
+/** nltk.chat.eliza.eliza_chat — banner + converse; input/output injectable (adapted). */
+export function eliza_chat(input?: ChatInput, output: ChatOut = (s) => console.log(s), rng?: ChatRng): void {
+  output("Therapist\n---------");
+  for (const l of CHAT_PREAMBLE) output(l);
   output("Hello.  How are you feeling today?");
-  makeChat(eliza_pairs).converse("quit", input, output);
+  makeChat(eliza_pairs, rng).converse("quit", input, output);
 }
 
 /** nltk.chat.iesha.iesha_chat */
-export function iesha_chat(input?: () => string | null | undefined, output: (s: string) => void = (s) => console.log(s)): void {
-  banner("Iesha Chatbot!", ["* Type 'quit' when you have had enough."], output);
-  output("hi!! i'm iesha! who are u??");
-  makeChat(iesha_pairs).converse("quit", input, output);
+export function iesha_chat(input?: ChatInput, output: ChatOut = (s) => console.log(s), rng?: ChatRng): void {
+  output("Iesha the TeenBoT\n---------");
+  for (const l of CHAT_PREAMBLE) output(l);
+  output("hi!! i'm iesha! who r u??!");
+  makeChat(iesha_pairs, rng, iesha_reflections).converse("quit", input, output);
 }
 
 /** nltk.chat.rude.rude_chat */
-export function rude_chat(input?: () => string | null | undefined, output: (s: string) => void = (s) => console.log(s)): void {
-  banner("Rude Chatbot!", ["* Type 'quit' when you have had enough."], output);
-  output("What do you want, loser?");
-  makeChat(rude_pairs).converse("quit", input, output);
+export function rude_chat(input?: ChatInput, output: ChatOut = (s) => console.log(s), rng?: ChatRng): void {
+  for (const l of CHAT_PREAMBLE) output(l);
+  output("I suppose I should say hello.");
+  makeChat(rude_pairs, rng).converse("quit", input, output);
 }
 
 /** nltk.chat.suntsu.suntsu_chat */
-export function suntsu_chat(input?: () => string | null | undefined, output: (s: string) => void = (s) => console.log(s)): void {
-  banner("Suntsu Chatbot!", ["* Type 'quit' when you have had enough."], output);
-  makeChat(suntsu_pairs).converse("quit", input, output);
+export function suntsu_chat(input?: ChatInput, output: ChatOut = (s) => console.log(s), rng?: ChatRng): void {
+  for (const l of CHAT_PREAMBLE) output(l);
+  output("You seek enlightenment?");
+  makeChat(suntsu_pairs, rng).converse("quit", input, output);
 }
 
 /** nltk.chat.zen.zen_chat */
-export function zen_chat(input?: () => string | null | undefined, output: (s: string) => void = (s) => console.log(s)): void {
-  banner("Zen Chatbot!", [
-    '"Look beyond mere words and letters - look into your mind"',
-    "* Talk your way to truth with Zen Chatbot.",
-    "* Type 'quit' when you have had enough.",
-  ], output);
+export function zen_chat(input?: ChatInput, output: ChatOut = (s) => console.log(s), rng?: ChatRng): void {
+  output("*".repeat(75));
+  output(pyCenter("Zen Chatbot!", 75));
+  output("*".repeat(75));
+  output(pyCenter('"Look beyond mere words and letters - look into your mind"', 75));
+  output("* Talk your way to truth with Zen Chatbot.");
+  output("* Type 'quit' when you have had enough.");
+  output("*".repeat(75));
   output("Welcome, my child.");
-  makeChat(zen_pairs).converse("quit", input, output);
+  makeChat(zen_pairs, rng).converse("quit", input, output);
 }

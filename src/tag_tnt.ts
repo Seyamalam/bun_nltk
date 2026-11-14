@@ -658,11 +658,5 @@ export function basic_sent_chop<T extends string | readonly [string, string]>(
 }
 export const basicSentChop = basic_sent_chop;
 
-function corpusError(name: string): never {
-  throw new Error(`${name} requires the NLTK treebank corpus (nltk_data) which is not bundled.`);
-}
-
-/** nltk.tag.tnt.demo — corpus-bound demo; unsupported without nltk_data. */
-export function demo(_testSize = 1000): never { return corpusError("nltk.tag.tnt.demo"); }
-/** nltk.tag.tnt.demo_errors — corpus-bound demo; unsupported without nltk_data. */
-export function demo_errors(_limit = 25, _testSize = 1000): never { return corpusError("nltk.tag.tnt.demo_errors"); }
+/** nltk.tag.tnt.demo / demo_errors — real treebank demos live in demos.ts. */
+export { tntDemo as demo, tntDemoErrors as demo_errors } from "./demos";
