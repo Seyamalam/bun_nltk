@@ -17,10 +17,14 @@ function unavailable(name: string): never {
   throw new Error(`${name} requires Java/subprocess — not available in JS`);
 }
 
+export function java(..._a: unknown[]): never { return unavailable("internals.java"); }
 export function configJava(..._a: unknown[]): never { return unavailable("internals.config_java"); }
 export const config_java = configJava;
-export function java(..._a: unknown[]): never { return unavailable("internals.java"); }
-export class UntrustedJarError extends Error {}
+export function findJar(..._a: unknown[]): never { return unavailable("internals.find_jar"); }
+export const find_jar = findJar;
+export class UntrustedJarError extends Error {
+  constructor(message?: string) { super(message); this.name = "UntrustedJarError"; }
+}
 
 /** nltk.internals.ReadError — expected/position ValueError subclass. */
 export class ReadError extends Error {
@@ -420,8 +424,6 @@ export function findBinary(name: string, options: FindBinaryOptions = {}): strin
   return findBinaryIter(name, options).next().value;
 }
 export const find_binary = findBinary;
-export function findJar(..._a: unknown[]): never { return unavailable("internals.find_jar"); }
-export const find_jar = findJar;
 export function sliceBounds(_seq: unknown, _slice: unknown): [number, number] { return [0, 0]; }
 export const slice_bounds = sliceBounds;
 

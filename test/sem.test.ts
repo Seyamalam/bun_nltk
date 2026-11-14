@@ -3,7 +3,7 @@ import {
   read_valuation, is_rel, set2rel, arity, demo_model0, toCnf, LinearLogicParser,
   list2sym, class_abbrev, rtuple, fromstring, skolemize, SemError, Undefined,
   resetUniqueVariableCounter,
-  CooperStore, parse_with_bindops, Boxer, BoxerDrs, DrsDrawer, foldemo,
+  CooperStore, parse_with_bindops, Boxer, DrsDrawer, foldemo,
   hole_readings, Constants, read_sents, interpret_sents,
 } from "../index";
 

@@ -22,20 +22,14 @@ export function open_datafile(path: PathPointer, fileName = "", encoding: string
   return openDatafile(path, fileName, encoding);
 }
 
-/** nltk.classify.maxent.call_megam — requires the external megam binary. */
-export function call_megam(_args: string[]): never {
-  throw new Error("call_megam() requires the external megam binary, which is not bundled");
-}
-
-/** nltk.classify.maxent.call_tadm — requires the external tadm binary. */
-export function call_tadm(_args: string[]): never {
-  throw new Error("call_tadm() requires the external tadm binary, which is not bundled");
-}
-
-/** nltk.classify.maxent.train_maxent_classifier_with_megam — external binary path. */
-export function train_maxent_classifier_with_megam(): never {
-  throw new Error("train_maxent_classifier_with_megam() requires the external megam binary, which is not bundled");
-}
+/** nltk.classify.maxent.call_megam / call_tadm / train_maxent_classifier_with_megam —
+ * real subprocess adapters in ext_subprocess.ts (env-resolved binaries; Python-exact
+ * errors when missing). */
+export {
+  call_megam,
+  call_tadm,
+  train_maxent_classifier_with_megam,
+} from "./ext_subprocess";
 
 /** nltk.classify.maxent file/param IO — real implementations in maxent_nltk. */
 export {

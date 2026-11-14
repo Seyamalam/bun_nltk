@@ -551,7 +551,8 @@ export { brill24, fntbl37, nltkdemo18, nltkdemo18plus, describe_template_sets, d
 export { logsumexp2, demo as hmmDemo, load_pos, demo_pos, demo_bw, demo_pos_bw } from "./src/hmm_tagger";
 export { basic_sent_chop, basicSentChop, demo as tntDemo, demo_errors } from "./src/tag_tnt";
 export { RandomProbDist } from "./src/probability";
-export { overridden, find_file, find_jar, java, config_java } from "./src/internals";
+export { overridden, find_file } from "./src/internals";
+export { find_jar, java, config_java } from "./src/ext_subprocess";
 export { normalizeResourceUrl as normalize_resource_url } from "./src/data";
 export { StanfordTokenizer, StanfordSegmenter, ReppTokenizer } from "./src/tokenize_wrappers";
 export { BllipParser, CoreNLPParser, MaltParser, StanfordParser, TransitionParser, ShiftReduceParser } from "./src/parse_wrappers";

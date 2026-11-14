@@ -10,10 +10,7 @@ function externalError(name: string): never {
   throw new Error(`${name} requires an external tool (Boxer / Prolog / Cooper storage) not available in the JS runtime.`);
 }
 
-export class Boxer {
-  constructor(..._args: unknown[]) { void _args; }
-  interpret(_sentence: string): unknown { return externalError("Boxer.interpret"); }
-}
+export { Boxer } from "./ext_subprocess";
 export function cooperStore(semrep: unknown, store?: unknown): unknown {
   // Adapted helper: build a CooperStore from a semantic rep + optional store list.
   const fs = new FeatDict({ CORE: semrep as FeatValue, STORE: (store as FeatValue) ?? new FeatList() });

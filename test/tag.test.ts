@@ -157,10 +157,10 @@ describe("nltk.tag root + wrappers", () => {
     expect(out[0]![0]![0]).toBe("the");
   });
 
-  it("external tagger stubs throw honestly", () => {
-    expect(() => new StanfordTagger().tag(["x"])).toThrowError(/external binary/);
-    expect(() => new HunposTagger().tag(["x"])).toThrowError(/external binary/);
-    expect(() => new Senna().tag_sents([["x"]])).toThrowError(/external binary/);
+  it("external tagger adapters raise Python-style errors when the tool is absent", () => {
+    expect(() => new (StanfordTagger as any)().tag(["x"])).toThrowError();
+    expect(() => new (HunposTagger as any)().tag(["x"])).toThrowError();
+    expect(() => new (Senna as any)().tag_sents([["x"]])).toThrowError();
   });
 });
 

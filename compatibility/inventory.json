@@ -193,7 +193,7 @@
    "MacIntyreContractions": "src/tokenizers_treebank.ts",
    "Mace": "src/inference_mace.ts",
    "MaceCommand": "src/inference_mace.ts",
-   "MaltParser": "src/parse_wrappers.ts",
+   "MaltParser": "src/ext_subprocess.ts",
    "MaxentClassifier": "src/classifier_compat.ts",
    "MaxentFeatureEncodingI": "src/maxent_nltk.ts",
    "MergeRule": "src/chunk_nltk.ts",
@@ -412,8 +412,8 @@
    "calculate_empirical_fcount": "src/maxent_nltk.ts",
    "calculate_estimated_fcount": "src/maxent_nltk.ts",
    "calculate_nfmap": "src/maxent_nltk.ts",
-   "call_megam": "src/platform_helpers.ts",
-   "call_tadm": "src/platform_helpers.ts",
+   "call_megam": "src/ext_subprocess.ts",
+   "call_tadm": "src/ext_subprocess.ts",
    "casualTokenize": "src/tokenizers.ts",
    "casual_tokenize": "src/tokenizers.ts",
    "ccgDemo": "src/ccg_chart.ts",
@@ -708,7 +708,7 @@
    "trainNgramLanguageModel": "src/lm.ts",
    "train_maxent_classifier_with_gis": "src/maxent_nltk.ts",
    "train_maxent_classifier_with_iis": "src/maxent_nltk.ts",
-   "train_maxent_classifier_with_megam": "src/platform_helpers.ts",
+   "train_maxent_classifier_with_megam": "src/ext_subprocess.ts",
    "transitiveClosure": "src/grammar.ts",
    "treebankWordTokenize": "src/tokenizers.ts",
    "trigrams": "src/nltk_compat.ts",
@@ -741,15 +741,15 @@
    "ConfusionMatrix": "src/metrics.ts",
    "HiddenMarkovModelTagger": "src/hmm_tagger.ts",
    "HiddenMarkovModelTrainer": "src/hmm_tagger.ts",
-   "HunposTagger": "src/tag_wrappers.ts",
+   "HunposTagger": "src/ext_subprocess.ts",
    "RandomProbDist": "src/probability.ts",
-   "Senna": "src/tag_wrappers.ts",
-   "SennaChunkTagger": "src/tag_wrappers.ts",
-   "SennaNERTagger": "src/tag_wrappers.ts",
-   "SennaTagger": "src/tag_wrappers.ts",
-   "StanfordNERTagger": "src/tag_wrappers.ts",
-   "StanfordPOSTagger": "src/tag_wrappers.ts",
-   "StanfordTagger": "src/tag_wrappers.ts",
+   "Senna": "src/ext_subprocess.ts",
+   "SennaChunkTagger": "src/ext_subprocess.ts",
+   "SennaNERTagger": "src/ext_subprocess.ts",
+   "SennaTagger": "src/ext_subprocess.ts",
+   "StanfordNERTagger": "src/ext_subprocess.ts",
+   "StanfordPOSTagger": "src/ext_subprocess.ts",
+   "StanfordTagger": "src/ext_subprocess.ts",
    "TnT": "src/tag_tnt.ts",
    "basic_sent_chop": "src/tag_tnt.ts",
    "brill24": "src/tag_brill_templates.ts",
@@ -759,10 +759,10 @@
    "demo_pos_bw": "src/hmm_tagger.ts",
    "describe_template_sets": "src/tag_brill_templates.ts",
    "find_file": "src/internals.ts",
-   "find_jar": "src/internals.ts",
+   "find_jar": "src/ext_subprocess.ts",
    "fntbl37": "src/tag_brill_templates.ts",
    "hmmDemo": "src/hmm_tagger.ts",
-   "java": "src/internals.ts",
+   "java": "src/ext_subprocess.ts",
    "load_pos": "src/hmm_tagger.ts",
    "logsumexp2": "src/hmm_tagger.ts",
    "nltkdemo18": "src/tag_brill_templates.ts",
@@ -777,7 +777,7 @@
    "tuple2str": "src/tag_util.ts",
    "untag": "src/hmm_tagger.ts",
    "Assignment": "src/sem_logic.ts",
-   "Boxer": "src/sem_wrappers.ts",
+   "Boxer": "src/ext_subprocess.ts",
    "DRS": "src/drt.ts",
    "DrtExpression": "src/drt.ts",
    "FStructure": "src/sem_wrappers.ts",
@@ -891,10 +891,10 @@
    "demo_legacy_grammar": "src/sem_util.ts",
    "demo_model0": "src/sem_util.ts",
    "read_sents": "src/sem_util.ts",
-   "BllipParser": "src/parse_wrappers.ts",
+   "BllipParser": "src/ext_subprocess.ts",
    "BottomUpProbabilisticChartParser": "src/parse_gaps.ts",
-   "CoreNLPDependencyParser": "src/parse_gaps.ts",
-   "CoreNLPParser": "src/parse_wrappers.ts",
+   "CoreNLPDependencyParser": "src/ext_subprocess.ts",
+   "CoreNLPParser": "src/ext_subprocess.ts",
    "DependencyEvaluator": "src/parse_evaluate.ts",
    "DependencyGraph": "src/dependency_graph.ts",
    "EarleyChartParser": "src/parser_tagger_compat.ts",
@@ -929,18 +929,18 @@
    "UnsortedChartParser": "src/parse_gaps.ts",
    "ViterbiParser": "src/parser_tagger_compat.ts",
    "extract_test_sentences": "src/parse_gaps.ts",
-   "CoreNLPServer": "src/parse_gaps.ts",
-   "CoreNLPServerError": "src/parse_gaps.ts",
-   "GenericCoreNLPParser": "src/parse_gaps.ts",
-   "config_java": "src/internals.ts",
-   "find_jar_iter": "src/parse_gaps.ts",
+   "CoreNLPServer": "src/ext_subprocess.ts",
+   "CoreNLPServerError": "src/ext_subprocess.ts",
+   "GenericCoreNLPParser": "src/ext_subprocess.ts",
+   "config_java": "src/ext_subprocess.ts",
+   "find_jar_iter": "src/ext_subprocess.ts",
    "transform": "src/parse_gaps.ts",
-   "try_port": "src/parse_gaps.ts",
+   "try_port": "src/ext_subprocess.ts",
    "DependencyGraphError": "src/dependency_graph.ts",
    "conll_demo": "src/parse_gaps.ts",
    "conll_file_demo": "src/parse_gaps.ts",
    "cycle_finding_demo": "src/parse_gaps.ts",
-   "dot2img": "src/parse_gaps.ts",
+   "dot2img": "src/ext_subprocess.ts",
    "malt_demo": "src/parse_gaps.ts",
    "CompleteFundamentalRule": "src/parse_gaps.ts",
    "CompleterRule": "src/parse_gaps.ts",
@@ -969,11 +969,11 @@
    "unify": "src/featstruct.ts",
    "generate": "src/parse_generate.ts",
    "ZipFilePathPointer": "src/parse_gaps.ts",
-   "find_dir": "src/parse_gaps.ts",
-   "find_jars_within_path": "src/parse_gaps.ts",
-   "find_malt_model": "src/parse_gaps.ts",
-   "find_maltparser": "src/parse_gaps.ts",
-   "malt_regex_tagger": "src/parse_gaps.ts",
+   "find_dir": "src/ext_subprocess.ts",
+   "find_jars_within_path": "src/ext_subprocess.ts",
+   "find_malt_model": "src/ext_subprocess.ts",
+   "find_maltparser": "src/ext_subprocess.ts",
+   "malt_regex_tagger": "src/ext_subprocess.ts",
    "taggedsents_to_conll": "src/parse_conll.ts",
    "DemoScorer": "src/parse_gaps.ts",
    "DependencyScorerI": "src/parse_gaps.ts",
@@ -2527,6 +2527,17 @@
    "anchor": "Differential test for nltk.downloader vs the pinned NLTK 3.10.3 oracle",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned against a private 0o700 file:// fixture: index.xml parsing, Package/Collection attrs+repr, status flags, download() progress lines byte-for-byte, md5/sha256 hexdigests, unzip+_unzip_iter incl. pathsec traversal/bomb guards, build_index, force/halt_on_error/raise_on_error, collection recursion, self-deadlock y-retry timeout, _errors sticky flag, zombie lock protocol."
+  },
+  {
+   "id": "gap-adapters-differential",
+   "kind": "differential",
+   "files": [
+    "test/gap_adapters.test.ts",
+    "test/gap_adapters_oracle.py"
+   ],
+   "anchor": "Differential test: external-tool gap adapters vs pinned NLTK 3.10.3 oracle",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned optional-dependency adapters: internals.java/config_java/find_jar/find_jar_iter/find_jars_within_path, jar-sandbox UntrustedJarError, Stanford POSTagger/NERTagger cmd+tag parsing, HunposTagger, Senna/SennaTagger/SennaChunkTagger/SennaNERTagger env+cmd+_map, MaltParser jar resolution+conll parse, BllipParser ImportError, CoreNLPServer spawn+GenericCoreNLPParser HTTP client (mock server), corenlp JSON strict/loose, dependencygraph dot2img, Boxer binary call, call_megam/call_tadm/write_megam_file/train_maxent_classifier_with_megam."
   }
  ],
  "signatureBindings": [
@@ -9375,58 +9386,62 @@
    "exports": [
     "call_megam"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function call_megam"
+     "file": "src/ext_subprocess.ts",
+     "anchor": "export function callMegam"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "NLTK call_megam is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.classify.maxent.call_tadm",
    "exports": [
     "call_tadm"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function call_tadm"
+     "file": "src/ext_subprocess.ts",
+     "anchor": "export function callTadm"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "NLTK call_tadm is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.classify.maxent.demo",
@@ -9648,29 +9663,31 @@
    "exports": [
     "train_maxent_classifier_with_megam"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function train_maxent_classifier_with_megam"
+     "file": "src/ext_subprocess.ts",
+     "anchor": "export function trainMaxentClassifierWithMegam"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "NLTK train_maxent_classifier_with_megam is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.classify.maxent.write_megam_file",
@@ -26191,10 +26208,10 @@
     "MaltParser"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class MaltParser"
     }
    ],
@@ -26210,15 +26227,15 @@
     ]
    },
    "evidence": [
-    "inference-differential"
+    "gap-adapters-differential"
    ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "parse() is a documented throwing stub: requires the external MaltParser jar."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "nltk.parse.malt.MaltParser re-exported through discourse; external-binary stub."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.inference.discourse.load_fol",
@@ -30923,29 +30940,31 @@
    "exports": [
     "HunposTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class HunposTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: hunpos-tag binary required; not an external-integration."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.NgramTagger",
@@ -31065,87 +31084,93 @@
    "exports": [
     "SennaChunkTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class SennaChunkTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: SENNA executable required."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.SennaNERTagger",
    "exports": [
     "SennaNERTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class SennaNERTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: SENNA executable required."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.SennaTagger",
    "exports": [
     "SennaTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class SennaTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: SENNA executable required."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.SequentialBackoffTagger",
@@ -31187,87 +31212,93 @@
    "exports": [
     "StanfordNERTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class StanfordNERTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: Stanford NER jar required."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.StanfordPOSTagger",
    "exports": [
     "StanfordPOSTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class StanfordPOSTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: Stanford POS tagger jar required."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.StanfordTagger",
    "exports": [
     "StanfordTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class StanfordTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: Stanford tagger jar required."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.TaggerI",
@@ -33243,29 +33274,31 @@
    "exports": [
     "HunposTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class HunposTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: hunpos-tag binary required; close()/executable paths absent."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.hunpos.TaggerI",
@@ -33493,203 +33526,217 @@
    "exports": [
     "Senna"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class Senna"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: SENNA executable required."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.senna.SennaChunkTagger",
    "exports": [
     "SennaChunkTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class SennaChunkTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: SENNA executable required; bio_to_chunks absent."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.senna.SennaNERTagger",
    "exports": [
     "SennaNERTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class SennaNERTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: SENNA executable required."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.senna.SennaTagger",
    "exports": [
     "SennaTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class SennaTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: SENNA executable required."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.stanford.StanfordNERTagger",
    "exports": [
     "StanfordNERTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class StanfordNERTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: Stanford NER jar required."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.stanford.StanfordPOSTagger",
    "exports": [
     "StanfordPOSTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class StanfordPOSTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: Stanford POS jar required."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.stanford.StanfordTagger",
    "exports": [
     "StanfordTagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/tag_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class StanfordTagger"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Throwing wrapper: Stanford tagger jar required; parse_output absent."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.stanford.TaggerI",
@@ -33797,29 +33844,31 @@
    "exports": [
     "java"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/internals.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export function java"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Java subprocess stub throws; no JVM in the JS runtime."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.tag.tnt.ConditionalFreqDist",
@@ -34222,11 +34271,11 @@
    "exports": [
     "Boxer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class Boxer"
     }
    ],
@@ -34234,17 +34283,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Boxer requires the external CandC/Boxer pipeline; stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Boxer requires the external CandC/Boxer pipeline; stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Boxer requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.sem.DRS",
@@ -35023,11 +35074,11 @@
    "exports": [
     "Boxer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class Boxer"
     }
    ],
@@ -35035,17 +35086,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Boxer requires the external CandC/Boxer pipeline; stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Boxer requires the external CandC/Boxer pipeline; stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "Boxer requires the external CandC/Boxer pipeline; stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.sem.boxer.BoxerCard",
@@ -38284,10 +38337,10 @@
     "MaltParser"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class MaltParser"
     }
    ],
@@ -38298,14 +38351,16 @@
      "NLTK re-exports MaltParser from nltk.parse.malt; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports MaltParser from nltk.parse.malt; mapped to the shared implementation."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "NLTK re-exports MaltParser from nltk.parse.malt; mapped to the shared implementation."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.sem.drt_glue_demo.RegexpTagger",
@@ -41907,11 +41962,11 @@
    "exports": [
     "BllipParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class BllipParser"
     }
    ],
@@ -41919,17 +41974,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BllipParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BllipParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "BllipParser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.BottomUpChartParser",
@@ -42062,11 +42119,11 @@
    "exports": [
     "CoreNLPDependencyParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class CoreNLPDependencyParser"
     }
    ],
@@ -42074,28 +42131,30 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "CoreNLPDependencyParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CoreNLPDependencyParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "CoreNLPDependencyParser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.CoreNLPParser",
    "exports": [
     "CoreNLPParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class CoreNLPParser"
     }
    ],
@@ -42103,17 +42162,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "CoreNLPParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CoreNLPParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "CoreNLPParser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.DependencyEvaluator",
@@ -42847,11 +42908,11 @@
    "exports": [
     "MaltParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class MaltParser"
     }
    ],
@@ -42859,17 +42920,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "MaltParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "MaltParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "MaltParser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.NaiveBayesDependencyScorer",
@@ -43542,11 +43605,11 @@
    "exports": [
     "BllipParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class BllipParser"
     }
    ],
@@ -43554,28 +43617,30 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "BllipParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "BllipParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "BllipParser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.corenlp.CoreNLPDependencyParser",
    "exports": [
     "CoreNLPDependencyParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class CoreNLPDependencyParser"
     }
    ],
@@ -43583,28 +43648,30 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "CoreNLPDependencyParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CoreNLPDependencyParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "CoreNLPDependencyParser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.corenlp.CoreNLPParser",
    "exports": [
     "CoreNLPParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class CoreNLPParser"
     }
    ],
@@ -43612,28 +43679,30 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "CoreNLPParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CoreNLPParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "CoreNLPParser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.corenlp.CoreNLPServer",
    "exports": [
     "CoreNLPServer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class CoreNLPServer"
     }
    ],
@@ -43641,17 +43710,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "CoreNLPServer: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "CoreNLPServer: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "CoreNLPServer: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.corenlp.CoreNLPServerError",
@@ -43662,7 +43733,7 @@
    "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class CoreNLPServerError"
     }
    ],
@@ -43720,11 +43791,11 @@
    "exports": [
     "GenericCoreNLPParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class GenericCoreNLPParser"
     }
    ],
@@ -43732,17 +43803,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "GenericCoreNLPParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "GenericCoreNLPParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "GenericCoreNLPParser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.corenlp.ParserI",
@@ -43866,7 +43939,7 @@
     "config_java"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/internals.ts",
@@ -43880,43 +43953,47 @@
      "NLTK re-exports config_java from nltk.internals; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports config_java from nltk.internals; mapped to the shared implementation."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "NLTK re-exports config_java from nltk.internals; mapped to the shared implementation."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.corenlp.find_jar_iter",
    "exports": [
     "find_jar_iter"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function find_jar_iter"
+     "file": "src/ext_subprocess.ts",
+     "anchor": "export const find_jar_iter"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "find_jar_iter: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "find_jar_iter: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "find_jar_iter: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.corenlp.java",
@@ -43924,7 +44001,7 @@
     "java"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/internals.ts",
@@ -43938,14 +44015,16 @@
      "NLTK re-exports java from nltk.internals; mapped to the shared implementation."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "NLTK re-exports java from nltk.internals; mapped to the shared implementation."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "NLTK re-exports java from nltk.internals; mapped to the shared implementation."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.corenlp.transform",
@@ -43983,29 +44062,31 @@
    "exports": [
     "try_port"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function try_port"
+     "file": "src/ext_subprocess.ts",
+     "anchor": "export function tryPort"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "try_port: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "try_port: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "try_port: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.dependencygraph.DependencyGraph",
@@ -44237,11 +44318,11 @@
    "exports": [
     "dot2img"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export function dot2img"
     }
    ],
@@ -44249,17 +44330,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "dot2img: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "dot2img: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "dot2img: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.dependencygraph.find_binary",
@@ -47331,11 +47414,11 @@
    "exports": [
     "MaltParser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_wrappers.ts",
+     "file": "src/ext_subprocess.ts",
      "anchor": "export class MaltParser"
     }
    ],
@@ -47343,17 +47426,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "MaltParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "MaltParser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "MaltParser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.malt.ParserI",
@@ -47389,11 +47474,11 @@
    "exports": [
     "ZipFilePathPointer"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
+     "file": "src/data.ts",
      "anchor": "export class ZipFilePathPointer"
     }
    ],
@@ -47401,17 +47486,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "ZipFilePathPointer: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "ZipFilePathPointer: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "ZipFilePathPointer: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.malt.find_dir",
@@ -47480,116 +47567,124 @@
    "exports": [
     "find_jars_within_path"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function find_jars_within_path"
+     "file": "src/ext_subprocess.ts",
+     "anchor": "export function findJarsWithinPath"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "find_jars_within_path: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "find_jars_within_path: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "find_jars_within_path: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.malt.find_malt_model",
    "exports": [
     "find_malt_model"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function find_malt_model"
+     "file": "src/ext_subprocess.ts",
+     "anchor": "export function findMaltModel"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "find_malt_model: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "find_malt_model: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "find_malt_model: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.malt.find_maltparser",
    "exports": [
     "find_maltparser"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function find_maltparser"
+     "file": "src/ext_subprocess.ts",
+     "anchor": "export function findMaltparser"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "find_maltparser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "find_maltparser: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "find_maltparser: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.malt.malt_regex_tagger",
    "exports": [
     "malt_regex_tagger"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function malt_regex_tagger"
+     "file": "src/ext_subprocess.ts",
+     "anchor": "export function maltRegexTagger"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "malt_regex_tagger: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "malt_regex_tagger: external-binary/server-bound or interactive demo; honest stub throws."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "malt_regex_tagger: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.parse.malt.taggedsents_to_conll",
@@ -96047,11 +96142,11 @@
     "find_jar_iter"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function find_jar_iter(): never { return unsupported(\"find_jar_iter\", EXT"
+     "file": "src/ext_subprocess.ts",
+     "anchor": "export const find_jar_iter"
     }
    ],
    "signatures": {
@@ -96061,14 +96156,16 @@
      "Existing implementation re-exported through this corpus module."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Covered by the implementation module\u2019s own tests."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "nltk.internals.find_jar_iter re-exports an existing implementation (corpus module alias)."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.internals.find_jars_within_path",
@@ -96076,11 +96173,11 @@
     "find_jars_within_path"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function find_jars_within_path(): never { return unsupported(\"find_jars_w"
+     "file": "src/ext_subprocess.ts",
+     "anchor": "export function findJarsWithinPath"
     }
    ],
    "signatures": {
@@ -96090,14 +96187,16 @@
      "Existing implementation re-exported through this corpus module."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-adapters-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Covered by the implementation module\u2019s own tests."
+     "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
     ]
    },
-   "notes": "nltk.internals.find_jars_within_path re-exports an existing implementation (corpus module alias)."
+   "notes": "Optional-dependency adapter: real subprocess/HTTP client, Python-exact errors when the tool is absent."
   },
   {
    "target": "nltk.internals.import_from_stdlib",

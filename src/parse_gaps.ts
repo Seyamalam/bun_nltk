@@ -11,9 +11,7 @@ function unsupported(name: string, why: string): never {
   throw pyError("NotImplementedError", `${name}: ${why}`);
 }
 
-export class CoreNLPServerError extends Error {
-  constructor(message: string) { super(message); this.name = "CoreNLPServerError"; }
-}
+export { CoreNLPServerError } from "./ext_subprocess";
 
 // Feature-chart machinery ported to parse_feature.ts (FeatStruct internals in
 // featstruct.ts); names stay routed through this module so reviewed
@@ -64,29 +62,26 @@ export {
 
 export { SteppingRecursiveDescentParser, SteppingShiftReduceParser } from "./parse_stepping";
 
-const EXT_WHY = "requires an external binary/server (CoreNLP, MaltParser), unavailable in the JS runtime";
-export class CoreNLPServer { constructor() { unsupported("CoreNLPServer", EXT_WHY); } }
-export class CoreNLPDependencyParser { constructor() { unsupported("CoreNLPDependencyParser", EXT_WHY); } }
-export class GenericCoreNLPParser { constructor() { unsupported("GenericCoreNLPParser", EXT_WHY); } }
+// Optional-dependency adapters in ext_subprocess.ts: resolve the tool via
+// env/config and spawn it; raise Python-exact LookupError/OSError when absent.
+export {
+  CoreNLPServer, CoreNLPDependencyParser, GenericCoreNLPParser,
+  find_jar_iter, try_port, find_dir, find_jars_within_path,
+  find_malt_model, find_maltparser, malt_regex_tagger, dot2img,
+} from "./ext_subprocess";
+
 export { ZipFilePathPointer as ZipFilePathPointerImpl } from "./data";
 import { ZipFilePathPointer as DataZipFilePathPointer } from "./data";
 /** Real nltk.data.ZipFilePathPointer (re-exported to keep reviewed provenance). */
 export class ZipFilePathPointer extends DataZipFilePathPointer {}
-export function find_jar_iter(): never { return unsupported("find_jar_iter", EXT_WHY); }
-export function try_port(): never { return unsupported("try_port", EXT_WHY); }
 export { transform } from "./parse_stepping";
-export function find_dir(): never { return unsupported("find_dir", EXT_WHY); }
-export function find_jars_within_path(): never { return unsupported("find_jars_within_path", EXT_WHY); }
-export function find_malt_model(): never { return unsupported("find_malt_model", EXT_WHY); }
-export function find_maltparser(): never { return unsupported("find_maltparser", EXT_WHY); }
-export function malt_regex_tagger(): never { return unsupported("malt_regex_tagger", EXT_WHY); }
 
 const DEMO_WHY = "interactive demo or corpus-bound helper; not applicable to the TS runtime contract";
+const EXT_WHY = "requires an external binary (MaltParser), unavailable in the JS runtime";
 export function run_profile(): never { return unsupported("run_profile", DEMO_WHY); }
 export function conll_demo(): never { return unsupported("conll_demo", DEMO_WHY); }
 export function conll_file_demo(): never { return unsupported("conll_file_demo", DEMO_WHY); }
 export function cycle_finding_demo(): never { return unsupported("cycle_finding_demo", DEMO_WHY); }
-export function dot2img(): never { return unsupported("dot2img", "requires graphviz dot binary"); }
 export function malt_demo(): never { return unsupported("malt_demo", EXT_WHY); }
 export function hall_demo(): never { return unsupported("hall_demo", DEMO_WHY); }
 export function nonprojective_conll_parse_demo(): never { return unsupported("nonprojective_conll_parse_demo", DEMO_WHY); }

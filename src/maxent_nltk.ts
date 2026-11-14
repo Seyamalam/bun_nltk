@@ -7,6 +7,13 @@ import { ClassifierI } from "./api_interfaces.ts";
 import { ClassifierBasedPOSTagger } from "./sequential_taggers.ts";
 import { find } from "./data.ts";
 
+/** Late-bound external trainers — ext_subprocess registers its megam adapter
+ * here at module init, keeping this module free of the import cycle
+ * (ext_subprocess already imports ConditionalExponentialClassifier). */
+export const _externalMaxentTrainers: {
+  megam: ((trainToks: unknown, options: Record<string, unknown>) => unknown) | null;
+} = { megam: null };
+
 export type MaxentEncodedVector = Array<[number, number]>;
 export interface MaxentEncodingLike {
   encode(featureset: MaxentFeatureset, label: string): MaxentEncodedVector;
@@ -411,7 +418,11 @@ export class ConditionalExponentialClassifier extends ClassifierI<MaxentFeatures
       return train_maxent_classifier_with_gis(train_toks, { trace, encoding, labels, ...cutoffs });
     }
     if (alg === "megam") {
-      throw new Error("train_maxent_classifier_with_megam() requires the external megam binary, which is not bundled");
+      const trainer = _externalMaxentTrainers.megam;
+      if (!trainer) {
+        throw new Error("train_maxent_classifier_with_megam() requires the external megam binary, which is not bundled");
+      }
+      return trainer([...train_toks], { trace, encoding: encoding as BinaryMaxentFeatureEncoding | null, labels }) as ConditionalExponentialClassifier;
     }
     throw new Error(`Unknown algorithm ${algorithm}`);
   }
