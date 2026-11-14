@@ -2,7 +2,7 @@
 // The oracle builds a private local data-server tree (file:// URLs only — no
 // real network) under a shared tmp root, records scenario output to JSON, and
 // this test replays the identical scenario sequence against the same files.
-import { describe, expect, test } from "bun:test";
+import { afterAll, describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
@@ -48,8 +48,16 @@ function oracle(): Record<string, any> {
 const o = oracle();
 
 // Mirror nltk.data.path[0] = $NLTK_DATA for default_download_dir parity.
+// Both mutations are suite-visible — restore them so later files see a clean env.
+const _prevNltkData = process.env.NLTK_DATA;
 process.env.NLTK_DATA = ROOT;
 dataPath.unshift(ROOT);
+afterAll(() => {
+  if (_prevNltkData === undefined) delete process.env.NLTK_DATA;
+  else process.env.NLTK_DATA = _prevNltkData;
+  const i = dataPath.indexOf(ROOT);
+  if (i !== -1) dataPath.splice(i, 1);
+});
 
 // ---- oracle-equivalent helpers ---------------------------------------------
 

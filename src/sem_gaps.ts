@@ -32,8 +32,9 @@ export function test_draw(): never { return unsupported("test_draw", TK_WHY); }
 
 const DEMO_WHY = "interactive demo helper; not applicable to the TS runtime contract";
 export function decorator(): never { return unsupported("decorator", DEMO_WHY); }
-export function foldemo(): never { return unsupported("foldemo", DEMO_WHY); }
-export function folmodel(): never { return unsupported("folmodel", DEMO_WHY); }
-export function propdemo(): never { return unsupported("propdemo", DEMO_WHY); }
-export function satdemo(): never { return unsupported("satdemo", DEMO_WHY); }
+export {
+  foldemo, foldemo_ , folmodel, folmodel_, propdemo, propdemo_, satdemo, satdemo_,
+  prodemo, evaluateDemo, evaluate_demo, drtDemo, drt_demo, linearlogicDemo,
+  linearlogic_demo, cooperDemo, cooper_demo, semUtilDemo, util_demo,
+} from "./demos";
 export function demo_read_depgraph(): never { return unsupported("demo_read_depgraph", DEMO_WHY); }

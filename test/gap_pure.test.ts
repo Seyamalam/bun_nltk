@@ -1,0 +1,400 @@
+// Pure-gaps differential vs pinned NLTK 3.10.3 oracle (test/gap_pure_oracle.py).
+// Oracle output has nondeterministic bits — normalized here:
+//   * heap addresses      0x[0-9a-f]+        → 0xADDR
+//   * elapsed seconds     "N.NNNsec"/Time:   → normalized floats
+//   * python set ordering {...}              → member-sorted
+//   * misc.sort/kmeans(2) RNG                → shape/invariants only
+import { beforeAll, describe, expect, test } from "bun:test";
+import { spawnSync } from "node:child_process";
+import { join } from "node:path";
+
+import {
+  arityParseDemo, chartDemo, collect, conllDemo, conllFileDemo, cooperDemo,
+  cycleFindingDemo, demoEval, dependencygraphDemo, distanceDemo, drtDemo,
+  earleychartDemo, emDemo, evaluateDemo, featurechartDemo, foldemo, folmodel,
+  generateDemo, hallDemo, kmeansDemo, linearlogicDemo, nonprojectiveConllParseDemo,
+  nppDemo, pchartDemo, pdpDemo, prodemoMissing, projectiveProbParseDemo,
+  projectiveRuleParseDemo, propdemo, recursivedescentDemo, ruleBasedDemo,
+  satdemo, scoresDemo, semUtilDemo, shiftreduceDemo, sortDemo, viterbiDemo,
+} from "../src/demos";
+import {
+  BasicTweetHandler, LOCAL, LocalTimezoneOffsetWithUTC, PyRandom, TweetHandlerI,
+  findJarIter, findJar, findJarsWithinPath, findMaltModel, findMaltparser,
+  maltRegexTagger, outfWriterCompat, stanfordFindJar, tryPort,
+} from "../src/ext_pure";
+import { bots } from "../src/ext_pure";
+import { RegexpParser } from "../src/chunk_nltk";
+import { resetUniqueVariableCounter } from "../src/sem_logic";
+import { dataPath } from "../src/data";
+import { gunzipSync } from "node:zlib";
+import { mkdtempSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+
+const NLTK_DATA = process.env.NLTK_DATA ?? join(process.cwd(), ".cache/nltk-data");
+
+function oracle(): { out: Record<string, any>; errs: Record<string, string> } {
+  const res = spawnSync("python3", ["test/gap_pure_oracle.py"], {
+    encoding: "utf-8",
+    env: { ...process.env, NLTK_DATA },
+  });
+  if (res.status !== 0) throw new Error(`oracle failed: ${res.stderr}`);
+  return JSON.parse(res.stdout.trim().split("\n").pop()!);
+}
+
+// ---------- normalizers ----------
+
+/** Sort members of top-level {...} set literals (python hash order is unstable). */
+function normSets(s: string): string {
+  let res = "", i = 0;
+  while (i < s.length) {
+    if (s[i] === "{") {
+      let depth = 0, j = i;
+      for (; j < s.length; j++) {
+        if (s[j] === "{") depth++;
+        else if (s[j] === "}") { depth--; if (!depth) { j++; break; } }
+      }
+      if (depth === 0) {
+        const inner = s.slice(i + 1, j - 1);
+        // split top level commas (nesting in (), [] and {}); normalize each
+        // part recursively so nested sets sort too — python hash order varies.
+        const parts: string[] = [];
+        let d = 0, last = 0;
+        for (let k = 0; k <= inner.length; k++) {
+          const c = inner[k];
+          if (c === "(" || c === "[" || c === "{") d++;
+          else if (c === ")" || c === "]" || c === "}") d--;
+          if ((c === "," && d === 0) || k === inner.length) {
+            parts.push(normSets(inner.slice(last, k)));
+            last = k + 1;
+          }
+        }
+        if (parts.length > 1) { res += "{" + parts.map(p => p.trim()).sort().join(", ") + "}"; i = j; continue; }
+      }
+    }
+    res += s[i++];
+  }
+  return res;
+}
+
+function norm(s: string): string {
+  let t = s
+    .replace(/0x[0-9a-fA-F]+/g, "0xADDR")
+    // "parser:  0.123sec" / "Time: 0.123"
+    .replace(/(parser:)\s+[\d.]+sec/g, "$1 TIME")
+    .replace(/(Time: )[\d.eE+-]+/g, "$1TIME")
+    // pchart/viterbi summary tables: elapsed seconds column
+    .replace(/(Time \(secs\)\s+# Parses   Average P\(parse\)\n-+\n\s*)[\d.]+/g, "$1TIME")
+    .replace(/(\|\s*)[\d.]+(\s+\d+\s+[\d.eE+-]+)/g, "$1TIME$2")
+    // em loglikelihood: trailing digits diverge via LAPACK dgetri + libm pow
+    // internals (OpenBLAS/glibc vs our scalar port) — truncate to 13 decimals.
+    .replace(/(iteration; loglikelihood -?\d+\.\d{13})\d+/g, "$1");
+  // "* Parsing times" rows are sorted by real elapsed time — order is timing-dependent.
+  const rows = t.split("\n");
+  const isTimeRow = (l: string) => l.endsWith(" parser: TIME");
+  const sorted = rows.filter(isTimeRow).sort();
+  let ri = 0;
+  return normSets(rows.map((l) => (isTimeRow(l) ? sorted[ri++]! : l)).join("\n"));
+}
+
+/** Python err string "Name: ..." prefix compare. */
+function errName(s: string | null | undefined): string {
+  return s ? s.split(":")[0]! : "null";
+}
+
+function errWrap(f: () => unknown): { text: string; err: string | null } {
+  const c = collect();
+  try { f(); return { text: c.text(), err: null }; }
+  catch (e) {
+    const name = e instanceof Error ? e.name : "Error";
+    return { text: c.text(), err: name };
+  }
+}
+
+const O = oracle();
+// Demos load grammars/book_grammars via data.find — make the cache dir
+// discoverable regardless of which test file ran before us.
+if (!dataPath.includes(NLTK_DATA)) dataPath.push(NLTK_DATA);
+const T = (k: string) => norm(O.out[k]?.text ?? "");
+const E = (k: string) => O.errs[k] ?? undefined;
+
+// helper: fresh collector per call
+function run(f: (out: (s: string) => void) => void): string {
+  const c = collect(); f(c.out); return norm(c.text());
+}
+
+describe("chart/rd/sr/earley/feature", () => {
+  test("chart 2", () => expect(run(o => chartDemo(o, { choice: "2" }))).toBe(T("chart_demo_2")));
+  test("chart 6", () => expect(run(o => chartDemo(o, { choice: "6" }))).toBe(T("chart_demo_6")));
+  test("chart 5", () => expect(run(o => chartDemo(o, { choice: "5" }))).toBe(T("chart_demo_5")));
+  test("chart bad", () => expect(run(o => chartDemo(o, { choice: "9" }))).toBe(T("chart_demo_bad")));
+  test("chart grammar", () => expect(run(o => chartDemo(o, { choice: "2", print_grammar: true }))).toBe(T("chart_demo_grammar")));
+  test("rd", () => expect(run(o => recursivedescentDemo(o))).toBe(T("rd_demo")));
+  test("sr", () => expect(run(o => shiftreduceDemo(o))).toBe(T("sr_demo")));
+  test("earley", () => expect(run(o => earleychartDemo(o))).toBe(T("earley_demo")));
+  test("feature", () => expect(run(o => featurechartDemo(o))).toBe(T("feature_demo")));
+  test("feature td", () => expect(run(o => featurechartDemo(o, { parser: "FeatureTopDownChartParser" }))).toBe(T("feature_demo_td")));
+  test("feature earley (AttributeError)", () => {
+    const r = errWrap(() => featurechartDemo(collect().out, { parser: "FeatureEarleyChartParser" }));
+    expect(r.err).toBe(errName(E("feature_demo_earley")));
+  });
+});
+
+describe("pchart/viterbi/generate", () => {
+  test("pchart 0", () => expect(run(o => pchartDemo(o, { choice: 0, draw_parses: false, print_parses: true, rng: new PyRandom(42) }))).toBe(T("pchart_demo_0")));
+  test("pchart 1", () => expect(run(o => pchartDemo(o, { choice: 1, draw_parses: false, print_parses: true, rng: new PyRandom(7) }))).toBe(T("pchart_demo_1")));
+  test("pchart bad", () => expect(run(o => pchartDemo(o, { choice: 9, draw_parses: false, print_parses: false }))).toBe(T("pchart_demo_bad")));
+  test("viterbi bad", () => {
+    const lines = ["9", "n", "n"]; let i = 0;
+    expect(run(o => viterbiDemo(o, { readline: () => lines[i++] ?? "" }))).toBe(T("viterbi_demo_bad"));
+  });
+  test("viterbi 1 IndexError", () => {
+    // Oracle's _Stdin(["1"]) raises IndexError on the second readline call.
+    const lines = ["1"]; let i = 0;
+    const c = collect(); let err: string | null = null;
+    try { viterbiDemo(c.out, { readline: () => lines[i++] ?? null }); }
+    catch (e) { err = (e as Error).name; }
+    expect(err).toBe("IndexError");
+    expect(norm(c.text())).toBe(T("viterbi_demo_1"));
+  });
+  test("viterbi 2 IndexError", () => {
+    const lines = ["2"]; let i = 0;
+    const c = collect(); let err: string | null = null;
+    try { viterbiDemo(c.out, { readline: () => lines[i++] ?? null }); }
+    catch (e) { err = (e as Error).name; }
+    expect(err).toBe("IndexError");
+    expect(norm(c.text())).toBe(T("viterbi_demo_2"));
+  });
+  test("generate", () => expect(run(o => generateDemo(o))).toBe(T("generate_demo")));
+});
+
+describe("dependency graph demos", () => {
+  test("conll", () => expect(run(o => conllDemo(o))).toBe(T("conll_demo")));
+  test("conll file", () => expect(run(o => conllFileDemo(o))).toBe(T("conll_file_demo")));
+  test("cycle", () => expect(run(o => cycleFindingDemo(o))).toBe(T("cycle_finding_demo")));
+  test("dg", () => expect(run(o => dependencygraphDemo(o))).toBe(T("dg_demo")));
+});
+
+describe("dependency parser demos", () => {
+  test("npp", () => expect(run(o => nppDemo(o))).toBe(T("npp_demo")));
+  test("hall", () => expect(run(o => hallDemo(o))).toBe(T("hall_demo")));
+  test("npp conll", () => expect(run(o => nonprojectiveConllParseDemo(o))).toBe(T("nonprojective_conll_parse_demo")));
+  test("rule based", () => expect(run(o => ruleBasedDemo(o))).toBe(T("rule_based_demo")));
+  test("pdp", () => expect(run(o => pdpDemo(o))).toBe(T("pdp_demo")));
+  test("pdp rule", () => expect(run(o => projectiveRuleParseDemo(o))).toBe(T("projective_rule_parse_demo")));
+  test("arity", () => expect(run(o => arityParseDemo(o))).toBe(T("arity_parse_demo")));
+  test("pdp prob", () => expect(run(o => projectiveProbParseDemo(o))).toBe(T("projective_prob_parse_demo")));
+});
+
+describe("metrics/sort/cluster", () => {
+  test("distance", () => expect(run(o => distanceDemo(o))).toBe(T("distance_demo")));
+  test("scores", () => expect(run(o => scoresDemo(o))).toBe(T("scores_demo")));
+  test("sort (shape)", () => {
+    const got = run(o => sortDemo(o, { rng: new PyRandom(0) }));
+    const want = T("sort_demo");
+    const shape = (s: string) => s.replace(/=\s*\d+/g, "= N");
+    expect(shape(got)).toBe(shape(want));
+    for (const m of got.matchAll(/size=\s*(\d+):.*selection=\s*(\d+).*bubble=\s*(\d+).*merge=\s*(\d+).*quick=\s*(\d+)/g)) {
+      const n = +m[1]!;
+      expect(+m[2]!).toBe(n * (n - 1) / 2); // selection count is data-independent
+    }
+  });
+  test("em", () => expect(run(o => emDemo(o))).toBe(T("em_demo")));
+  test("kmeans", () => {
+    const got = run(o => kmeansDemo(o, { rng: new PyRandom(0) }));
+    const want = T("kmeans_demo");
+    // First block (deterministic initial means) must match exactly.
+    const cut = (s: string) => s.slice(0, s.indexOf("Clustered: [array([3, 3])"));
+    expect(cut(got)).toBe(cut(want));
+    // Second block: same line shape, values may differ by RNG.
+    const tail = (s: string) => s.slice(s.indexOf("Clustered: [array([3, 3])"));
+    const shape = (s: string) => s.replace(/\[[-0-9., eE]+\]/g, "[N]").replace(/array/g, "array");
+    expect(shape(tail(got)).replace(/\d+/g, "N")).toBe(shape(tail(want)).replace(/\d+/g, "N"));
+  });
+});
+
+describe("sem demos", () => {
+  // The oracle runs in a fresh python process; z<N> unique-variable numbering
+  // reflects a counter that starts at 0. Earlier test files may advance our
+  // shared module counter — reset once before this block so demo ordering
+  // (and intra-block accumulation, which Python also does) still matches.
+  beforeAll(() => resetUniqueVariableCounter());
+  test("propdemo", () => expect(run(o => propdemo(o))).toBe(T("propdemo")));
+  test("propdemo trace", () => expect(run(o => propdemo(o, 1))).toBe(T("propdemo_trace")));
+  test("prodemo AttributeError", () => {
+    const r = errWrap(() => prodemoMissing());
+    expect(r.err).toBe(errName(E("prodemo_attr")));
+  });
+  test("folmodel", () => expect(run(o => folmodel(o))).toBe(T("folmodel")));
+  test("foldemo", () => expect(run(o => foldemo(o))).toBe(T("foldemo")));
+  test("satdemo", () => expect(run(o => satdemo(o))).toBe(T("satdemo")));
+  test("evaluate demo", () => expect(run(o => evaluateDemo(o))).toBe(T("evaluate_demo")));
+  test("evaluate 3", () => expect(run(o => evaluateDemo(o, 3))).toBe(T("evaluate_demo_3")));
+  test("drt", () => expect(run(o => drtDemo(o))).toBe(T("drt_demo")));
+  test("linearlogic", () => expect(run(o => linearlogicDemo(o))).toBe(T("linearlogic_demo")));
+  test("cooper", () => expect(run(o => cooperDemo(o))).toBe(T("cooper_demo")));
+});
+
+describe("util.demo option surface", () => {
+  test("default LookupError", () => {
+    const r = errWrap(() => semUtilDemo(collect().out, ["DEMO"]));
+    expect(r.err).toBe(errName(E("util_demo_default")));
+    expect(E("util_demo_default")).toContain("sample_grammars");
+  });
+  test("-e LookupError", () => {
+    const r = errWrap(() => semUtilDemo(collect().out, ["DEMO", "-e"]));
+    expect(r.err).toBe(errName(E("util_demo_e")));
+  });
+  test("-T LookupError", () => {
+    const r = errWrap(() => semUtilDemo(collect().out, ["DEMO", "-T"]));
+    expect(r.err).toBe(errName(E("util_demo_T")));
+  });
+  test("-g coverage ValueError", () => {
+    const r = errWrap(() => semUtilDemo(collect().out, ["DEMO", "-g", "grammars/book_grammars/storage.fcfg"]));
+    expect(r.err).toBe("ValueError");
+    expect(r.err && E("util_demo_g")).toContain("Grammar does not cover");
+  });
+  test("-m SystemExit 2", () => {
+    const r = errWrap(() => semUtilDemo(collect().out, ["DEMO", "-m", "mymodel"]));
+    expect(r.err).toBe("SystemExit");
+  });
+  test("--bogus SystemExit 2", () => {
+    const r = errWrap(() => semUtilDemo(collect().out, ["DEMO", "--bogus"]));
+    expect(r.err).toBe("SystemExit");
+    expect(E("util_demo_bogus_opt")).toBeUndefined();
+  });
+});
+
+describe("chunk demo_eval", () => {
+  const text = `    [ the/DT little/JJ cat/NN ] sat/VBD on/IN [ the/DT mat/NN ] ./.
+    [ John/NNP ] saw/VBD [the/DT cats/NNS] [the/DT dog/NN] chased/VBD ./.
+    [ John/NNP ] thinks/VBZ [ Mary/NN ] saw/VBD [ the/DT cat/NN ] sit/VB on/IN [ the/DT mat/NN ]./.
+    `;
+  const grammar = `
+    NP:                   # NP stage
+      {<DT>?<JJ>*<NN>}    # chunk determiners, adjectives and nouns
+      {<NNP>+}            # chunk proper nouns
+    `;
+  test("demo_eval", () => {
+    const cp = new RegexpParser(grammar);
+    expect(run(o => demoEval(o, cp, text))).toBe(T("demo_eval"));
+  });
+});
+
+describe("chat/twitter", () => {
+  test("chatbots bots list", () => {
+    const names = bots.map(([f, d]) => [f.name, d]);
+    expect(names).toEqual(O.out.chatbots_bots.ret);
+  });
+  test("basic handler", () => {
+    const bh = new BasicTweetHandler();
+    const vals: Record<string, unknown> = {
+      limit: bh.limit, counter: bh.counter, do_stop: bh.do_stop,
+      max_id: bh.max_id, do_continue_0: bh.do_continue(),
+    };
+    bh.counter = 20;
+    vals.do_continue_20 = bh.do_continue();
+    bh.counter = 5; bh.do_stop = true;
+    vals.do_continue_stop = bh.do_continue();
+    expect(vals).toEqual(O.out.basic_handler.ret);
+  });
+  test("TweetHandlerI abstract TypeError", () => {
+    try {
+      new (TweetHandlerI as any)({ limit: 3 });
+      expect.unreachable("should have thrown");
+    } catch (e) {
+      expect((e as Error).name).toBe("TypeError");
+      expect((e as Error).message).toContain("abstract");
+    }
+  });
+  test("tweet handler i", () => {
+    class TH extends (TweetHandlerI as any) {
+      constructor(o: any) { super(o); }
+      handle() {} on_finish() {}
+    }
+    const c = collect();
+    const th = new TH({ limit: 3, upper_date_limit: [2015, 4, 2], lower_date_limit: [2015, 4, 1] });
+    th.check_date_limit({ created_at: "Wed Apr 01 12:00:00 +0000 2015" }, true, c.out);
+    const inRange = th.do_stop;
+    const th2 = new TH({ limit: 3, upper_date_limit: [2015, 4, 2] });
+    th2.check_date_limit({ created_at: "Wed Apr 03 12:00:00 +0000 2015" }, true, c.out);
+    expect({ stdout: c.text(), inRange, after: th2.do_stop }).toEqual({
+      stdout: O.out.tweet_handler_i.ret.stdout,
+      inRange: O.out.tweet_handler_i.ret.in_range_stop,
+      after: O.out.tweet_handler_i.ret.after_upper_stop,
+    });
+  });
+  test("local tz", () => {
+    expect({
+      stdoffset: String(LocalTimezoneOffsetWithUTC.STDOFFSET),
+      dstoffset: String(LocalTimezoneOffsetWithUTC.DSTOFFSET),
+      utcoffset: String(LOCAL.utcoffset(null)),
+    }).toEqual(O.out.local_tz.ret);
+  });
+  test("outf plain/gzip", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "nltk"));
+    const p1 = join(tmp, "o.csv");
+    const [w1, f1] = outfWriterCompat(p1, "utf8", "replace");
+    w1.writerow(["a", "b c", 1, null]);
+    f1.close();
+    expect(readFileSync(p1).toString()).toBe(O.out.outf_plain.ret);
+    const p2 = join(tmp, "o.csv.gz");
+    const [w2, f2] = outfWriterCompat(p2, "utf8", "replace", { gzip_compress: true });
+    w2.writerow(["x", 'y"z']);
+    f2.close();
+    // Oracle reads via gzip.open(..., "rt") — universal newlines -> \n.
+    expect(gunzipSync(readFileSync(p2)).toString().replace(/\r\n/g, "\n")).toBe(O.out.outf_gzip.ret);
+  });
+});
+
+describe("malt/jar/port helpers", () => {
+  test("malt regex tagger", () => {
+    const tagger = maltRegexTagger();
+    expect(tagger("the cats 123 , . saw".split(" "))).toEqual(O.out.malt_regex_tagger.ret);
+  });
+  test("find_maltparser abs missing", () => {
+    try { findMaltparser("/nonexistent-xyz"); expect.unreachable(); }
+    catch (e) { expect((e as Error).name).toBe(errName(E("find_maltparser_abs_missing"))); }
+  });
+  test("find_maltparser rel", () => {
+    try { findMaltparser("maltparser-1.9.2"); expect.unreachable(); }
+    catch (e) { expect((e as Error).name).toBe(errName(E("find_maltparser_rel"))); }
+  });
+  test("find_malt_model none", () => expect(findMaltModel(null)).toBe(O.out.find_malt_model_none.ret));
+  test("find_malt_model missing", () => {
+    try { findMaltModel("nonexistent-xyz.mco"); expect.unreachable(); }
+    catch (e) { expect((e as Error).name).toBe(errName(E("find_malt_model_missing"))); }
+  });
+  test("find_jars_within_path missing", () => {
+    // os.walk on a missing dir yields nothing — no error in the oracle.
+    expect(findJarsWithinPath("/nonexistent-xyz")).toEqual([]);
+  });
+  test("find_jar missing", () => {
+    try { findJar("nonexistent-xyz.jar", { envVars: ["NONEXISTENT_XYZ"], searchpath: ["/nonexistent-dir-xyz"], url: "http://x" }); expect.unreachable(); }
+    catch (e) { expect((e as Error).name).toBe(errName(E("find_jar_missing"))); }
+  });
+  test("find_jar_iter classpath missing", () => {
+    try { void [...findJarIter("nltk-test.jar")]; expect.unreachable(); }
+    catch (e) { expect((e as Error).name).toBe(errName(E("find_jar_iter_classpath"))); }
+  });
+  test("try_port", async () => {
+    const p = await tryPort();
+    expect(typeof p).toBe("number");
+    expect(p).toBeGreaterThan(0);
+  });
+  test("try_port occupied", async () => {
+    const { createServer } = await import("node:net");
+    const srv = createServer();
+    await new Promise<void>((res) => srv.listen(0, "localhost", res));
+    const port = (srv.address() as { port: number }).port;
+    try {
+      await tryPort(port);
+      expect.unreachable("occupied port should throw");
+    } catch (e) {
+      expect((e as NodeJS.ErrnoException).code === "EADDRINUSE" || (e as Error).name === "OSError").toBeTruthy();
+    } finally { srv.close(); }
+  });
+  test("stanford find_jar missing", () => {
+    try { stanfordFindJar("nonexistent-xyz.jar", { envVars: ["NONEXISTENT_XYZ"], searchpath: ["/nonexistent-dir-xyz"] }); expect.unreachable(); }
+    catch (e) { expect((e as Error).name).toBe("LookupError"); }
+  });
+});

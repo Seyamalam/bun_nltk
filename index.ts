@@ -899,7 +899,10 @@ export {
   BoxerNamed, BoxerNot, BoxerOr, BoxerOutputDrsParser, BoxerPred, BoxerProp, BoxerRel, BoxerWhq,
   NltkDrtBoxerDrsInterpreter, PassthroughBoxerDrsInterpreter, find_binary_iter,
   DrsDrawer, CanvasFrame, DrsWidget, ShowText, test_draw,
-  decorator, foldemo, folmodel, propdemo, satdemo, demo_read_depgraph,
+  decorator, foldemo, foldemo_, folmodel, folmodel_, propdemo, propdemo_, satdemo,
+  satdemo_, prodemo, evaluateDemo, evaluate_demo, drtDemo, drt_demo,
+  linearlogicDemo, linearlogic_demo, cooperDemo, cooper_demo, semUtilDemo,
+  util_demo, demo_read_depgraph,
 } from "./src/sem_gaps";
 export { DependencyGraph, DependencyGraphError } from "./src/dependency_graph";
 export { DependencyEvaluator } from "./src/parse_evaluate";
@@ -927,8 +930,21 @@ export {
   find_jar_iter, try_port, transform, find_dir, find_jars_within_path, find_malt_model, find_maltparser,
   malt_regex_tagger, run_profile, conll_demo, conll_file_demo, cycle_finding_demo, dot2img, malt_demo,
   hall_demo, nonprojective_conll_parse_demo, rule_based_demo, arity_parse_demo, projective_prob_parse_demo,
-  projective_rule_parse_demo,
+  projective_rule_parse_demo, conllDemo, conllFileDemo, cycleFindingDemo, dependencygraphDemo,
+  dg_demo, nppDemo, npp_demo, hallDemo, nonprojectiveConllParseDemo, ruleBasedDemo, pdpDemo,
+  pdp_demo, projectiveRuleParseDemo, arityParseDemo, projectiveProbParseDemo,
 } from "./src/parse_gaps";
+
+// nltk.*.demo ports — sink-injected pure demos (oracle-pinned).
+export {
+  chartDemo, chart_demo, chartDemoGrammar, recursivedescentDemo,
+  recursiveDescentDemo, shiftreduceDemo, shiftReduceDemo, earleychartDemo,
+  earleyDemo, featurechartDemo, featureDemo, pchartDemo, pchart_demo,
+  viterbiDemo, viterbi_demo, generateDemo, generate_demo, distanceDemo,
+  distance_demo, scoresDemo, scores_demo, sortDemo, sort_demo, emDemo, em_demo,
+  kmeansDemo, kmeans_demo, demoEval, prodemoMissing,
+} from "./src/demos";
+export type { PrintSink } from "./src/demos";
 
 // nltk.corpus.reader + nltk.data path/stream primitives + nltk.pathsec.
 export {
@@ -1159,7 +1175,7 @@ export {
   suntsu_chat,
   zen_chat,
 } from "./src/chat";
-export { chatbots, chat_demo } from "./src/misc_gaps";
+export { chatbots, bots, chat_demo } from "./src/misc_gaps";
 
 // nltk.toolbox — StandardFormat/ToolboxData/ToolboxSettings + helpers are
 // exported above (pre-wired block); add the element type + demo stub.
@@ -1212,4 +1228,5 @@ export { add_py3_data, py3_data } from "./src/compat_port";
 // nltk.decorators + nltk.huggingface honest gaps.
 export { getinfo, new_wrapper } from "./src/misc_gaps";
 export { HFDatasetPathPointer, hf_download, hf_load_data } from "./src/misc_gaps";
-export { outf_writer_compat, TweetHandlerI, BasicTweetHandler, LocalTimezoneOffsetWithUTC } from "./src/misc_gaps";
+export { outf_writer_compat, outfWriterCompat, CsvWriter, CsvFile, TweetHandlerI, BasicTweetHandler, LocalTimezoneOffsetWithUTC, LOCAL, parseTwitterDate } from "./src/misc_gaps";
+export { stanfordFindJar, stanford_find_jar } from "./src/ext_pure";

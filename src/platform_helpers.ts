@@ -83,7 +83,5 @@ Prep -> "under"
   );
 }
 
-/** nltk.chunk.regexp.demo_eval — interactive demo. */
-export function demo_eval(): never {
-  throw new Error("demo_eval() is an interactive NLTK demo and is not supported in the JS runtime");
-}
+/** nltk.chunk.regexp.demo_eval — real port lives in demos.ts (sink-injected). */
+export { demoEval, demo_eval } from "./demos";

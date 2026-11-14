@@ -112,12 +112,16 @@ describe("excluded modules vs NLTK 3.10.3 oracle", () => {
   });
 
   test("downloader Package/Collection fromxml + hexdigests + validation", () => {
-    const pkg = Package.fromxml('<package id="stopwords" url="https://x/stopwords.zip" subdir="corpora" size="100" unzipped_size="300" checksum="abc" unzip="1"/>');
+    const px = join(tmp, "pkg.xml");
+    writeFileSync(px, '<package id="stopwords" url="https://x/stopwords.zip" subdir="corpora" size="100" unzipped_size="300" checksum="abc" unzip="1"/>');
+    const pkg = Package.fromxml(px);
     for (const [k, v] of Object.entries(o.dl.pkg as Record<string, unknown>)) {
       expect((pkg as any)[k]).toEqual(v);
     }
     expect(pkg.toString()).toBe(o.dl.repr);
-    const col = Collection.fromxml('<collection id="all"><item ref="stopwords"/><item ref="punkt"/></collection>');
+    const cx = join(tmp, "col.xml");
+    writeFileSync(cx, '<collection id="all"><item ref="stopwords"/><item ref="punkt"/></collection>');
+    const col = Collection.fromxml(cx);
     expect(col.children).toEqual(o.dl.col.children);
     expect(col.toString()).toBe(o.dl.col.repr);
     const mf = join(tmp, "m.bin");

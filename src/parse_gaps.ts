@@ -79,13 +79,14 @@ export { transform } from "./parse_stepping";
 const DEMO_WHY = "interactive demo or corpus-bound helper; not applicable to the TS runtime contract";
 const EXT_WHY = "requires an external binary (MaltParser), unavailable in the JS runtime";
 export function run_profile(): never { return unsupported("run_profile", DEMO_WHY); }
-export function conll_demo(): never { return unsupported("conll_demo", DEMO_WHY); }
-export function conll_file_demo(): never { return unsupported("conll_file_demo", DEMO_WHY); }
-export function cycle_finding_demo(): never { return unsupported("cycle_finding_demo", DEMO_WHY); }
+export {
+  conllDemo, conll_demo, conllFileDemo, conll_file_demo,
+  cycleFindingDemo, cycle_finding_demo, dependencygraphDemo, dg_demo,
+  nppDemo, npp_demo, hallDemo, hall_demo,
+  nonprojectiveConllParseDemo, nonprojective_conll_parse_demo,
+  ruleBasedDemo, rule_based_demo, pdpDemo, pdp_demo,
+  projectiveRuleParseDemo, projective_rule_parse_demo,
+  arityParseDemo, arity_parse_demo,
+  projectiveProbParseDemo, projective_prob_parse_demo,
+} from "./demos";
 export function malt_demo(): never { return unsupported("malt_demo", EXT_WHY); }
-export function hall_demo(): never { return unsupported("hall_demo", DEMO_WHY); }
-export function nonprojective_conll_parse_demo(): never { return unsupported("nonprojective_conll_parse_demo", DEMO_WHY); }
-export function rule_based_demo(): never { return unsupported("rule_based_demo", DEMO_WHY); }
-export function arity_parse_demo(): never { return unsupported("arity_parse_demo", DEMO_WHY); }
-export function projective_prob_parse_demo(): never { return unsupported("projective_prob_parse_demo", DEMO_WHY); }
-export function projective_rule_parse_demo(): never { return unsupported("projective_rule_parse_demo", DEMO_WHY); }

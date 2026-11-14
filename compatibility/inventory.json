@@ -478,7 +478,7 @@
    "demoStrRuleFormat": "src/tbl_demo.ts",
    "demoTemplateStatistics": "src/tbl_demo.ts",
    "demoVerboseRuleFormat": "src/tbl_demo.ts",
-   "demo_eval": "src/platform_helpers.ts",
+   "demo_eval": "src/demos.ts",
    "demo_grammar": "src/platform_helpers.ts",
    "deprecated": "src/util_nltk.ts",
    "discourseDemo": "src/inference_discourse.ts",
@@ -857,10 +857,10 @@
    "ShowText": "src/sem_gaps.ts",
    "SemError": "src/sem_evaluate.ts",
    "decorator": "src/sem_gaps.ts",
-   "foldemo": "src/sem_gaps.ts",
-   "folmodel": "src/sem_gaps.ts",
-   "propdemo": "src/sem_gaps.ts",
-   "satdemo": "src/sem_gaps.ts",
+   "foldemo": "src/demos.ts",
+   "folmodel": "src/demos.ts",
+   "propdemo": "src/demos.ts",
+   "satdemo": "src/demos.ts",
    "sem_trace": "src/sem_evaluate.ts",
    "DrtGlueDict": "src/sem_glue.ts",
    "DrtGlueFormula": "src/sem_glue.ts",
@@ -937,9 +937,9 @@
    "transform": "src/parse_gaps.ts",
    "try_port": "src/ext_subprocess.ts",
    "DependencyGraphError": "src/dependency_graph.ts",
-   "conll_demo": "src/parse_gaps.ts",
-   "conll_file_demo": "src/parse_gaps.ts",
-   "cycle_finding_demo": "src/parse_gaps.ts",
+   "conll_demo": "src/demos.ts",
+   "conll_file_demo": "src/demos.ts",
+   "cycle_finding_demo": "src/demos.ts",
    "dot2img": "src/ext_subprocess.ts",
    "malt_demo": "src/parse_gaps.ts",
    "CompleteFundamentalRule": "src/parse_gaps.ts",
@@ -977,9 +977,9 @@
    "taggedsents_to_conll": "src/parse_conll.ts",
    "DemoScorer": "src/parse_gaps.ts",
    "DependencyScorerI": "src/parse_gaps.ts",
-   "hall_demo": "src/parse_gaps.ts",
-   "nonprojective_conll_parse_demo": "src/parse_gaps.ts",
-   "rule_based_demo": "src/parse_gaps.ts",
+   "hall_demo": "src/demos.ts",
+   "nonprojective_conll_parse_demo": "src/demos.ts",
+   "rule_based_demo": "src/demos.ts",
    "ProbabilisticBottomUpInitRule": "src/parse_gaps.ts",
    "ProbabilisticBottomUpPredictRule": "src/parse_gaps.ts",
    "ProbabilisticFundamentalRule": "src/parse_gaps.ts",
@@ -989,9 +989,9 @@
    "SingleEdgeProbabilisticFundamentalRule": "src/parse_gaps.ts",
    "ChartCell": "src/parse_gaps.ts",
    "DependencySpan": "src/parse_gaps.ts",
-   "arity_parse_demo": "src/parse_gaps.ts",
-   "projective_prob_parse_demo": "src/parse_gaps.ts",
-   "projective_rule_parse_demo": "src/parse_gaps.ts",
+   "arity_parse_demo": "src/demos.ts",
+   "projective_prob_parse_demo": "src/demos.ts",
+   "projective_rule_parse_demo": "src/demos.ts",
    "ImmutableTree": "src/parented_tree.ts",
    "Configuration": "src/parse_gaps.ts",
    "Transition": "src/parse_gaps.ts",
@@ -1183,7 +1183,7 @@
    "rude_chat": "src/chat.ts",
    "suntsu_chat": "src/chat.ts",
    "zen_chat": "src/chat.ts",
-   "chatbots": "src/misc_gaps.ts",
+   "chatbots": "src/ext_pure.ts",
    "chat_demo": "src/misc_gaps.ts",
    "toolbox_demo": "src/misc_gaps.ts",
    "StandardFormat": "src/toolbox.ts",
@@ -1225,17 +1225,82 @@
    "get_header_field_list": "src/twitter_common.ts",
    "json2csv": "src/twitter_common.ts",
    "json2csv_entities": "src/twitter_common.ts",
-   "outf_writer_compat": "src/misc_gaps.ts",
-   "TweetHandlerI": "src/misc_gaps.ts",
-   "BasicTweetHandler": "src/misc_gaps.ts",
-   "LocalTimezoneOffsetWithUTC": "src/misc_gaps.ts",
+   "outf_writer_compat": "src/ext_pure.ts",
+   "TweetHandlerI": "src/ext_pure.ts",
+   "BasicTweetHandler": "src/ext_pure.ts",
+   "LocalTimezoneOffsetWithUTC": "src/ext_pure.ts",
    "add_py3_data": "src/compat_port.ts",
    "py3_data": "src/compat_port.ts",
    "getinfo": "src/misc_gaps.ts",
    "new_wrapper": "src/misc_gaps.ts",
    "HFDatasetPathPointer": "src/misc_gaps.ts",
    "hf_download": "src/misc_gaps.ts",
-   "hf_load_data": "src/misc_gaps.ts"
+   "hf_load_data": "src/misc_gaps.ts",
+   "chartDemo": "src/demos.ts",
+   "chart_demo": "src/demos.ts",
+   "recursivedescentDemo": "src/demos.ts",
+   "recursiveDescentDemo": "src/demos.ts",
+   "shiftreduceDemo": "src/demos.ts",
+   "shiftReduceDemo": "src/demos.ts",
+   "earleychartDemo": "src/demos.ts",
+   "earleyDemo": "src/demos.ts",
+   "featurechartDemo": "src/demos.ts",
+   "featureDemo": "src/demos.ts",
+   "pchartDemo": "src/demos.ts",
+   "pchart_demo": "src/demos.ts",
+   "viterbiDemo": "src/demos.ts",
+   "viterbi_demo": "src/demos.ts",
+   "generateDemo": "src/demos.ts",
+   "generate_demo": "src/demos.ts",
+   "distanceDemo": "src/demos.ts",
+   "distance_demo": "src/demos.ts",
+   "scoresDemo": "src/demos.ts",
+   "scores_demo": "src/demos.ts",
+   "sortDemo": "src/demos.ts",
+   "sort_demo": "src/demos.ts",
+   "emDemo": "src/demos.ts",
+   "em_demo": "src/demos.ts",
+   "kmeansDemo": "src/demos.ts",
+   "kmeans_demo": "src/demos.ts",
+   "demoEval": "src/demos.ts",
+   "foldemo_": "src/demos.ts",
+   "folmodel_": "src/demos.ts",
+   "propdemo_": "src/demos.ts",
+   "satdemo_": "src/demos.ts",
+   "evaluateDemo": "src/demos.ts",
+   "evaluate_demo": "src/demos.ts",
+   "drtDemo": "src/demos.ts",
+   "drt_demo": "src/demos.ts",
+   "linearlogicDemo": "src/demos.ts",
+   "linearlogic_demo": "src/demos.ts",
+   "cooperDemo": "src/demos.ts",
+   "cooper_demo": "src/demos.ts",
+   "semUtilDemo": "src/demos.ts",
+   "util_demo": "src/demos.ts",
+   "conllDemo": "src/demos.ts",
+   "conllFileDemo": "src/demos.ts",
+   "cycleFindingDemo": "src/demos.ts",
+   "dependencygraphDemo": "src/demos.ts",
+   "dg_demo": "src/demos.ts",
+   "nppDemo": "src/demos.ts",
+   "npp_demo": "src/demos.ts",
+   "hallDemo": "src/demos.ts",
+   "nonprojectiveConllParseDemo": "src/demos.ts",
+   "ruleBasedDemo": "src/demos.ts",
+   "pdpDemo": "src/demos.ts",
+   "pdp_demo": "src/demos.ts",
+   "projectiveRuleParseDemo": "src/demos.ts",
+   "arityParseDemo": "src/demos.ts",
+   "projectiveProbParseDemo": "src/demos.ts",
+   "stanfordFindJar": "src/ext_pure.ts",
+   "stanford_find_jar": "src/ext_pure.ts",
+   "bots": "src/ext_pure.ts",
+   "outfWriterCompat": "src/ext_pure.ts",
+   "CsvWriter": "src/ext_pure.ts",
+   "CsvFile": "src/ext_pure.ts",
+   "LOCAL": "src/ext_pure.ts",
+   "parseTwitterDate": "src/ext_pure.ts",
+   "prodemo": "src/demos.ts"
   }
  },
  "modules": [
@@ -2538,6 +2603,17 @@
    "anchor": "Differential test: external-tool gap adapters vs pinned NLTK 3.10.3 oracle",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned optional-dependency adapters: internals.java/config_java/find_jar/find_jar_iter/find_jars_within_path, jar-sandbox UntrustedJarError, Stanford POSTagger/NERTagger cmd+tag parsing, HunposTagger, Senna/SennaTagger/SennaChunkTagger/SennaNERTagger env+cmd+_map, MaltParser jar resolution+conll parse, BllipParser ImportError, CoreNLPServer spawn+GenericCoreNLPParser HTTP client (mock server), corenlp JSON strict/loose, dependencygraph dot2img, Boxer binary call, call_megam/call_tadm/write_megam_file/train_maxent_classifier_with_megam."
+  },
+  {
+   "id": "gap-pure-differential",
+   "kind": "differential",
+   "files": [
+    "test/gap_pure.test.ts",
+    "test/gap_pure_oracle.py"
+   ],
+   "anchor": "Pure-gaps differential vs pinned NLTK 3.10.3 oracle",
+   "oracleVersion": "3.10.3",
+   "scope": "NLTK 3.10.3-pinned pure demos/helpers: chart/rd/sr/earley/featurechart/pchart/viterbi/generate demos, dep-parser conll/cycle/npp/hall/rule/arity/prob demos, distance/scores/sort demos, EM+kmeans cluster demos (bit-exact inv2/rsqrt), evaluate/drt/linearlogic/cooper/util sem demos, regexp demo_eval, chatbots registry, twitter outf_writer_compat + TweetHandlerI/BasicTweetHandler/LocalTimezoneOffsetWithUTC/LOCAL/parseTwitterDate, tag.stanford find_jar, malt/jar find helpers."
   }
  ],
  "signatureBindings": [
@@ -8976,31 +9052,34 @@
   {
    "target": "nltk.chunk.regexp.demo_eval",
    "exports": [
+    "demoEval",
     "demo_eval"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo_eval"
+     "file": "src/demos.ts",
+     "anchor": "export function demoEval"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "NLTK demo_eval is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.classify.decisiontree.ClassifierI",
@@ -10355,31 +10434,35 @@
   {
    "target": "nltk.metrics.distance.demo",
    "exports": [
+    "distanceDemo",
+    "distance_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function distanceDemo"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.metrics.distance.fractional_presence",
@@ -10616,31 +10699,35 @@
   {
    "target": "nltk.metrics.scores.demo",
    "exports": [
+    "scoresDemo",
+    "scores_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function scoresDemo"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.metrics.scores.f_measure",
@@ -10981,31 +11068,35 @@
   {
    "target": "nltk.parse.chart.demo",
    "exports": [
+    "chartDemo",
+    "chart_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function chartDemo("
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Chart demo on demo_grammar; trace output oracle-pinned."
   },
   {
    "target": "nltk.parse.chart.demo_grammar",
@@ -21431,31 +21522,35 @@
   {
    "target": "nltk.cluster.em.demo",
    "exports": [
+    "emDemo",
+    "em_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/cluster_em.ts",
-     "anchor": "EMClusterer"
+     "file": "src/demos.ts",
+     "anchor": "export function emDemo("
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo function \u2014 no non-interactive equivalent is provided."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Demo output is interactive/terminal-bound; no oracle pins."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "NLTK demo() prints an interactive walkthrough; recorded as an explicit gap."
+   "notes": "EM cluster demo; bit-exact LAPACK dgetri-form inv2 + correctly-rounded rsqrtCR."
   },
   {
    "target": "nltk.cluster.gaac.GAAClusterer",
@@ -21737,31 +21832,35 @@
   {
    "target": "nltk.cluster.kmeans.demo",
    "exports": [
+    "kmeansDemo",
+    "kmeans_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/cluster_kmeans.ts",
-     "anchor": "KMeansClusterer"
+     "file": "src/demos.ts",
+     "anchor": "export function kmeansDemo"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo function \u2014 no non-interactive equivalent is provided."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Demo output is interactive/terminal-bound; no oracle pins."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "NLTK demo() prints an interactive walkthrough; recorded as an explicit gap."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.cluster.util.ClusterI",
@@ -22939,31 +23038,35 @@
   {
    "target": "nltk.misc.sort.demo",
    "exports": [
+    "sortDemo",
+    "sort_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function sortDemo"
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo printing RNG-dependent comparison counts; not applicable to the TS runtime contract."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo with non-deterministic output."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "nltk.misc.sort.demo is an interactive randomized demo; platform stub."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.misc.wordfinder.revword",
@@ -24980,7 +25083,8 @@
   {
    "target": "nltk.sem.logic.demo",
    "exports": [
-    "semLogicDemo"
+    "semLogicDemo",
+    "demo"
    ],
    "category": "ts-algorithm",
    "status": "implemented-subset",
@@ -26400,7 +26504,8 @@
   {
    "target": "nltk.inference.discourse.demo",
    "exports": [
-    "discourseModuleDemo"
+    "discourseModuleDemo",
+    "demo"
    ],
    "category": "ts-algorithm",
    "status": "partial",
@@ -26799,7 +26904,8 @@
   {
    "target": "nltk.inference.mace.demo",
    "exports": [
-    "maceDemo"
+    "maceDemo",
+    "demo"
    ],
    "category": "ts-algorithm",
    "status": "partial",
@@ -27130,7 +27236,8 @@
   {
    "target": "nltk.inference.nonmonotonic.demo",
    "exports": [
-    "nonmonotonicDemo"
+    "nonmonotonicDemo",
+    "demo"
    ],
    "category": "ts-algorithm",
    "status": "partial",
@@ -27720,7 +27827,8 @@
   {
    "target": "nltk.inference.prover9.demo",
    "exports": [
-    "prover9Demo"
+    "prover9Demo",
+    "demo"
    ],
    "category": "ts-algorithm",
    "status": "partial",
@@ -28225,7 +28333,8 @@
   {
    "target": "nltk.inference.resolution.demo",
    "exports": [
-    "resolutionDemo"
+    "resolutionDemo",
+    "demo"
    ],
    "category": "ts-algorithm",
    "status": "implemented-subset",
@@ -28595,7 +28704,8 @@
   {
    "target": "nltk.inference.tableau.demo",
    "exports": [
-    "tableauDemo"
+    "tableauDemo",
+    "demo"
    ],
    "category": "ts-algorithm",
    "status": "partial",
@@ -33813,31 +33923,35 @@
   {
    "target": "nltk.tag.stanford.find_jar",
    "exports": [
+    "stanfordFindJar",
+    "stanford_find_jar",
     "find_jar"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/internals.ts",
-     "anchor": "export function findJar"
+     "file": "src/ext_pure.ts",
+     "anchor": "export function stanfordFindJar"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Env-var/classpath/searchpath resolution; no jar execution."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Env-var/classpath/searchpath resolution; no jar execution."
     ]
    },
-   "notes": "Jar lookup stub throws (config_java/untrusted-jar paths not applicable)."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.tag.stanford.java",
@@ -36619,31 +36733,35 @@
   {
    "target": "nltk.sem.cooper_storage.demo",
    "exports": [
+    "cooperDemo",
+    "cooper_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function cooperDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.sem.cooper_storage.load_parser",
@@ -37928,31 +38046,35 @@
   {
    "target": "nltk.sem.drt.demo",
    "exports": [
+    "drtDemo",
+    "drt_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function drtDemo("
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "DRT demo incl. Python-faithful _pretty scope-patch."
   },
   {
    "target": "nltk.sem.drt.in_idle",
@@ -39154,42 +39276,47 @@
   {
    "target": "nltk.sem.evaluate.demo",
    "exports": [
+    "evaluateDemo",
+    "evaluate_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function evaluateDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.sem.evaluate.foldemo",
    "exports": [
-    "foldemo"
+    "foldemo",
+    "foldemo_"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
+     "file": "src/demos.ts",
      "anchor": "export function foldemo"
     }
    ],
@@ -39197,28 +39324,31 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "foldemo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "foldemo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "foldemo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.sem.evaluate.folmodel",
    "exports": [
-    "folmodel"
+    "folmodel",
+    "folmodel_"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
+     "file": "src/demos.ts",
      "anchor": "export function folmodel"
     }
    ],
@@ -39226,17 +39356,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "folmodel: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "folmodel: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "folmodel: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.sem.evaluate.is_indvar",
@@ -39301,13 +39433,15 @@
   {
    "target": "nltk.sem.evaluate.propdemo",
    "exports": [
-    "propdemo"
+    "propdemo",
+    "propdemo_",
+    "prodemo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
+     "file": "src/demos.ts",
      "anchor": "export function propdemo"
     }
    ],
@@ -39315,17 +39449,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "propdemo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "propdemo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "propdemo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.sem.evaluate.read_valuation",
@@ -39361,13 +39497,14 @@
   {
    "target": "nltk.sem.evaluate.satdemo",
    "exports": [
-    "satdemo"
+    "satdemo",
+    "satdemo_"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/sem_gaps.ts",
+     "file": "src/demos.ts",
      "anchor": "export function satdemo"
     }
    ],
@@ -39375,17 +39512,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "satdemo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "satdemo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "satdemo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.sem.evaluate.set2rel",
@@ -40875,31 +41014,35 @@
   {
    "target": "nltk.sem.linearlogic.demo",
    "exports": [
+    "linearlogicDemo",
+    "linearlogic_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function linearlogicDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.sem.relextract.class_abbrev",
@@ -41726,31 +41869,35 @@
   {
    "target": "nltk.sem.util.demo",
    "exports": [
+    "semUtilDemo",
+    "util_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function semUtilDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.sem.util.demo_legacy_grammar",
@@ -44200,118 +44347,131 @@
   {
    "target": "nltk.parse.dependencygraph.conll_demo",
    "exports": [
+    "conllDemo",
     "conll_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function conll_demo"
+     "file": "src/demos.ts",
+     "anchor": "export function conllDemo("
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "conll_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "conll_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "conll_demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "CoNLL read demo over bundled fixtures."
   },
   {
    "target": "nltk.parse.dependencygraph.conll_file_demo",
    "exports": [
+    "conllFileDemo",
     "conll_file_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function conll_file_demo"
+     "file": "src/demos.ts",
+     "anchor": "export function conllFileDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "conll_file_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "conll_file_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "conll_file_demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.parse.dependencygraph.cycle_finding_demo",
    "exports": [
+    "cycleFindingDemo",
     "cycle_finding_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function cycle_finding_demo"
+     "file": "src/demos.ts",
+     "anchor": "export function cycleFindingDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "cycle_finding_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "cycle_finding_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "cycle_finding_demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.parse.dependencygraph.demo",
    "exports": [
+    "dependencygraphDemo",
+    "dg_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function dependencygraphDemo("
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "dependencygraph.demo()."
   },
   {
    "target": "nltk.parse.dependencygraph.dot2img",
@@ -45922,31 +46082,35 @@
   {
    "target": "nltk.parse.earleychart.demo",
    "exports": [
+    "earleychartDemo",
+    "earleyDemo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function earleychartDemo("
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Earley chart demo."
   },
   {
    "target": "nltk.parse.evaluate.DependencyEvaluator",
@@ -47085,31 +47249,35 @@
   {
    "target": "nltk.parse.featurechart.demo",
    "exports": [
+    "featurechartDemo",
+    "featureDemo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function featurechartDemo("
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Feature chart demo on FeatStruct grammar."
   },
   {
    "target": "nltk.parse.featurechart.demo_grammar",
@@ -47321,31 +47489,35 @@
   {
    "target": "nltk.parse.generate.demo",
    "exports": [
+    "generateDemo",
+    "generate_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function generateDemo("
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "generate() demo over demo grammar."
   },
   {
    "target": "nltk.parse.generate.generate",
@@ -47931,118 +48103,131 @@
   {
    "target": "nltk.parse.nonprojectivedependencyparser.demo",
    "exports": [
+    "nppDemo",
+    "npp_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function nppDemo("
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Nonprojective dep parser demo."
   },
   {
    "target": "nltk.parse.nonprojectivedependencyparser.hall_demo",
    "exports": [
+    "hallDemo",
     "hall_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function hall_demo"
+     "file": "src/demos.ts",
+     "anchor": "export function hallDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "hall_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "hall_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "hall_demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.parse.nonprojectivedependencyparser.nonprojective_conll_parse_demo",
    "exports": [
+    "nonprojectiveConllParseDemo",
     "nonprojective_conll_parse_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function nonprojective_conll_parse_demo"
+     "file": "src/demos.ts",
+     "anchor": "export function nonprojectiveConllParseDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "nonprojective_conll_parse_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "nonprojective_conll_parse_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "nonprojective_conll_parse_demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.parse.nonprojectivedependencyparser.rule_based_demo",
    "exports": [
+    "ruleBasedDemo",
     "rule_based_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function rule_based_demo"
+     "file": "src/demos.ts",
+     "anchor": "export function ruleBasedDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "rule_based_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "rule_based_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "rule_based_demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.parse.pchart.AbstractChartRule",
@@ -48713,31 +48898,35 @@
   {
    "target": "nltk.parse.pchart.demo",
    "exports": [
+    "pchartDemo",
+    "pchart_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function pchartDemo("
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Inside/probabilistic chart demo."
   },
   {
    "target": "nltk.parse.projectivedependencyparser.ChartCell",
@@ -49000,118 +49189,131 @@
   {
    "target": "nltk.parse.projectivedependencyparser.arity_parse_demo",
    "exports": [
+    "arityParseDemo",
     "arity_parse_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function arity_parse_demo"
+     "file": "src/demos.ts",
+     "anchor": "export function arityParseDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "arity_parse_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "arity_parse_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "arity_parse_demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.parse.projectivedependencyparser.demo",
    "exports": [
+    "pdpDemo",
+    "pdp_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function pdpDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.parse.projectivedependencyparser.projective_prob_parse_demo",
    "exports": [
+    "projectiveProbParseDemo",
     "projective_prob_parse_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function projective_prob_parse_demo"
+     "file": "src/demos.ts",
+     "anchor": "export function projectiveProbParseDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "projective_prob_parse_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "projective_prob_parse_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "projective_prob_parse_demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.parse.projectivedependencyparser.projective_rule_parse_demo",
    "exports": [
+    "projectiveRuleParseDemo",
     "projective_rule_parse_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/parse_gaps.ts",
-     "anchor": "export function projective_rule_parse_demo"
+     "file": "src/demos.ts",
+     "anchor": "export function projectiveRuleParseDemo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "projective_rule_parse_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "projective_rule_parse_demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "projective_rule_parse_demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.parse.projectivedependencyparser.raise_unorderable_types",
@@ -49321,31 +49523,35 @@
   {
    "target": "nltk.parse.recursivedescent.demo",
    "exports": [
+    "recursivedescentDemo",
+    "recursiveDescentDemo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function recursivedescentDemo("
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Recursive-descent demo."
   },
   {
    "target": "nltk.parse.shiftreduce.Nonterminal",
@@ -49497,31 +49703,35 @@
   {
    "target": "nltk.parse.shiftreduce.demo",
    "exports": [
+    "shiftreduceDemo",
+    "shiftReduceDemo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function shiftreduceDemo("
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Shift-reduce demo."
   },
   {
    "target": "nltk.parse.transitionparser.Configuration",
@@ -50373,31 +50583,35 @@
   {
    "target": "nltk.parse.viterbi.demo",
    "exports": [
+    "viterbiDemo",
+    "viterbi_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
-     "anchor": "export function demo"
+     "file": "src/demos.ts",
+     "anchor": "export function viterbiDemo("
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "Viterbi chart demo."
   },
   {
    "target": "nltk.corpus.AlignedCorpusReader",
@@ -96535,31 +96749,34 @@
   {
    "target": "nltk.chat.chatbots",
    "exports": [
-    "chatbots"
+    "chatbots",
+    "bots"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/misc_gaps.ts",
-     "anchor": "export function chatbots"
+     "file": "src/ext_pure.ts",
+     "anchor": "export function chatbots("
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+     "Takes out/inputFn injections; converse loop needs an input source."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope for this runtime."
+     "Takes out/inputFn injections; converse loop needs an input source."
     ]
    },
-   "notes": "Interactive bot-selection menu; the Chat engine itself is ported."
+   "notes": "Chatbot registry + which_chat dispatch; converse() itself needs interactive input."
   },
   {
    "target": "nltk.chat.eliza.eliza_chat",
@@ -98245,42 +98462,47 @@
   {
    "target": "nltk.twitter.common.outf_writer_compat",
    "exports": [
-    "outf_writer_compat"
+    "outfWriterCompat",
+    "outf_writer_compat",
+    "CsvWriter",
+    "CsvFile"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/misc_gaps.ts",
-     "anchor": "export function outf_writer_compat"
+     "file": "src/ext_pure.ts",
+     "anchor": "export function outfWriterCompat"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+     "encoding/errors/gzip_compress params honoured; returns [writer, file] tuple."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope for this runtime."
+     "encoding/errors/gzip_compress params honoured; returns [writer, file] tuple."
     ]
    },
-   "notes": "Deprecated open()+csv.writer compatibility shim."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.twitter.api.TweetHandlerI",
    "exports": [
     "TweetHandlerI"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/misc_gaps.ts",
+     "file": "src/ext_pure.ts",
      "anchor": "export class TweetHandlerI"
     }
    ],
@@ -98288,28 +98510,30 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+     "Abstract-guard TypeError parity; no twisted reactor."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope for this runtime."
+     "Abstract-guard TypeError parity; no twisted reactor."
     ]
    },
-   "notes": "Twisted/reactor line receiver; network-bound."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.twitter.api.BasicTweetHandler",
    "exports": [
     "BasicTweetHandler"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/misc_gaps.ts",
+     "file": "src/ext_pure.ts",
      "anchor": "export class BasicTweetHandler"
     }
    ],
@@ -98317,28 +98541,32 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+     "counter/limit honoured; handle() not reactor-bound."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope for this runtime."
+     "counter/limit honoured; handle() not reactor-bound."
     ]
    },
-   "notes": "Twisted/reactor line receiver; network-bound."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.twitter.api.LocalTimezoneOffsetWithUTC",
    "exports": [
-    "LocalTimezoneOffsetWithUTC"
+    "LocalTimezoneOffsetWithUTC",
+    "LOCAL",
+    "parseTwitterDate"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/misc_gaps.ts",
+     "file": "src/ext_pure.ts",
      "anchor": "export class LocalTimezoneOffsetWithUTC"
     }
    ],
@@ -98346,17 +98574,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope for this runtime."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Twisted/reactor line receiver; network-bound."
+   "notes": "Sink-injected port of the Python demo/helper; output pinned to the NLTK 3.10.3 oracle."
   },
   {
    "target": "nltk.compat.add_py3_data",

@@ -24,19 +24,12 @@ export function hf_load_data(..._a: unknown[]): never { return unavailable("nltk
 export function toolbox_demo(..._a: unknown[]): never { return unavailable("nltk.toolbox.demo"); }
 
 // { nltk.chat demo wrappers — interactive menu. }
-export function chatbots(..._a: unknown[]): never { return unavailable("nltk.chat.chatbots"); }
+export { chatbots, bots } from "./ext_pure";
 export function chat_demo(..._a: unknown[]): never { return unavailable("nltk.chat.demo"); }
 
 // { nltk.twitter.common.outf_writer_compat — deprecated file-object shim. }
-export function outf_writer_compat(..._a: unknown[]): never { return unavailable("nltk.twitter.common.outf_writer_compat"); }
-
-// { nltk.twitter.api — twisted/reactor line receivers; network-bound. }
-export class TweetHandlerI {
-  constructor(..._a: unknown[]) { unavailable("TweetHandlerI"); }
-}
-export class BasicTweetHandler {
-  constructor(..._a: unknown[]) { unavailable("BasicTweetHandler"); }
-}
-export class LocalTimezoneOffsetWithUTC {
-  constructor(..._a: unknown[]) { unavailable("LocalTimezoneOffsetWithUTC"); }
-}
+export {
+  outfWriterCompat, outf_writer_compat, CsvWriter, CsvFile,
+  TweetHandlerI, BasicTweetHandler, LocalTimezoneOffsetWithUTC, LOCAL,
+  parseTwitterDate,
+} from "./ext_pure";
