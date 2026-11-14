@@ -50,21 +50,39 @@ Python API consumes an iterable, arrays are accepted.
 - `nltk.corpus` readers resolve against `NLTK_DATA`-style directories; corpus
   files that ship with Python NLTK but are not provisioned remain documented
   gaps rather than silently empty readers.
-- There is no `nltk.download()` equivalent at runtime; resources are
-  provisioned at build/dev time via `scripts/nltk-resources.py` (checksum-locked).
+- `nltk.download()` / `nltk.downloader.Downloader` are real, async
+  (fetch-based) ports: index fetching, package/collection status,
+  `download()`/`update()`/`incr_download()`, md5/sha256 checksums,
+  pathsec-guarded unzip, and `.lock`/`.tmp` install protocol — all
+  oracle-pinned. The API is `await`-able because fetch cannot be sync;
+  download/extract paths need `node:fs`, while index/status/message
+  handling on in-memory data works anywhere `fetch` exists. Interactive
+  GUI/shell entry points (`download_gui`, `download_shell`,
+  `DownloaderGUI`, `DownloaderShell`) remain unsupported stubs.
+- External-tool wrappers are optional **adapters**, not hard stubs: when
+  Node can exec the tool (Stanford taggers, Hunpos, Senna, Malt, Bllip,
+  CoreNLP server + HTTP client, Boxer, megam/tadm, Graphviz `dot2img`,
+  `internals.java`/`config_java`/`find_jar*` with jar-sandbox checks),
+  they run for real; when the binary/service is absent they raise the
+  same Python-style `LookupError`/`ImportError`/`OSError` the oracle
+  records. Browser builds keep the importable surface but these paths
+  require a process to spawn or a socket to connect.
 
 ## Deliberate gaps
 
 Shims exist so imports do not crash, but these throw descriptive errors —
 matching Python behavior here is impossible without the dependency:
 
-- Tkinter GUIs (`nltk.app`, `nltk.draw` and friends)
-- External binaries/services: Stanford/Malt/CoreNLP wrappers, Boxer, chatbot
-  network integrations, Twitter streaming
-- Pickle deserialization of Python-trained artifacts (`.pickle` model loading,
-  TBL demo pickles)
-- Java bridges and `nltk.internals`-style subprocess launching are replaced
-  by the native Rust path or stubbed where no equivalent exists
+- Tkinter GUIs (`nltk.app`, `nltk.draw` and friends, `DrsDrawer`,
+  `drt.test_draw`, `cluster` `ShowText`/dendrogram display)
+- Truly network-interactive paths: `chat_demo`/`chatbots` converse loops,
+  Twitter streaming/twisted reactors, CoreNLP *client-side* `transform`
+  pieces that need a live server
+- Pickle deserialization of Python-trained artifacts (`.pickle` model
+  loading, TBL demo pickles)
+- Corpus-bound demos and helpers whose only input is a resource that
+  does not ship (toolbox rotokas demo, `dependencygraph.malt_demo`'s
+  MaltParser binary path when no jar is installed)
 
 The inventory records each as `unsupported`/`gap` with notes — nothing is
 silently partial.

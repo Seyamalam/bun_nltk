@@ -8,6 +8,43 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+- **`nltk.downloader` real port (24 mappings promoted)**: `Downloader`,
+  `Package`, `Collection`, all 12 message classes, `build_index`,
+  `unzip`/`_unzip_iter`, `md5_hexdigest`/`sha256_hexdigest`,
+  `xml_tostring`, module-level `download`/`update`/`defaultDownloader`.
+  Async fetch-based API (`await d.download(...)`); GUI/shell entry
+  points stay honest stubs. Python quirks pinned: self-deadlock on "y"
+  retry, `Exception(<ErrorMessage>)` object reprs, double-space "Done",
+  `%s`/`%r` repr asymmetry, def-time `sys.stderr` binding, sticky
+  `_errors`, missing-sha256 warning + md5 fallback, `ENOTDIR` file-
+  blocks-dir unzip, full pathsec (traversal/null-byte/symlink-escape/
+  cross-package CVE-2026-12261 checks), decompression-bomb limits,
+  `.lock`/`.tmp` install protocol.
+- **Optional-dependency adapters (45 mappings promoted)**: real
+  subprocess/HTTP ports that execute when the tool exists and raise
+  Python-style `LookupError`/`ImportError`/`OSError` when absent —
+  `internals.java`/`config_java`/`find_jar*` with jar-sandbox
+  `UntrustedJarError`, Stanford POSTagger/NERTagger, HunposTagger,
+  Senna/SennaTagger/SennaChunkTagger/SennaNERTagger, MaltParser,
+  BllipParser (`ImportError` parity), `CoreNLPServer` spawn +
+  `GenericCoreNLPParser` HTTP client (strict/loose JSON parity),
+  dependencygraph `dot2img`, Boxer, `call_megam`/`call_tadm`/
+  `write_megam_file`/`write_tadm_file`/`parse_megam_weights`/
+  `parse_tadm_weights`, and `train(algorithm="megam")` dispatch via a
+  late-bound trainer slot.
+- **Pure demos/helpers (41 mappings promoted)**: `src/demos.ts` ports
+  every corpus-free NLTK demo with sink-injected output — chart/rd/sr/
+  earley/featurechart/pchart/viterbi/generate parse demos, dep-parser
+  conll/cycle/npp/hall/rule-based/arity/probabilistic demos, metrics
+  distance+scores, misc sort, EM+kmeans cluster demos (bit-exact LAPACK
+  `dgetri`-form `inv2` + correctly-rounded `rsqrtCR`), sem evaluate/
+  propdemo/folmodel/foldemo/satdemo, DRT demo with Python-faithful
+  `_pretty` scope-patch, linearlogic/cooper/util demos, chunk
+  `demo_eval`. `src/ext_pure.ts` adds the chatbots registry, twitter
+  `outf_writer_compat`/`TweetHandlerI`/`BasicTweetHandler`/
+  `LocalTimezoneOffsetWithUTC`/`LOCAL`/`parseTwitterDate`, stanford
+  `find_jar`, and the Py*/NdArray runtime scaffolding the demos pin.
+
 - **Corpus-reader sweep (~196 mappings promoted)**: real portable
   implementations for the previously stubbed reader families —
   `XMLCorpusReader`/`XMLCorpusView`/`XML_Tool`/`xpath` plus a pure
@@ -86,6 +123,15 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Fixed
 
+- `test/downloader.test.ts` restores `process.env.NLTK_DATA` and
+  `dataPath` after running — previously leaked `/tmp/nltk_dl_test` into
+  later files' oracle environments.
+- `test/gap_pure.test.ts` resets the unique-variable counter once per
+  describe (mirroring the oracle's fresh process) and pushes the cache
+  dir into `dataPath` itself instead of relying on test-file order.
+- `excluded_modules` `fromxml` test writes XML to real files — Python
+  treats a string argument as a filename (`FileNotFoundError`), which the
+  port now faithfully reproduces.
 - Stale source-hash snapshot drift and test-file type errors
   (`cluster.test.ts`, `sem.test.ts`); `tsc --noEmit` is clean.
 - Committed `__pycache__` bytecode removed; `*.pyc` is now gitignored.
