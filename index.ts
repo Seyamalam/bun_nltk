@@ -945,7 +945,8 @@ export {
   kmeansDemo, kmeans_demo, demoEval, prodemoMissing, demoReadDepgraph,
   punktDemo, punkt_demo, porterDemo, porter_demo, tnt_demo, tntDemoErrors,
   tnt_demo_errors, elizaDemo, eliza_demo, ieshaDemo, iesha_demo, rudeDemo,
-  rude_demo, suntsuDemo, suntsu_demo, zenDemo, zen_demo,
+  rude_demo, suntsuDemo, suntsu_demo, zenDemo, zen_demo, gaacDemo, gaac_demo,
+  wordfinderDemo, word_finder_demo,
 } from "./src/demos";
 export type { PrintSink } from "./src/demos";
 

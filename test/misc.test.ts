@@ -4,6 +4,7 @@ import { MinimalSet } from "../src/misc_minimalset";
 import { generateChomsky, _internal } from "../src/misc_chomsky";
 import { babelizeShell } from "../src/misc_babelfish";
 import { check, revword, step, wordfinder, word_finder } from "../src/misc_wordfinder";
+import { dataPath } from "../src/data";
 
 // Pinned against NLTK 3.10.3 (see test/misc_oracle.py).
 
@@ -130,7 +131,12 @@ describe("nltk.misc.wordfinder", () => {
     expect(used.every((w) => words.map((x) => x.toUpperCase()).includes(w))).toBe(true);
   });
 
-  test("word_finder is corpus-bound and throws a descriptive error", () => {
-    expect(() => word_finder()).toThrow("nltk.corpus.words");
+  test("word_finder without corpus raises LookupError", () => {
+    const saved = dataPath.splice(0);
+    try {
+      expect(() => word_finder(() => {})).toThrow();
+    } finally {
+      dataPath.push(...saved);
+    }
   });
 });

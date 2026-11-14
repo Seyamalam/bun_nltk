@@ -1318,7 +1318,11 @@
    "suntsuDemo": "src/demos.ts",
    "suntsu_demo": "src/demos.ts",
    "zenDemo": "src/demos.ts",
-   "zen_demo": "src/demos.ts"
+   "zen_demo": "src/demos.ts",
+   "gaacDemo": "src/demos.ts",
+   "gaac_demo": "src/demos.ts",
+   "wordfinderDemo": "src/demos.ts",
+   "word_finder_demo": "src/demos.ts"
   }
  },
  "modules": [
@@ -21740,31 +21744,35 @@
   {
    "target": "nltk.cluster.gaac.demo",
    "exports": [
+    "gaacDemo",
+    "gaac_demo",
     "demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/cluster_gaac.ts",
-     "anchor": "GAAClusterer"
+     "file": "src/demos.ts",
+     "anchor": "export function gaacDemo("
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo function \u2014 no non-interactive equivalent is provided."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Demo output is interactive/terminal-bound; no oracle pins."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "NLTK demo() prints an interactive walkthrough; recorded as an explicit gap."
+   "notes": "GAAC 2-D demo; dendrogram bypasses the sink like Python's module-bound stdout. Oracle-pinned."
   },
   {
    "target": "nltk.cluster.kmeans.KMeansClusterer",
@@ -23100,7 +23108,7 @@
     "revword"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/misc_wordfinder.ts",
@@ -23111,7 +23119,7 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Random 50/50 reversal like nltk's random.randint(1,2)==1; JS RNG differs from MT19937."
+     "Adds optional PyRandom rng param; Python draws from the module-global random."
     ]
    },
    "evidence": [
@@ -23123,7 +23131,7 @@
      "Deterministic surfaces pinned verbatim; RNG-bound outputs verified structurally."
     ]
    },
-   "notes": "Port of nltk.misc.wordfinder.revword."
+   "notes": "Port of nltk.misc.wordfinder.revword; randint(1,2)==1 reversal via PyRandom randbelow."
   },
   {
    "target": "nltk.misc.wordfinder.step",
@@ -23193,7 +23201,7 @@
     "wordfinder"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/misc_wordfinder.ts",
@@ -23204,7 +23212,7 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Returns {grid, used} object rather than a tuple; RNG placement differs from Python's MT19937; grid/used semantics and alphabet fill pinned."
+     "Adds optional PyRandom rng param; Python draws from the module-global random."
     ]
    },
    "evidence": [
@@ -23216,36 +23224,40 @@
      "Deterministic surfaces pinned verbatim; RNG-bound outputs verified structurally."
     ]
    },
-   "notes": "Port of nltk.misc.wordfinder.wordfinder."
+   "notes": "Port of nltk.misc.wordfinder.wordfinder; PyRandom rng param for seeded parity (CPython randbelow draw order)."
   },
   {
    "target": "nltk.misc.wordfinder.word_finder",
    "exports": [
-    "word_finder"
+    "word_finder",
+    "wordfinderDemo",
+    "word_finder_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/misc_wordfinder.ts",
-     "anchor": "export function word_finder"
+     "anchor": "export function word_finder("
     }
    ],
    "signatures": {
-    "status": "missing",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Requires nltk.corpus.words which is not bundled; throws a descriptive error pointing at wordfinder(words)."
+     "Takes a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Corpus resource nltk.corpus.words is not packaged; the demo path cannot run."
+     "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "nltk.misc.wordfinder.word_finder needs the words corpus; wordfinder() itself is ported."
+   "notes": "words-corpus grid demo; seeded-PyRandom shuffle/placement draw-for-draw parity. Oracle-pinned."
   },
   {
    "target": "nltk.sem.logic.Expression",

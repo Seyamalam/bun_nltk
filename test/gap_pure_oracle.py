@@ -308,4 +308,10 @@ try:
 finally:
     sys.stdin = _stdin
 
+from nltk.cluster import gaac as _gaac
+run("gaac_demo", _gaac.demo)
+
+from nltk.misc import wordfinder as _wf
+random.seed(0); run("word_finder_demo", _wf.word_finder)
+
 print(json.dumps({"out": out, "errs": errs}))

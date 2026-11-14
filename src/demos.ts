@@ -58,6 +58,8 @@ import { PunktTrainer as PunktTrainerNltk, PunktSentenceTokenizer as PunktSenten
 import { demo_model0, evaluate_sents } from "./sem_util";
 import { cooperStoreFromTree, parse_with_bindops } from "./cooper_storage";
 import { find as dataFind } from "./data";
+import { GAAClusterer } from "./cluster_gaac";
+import { word_finder } from "./misc_wordfinder";
 
 export type { PrintSink };
 export const stdout: PrintSink = (s) => process.stdout.write(s);
@@ -2199,3 +2201,27 @@ export const iesha_demo = ieshaDemo;
 export const rude_demo = rudeDemo;
 export const suntsu_demo = suntsuDemo;
 export const zen_demo = zenDemo;
+
+/** nltk.cluster.gaac.demo — non-interactive 2-D GAAC walkthrough. The
+ * dendrogram goes to real stdout (Python's show() writes through a
+ * module-bound sys.stdout, bypassing redirect_stdout). */
+export function gaacDemo(out: PrintSink): void {
+  const vectors = [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]];
+  const clusterer = new GAAClusterer(4);
+  const clusters = clusterer.cluster(vectors.map((v) => v.slice()), true) as number[];
+  pyPrint(out, "Clusterer:", clusterer);
+  pyPrint(out, `Clustered: [${vectors.map((v) => ndarrayRepr(v, "int")).join(", ")}]`);
+  pyPrint(out, "As:", clusters);
+  pyPrint(out);
+  stdout(clusterer.dendrogram()!.show());
+  pyPrint(out, `classify(${ndarray([3, 3], "int")}):`, pyEnd(" "));
+  pyPrint(out, clusterer.classify([3, 3]));
+  pyPrint(out);
+}
+export const gaac_demo = gaacDemo;
+
+/** nltk.misc.wordfinder.word_finder — words-corpus grid demo (rng seedable). */
+export function wordfinderDemo(out: PrintSink, rng?: PyRandom): void {
+  word_finder(out, rng);
+}
+export const word_finder_demo = wordfinderDemo;

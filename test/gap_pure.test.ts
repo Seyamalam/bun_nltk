@@ -15,7 +15,7 @@ import {
   generateDemo, hallDemo, kmeansDemo, linearlogicDemo, nonprojectiveConllParseDemo,
   nppDemo, pchartDemo, pdpDemo, prodemoMissing, projectiveProbParseDemo,
   demoReadDepgraph, punktDemo, porterDemo, tntDemo, tntDemoErrors,
-  elizaDemo, ieshaDemo, rudeDemo, suntsuDemo, zenDemo,
+  elizaDemo, ieshaDemo, rudeDemo, suntsuDemo, zenDemo, gaacDemo, wordfinderDemo,
   projectiveRuleParseDemo, propdemo, recursivedescentDemo, ruleBasedDemo,
   satdemo, scoresDemo, semUtilDemo, shiftreduceDemo, sortDemo, viterbiDemo,
 } from "../src/demos";
@@ -250,6 +250,8 @@ describe("sem demos", () => {
     expect(run(o => suntsuDemo(o, feed, new PyRandom(0)))).toBe(T("chat_suntsu_demo"));
     expect(run(o => zenDemo(o, feed, new PyRandom(0)))).toBe(T("chat_zen_demo"));
   });
+  test("gaac demo", () => expect(run(o => gaacDemo(o))).toBe(T("gaac_demo")));
+  test("wordfinder demo", () => expect(run(o => wordfinderDemo(o, new PyRandom(0)))).toBe(T("word_finder_demo")));
 });
 
 describe("util.demo option surface", () => {
