@@ -395,4 +395,14 @@ def _snowball_demo_inputs(seq):
 run("snowball_demo_en", _snowball_demo_inputs(["bogus", "english", "exit"]))
 run("snowball_demo_fr", _snowball_demo_inputs(["french", "exit"]))
 
+
+# ---------------- chunk regexp demo (nltk.chunk.regexp) ----------------
+import nltk.chunk.regexp as _cr
+run("chunk_regexp_demo", _cr.demo)
+
+
+# ---------------- transitionparser demo (nltk.parse.transitionparser) ----------------
+import nltk.parse.transitionparser as _tparser
+run("transitionparser_demo", _tparser.demo)
+
 print(json.dumps({"out": out, "errs": errs}))

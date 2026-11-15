@@ -527,6 +527,7 @@ export { skolemize } from "./src/skolemize";
 export type { SNOWBALL_LANGUAGES as SnowballLanguages } from "./src/snowball";
 export { SNOWBALL_LANGUAGES, snowballStem } from "./src/snowball";
 export { demo as snowball_demo, demo as snowballDemo } from "./src/snowball_demo";
+export { demo as chunk_regexp_demo, demo as chunkRegexpDemo } from "./src/chunk_regexp_demo";
 
 export {
   IBMModel1,
@@ -556,7 +557,7 @@ export { overridden, find_file } from "./src/internals";
 export { find_jar, java, config_java } from "./src/ext_subprocess";
 export { normalizeResourceUrl as normalize_resource_url } from "./src/data";
 export { StanfordTokenizer, StanfordSegmenter, ReppTokenizer } from "./src/tokenize_wrappers";
-export { BllipParser, CoreNLPParser, MaltParser, StanfordParser, TransitionParser, ShiftReduceParser } from "./src/parse_wrappers";
+export { BllipParser, CoreNLPParser, MaltParser, StanfordParser, TransitionParser, ShiftReduceParser, demo as transitionparser_demo, demo as transitionparserDemo } from "./src/parse_wrappers";
 export { Boxer, cooperStore, lfgParse } from "./src/sem_wrappers";
 export { TreePrettyPrinter, prettyPrint } from "./src/tree_prettyprinter";
 export { Paice } from "./src/metrics_paice";

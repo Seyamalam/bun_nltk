@@ -301,24 +301,26 @@ export function conllstr2tree(s: string, chunkTypes = ["NP", "PP", "VP"], rootLa
     if (fields.length < 3) {
       throw pyError("ValueError", ` conllstr2tree: line has ${fields.length} fields (<3): ${line}`);
     }
-    const chunk = fields[fields.length - 1]!;
-    const text = fields.slice(0, -1).join("/");
-    if (chunk.startsWith("B-")) {
-      const label = chunk.slice(2);
-      const subtree = new SimpleTree(label, []);
+    const word = fields[0]!;
+    const tag = fields[1]!;
+    const m = /^([BIO])-?(\S+)?$/.exec(fields[fields.length - 1]!);
+    let state = m ? m[1]! : "";
+    const chunkType = m ? (m[2] ?? null) : null;
+    // If it's a chunk type we don't care about, treat it as O.
+    if (chunkTypes != null && chunkType !== null && !chunkTypes.includes(chunkType)) {
+      state = "O";
+    }
+    // For "Begin"/"Outside", finish any completed chunks — also for
+    // "Inside" which don't match the previous token.
+    const mismatchI = state === "I" && chunkType !== stack[stack.length - 1]!.label;
+    if (state === "B" || state === "O" || mismatchI) {
+      if (stack.length === 2) stack.pop();
+    }
+    if (state === "B" || mismatchI) {
+      const subtree = new SimpleTree(chunkType ?? "", []);
       stack[stack.length - 1]!.children.push(subtree);
       stack.push(subtree);
-    } else if (chunk.startsWith("I-")) {
-      const label = chunk.slice(2);
-      if (stack.length === 1 || stack[stack.length - 1]!.label !== label) {
-        const subtree = new SimpleTree(label, []);
-        stack[stack.length - 1]!.children.push(subtree);
-        stack.push(subtree);
-      }
-    } else if (chunk === "O") {
-      while (stack.length > 1) stack.pop();
     }
-    const [word, tag] = str2tuple(text, "/");
     stack[stack.length - 1]!.children.push([word, tag]);
   }
   return stack[0]!;

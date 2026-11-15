@@ -1340,7 +1340,11 @@
    "demoBw": "src/hmm_tagger.ts",
    "demoPosBw": "src/hmm_tagger.ts",
    "snowball_demo": "src/snowball_demo.ts",
-   "snowballDemo": "src/snowball_demo.ts"
+   "snowballDemo": "src/snowball_demo.ts",
+   "chunk_regexp_demo": "src/chunk_regexp_demo.ts",
+   "chunkRegexpDemo": "src/chunk_regexp_demo.ts",
+   "transitionparser_demo": "src/parse_wrappers.ts",
+   "transitionparserDemo": "src/parse_wrappers.ts"
   }
  },
  "modules": [
@@ -1994,7 +1998,7 @@
     "test/sequential_taggers.test.ts",
     "test/sequential_tagger_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — TaggerI member surface",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 TaggerI member surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: accuracy/precision/recall/f_measure/evaluate_per_tag tables, size, _context_to_tag, _check_params both/neither, DefaultTagger backoff, encode/decode_json_obj."
   },
@@ -2005,9 +2009,9 @@
     "test/perceptron_tagger.test.ts",
     "test/perceptron_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 doctest pins — trained-tagger surface",
+   "anchor": "NLTK 3.10.3 doctest pins \u2014 trained-tagger surface",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: doctest train→tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
+   "scope": "NLTK 3.10.3-pinned: doctest train\u2192tag output, classes, normalize (!HYPHEN/!YEAR/!DIGITS), param_files names, accuracy/precision/recall/evaluate_per_tag on trained model, empty-classes max() error, encode/decode_json round-trip."
   },
   {
    "id": "concordance-differential",
@@ -2016,7 +2020,7 @@
     "test/text.test.ts",
     "test/concordance_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — ConcordanceIndex contract",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 ConcordanceIndex contract",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: offsets/defaultdict types count, find_concordance line bytes (left rjust, i+context right slice, trailing space), phrase matching, print_concordance Displaying/no-matches format, repr."
   },
@@ -2049,7 +2053,7 @@
     "test/collocations.test.ts",
     "test/collocations_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — BigramCollocationFinder contract",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 BigramCollocationFinder contract",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: N/word_fd/window_size, pmi/raw_freq scores, score_ngrams ordering, nbest, above_score, ws=3 non-contiguous bigrams, freq filter."
   },
@@ -2060,7 +2064,7 @@
     "test/sentiment.test.ts",
     "test/vader_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — full SentimentIntensityAnalyzer member surface",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 full SentimentIntensityAnalyzer member surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: 5 doctest polarity_scores dicts, SentiText words/cap_diff, VaderConstants negated/normalize/scalar_inc_dec, score_valence + empty, sentiment_valence, make_lex_dict, 7502-entry lexicon."
   },
@@ -2071,7 +2075,7 @@
     "test/probability.test.ts",
     "test/probdist_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — ProbDistI inherited surface",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 ProbDistI inherited surface",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: SUM_TO_ONE per class, discount (base 0.0 vs Lidstone formula), logprob -1e300 unseen, prob unseen/empty=0, generate weighted sampling, repr, bins>=B() error wording."
   },
@@ -2082,7 +2086,7 @@
     "test/grammar.test.ts",
     "test/grammar_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.grammar CFG/Production/Nonterminal",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.grammar CFG/Production/Nonterminal",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: CFG init/indexes/leftcorner closure, productions(lhs/rhs/empty) filters, grammar-form predicates, chomsky_normal_form pipeline (eliminate_start, binarize, remove_mixed_rules, remove_unitary_rules with cycle guard), check_coverage quoting, read_grammar errors, Production/ProbabilisticProduction/DependencyProduction/Nonterminal/nonterminals."
   },
@@ -2093,7 +2097,7 @@
     "test/chart_parser.test.ts",
     "test/chart_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.parse.chart",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.parse.chart",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: ChartParser.chart_parse agenda/non-agenda loops, BU_LC/TD/LC strategies, edge set/count equality, shared-edge ambiguity via child_pointer_lists, select restrictions, pretty_format_edge/leaves, parse trees and ParserI surface."
   },
@@ -2104,7 +2108,7 @@
     "test/chunk_parser.test.ts",
     "test/chunk_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.chunk RegexpParser/RegexpChunkParser/ChunkScore",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.chunk RegexpParser/RegexpChunkParser/ChunkScore",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: RegexpParser staged grammars/chinks/loop, all 8 RegexpChunkRule subclasses via fromstring, ChunkString brace validation, tag_pattern2re_pattern translations and errors, ChunkScore metrics/str/repr, ParserI parse_one/parse_all/parse_sents surface."
   },
@@ -2115,7 +2119,7 @@
     "test/lm_nltk.test.ts",
     "test/lm_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.lm LanguageModel/Vocabulary/NgramCounter",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.lm LanguageModel/Vocabulary/NgramCounter",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: MLE/Lidstone/Laplace/StupidBackoff/WittenBellInterpolated/AbsoluteDiscountingInterpolated/KneserNeyInterpolated score+perplexity matrix, generate via Python-compatible MT19937 (seed=3), context backoff/trimming, math domain error, Vocabulary cutoff/membership/lookup/update/str, NgramCounter orders/N/indexing/tuple validation."
   },
@@ -2126,7 +2130,7 @@
     "test/wordnet_objects.test.ts",
     "test/wordnet_objects_oracle.py"
    ],
-   "anchor": "NLTK 3.10.3 oracle pins — nltk.corpus.wordnet Synset/Lemma object model",
+   "anchor": "NLTK 3.10.3 oracle pins \u2014 nltk.corpus.wordnet Synset/Lemma object model",
    "oracleVersion": "3.10.3",
    "scope": "NLTK 3.10.3-pinned: Synset name/pos/offset/lexname/definition/examples/lemma_names, Lemma name/key/repr/antonyms/lang, hypernym/hyponym relations, index.<pos> sense numbering, hypernym_paths, root_hypernyms, lowest_common_hypernyms, common_hypernyms membership, hypernym_distances, max/min_depth, shortest_path_distance, path/wup/lch similarity. Requires the packed wordnet artifact (senseNums + original lemma/pointer order)."
   },
@@ -2139,7 +2143,7 @@
    ],
    "anchor": "Values pinned from Python NLTK 3.10.3 (see test/snowball_arfihu_oracle.py)",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: 45 Arabic + 40 Finnish + 43 Hungarian stems including diacritic normalization, string-vs-tuple suffix iteration quirks (noun step2b 'ات'), Hungarian digraph R1, Finnish vowel-harmony step checks, ignore_stopwords post-normalization check for Arabic."
+   "scope": "NLTK 3.10.3-pinned: 45 Arabic + 40 Finnish + 43 Hungarian stems including diacritic normalization, string-vs-tuple suffix iteration quirks (noun step2b '\u0627\u062a'), Hungarian digraph R1, Finnish vowel-harmony step checks, ignore_stopwords post-normalization check for Arabic."
   },
   {
    "id": "tree-differential",
@@ -2477,7 +2481,7 @@
    ],
    "anchor": "earleychart parsers differential: parses and per-end edge counts match oracle",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: Earley/IncrementalTopDown/IncrementalBottomUp/IncrementalBottomUpLeftCorner/IncrementalLeftCorner chart parsers on the chart.py demo grammar + sentence — exact parse trees, num_edges, and per-end edge counts; IncrementalChart select end contract; strategy NUM_EDGES partitions."
+   "scope": "NLTK 3.10.3-pinned: Earley/IncrementalTopDown/IncrementalBottomUp/IncrementalBottomUpLeftCorner/IncrementalLeftCorner chart parsers on the chart.py demo grammar + sentence \u2014 exact parse trees, num_edges, and per-end edge counts; IncrementalChart select end contract; strategy NUM_EDGES partitions."
   },
   {
    "id": "parse-featurechart-differential",
@@ -2488,7 +2492,7 @@
    ],
    "anchor": "feature-chart parsers match oracle trees for all eight strategies",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: FeatureChartParser/TopDown/BottomUp/BULC + Earley + 3 incremental feature parsers on the featurechart demo grammar — exact tree sets per strategy; FeatStruct unify results + bindings; FeatureGrammar TYPE-indexed productions; FeatureTreeEdge binding substitution on completion; InstantiateVarsChart @-var renaming; find_variables."
+   "scope": "NLTK 3.10.3-pinned: FeatureChartParser/TopDown/BottomUp/BULC + Earley + 3 incremental feature parsers on the featurechart demo grammar \u2014 exact tree sets per strategy; FeatStruct unify results + bindings; FeatureGrammar TYPE-indexed productions; FeatureTreeEdge binding substitution on completion; InstantiateVarsChart @-var renaming; find_variables."
   },
   {
    "id": "parse-generate-differential",
@@ -2499,7 +2503,7 @@
    ],
    "anchor": "generate() sentence stream matches oracle",
    "oracleVersion": "3.10.3",
-   "scope": "NLTK 3.10.3-pinned: generate() on a test CFG — depth-limited enumeration order, n slicing, n=0; chart.demo_grammar() productions + start symbol."
+   "scope": "NLTK 3.10.3-pinned: generate() on a test CFG \u2014 depth-limited enumeration order, n slicing, n=0; chart.demo_grammar() productions + start symbol."
   },
   {
    "id": "internals-differential",
@@ -4488,7 +4492,7 @@
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "confusion crashes on None tags in both implementations (sorted str+NoneType) — adapted."
+     "confusion crashes on None tags in both implementations (sorted str+NoneType) \u2014 adapted."
     ]
    },
    "notes": "TS sequential tagger, not the Rust perceptron/HMM primitives. TaggerI metric surface + ContextTagger._context_to_tag + _check_params both/neither + public context/chooseTag/train + encode/decode_json_obj."
@@ -4590,7 +4594,7 @@
      "Combining-character cut_string paths pinned by construction, not by oracle fixture."
     ]
    },
-   "notes": "Defaultdict offsets (miss registers key), i+context right-slice, untrimmed line join, cut_string combining-aware width, Displaying/no-matches print format — all pinned."
+   "notes": "Defaultdict offsets (miss registers key), i+context right-slice, untrimmed line join, cut_string combining-aware width, Displaying/no-matches print format \u2014 all pinned."
   },
   {
    "target": "nltk.collocations.BigramCollocationFinder",
@@ -4673,7 +4677,7 @@
      "No remaining tracked gaps in this fixture."
     ]
    },
-   "notes": "SentiText, VaderConstants, make_lex_dict, sentiment_valence, score_valence, polarity_scores — full discovered member surface, byte-pinned on doctest corpus."
+   "notes": "SentiText, VaderConstants, make_lex_dict, sentiment_valence, score_valence, polarity_scores \u2014 full discovered member surface, byte-pinned on doctest corpus."
   },
   {
    "target": "nltk.chunk.regexp.RegexpParser",
@@ -6973,7 +6977,7 @@
      "acyclic_tree"
     ],
     "gaps": [
-     "Meronym/holonym/domain/entailment/verb_group/attribute/frame/instance relations return empty — not carried in the packed payload.",
+     "Meronym/holonym/domain/entailment/verb_group/attribute/frame/instance relations return empty \u2014 not carried in the packed payload.",
      "res/jcn/lin_similarity are implemented; they need a caller-supplied IC mapping (WordNetICCorpusReader.ic).",
      "common_hypernyms ordering is BFS rather than Python set order."
     ]
@@ -9063,31 +9067,35 @@
   {
    "target": "nltk.chunk.regexp.demo",
    "exports": [
-    "demo"
+    "demo",
+    "chunk_regexp_demo",
+    "chunkRegexpDemo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
+     "file": "src/chunk_regexp_demo.ts",
      "anchor": "export function demo"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "Output routed to a PrintSink instead of stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Oracle-pinned byte-exact except hash-nondeterministic missed/incorrect chunk ordering (python ChunkScore set order)."
     ]
    },
-   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Port of nltk.chunk.regexp.demo + demo_eval \u2014 RegexpParser stages on tagstr2tree gold, conll2000 accuracy evals, final tagged-token parse printed via SimpleTree.pformat."
   },
   {
    "target": "nltk.chunk.regexp.demo_eval",
@@ -9498,7 +9506,7 @@
      "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "classify.util accuracy(classifier, gold) — distinct from nltk.metrics accuracy."
+   "notes": "classify.util accuracy(classifier, gold) \u2014 distinct from nltk.metrics accuracy."
   },
   {
    "target": "nltk.classify.maxent.call_megam",
@@ -9682,7 +9690,7 @@
      "Pinned in test/maxent_nltk.test.ts for the documented members."
     ]
    },
-   "notes": "classify.util log_likelihood(classifier, gold) — distinct from the probdist log_likelihood."
+   "notes": "classify.util log_likelihood(classifier, gold) \u2014 distinct from the probdist log_likelihood."
   },
   {
    "target": "nltk.classify.maxent.parse_megam_weights",
@@ -10318,7 +10326,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.wordnet.deprecated re-exports an existing implementation (corpus module alias)."
@@ -12244,7 +12252,7 @@
      "Oracle-driven input sequences; byte-exact output for english/french runs."
     ]
    },
-   "notes": "Port of nltk.stem.snowball.demo — interactive input() loop injectable; udhr.words via the new UdhrCorpusReader ENCODINGS table; byte-exact vs oracle."
+   "notes": "Port of nltk.stem.snowball.demo \u2014 interactive input() loop injectable; udhr.words via the new UdhrCorpusReader ENCODINGS table; byte-exact vs oracle."
   },
   {
    "target": "nltk.tag.perceptron.AveragedPerceptron",
@@ -18547,7 +18555,7 @@
      "namedtuple surface covered via PhraseTable.add/translationsFor in stack-decoder tests."
     ]
    },
-   "notes": "NamedTuple entry {trgPhrase, logProb} — exported as TS type only."
+   "notes": "NamedTuple entry {trgPhrase, logProb} \u2014 exported as TS type only."
   },
   {
    "target": "nltk.translate.api.find_binary",
@@ -18826,7 +18834,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "nltk.translate.gale_church.parse_token_stream: implements documented contract — Python 3 NLTK impl always raises (py2 .next() + PEP479)"
+   "notes": "nltk.translate.gale_church.parse_token_stream: implements documented contract \u2014 Python 3 NLTK impl always raises (py2 .next() + PEP479)"
   },
   {
    "target": "nltk.translate.gale_church.split_at",
@@ -18857,7 +18865,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "nltk.translate.gale_church.split_at: implements documented contract — Python 3 NLTK impl always raises (py2 .next() + PEP479)"
+   "notes": "nltk.translate.gale_church.split_at: implements documented contract \u2014 Python 3 NLTK impl always raises (py2 .next() + PEP479)"
   },
   {
    "target": "nltk.translate.gale_church.trace",
@@ -19519,7 +19527,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "WordNetCorpusReader → WordNetReader alias."
+   "notes": "WordNetCorpusReader \u2192 WordNetReader alias."
   },
   {
    "target": "nltk.translate.metrics.alignment_error_rate",
@@ -19550,7 +19558,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "AER = 1 - (|H∩S|+|H∩P|)/(|H|+|S|)."
+   "notes": "AER = 1 - (|H\u2229S|+|H\u2229P|)/(|H|+|S|)."
   },
   {
    "target": "nltk.translate.phrase_based.extract",
@@ -21648,7 +21656,7 @@
      "No fixture gaps observed for the pinned cases."
     ]
    },
-   "notes": "Group-average agglomerative clusterer — deterministic, oracle-pinned."
+   "notes": "Group-average agglomerative clusterer \u2014 deterministic, oracle-pinned."
   },
   {
    "target": "nltk.cluster.gaac.Dendrogram",
@@ -22365,8 +22373,8 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Returns PostagResult {tagger, baselineAccuracy, brillAccuracy, taggedTest} — nltk returns None and only prints; takes an optional PrintSink; options object uses camelCase names.",
-     "cache_baseline_tagger/serialize_output: CPython pickle is unportable — throws TypeError at the dump point Python reaches; error_output reproduces the upstream TypeError ('can't concat str to bytes') after writing the header-only file; learning_curve_output raises ModuleNotFoundError inside incremental_stats like python; tagged_data=None loads the treebank corpus reader."
+     "Returns PostagResult {tagger, baselineAccuracy, brillAccuracy, taggedTest} \u2014 nltk returns None and only prints; takes an optional PrintSink; options object uses camelCase names.",
+     "cache_baseline_tagger/serialize_output: CPython pickle is unportable \u2014 throws TypeError at the dump point Python reaches; error_output reproduces the upstream TypeError ('can't concat str to bytes') after writing the header-only file; learning_curve_output raises ModuleNotFoundError inside incremental_stats like python; tagged_data=None loads the treebank corpus reader."
     ]
    },
    "evidence": [
@@ -22548,7 +22556,7 @@
      "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Port of nltk.tbl.demo.demo — postag() with defaults; treebank-loaded; score-table trace byte-pinned."
+   "notes": "Port of nltk.tbl.demo.demo \u2014 postag() with defaults; treebank-loaded; score-table trace byte-pinned."
   },
   {
    "target": "nltk.tbl.demo.demo_repr_rule_format",
@@ -22580,7 +22588,7 @@
      "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Port of nltk.tbl.demo.demo_repr_rule_format — postag(ruleformat='repr'); repr-format score table pinned."
+   "notes": "Port of nltk.tbl.demo.demo_repr_rule_format \u2014 postag(ruleformat='repr'); repr-format score table pinned."
   },
   {
    "target": "nltk.tbl.demo.demo_str_rule_format",
@@ -22612,7 +22620,7 @@
      "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Port of nltk.tbl.demo.demo_str_rule_format — postag(ruleformat='str'); str-format score table pinned."
+   "notes": "Port of nltk.tbl.demo.demo_str_rule_format \u2014 postag(ruleformat='str'); str-format score table pinned."
   },
   {
    "target": "nltk.tbl.demo.demo_verbose_rule_format",
@@ -22644,7 +22652,7 @@
      "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Port of nltk.tbl.demo.demo_verbose_rule_format — postag(ruleformat='verbose'); verbose-format score table pinned."
+   "notes": "Port of nltk.tbl.demo.demo_verbose_rule_format \u2014 postag(ruleformat='verbose'); verbose-format score table pinned."
   },
   {
    "target": "nltk.tbl.demo.demo_multiposition_feature",
@@ -22676,7 +22684,7 @@
      "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Port of nltk.tbl.demo.demo_multiposition_feature — postag(templates=[Template(Pos([-3,-2,-1]))]); pinned."
+   "notes": "Port of nltk.tbl.demo.demo_multiposition_feature \u2014 postag(templates=[Template(Pos([-3,-2,-1]))]); pinned."
   },
   {
    "target": "nltk.tbl.demo.demo_multifeature_template",
@@ -22708,7 +22716,7 @@
      "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Port of nltk.tbl.demo.demo_multifeature_template — postag(templates=[Template(Word([0]), Pos([-2,-1]))]); pinned."
+   "notes": "Port of nltk.tbl.demo.demo_multifeature_template \u2014 postag(templates=[Template(Word([0]), Pos([-2,-1]))]); pinned."
   },
   {
    "target": "nltk.tbl.demo.demo_generated_templates",
@@ -22740,7 +22748,7 @@
      "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Port of nltk.tbl.demo.demo_generated_templates — Template.expand generated set; crashes at upstream stats TypeError — pinned."
+   "notes": "Port of nltk.tbl.demo.demo_generated_templates \u2014 Template.expand generated set; crashes at upstream stats TypeError \u2014 pinned."
   },
   {
    "target": "nltk.tbl.demo.demo_template_statistics",
@@ -22772,7 +22780,7 @@
      "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Port of nltk.tbl.demo.demo_template_statistics — incremental+template stats; crashes at upstream '{:s}'.format(Template) TypeError — stdout prefix + error pinned."
+   "notes": "Port of nltk.tbl.demo.demo_template_statistics \u2014 incremental+template stats; crashes at upstream '{:s}'.format(Template) TypeError \u2014 stdout prefix + error pinned."
   },
   {
    "target": "nltk.tbl.demo.demo_error_analysis",
@@ -22804,7 +22812,7 @@
      "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Port of nltk.tbl.demo.demo_error_analysis — error_output run; crashes at upstream bytes+str concat TypeError after writing header-only errors.txt — stdout + file pinned."
+   "notes": "Port of nltk.tbl.demo.demo_error_analysis \u2014 error_output run; crashes at upstream bytes+str concat TypeError after writing header-only errors.txt \u2014 stdout + file pinned."
   },
   {
    "target": "nltk.tbl.demo.demo_serialize_tagger",
@@ -22836,7 +22844,7 @@
      "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Port of nltk.tbl.demo.demo_serialize_tagger — full run; CPython pickle.dump unportable — throws TypeError at the dump point; stdout is a strict oracle prefix (python then crashes at pickle_load)."
+   "notes": "Port of nltk.tbl.demo.demo_serialize_tagger \u2014 full run; CPython pickle.dump unportable \u2014 throws TypeError at the dump point; stdout is a strict oracle prefix (python then crashes at pickle_load)."
   },
   {
    "target": "nltk.tbl.demo.demo_high_accuracy_rules",
@@ -22868,7 +22876,7 @@
      "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Port of nltk.tbl.demo.demo_high_accuracy_rules — num_sents=3000, min_acc=0.96, min_score=10; pinned."
+   "notes": "Port of nltk.tbl.demo.demo_high_accuracy_rules \u2014 num_sents=3000, min_acc=0.96, min_score=10; pinned."
   },
   {
    "target": "nltk.tbl.demo.demo_learning_curve",
@@ -22900,7 +22908,7 @@
      "Sink-injected demo; oracle-pinned output."
     ]
    },
-   "notes": "Port of nltk.tbl.demo.demo_learning_curve — incremental run; _demo_plot's `import matplotlib` surfaces ModuleNotFoundError — stdout + error pinned."
+   "notes": "Port of nltk.tbl.demo.demo_learning_curve \u2014 incremental run; _demo_plot's `import matplotlib` surfaces ModuleNotFoundError \u2014 stdout + error pinned."
   },
   {
    "target": "nltk.misc.babelfish.babelize_shell",
@@ -22989,7 +22997,7 @@
      "targets"
     ],
     "gaps": [
-     "camelCase displayAll with display_all alias; _targets/_contexts/_seen/_displays are private fields; iteration order follows JS insertion-ordered Set (Python set order differs) — contents are equal."
+     "camelCase displayAll with display_all alias; _targets/_contexts/_seen/_displays are private fields; iteration order follows JS insertion-ordered Set (Python set order differs) \u2014 contents are equal."
     ]
    },
    "evidence": [
@@ -27140,7 +27148,7 @@
      "retract_assumptions"
     ],
     "gaps": [
-     "assumptions() itself calls Prover9.prove for equality checks — propagates the external-binary error when the domain has 2+ elements, matching NLTK without the binary."
+     "assumptions() itself calls Prover9.prove for equality checks \u2014 propagates the external-binary error when the domain has 2+ elements, matching NLTK without the binary."
     ]
    },
    "evidence": [
@@ -27149,7 +27157,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "assumptions() itself calls Prover9.prove for equality checks — propagates the external-binary error when the domain has 2+ elements, matching NLTK without the binary."
+     "assumptions() itself calls Prover9.prove for equality checks \u2014 propagates the external-binary error when the domain has 2+ elements, matching NLTK without the binary."
     ]
    },
    "notes": "Port of nltk.inference.nonmonotonic.UniqueNamesProver."
@@ -28222,7 +28230,7 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Defined but never raised in NLTK (dead exception class) — ported identically."
+     "Defined but never raised in NLTK (dead exception class) \u2014 ported identically."
     ]
    },
    "evidence": [
@@ -28231,7 +28239,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Defined but never raised in NLTK (dead exception class) — ported identically."
+     "Defined but never raised in NLTK (dead exception class) \u2014 ported identically."
     ]
    },
    "notes": "Port of nltk.inference.resolution.UnificationException."
@@ -28783,7 +28791,7 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Both NLTK and the port crash identically on 'believe(j, -lie(b) & -cheat(b))' — the expression is not parseable (LogicalExpressionException preserved)."
+     "Both NLTK and the port crash identically on 'believe(j, -lie(b) & -cheat(b))' \u2014 the expression is not parseable (LogicalExpressionException preserved)."
     ]
    },
    "evidence": [
@@ -28792,7 +28800,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Both NLTK and the port crash identically on 'believe(j, -lie(b) & -cheat(b))' — the expression is not parseable (LogicalExpressionException preserved)."
+     "Both NLTK and the port crash identically on 'believe(j, -lie(b) & -cheat(b))' \u2014 the expression is not parseable (LogicalExpressionException preserved)."
     ]
    },
    "notes": "Port of nltk.inference.tableau.testHigherOrderTableauProver."
@@ -30254,7 +30262,7 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "include_semantics flag as includeSemantics; root `fromstring` stays bound to nltk.sem.logic's parser — the lexicon parser is exported as from_string/ccg_fromstring/ccgFromstring."
+     "include_semantics flag as includeSemantics; root `fromstring` stays bound to nltk.sem.logic's parser \u2014 the lexicon parser is exported as from_string/ccg_fromstring/ccgFromstring."
     ]
    },
    "evidence": [
@@ -33298,7 +33306,7 @@
      "Sink-injected demo; oracle-pinned output (Entropy lines epsilon-compared for demo_pos)."
     ]
    },
-   "notes": "Port of nltk.tag.hmm.demo — Market-HMM probability demo; entropy/entropy-exhaustive/point-entropy + tag output byte-pinned."
+   "notes": "Port of nltk.tag.hmm.demo \u2014 Market-HMM probability demo; entropy/entropy-exhaustive/point-entropy + tag output byte-pinned."
   },
   {
    "target": "nltk.tag.hmm.demo_bw",
@@ -33330,7 +33338,7 @@
      "Sink-injected demo; oracle-pinned output (iteration logprob lines epsilon-compared for np.power ulp noise)."
     ]
    },
-   "notes": "Port of nltk.tag.hmm.demo_bw — Baum-Welch EM on 10 random market samples; converges at iteration 203; logprob floats epsilon-compared (numpy vectorized np.power vs scalar 2** ulp noise)."
+   "notes": "Port of nltk.tag.hmm.demo_bw \u2014 Baum-Welch EM on 10 random market samples; converges at iteration 203; logprob floats epsilon-compared (numpy vectorized np.power vs scalar 2** ulp noise)."
   },
   {
    "target": "nltk.tag.hmm.demo_pos",
@@ -33362,7 +33370,7 @@
      "Sink-injected demo; oracle-pinned output (Entropy lines epsilon-compared for demo_pos)."
     ]
    },
-   "notes": "Port of nltk.tag.hmm.demo_pos — brown-news supervised HMM demo; pinned verbatim except Entropy lines which carry python-hashseed ulp noise (epsilon-compared)."
+   "notes": "Port of nltk.tag.hmm.demo_pos \u2014 brown-news supervised HMM demo; pinned verbatim except Entropy lines which carry python-hashseed ulp noise (epsilon-compared)."
   },
   {
    "target": "nltk.tag.hmm.demo_pos_bw",
@@ -33394,7 +33402,7 @@
      "Sink-injected demo; deterministic half oracle-pinned (entropy/logprob epsilon-compared); post-BW degenerate output normalized (nan argmax is hash-order-dependent upstream)."
     ]
    },
-   "notes": "Port of nltk.tag.hmm.demo_pos_bw — supervised + Baum-Welch on brown news; post-BW model degenerates to nan entropy; final accuracy nondeterministic upstream (3.17/3.87/3.52 across python hash seeds) so pinned structurally."
+   "notes": "Port of nltk.tag.hmm.demo_pos_bw \u2014 supervised + Baum-Welch on brown news; post-BW model degenerates to nan entropy; final accuracy nondeterministic upstream (3.17/3.87/3.52 across python hash seeds) so pinned structurally."
   },
   {
    "target": "nltk.tag.hmm.load_pos",
@@ -33426,7 +33434,7 @@
      "Sink-injected demo; oracle-pinned output (Entropy lines epsilon-compared for demo_pos)."
     ]
    },
-   "notes": "Port of nltk.tag.hmm.load_pos — brown news loader; tag regex + lowercase parity; tag_set/symbols order is insertion-order (python uses list(set) — per-process hash order)."
+   "notes": "Port of nltk.tag.hmm.load_pos \u2014 brown news loader; tag regex + lowercase parity; tag_set/symbols order is insertion-order (python uses list(set) \u2014 per-process hash order)."
   },
   {
    "target": "nltk.tag.hmm.logsumexp2",
@@ -36939,7 +36947,7 @@
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "grammar defaults to book_grammars/storage.fcfg in the oracle; the nltk_data resource is not bundled — pass a FeatureGrammar or fcfg text (signature otherwise matches: sentence, grammar, trace)."
+     "grammar defaults to book_grammars/storage.fcfg in the oracle; the nltk_data resource is not bundled \u2014 pass a FeatureGrammar or fcfg text (signature otherwise matches: sentence, grammar, trace)."
     ]
    },
    "notes": "Real cooper_storage parse_with_bindops (load_parser-path grammar arg, default storage.fcfg via data.find); oracle-pinned."
@@ -50080,13 +50088,15 @@
   {
    "target": "nltk.parse.transitionparser.demo",
    "exports": [
-    "demo"
+    "demo",
+    "transitionparser_demo",
+    "transitionparserDemo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
+     "file": "src/parse_wrappers.ts",
      "anchor": "export function demo"
     }
    ],
@@ -50094,17 +50104,19 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "demo() carries the python docstring verbatim; TS no-op matches call behavior."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "demo: external-binary/server-bound or interactive demo; honest stub throws."
+     "Oracle-pinned: docstring-only doctest holder, no-op call like python."
     ]
    },
-   "notes": "demo: external-binary/server-bound or interactive demo; honest stub throws."
+   "notes": "demo() is a doctest placeholder in python \u2014 returns None, prints nothing."
   },
   {
    "target": "nltk.parse.util.CFG",
@@ -52144,7 +52156,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.RegexpTokenizer re-exports an existing implementation (corpus module alias)."
@@ -52782,7 +52794,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.WordNetCorpusReader re-exports an existing implementation (module alias)."
@@ -52811,7 +52823,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.WordNetICCorpusReader re-exports an existing implementation (corpus module alias)."
@@ -52902,7 +52914,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.demo re-exports an existing implementation (corpus module alias)."
@@ -54988,7 +55000,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.europarl_raw.WordNetCorpusReader re-exports an existing implementation (module alias)."
@@ -55017,7 +55029,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.europarl_raw.WordNetICCorpusReader re-exports an existing implementation (corpus module alias)."
@@ -57134,7 +57146,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.WordNetCorpusReader re-exports an existing implementation (module alias)."
@@ -57163,7 +57175,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.WordNetICCorpusReader re-exports an existing implementation (corpus module alias)."
@@ -57348,7 +57360,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.aligned.AlignedSent re-exports an existing implementation (corpus module alias)."
@@ -57408,7 +57420,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.aligned.Alignment re-exports an existing implementation (corpus module alias)."
@@ -57469,7 +57481,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.aligned.RegexpTokenizer re-exports an existing implementation (corpus module alias)."
@@ -57530,7 +57542,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.aligned.WhitespaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -57622,7 +57634,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.api.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -57774,7 +57786,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.api.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -57803,7 +57815,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.api.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -58261,7 +58273,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.api.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -58321,7 +58333,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.api.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -58631,7 +58643,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.bracket_parse.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -58877,7 +58889,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.bracket_parse.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -58906,7 +58918,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.bracket_parse.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -59057,7 +59069,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.bracket_parse.Tree re-exports an existing implementation (corpus module alias)."
@@ -59422,7 +59434,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.bracket_parse.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -59482,7 +59494,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.bracket_parse.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -59511,7 +59523,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -59540,7 +59552,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.BlanklineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -59723,7 +59735,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -59752,7 +59764,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -59781,7 +59793,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.LegalitySyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -59810,7 +59822,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.LineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -59839,7 +59851,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.MWETokenizer re-exports an existing implementation (corpus module alias)."
@@ -59868,7 +59880,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.NLTKWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -59926,7 +59938,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.PunktSentenceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -59955,7 +59967,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.PunktTokenizer re-exports an existing implementation (corpus module alias)."
@@ -59984,7 +59996,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.RegexpTokenizer re-exports an existing implementation (corpus module alias)."
@@ -60013,7 +60025,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.ReppTokenizer re-exports an existing implementation (corpus module alias)."
@@ -60042,7 +60054,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.SExprTokenizer re-exports an existing implementation (corpus module alias)."
@@ -60100,7 +60112,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.SpaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -60129,7 +60141,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.StanfordSegmenter re-exports an existing implementation (corpus module alias)."
@@ -60190,7 +60202,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.SyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -60251,7 +60263,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.TabTokenizer re-exports an existing implementation (corpus module alias)."
@@ -60280,7 +60292,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.TextTilingTokenizer re-exports an existing implementation (corpus module alias)."
@@ -60309,7 +60321,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.ToktokTokenizer re-exports an existing implementation (corpus module alias)."
@@ -60338,7 +60350,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.TreebankWordDetokenizer re-exports an existing implementation (corpus module alias)."
@@ -60367,7 +60379,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.TreebankWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -60396,7 +60408,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.TweetTokenizer re-exports an existing implementation (corpus module alias)."
@@ -60425,7 +60437,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.WhitespaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -60454,7 +60466,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.WordPunctTokenizer re-exports an existing implementation (corpus module alias)."
@@ -60512,7 +60524,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.blankline_tokenize re-exports an existing implementation (corpus module alias)."
@@ -60541,7 +60553,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.casual_tokenize re-exports an existing implementation (corpus module alias)."
@@ -60634,7 +60646,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.line_tokenize re-exports an existing implementation (corpus module alias)."
@@ -60906,7 +60918,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.regexp_span_tokenize re-exports an existing implementation (module alias)."
@@ -60935,7 +60947,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.regexp_tokenize re-exports an existing implementation (corpus module alias)."
@@ -60964,7 +60976,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.sent_tokenize re-exports an existing implementation (corpus module alias)."
@@ -60993,7 +61005,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.sexpr_tokenize re-exports an existing implementation (corpus module alias)."
@@ -61022,7 +61034,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -61051,7 +61063,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.string_span_tokenize re-exports an existing implementation (module alias)."
@@ -61111,7 +61123,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.word_tokenize re-exports an existing implementation (corpus module alias)."
@@ -61140,7 +61152,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.categorized_sents.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -61200,7 +61212,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.childes.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -61229,7 +61241,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.childes.LazyMap re-exports an existing implementation (corpus module alias)."
@@ -61321,7 +61333,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.childes.demo re-exports an existing implementation (corpus module alias)."
@@ -61350,7 +61362,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.childes.flatten re-exports an existing implementation (corpus module alias)."
@@ -61379,7 +61391,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -61408,7 +61420,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.BlanklineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -61656,7 +61668,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -61685,7 +61697,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -61714,7 +61726,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.LegalitySyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -61743,7 +61755,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.LineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -61772,7 +61784,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.MWETokenizer re-exports an existing implementation (corpus module alias)."
@@ -61801,7 +61813,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.NLTKWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -61859,7 +61871,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.PunktSentenceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -61888,7 +61900,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.PunktTokenizer re-exports an existing implementation (corpus module alias)."
@@ -61917,7 +61929,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.RegexpTokenizer re-exports an existing implementation (corpus module alias)."
@@ -61946,7 +61958,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.ReppTokenizer re-exports an existing implementation (corpus module alias)."
@@ -61975,7 +61987,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.SExprTokenizer re-exports an existing implementation (corpus module alias)."
@@ -62033,7 +62045,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.SpaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -62062,7 +62074,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.StanfordSegmenter re-exports an existing implementation (corpus module alias)."
@@ -62123,7 +62135,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.SyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -62184,7 +62196,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.TabTokenizer re-exports an existing implementation (corpus module alias)."
@@ -62213,7 +62225,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.TextTilingTokenizer re-exports an existing implementation (corpus module alias)."
@@ -62242,7 +62254,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.ToktokTokenizer re-exports an existing implementation (corpus module alias)."
@@ -62271,7 +62283,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.Tree re-exports an existing implementation (corpus module alias)."
@@ -62300,7 +62312,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.TreebankWordDetokenizer re-exports an existing implementation (corpus module alias)."
@@ -62329,7 +62341,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.TreebankWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -62358,7 +62370,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.TweetTokenizer re-exports an existing implementation (corpus module alias)."
@@ -62387,7 +62399,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.WhitespaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -62416,7 +62428,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.WordPunctTokenizer re-exports an existing implementation (corpus module alias)."
@@ -62474,7 +62486,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.blankline_tokenize re-exports an existing implementation (corpus module alias)."
@@ -62503,7 +62515,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.casual_tokenize re-exports an existing implementation (corpus module alias)."
@@ -62596,7 +62608,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.line_tokenize re-exports an existing implementation (corpus module alias)."
@@ -62868,7 +62880,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.regexp_span_tokenize re-exports an existing implementation (module alias)."
@@ -62897,7 +62909,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.regexp_tokenize re-exports an existing implementation (corpus module alias)."
@@ -62926,7 +62938,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.sent_tokenize re-exports an existing implementation (corpus module alias)."
@@ -62955,7 +62967,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.sexpr_tokenize re-exports an existing implementation (corpus module alias)."
@@ -62984,7 +62996,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -63013,7 +63025,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.string_span_tokenize re-exports an existing implementation (module alias)."
@@ -63102,7 +63114,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.word_tokenize re-exports an existing implementation (corpus module alias)."
@@ -63131,7 +63143,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.chunked.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -63160,7 +63172,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.cmudict.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -63343,7 +63355,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.cmudict.Index re-exports an existing implementation (corpus module alias)."
@@ -63372,7 +63384,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.cmudict.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -63401,7 +63413,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.cmudict.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -63890,7 +63902,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.cmudict.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -63950,7 +63962,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.cmudict.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -63979,7 +63991,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -64008,7 +64020,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.BlanklineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64222,7 +64234,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -64251,7 +64263,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -64280,7 +64292,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.LegalitySyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64309,7 +64321,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.LineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64338,7 +64350,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.MWETokenizer re-exports an existing implementation (corpus module alias)."
@@ -64367,7 +64379,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.NLTKWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64425,7 +64437,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.PunktSentenceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64454,7 +64466,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.PunktTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64483,7 +64495,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.RegexpTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64512,7 +64524,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.ReppTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64541,7 +64553,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.SExprTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64599,7 +64611,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.SpaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64628,7 +64640,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.StanfordSegmenter re-exports an existing implementation (corpus module alias)."
@@ -64689,7 +64701,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.SyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64750,7 +64762,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.TabTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64779,7 +64791,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.TextTilingTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64808,7 +64820,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.ToktokTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64837,7 +64849,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.TreebankWordDetokenizer re-exports an existing implementation (corpus module alias)."
@@ -64866,7 +64878,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.TreebankWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64895,7 +64907,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.TweetTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64924,7 +64936,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.WhitespaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -64953,7 +64965,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.WordPunctTokenizer re-exports an existing implementation (corpus module alias)."
@@ -65011,7 +65023,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.blankline_tokenize re-exports an existing implementation (corpus module alias)."
@@ -65040,7 +65052,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.casual_tokenize re-exports an existing implementation (corpus module alias)."
@@ -65133,7 +65145,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.line_tokenize re-exports an existing implementation (corpus module alias)."
@@ -65405,7 +65417,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.regexp_span_tokenize re-exports an existing implementation (module alias)."
@@ -65434,7 +65446,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.regexp_tokenize re-exports an existing implementation (corpus module alias)."
@@ -65463,7 +65475,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.sent_tokenize re-exports an existing implementation (corpus module alias)."
@@ -65492,7 +65504,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.sexpr_tokenize re-exports an existing implementation (corpus module alias)."
@@ -65521,7 +65533,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -65550,7 +65562,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.string_span_tokenize re-exports an existing implementation (module alias)."
@@ -65610,7 +65622,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.word_tokenize re-exports an existing implementation (corpus module alias)."
@@ -65639,7 +65651,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.comparative_sents.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -65668,7 +65680,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.conll.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -65942,7 +65954,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.conll.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -65971,7 +65983,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.conll.LazyMap re-exports an existing implementation (corpus module alias)."
@@ -66000,7 +66012,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.conll.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -66151,7 +66163,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.conll.Tree re-exports an existing implementation (corpus module alias)."
@@ -66516,7 +66528,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.conll.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -66576,7 +66588,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.conll.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -66668,7 +66680,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.crubadan.FreqDist re-exports an existing implementation (corpus module alias)."
@@ -66757,7 +66769,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -66786,7 +66798,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.BlanklineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -66971,7 +66983,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.DependencyGraph re-exports an existing implementation (corpus module alias)."
@@ -67029,7 +67041,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -67058,7 +67070,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -67087,7 +67099,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.LegalitySyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67116,7 +67128,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.LineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67145,7 +67157,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.MWETokenizer re-exports an existing implementation (corpus module alias)."
@@ -67174,7 +67186,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.NLTKWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67232,7 +67244,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.PunktSentenceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67261,7 +67273,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.PunktTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67290,7 +67302,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.RegexpTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67319,7 +67331,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.ReppTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67348,7 +67360,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.SExprTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67406,7 +67418,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.SpaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67435,7 +67447,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.StanfordSegmenter re-exports an existing implementation (corpus module alias)."
@@ -67496,7 +67508,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.SyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67557,7 +67569,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.TabTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67586,7 +67598,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.TextTilingTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67615,7 +67627,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.ToktokTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67644,7 +67656,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.TreebankWordDetokenizer re-exports an existing implementation (corpus module alias)."
@@ -67673,7 +67685,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.TreebankWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67702,7 +67714,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.TweetTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67731,7 +67743,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.WhitespaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67760,7 +67772,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.WordPunctTokenizer re-exports an existing implementation (corpus module alias)."
@@ -67818,7 +67830,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.blankline_tokenize re-exports an existing implementation (corpus module alias)."
@@ -67847,7 +67859,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.casual_tokenize re-exports an existing implementation (corpus module alias)."
@@ -67940,7 +67952,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.line_tokenize re-exports an existing implementation (corpus module alias)."
@@ -68212,7 +68224,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.regexp_span_tokenize re-exports an existing implementation (module alias)."
@@ -68241,7 +68253,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.regexp_tokenize re-exports an existing implementation (corpus module alias)."
@@ -68270,7 +68282,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.sent_tokenize re-exports an existing implementation (corpus module alias)."
@@ -68299,7 +68311,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.sexpr_tokenize re-exports an existing implementation (corpus module alias)."
@@ -68328,7 +68340,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -68357,7 +68369,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.string_span_tokenize re-exports an existing implementation (module alias)."
@@ -68417,7 +68429,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.word_tokenize re-exports an existing implementation (corpus module alias)."
@@ -68446,7 +68458,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.dependency.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -68599,7 +68611,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.framenet.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -68628,7 +68640,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.framenet.LazyIteratorList re-exports an existing implementation (corpus module alias)."
@@ -68657,7 +68669,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.framenet.LazyMap re-exports an existing implementation (corpus module alias)."
@@ -68934,7 +68946,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.framenet.demo re-exports an existing implementation (corpus module alias)."
@@ -69150,7 +69162,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.indian.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -69364,7 +69376,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.indian.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -69393,7 +69405,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.indian.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -69880,7 +69892,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.indian.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -69909,7 +69921,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.indian.str2tuple re-exports an existing implementation (corpus module alias)."
@@ -69969,7 +69981,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.indian.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -70188,7 +70200,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.knbc.DependencyGraph re-exports an existing implementation (corpus module alias)."
@@ -70309,7 +70321,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.knbc.demo re-exports an existing implementation (corpus module alias)."
@@ -70494,7 +70506,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.lin.demo re-exports an existing implementation (corpus module alias)."
@@ -70865,7 +70877,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.markdown.blankline_tokenize re-exports an existing implementation (corpus module alias)."
@@ -71020,7 +71032,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.markdown.sent_tokenize re-exports an existing implementation (corpus module alias)."
@@ -71049,7 +71061,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.markdown.word_tokenize re-exports an existing implementation (corpus module alias)."
@@ -71637,7 +71649,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.nombank.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -71789,7 +71801,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.nombank.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -71818,7 +71830,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.nombank.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -72155,7 +72167,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.nombank.Tree re-exports an existing implementation (corpus module alias)."
@@ -72277,7 +72289,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.nombank.raise_unorderable_types re-exports an existing implementation (corpus module alias)."
@@ -72520,7 +72532,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.nombank.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -72580,7 +72592,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.nombank.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -72609,7 +72621,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.nps_chat.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -72792,7 +72804,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.nps_chat.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -72821,7 +72833,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.nps_chat.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -73003,7 +73015,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.nps_chat.WordPunctTokenizer re-exports an existing implementation (corpus module alias)."
@@ -73461,7 +73473,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.nps_chat.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -73521,7 +73533,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.nps_chat.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -73550,7 +73562,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.opinion_lexicon.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -73731,7 +73743,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.opinion_lexicon.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -73760,7 +73772,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.opinion_lexicon.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -74279,7 +74291,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.opinion_lexicon.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -74339,7 +74351,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.opinion_lexicon.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -74462,7 +74474,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pl196x.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -74614,7 +74626,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pl196x.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -74643,7 +74655,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pl196x.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -75225,7 +75237,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pl196x.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -75285,7 +75297,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pl196x.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -75314,7 +75326,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -75343,7 +75355,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.BlanklineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -75555,7 +75567,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -75584,7 +75596,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -75613,7 +75625,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.LegalitySyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -75642,7 +75654,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.LineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -75671,7 +75683,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.MWETokenizer re-exports an existing implementation (corpus module alias)."
@@ -75700,7 +75712,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.NLTKWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -75819,7 +75831,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.PunktSentenceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -75848,7 +75860,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.PunktTokenizer re-exports an existing implementation (corpus module alias)."
@@ -75877,7 +75889,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.RegexpTokenizer re-exports an existing implementation (corpus module alias)."
@@ -75906,7 +75918,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.ReppTokenizer re-exports an existing implementation (corpus module alias)."
@@ -75935,7 +75947,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.SExprTokenizer re-exports an existing implementation (corpus module alias)."
@@ -75993,7 +76005,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.SpaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -76022,7 +76034,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.StanfordSegmenter re-exports an existing implementation (corpus module alias)."
@@ -76083,7 +76095,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.SyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -76144,7 +76156,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.TabTokenizer re-exports an existing implementation (corpus module alias)."
@@ -76173,7 +76185,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.TextTilingTokenizer re-exports an existing implementation (corpus module alias)."
@@ -76202,7 +76214,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.ToktokTokenizer re-exports an existing implementation (corpus module alias)."
@@ -76231,7 +76243,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.TreebankWordDetokenizer re-exports an existing implementation (corpus module alias)."
@@ -76260,7 +76272,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.TreebankWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -76289,7 +76301,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.TweetTokenizer re-exports an existing implementation (corpus module alias)."
@@ -76318,7 +76330,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.WhitespaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -76347,7 +76359,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.WordPunctTokenizer re-exports an existing implementation (corpus module alias)."
@@ -76405,7 +76417,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.blankline_tokenize re-exports an existing implementation (corpus module alias)."
@@ -76434,7 +76446,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.casual_tokenize re-exports an existing implementation (corpus module alias)."
@@ -76527,7 +76539,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.line_tokenize re-exports an existing implementation (corpus module alias)."
@@ -76799,7 +76811,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.regexp_span_tokenize re-exports an existing implementation (module alias)."
@@ -76828,7 +76840,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.regexp_tokenize re-exports an existing implementation (corpus module alias)."
@@ -76857,7 +76869,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.sent_tokenize re-exports an existing implementation (corpus module alias)."
@@ -76886,7 +76898,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.sexpr_tokenize re-exports an existing implementation (corpus module alias)."
@@ -76915,7 +76927,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -76944,7 +76956,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.string_span_tokenize re-exports an existing implementation (module alias)."
@@ -77004,7 +77016,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.word_tokenize re-exports an existing implementation (corpus module alias)."
@@ -77033,7 +77045,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.plaintext.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -77062,7 +77074,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.ppattach.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -77214,7 +77226,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.ppattach.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -77243,7 +77255,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.ppattach.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -77763,7 +77775,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.ppattach.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -77823,7 +77835,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.ppattach.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -77852,7 +77864,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.propbank.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -78004,7 +78016,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.propbank.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -78033,7 +78045,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.propbank.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -78401,7 +78413,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.propbank.Tree re-exports an existing implementation (corpus module alias)."
@@ -78523,7 +78535,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.propbank.raise_unorderable_types re-exports an existing implementation (corpus module alias)."
@@ -78766,7 +78778,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.propbank.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -78826,7 +78838,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.propbank.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -78855,7 +78867,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -78884,7 +78896,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.BlanklineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79036,7 +79048,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -79065,7 +79077,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -79094,7 +79106,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.LegalitySyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79123,7 +79135,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.LineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79152,7 +79164,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.MWETokenizer re-exports an existing implementation (corpus module alias)."
@@ -79181,7 +79193,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.NLTKWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79270,7 +79282,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.PunktSentenceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79299,7 +79311,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.PunktTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79328,7 +79340,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.RegexpTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79357,7 +79369,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.ReppTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79386,7 +79398,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.SExprTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79444,7 +79456,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.SpaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79473,7 +79485,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.StanfordSegmenter re-exports an existing implementation (corpus module alias)."
@@ -79534,7 +79546,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.SyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79595,7 +79607,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.TabTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79624,7 +79636,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.TextTilingTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79653,7 +79665,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.ToktokTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79682,7 +79694,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.TreebankWordDetokenizer re-exports an existing implementation (corpus module alias)."
@@ -79711,7 +79723,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.TreebankWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79740,7 +79752,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.TweetTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79769,7 +79781,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.WhitespaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79798,7 +79810,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.WordPunctTokenizer re-exports an existing implementation (corpus module alias)."
@@ -79856,7 +79868,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.blankline_tokenize re-exports an existing implementation (corpus module alias)."
@@ -79885,7 +79897,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.casual_tokenize re-exports an existing implementation (corpus module alias)."
@@ -79978,7 +79990,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.line_tokenize re-exports an existing implementation (corpus module alias)."
@@ -80250,7 +80262,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.regexp_span_tokenize re-exports an existing implementation (module alias)."
@@ -80279,7 +80291,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.regexp_tokenize re-exports an existing implementation (corpus module alias)."
@@ -80308,7 +80320,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.sent_tokenize re-exports an existing implementation (corpus module alias)."
@@ -80337,7 +80349,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.sexpr_tokenize re-exports an existing implementation (corpus module alias)."
@@ -80366,7 +80378,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -80395,7 +80407,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.string_span_tokenize re-exports an existing implementation (module alias)."
@@ -80455,7 +80467,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.word_tokenize re-exports an existing implementation (corpus module alias)."
@@ -80484,7 +80496,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.pros_cons.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -80513,7 +80525,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -80542,7 +80554,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.BlanklineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -80694,7 +80706,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -80723,7 +80735,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -80752,7 +80764,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.LegalitySyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -80781,7 +80793,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.LineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -80810,7 +80822,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.MWETokenizer re-exports an existing implementation (corpus module alias)."
@@ -80839,7 +80851,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.NLTKWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -80897,7 +80909,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.PunktSentenceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -80926,7 +80938,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.PunktTokenizer re-exports an existing implementation (corpus module alias)."
@@ -80955,7 +80967,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.RegexpTokenizer re-exports an existing implementation (corpus module alias)."
@@ -80984,7 +80996,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.ReppTokenizer re-exports an existing implementation (corpus module alias)."
@@ -81106,7 +81118,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.SExprTokenizer re-exports an existing implementation (corpus module alias)."
@@ -81164,7 +81176,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.SpaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -81193,7 +81205,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.StanfordSegmenter re-exports an existing implementation (corpus module alias)."
@@ -81254,7 +81266,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.SyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -81315,7 +81327,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.TabTokenizer re-exports an existing implementation (corpus module alias)."
@@ -81344,7 +81356,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.TextTilingTokenizer re-exports an existing implementation (corpus module alias)."
@@ -81373,7 +81385,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.ToktokTokenizer re-exports an existing implementation (corpus module alias)."
@@ -81402,7 +81414,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.TreebankWordDetokenizer re-exports an existing implementation (corpus module alias)."
@@ -81431,7 +81443,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.TreebankWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -81460,7 +81472,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.TweetTokenizer re-exports an existing implementation (corpus module alias)."
@@ -81489,7 +81501,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.WhitespaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -81518,7 +81530,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.WordPunctTokenizer re-exports an existing implementation (corpus module alias)."
@@ -81576,7 +81588,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.blankline_tokenize re-exports an existing implementation (corpus module alias)."
@@ -81605,7 +81617,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.casual_tokenize re-exports an existing implementation (corpus module alias)."
@@ -81698,7 +81710,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.line_tokenize re-exports an existing implementation (corpus module alias)."
@@ -81970,7 +81982,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.regexp_span_tokenize re-exports an existing implementation (module alias)."
@@ -81999,7 +82011,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.regexp_tokenize re-exports an existing implementation (corpus module alias)."
@@ -82028,7 +82040,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.sent_tokenize re-exports an existing implementation (corpus module alias)."
@@ -82057,7 +82069,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.sexpr_tokenize re-exports an existing implementation (corpus module alias)."
@@ -82086,7 +82098,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -82115,7 +82127,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.string_span_tokenize re-exports an existing implementation (module alias)."
@@ -82175,7 +82187,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.word_tokenize re-exports an existing implementation (corpus module alias)."
@@ -82204,7 +82216,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.reviews.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -82233,7 +82245,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.rte.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -82416,7 +82428,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.rte.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -82445,7 +82457,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.rte.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -82658,7 +82670,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.rte.WordPunctTokenizer re-exports an existing implementation (corpus module alias)."
@@ -83118,7 +83130,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.rte.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -83178,7 +83190,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.rte.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -83207,7 +83219,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.semcor.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -83359,7 +83371,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.semcor.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -83388,7 +83400,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.semcor.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -83632,7 +83644,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.semcor.Tree re-exports an existing implementation (corpus module alias)."
@@ -84030,7 +84042,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.semcor.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -84090,7 +84102,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.semcor.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -84119,7 +84131,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -84148,7 +84160,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.BlanklineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -84300,7 +84312,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -84329,7 +84341,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -84358,7 +84370,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.LegalitySyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -84387,7 +84399,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.LineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -84416,7 +84428,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.MWETokenizer re-exports an existing implementation (corpus module alias)."
@@ -84445,7 +84457,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.NLTKWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -84503,7 +84515,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.PunktSentenceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -84532,7 +84544,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.PunktTokenizer re-exports an existing implementation (corpus module alias)."
@@ -84561,7 +84573,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.RegexpTokenizer re-exports an existing implementation (corpus module alias)."
@@ -84590,7 +84602,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.ReppTokenizer re-exports an existing implementation (corpus module alias)."
@@ -84619,7 +84631,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.SExprTokenizer re-exports an existing implementation (corpus module alias)."
@@ -84770,7 +84782,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.SpaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -84799,7 +84811,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.StanfordSegmenter re-exports an existing implementation (corpus module alias)."
@@ -84860,7 +84872,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.SyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -84921,7 +84933,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.TabTokenizer re-exports an existing implementation (corpus module alias)."
@@ -84950,7 +84962,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.TextTilingTokenizer re-exports an existing implementation (corpus module alias)."
@@ -84979,7 +84991,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.ToktokTokenizer re-exports an existing implementation (corpus module alias)."
@@ -85008,7 +85020,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.TreebankWordDetokenizer re-exports an existing implementation (corpus module alias)."
@@ -85037,7 +85049,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.TreebankWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -85066,7 +85078,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.TweetTokenizer re-exports an existing implementation (corpus module alias)."
@@ -85095,7 +85107,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.WhitespaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -85124,7 +85136,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.WordPunctTokenizer re-exports an existing implementation (corpus module alias)."
@@ -85182,7 +85194,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.blankline_tokenize re-exports an existing implementation (corpus module alias)."
@@ -85211,7 +85223,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.casual_tokenize re-exports an existing implementation (corpus module alias)."
@@ -85304,7 +85316,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.line_tokenize re-exports an existing implementation (corpus module alias)."
@@ -85576,7 +85588,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.regexp_span_tokenize re-exports an existing implementation (module alias)."
@@ -85605,7 +85617,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.regexp_tokenize re-exports an existing implementation (corpus module alias)."
@@ -85634,7 +85646,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.sent_tokenize re-exports an existing implementation (corpus module alias)."
@@ -85663,7 +85675,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.sexpr_tokenize re-exports an existing implementation (corpus module alias)."
@@ -85692,7 +85704,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -85721,7 +85733,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.string_span_tokenize re-exports an existing implementation (module alias)."
@@ -85781,7 +85793,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.word_tokenize re-exports an existing implementation (corpus module alias)."
@@ -85810,7 +85822,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.senseval.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -85929,7 +85941,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.sinica_treebank.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -86081,7 +86093,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.sinica_treebank.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -86110,7 +86122,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.sinica_treebank.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -86659,7 +86671,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.sinica_treebank.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -86719,7 +86731,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.sinica_treebank.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -86748,7 +86760,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.string_category.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -86900,7 +86912,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.string_category.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -86929,7 +86941,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.string_category.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -87416,7 +87428,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.string_category.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -87476,7 +87488,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.string_category.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -87505,7 +87517,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.switchboard.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -87657,7 +87669,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.switchboard.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -87686,7 +87698,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.switchboard.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -88235,7 +88247,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.switchboard.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -88264,7 +88276,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.switchboard.str2tuple re-exports an existing implementation (corpus module alias)."
@@ -88324,7 +88336,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.switchboard.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -88353,7 +88365,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -88382,7 +88394,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.BlanklineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -88565,7 +88577,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -88594,7 +88606,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -88623,7 +88635,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.LegalitySyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -88652,7 +88664,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.LineTokenizer re-exports an existing implementation (corpus module alias)."
@@ -88681,7 +88693,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.MWETokenizer re-exports an existing implementation (corpus module alias)."
@@ -88739,7 +88751,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.NLTKWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -88797,7 +88809,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.PunktSentenceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -88826,7 +88838,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.PunktTokenizer re-exports an existing implementation (corpus module alias)."
@@ -88855,7 +88867,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.RegexpTokenizer re-exports an existing implementation (corpus module alias)."
@@ -88884,7 +88896,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.ReppTokenizer re-exports an existing implementation (corpus module alias)."
@@ -88913,7 +88925,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.SExprTokenizer re-exports an existing implementation (corpus module alias)."
@@ -88971,7 +88983,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.SpaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -89000,7 +89012,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.StanfordSegmenter re-exports an existing implementation (corpus module alias)."
@@ -89061,7 +89073,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.SyllableTokenizer re-exports an existing implementation (corpus module alias)."
@@ -89122,7 +89134,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.TabTokenizer re-exports an existing implementation (corpus module alias)."
@@ -89215,7 +89227,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.TextTilingTokenizer re-exports an existing implementation (corpus module alias)."
@@ -89273,7 +89285,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.ToktokTokenizer re-exports an existing implementation (corpus module alias)."
@@ -89302,7 +89314,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.TreebankWordDetokenizer re-exports an existing implementation (corpus module alias)."
@@ -89331,7 +89343,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.TreebankWordTokenizer re-exports an existing implementation (corpus module alias)."
@@ -89360,7 +89372,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.TweetTokenizer re-exports an existing implementation (corpus module alias)."
@@ -89389,7 +89401,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.WhitespaceTokenizer re-exports an existing implementation (corpus module alias)."
@@ -89418,7 +89430,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.WordPunctTokenizer re-exports an existing implementation (corpus module alias)."
@@ -89476,7 +89488,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.blankline_tokenize re-exports an existing implementation (corpus module alias)."
@@ -89505,7 +89517,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.casual_tokenize re-exports an existing implementation (corpus module alias)."
@@ -89598,7 +89610,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.line_tokenize re-exports an existing implementation (corpus module alias)."
@@ -89928,7 +89940,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.regexp_span_tokenize re-exports an existing implementation (module alias)."
@@ -89957,7 +89969,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.regexp_tokenize re-exports an existing implementation (corpus module alias)."
@@ -89986,7 +89998,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.sent_tokenize re-exports an existing implementation (corpus module alias)."
@@ -90015,7 +90027,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.sexpr_tokenize re-exports an existing implementation (corpus module alias)."
@@ -90044,7 +90056,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -90073,7 +90085,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.str2tuple re-exports an existing implementation (corpus module alias)."
@@ -90102,7 +90114,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.string_span_tokenize re-exports an existing implementation (module alias)."
@@ -90162,7 +90174,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.word_tokenize re-exports an existing implementation (corpus module alias)."
@@ -90191,7 +90203,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.tagged.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -90220,7 +90232,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.timit.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -90372,7 +90384,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.timit.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -90401,7 +90413,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.timit.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -90614,7 +90626,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.timit.Tree re-exports an existing implementation (corpus module alias)."
@@ -91008,7 +91020,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.timit.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -91068,7 +91080,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.timit.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -91097,7 +91109,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.toolbox.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -91249,7 +91261,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.toolbox.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -91278,7 +91290,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.toolbox.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -91460,7 +91472,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.toolbox.ToolboxData re-exports an existing implementation (corpus module alias)."
@@ -91550,7 +91562,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.toolbox.demo re-exports an existing implementation (corpus module alias)."
@@ -91825,7 +91837,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.toolbox.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -91885,7 +91897,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.toolbox.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -91978,7 +91990,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.twitter.TweetTokenizer re-exports an existing implementation (corpus module alias)."
@@ -92136,7 +92148,7 @@
      "words() output matches python byte-exactly on latin-1/cp1256/utf-8 fileids; exercised via snowball.demo oracle."
     ]
    },
-   "notes": "Port of nltk.corpus.reader.udhr.UdhrCorpusReader — per-fileid encoding table + SKIP set; real udhr corpus provisioned and verified."
+   "notes": "Port of nltk.corpus.reader.udhr.UdhrCorpusReader \u2014 per-fileid encoding table + SKIP set; real udhr corpus provisioned and verified."
   },
   {
    "target": "nltk.corpus.reader.udhr.find_corpus_fileids",
@@ -92194,7 +92206,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.util.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -92283,7 +92295,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.util.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -92312,7 +92324,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.util.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -92738,7 +92750,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.util.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -92798,7 +92810,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.util.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -92889,7 +92901,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.wordlist.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -93041,7 +93053,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.wordlist.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -93070,7 +93082,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.wordlist.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -93462,7 +93474,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.wordlist.line_tokenize re-exports an existing implementation (corpus module alias)."
@@ -93705,7 +93717,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.wordlist.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -93765,7 +93777,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.wordlist.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -93794,7 +93806,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.xmldocs.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -93946,7 +93958,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.xmldocs.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -93975,7 +93987,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.xmldocs.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -94094,7 +94106,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.xmldocs.WordPunctTokenizer re-exports an existing implementation (corpus module alias)."
@@ -94523,7 +94535,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.xmldocs.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -94583,7 +94595,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.xmldocs.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -94612,7 +94624,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.ycoe.AbstractLazySequence re-exports an existing implementation (corpus module alias)."
@@ -94796,7 +94808,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.ycoe.LazyConcatenation re-exports an existing implementation (corpus module alias)."
@@ -94825,7 +94837,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.ycoe.LazySubsequence re-exports an existing implementation (corpus module alias)."
@@ -94883,7 +94895,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.ycoe.RegexpTokenizer re-exports an existing implementation (corpus module alias)."
@@ -95437,7 +95449,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.ycoe.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -95497,7 +95509,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.corpus.reader.ycoe.wordpunct_tokenize re-exports an existing implementation (corpus module alias)."
@@ -96097,7 +96109,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.internals.Counter re-exports an existing implementation (corpus module alias)."
@@ -96256,7 +96268,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.internals.config_java re-exports an existing implementation (corpus module alias)."
@@ -96285,7 +96297,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.internals.deprecated re-exports an existing implementation (corpus module alias)."
@@ -96469,7 +96481,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.internals.find_jar re-exports an existing implementation (corpus module alias)."
@@ -96620,7 +96632,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.internals.java re-exports an existing implementation (corpus module alias)."
@@ -96680,7 +96692,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.internals.raise_unorderable_types re-exports an existing implementation (corpus module alias)."
@@ -96802,7 +96814,7 @@
    "fixtures": {
     "status": "unit-only",
     "gaps": [
-     "Covered by the implementation module’s own tests."
+     "Covered by the implementation module\u2019s own tests."
     ]
    },
    "notes": "nltk.internals.slice_bounds re-exports an existing implementation (corpus module alias)."
@@ -97543,7 +97555,7 @@
      "Demo crashes upstream (TypeError: cannot use a string pattern on a bytes-like object); pinned via oracle errs."
     ]
    },
-   "notes": "Port of nltk.toolbox.demo — faithfully reproduces the upstream NLTK 3.10.3 crash: PathPointer.open(None) yields a binary stream and raw_fields hits TypeError at the first regex."
+   "notes": "Port of nltk.toolbox.demo \u2014 faithfully reproduces the upstream NLTK 3.10.3 crash: PathPointer.open(None) yields a binary stream and raw_fields hits TypeError at the first regex."
   },
   {
    "target": "nltk.toolbox.pathsec_open",
@@ -98108,7 +98120,7 @@
      "models"
     ],
     "gaps": [
-     "Async API (fetch) vs Python sync — documented divergence; GUI/shell unsupported."
+     "Async API (fetch) vs Python sync \u2014 documented divergence; GUI/shell unsupported."
     ]
    },
    "evidence": [
@@ -98117,10 +98129,10 @@
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "Async API (fetch) vs Python sync — documented divergence; GUI/shell unsupported."
+     "Async API (fetch) vs Python sync \u2014 documented divergence; GUI/shell unsupported."
     ]
    },
-   "notes": "Real fetch-based Downloader (async API: fetch is async; Python is sync — documented divergence). GUI/shell remain unsupported."
+   "notes": "Real fetch-based Downloader (async API: fetch is async; Python is sync \u2014 documented divergence). GUI/shell remain unsupported."
   },
   {
    "target": "nltk.downloader.DownloaderGUI",
@@ -98317,7 +98329,7 @@
     "status": "adapted",
     "members": [],
     "gaps": [
-     "None — pure fs index builder."
+     "None \u2014 pure fs index builder."
     ]
    },
    "evidence": [

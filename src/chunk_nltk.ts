@@ -7,6 +7,23 @@ function isTree(piece: Piece): piece is ChunkTree {
   return typeof (piece as ChunkTree).label === "string" && Array.isArray((piece as ChunkTree).children);
 }
 
+/** repr() of a python str — quote selection + escaping. */
+export function pyStrRepr(s: string): string {
+  const escBackslash = (t: string) => t.replace(/\\/g, "\\\\");
+  const quote = s.includes("'") && !s.includes('"') ? '"' : "'";
+  const body = escBackslash(s)
+    .replace(new RegExp(quote === "'" ? "'" : '"', "g"), "\\" + quote)
+    .replace(/\n/g, "\\n")
+    .replace(/\t/g, "\\t")
+    .replace(/\r/g, "\\r");
+  return quote + body + quote;
+}
+
+function pieceKey(piece: Piece): string {
+  if (isTree(piece)) return `(${piece.label} ${piece.children.map(pieceKey).join(" ")})`;
+  return `${piece.token}/${piece.tag}`;
+}
+
 function tagOf(piece: Piece): string {
   if (isTree(piece)) return piece.label;
   if (typeof (piece as TaggedToken).tag === "string") return piece.tag;
@@ -101,7 +118,10 @@ export class ChunkString {
   }
 
   toString(): string {
-    return `<<${this._str}>>`;
+    let str = this._str.replace(/>(?!\})/g, "> ");
+    str = str.replace(/([^{])</g, "$1 <");
+    if (str.startsWith("<")) str = " " + str;
+    return str;
   }
 }
 
@@ -168,7 +188,7 @@ export class ChunkRule extends RegexpChunkRule {
     super(new RegExp(`(?<chunk>${tp2re(pattern)})${ChunkString.IN_STRIP_PATTERN}`, "g"), "{\\g<chunk>}", descr);
   }
   override toString(): string {
-    return `<ChunkRule: '${this.pattern}'>`;
+    return `<ChunkRule: ${pyStrRepr(this.pattern)}>`;
   }
 }
 
@@ -176,11 +196,17 @@ export class StripRule extends RegexpChunkRule {
   constructor(public readonly pattern: string, descr: string) {
     super(new RegExp(`(?<strip>${tp2re(pattern)})${ChunkString.IN_CHUNK_PATTERN}`, "g"), "}\\g<strip>{", descr);
   }
+  override toString(): string {
+    return `<StripRule: ${pyStrRepr(this.pattern)}>`;
+  }
 }
 
 export class UnChunkRule extends RegexpChunkRule {
   constructor(public readonly pattern: string, descr: string) {
     super(new RegExp(`\\{(?<chunk>${tp2re(pattern)})\\}`, "g"), "\\g<chunk>", descr);
+  }
+  override toString(): string {
+    return `<UnChunkRule: ${pyStrRepr(this.pattern)}>`;
   }
 }
 
@@ -192,6 +218,9 @@ export class MergeRule extends RegexpChunkRule {
   ) {
     super(new RegExp(`(?<left>${tp2re(leftTagPattern)})\\}\\{(?=${tp2re(rightTagPattern)})`, "g"), "\\g<left>", descr);
   }
+  override toString(): string {
+    return `<MergeRule: ${pyStrRepr(this.leftTagPattern)}, ${pyStrRepr(this.rightTagPattern)}>`;
+  }
 }
 
 export class SplitRule extends RegexpChunkRule {
@@ -201,6 +230,9 @@ export class SplitRule extends RegexpChunkRule {
     descr: string,
   ) {
     super(new RegExp(`(?<left>${tp2re(leftTagPattern)})(?=${tp2re(rightTagPattern)})`, "g"), "\\g<left>}{", descr);
+  }
+  override toString(): string {
+    return `<SplitRule: ${pyStrRepr(this.leftTagPattern)}, ${pyStrRepr(this.rightTagPattern)}>`;
   }
 }
 
@@ -212,6 +244,9 @@ export class ExpandLeftRule extends RegexpChunkRule {
   ) {
     super(new RegExp(`(?<left>${tp2re(leftTagPattern)})\\{(?<right>${tp2re(rightTagPattern)})`, "g"), "{\\g<left>\\g<right>", descr);
   }
+  override toString(): string {
+    return `<ExpandLeftRule: ${pyStrRepr(this.leftTagPattern)}, ${pyStrRepr(this.rightTagPattern)}>`;
+  }
 }
 
 export class ExpandRightRule extends RegexpChunkRule {
@@ -221,6 +256,9 @@ export class ExpandRightRule extends RegexpChunkRule {
     descr: string,
   ) {
     super(new RegExp(`(?<left>${tp2re(leftTagPattern)})\\}(?<right>${tp2re(rightTagPattern)})`, "g"), "\\g<left>\\g<right>}", descr);
+  }
+  override toString(): string {
+    return `<ExpandRightRule: ${pyStrRepr(this.leftTagPattern)}, ${pyStrRepr(this.rightTagPattern)}>`;
   }
 }
 
@@ -239,6 +277,9 @@ export class ChunkRuleWithContext extends RegexpChunkRule {
       "\\g<left>{\\g<chunk>}\\g<right>",
       descr,
     );
+  }
+  override toString(): string {
+    return `<ChunkRuleWithContext:  ${pyStrRepr(this.leftTagPattern)}, ${pyStrRepr(this.tagPattern)}, ${pyStrRepr(this.rightTagPattern)}>`;
   }
 }
 
@@ -304,7 +345,9 @@ export class ChunkScore {
     for (const child of tree.children) {
       if (isTree(child)) {
         if (new RegExp(this.chunkLabel).test(child.label)) {
-          chunks.set(`${count}:${pos}`, child);
+          // python stores ((count,pos), frozen_tree) set elements — the
+          // chunk's structure is part of the identity.
+          chunks.set(`${count}:${pos}:${pieceKey(child)}`, child);
         }
         pos += leaves(child).length;
       } else {

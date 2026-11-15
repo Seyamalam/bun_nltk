@@ -23,3 +23,6 @@ export class ShiftReduceParser {
   constructor(_grammar: unknown) { void _grammar; }
   parse(_tokens: string[]): unknown { return externalError("ShiftReduceParser.parse"); }
 }
+
+/** nltk.parse.transitionparser.demo — docstring-only doctest holder; calling it is a no-op. */
+export function demo(): void {}

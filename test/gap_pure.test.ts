@@ -31,6 +31,8 @@ import { clearTemplateRegistry } from "../src/brill_tagger";
 import { demo as hmmDemo, demo_bw, demo_pos, demo_pos_bw } from "../src/hmm_tagger";
 import { demo as toolboxDemo } from "../src/toolbox";
 import { demo as snowballDemo } from "../src/snowball_demo";
+import { demo as chunkRegexpDemo } from "../src/chunk_regexp_demo";
+import { demo as transitionparserDemo } from "../src/parse_wrappers";
 import {
   demo as tblDemo,
   demoErrorAnalysis, demoGeneratedTemplates, demoHighAccuracyRules,
@@ -603,5 +605,28 @@ describe("nltk.stem.snowball.demo vs NLTK 3.10.3", () => {
     const c = collect();
     snowballDemo(() => inputs.shift() ?? null, c.out);
     expect(c.text()).toBe(T("snowball_demo_fr"));
+  });
+});
+
+describe("nltk.chunk.regexp.demo vs NLTK 3.10.3", () => {
+  test("demo output byte-exact except hash-ordered missed/incorrect chunks", () => {
+    const c = collect();
+    chunkRegexpDemo(c.out);
+    // python ChunkScore stores ((count,pos), frozen_tree) pairs in a set —
+    // missed()/incorrect() iterate in hash order (varies per process).
+    const CHUNK_LINE = /^   \(/;
+    const strip = (t: string) => t.split("\n").filter((l) => !CHUNK_LINE.test(l)).join("\n");
+    const sortedChunks = (t: string) => t.split("\n").filter((l) => CHUNK_LINE.test(l)).sort();
+    expect(strip(c.text())).toBe(strip(T("chunk_regexp_demo")));
+    expect(sortedChunks(c.text())).toEqual(sortedChunks(T("chunk_regexp_demo")));
+  });
+});
+
+describe("nltk.parse.transitionparser.demo vs NLTK 3.10.3", () => {
+  test("demo() is a no-op like python (doctest holder)", () => {
+    const c = collect();
+    transitionparserDemo();
+    expect(c.text()).toBe(T("transitionparser_demo"));
+    expect(T("transitionparser_demo")).toBe("");
   });
 });
