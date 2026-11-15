@@ -26,7 +26,7 @@ marshaling, and remaining legacy algorithms. The target is Python NLTK 3.10.3.
   GUI, Java, and network integrations are reported separately and never counted
   as passed.
 - The integrated Rust crate passes **117 tests** plus **2 seeded adversarial**
-  and **4 compatibility-crate tests**. The Bun suite has **1,502 passes and 0
+  and **4 compatibility-crate tests**. The Bun suite has **1,513 passes and 0
   failures** on Linux x64 (Bun 1.4.4, Node v26.13.0): the shipped WASM is
   **1,088,530 bytes** against the 1,300,000-byte gate.
 - The package currently packs to **15,500,055 unpacked bytes** across **383

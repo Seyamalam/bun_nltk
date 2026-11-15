@@ -8,13 +8,23 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
-- **IEER relation extraction (`nltk.sem.relextract` demos promoted)**:
+- **IEER relation extraction (`nltk.sem.relextract` — module complete)**:
   faithful `ieerstr2tree` port (`src/ieerstr2tree.ts`) driving real
   `IEERCorpusReader.parsed_docs`, plus byte-exact `in_demo` (incl. the
-  `sqlite3 :memory:` `Locations` table + Atlanta clause output) and
-  `roles_demo` against the provisioned ieer corpus. `extract_rels`
-  promoted: anchors Python `pattern.match` semantics and emits
-  Python-style `rtuple` reprs.
+  `sqlite3 :memory:` `Locations` table + Atlanta clause output),
+  `roles_demo`, `ieer_headlines`, `conllned`, and `conllesp` against
+  the provisioned ieer + conll2002 corpora. `ne_chunked` reproduces
+  the upstream `NameError` (relextract.py never binds `nltk`); the
+  intended treebank+NE-chunker loop ships as `ne_chunked_fixed`.
+  `extract_rels` promoted: anchors Python `pattern.match` semantics
+  and emits Python-style `rtuple` reprs.
+- **`framenet.mimic_wrap` real port**: `textwrap.fill` with
+  `drop_whitespace=False` (new flag on the shared CPython-faithful
+  wrapper) then cuts remaining lines at the first line's chunk
+  lengths; byte-identical incl. `wrap_at` variants and empty input.
+- **`knbc.test` real + corpus provisioned**: silent type asserts over
+  the zip-resident euc-jp corpus via the `LazyCorpusLoader` zip
+  fallback; root `test` export now binds the real function.
 - **`nltk.downloader` real port (24 mappings promoted)**: `Downloader`,
   `Package`, `Collection`, all 12 message classes, `build_index`,
   `unzip`/`_unzip_iter`, `md5_hexdigest`/`sha256_hexdigest`,

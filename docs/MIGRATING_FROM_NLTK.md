@@ -107,6 +107,15 @@ silently partial.
   (`TypeError: 'zip' object is not subscriptable` at
   `zip(test, pdists)[:5]`); the likelihood float preceding it is pinned
   within `1e-12` relative error (ULP-level divergence is expected).
+- `sem.relextract.ne_chunked` reproduces another upstream bug:
+  `relextract.py` never binds `nltk`, so the demo `NameError`s on the
+  first iteration after printing its header. The intended loop —
+  `treebank.tagged_sents()[:1500]` → `ne_chunk` → ace PER/ORG
+  relations — ships separately as `ne_chunked_fixed` and runs over
+  the provisioned corpora. The module's other demos (`in_demo`,
+  `roles_demo`, `ieer_headlines`, `conllned`, `conllesp`) are
+  byte-exact against the oracle, including `in_demo`'s
+  `sqlite3 :memory:` output.
 
 ## Runtime surfaces
 
