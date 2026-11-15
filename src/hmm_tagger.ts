@@ -1,10 +1,11 @@
 import { ConditionalFreqDist, FreqDist } from "./freqdist";
 import { ConfusionMatrix } from "./confusion_metrics";
 import { hmmViterbiIdsNative } from "./native";
-import { ConditionalProbDist, DictionaryConditionalProbDist, DictionaryProbDist, LidstoneProbDist, type ConditionalProbDistI, type ProbDistLike } from "./probability";
+import { ConditionalProbDist, DictionaryConditionalProbDist, DictionaryProbDist, LidstoneProbDist, MutableProbDist, RandomProbDist, type ConditionalProbDistI, type ProbDistLike } from "./probability";
 import { find as dataFind } from "./data";
 import { CategorizedTaggedCorpusReader } from "./corpus_text_readers";
 import { ndarray, pyFloatRepr, pyRepr, pytuple, type PrintSink } from "./ext_pure";
+import { PyRandom } from "./py_random";
 import type { GoldSentence, TaggedToken, UntaggedSentence } from "./sequential_taggers";
 
 export type Estimator = (freqdist: FreqDist<string>, bins: number) => ProbDistLike<string>;
@@ -112,9 +113,177 @@ export class HiddenMarkovModelTrainer {
     return this.trainSupervised(labeledSequences, options);
   }
 
-  /** NLTK `train_unsupervised` (Baum-Welch) — not implemented. */
-  train_unsupervised(_unlabeledSequences: unknown, _options?: unknown): never {
-    throw new Error("HiddenMarkovModelTrainer.train_unsupervised (Baum-Welch) is not implemented in this port");
+  /**
+   * nltk.tag.hmm.train_unsupervised — Baum-Welch EM on unlabeled sequences.
+   * `options.model` seeds the EM; without it a RandomProbDist model is built
+   * (python draws from the ambient `random` module — inject `options.random`
+   * for determinism). Prints "iteration <i> logprob <l>" per EM round.
+   */
+  trainUnsupervised(
+    unlabeledSequences: ReadonlyArray<UntaggedSentence>,
+    options: {
+      updateOutputs?: boolean;
+      model?: HiddenMarkovModelTagger;
+      maxIterations?: number;
+      convergenceLogprob?: number;
+      random?: () => number;
+      out?: PrintSink;
+    } = {},
+  ): HiddenMarkovModelTagger {
+    const updateOutputs = options.updateOutputs ?? true;
+    const out = options.out ?? defaultPrintSink;
+    const random = options.random ?? Math.random;
+
+    let model = options.model;
+    if (!model) {
+      const priors = new RandomProbDist(this.states, random);
+      const transitions = new DictionaryConditionalProbDist<string, string>(
+        this.states.map((s) => [s, new RandomProbDist(this.states, random)] as const));
+      const outputs = new DictionaryConditionalProbDist<string, string>(
+        this.states.map((s) => [s, new RandomProbDist(this.symbols, random)] as const));
+      model = new HiddenMarkovModelTagger(this.symbols, this.states, transitions, outputs, priors);
+    }
+
+    this.states = model.states;
+    this.symbols = model.symbols;
+
+    const N = this.states.length;
+    const M = this.symbols.length;
+    const symbolNumbers = new Map(this.symbols.map((s, i) => [s, i]));
+
+    model.transitions = new DictionaryConditionalProbDist<string, string>(
+      this.states.map((s) => [s, new MutableProbDist(model.transitions.get(s), this.states)] as const));
+    if (updateOutputs) {
+      model.outputs = new DictionaryConditionalProbDist<string, string>(
+        this.states.map((s) => [s, new MutableProbDist(model.outputs.get(s), this.symbols)] as const));
+    }
+
+    model.resetCache();
+
+    let converged = false;
+    let lastLogprob: number | null = null;
+    let iteration = 0;
+    const maxIterations = options.maxIterations ?? 1000;
+    const epsilon = options.convergenceLogprob ?? 1e-6;
+
+    while (!converged && iteration < maxIterations) {
+      let Anumer = ninfMatrix(N, N);
+      let Bnumer = ninfMatrix(N, M);
+      let Adenom = ninfVector(N);
+      let Bdenom = ninfVector(N);
+
+      let logprob = 0;
+      for (const seq of unlabeledSequences) {
+        const sequence = [...seq];
+        if (sequence.length === 0) continue;
+        const [lpk, seqAnumer, seqAdenom, seqBnumer, seqBdenom] = this.#baumWelchStep(sequence, model, symbolNumbers);
+
+        for (let i = 0; i < N; i += 1) {
+          for (let j = 0; j < N; j += 1) {
+            Anumer[i]![j] = logAddExp2(Anumer[i]![j]!, seqAnumer[i]![j]! - lpk);
+          }
+          for (let k = 0; k < M; k += 1) {
+            Bnumer[i]![k] = logAddExp2(Bnumer[i]![k]!, seqBnumer[i]![k]! - lpk);
+          }
+        }
+        for (let i = 0; i < N; i += 1) {
+          Adenom[i] = logAddExp2(Adenom[i]!, seqAdenom[i]! - lpk);
+          Bdenom[i] = logAddExp2(Bdenom[i]!, seqBdenom[i]! - lpk);
+        }
+
+        logprob += lpk;
+      }
+
+      for (let i = 0; i < N; i += 1) {
+        const logprobAi = Anumer[i]!.map((v) => v - Adenom[i]!);
+        const logprobBi = Bnumer[i]!.map((v) => v - Bdenom[i]!);
+
+        const normA = logSumExp2(logprobAi);
+        const normB = logSumExp2(logprobBi);
+        for (let j = 0; j < N; j += 1) logprobAi[j] = logprobAi[j]! - normA;
+        for (let k = 0; k < M; k += 1) logprobBi[k] = logprobBi[k]! - normB;
+
+        const si = this.states[i]!;
+        const transRow = model.transitions.get(si) as MutableProbDist<string>;
+        for (let j = 0; j < N; j += 1) transRow.update(this.states[j]!, logprobAi[j]!);
+
+        if (updateOutputs) {
+          const outRow = model.outputs.get(si) as MutableProbDist<string>;
+          for (let k = 0; k < M; k += 1) outRow.update(this.symbols[k]!, logprobBi[k]!);
+        }
+      }
+
+      if (iteration > 0 && Math.abs(logprob - lastLogprob!) < epsilon) converged = true;
+
+      print(out, `iteration ${iteration} logprob ${pyFloatRepr(logprob)}`);
+      iteration += 1;
+      lastLogprob = logprob;
+    }
+
+    return model;
+  }
+
+  /** NLTK `train_unsupervised` snake_case member. */
+  train_unsupervised(
+    unlabeledSequences: ReadonlyArray<UntaggedSentence>,
+    options?: Parameters<HiddenMarkovModelTrainer["trainUnsupervised"]>[1],
+  ): HiddenMarkovModelTagger {
+    return this.trainUnsupervised(unlabeledSequences, options);
+  }
+
+  /** nltk.tag.hmm._baum_welch_step — per-sequence expected counts in log space. */
+  #baumWelchStep(
+    sequence: UntaggedSentence,
+    model: HiddenMarkovModelTagger,
+    symbolToNumber: ReadonlyMap<string, number>,
+  ): [number, number[][], number[], number[][], number[]] {
+    const N = model.states.length;
+    const M = model.symbols.length;
+    const T = sequence.length;
+
+    const alpha = model.forwardProbability(sequence);
+    const beta = model.backwardProbability(sequence);
+    const lpk = logSumExp2(alpha[T - 1]!);
+
+    const Anumer = ninfMatrix(N, N);
+    const Bnumer = ninfMatrix(N, M);
+    const Adenom = ninfVector(N);
+    const Bdenom = ninfVector(N);
+
+    // _transitions_matrix().T: transitionsLog[j][i] = logprob(s_i | s_j)
+    const transitionsLog: number[][] = model.states.map((j) =>
+      model.states.map((i) => model.transitionLogProb(j, i)));
+
+    for (let t = 0; t < T; t += 1) {
+      const symbol = sequence[t]!;
+      const nextSymbol = t < T - 1 ? sequence[t + 1]! : undefined;
+      const xi = symbolToNumber.get(symbol)!;
+
+      const nextOutputsLogprob = model.states.map((s) => model.emissionLogProb(s, nextSymbol as string));
+      const alphaPlusBeta = alpha[t]!.map((v, i) => v + beta[t]![i]!);
+
+      if (t < T - 1) {
+        for (let j = 0; j < N; j += 1) {
+          for (let i = 0; i < N; i += 1) {
+            const numerAdd = transitionsLog[j]![i]! + nextOutputsLogprob[i]! + beta[t + 1]![i]! + alpha[t]![j]!;
+            Anumer[j]![i] = logAddExp2(Anumer[j]![i]!, numerAdd);
+          }
+        }
+        for (let i = 0; i < N; i += 1) {
+          Adenom[i] = logAddExp2(Adenom[i]!, alphaPlusBeta[i]!);
+        }
+      } else {
+        for (let i = 0; i < N; i += 1) {
+          Bdenom[i] = logAddExp2(Adenom[i]!, alphaPlusBeta[i]!);
+        }
+      }
+
+      for (let i = 0; i < N; i += 1) {
+        Bnumer[i]![xi] = logAddExp2(Bnumer[i]![xi]!, alphaPlusBeta[i]!);
+      }
+    }
+
+    return [lpk, Anumer, Adenom, Bnumer, Bdenom];
   }
 }
 
@@ -597,6 +766,21 @@ export class HiddenMarkovModelTagger {
     return this.evaluate_per_tag(gold);
   }
 
+  /** nltk.tag.hmm.reset_cache — drops the lazily built log-prob caches. */
+  resetCache(): void {
+    this.#priorLogCache = null;
+    this.#transitionLogCache = null;
+    this.#outputLogCache = null;
+    this.#transitionLogFlat = null;
+    this.#outputLogFlat = null;
+    this.#symbolIndex.clear();
+  }
+
+  /** NLTK `reset_cache` snake_case member. */
+  reset_cache(): void {
+    this.resetCache();
+  }
+
   #ensureSymbolCache(unlabeledSequence: UntaggedSentence): void {
     let added = false;
     for (const token of unlabeledSequence) {
@@ -710,7 +894,7 @@ function npSum(a: readonly number[]): number {
 function logSumExp2(values: number[]): number {
   if (values.length === 0) return Number.NEGATIVE_INFINITY;
   const max = Math.max(...values);
-  if (max === Number.NEGATIVE_INFINITY) return max;
+  // numpy parity: all--inf input yields (-inf) - (-inf) = nan, not -inf.
   return Math.log2(npSum(values.map((v) => 2 ** (v - max)))) + max;
 }
 
@@ -722,6 +906,15 @@ function logSumExp2(values: number[]): number {
  */
 export function logsumexp2(arr: readonly number[]): number {
   return logSumExp2([...arr]);
+}
+
+const ninfVector = (n: number): number[] => Array.from({ length: n }, () => -Infinity);
+const ninfMatrix = (rows: number, cols: number): number[][] => Array.from({ length: rows }, () => ninfVector(cols));
+
+/** numpy `np.logaddexp2` scalar — `log2(2**a + 2**b)` with -inf handling. */
+function logAddExp2(a: number, b: number): number {
+  if (a === -Infinity && b === -Infinity) return -Infinity;
+  return a > b ? a + Math.log2(1 + 2 ** (b - a)) : b + Math.log2(1 + 2 ** (a - b));
 }
 
 /** nltk.tag.hmm._log_add — log2-sum of already-logged values via the max trick. */
@@ -841,11 +1034,66 @@ export function demo_pos(out: PrintSink = defaultPrintSink): void {
 /** NLTK `demo_pos` camelCase binding. */
 export { demo_pos as demoPos };
 
-function corpusError(name: string): never {
-  throw new Error(`${name} requires the NLTK treebank/brown corpus (nltk_data) which is not bundled.`);
+/** nltk.tag.hmm.demo_bw — Baum-Welch EM on random samples from the market model. */
+export function demo_bw(out: PrintSink = defaultPrintSink): void {
+  print(out, "");
+  print(out, "Baum-Welch demo for market example");
+  print(out, "");
+
+  const [model, states, symbols] = marketHmmExample();
+
+  const rng = new PyRandom(0);
+  const training: UntaggedSentence[] = [];
+  for (let i = 0; i < 10; i += 1) {
+    const item = model.randomSample(rng, 5);
+    training.push(item.map(([w]) => w));
+  }
+
+  const trainer = new HiddenMarkovModelTrainer(states, symbols);
+  trainer.train_unsupervised(training, { model, maxIterations: 1000, out });
 }
 
-/** nltk.tag.hmm.demo_bw — Baum-Welch demo; requires train_unsupervised (not yet ported). */
-export function demo_bw(): never { return corpusError("nltk.tag.hmm.demo_bw (Baum-Welch train_unsupervised not ported)"); }
-/** nltk.tag.hmm.demo_pos_bw — Baum-Welch demo; requires train_unsupervised (not yet ported). */
-export function demo_pos_bw(): never { return corpusError("nltk.tag.hmm.demo_pos_bw (Baum-Welch train_unsupervised not ported)"); }
+/** NLTK `demo_bw` camelCase binding. */
+export { demo_bw as demoBw };
+
+/** nltk.tag.hmm.demo_pos_bw — supervised + unsupervised HMM over brown news. */
+export function demo_pos_bw(
+  test = 10,
+  supervised = 20,
+  unsupervised = 10,
+  verbose = true,
+  maxIterations = 5,
+  out: PrintSink = defaultPrintSink,
+): void {
+  print(out, "");
+  print(out, "Baum-Welch demo for POS tagging");
+  print(out, "");
+
+  print(out, `Training HMM (supervised, ${supervised} sentences)...`);
+
+  const [sentences, tagSet] = loadPos(test + supervised + unsupervised);
+
+  const symbols: string[] = [];
+  const seen = new Set<string>();
+  for (const sentence of sentences) {
+    for (const [token] of sentence) {
+      if (!seen.has(token)) { seen.add(token); symbols.push(token); }
+    }
+  }
+
+  const trainer = new HiddenMarkovModelTrainer(tagSet, symbols);
+  let hmm = trainer.train_supervised(
+    sentences.slice(test, test + supervised),
+    { estimator: (fd, bins) => new LidstoneProbDist(fd, 0.1, bins) },
+  );
+
+  hmm.test(sentences.slice(0, test), verbose, out);
+
+  print(out, `Training (unsupervised, ${unsupervised} sentences)...`);
+  const unlabeled = untagSents(sentences.slice(test + supervised));
+  hmm = trainer.train_unsupervised(unlabeled, { model: hmm, maxIterations, out });
+  hmm.test(sentences.slice(0, test), verbose, out);
+}
+
+/** NLTK `demo_pos_bw` camelCase binding. */
+export { demo_pos_bw as demoPosBw };

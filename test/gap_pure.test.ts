@@ -28,7 +28,7 @@ import { bots } from "../src/ext_pure";
 import { RegexpParser } from "../src/chunk_nltk";
 import { resetUniqueVariableCounter } from "../src/sem_logic";
 import { clearTemplateRegistry } from "../src/brill_tagger";
-import { demo as hmmDemo, demo_pos } from "../src/hmm_tagger";
+import { demo as hmmDemo, demo_bw, demo_pos, demo_pos_bw } from "../src/hmm_tagger";
 import {
   demo as tblDemo,
   demoErrorAnalysis, demoGeneratedTemplates, demoHighAccuracyRules,
@@ -523,5 +523,60 @@ describe("nltk.tag.hmm demos vs NLTK 3.10.3", () => {
     const [pe, oe] = [ents(py), ents(ours)];
     expect(oe.length).toBe(pe.length);
     pe.forEach((v, i) => expect(Math.abs(oe[i]! - v)).toBeLessThan(1e-9));
+  });
+  test("demo_bw (Baum-Welch EM on market samples)", { timeout: 120_000 }, () => {
+    const c = collect();
+    demo_bw(c.out);
+    // `iteration i logprob F` floats carry ulp noise (numpy vectorized
+    // np.power vs scalar 2** inside np.logaddexp2/logsumexp2) — everything
+    // else, including EM convergence at iteration 203, byte-for-byte.
+    const normLp = (s: string) => s.replace(/(iteration \d+ logprob) -?[\d.eE+nan]+/g, "$1 F");
+    const lps = (s: string) => [...s.matchAll(/iteration (\d+) logprob (-?[\d.eE+nan]+)/g)]
+      .map((m) => [Number(m[1]), Number(m[2])] as const);
+    const py = T("hmm_demo_bw");
+    const ours = c.text();
+    expect(normLp(ours)).toBe(normLp(py));
+    const [pe, oe] = [lps(py), lps(ours)];
+    expect(oe.length).toBe(pe.length);
+    pe.forEach(([it, v], i) => {
+      expect(oe[i]![0]).toBe(it);
+      expect(Math.abs(oe[i]![1] - v)).toBeLessThan(1e-9);
+    });
+  });
+  test("demo_pos_bw (supervised + Baum-Welch on brown)", { timeout: 300_000 }, () => {
+    const c = collect();
+    demo_pos_bw(10, 20, 10, true, 5, c.out);
+    // After `Training (unsupervised` the model degenerates (entropy -> nan);
+    // the post-BW argmax over nan-poisoned rows is hash-order-dependent —
+    // python itself scores 3.17/3.87/3.52 across hash seeds. Pin: everything
+    // before the marker byte-exact modulo float epsilons; after it, tag
+    // assignments + the final accuracy are normalized structurally.
+    const norm = (s: string) => {
+      const idx = s.indexOf("Training (unsupervised");
+      const det = s.slice(0, idx)
+        .replace(/Entropy: -?[\w.]+/g, "Entropy: E");
+      const nondet = s.slice(idx)
+        .replace(/Entropy: -?[\w.]+/g, "Entropy: E")
+        .replace(/(iteration \d+ logprob) -?[\d.eE+nan]+/g, "$1 F")
+        .replace(/(accuracy over \d+ tokens:) [\d.]+/g, "$1 F")
+        .split("\n")
+        .map((l) => l.startsWith("HMM-tagged:") ? l.replace(/\/[^ \n]+/g, "/T") : l)
+        .join("\n");
+      return det + nondet;
+    };
+    const floats = (s: string, re: RegExp) => [...s.matchAll(re)].map((m) => Number(m[1]));
+    const py = T("hmm_demo_pos_bw");
+    const ours = c.text();
+    expect(norm(ours)).toBe(norm(py));
+    // Epsilon-compare the deterministic-half floats (entropy + logprob).
+    const entRe = /Entropy: (-?[\w.]+)/g;
+    const lpRe = /iteration \d+ logprob (-?[\d.eE+nan]+)/g;
+    const detPart = (s: string) => s.slice(0, s.indexOf("Training (unsupervised"));
+    const [pe, oe] = [floats(detPart(py), entRe), floats(detPart(ours), entRe)];
+    expect(oe.length).toBe(pe.length);
+    pe.forEach((v, i) => expect(Math.abs(oe[i]! - v)).toBeLessThan(1e-9));
+    const [pl, ol] = [floats(py, lpRe), floats(ours, lpRe)];
+    expect(ol.length).toBe(pl.length);
+    pl.forEach((v, i) => expect(Math.abs(ol[i]! - v)).toBeLessThan(1e-9));
   });
 });

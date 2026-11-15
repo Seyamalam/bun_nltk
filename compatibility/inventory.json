@@ -1336,7 +1336,9 @@
    "xpath": "src/corpus_gaps.ts",
    "zenDemo": "src/demos.ts",
    "zen_chat": "src/chat.ts",
-   "zen_demo": "src/demos.ts"
+   "zen_demo": "src/demos.ts",
+   "demoBw": "src/hmm_tagger.ts",
+   "demoPosBw": "src/hmm_tagger.ts"
   }
  },
  "modules": [
@@ -31119,7 +31121,7 @@
      "train_unsupervised"
     ],
     "gaps": [
-     "train_unsupervised (Baum-Welch) raises; supervised Lidstone estimation pinned."
+     "train is an alias of train_supervised here (NLTK dispatches on kwargs); train_unsupervised takes an options object (updateOutputs/model/maxIterations/convergenceLogprob/random/out) instead of **kwargs."
     ]
    },
    "evidence": [
@@ -31128,7 +31130,7 @@
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "train_supervised pinned; train_unsupervised throws."
+     "train_supervised + train_unsupervised (Baum-Welch EM) pinned via demo_bw/demo_pos_bw oracles."
     ]
    },
    "notes": "Re-export through nltk.tag namespace of the nltk.tag.hmm implementation."
@@ -32995,7 +32997,7 @@
      "train_unsupervised"
     ],
     "gaps": [
-     "train_unsupervised (Baum-Welch) raises; train is an alias of train_supervised here (NLTK dispatches on kwargs)."
+     "train is an alias of train_supervised here (NLTK dispatches on kwargs); train_unsupervised takes an options object (updateOutputs/model/maxIterations/convergenceLogprob/random/out) instead of **kwargs."
     ]
    },
    "evidence": [
@@ -33004,10 +33006,10 @@
    "fixtures": {
     "status": "pinned-differential",
     "gaps": [
-     "train_supervised pinned; unsupervised path throws."
+     "train_supervised + train_unsupervised (Baum-Welch EM) pinned via demo_bw/demo_pos_bw oracles."
     ]
    },
-   "notes": "Supervised HMM estimation port; Baum-Welch not implemented."
+   "notes": "Supervised + unsupervised (Baum-Welch EM) HMM estimation port."
   },
   {
    "target": "nltk.tag.hmm.LazyMap",
@@ -33295,10 +33297,11 @@
   {
    "target": "nltk.tag.hmm.demo_bw",
    "exports": [
-    "demo_bw"
+    "demo_bw",
+    "demoBw"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/hmm_tagger.ts",
@@ -33306,20 +33309,22 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "demo fns take a PrintSink out-arg instead of writing to stdout."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sink-injected demo; oracle-pinned output (iteration logprob lines epsilon-compared for np.power ulp noise)."
     ]
    },
-   "notes": "Corpus-bound Baum-Welch demo; unsupported without nltk_data."
+   "notes": "Port of nltk.tag.hmm.demo_bw — Baum-Welch EM on 10 random market samples; converges at iteration 203; logprob floats epsilon-compared (numpy vectorized np.power vs scalar 2** ulp noise)."
   },
   {
    "target": "nltk.tag.hmm.demo_pos",
@@ -33356,10 +33361,11 @@
   {
    "target": "nltk.tag.hmm.demo_pos_bw",
    "exports": [
-    "demo_pos_bw"
+    "demo_pos_bw",
+    "demoPosBw"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/hmm_tagger.ts",
@@ -33367,20 +33373,22 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "demo fns take a PrintSink out-arg instead of writing to stdout; tag_set/symbols use insertion order rather than python's per-process set order."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sink-injected demo; deterministic half oracle-pinned (entropy/logprob epsilon-compared); post-BW degenerate output normalized (nan argmax is hash-order-dependent upstream)."
     ]
    },
-   "notes": "Corpus-bound demo; unsupported without nltk_data."
+   "notes": "Port of nltk.tag.hmm.demo_pos_bw — supervised + Baum-Welch on brown news; post-BW model degenerates to nan entropy; final accuracy nondeterministic upstream (3.17/3.87/3.52 across python hash seeds) so pinned structurally."
   },
   {
    "target": "nltk.tag.hmm.load_pos",

@@ -548,7 +548,7 @@ export { SvmClassifier, MegamMaxentClassifier, TadmMaxentClassifier, WekaClassif
 export { StanfordPOSTagger, StanfordNERTagger, StanfordTagger, HunPosTagger, HunposTagger, Senna, SennaTagger, SennaChunkTagger, SennaNERTagger } from "./src/tag_wrappers";
 export { str2tuple, tuple2str, pos_tag_sents, posTagSents } from "./src/tag_util";
 export { brill24, fntbl37, nltkdemo18, nltkdemo18plus, describe_template_sets, describeTemplateSets } from "./src/tag_brill_templates";
-export { logsumexp2, demo as hmmDemo, load_pos, loadPos, demo_pos, demoPos, demo_bw, demo_pos_bw } from "./src/hmm_tagger";
+export { logsumexp2, demo as hmmDemo, load_pos, loadPos, demo_pos, demoPos, demo_bw, demoBw, demo_pos_bw, demoPosBw } from "./src/hmm_tagger";
 export { basic_sent_chop, basicSentChop, demo as tntDemo, demo_errors } from "./src/tag_tnt";
 export { RandomProbDist } from "./src/probability";
 export { overridden, find_file } from "./src/internals";

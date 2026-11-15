@@ -5,9 +5,8 @@ import {
   brill24,
   ConfusionMatrix,
   describe_template_sets,
-  demo_bw,
-  demo_pos_bw,
   fntbl37,
+  HiddenMarkovModelTagger,
   HiddenMarkovModelTrainer,
   HunposTagger,
   logsumexp2,
@@ -22,6 +21,7 @@ import {
   tuple2str,
   untag,
 } from "../index";
+import type { UntaggedSentence } from "../index";
 
 // Oracle: test/tag_oracle.py (NLTK 3.10.3, Python 3.14.4)
 
@@ -122,9 +122,19 @@ describe("nltk.tag.hmm", () => {
     expect(tagger.best_path(["the", "cat"])).toEqual(["DT", "NN"]);
   });
 
-  it("corpus-bound demos throw honestly", () => {
-    expect(() => demo_bw()).toThrowError(/Baum-Welch/);
-    expect(() => demo_pos_bw()).toThrowError(/Baum-Welch/);
+  it("train_unsupervised runs Baum-Welch EM to convergence", () => {
+    const trainer = new HiddenMarkovModelTrainer(["NN", "VB"], ["a", "b"]);
+    const sents: UntaggedSentence[] = [["a", "b", "a"], ["b", "a", "b"], ["a", "a", "b"]];
+    const logLines: string[] = [];
+    const hmm = trainer.train_unsupervised(sents, {
+      maxIterations: 50,
+      out: (t) => logLines.push(t),
+    });
+    expect(hmm).toBeInstanceOf(HiddenMarkovModelTagger);
+    expect(logLines.length).toBeGreaterThan(1);
+    expect(logLines[0]!.trimEnd()).toMatch(/^iteration 0 logprob -?[\d.]+$/);
+    // EM prints every iteration including the converging one.
+    expect(logLines.at(-1)!.trimEnd()).toMatch(/^iteration \d+ logprob /);
   });
 });
 

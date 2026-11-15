@@ -370,5 +370,7 @@ import nltk.tag.hmm as _hmm
 
 run("hmm_demo", _hmm.demo)
 run("hmm_demo_pos", _hmm.demo_pos)
+run("hmm_demo_bw", _hmm.demo_bw)
+run("hmm_demo_pos_bw", _hmm.demo_pos_bw)
 
 print(json.dumps({"out": out, "errs": errs}))
