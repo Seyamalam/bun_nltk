@@ -1014,7 +1014,7 @@ export class Chat {
       : rng;
     const sorted = Object.keys(refl).sort((a, b) => b.length - a.length);
     const esc = sorted.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
-    this._regex = new RegExp(`\\b(${esc.join("|")})\\b`, "i");
+    this._regex = new RegExp(`(?<![\\p{L}\\p{N}_])(${esc.join("|")})(?![\\p{L}\\p{N}_])`, "iu");
   }
 
   private _substitute(str: string): string {

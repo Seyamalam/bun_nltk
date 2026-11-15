@@ -12,7 +12,7 @@ export class NLTKWordTokenizer {
     [/^"/g, "``"],
     [/(``)/g, " $1 "],
     [/([ ([{<])("|'{2})/g, "$1 `` "],
-    [/(?<!\w)(')(?!(?:re|ve|ll|m|t|s|d|n)\b)(?=\w)/giu, "$1 "],
+    [/(?<![\p{L}\p{N}_])(')(?!(?:re|ve|ll|m|t|s|d|n)(?![\p{L}\p{N}_]))(?=[\p{L}\p{N}_])/giu, "$1 "],
   ];
 
   // Ending quotes.
@@ -51,12 +51,16 @@ export class NLTKWordTokenizer {
 
   static readonly DOUBLE_DASHES: Subst = [/--/g, " -- "];
 
+  // Python \b is Unicode-aware; JS \b is ASCII-only. Emulate with
+  // lookarounds on the Unicode word class [\p{L}\p{N}_].
   static readonly CONTRACTIONS2: RegExp[] = [
-    /\b(can)(not)\b/gi, /\b(d)('ye)\b/gi, /\b(gim)(me)\b/gi, /\b(gon)(na)\b/gi,
-    /\b(got)(ta)\b/gi, /\b(lem)(me)\b/gi, /\b(more)('n)\b/gi, /\b(wan)(na)(?=\s)/gi,
+    /(?<![\p{L}\p{N}_])(can)(not)(?![\p{L}\p{N}_])/giu, /(?<![\p{L}\p{N}_])(d)('ye)(?![\p{L}\p{N}_])/giu,
+    /(?<![\p{L}\p{N}_])(gim)(me)(?![\p{L}\p{N}_])/giu, /(?<![\p{L}\p{N}_])(gon)(na)(?![\p{L}\p{N}_])/giu,
+    /(?<![\p{L}\p{N}_])(got)(ta)(?![\p{L}\p{N}_])/giu, /(?<![\p{L}\p{N}_])(lem)(me)(?![\p{L}\p{N}_])/giu,
+    /(?<![\p{L}\p{N}_])(more)('n)(?![\p{L}\p{N}_])/giu, /(?<![\p{L}\p{N}_])(wan)(na)(?=\s)/giu,
   ];
-  static readonly CONTRACTIONS3: RegExp[] = [/ ('t)(is)\b/gi, / ('t)(was)\b/gi];
-  static readonly CONTRACTIONS4: RegExp[] = [/\b(whad)(dd)(ya)\b/gi, /\b(wha)(t)(cha)\b/gi];
+  static readonly CONTRACTIONS3: RegExp[] = [/ ('t)(is)(?![\p{L}\p{N}_])/giu, / ('t)(was)(?![\p{L}\p{N}_])/giu];
+  static readonly CONTRACTIONS4: RegExp[] = [/(?<![\p{L}\p{N}_])(whad)(dd)(ya)(?![\p{L}\p{N}_])/giu, /(?<![\p{L}\p{N}_])(wha)(t)(cha)(?![\p{L}\p{N}_])/giu];
 
   tokenize(text: string, convertParentheses?: boolean, returnStr?: boolean): string[] | string;
   tokenize(text: string, convert_parentheses?: boolean, return_str?: boolean): string[] | string;

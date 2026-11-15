@@ -89,19 +89,19 @@ function pyTupleCmp(a: readonly unknown[], b: readonly unknown[]): number {
   return a.length - b.length;
 }
 
-/** Python str.islower(). */
+/** Python str.islower(): at least one cased char, all cased chars lower. */
 function pyIsLower(s: string): boolean {
-  return /[^\W\d_]/.test(s) && s === s.toLowerCase();
+  return /[\p{Ll}\p{Lu}\p{Lt}]/u.test(s) && s === s.toLowerCase();
 }
 
-/** Python str.title(): uppercase each letter following a non-letter. */
+/** Python str.title(): uppercase each cased char following an uncased one. */
 function pyTitle(s: string): string {
   let out = "";
-  let prevIsLetter = false;
+  let prevIsCased = false;
   for (const ch of s) {
-    const isLetter = /[a-zA-Z]/.test(ch);
-    out += !isLetter ? ch : prevIsLetter ? ch.toLowerCase() : ch.toUpperCase();
-    prevIsLetter = isLetter;
+    const isCased = /[\p{Ll}\p{Lu}\p{Lt}]/u.test(ch);
+    out += !isCased ? ch : prevIsCased ? ch.toLowerCase() : ch.toUpperCase();
+    prevIsCased = isCased;
   }
   return out;
 }

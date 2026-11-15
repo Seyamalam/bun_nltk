@@ -80,7 +80,7 @@ function isLikelyAbbreviation(token: string, abbrevs: Set<string>): boolean {
 
 function learnAbbreviations(text: string, base: Set<string>): Set<string> {
   const scored = new Map<string, { lower: number; upper: number; total: number }>();
-  const candidateRe = /\b([A-Za-z][A-Za-z.]{0,10})\.\s+([A-Za-z])/g;
+  const candidateRe = /(?<![\p{L}\p{N}_])([A-Za-z][A-Za-z.]{0,10})\.\s+([A-Za-z])/gu;
   for (const match of text.matchAll(candidateRe)) {
     const raw = (match[1] ?? "").toLowerCase().replace(/\.+$/, "");
     const next = match[2] ?? "";

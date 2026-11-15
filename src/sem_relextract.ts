@@ -297,7 +297,7 @@ export function in_demo(trace=0, sql=true): void {
       console.warn("Cannot import sqlite; sql flag will be ignored.");
     }
   }
-  const IN = /.*\bin\b(?!\b.+ing)/;
+  const IN = /.*(?<![\p{L}\p{N}_])in(?![\p{L}\p{N}_])(?!.+ing)/u;
   console.log();
   console.log("IEER: in(ORG, LOC) -- just the clauses:");
   console.log("=".repeat(45));
