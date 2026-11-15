@@ -81,8 +81,8 @@ matching Python behavior here is impossible without the dependency:
 - Pickle deserialization of Python-trained artifacts (`.pickle` model
   loading, TBL demo pickles)
 - Corpus-bound demos and helpers whose only input is a resource that
-  does not ship (toolbox rotokas demo, `dependencygraph.malt_demo`'s
-  MaltParser binary path when no jar is installed)
+  does not ship (`dependencygraph.malt_demo`'s MaltParser binary path
+  when no jar is installed)
 
 The inventory records each as `unsupported`/`gap` with notes — nothing is
 silently partial.
@@ -98,6 +98,15 @@ silently partial.
   `artifacts/fidelity-report.json`.
 - Randomized trainers (KMeans, EM) take explicit seeds where Python reads
   global `random` state; pin the seed for reproducibility.
+- Where CPython's iteration order is hash-dependent (`set`/`dict` of
+  feature names or values), the port uses deterministic ordering and the
+  output is structurally pinned rather than byte-identical — e.g.
+  `decisiontree.demo`'s stump search produces a different (equally valid)
+  tree than any given CPython run.
+- `positivenaivebayes.demo` reproduces the upstream Python 3 crash
+  (`TypeError: 'zip' object is not subscriptable` at
+  `zip(test, pdists)[:5]`); the likelihood float preceding it is pinned
+  within `1e-12` relative error (ULP-level divergence is expected).
 
 ## Runtime surfaces
 

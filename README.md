@@ -26,11 +26,13 @@ marshaling, and remaining legacy algorithms. The target is Python NLTK 3.10.3.
   GUI, Java, and network integrations are reported separately and never counted
   as passed.
 - The integrated Rust crate passes **117 tests** plus **2 seeded adversarial**
-  and **4 compatibility-crate tests**. The Bun suite has **1,251 passes and 0
+  and **4 compatibility-crate tests**. The Bun suite has **1,502 passes and 0
   failures** on Linux x64 (Bun 1.4.4, Node v26.13.0): the shipped WASM is
   **1,088,530 bytes** against the 1,300,000-byte gate.
-- The package gate passes at **14,171,205 unpacked bytes** across **362 files**
-  (limits: 15,000,000 bytes / 400 files). NE chunker models ship as Brotli.
+- The package currently packs to **15,500,055 unpacked bytes** across **383
+  files** — the file count passes (limit 400) but the byte size exceeds the
+  15,000,000-byte cap; a budget decision is pending with the owner. VADER,
+  Punkt, and NE chunker models ship as Brotli.
 - The browser WASM budget was raised from 700,000 to 1,100,000 bytes on
   2026-10-21 and to **1,300,000 bytes** on 2026-11-09 by explicit owner
   decisions. Exact float round-tripping (required
@@ -360,9 +362,10 @@ bun run release:check
 bash scripts/loc-guard.sh 600
 ```
 
-The npm package currently contains 362 files / 14,171,205 unpacked bytes, below
-the 400-file and 15 MB limits. The LOC guard rejects non-grandfathered `.ts` and
-`.rs` files above 600 lines.
+The npm package currently contains 383 files / 15,500,055 unpacked bytes —
+within the 400-file limit but above the 15 MB byte cap (a budget decision is
+pending with the owner; the growth is newly ported feature code). The LOC guard
+rejects non-grandfathered `.ts` and `.rs` files above 600 lines.
 
 ## Environment
 

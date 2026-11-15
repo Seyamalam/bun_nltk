@@ -128,6 +128,16 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - `dist/portable` rebuilt (stale since `1406167`); `WasmPunktTrainer` is now
   exported from the browser root, maxent encoding types are re-exported from
   `index.ts`, and a `node:fs` re-export no longer leaks into declarations.
+- VADER and default Punkt models now ship as Brotli (`models/vader.json.br`,
+  `models/punkt-english.json.br`), loaded via `process.getBuiltinModule`
+  so no bundler-visible `node:` imports or `createRequire` shims leak into
+  `dist/portable`. The browser Punkt fallback is inlined into
+  `index.browser.js` through a registry populated by the static import in
+  `src/index_browser.ts`; the dev JSON moved to `scripts/data/`.
+- Package gate status: currently packs to **15,500,055 bytes / 383 files** —
+  the byte size exceeds the 15 MB cap pending an owner budget decision;
+  the growth is newly ported feature code (+531 KB compiled dist), not a
+  removable synthetic payload.
 - `GAAClusterer.clusterName` accepts and returns any value to match NLTK's
   identity `cluster_name`; `set2rel` returns `Set<unknown>` since NLTK's
   integer quirk yields bare `str(elem)` strings.
@@ -146,6 +156,16 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - Stale source-hash snapshot drift and test-file type errors
   (`cluster.test.ts`, `sem.test.ts`); `tsc --noEmit` is clean.
 - Committed `__pycache__` bytecode removed; `*.pyc` is now gitignored.
+- Browser bundle `AA is not a function` / `j2 is not a function` crash:
+  a `require()`-of-JSON fallback compiled to a `createRequire` shim that
+  was never emitted in the shared chunk; replaced by the
+  `englishJsonFallback` registry.
+- `ext_subprocess.ts` leaked the ambient `Bun.Subprocess` type into
+  portable declarations; `PyPopen.proc` now exposes the ambient-free
+  `PySubprocessLike` interface.
+- `test/fixtures/portable-types/node.ts.fixture` asserted
+  `chat.respond(): string`; the faithful signature is
+  `string | undefined` (Python returns `None` on no match).
 
 ## [1.1.0] - 2026-11-09
 
