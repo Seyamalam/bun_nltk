@@ -422,5 +422,7 @@ run("relextract_in_demo", _rel.in_demo)
 run("relextract_roles_demo", _rel.roles_demo)
 run("relextract_ieer_headlines", _rel.ieer_headlines)
 run("relextract_ne_chunked", _rel.ne_chunked)
+run("relextract_conllned", _rel.conllned)
+run("relextract_conllesp", _rel.conllesp)
 
 print(json.dumps({"out": out, "errs": errs}))

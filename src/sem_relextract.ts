@@ -6,7 +6,7 @@
 
 import { SimpleTree } from "./corpus_tree";
 import { pyError } from "./internals.ts";
-import { IEERCorpusReader, BracketParseCorpusReader } from "./corpus_readers2";
+import { IEERCorpusReader, BracketParseCorpusReader, ConllChunkCorpusReader } from "./corpus_readers2";
 import { neChunk } from "./named_entity";
 import { find } from "./data";
 import { openSqliteDb } from "./sem_chat80";
@@ -360,8 +360,35 @@ export function ieer_headlines(): void {
   }
 }
 export const ieerHeadlines = ieer_headlines;
-export function conllned(_trace=1): void { console.log("conllned requires conll2002 corpus — not available in JS runtime."); }
-export function conllesp(): void { console.log("conllesp requires conll2002 corpus — not available in JS runtime."); }
+export function conllned(trace=1): void {
+  // python re.VERBOSE — comments/whitespace stripped:
+  //   "( is/V| was/V| werd/V| wordt/V ) .* van/Prep"
+  const VAN = /(is\/V|was\/V|werd\/V|wordt\/V).*van\/Prep/;
+  console.log();
+  console.log("Dutch CoNLL2002: van(PER, ORG) -- raw rtuples with context:");
+  console.log("=".repeat(45));
+  const conll2002 = new ConllChunkCorpusReader(find("corpora/conll2002"), ".*(testa|testb|train).*", ["LOC","PER","ORG","MISC"]);
+  for (const doc of conll2002.chunked_sents("ned.train") as Iterable<SimpleTree>) {
+    const lcon = !!trace, rcon = !!trace;
+    for (const rel of extract_rels("PER", "ORG", chunkChildren(doc) as ChunkTree, "conll2002", VAN, 10)) {
+      console.log(rtuple(rel, lcon, rcon));
+    }
+  }
+}
+export function conllesp(): void {
+  // python re.VERBOSE: ".*(de/SP|del/SP)"
+  const DE = /.*(de\/SP|del\/SP)/;
+  console.log();
+  console.log("Spanish CoNLL2002: de(ORG, LOC) -- just the first 10 clauses:");
+  console.log("=".repeat(45));
+  const conll2002 = new ConllChunkCorpusReader(find("corpora/conll2002"), ".*(testa|testb|train).*", ["LOC","PER","ORG","MISC"]);
+  const rels: RelDict[] = [];
+  for (const doc of conll2002.chunked_sents("esp.train") as Iterable<SimpleTree>) {
+    rels.push(...extract_rels("ORG", "LOC", chunkChildren(doc) as ChunkTree, "conll2002", DE));
+  }
+  for (const r of rels.slice(0, 10)) console.log(clause(r, "DE"));
+  console.log();
+}
 export function ne_chunked(): void {
   console.log();
   console.log("1500 Sentences from Penn Treebank, as processed by NLTK NE Chunker");

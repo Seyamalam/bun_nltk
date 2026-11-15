@@ -20,7 +20,7 @@ import {
   satdemo, scoresDemo, semUtilDemo, shiftreduceDemo, sortDemo, viterbiDemo,
   withConsoleLog,
 } from "../src/demos";
-import { in_demo, roles_demo, ieer_headlines, ne_chunked, ne_chunked_fixed } from "../src/sem_relextract";
+import { in_demo, roles_demo, ieer_headlines, ne_chunked, ne_chunked_fixed, conllned, conllesp } from "../src/sem_relextract";
 import {
   BasicTweetHandler, LOCAL, LocalTimezoneOffsetWithUTC, PyRandom, TweetHandlerI,
   findJarIter, findJar, findJarsWithinPath, findMaltModel, findMaltparser,
@@ -703,6 +703,16 @@ describe("nltk.sem.relextract demos vs NLTK 3.10.3", () => {
     // PER-ORG ROLE relations — output shape: "{i:<5}{rtuple}".
     expect(lines.filter((l) => /^\d+\s+\[PER:/.test(l)).length).toBeGreaterThan(5);
   }, { timeout: 120_000 });
+  test("conllned: Dutch van(PER,ORG) rtuples (byte-exact)", () => {
+    const c = collect();
+    withConsoleLog(c.out, () => conllned());
+    expect(c.text()).toBe(T("relextract_conllned"));
+  });
+  test("conllesp: Spanish de(ORG,LOC) clauses (byte-exact)", () => {
+    const c = collect();
+    withConsoleLog(c.out, () => conllesp());
+    expect(c.text()).toBe(T("relextract_conllesp"));
+  });
 });
 
 describe("nltk.classify.decisiontree.demo vs NLTK 3.10.3", () => {

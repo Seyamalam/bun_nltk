@@ -7678,7 +7678,7 @@ declare function clause(reldict: RelDict, relsym: string): string;
 declare function in_demo(trace?: number, sql?: boolean): void;
 declare function roles_demo(trace?: number): void;
 declare function ieer_headlines(): void;
-declare function conllned(_trace?: number): void;
+declare function conllned(trace?: number): void;
 declare function conllesp(): void;
 declare function ne_chunked(): void;
 

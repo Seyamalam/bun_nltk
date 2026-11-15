@@ -41265,8 +41265,8 @@
       "exports": [
         "conllesp"
       ],
-      "category": "gap",
-      "status": "unsupported",
+      "category": "ts-algorithm",
+      "status": "implemented-subset",
       "source": [
         {
           "file": "src/sem_relextract.ts",
@@ -41277,25 +41277,27 @@
         "status": "adapted",
         "members": [],
         "gaps": [
-          "conllesp: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+          "Prints via console.log; corpus must be provisioned under NLTK_DATA."
         ]
       },
-      "evidence": [],
+      "evidence": [
+        "gap-pure-differential"
+      ],
       "fixtures": {
-        "status": "missing",
+        "status": "pinned-differential",
         "gaps": [
-          "conllesp: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+          "Oracle-pinned byte-exact against provisioned conll2002."
         ]
       },
-      "notes": "conllesp: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+      "notes": "Faithful port of nltk.sem.relextract.conllesp over the provisioned conll2002 chunked_sents."
     },
     {
       "target": "nltk.sem.relextract.conllned",
       "exports": [
         "conllned"
       ],
-      "category": "gap",
-      "status": "unsupported",
+      "category": "ts-algorithm",
+      "status": "implemented-subset",
       "source": [
         {
           "file": "src/sem_relextract.ts",
@@ -41306,17 +41308,19 @@
         "status": "adapted",
         "members": [],
         "gaps": [
-          "conllned: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+          "Prints via console.log; corpus must be provisioned under NLTK_DATA."
         ]
       },
-      "evidence": [],
+      "evidence": [
+        "gap-pure-differential"
+      ],
       "fixtures": {
-        "status": "missing",
+        "status": "pinned-differential",
         "gaps": [
-          "conllned: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+          "Oracle-pinned byte-exact against provisioned conll2002."
         ]
       },
-      "notes": "conllned: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+      "notes": "Faithful port of nltk.sem.relextract.conllned over the provisioned conll2002 chunked_sents."
     },
     {
       "target": "nltk.sem.relextract.descape_entity",
