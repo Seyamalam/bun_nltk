@@ -70435,29 +70435,31 @@
       "exports": [
         "test"
       ],
-      "category": "gap",
-      "status": "unsupported",
+      "category": "ts-algorithm",
+      "status": "implemented-subset",
       "source": [
         {
-          "file": "src/corpus_gaps.ts",
-          "anchor": "test"
+          "file": "src/corpus_readers3.ts",
+          "anchor": "export function knbc_test"
         }
       ],
       "signatures": {
-        "status": "missing",
+        "status": "adapted",
         "members": [],
         "gaps": [
-          "test: corpus reader surface not yet ported; honest stub throws."
+          "Silent assert-only function; requires knbc corpus (zip) provisioned."
         ]
       },
-      "evidence": [],
+      "evidence": [
+        "gap-pure-differential"
+      ],
       "fixtures": {
-        "status": "missing",
+        "status": "pinned-differential",
         "gaps": [
-          "test: not implemented in the TS runtime."
+          "Materializes words/sents/tagged_words/tagged_sents through the knbc.zip via the LazyCorpusLoader zip fallback, euc-jp decoding."
         ]
       },
-      "notes": "Honest gap: nltk.corpus.reader.knbc.test not yet ported (corpus-family stub)."
+      "notes": "Faithful: silent type asserts over the lazy zip-resident euc-jp corpus (encoding forwarded positionally)."
     },
     {
       "target": "nltk.corpus.reader.lin.CorpusReader",

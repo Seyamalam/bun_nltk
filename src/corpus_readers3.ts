@@ -653,12 +653,15 @@ export class KNBCorpusReader extends SyntaxCorpusReader {
 }
 
 export function knbc_test(): void {
-  const knbc = new LazyCorpusLoader("knbc/corpus1", KNBCorpusReader as never, [".*/KN.*"], { encoding: "euc-jp" });
-  const w = knbc.words() as Iterable<unknown>;
-  const s = knbc.sents() as Iterable<unknown>;
-  const tw = knbc.call("tagged_words") as Iterable<unknown>;
-  const ts = knbc.call("tagged_sents") as Iterable<unknown>;
-  for (const _x of [w, s, tw, ts]) void _x;
+  // python: LazyCorpusLoader('knbc/corpus1', KNBCorpusReader, r'.*/KN.*', encoding='euc-jp')
+  // (encoding forwarded positionally — our loader drops kwargs).
+  const knbc = new LazyCorpusLoader("knbc/corpus1", KNBCorpusReader as never, [".*/KN.*", "euc-jp"]);
+  const first = (it: Iterable<unknown>) => it[Symbol.iterator]().next().value;
+  const assert = (ok: boolean) => { if (!ok) throw pyError("AssertionError", ""); };
+  assert(typeof first(knbc.words() as Iterable<unknown>) === "string");
+  assert(typeof first((first(knbc.sents() as Iterable<Iterable<unknown>>) as Iterable<unknown>)) === "string");
+  assert(Array.isArray(first(knbc.call("tagged_words") as Iterable<unknown>)));
+  assert(Array.isArray(first((first(knbc.call("tagged_sents") as Iterable<Iterable<unknown>>) as Iterable<unknown>))));
 }
 
 // { chasen

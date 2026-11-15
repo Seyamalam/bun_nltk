@@ -425,4 +425,8 @@ run("relextract_ne_chunked", _rel.ne_chunked)
 run("relextract_conllned", _rel.conllned)
 run("relextract_conllesp", _rel.conllesp)
 
+# ---------------- knbc.test (knbc corpus, zip-resident euc-jp) ----------------
+import nltk.corpus.reader.knbc as _knbc
+run("knbc_test", _knbc.test)
+
 print(json.dumps({"out": out, "errs": errs}))

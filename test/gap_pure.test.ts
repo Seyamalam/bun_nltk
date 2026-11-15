@@ -34,6 +34,7 @@ import { demo as hmmDemo, demo_bw, demo_pos, demo_pos_bw } from "../src/hmm_tagg
 import { demo as toolboxDemo } from "../src/toolbox";
 import { demo as snowballDemo } from "../src/snowball_demo";
 import { demo as chunkRegexpDemo } from "../src/chunk_regexp_demo";
+import { knbc_test } from "../src/corpus_readers3";
 import { demo as transitionparserDemo } from "../src/parse_wrappers";
 import { naivebayesDemo, positiveNaiveBayesDemo, maxentDemo, decisionTreeDemo } from "../src/classify_demos";
 import {
@@ -713,6 +714,13 @@ describe("nltk.sem.relextract demos vs NLTK 3.10.3", () => {
     withConsoleLog(c.out, () => conllesp());
     expect(c.text()).toBe(T("relextract_conllesp"));
   });
+});
+
+describe("nltk.corpus.reader.knbc.test vs NLTK 3.10.3", () => {
+  test("lazy zip-resident corpus materializes (silent asserts)", () => {
+    knbc_test();
+    expect(T("knbc_test")).toBe("");
+  }, { timeout: 60_000 });
 });
 
 describe("nltk.classify.decisiontree.demo vs NLTK 3.10.3", () => {

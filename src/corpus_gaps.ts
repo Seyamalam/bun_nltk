@@ -58,6 +58,6 @@ export class switch_chunker { constructor(..._a: unknown[]) { unavailable("switc
 export class switch_p_tagger { constructor(..._a: unknown[]) { unavailable("switch_p_tagger"); } }
 export class switch_punkt { constructor(..._a: unknown[]) { unavailable("switch_punkt"); } }
 export class switch_t_tagger { constructor(..._a: unknown[]) { unavailable("switch_t_tagger"); } }
-export class test { constructor(..._a: unknown[]) { unavailable("test"); } }
+export { knbc_test as test } from "./corpus_readers3";
 export { urlopen } from "./pathsec";
 export { validate_network_url, validate_network_url_async } from "./pathsec";
