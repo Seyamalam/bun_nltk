@@ -22,7 +22,7 @@ const XML_ENTITIES: Record<string, string> = {
 /** Decode XML entity/character references. Unknown named entities raise
  * ParseError, matching ElementTree's "undefined entity" failure. */
 export function xmlUnescape(s: string): string {
-  return s.replace(/&(#x[0-9a-fA-F]+|#\d+|[a-zA-Z_:][\w.:-]*);/g, (whole, body: string) => {
+  return s.replace(/&(#x[0-9a-fA-F]+|#\d+|[a-zA-Z_:][\p{L}\p{N}_.:-]*);/gu, (whole, body: string) => {
     if (body[0] === "#") {
       const code = body[1] === "x" || body[1] === "X"
         ? parseInt(body.slice(2), 16) : parseInt(body.slice(1), 10);
@@ -152,7 +152,7 @@ function compilePath(path: string, ns?: Record<string, string> | null): PathStep
   const resolveTag = (t: string): string => {
     if (t === "*") return t;
     if (t.startsWith("{")) return t;
-    const m = /^([A-Za-z_][\w.-]*):(.+)$/.exec(t);
+    const m = /^([A-Za-z_][\p{L}\p{N}_.-]*):(.+)$/u.exec(t);
     if (m && ns && m[1]! in ns) return `{${ns[m[1]!]}}${m[2]}`;
     return t;
   };

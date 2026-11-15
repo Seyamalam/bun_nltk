@@ -1356,13 +1356,13 @@ function sensevalFixXml(text: string): string {
   // remove <@>, <p>, </p>
   text = text.replace(/<(@|\/?p)>/g, "");
   // remove <&M .> and <&T .> and <&Ms .>
-  text = text.replace(/<&\w+ \.>/g, "");
+  text = text.replace(/<&[\p{L}\p{N}_]+ \.>/gu, "");
   // remove <!DOCTYPE... > lines
   text = text.replace(/<!DOCTYPE[^>]*>/g, "");
   // remove <[hi]> and <[/p]> etc
   text = text.replace(/<\[\/?[^>]+\]*>/g, "");
   // take the thing out of the brackets: <&hellip;>
-  text = text.replace(/<(&\w+;)>/g, "$1");
+  text = text.replace(/<(&[\p{L}\p{N}_]+;)>/gu, "$1");
   // and remove the & for those patterns that aren't regular XML
   text = text.replace(/&(?!(amp|gt|lt|apos|quot))/g, "");
   // fix 'abc <p="foo"/>' style tags - now <wf pos="foo">abc</wf>

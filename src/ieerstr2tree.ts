@@ -5,7 +5,7 @@ import { pyError } from "./internals";
 
 // re.DOTALL: text spans lines.
 const IEER_DOC_RE = /<DOC>\s*(?:<DOCNO>\s*(?<docno>.+?)\s*<\/DOCNO>\s*)?(?:<DOCTYPE>\s*(?<doctype>.+?)\s*<\/DOCTYPE>\s*)?(?:<DATE_TIME>\s*(?<date_time>.+?)\s*<\/DATE_TIME>\s*)?<BODY>\s*(?:<HEADLINE>\s*(?<headline>.+?)\s*<\/HEADLINE>\s*)?<TEXT>(?<text>.*?)<\/TEXT>\s*<\/BODY>\s*<\/DOC>\s*/s;
-const IEER_TYPE_RE = /^<b_\w+\s+[^>]*?type="(?<type>\w+)"/;
+const IEER_TYPE_RE = /^<b_[\p{L}\p{N}_]+\s+[^>]*?type="(?<type>[\p{L}\p{N}_]+)"/u;
 
 export interface IeerTreeDict {
   text: SimpleTree | SimpleTreeChild[];

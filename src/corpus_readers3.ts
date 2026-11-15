@@ -970,7 +970,7 @@ export class SwitchboardTurn extends Array<unknown> {
 
 export class SwitchboardCorpusReader extends CorpusReader {
   static _FILES = ["tagged"];
-  private static _UTTERANCE_RE = /^(\w+)\.(\d+):\s*(.*)/;
+  private static _UTTERANCE_RE = /^([\p{L}\p{N}_]+)\.(\d+):\s*(.*)/u;
   private static _SEP = "/";
 
   constructor(root: string | PathPointer, tagset: string | null = null) {
@@ -1031,9 +1031,9 @@ export class SwitchboardCorpusReader extends CorpusReader {
 // { alpino
 
 const ALPINO_NODE = /^[ \t]*<node ([^>\n]*?)(\/?)>/gm;
-const ALPINO_ATTR = /(\w+)="([^"]*)"/g;
+const ALPINO_ATTR = /([\p{L}\p{N}_]+)="([^"]*)"/gu;
 const ALPINO_DIGITS = /^\d+$/;
-const ALPINO_WORD = /^\w+$/;
+const ALPINO_WORD = /^[\p{L}\p{N}_]+$/u;
 const SORTTAGWRD = /\((\d+) ([^\s()]+) ([^\s()]+)\)/g;
 
 function alpinoNodeToSexpr(body: string, selfclose: string, wholeMatch: string, ordered: boolean): string {

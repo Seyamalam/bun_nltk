@@ -536,8 +536,8 @@ const CS_COMPARISON = /<cs-[1234]>/g;
 const CS_CLOSE_COMPARISON = /<\/cs-[1234]>/;
 const CS_GRAD_COMPARISON = /<cs-[123]>/g;
 const CS_NON_GRAD_COMPARISON = /<cs-4>/g;
-const CS_ENTITIES_FEATS = /(\d)_((?:[.\w\s/-](?!\d_))+)/g;
-const CS_ENTITIES_FEATS_TEST = /(\d)_((?:[.\w\s/-](?!\d_))+)/;
+const CS_ENTITIES_FEATS = /(\d)_((?:[.\p{L}\p{N}_\s/-](?!\d_))+)/gu;
+const CS_ENTITIES_FEATS_TEST = /(\d)_((?:[.\p{L}\p{N}_\s/-](?!\d_))+)/u;
 const CS_KEYWORD = /\(([^()]*)\)\n?$/;
 const CS_COMP_TYPE = /<cs-(\d)>/;
 
@@ -842,7 +842,7 @@ export class IEERCorpusReader extends CorpusReader {
 // { reviews — Hu & Liu customer review data
 
 const REV_TITLE = /^\[t\](.*)\n?$/;
-const REV_FEATURES = /(\w+(?:\s\w+){0,50})\[((?:\+|-)\d)\]/g;
+const REV_FEATURES = /([\p{L}\p{N}_]+(?:\s[\p{L}\p{N}_]+){0,50})\[((?:\+|-)\d)\]/gu;
 const REV_NOTES = /\[(?!t)(p|u|s|cc|cs)\]/g;
 const REV_SENT = /##(.*)\n?$/;
 

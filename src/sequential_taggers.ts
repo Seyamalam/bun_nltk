@@ -518,10 +518,10 @@ export class ClassifierBasedPOSTagger extends ClassifierBasedTagger {
     }
     let shape: string;
     if (/^[0-9]+(\.[0-9]*)?|^[0-9]*\.[0-9]+$/.test(word)) shape = "number";
-    else if (/^\W+$/.test(word)) shape = "punct";
+    else if (/^[^\p{L}\p{N}_]+$/u.test(word)) shape = "punct";
     else if (/^[A-Z][a-z]+$/.test(word)) shape = "upcase";
     else if (/^[a-z]+$/.test(word)) shape = "downcase";
-    else if (/^\w+$/.test(word)) shape = "mixedcase";
+    else if (/^[\p{L}\p{N}_]+$/u.test(word)) shape = "mixedcase";
     else shape = "other";
     const lower = word.toLowerCase();
     return {

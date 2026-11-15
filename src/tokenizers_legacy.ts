@@ -96,7 +96,7 @@ function buildTweetRegex(matchPhoneNumbers: boolean): RegExp {
   const phone = String.raw`(?:\(\d{3}\)\s*\d+\s*-\d+|\d{2}-\d{8}|\d{3}-\d{3}-\d{4}|\d+\s*-\s*\d+)`;
   const emoticon = String.raw`(?::|;|=|8)(?:-)?(?:\)|\(|D|P|p|O|o|/|\\)`;
   const emojiSeq = String.raw`\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|\uFE0F)?(?:\u200D\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|\uFE0F)?)*`;
-  const core = String.raw`https?:\/\/\S+|#[\w_]+|@[\w_]+|${emoticon}|[A-Za-z0-9]+(?:'[A-Za-z0-9]+)?|${emojiSeq}|[^\s]`;
+  const core = String.raw`https?:\/\/\S+|#[\p{L}\p{N}_]+|@[\p{L}\p{N}_]+|${emoticon}|[A-Za-z0-9]+(?:'[A-Za-z0-9]+)?|${emojiSeq}|[^\s]`;
   const source = matchPhoneNumbers ? `${phone}|${core}` : core;
   return new RegExp(source, "gu");
 }

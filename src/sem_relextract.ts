@@ -67,7 +67,7 @@ export const descapeEntity = descape_entity;
 export function list2sym(lst: JoinItem[]): string {
   let sym = _join(lst, "_", true);
   sym = sym.toLowerCase();
-  sym = sym.replace(/&(\w+?);/g, (_match, p1: string) => ENTITY_DEFS[p1] ?? `&${p1};`);
+  sym = sym.replace(/&([\p{L}\p{N}_]+?);/gu, (_match, p1: string) => ENTITY_DEFS[p1] ?? `&${p1};`);
   sym = sym.replace(/\./g, "");
   return sym;
 }

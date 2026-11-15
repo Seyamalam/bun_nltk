@@ -684,7 +684,7 @@ export class FeatStructReader {
     }
     // Optional prefix identifier (word or ?var).
     let prefix: string | Variable | null = null;
-    const pm = /^\s*(\??[\w-]+)\s*/.exec(s.slice(pos));
+    const pm = /^\s*(\??[\p{L}\p{N}_-]+)\s*/u.exec(s.slice(pos));
     if (pm && s.slice(pos + pm[0].length).startsWith("[")) {
       prefix = pm[1]!.startsWith("?") ? new Variable(pm[1]!) : pm[1]!;
       pos += pm[0].length;
@@ -777,11 +777,11 @@ export class FeatStructReader {
   private _readValue(s: string, pos: number): [FeatValue, number] {
     const rest = s.slice(pos);
     let m = /^\s*\((\d+)\)\s*/.exec(rest);
-    if (m || rest.trimStart().startsWith("[") || /^\s*[\w?-]+\s*\[/.test(rest)) {
+    if (m || rest.trimStart().startsWith("[") || /^\s*[\p{L}\p{N}_?-]+\s*\[/u.test(rest)) {
       return this.read_partial(s, pos);
     }
-    if ((m = /^\s*\?[\w-]+/.exec(rest))) return [new Variable(m[0]!.trimStart()), pos + m[0].length];
-    if ((m = /^\s*(None|True|False)(?![\w])/.exec(rest))) {
+    if ((m = /^\s*\?[\p{L}\p{N}_-]+/u.exec(rest))) return [new Variable(m[0]!.trimStart()), pos + m[0].length];
+    if ((m = /^\s*(None|True|False)(?![\p{L}\p{N}_])/u.exec(rest))) {
       const v = m[1] === "None" ? null : m[1] === "True";
       return [v, pos + m[0].length];
     }

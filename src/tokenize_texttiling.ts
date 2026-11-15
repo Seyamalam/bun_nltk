@@ -170,7 +170,7 @@ export class TextTilingTokenizer {
   private divideToTokenSequences(text: string): TokenSequence[] {
     const w = this.w;
     const wrdindexList: Array<[string, number]> = [];
-    const re = /\w+/g;
+    const re = /[\p{L}\p{N}_]+/gu;
     let m: RegExpExecArray | null;
     while ((m = re.exec(text)) !== null) wrdindexList.push([m[0], m.index]);
     const seqs: TokenSequence[] = [];

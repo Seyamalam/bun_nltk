@@ -60,8 +60,10 @@ function pyExpandTabs(text: string, tabsize = 8): string {
 
 // CPython textwrap TextWrapper.wordsep_re with break_on_hyphens=True,
 // specialized to the module's whitespace/letter/word-punct classes.
+// Python \w/\d are Unicode-aware; JS \w/\d are ASCII-only. CPython's
+// [^\d\W] = \w minus \p{Nd} = [\p{L}\p{Nl}\p{No}_].
 const WORDSEP_RE =
-  /([ \t\n\v\f\r]+|(?<=[\w!"'&.,?])-{2,}(?=\w)|[^ \t\n\v\f\r]+?(?:-(?:(?<=[^\d\W]{2}-)|(?<=[^\d\W]-[^\d\W]-))(?=[^\d\W]-?[^\d\W])|(?=[ \t\n\v\f\r]|$)|(?<=[\w!"'&.,?])(?=-{2,}\w)))/g;
+  /([ \t\n\v\f\r]+|(?<=[\p{L}\p{N}_!"'&.,?])-{2,}(?=[\p{L}\p{N}_])|[^ \t\n\v\f\r]+?(?:-(?:(?<=[\p{L}\p{Nl}\p{No}_]{2}-)|(?<=[\p{L}\p{Nl}\p{No}_]-[\p{L}\p{Nl}\p{No}_]-))(?=[\p{L}\p{Nl}\p{No}_]-?[\p{L}\p{Nl}\p{No}_])|(?=[ \t\n\v\f\r]|$)|(?<=[\p{L}\p{N}_!"'&.,?])(?=-{2,}[\p{L}\p{N}_])))/gu;
 
 /** CPython textwrap.fill — TextWrapper defaults (break_long_words=True,
  * break_on_hyphens=True, drop_whitespace=True, max_lines=None). */
