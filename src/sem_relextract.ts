@@ -342,7 +342,21 @@ export function roles_demo(trace=0): void {
 }
 export const rolesDemo = roles_demo;
 
-export function ieer_headlines(): void { console.log("ieer_headlines requires ieer corpus — not available in JS runtime."); }
+export function ieer_headlines(): void {
+  console.log("IEER: First 20 Headlines");
+  console.log("=".repeat(45));
+  const ieer = new IEERCorpusReader(find("corpora/ieer"), "(?!README|\\.).*");
+  const trees: Array<[unknown, unknown]> = [];
+  for (const file of ieer.fileids()) {
+    for (const doc of ieer.parsed_docs(file) as Iterable<IeDocument>) {
+      trees.push([doc.docno, doc.headline]);
+    }
+  }
+  for (const [docno, headline] of trees.slice(0, 20)) {
+    console.log();
+    console.log(`${docno}:\n${headline}`);
+  }
+}
 export const ieerHeadlines = ieer_headlines;
 export function conllned(_trace=1): void { console.log("conllned requires conll2002 corpus — not available in JS runtime."); }
 export function conllesp(): void { console.log("conllesp requires conll2002 corpus — not available in JS runtime."); }

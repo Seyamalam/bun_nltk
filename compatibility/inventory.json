@@ -41383,8 +41383,8 @@
       "exports": [
         "ieer_headlines"
       ],
-      "category": "gap",
-      "status": "unsupported",
+      "category": "ts-algorithm",
+      "status": "implemented-subset",
       "source": [
         {
           "file": "src/sem_relextract.ts",
@@ -41395,17 +41395,19 @@
         "status": "adapted",
         "members": [],
         "gaps": [
-          "ieer_headlines: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+          "Prints via console.log; corpus must be provisioned under NLTK_DATA."
         ]
       },
-      "evidence": [],
+      "evidence": [
+        "gap-pure-differential"
+      ],
       "fixtures": {
-        "status": "missing",
+        "status": "pinned-differential",
         "gaps": [
-          "ieer_headlines: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+          "Oracle-pinned byte-exact (first 20 docno+headline trees)."
         ]
       },
-      "notes": "ieer_headlines: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+      "notes": "Faithful port over provisioned ieer corpus parsed_docs."
     },
     {
       "target": "nltk.sem.relextract.in_demo",

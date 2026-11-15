@@ -20,7 +20,7 @@ import {
   satdemo, scoresDemo, semUtilDemo, shiftreduceDemo, sortDemo, viterbiDemo,
   withConsoleLog,
 } from "../src/demos";
-import { in_demo, roles_demo } from "../src/sem_relextract";
+import { in_demo, roles_demo, ieer_headlines } from "../src/sem_relextract";
 import {
   BasicTweetHandler, LOCAL, LocalTimezoneOffsetWithUTC, PyRandom, TweetHandlerI,
   findJarIter, findJar, findJarsWithinPath, findMaltModel, findMaltparser,
@@ -680,6 +680,11 @@ describe("nltk.sem.relextract demos vs NLTK 3.10.3", () => {
     const c = collect();
     withConsoleLog(c.out, () => roles_demo());
     expect(c.text()).toBe(T("relextract_roles_demo"));
+  });
+  test("ieer_headlines: first 20 docno+headline trees (byte-exact)", () => {
+    const c = collect();
+    withConsoleLog(c.out, () => ieer_headlines());
+    expect(c.text()).toBe(T("relextract_ieer_headlines"));
   });
 });
 
