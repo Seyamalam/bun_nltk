@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { sentenceTokenizePunkt } from "./punkt";
@@ -78,7 +79,7 @@ export class CorpusReader {
     const out: string[] = [];
     for (const file of selected) {
       for (const sentence of sentenceTokenizePunkt(file.text)) {
-        if (sentence.trim()) out.push(sentence.trim());
+        if (pyStrip(sentence)) out.push(pyStrip(sentence));
       }
     }
     return out;
@@ -90,7 +91,7 @@ export class CorpusReader {
     for (const file of selected) {
       const parts = file.text
         .split(/\r?\n\r?\n/g)
-        .map((row) => row.trim())
+        .map((row) => pyStrip(row))
         .filter((row) => row.length > 0);
       out.push(...parts);
     }

@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 export type TaggedToken = { token: string; tag: string };
 export type ChunkTree = { label: string; children: Array<ChunkTree | TaggedToken> };
 
@@ -38,7 +39,7 @@ const BALANCED_BRACKETS = /(\{\})*$/;
 const CHUNK_TAG_PATTERN = /^(([^<>{}]|\{\d+,?\}|\{\d*,\d+\})|<[^<>{}]+>)*$/;
 
 export function tagPattern2rePattern(tagPattern: string): string {
-  let p = tagPattern.replace(/\s/g, "");
+  let p = tagPattern.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/gu, "");
   p = p.replace(/</g, "(<(");
   p = p.replace(/>/g, ")>)");
   if (!CHUNK_TAG_PATTERN.test(p)) throw new Error(`Bad tag pattern: '${tagPattern}'`);
@@ -150,8 +151,8 @@ export class RegexpChunkRule {
 
   static fromstring(s: string): RegexpChunkRule {
     const m = /^(?<rule>(\\.|[^#])*)(?<comment>#.*)?$/.exec(s)!;
-    const rule = m.groups!.rule!.trim();
-    const comment = (m.groups!.comment ?? "").slice(1).trim();
+    const rule = pyStrip(m.groups!.rule!);
+    const comment = pyStrip((m.groups!.comment ?? "").slice(1));
     try {
       if (!rule) throw new Error("Empty chunk pattern");
       if (rule[0] === "{" && rule[rule.length - 1] === "}") {
@@ -569,13 +570,13 @@ export class RegexpParser {
     let lhs: string | null = null;
     const pattern = /^(?<nonterminal>(\.|[^:])*)(:(?<rule>.*))?$/;
     for (const raw of grammar.split("\n")) {
-      const line = raw.trim();
+      const line = pyStrip(raw);
       const m = pattern.exec(line);
       if (m && m.groups!.nonterminal !== undefined && line.includes(":")) {
         this._addStage(rules, lhs, rootLabel, trace);
-        lhs = m.groups!.nonterminal.trim();
+        lhs = pyStrip(m.groups!.nonterminal);
         rules = [];
-        const rest = m.groups!.rule!.trim();
+        const rest = pyStrip(m.groups!.rule!);
         if (rest === "" || rest.startsWith("#")) continue;
         rules.push(RegexpChunkRule.fromstring(rest));
         continue;

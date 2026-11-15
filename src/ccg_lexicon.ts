@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 /**
  * CCG Lexicon — port of nltk/ccg/lexicon.py
  */
@@ -9,8 +10,8 @@ import type { Expression } from "./sem_logic.ts";
 import { deprecated, pyError } from "./internals.ts";
 
 // Regex mirrors
-const LEX_RE = /^([\S_]*?[^\s=-])\s*(::|[-=]+>)\s*(.+)/;
-const RHS_RE = /^([^{}]*[^ {}])\s*(\{[^}]+\})?/;
+const LEX_RE = /^([\S_]*?[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000=-])[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(::|[-=]+>)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(.+)/u;
+const RHS_RE = /^([^{}]*[^ {}])[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(\{[^}]+\})?/u;
 const SEM_RE = /\{([^}]+)\}/;
 const COMMENTS_RE = /^([^#]*)(?:#.*)?/;
 
@@ -65,11 +66,11 @@ export function fromString(lexStr: string, includeSemantics = false): CCGLexicon
   const entries = new Map<string, Token[]>();
 
   for (const rawLine of lexStr.split("\n")) {
-    const stripped = (COMMENTS_RE.exec(rawLine)?.[1] ?? "").trim();
+    const stripped = pyStrip(COMMENTS_RE.exec(rawLine)?.[1] ?? "");
     if (stripped === "") continue;
 
     if (stripped.startsWith(":-")) {
-      primitives = primitives.concat(stripped.slice(2).split(",").map((s) => s.trim()).filter(Boolean));
+      primitives = primitives.concat(stripped.slice(2).split(",").map((s) => pyStrip(s)).filter(Boolean));
     } else {
       const m = LEX_RE.exec(stripped);
       if (!m) throw pyError("AttributeError", "'NoneType' object has no attribute 'groups'");
@@ -78,7 +79,7 @@ export function fromString(lexStr: string, includeSemantics = false): CCGLexicon
       if (!rhsM) throw pyError("AttributeError", "'NoneType' object has no attribute 'groups'");
       const catStr = rhsM[1]!, semanticsStr = rhsM[2];
       const primSet = new Set(primitives);
-      const [cat, v] = augParseCategory(catStr.trim(), primSet, families);
+      const [cat, v] = augParseCategory(pyStrip(catStr), primSet, families);
 
       if (sep === "::") {
         // family definition: need var if present

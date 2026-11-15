@@ -1,5 +1,5 @@
 import type { CfgGrammar, CfgProduction, PcfgGrammar, PcfgProduction } from "./parse";
-import { pyError } from "./internals";
+import { PY_WS_RUN, pyError, pyLstrip, pyRstrip, pyStrip } from "./internals";
 
 export type GrammarSymbol = Nonterminal | string;
 
@@ -65,8 +65,8 @@ export class Nonterminal {
 }
 
 export function nonterminals(symbols: string): Nonterminal[] {
-  const list = symbols.includes(",") ? symbols.split(",") : symbols.split(/\s+/).filter((s) => s.length > 0);
-  return list.map((s) => new Nonterminal(s.trim()));
+  const list = symbols.includes(",") ? symbols.split(",") : symbols.split(PY_WS_RUN).filter((s) => s.length > 0);
+  return list.map((s) => new Nonterminal(pyStrip(s)));
 }
 
 export function isNonterminal(item: unknown): item is Nonterminal {
@@ -219,13 +219,13 @@ export function invertGraph(graph: Map<string, Set<string>>): Map<string, Set<st
   return inverted;
 }
 
-const ARROW_RE = /\s*->\s*/y;
-const PROBABILITY_RE = /(\[[\d.]+\])\s*/y;
-const TERMINAL_RE = /("[^"]*"|'[^']*')\s*/y;
-const DISJUNCTION_RE = /\|\s*/y;
+const ARROW_RE = /[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*->[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/yu;
+const PROBABILITY_RE = /(\[[\d.]+\])[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/yu;
+const TERMINAL_RE = /("[^"]*"|'[^']*')[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/yu;
+const DISJUNCTION_RE = /\|[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/yu;
 // Python \w is Unicode-aware (alphanumeric + underscore); JS \w is ASCII-only.
 // Python's isalnum ≈ \p{L}+\p{N}, so \w = [\p{L}\p{N}_].
-const STANDARD_NONTERM_RE = /([\p{L}\p{N}_/][\p{L}\p{N}_/^<>-]*)\s*/uy;
+const STANDARD_NONTERM_RE = /([\p{L}\p{N}_/][\p{L}\p{N}_/^<>-]*)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/uy;
 const STANDARD_NONTERM_FINDALL = /[\p{L}\p{N}_/][\p{L}\p{N}_/^<>-]*/gu;
 
 function matchAt(re: RegExp, line: string, pos: number): RegExpExecArray | null {
@@ -299,16 +299,16 @@ export function readGrammar(
   const productions: Production[] = [];
   let continueLine = "";
   for (let linenum = 0; linenum < lines.length; linenum++) {
-    const line = continueLine + lines[linenum]!.trim();
+    const line = continueLine + pyStrip(lines[linenum]!);
     if (line.startsWith("#") || line === "") continue;
     if (line.endsWith("\\")) {
-      continueLine = `${line.slice(0, -1).trimEnd()} `;
+      continueLine = `${pyRstrip(line.slice(0, -1))} `;
       continue;
     }
     continueLine = "";
     try {
       if (line[0] === "%") {
-        const [directive, args] = splitOnce(line.slice(1).trimStart());
+        const [directive, args] = splitOnce(pyLstrip(line.slice(1)));
         if (directive === "start") {
           const [s, pos] = nontermParser(args, 0);
           start = s;
@@ -338,9 +338,9 @@ export function read_grammar(
 }
 
 function splitOnce(text: string): [string, string] {
-  const idx = text.search(/\s/);
+  const idx = text.search(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u);
   if (idx < 0) return [text, ""];
-  return [text.slice(0, idx), text.slice(idx + 1).trimStart()];
+  return [text.slice(0, idx), pyLstrip(text.slice(idx + 1))];
 }
 
 export class CFG {
@@ -748,7 +748,7 @@ export class CFG {
 
 export { CFG as Grammar };
 
-const READ_DG_RE = /^\s*('[^']+')\s*[-=]+>\s*(?:(?:"[^"]+"|'[^']+'|\|)\s*)*$/;
+const READ_DG_RE = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*('[^']+')[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*[-=]+>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(?:(?:"[^"]+"|'[^']+'|\|)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*)*$/u;
 const SPLIT_DG_RE = /('[^']'|[-=]+>|"[^"]+"|'[^']+'|\|)/g;
 
 function readDependencyProduction(s: string): DependencyProduction[] {
@@ -776,7 +776,7 @@ export class DependencyGrammar {
     const productions: DependencyProduction[] = [];
     const lines = input.split("\n");
     for (let linenum = 0; linenum < lines.length; linenum++) {
-      const line = lines[linenum]!.trim();
+      const line = pyStrip(lines[linenum]!);
       if (line.startsWith("#") || line === "") continue;
       try {
         productions.push(...readDependencyProduction(line));

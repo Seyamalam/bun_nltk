@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 /*
  * Port of nltk.sem.drt (subset) — Discourse Representation Theory.
  *
@@ -316,7 +317,7 @@ export class DRS extends DrtExpression {
     for (const c of this.conds) {
       const d = c as unknown as DrtExpression;
       const lines = d._pretty ? d._pretty() : [c.str()];
-      for (const l of lines) if (l.trim()) condLines.push(l);
+      for (const l of lines) if (pyStrip(l)) condLines.push(l);
     }
     const allLines = [refsLine, ...condLines];
     const length = Math.max(...allLines.map((l) => l.length), 0);
@@ -758,7 +759,7 @@ export class DrtParser {
   private trie = DRT_TRIE;
 
   parse(data: string): DrtExpression {
-    data = data.replace(/\s+$/, "");
+    data = data.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u, "");
     this.currentIndex = 0;
     this.buffer = this.process(data);
     let result: DrtExpression;

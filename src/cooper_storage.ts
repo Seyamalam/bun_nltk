@@ -8,7 +8,7 @@ import { ApplicationExpression, LambdaExpression, Variable, type Expression } fr
 import type { FeatStructNonterminal } from "./parse_feature";
 import type { ParseTree } from "./parse";
 import { FeatureGrammar, FeatureIncrementalChartParser, InstantiateVarsChart } from "./parse_feature";
-import { pyError } from "./internals";
+import { PY_WS_RUN, pyError, pyStrip } from "./internals";
 import { readFileSync } from "node:fs";
 import { find as dataFind } from "./data";
 
@@ -100,7 +100,7 @@ export function parse_with_bindops(
           "utf-8",
         ),
       );
-  const tokens = sentence.trim().split(/\s+/).filter((t) => t.length > 0);
+  const tokens = pyStrip(sentence).split(PY_WS_RUN).filter((t) => t.length > 0);
   const parser = new FeatureIncrementalChartParser(g, { chartClass: InstantiateVarsChart });
   return parser.parse(tokens);
 }

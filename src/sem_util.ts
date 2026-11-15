@@ -18,7 +18,7 @@ export function parseSents(
   // Callers that need actual parses should use parseFeatureCfgGrammar + featureChartParse directly.
   void grammar;
   return inputs.map(sent => {
-    const tokens = sent.split(/\s+/).filter(Boolean);
+    const tokens = sent.split(PY_WS_RUN).filter(Boolean);
     void tokens;
     return [];
   });
@@ -39,13 +39,14 @@ export function skolemizeSemrep(tree: FeatureTreeLike, semkey = "SEM"): unknown 
 }
 
 import { readFileSync } from "node:fs";
+import { PY_WS_RUN } from "./internals";
 import { Assignment, Model, Valuation } from "./sem_logic";
 
 /** Port of nltk.sem.util.read_sents: read non-blank, non-comment lines from a file. */
 export function read_sents(filename: string, encoding = "utf8"): string[] {
   const sents = readFileSync(filename, encoding as BufferEncoding)
     .split(/\r?\n/)
-    .map((l) => l.replace(/\s+$/, ""));
+    .map((l) => l.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u, ""));
   return sents.filter((l) => l.length > 0 && l[0] !== "#");
 }
 export const readSents = read_sents;

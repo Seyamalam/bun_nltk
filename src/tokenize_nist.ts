@@ -6,6 +6,7 @@
  */
 
 import { pupNumber, pupPunct, pupSymbol, pupNumberEscaped, pupPunctEscaped, pupSymbolEscaped } from "./perluniprops_data";
+import { PY_WS_RUN, pyStrip } from "./internals";
 
 function escClass(s: string): string {
   return s.replace(/[\]\\^-]/g, (m) => "\\" + m);
@@ -63,9 +64,9 @@ export class NISTTokenizer {
       if (lowercase) t = t.toLowerCase();
       for (const [re, sub] of NISTTokenizer.LANG_DEPENDENT) t = t.replace(re, sub);
     }
-    t = t.split(/\\s+/).filter(Boolean).join(" ");
-    t = t.trim();
-    return returnStr ? t : t ? t.split(/\s+/).filter(Boolean) : [];
+    t = t.split(PY_WS_RUN).filter(Boolean).join(" ");
+    t = pyStrip(t);
+    return returnStr ? t : t ? t.split(PY_WS_RUN).filter(Boolean) : [];
   }
 
   internationalTokenize(
@@ -79,8 +80,8 @@ export class NISTTokenizer {
     t = xmlUnescape(t);
     if (lowercase) t = t.toLowerCase();
     for (const [re, sub] of NISTTokenizer.INTERNATIONAL) t = t.replace(re, sub);
-    t = t.trim().split(/\\s+/).filter(Boolean).join(" ");
-    return returnStr ? t : t ? t.split(/\s+/).filter(Boolean) : [];
+    t = pyStrip(t).split(PY_WS_RUN).filter(Boolean).join(" ");
+    return returnStr ? t : t ? t.split(PY_WS_RUN).filter(Boolean) : [];
   }
 }
 

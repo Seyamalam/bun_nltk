@@ -1,3 +1,4 @@
+import { PY_WS_RUN, pyStrip } from "./internals";
 /**
  * Port of nltk.misc.chomsky — Chomsky random text generator.
  * Faithful port of leadins/subjects/verbs/objects and generate_chomsky.
@@ -98,14 +99,14 @@ export const objects = ` problems of phonemic and morphological analysis.
 const _rawObjects = objects;
 
 function splitAndTrim(s: string): string[] {
-  return s.split("\n").map((x) => x.trim()).filter((x) => x.length > 0).map((x) => x.replace(/\\\s*/g, " ").replace(/\s+/g, " ").trim());
+  return s.split("\n").map((x) => pyStrip(x)).filter((x) => x.length > 0).map((x) => pyStrip(x.replace(/\\[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/gu, " ").replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/gu, " ")));
 }
 
 // Use raw strings split correctly (handles backslash continuations)
 function parseList(s: string): string[] {
   // Join backslash-newline continuations first
-  const normalized = s.replace(/\\\n\s*/g, " ");
-  return normalized.split("\n").map((l) => l.trim()).filter(Boolean);
+  const normalized = s.replace(/\\\n[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/gu, " ");
+  return normalized.split("\n").map((l) => pyStrip(l)).filter(Boolean);
 }
 
 function shuffleInPlace<T>(arr: T[]): void {
@@ -118,7 +119,7 @@ function shuffleInPlace<T>(arr: T[]): void {
 }
 
 function textwrapFill(text: string, width: number): string {
-  const words = text.split(/\s+/);
+  const words = text.split(PY_WS_RUN);
   const lines: string[] = [];
   let cur = "";
   for (const w of words) {

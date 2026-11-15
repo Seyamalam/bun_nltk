@@ -4,7 +4,7 @@
 // ipipan, twitter, toolbox, markdown, sinica_treebank, switchboard, ycoe,
 // knbc, europarl_raw.
 
-import { pyError } from "./internals";
+import { PY_WS_RUN, pyError, pyStrip } from "./internals";
 import { PathPointer } from "./data";
 import { SeekableUnicodeStreamReader } from "./corpus_stream";
 import {
@@ -30,8 +30,8 @@ import { ZipFilePathPointer } from "./data";
 // { bracket_parse
 
 // we use [^\s()]+ instead of \S+? to avoid matching ()
-const TAGWORD = /\(([^\s()]+) ([^\s()]+)\)/g;
-const WORD = /\([^\s()]+ ([^\s()]+)\)/g;
+const TAGWORD = /\(([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000()]+) ([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000()]+)\)/gu;
+const WORD = /\([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000()]+ ([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000()]+)\)/gu;
 
 export class BracketParseCorpusReader extends SyntaxCorpusReader {
   protected _comment_char: string | null;
@@ -63,7 +63,7 @@ export class BracketParseCorpusReader extends SyntaxCorpusReader {
 
   protected _normalize(t: string): string {
     t = t.replace(/\((.)\)/g, "($1 $1)");
-    t = t.replace(/\(([^\s()]+) ([^\s()]+) [^\s()]+\)/g, "($1 $2)");
+    t = t.replace(/\(([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000()]+) ([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000()]+) [^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000()]+\)/gu, "($1 $2)");
     return t;
   }
 
@@ -181,7 +181,7 @@ export class ChunkedCorpusView extends StreamBackedCorpusView<unknown> {
     for (const paraStr of this._para_block_reader(stream)) {
       const para: unknown[] = [];
       for (const sentStr of this._sent_tokenizer.tokenize(paraStr)) {
-        const sent = this._str2chunktree(sentStr.trim());
+        const sent = this._str2chunktree(pyStrip(sentStr));
         if (this._words && !this._etag) {
           const leaves = sent.leaves();
           if (this._sents) para.push(leaves.map((l) => Array.isArray(l) ? l[0] : l));
@@ -283,8 +283,8 @@ export class ConllChunkCorpusReader extends CorpusReader {
     for (const sentStr of read_blankline_block(stream)) {
       const sent: Array<[string, string, string]> = [];
       for (const line of sentStr.split("\n")) {
-        if (!line.trim()) continue;
-        const fields = this.separator ? line.split(this.separator) : line.split(/\s+/);
+        if (!pyStrip(line)) continue;
+        const fields = this.separator ? line.split(this.separator) : line.split(PY_WS_RUN);
         if (fields.length >= 3) sent.push([fields[0]!, fields[1]!, fields[fields.length - 1]!]);
       }
       out.push(...sent);
@@ -297,14 +297,14 @@ export class ConllChunkCorpusReader extends CorpusReader {
 export function conllstr2tree(s: string, chunkTypes = ["NP", "PP", "VP"], rootLabel = "S", separator: string | null = null): SimpleTree {
   const stack: SimpleTree[] = [new SimpleTree(rootLabel, [])];
   for (const line of s.split("\n")) {
-    if (!line.trim()) continue;
-    const fields = separator ? line.split(separator) : line.split(/\s+/);
+    if (!pyStrip(line)) continue;
+    const fields = separator ? line.split(separator) : line.split(PY_WS_RUN);
     if (fields.length < 3) {
       throw pyError("ValueError", ` conllstr2tree: line has ${fields.length} fields (<3): ${line}`);
     }
     const word = fields[0]!;
     const tag = fields[1]!;
-    const m = /^([BIO])-?(\S+)?$/.exec(fields[fields.length - 1]!);
+    const m = /^([BIO])-?([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+)?$/u.exec(fields[fields.length - 1]!);
     let state = m ? m[1]! : "";
     const chunkType = m ? (m[2] ?? null) : null;
     // If it's a chunk type we don't care about, treat it as O.
@@ -383,7 +383,7 @@ export class IgnoreReadmeCorpusView extends StreamBackedCorpusView<string> {
   constructor(corpusFile: string | PathPointer, encoding: string | null) {
     super(corpusFile, undefined, 0, encoding);
     this.read_block = (stream) => {
-      const line = stream.readline().trim();
+      const line = pyStrip(stream.readline());
       if (line === "") return [];
       return [line];
     };
@@ -462,14 +462,14 @@ export class SentiWordNetCorpusReader extends CorpusReader {
       const line = stream.readline();
       if (line === "") break;
       if (line.startsWith("#")) continue;
-      const fields = line.trim().split("\t");
+      const fields = pyStrip(line).split("\t");
       if (fields.length < 6) continue;
       try {
         const pos = fields[0]!;
         const id = parseInt(fields[1]!, 10);
         const posScore = parseFloat(fields[2]!);
         const negScore = parseFloat(fields[3]!);
-        const terms = fields[4]!.split(/\s+/);
+        const terms = fields[4]!.split(PY_WS_RUN);
         const gloss = fields[5]!;
         const key = `${terms[0]!.split("#")[0]}.${pos}`;
         const synsetName = `${key}.${String(id).padStart(8, "0")}`;
@@ -512,14 +512,14 @@ export class StringCategoryCorpusReader extends CorpusReader {
   private readTupleBlock(stream: SeekableUnicodeStreamReader): Array<[string, string[]]> {
     const line = stream.readline();
     if (line === "") return [];
-    return [[line.trim(), line.trim().split(this._delimiter)]];
+    return [[pyStrip(line), pyStrip(line).split(this._delimiter)]];
   }
 
   strings(fileids?: string | string[] | null): unknown {
     const views = (this.abspaths(fileids, true) as Array<[PathPointer, string | null]>)
       .map(([f, e]) => new StreamBackedCorpusView(f, (s) => {
         const line = s.readline();
-        return line === "" ? [] : [line.trim()];
+        return line === "" ? [] : [pyStrip(line)];
       }, 0, e));
     return concat(views);
   }
@@ -536,8 +536,8 @@ const CS_COMPARISON = /<cs-[1234]>/g;
 const CS_CLOSE_COMPARISON = /<\/cs-[1234]>/;
 const CS_GRAD_COMPARISON = /<cs-[123]>/g;
 const CS_NON_GRAD_COMPARISON = /<cs-4>/g;
-const CS_ENTITIES_FEATS = /(\d)_((?:[.\p{L}\p{N}_\s/-](?!\d_))+)/gu;
-const CS_ENTITIES_FEATS_TEST = /(\d)_((?:[.\p{L}\p{N}_\s/-](?!\d_))+)/u;
+const CS_ENTITIES_FEATS = /(\d)_((?:[.\p{L}\p{N}_\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000/-](?!\d_))+)/gu;
+const CS_ENTITIES_FEATS_TEST = /(\d)_((?:[.\p{L}\p{N}_\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000/-](?!\d_))+)/u;
 const CS_KEYWORD = /\(([^()]*)\)\n?$/;
 const CS_COMP_TYPE = /<cs-(\d)>/;
 
@@ -591,7 +591,7 @@ export class ComparativeSentencesCorpusReader extends CorpusReader {
     const keywords: string[] = [];
     for (const line of rawText.split("\n")) {
       if (line === "" || line.startsWith("//")) continue;
-      keywords.push(line.trim());
+      keywords.push(pyStrip(line));
     }
     return keywords;
   }
@@ -616,7 +616,7 @@ export class ComparativeSentencesCorpusReader extends CorpusReader {
       if (comparisonTags !== null) {
         const gradComparisons = line.match(CS_GRAD_COMPARISON) ?? [];
         const nonGradComparisons = line.match(CS_NON_GRAD_COMPARISON) ?? [];
-        let comparisonText: unknown = stream.readline().trim();
+        let comparisonText: unknown = pyStrip(stream.readline());
         if (this._wordTokenizer) comparisonText = this._wordTokenizer.tokenize(comparisonText as string);
         stream.readline();
         const bundle: Comparison[] = [];
@@ -625,9 +625,9 @@ export class ComparativeSentencesCorpusReader extends CorpusReader {
           const comparison = new Comparison(comparisonText, compType);
           line = stream.readline();
           for (const m of line.matchAll(CS_ENTITIES_FEATS)) {
-            if (m[1] === "1") comparison.entity_1 = m[2]!.trim();
-            else if (m[1] === "2") comparison.entity_2 = m[2]!.trim();
-            else if (m[1] === "3") comparison.feature = m[2]!.trim();
+            if (m[1] === "1") comparison.entity_1 = pyStrip(m[2]!);
+            else if (m[1] === "2") comparison.entity_2 = pyStrip(m[2]!);
+            else if (m[1] === "3") comparison.feature = pyStrip(m[2]!);
           }
           const kw = CS_KEYWORD.exec(line);
           if (kw !== null) comparison.keyword = kw[1]!;
@@ -675,7 +675,7 @@ export class ComparativeSentencesCorpusReader extends CorpusReader {
 
 // { pros_cons — Bing Liu Pros/Cons dataset
 
-const PROSCONS_SENT = /^(?!\n)\s*<(Pros|Cons)>(.*)<\/(?:Pros|Cons)>/;
+const PROSCONS_SENT = /^(?!\n)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<(Pros|Cons)>(.*)<\/(?:Pros|Cons)>/u;
 
 export class ProsConsCorpusReader extends CategorizedCorpusReader {
   private _wordTokenizer: TextTokenizerLike;
@@ -705,7 +705,7 @@ export class ProsConsCorpusReader extends CategorizedCorpusReader {
       const line = stream.readline();
       if (line === "") continue;
       const m = PROSCONS_SENT.exec(line);
-      if (m !== null) sents.push(this._wordTokenizer.tokenize(m[2]!.trim()));
+      if (m !== null) sents.push(this._wordTokenizer.tokenize(pyStrip(m[2]!)));
     }
     return sents;
   }
@@ -744,15 +744,15 @@ export class PPAttachmentCorpusReader extends CorpusReader {
   private readTupleBlock(stream: SeekableUnicodeStreamReader): string[][] {
     const line = stream.readline();
     if (line === "") return [];
-    const trimmed = line.trim();
-    return [trimmed === "" ? [] : trimmed.split(/\s+/)];
+    const trimmed = pyStrip(line);
+    return [trimmed === "" ? [] : trimmed.split(PY_WS_RUN)];
   }
 
   private readObjBlock(stream: SeekableUnicodeStreamReader): PPAttachment[] {
     const line = stream.readline();
     if (line === "") return [];
-    const trimmed = line.trim();
-    const fields = trimmed === "" ? [] : trimmed.split(/\s+/);
+    const trimmed = pyStrip(line);
+    const fields = trimmed === "" ? [] : trimmed.split(PY_WS_RUN);
     if (fields.length !== 6) {
       throw pyError("TypeError", `PPAttachment() takes 6 fields, ${fields.length} given`);
     }
@@ -826,14 +826,14 @@ export class IEERCorpusReader extends CorpusReader {
     for (;;) {
       line = stream.readline();
       if (line === "") return [];
-      if (line.trim() === "<DOC>") break;
+      if (pyStrip(line) === "<DOC>") break;
     }
     out.push(line);
     for (;;) {
       line = stream.readline();
       if (line === "") break;
       out.push(line);
-      if (line.trim() === "</DOC>") break;
+      if (pyStrip(line) === "</DOC>") break;
     }
     return [out.join("\n")];
   }
@@ -842,7 +842,7 @@ export class IEERCorpusReader extends CorpusReader {
 // { reviews — Hu & Liu customer review data
 
 const REV_TITLE = /^\[t\](.*)\n?$/;
-const REV_FEATURES = /([\p{L}\p{N}_]+(?:\s[\p{L}\p{N}_]+){0,50})\[((?:\+|-)\d)\]/gu;
+const REV_FEATURES = /([\p{L}\p{N}_]+(?:[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000][\p{L}\p{N}_]+){0,50})\[((?:\+|-)\d)\]/gu;
 const REV_NOTES = /\[(?!t)(p|u|s|cc|cs)\]/g;
 const REV_SENT = /##(.*)\n?$/;
 
@@ -928,7 +928,7 @@ export class ReviewsCorpusReader extends CorpusReader {
       if (line === "") return [];
       const m = REV_TITLE.exec(line);
       if (m !== null) {
-        review = new Review(m[1]!.trim());
+        review = new Review(pyStrip(m[1]!));
         break;
       }
     }
@@ -1014,8 +1014,8 @@ export class IndianCorpusView extends StreamBackedCorpusView<unknown> {
   private readBlock(stream: SeekableUnicodeStreamReader): unknown[] {
     const line = stream.readline();
     if (line.startsWith("<")) return [];
-    const trimmed = line.trim();
-    let sent: unknown[] = (trimmed === "" ? [] : trimmed.split(/\s+/))
+    const trimmed = pyStrip(line);
+    let sent: unknown[] = (trimmed === "" ? [] : trimmed.split(PY_WS_RUN))
       .map((w) => str2tuple(w, "_"));
     if (this._tagMappingFunction !== null) {
       const fn = this._tagMappingFunction;

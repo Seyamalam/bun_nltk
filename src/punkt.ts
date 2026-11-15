@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 import { trainPunkt } from "./punkt_trainer";
 import { punktSentences, punktSpans } from "./punkt_engine";
 import { englishJsonFallback } from "./punkt_english_data";
@@ -42,7 +43,7 @@ export class PunktTrainerSubset {
   private cached: PunktModelSerialized | null = null;
 
   train(text: string, options: PunktTrainingOptions = {}): this {
-    if (text.trim()) this.chunks.push(text);
+    if (pyStrip(text)) this.chunks.push(text);
     this.options = {
       minAbbrevCount: options.minAbbrevCount ?? this.options.minAbbrevCount,
       minCollocationCount: options.minCollocationCount ?? this.options.minCollocationCount,

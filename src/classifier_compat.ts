@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 import { NaiveBayesTextClassifier } from "./classify";
 import { DecisionTreeTextClassifier } from "./decision_tree";
 import { DictionaryProbDist } from "./probability";
@@ -15,7 +16,7 @@ export type { FeatureValue, FeatureSet, LabeledFeatureset } from "./feature_type
 
 function normalizeToken(value: string): string {
   const cleaned = value.toLowerCase().replace(/[^a-z0-9']+/g, " ");
-  return cleaned.trim();
+  return pyStrip(cleaned);
 }
 
 function featureText(featureset: FeatureSet): string {

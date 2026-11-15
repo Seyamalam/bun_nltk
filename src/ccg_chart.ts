@@ -1,3 +1,4 @@
+import { pyRstrip } from "./internals";
 /**
  * CCG Chart parser — port of nltk/ccg/chart.py
  */
@@ -561,8 +562,8 @@ export function printCCGDerivation(tree: CCGTree): void {
     const rleaflen = lleaflen + (nextlen - leaf.length) % 2;
     leafstr += " ".repeat(lleaflen) + leaf + " ".repeat(rleaflen);
   }
-  console.log(leafstr.trimEnd());
-  console.log(catstr.trimEnd());
+  console.log(pyRstrip(leafstr));
+  console.log(pyRstrip(catstr));
 
   // Display the derivation steps
   printCCGTree(0, tree);

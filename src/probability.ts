@@ -552,7 +552,7 @@ export class ConditionalProbDist<C, T, Args extends unknown[] = unknown[]> exten
   ) {
     super();
     this.#cfdist = cfdist;
-    this.#createDistribution = /^class\s/.test(Function.prototype.toString.call(probdistFactory))
+    this.#createDistribution = /^class[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.test(Function.prototype.toString.call(probdistFactory))
       ? freqdist => new (probdistFactory as new (freqdist: FreqDist<T>, ...args: Args) => ProbDistLike<T>)(freqdist, ...factoryArgs)
       : freqdist => (probdistFactory as (freqdist: FreqDist<T>, ...args: Args) => ProbDistLike<T>)(freqdist, ...factoryArgs);
     const sources = new Map<string, { condition: C; freqdist: FreqDist<T>; copied: boolean }>();

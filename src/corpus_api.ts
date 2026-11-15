@@ -4,7 +4,7 @@
 // Originals: nltk/corpus/reader/api.py, nltk/corpus/util.py
 
 import { isAbsolute } from "node:path";
-import { pyError } from "./internals";
+import { pyError, pyStrip } from "./internals";
 import * as pathsec from "./pathsec";
 import { AbstractLazySequence } from "./collections";
 import { FileSystemPathPointer, PathPointer, ZipFilePathPointer, find as dataFind } from "./data";
@@ -199,7 +199,7 @@ export class CategorizedCorpusReaderBase extends CorpusReader {
       const stream = this.open(this._catFile);
       const delim = this._catDelimiter ?? undefined;
       for (const rawLine of stream.read().split("\n")) {
-        const line = rawLine.trim();
+        const line = pyStrip(rawLine);
         if (!line) continue;
         const idx = delim === undefined ? line.indexOf(" ") : line.indexOf(delim);
         const fileId = line.slice(0, idx);

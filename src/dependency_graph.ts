@@ -6,7 +6,7 @@
  * nx-graph helpers (nx_graph, left_children, right_children, chain,
  * contains_address, cycle_analysis, tree/triples tree output) are not ported.
  */
-import { pyError } from "./internals";
+import { PY_WS_RUN, pyError, pyStrip } from "./internals";
 
 export class DependencyGraphError extends Error {
   constructor(message: string) {
@@ -100,14 +100,14 @@ export class DependencyGraph {
     let cellNumber: number | null = null;
     let extractor = options?.cellExtractor;
     for (const raw of rawLines) {
-      const line = raw.replace(/\s+$/, "");
+      const line = raw.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u, "");
       if (line.startsWith("#")) {
         this.stream.push(line);
         continue;
       }
       if (line === "") continue;
       lineIndex += 1;
-      const cells = sep === null ? line.trim().split(/\s+/) : line.split(sep);
+      const cells = sep === null ? pyStrip(line).split(PY_WS_RUN) : line.split(sep);
       if (cellNumber === null) cellNumber = cells.length;
       else if (cells.length !== cellNumber) {
         throw pyError("AssertionError", `cell count ${cells.length} != ${cellNumber}`);

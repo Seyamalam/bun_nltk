@@ -1,7 +1,9 @@
+
 // NLTK internals — shim (Java + file-find helpers not available in JS)
 // Original: nltk/internals.py
 
 import { existsSync, statSync } from "node:fs";
+
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -128,6 +130,43 @@ export function readStr(s: string, startPosition: number): [string, number] {
 }
 export const read_str = readStr;
 
+// Python whitespace differs from JS \s: Python \s / str.isspace include
+// \x1c-\x1f (FS/GS/RS/US) and \x85 (NEL), and exclude \ufeff (BOM).
+export const PY_WS_CLASS = "[\\t\\n\\v\\f\\r \\x1c-\\x1f\\x85\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]";
+export const PY_WS_INNER = "\\t\\n\\v\\f\\r \\x1c-\\x1f\\x85\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000";
+export const PY_WS = new RegExp(PY_WS_CLASS, "u");
+export const PY_WS_RUN = new RegExp(`${PY_WS_CLASS}+`, "gu");
+const PY_WS_EDGES = new RegExp(`^${PY_WS_CLASS}+|${PY_WS_CLASS}+$`, "gu");
+const PY_WS_LEFT = new RegExp(`^${PY_WS_CLASS}+`, "u");
+const PY_WS_RIGHT = new RegExp(`${PY_WS_CLASS}+$`, "u");
+
+/** Python str.strip(). */
+export function pyStrip(s: string): string { return s.replace(PY_WS_EDGES, ""); }
+/** Python str.lstrip(). */
+export function pyLstrip(s: string): string { return s.replace(PY_WS_LEFT, ""); }
+/** Python str.rstrip(). */
+export function pyRstrip(s: string): string { return s.replace(PY_WS_RIGHT, ""); }
+
+/** Python str.split(None, maxsplit): runs of whitespace, no empty pieces. */
+export function pySplit(s: string, maxsplit = -1): string[] {
+  const out: string[] = [];
+  const n = s.length;
+  let i = 0;
+  while (i < n && (maxsplit < 0 || out.length < maxsplit + 1)) {
+    while (i < n && PY_WS.test(s[i]!)) i++;
+    if (i >= n) break;
+    if (maxsplit >= 0 && out.length === maxsplit) {
+      out.push(s.slice(i));
+      break;
+    }
+    let j = i;
+    while (j < n && !PY_WS.test(s[j]!)) j++;
+    out.push(s.slice(i, j));
+    i = j;
+  }
+  return out;
+}
+
 const READ_INT_RE = /-?\d+/y;
 
 /** nltk.internals.read_int — read an integer literal at start_position. */
@@ -177,19 +216,19 @@ export function deprecated<F extends (...args: any[]) => any>(message: string) {
   return (func: F): F => {
     const wrapped = function (this: unknown, ...args: unknown[]) {
       const msg = `Function ${func.name}() has been deprecated.  ${message}`;
-      const chunks = msg.split(/(\s+)/).filter((c) => c !== "");
+      const chunks = msg.split(/([\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+)/u).filter((c) => c !== "");
       const lines: string[] = [];
       let cur = "";
       for (const chunk of chunks) {
-        if (("  " + cur + chunk).length <= 70 || cur.trim() === "") {
-          if (cur === "" && /^\s+$/.test(chunk)) continue;
+        if (("  " + cur + chunk).length <= 70 || pyStrip(cur) === "") {
+          if (cur === "" && /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u.test(chunk)) continue;
           cur += chunk;
         } else {
-          lines.push(cur.replace(/\s+$/, ""));
-          cur = /^\s+$/.test(chunk) ? "" : chunk;
+          lines.push(cur.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u, ""));
+          cur = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u.test(chunk) ? "" : chunk;
         }
       }
-      if (cur.trim() !== "") lines.push(cur.replace(/\s+$/, ""));
+      if (pyStrip(cur) !== "") lines.push(cur.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u, ""));
       console.warn("\n" + lines.map((l) => "  " + l).join("\n"));
       return func.apply(this, args);
     } as unknown as F & { __deprecated__?: boolean };
@@ -215,28 +254,28 @@ export class Deprecated {
     }
     if (!dep) throw new Error("Unable to determine which base is deprecated.");
     const doc = String(dep.__doc__ ?? dep.doc ?? "")
-      .replace(/^\s*@deprecated:/, "")
-      .replace(/^\s*/gm, "");
+      .replace(/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*@deprecated:/u, "")
+      .replace(/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/gmu, "");
     const name = `Class ${dep.name}` + (cls !== dep ? ` (base class for ${cls.name})` : "");
     const msg = `${name} has been deprecated.  ${doc}`;
     // textwrap.fill(msg, initial_indent="    ", subsequent_indent="    ")
     const indent = "    ";
     const width = 70;
     const norm = msg.replace(/[\n\t\v\f\r]/g, " ");
-    const chunks = norm.split(/(\s+)/).filter((c) => c !== "");
+    const chunks = norm.split(/([\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+)/u).filter((c) => c !== "");
     const lines: string[] = [];
     let cur = indent;
     for (const c of chunks) {
-      const isWs = /^\s+$/.test(c);
+      const isWs = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u.test(c);
       if (cur.length + c.length <= width) {
         if (isWs && cur === indent) continue;
         cur += c;
       } else {
-        lines.push(cur.replace(/\s+$/, ""));
+        lines.push(cur.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u, ""));
         cur = indent + (isWs ? "" : c);
       }
     }
-    if (cur.trim() !== "") lines.push(cur.replace(/\s+$/, ""));
+    if (pyStrip(cur) !== "") lines.push(cur.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u, ""));
     console.warn("\n" + lines.join("\n"));
   }
 }
@@ -263,7 +302,7 @@ const PATHSEP = process.platform === "win32" ? ";" : ":";
 
 /** nltk.internals.find_file_iter — yield candidate locations for a file. */
 export function* findFileIter(filename: string, options: FindFileOptions = {}): Generator<string> {
-  const envVars = typeof options.env_vars === "string" ? options.env_vars.split(/\s+/) : (options.env_vars ?? []);
+  const envVars = typeof options.env_vars === "string" ? options.env_vars.split(PY_WS_RUN) : (options.env_vars ?? []);
   const fileNames = [filename, ...(options.file_names ?? [])];
   const searchpath = options.searchpath ?? [];
   const verbose = options.verbose ?? false;
@@ -346,7 +385,7 @@ export function* findFileIter(filename: string, options: FindFileOptions = {}): 
     for (const alternative of fileNames) {
       try {
         const p = Bun.spawnSync(["which", alternative], { stdout: "pipe", stderr: "pipe" });
-        const path = p.stdout.toString().trim();
+        const path = pyStrip(p.stdout.toString());
         if (path.endsWith(alternative) && existsSync(path)) {
           if (verbose) console.log(`[Found ${filename}: ${path}]`);
           yielded = true;

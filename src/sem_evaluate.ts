@@ -2,7 +2,7 @@
  * Port of nltk.sem.evaluate helpers: relation utilities, read_valuation,
  * Error/Undefined exception types, and the trace decorator.
  */
-import { pyError } from "./internals";
+import { pyError, pyStrip } from "./internals";
 import { Valuation, type ValuationSpec } from "./sem_logic";
 
 export class SemError extends Error {
@@ -60,12 +60,12 @@ export function arity(rel: Set<unknown[]>): number {
   return [...rel][0]!.length;
 }
 
-const VAL_SPLIT_RE = /\s*=>\s*/;
+const VAL_SPLIT_RE = /[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*=>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u;
 const TUPLES_RE = /\([^)]*\)/g;
 
 /** Port of nltk.sem.evaluate._read_valuation_line. */
 function readValuationLine(s: string): [string, string | boolean | string[] | string[][]] {
-  const pieces = s.split(VAL_SPLIT_RE).map((p) => p.trim());
+  const pieces = s.split(VAL_SPLIT_RE).map((p) => pyStrip(p));
   const symbol = pieces[0]!;
   let value: string | string[] | string[][] | boolean = pieces[1]!;
   if (value.startsWith("{")) {
@@ -73,12 +73,12 @@ function readValuationLine(s: string): [string, string | boolean | string[] | st
     const tupleStrings = inner.match(TUPLES_RE);
     if (tupleStrings) {
       const setElements: string[][] = tupleStrings.map((ts) =>
-        ts.slice(1, -1).split(",").map((e) => e.trim()));
+        ts.slice(1, -1).split(",").map((e) => pyStrip(e)));
       value = setElements;
     } else {
       value = inner
         .split(",")
-        .map((e) => e.trim())
+        .map((e) => pyStrip(e))
         .filter((e) => e.length > 0);
     }
   }
@@ -92,7 +92,7 @@ export function read_valuation(s: string, encoding?: string): Valuation {
   const spec: ValuationSpec = {};
   const lines = s.split(/\r?\n/);
   for (let linenum = 0; linenum < lines.length; linenum++) {
-    const line = lines[linenum]!.trim();
+    const line = pyStrip(lines[linenum]!);
     if (line.startsWith("#") || line === "") continue;
     try {
       const [sym, val] = readValuationLine(line);

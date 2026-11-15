@@ -1,3 +1,4 @@
+import { PY_WS_RUN, pyStrip } from "./internals";
 export type TaggedToken = {
   token: string;
   tag: string;
@@ -15,7 +16,7 @@ export type ChunkedSentence = ChunkedToken[];
 function splitNonEmptyLines(text: string): string[] {
   return text
     .split(/\r?\n/g)
-    .map((line) => line.trim())
+    .map((line) => pyStrip(line))
     .filter((line) => line.length > 0);
 }
 
@@ -24,7 +25,7 @@ export function parseConllTagged(text: string): TaggedSentence[] {
   let current: TaggedSentence = [];
 
   for (const raw of text.split(/\r?\n/g)) {
-    const line = raw.trim();
+    const line = pyStrip(raw);
     if (!line) {
       if (current.length > 0) {
         sentences.push(current);
@@ -45,7 +46,7 @@ export function parseConllTagged(text: string): TaggedSentence[] {
 export function parseBrownTagged(text: string): TaggedSentence[] {
   const sentences: TaggedSentence[] = [];
   for (const line of splitNonEmptyLines(text)) {
-    const tokens = line.split(/\s+/g);
+    const tokens = line.split(PY_WS_RUN);
     const sentence: TaggedSentence = [];
     for (const item of tokens) {
       const slash = item.lastIndexOf("/");
@@ -65,7 +66,7 @@ export function parseConllChunked(text: string): ChunkedSentence[] {
   let current: ChunkedSentence = [];
 
   for (const raw of text.split(/\r?\n/g)) {
-    const line = raw.trim();
+    const line = pyStrip(raw);
     if (!line) {
       if (current.length > 0) {
         sentences.push(current);
@@ -74,7 +75,7 @@ export function parseConllChunked(text: string): ChunkedSentence[] {
       continue;
     }
 
-    const [token, pos, chunk] = line.split(/\s+/g);
+    const [token, pos, chunk] = line.split(PY_WS_RUN);
     if (!token || !pos || !chunk) continue;
     current.push({ token, pos, chunk });
   }

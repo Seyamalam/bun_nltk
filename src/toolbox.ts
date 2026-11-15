@@ -4,7 +4,7 @@
 
 import { PathPointer, find } from "./data";
 import { pathsec_open } from "./pathsec";
-import { pyError } from "./internals";
+import { PY_WS_CLASS, PY_WS_INNER, pyError } from "./internals";
 import { regexpChunkParse } from "./chunk";
 
 /** Minimal xml.etree.ElementTree.Element substitute for toolbox trees. */
@@ -134,7 +134,7 @@ export class StandardFormat {
 
   *raw_fields(): Generator<[string | null, string]> {
     const joinString = "\n";
-    const lineRegexp = (first: string) => new RegExp(`^${first}(?:\\\\(\\S+)\\s*)?(.*)$`, "m");
+    const lineRegexp = (first: string) => new RegExp(`^${first}(?:\\\\([^${PY_WS_INNER}]+)${PY_WS_CLASS}*)?(.*)$`, "m");
     const firstLinePat = lineRegexp("(?:\xEF\xBB\xBF)?");
     const linePat = lineRegexp("");
     const it = this._file!;
@@ -173,7 +173,7 @@ export class StandardFormat {
     for (const [mkr, val0] of this.raw_fields()) {
       let val = val0;
       if (unwrap) val = val.replace(unwrapPat, " ");
-      if (strip) val = val.replace(/\s+$/, "");
+      if (strip) val = val.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u, "");
       yield [mkr, val];
     }
   }
@@ -244,7 +244,7 @@ export class ToolboxData extends StandardFormat {
   }
 }
 
-const _is_value = /\S/;
+const _is_value = /[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u;
 
 /** nltk.toolbox.to_sfm_string — tree → SFM text. */
 export function to_sfm_string(tree: ToolboxElement, options: { encoding?: string | null; errors?: string; unicode_fields?: Set<string> | null } = {}): string {

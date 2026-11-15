@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 const DEFAULT_ABBREVIATIONS = new Set([
   "mr",
   "mrs",
@@ -26,7 +27,7 @@ type NextToken = {
 };
 
 function isWhitespace(ch: string): boolean {
-  return /\s/.test(ch);
+  return /[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.test(ch);
 }
 
 function isSentencePunct(ch: string): boolean {
@@ -58,7 +59,7 @@ function findNextToken(text: string, idx: number): NextToken | null {
 
 function findPrevToken(text: string, idx: number): string {
   let end = idx;
-  while (end >= 0 && /[\s"'()[\]{}]/.test(text[end]!)) end -= 1;
+  while (end >= 0 && /[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000"'()[\]{}]/u.test(text[end]!)) end -= 1;
   if (end < 0) return "";
 
   let start = end;
@@ -80,7 +81,7 @@ function isLikelyAbbreviation(token: string, abbrevs: Set<string>): boolean {
 
 function learnAbbreviations(text: string, base: Set<string>): Set<string> {
   const scored = new Map<string, { lower: number; upper: number; total: number }>();
-  const candidateRe = /(?<![\p{L}\p{N}_])([A-Za-z][A-Za-z.]{0,10})\.\s+([A-Za-z])/gu;
+  const candidateRe = /(?<![\p{L}\p{N}_])([A-Za-z][A-Za-z.]{0,10})\.[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+([A-Za-z])/gu;
   for (const match of text.matchAll(candidateRe)) {
     const raw = (match[1] ?? "").toLowerCase().replace(/\.+$/, "");
     const next = match[2] ?? "";
@@ -105,7 +106,7 @@ function collectLikelyStarters(text: string): Set<string> {
   const starters = new Map<string, number>();
   const roughSentences = text.split(/[.!?]+/g);
   for (const s of roughSentences) {
-    const token = s.trim().match(/^[A-Za-z][A-Za-z0-9'-]*/)?.[0];
+    const token = pyStrip(s).match(/^[A-Za-z][A-Za-z0-9'-]*/)?.[0];
     if (!token) continue;
     const key = token.toLowerCase();
     starters.set(key, (starters.get(key) ?? 0) + 1);
@@ -145,7 +146,7 @@ function shouldSplitAt(
     if (/^[A-Z]$/.test(prevToken) && isInitial) return false;
 
     const leftWindow = text.slice(Math.max(0, punctIdx - 24), punctIdx + 1);
-    if (/(?:[A-Z]\.\s+){2,}[A-Z]\.$/.test(leftWindow) && /^[A-Z][a-z]/.test(look.token)) {
+    if (/(?:[A-Z]\.[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+){2,}[A-Z]\.$/u.test(leftWindow) && /^[A-Z][a-z]/.test(look.token)) {
       return false;
     }
 
@@ -197,12 +198,12 @@ export function sentenceTokenizeSubset(text: string, options: SentenceTokenizerO
 
     let end = i + 1;
     while (end < text.length && isCloser(text[end]!)) end += 1;
-    const sentence = text.slice(start, end).trim();
+    const sentence = pyStrip(text.slice(start, end));
     if (sentence) out.push(sentence);
     start = end;
   }
 
-  const tail = text.slice(start).trim();
+  const tail = pyStrip(text.slice(start));
   if (tail) out.push(tail);
 
   return out;

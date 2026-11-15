@@ -2,7 +2,7 @@
 // Mirrors nltk.tree.Tree.fromstring + the accessors corpus users rely on.
 // (src/rust_parse.ts Tree is WASM-runtime-bound and cannot be built sync.)
 
-import { pyError } from "./internals";
+import { PY_WS_CLASS, PY_WS_INNER, pyError, pyLstrip } from "./internals";
 import { str2tuple } from "./tag_util";
 import { mapTag } from "./tag_mapping";
 
@@ -24,13 +24,13 @@ export class SimpleTree {
   static fromstring(s: string, options?: { remove_empty_top_bracketing?: boolean; brackets?: string }): SimpleTree {
     const brackets = options?.brackets ?? "()";
     if (typeof brackets !== "string" || [...brackets].length !== 2) throw new TypeError("brackets must be a length-2 string");
-    if (/\s/.test(brackets)) throw new TypeError("whitespace brackets not allowed");
+    if (/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.test(brackets)) throw new TypeError("whitespace brackets not allowed");
     const openB = brackets[0]!, closeB = brackets[1]!;
     const esc = (c: string) => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     // token_char: a backslash-escaped bracket (kept verbatim) or any char
     // that is not whitespace or an unescaped bracket.
-    const tokenChar = `(?:\\\\[${esc(openB)}${esc(closeB)}]|[^\\s${esc(openB)}${esc(closeB)}])`;
-    const tokenRe = new RegExp(`${esc(openB)}\\s*(?:${tokenChar}+)?|${esc(closeB)}|${tokenChar}+`, "g");
+    const tokenChar = `(?:\\\\[${esc(openB)}${esc(closeB)}]|[^${PY_WS_INNER}${esc(openB)}${esc(closeB)}])`;
+    const tokenRe = new RegExp(`${esc(openB)}${PY_WS_CLASS}*(?:${tokenChar}+)?|${esc(closeB)}|${tokenChar}+`, "g");
 
     const points = [...s];
     const parseError = (matchIndex: number | "end-of-string", token: string | undefined, expecting: string): never => {
@@ -52,7 +52,7 @@ export class SimpleTree {
       const token = m[0];
       if (token[0] === openB) {
         if (stack.length === 1 && stack[0]!.children.length > 0) parseError(m.index, token, "end-of-string");
-        stack.push({ label: token.slice(1).trimStart(), children: [] });
+        stack.push({ label: pyLstrip(token.slice(1)), children: [] });
         if (stack.length > 500) {
           throw pyError("ValueError", "Tree nesting depth exceeds MAX_TREE_DEPTH (500); the input may be adversarially deep. Raise nltk.tree.tree.MAX_TREE_DEPTH to allow it.");
         }
@@ -181,7 +181,7 @@ export function pyRepr(value: unknown): string {
 /** nltk.chunk.tagstr2tree — bracketed tagged text → Tree. */
 export function tagstr2tree(s: string, chunkLabel = "NP", rootLabel = "S", sep: string | null = "/", sourceTagset: string | null = null, targetTagset: string | null = null): SimpleTree {
   const stack: SimpleTree[] = [new SimpleTree(rootLabel, [])];
-  const re = /\[|\]|[^[\]\s]+/g;
+  const re = /\[|\]|[^[\]\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/gu;
   let m: RegExpExecArray | null;
   while ((m = re.exec(s)) !== null) {
     const text = m[0];

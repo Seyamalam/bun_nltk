@@ -8,7 +8,7 @@
 
 import { existsSync } from "node:fs";
 import { join as pathJoin } from "node:path";
-import { pyError } from "./internals";
+import { PY_WS_CLASS, PY_WS_RUN, pyError, pyLstrip, pyRstrip, pySplit, pyStrip } from "./internals";
 import { PathPointer, FileSystemPathPointer, ZipFilePathPointer } from "./data";
 import { SeekableUnicodeStreamReader } from "./corpus_stream";
 import {
@@ -37,33 +37,13 @@ import { XMLElement, parseXmlString, xmlUnescape } from "./xmldocs";
 
 /** Python int() for decimal strings — strict, no partial parses. */
 function pyInt(s: string): number {
-  const t = s.trim();
+  const t = pyStrip(s);
   if (!/^[+-]?\d+$/.test(t)) {
     throw pyError("ValueError", `invalid literal for int() with base 10: ${pyReprDeep(s)}`);
   }
   return parseInt(t, 10);
 }
 
-/** Python str.split(None, maxsplit): runs of whitespace, no empty pieces. */
-function pySplit(s: string, maxsplit = -1): string[] {
-  const out: string[] = [];
-  const n = s.length;
-  let i = 0;
-  while (i < n && (maxsplit < 0 || out.length < maxsplit + 1)) {
-    while (i < n && /\s/.test(s[i]!)) i++;
-    if (i >= n) break;
-    if (maxsplit >= 0 && out.length === maxsplit) {
-      out.push(s.slice(i));
-      i = n;
-      break;
-    }
-    let j = i;
-    while (j < n && !/\s/.test(s[j]!)) j++;
-    out.push(s.slice(i, j));
-    i = j;
-  }
-  return out;
-}
 
 /** Python str comparison for sorting (codepoint order ~ UTF-16 order for BMP). */
 function pyStrCmp(a: string, b: string): number {
@@ -304,7 +284,7 @@ export class TextWrapper {
     }
     if (this.max_lines !== null) {
       const indent = this.max_lines > 1 ? this.subsequent_indent : this.initial_indent;
-      if (indent.length + this.placeholder.trimStart().length > this.width) {
+      if (indent.length + pyLstrip(this.placeholder).length > this.width) {
         throw pyError("ValueError", "placeholder too large for max width");
       }
     }
@@ -314,7 +294,7 @@ export class TextWrapper {
       let curLen = 0;
       const indent = lines.length ? this.subsequent_indent : this.initial_indent;
       const width = this.width - indent.length;
-      if (this.drop_whitespace && chunks[chunks.length - 1]!.trim() === "" && lines.length) {
+      if (this.drop_whitespace && pyStrip(chunks[chunks.length - 1]!) === "" && lines.length) {
         chunks.pop();
       }
       while (chunks.length) {
@@ -328,7 +308,7 @@ export class TextWrapper {
         this._handle_long_word(chunks, curLine, curLen, width);
         curLen = curLine.reduce((n, c) => n + c.length, 0);
       }
-      if (this.drop_whitespace && curLine.length && curLine[curLine.length - 1]!.trim() === "") {
+      if (this.drop_whitespace && curLine.length && pyStrip(curLine[curLine.length - 1]!) === "") {
         curLen -= curLine[curLine.length - 1]!.length;
         curLine.pop();
       }
@@ -337,14 +317,14 @@ export class TextWrapper {
           this.max_lines === null ||
           lines.length + 1 < this.max_lines ||
           ((!chunks.length ||
-            (this.drop_whitespace && chunks.length === 1 && !chunks[0]!.trim())) &&
+            (this.drop_whitespace && chunks.length === 1 && !pyStrip(chunks[0]!))) &&
             curLen <= width)
         ) {
           lines.push(indent + curLine.join(""));
         } else {
           let broke = false;
           while (curLine.length) {
-            if (curLine[curLine.length - 1]!.trim() && curLen + this.placeholder.length <= width) {
+            if (pyStrip(curLine[curLine.length - 1]!) && curLen + this.placeholder.length <= width) {
               curLine.push(this.placeholder);
               lines.push(indent + curLine.join(""));
               broke = true;
@@ -355,13 +335,13 @@ export class TextWrapper {
           }
           if (!broke) {
             if (lines.length) {
-              const prevLine = lines[lines.length - 1]!.trimEnd();
+              const prevLine = pyRstrip(lines[lines.length - 1]!);
               if (prevLine.length + this.placeholder.length <= this.width) {
                 lines[lines.length - 1] = prevLine + this.placeholder;
                 break;
               }
             }
-            lines.push(indent + this.placeholder.trimStart());
+            lines.push(indent + pyLstrip(this.placeholder));
           }
           break;
         }
@@ -571,10 +551,10 @@ export class TimitCorpusReader extends CorpusReader {
     const transcriptions: Record<string, string[]> = {};
     const fp = this.open("timitdic.txt");
     for (const line of fp.read().split("\n")) {
-      if (!line.trim() || line[0] === ";") continue;
-      const m = /^\s*(\S+)\s+\/(.*)\/\s*$/.exec(line);
+      if (!pyStrip(line) || line[0] === ";") continue;
+      const m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(\S+)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+\/(.*)\/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.exec(line);
       if (!m) throw pyError("ValueError", `Bad line: ${pyReprDeep(line)}`);
-      transcriptions[m[1]!] = m[2]!.split(/\s+/).filter((x) => x !== "");
+      transcriptions[m[1]!] = m[2]!.split(PY_WS_RUN).filter((x) => x !== "");
     }
     return transcriptions;
   }
@@ -602,8 +582,8 @@ export class TimitCorpusReader extends CorpusReader {
       this._speakerinfo = new Map();
       const fp = this.open("spkrinfo.txt");
       for (const line of fp.read().split("\n")) {
-        if (!line.trim() || line[0] === ";") continue;
-        const rec = pySplit(line.trim(), 9);
+        if (!pyStrip(line) || line[0] === ";") continue;
+        const rec = pySplit(pyStrip(line), 9);
         if (rec.length < 9) {
           throw pyError("TypeError", `SpeakerInfo() missing ${9 - rec.length} required positional arguments`);
         }
@@ -621,7 +601,7 @@ export class TimitCorpusReader extends CorpusReader {
   private *_readLines(fileid: string): Generator<string> {
     const fp = this.open(fileid);
     for (const line of fp.read().split("\n")) {
-      if (line.trim()) yield line;
+      if (pyStrip(line)) yield line;
     }
   }
 
@@ -692,7 +672,7 @@ export class TimitCorpusReader extends CorpusReader {
     for (const fileid of this._utterance_fileids(utterances, ".txt")) {
       for (const line of this._readLines(fileid)) {
         const parts = pySplit(line, 2);
-        results.push([parts[parts.length - 1]!.trim(), pyInt(parts[0]!), pyInt(parts[1]!)]);
+        results.push([pyStrip(parts[parts.length - 1]!), pyInt(parts[0]!), pyInt(parts[1]!)]);
       }
     }
     return results;
@@ -1029,8 +1009,8 @@ export class PanlexSwadeshCorpusReader extends WordListCorpusReader {
 
   *get_languages(): Generator<PanlexLanguage> {
     for (const line of this.raw(`langs${this.swadesh_size}.txt`).split("\n")) {
-      if (!line.trim()) continue;
-      const f = line.trim().split("\t");
+      if (!pyStrip(line)) continue;
+      const f = pyStrip(line).split("\t");
       yield new PanlexLanguage(f[0]!, f[1]!, f[2]!, f[3]!, f[4]!, f[5]!);
     }
   }
@@ -1075,10 +1055,10 @@ export class PanlexSwadeshCorpusReader extends WordListCorpusReader {
 
 // { pl196x
 
-const PL196X_PARA = /<p(?: [^>]*){0,1}>([\s\S]*?)<\/p>/g;
-const PL196X_SENT = /<s(?: [^>]*){0,1}>([\s\S]*?)<\/s>/g;
-const PL196X_TAGGEDWORD = /<([wc](?: [^>]*){0,1}>)([\s\S]*?)<\/[wc]>/g;
-const PL196X_WORD = /<[wc](?: [^>]*){0,1}>([\s\S]*?)<\/[wc]>/g;
+const PL196X_PARA = /<p(?: [^>]*){0,1}>([\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\S]*?)<\/p>/gu;
+const PL196X_SENT = /<s(?: [^>]*){0,1}>([\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\S]*?)<\/s>/gu;
+const PL196X_TAGGEDWORD = /<([wc](?: [^>]*){0,1}>)([\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\S]*?)<\/[wc]>/gu;
+const PL196X_WORD = /<[wc](?: [^>]*){0,1}>([\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\S]*?)<\/[wc]>/gu;
 const PL196X_TYPE = /type="(.*?)"/;
 const PL196X_ANA = /ana="(.*?)"/;
 
@@ -1206,7 +1186,7 @@ export class Pl196xCorpusReader extends CategorizedCorpusReaderBase {
       const lines = text.split("\n");
       if (lines.length && lines[lines.length - 1] === "") lines.pop();
       for (const rawLine of lines) {
-        const line = rawLine.trim();
+        const line = pyStrip(rawLine);
         const sp = line.indexOf(" ");
         const parts = sp < 0 ? [line] : [line.slice(0, sp), line.slice(sp + 1)];
         if (parts.length !== 2) {
@@ -1373,7 +1353,7 @@ export class BCP47CorpusReader extends CorpusReader {
 
   load_wiki_q(): void {
     const fp = this.open("cldr/tools-cldr-rdf-external-entityToCode.tsv");
-    this.wiki_q = this.wiki_dict(fp.read().trim().split("\n").slice(1));
+    this.wiki_q = this.wiki_dict(pyStrip(fp.read()).split("\n").slice(1));
   }
 
   loadWikiQ(): void { this.load_wiki_q(); }
@@ -1381,7 +1361,7 @@ export class BCP47CorpusReader extends CorpusReader {
   wiki_dict(lines: string[]): Record<string, string> {
     const out: Record<string, string> = {};
     for (const line of lines) {
-      const pair = line.trim().split("\t");
+      const pair = pyStrip(line).split("\t");
       if (pair.length < 2) throw pyError("IndexError", "list index out of range");
       out[pair[1]!] = pair[0]!.split("/").pop()!;
     }
@@ -1418,7 +1398,7 @@ export class BCP47CorpusReader extends CorpusReader {
 
   data_dict(records: string[]): Record<string, Record<string, Record<string, string | string[]>>> {
     if (records.length === 0) throw pyError("IndexError", "list index out of range");
-    this.version = records[0]!.replaceAll("File-Date:", "").trim();
+    this.version = pyStrip(records[0]!.replaceAll("File-Date:", ""));
     const dic: Record<string, Record<string, Record<string, string | string[]>>> = {};
     const deprecated: Record<string, Record<string, Record<string, string | string[]>>> = {};
     for (const label of ["language", "extlang", "script", "region", "variant", "redundant", "grandfathered"]) {
@@ -1427,7 +1407,7 @@ export class BCP47CorpusReader extends CorpusReader {
     dic["deprecated"] = deprecated as unknown as Record<string, Record<string, string | string[]>>;
     let key: string | undefined;
     for (const record of records.slice(1)) {
-      const fields = record.trim().split("\n").map((field) => field.split(": "));
+      const fields = pyStrip(record).split("\n").map((field) => field.split(": "));
       if (fields[0] === undefined || fields[0].length < 2 ||
           fields[1] === undefined || fields[1].length < 2) {
         throw pyError("IndexError", "list index out of range");
@@ -1446,7 +1426,7 @@ export class BCP47CorpusReader extends CorpusReader {
           if (key === undefined) throw pyError("NameError", "name 'key' is not defined");
           const arr = subfields[key];
           if (arr === undefined) throw pyError("KeyError", pyReprDeep(key));
-          arr[arr.length - 1] = arr[arr.length - 1] + " " + field[0]!.trim();
+          arr[arr.length - 1] = arr[arr.length - 1] + " " + pyStrip(field[0]!);
         }
         if (!record.includes("Deprecated") && typ === "language" && key === "Description") {
           this.langcode[subfields[key]![subfields[key]!.length - 1]!] = tag;
@@ -1645,7 +1625,7 @@ export class CrubadanCorpusReader extends CorpusReader {
       throw pyError("RuntimeError", `Could not find language mapper file: ${mapper_file}`);
     }
     const bytes = pathsec_open(mapper_file, "r", "CrubadanCorpusReader", (this.root as FileSystemPathPointer).path);
-    const strip_raw = new TextDecoder("utf-8").decode(bytes).trim();
+    const strip_raw = pyStrip(new TextDecoder("utf-8").decode(bytes));
     this._lang_mapping_data = strip_raw.split("\n").map((row) => row.split("\t"));
   }
 
@@ -1767,7 +1747,7 @@ export function norm(value_string: string): number {
  * a string becomes a set of its stripped comma-separated parts; a list
  * becomes a set of its elements; anything else passes through. */
 function csArg<T>(v: T): T | Set<string> {
-  if (typeof v === "string") return new Set(v.split(",").map((p) => p.trim()));
+  if (typeof v === "string") return new Set(v.split(",").map((p) => pyStrip(p)));
   if (Array.isArray(v)) return new Set(v as Iterable<string>);
   return v;
 }
@@ -1837,7 +1817,7 @@ const MD_BQ_RE = /^ {0,3}> ?/;
 const MD_SETEXT1 = /^ {0,3}=+[ \t]*$/;
 const MD_SETEXT2 = /^ {0,3}-+[ \t]*$/;
 const MD_HR_RE = /^ {0,3}(?:(\*[ \t]*){3,}|(_[ \t]*){3,}|(-[ \t]*){3,})$/;
-const MD_REFDEF_RE = /^ {0,3}\[([^\]]+)\]:[ \t]*(<[^<>\n]*>|\S+)(?:[ \t]+("[^"\n]*"|'[^'\n]*'|\([^()\n]*\)))?[ \t]*$/;
+const MD_REFDEF_RE = /^ {0,3}\[([^\]]+)\]:[ \t]*(<[^<>\n]*>|[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+)(?:[ \t]+("[^"\n]*"|'[^'\n]*'|\([^()\n]*\)))?[ \t]*$/u;
 
 const MD_HTML_TAGS = new Set(
   ("address article aside base basefont blockquote body caption center col colgroup dd details dialog dir div dl dt fieldset figcaption figure footer form frame frameset h1 h2 h3 h4 h5 h6 head header hr html iframe legend li link main menu menuitem nav noframes ol optgroup option p param search section summary table tbody td tfoot th thead title tr track ul").split(" "),
@@ -1845,7 +1825,7 @@ const MD_HTML_TAGS = new Set(
 
 /** Starts a block-level construct at this line (used to end paragraphs/items). */
 function mdStartsBlock(line: string, level: number): boolean {
-  if (/^\s*$/.test(line)) return true;
+  if (/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(line)) return true;
   if (MD_FENCE_RE.test(line)) return true;
   if (MD_ATX_RE.test(line)) return true;
   if (MD_HR_RE.test(line)) return true;
@@ -1865,7 +1845,7 @@ function mdHtmlBlockEnd(line: string): "start" | null {
   if (/^ {0,3}<!\[CDATA\[/.test(line)) return "start";
   const m = /^ {0,3}<\/?([A-Za-z][A-Za-z0-9-]*)/.exec(line);
   if (m && MD_HTML_TAGS.has(m[1]!.toLowerCase())) return "start";
-  if (/^ {0,3}<(script|pre|style|textarea)(?:\s|>|$)/i.test(line)) return "start";
+  if (/^ {0,3}<(script|pre|style|textarea)(?:[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]|>|$)/iu.test(line)) return "start";
   return null;
 }
 
@@ -1879,14 +1859,14 @@ function mdHtmlBlock(lines: string[], i: number, e: number, level: number): [MdT
   else if (/^ {0,3}<!\[CDATA\[/.test(line)) endRe = /\]\]>/;
   else if (/^ {0,3}<![A-Za-z]/.test(line)) endRe = />/;
   else {
-    const m = /^ {0,3}<(script|pre|style|textarea)(?:\s|>|$)/i.exec(line);
-    if (m) endRe = new RegExp(`</${m[1]!.toLowerCase()}\\s*>`, "i");
+    const m = /^ {0,3}<(script|pre|style|textarea)(?:[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]|>|$)/iu.exec(line);
+    if (m) endRe = new RegExp(`</${m[1]!.toLowerCase()}${PY_WS_CLASS}*>`, "i");
     else untilBlank = true;
   }
   const body: string[] = [];
   let j = i;
   if (untilBlank) {
-    while (j < e && !/^\s*$/.test(lines[j]!)) { body.push(lines[j]!); j++; }
+    while (j < e && !/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(lines[j]!)) { body.push(lines[j]!); j++; }
   } else {
     while (j < e) {
       body.push(lines[j]!);
@@ -1909,7 +1889,7 @@ function mdParseBlocks(lines: string[], s: number, e: number, level: number, ref
   let i = s;
   while (i < e) {
     const line = lines[i]!;
-    if (/^\s*$/.test(line)) { i++; continue; }
+    if (/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(line)) { i++; continue; }
 
     // front_matter plugin: --- at absolute doc start only.
     if (docStart && i === 0 && level === 0 && /^-{3,}/.test(line)) {
@@ -1917,10 +1897,10 @@ function mdParseBlocks(lines: string[], s: number, e: number, level: number, ref
       let found = -1;
       for (let j = i + 1; j < e; j++) {
         const l2 = lines[j]!;
-        if (/^\s*$/.test(l2)) continue;
-        if (/^\.{3,}\s*$/.test(l2)) { found = j; break; }
+        if (/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(l2)) continue;
+        if (/^\.{3,}[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(l2)) { found = j; break; }
         const dm = /^-+/.exec(l2);
-        if (dm && dm[0].length >= markerCount && /^\s*$/.test(l2.slice(dm[0].length))) { found = j; break; }
+        if (dm && dm[0].length >= markerCount && /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(l2.slice(dm[0].length))) { found = j; break; }
       }
       if (found >= 0) {
         const t = new MdToken("front_matter");
@@ -1942,7 +1922,7 @@ function mdParseBlocks(lines: string[], s: number, e: number, level: number, ref
     if (fm && (fm[1]![0] === "~" || !fm[2]!.includes("`"))) {
       const fenceCh = fm[1]![0]!;
       const fenceLen = fm[1]!.length;
-      const info = fm[2]!.trim();
+      const info = pyStrip(fm[2]!);
       const body: string[] = [];
       let j = i + 1;
       for (; j < e; j++) {
@@ -1970,7 +1950,7 @@ function mdParseBlocks(lines: string[], s: number, e: number, level: number, ref
         if (/^(?: {4}| {0,3}\t)/.test(lines[j]!)) {
           body.push(lines[j]!.replace(/^(?: {4}| {0,3}\t)/, ""));
           j++;
-        } else if (/^\s*$/.test(lines[j]!)) {
+        } else if (/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(lines[j]!)) {
           // blank inside code block — include tentatively
           body.push("");
           j++;
@@ -1993,7 +1973,7 @@ function mdParseBlocks(lines: string[], s: number, e: number, level: number, ref
     if (am) {
       const open = new MdToken("heading_open");
       open.block = true; open.level = level; open.markup = am[1]!;
-      let text = (am[2] ?? "").replace(/[ \t]+#+[ \t]*$/, "").trim();
+      let text = pyStrip((am[2] ?? "").replace(/[ \t]+#+[ \t]*$/, ""));
       const inline = new MdToken("inline");
       inline.level = level + 1;
       inline.content = text;
@@ -2009,7 +1989,7 @@ function mdParseBlocks(lines: string[], s: number, e: number, level: number, ref
     if (MD_HR_RE.test(line)) {
       const t = new MdToken("hr");
       t.block = true; t.level = level;
-      t.markup = line.trim()[0]!.repeat(3);
+      t.markup = pyStrip(line)[0]!.repeat(3);
       t.map = [i, i + 1];
       out.push(t);
       i++;
@@ -2023,7 +2003,7 @@ function mdParseBlocks(lines: string[], s: number, e: number, level: number, ref
       while (j < e) {
         if (MD_BQ_RE.test(lines[j]!)) { inner.push(lines[j]!.replace(MD_BQ_RE, "")); j++; continue; }
         // lazy continuation: non-blank line that doesn't start a new block
-        if (!/^\s*$/.test(lines[j]!) && inner.length && !mdStartsBlock(lines[j]!, level)) {
+        if (!/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(lines[j]!) && inner.length && !mdStartsBlock(lines[j]!, level)) {
           inner.push(lines[j]!);
           j++;
           continue;
@@ -2081,11 +2061,11 @@ function mdParseBlocks(lines: string[], s: number, e: number, level: number, ref
         j++;
         while (j < e) {
           const nl = lines[j]!;
-          if (/^\s*$/.test(nl)) {
+          if (/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(nl)) {
             // blank — lookahead: list-item of our type → item boundary; an
             // indented line → continues this item; anything else → list ends
             let k = j + 1;
-            while (k < e && /^\s*$/.test(lines[k]!)) k++;
+            while (k < e && /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(lines[k]!)) k++;
             if (k >= e) { j = k; endedByBlank = true; break; }
             const kb = MD_BULLET_RE.exec(lines[k]!);
             const ko = kb ? null : MD_ORDERED_RE.exec(lines[k]!);
@@ -2133,7 +2113,7 @@ function mdParseBlocks(lines: string[], s: number, e: number, level: number, ref
     let isSetext: string | null = null;
     while (j < e) {
       const nl = lines[j]!;
-      if (/^\s*$/.test(nl)) break;
+      if (/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(nl)) break;
       if (paraLines.length > 0 && mdStartsBlock(nl, level)) {
         // setext underline → heading instead of paragraph
         if (MD_SETEXT1.test(nl)) { isSetext = "="; j++; }
@@ -2141,7 +2121,7 @@ function mdParseBlocks(lines: string[], s: number, e: number, level: number, ref
         break;
       }
       if (paraLines.length > 0 && (MD_SETEXT1.test(nl) || MD_SETEXT2.test(nl))) {
-        isSetext = nl.trim()[0]!; j++; break;
+        isSetext = pyStrip(nl)[0]!; j++; break;
       }
       paraLines.push(nl);
       j++;
@@ -2151,7 +2131,7 @@ function mdParseBlocks(lines: string[], s: number, e: number, level: number, ref
     while (paraLines.length) {
       const rm = MD_REFDEF_RE.exec(paraLines[0]!);
       if (!rm) break;
-      const label = rm[1]!.toLowerCase().replace(/\s+/g, " ").trim();
+      const label = pyStrip(rm[1]!.toLowerCase().replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/gu, " "));
       let href = rm[2]!;
       if (href.startsWith("<") && href.endsWith(">")) href = href.slice(1, -1);
       let title: string | null = rm[3] ?? null;
@@ -2164,7 +2144,7 @@ function mdParseBlocks(lines: string[], s: number, e: number, level: number, ref
       const last = paraLines[paraLines.length - 1]!;
       const rm = MD_REFDEF_RE.exec(last);
       if (!rm) break;
-      const label = rm[1]!.toLowerCase().replace(/\s+/g, " ").trim();
+      const label = pyStrip(rm[1]!.toLowerCase().replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/gu, " "));
       let href = rm[2]!;
       if (href.startsWith("<") && href.endsWith(">")) href = href.slice(1, -1);
       let title: string | null = rm[3] ?? null;
@@ -2173,7 +2153,7 @@ function mdParseBlocks(lines: string[], s: number, e: number, level: number, ref
       paraLines.pop();
     }
     if (isSetext !== null) {
-      const text = paraLines.join("\n").trim();
+      const text = pyStrip(paraLines.join("\n"));
       const open = new MdToken("heading_open");
       open.block = true; open.level = level; open.markup = isSetext;
       const inline = new MdToken("inline");
@@ -2237,7 +2217,7 @@ function mdParseInline(src: string, refs: Map<string, RefDef>, level: number): M
   // parse "(dest [title])" starting at i (src[i]==='('). returns [href,title,end] or null
   const parseInlineDest = (i: number): [string, string | null, number] | null => {
     let j = i + 1;
-    while (j < src.length && /\s/.test(src[j]!)) j++;
+    while (j < src.length && /[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.test(src[j]!)) j++;
     if (j >= src.length) return null;
     let href = "";
     if (src[j] === "<") {
@@ -2253,12 +2233,12 @@ function mdParseInline(src: string, refs: Map<string, RefDef>, level: number): M
         if (ch === "\\") { j += 2; continue; }
         if (ch === "(") depth++;
         else if (ch === ")") { if (depth === 0) break; depth--; }
-        else if (/\s/.test(ch) && depth === 0) break;
+        else if (/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.test(ch) && depth === 0) break;
         j++;
       }
       href = src.slice(start, j);
     }
-    while (j < src.length && /\s/.test(src[j]!)) j++;
+    while (j < src.length && /[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.test(src[j]!)) j++;
     let title: string | null = null;
     if (j < src.length && (src[j] === '"' || src[j] === "'" || src[j] === "(")) {
       const qc = src[j]!;
@@ -2267,12 +2247,12 @@ function mdParseInline(src: string, refs: Map<string, RefDef>, level: number): M
       if (close < 0) return null;
       title = src.slice(j + 1, close);
       j = close + 1;
-      while (j < src.length && /\s/.test(src[j]!)) j++;
+      while (j < src.length && /[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.test(src[j]!)) j++;
     }
     if (j < src.length && src[j] === ")") return [href, title, j + 1];
     return null;
   };
-  const normRef = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
+  const normRef = (s: string) => pyStrip(s.toLowerCase().replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/gu, " "));
 
   let i = 0;
   while (i < src.length) {
@@ -2311,7 +2291,7 @@ function mdParseInline(src: string, refs: Map<string, RefDef>, level: number): M
       const closer = src.indexOf("`".repeat(run), i + run);
       if (closer >= 0) {
         let code = src.slice(i + run, closer).replace(/\n/g, " ");
-        if (code.length >= 2 && code.startsWith(" ") && code.endsWith(" ") && code.trim() !== "") code = code.slice(1, -1);
+        if (code.length >= 2 && code.startsWith(" ") && code.endsWith(" ") && pyStrip(code) !== "") code = code.slice(1, -1);
         const t = new MdToken("code_inline"); t.level = level; t.content = code; t.markup = "`".repeat(run);
         tokens.push(t);
         i = closer + run;
@@ -2330,7 +2310,7 @@ function mdParseInline(src: string, refs: Map<string, RefDef>, level: number): M
     }
 
     if (c === "<") {
-      const am = /^<([a-zA-Z][a-zA-Z0-9+.-]{1,31}:[^<>\s]*)>/.exec(src.slice(i));
+      const am = /^<([a-zA-Z][a-zA-Z0-9+.-]{1,31}:[^<>\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*)>/u.exec(src.slice(i));
       const mm = /^<([A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*)>/.exec(src.slice(i));
       if (am) {
         const open = new MdToken("link_open");
@@ -2350,7 +2330,7 @@ function mdParseInline(src: string, refs: Map<string, RefDef>, level: number): M
         tokens.push(open, text, close);
         i += mm[0].length; continue;
       }
-      const hm = /^<\/?[A-Za-z][^>\n]*>|^<!--[\s\S]*?-->|^<\?[^>\n]*\?>|^<![A-Z][^>\n]*>|^<!\[CDATA\[[\s\S]*?\]\]>/.exec(src.slice(i));
+      const hm = /^<\/?[A-Za-z][^>\n]*>|^<!--[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\S]*?-->|^<\?[^>\n]*\?>|^<![A-Z][^>\n]*>|^<!\[CDATA\[[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\S]*?\]\]>/u.exec(src.slice(i));
       if (hm) {
         const t = new MdToken("html_inline"); t.level = level; t.content = hm[0]; tokens.push(t);
         i += hm[0].length; continue;
@@ -2481,7 +2461,7 @@ function mdParseInline(src: string, refs: Map<string, RefDef>, level: number): M
 
 /** mdit_plain HTMLTextRenderer — collect all data nodes, decode entities. */
 function mdHtmlToText(html: string): string {
-  const noComments = html.replace(/<!--[\s\S]*?-->/g, "");
+  const noComments = html.replace(/<!--[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\S]*?-->/gu, "");
   const noTags = noComments.replace(/<[^>]*>/g, "");
   return xmlUnescape(noTags);
 }
@@ -2525,7 +2505,7 @@ export class RendererPlain {
       result += rule(tokens, i);
       if (t.children !== null) result += this.render(t.children, _options, _env);
     }
-    return result.trim();
+    return pyStrip(result);
   }
 }
 
@@ -2551,7 +2531,7 @@ export class MiniMarkdownIt {
 // { yaml.safe_load subset — block maps/sequences, flow collections, scalars
 
 function yamlScalar(s: string): unknown {
-  const t = s.trim();
+  const t = pyStrip(s);
   if (t === "" || t === "~" || /^null$/i.test(t)) return null;
   if (/^(?:true|yes|on)$/i.test(t)) return true;
   if (/^(?:false|no|off)$/i.test(t)) return false;
@@ -2569,17 +2549,17 @@ function yamlScalar(s: string): unknown {
   }
   if (t.startsWith("'") && t.endsWith("'") && t.length >= 2) return t.slice(1, -1).replace(/''/g, "'");
   if (t.startsWith("[") && t.endsWith("]")) {
-    const inner = t.slice(1, -1).trim();
+    const inner = pyStrip(t.slice(1, -1));
     if (!inner) return [];
     return yamlFlowSplit(inner).map(yamlScalar);
   }
   if (t.startsWith("{") && t.endsWith("}")) {
-    const inner = t.slice(1, -1).trim();
+    const inner = pyStrip(t.slice(1, -1));
     const out: Record<string, unknown> = {};
     if (!inner) return out;
     for (const part of yamlFlowSplit(inner)) {
       const ci = yamlColonIndex(part);
-      if (ci < 0) { out[part.trim()] = null; continue; }
+      if (ci < 0) { out[pyStrip(part)] = null; continue; }
       out[String(yamlScalar(part.slice(0, ci)))] = yamlScalar(part.slice(ci + 1));
     }
     return out;
@@ -2602,7 +2582,7 @@ function yamlFlowSplit(s: string): string[] {
     if (ch === "," && depth === 0) { parts.push(cur); cur = ""; continue; }
     cur += ch;
   }
-  if (cur.trim() !== "" || parts.length) parts.push(cur);
+  if (pyStrip(cur) !== "" || parts.length) parts.push(cur);
   return parts;
 }
 
@@ -2617,7 +2597,7 @@ function yamlColonIndex(s: string): number {
     if (ch === "'") { inS = true; continue; }
     if (ch === "[" || ch === "{") depth++;
     if (ch === "]" || ch === "}") depth--;
-    if (ch === ":" && depth === 0 && (i + 1 >= s.length || /\s/.test(s[i + 1]!))) return i;
+    if (ch === ":" && depth === 0 && (i + 1 >= s.length || /[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.test(s[i + 1]!))) return i;
   }
   return -1;
 }
@@ -2636,10 +2616,10 @@ export function yamlSafeLoad(src: string): unknown {
       if (inS) { if (ch === "'") inS = false; continue; }
       if (ch === '"') { inD = true; continue; }
       if (ch === "'") { inS = true; continue; }
-      if (ch === "#" && (i === 0 || /\s/.test(raw[i - 1]!))) { cut = i; break; }
+      if (ch === "#" && (i === 0 || /[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.test(raw[i - 1]!))) { cut = i; break; }
     }
     const line = raw.slice(0, cut);
-    if (/^\s*$/.test(line)) continue;
+    if (/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(line)) continue;
     const indent = /^ */.exec(line)![0].length;
     lines.push({ indent, text: line.slice(indent) });
   }
@@ -2662,7 +2642,7 @@ export function yamlSafeLoad(src: string): unknown {
           const map: Record<string, unknown> = {};
           const ci = yamlColonIndex(rest);
           const k = String(yamlScalar(rest.slice(0, ci)));
-          const v = rest.slice(ci + 1).trim();
+          const v = pyStrip(rest.slice(ci + 1));
           map[k] = v === "" ? null : yamlScalar(v);
           i++;
           // deeper-indented continuation of the same map
@@ -2670,7 +2650,7 @@ export function yamlSafeLoad(src: string): unknown {
             const l = lines[i]!;
             const ci2 = yamlColonIndex(l.text);
             if (ci2 >= 0) {
-              map[String(yamlScalar(l.text.slice(0, ci2)))] = l.text.slice(ci2 + 1).trim() === "" ? null : yamlScalar(l.text.slice(ci2 + 1));
+              map[String(yamlScalar(l.text.slice(0, ci2)))] = pyStrip(l.text.slice(ci2 + 1)) === "" ? null : yamlScalar(l.text.slice(ci2 + 1));
             }
             i++;
           }
@@ -2691,7 +2671,7 @@ export function yamlSafeLoad(src: string): unknown {
         const ci = yamlColonIndex(l.text);
         if (ci < 0) break;
         const k = String(yamlScalar(l.text.slice(0, ci)));
-        const v = l.text.slice(ci + 1).trim();
+        const v = pyStrip(l.text.slice(ci + 1));
         if (v !== "") { map[k] = yamlScalar(v); i++; continue; }
         // value on deeper-indented block (or null)
         if (i + 1 < lines.length && lines[i + 1]!.indent > indent) {
@@ -2709,7 +2689,7 @@ export function yamlSafeLoad(src: string): unknown {
     let i = start;
     let text = lines[i]!.text;
     i++;
-    while (i < lines.length && lines[i]!.indent > indent) { text += " " + lines[i]!.text.trim(); i++; }
+    while (i < lines.length && lines[i]!.indent > indent) { text += " " + pyStrip(lines[i]!.text); i++; }
     return [yamlScalar(text), i];
   };
   const [v] = parse(0, lines[0]!.indent);

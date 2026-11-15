@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 // Port of Python's fractions.Fraction used by nltk.translate.bleu_score.
 function gcd(a: bigint, b: bigint): bigint { a = a < 0n ? -a : a; b = b < 0n ? -b : b; while (b) { [a, b] = [b, a % b]; } return a; }
 
@@ -27,7 +28,7 @@ export class Fraction {
   }
 
   private static _fromString(s: string): Fraction {
-    const m = s.trim().match(/^([+-]?\d+)(?:\/(\d+))?$/);
+    const m = pyStrip(s).match(/^([+-]?\d+)(?:\/(\d+))?$/);
     if (!m) throw new Error(`Invalid literal for Fraction: ${s}`);
     return new Fraction(BigInt(m[1]!), m[2] !== undefined ? BigInt(m[2]) : 1n);
   }

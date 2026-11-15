@@ -1,3 +1,4 @@
+import { PY_WS_RUN } from "./internals";
 /**
  * Phrase extraction from word alignments (port of nltk.translate.phrase_based).
  */
@@ -27,8 +28,8 @@ export function phraseExtraction(
   alignment: Array<[number, number]>,
   maxPhraseLength = 0,
 ): PhrasePair[] {
-  const srcToks = srctext.split(/\s+/).filter(Boolean);
-  const trgToks = trgtext.split(/\s+/).filter(Boolean);
+  const srcToks = srctext.split(PY_WS_RUN).filter(Boolean);
+  const trgToks = trgtext.split(PY_WS_RUN).filter(Boolean);
   const srcLen = srcToks.length, trgLen = trgToks.length;
   if (!maxPhraseLength) {
     maxPhraseLength = Math.max(srcLen, trgLen);

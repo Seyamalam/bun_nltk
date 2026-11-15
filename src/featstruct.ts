@@ -7,7 +7,7 @@
  * nltk.featstruct itself is an excluded module; this provides the internal
  * equivalents the feature-chart port depends on.
  */
-import { pyError } from "./internals";
+import { PY_WS_CLASS, pyError, pyLstrip, pyStrip } from "./internals";
 import { Expression, Variable as LogicVariable } from "./sem_logic";
 
 export const TYPE = "type";
@@ -675,7 +675,7 @@ export class FeatStructReader {
   read_partial(s: string, position = 0): [FeatValue, number] {
     let pos = position;
     // Optional reentrance id "(n)".
-    const reId = /^\s*\((\d+)\)\s*/.exec(s.slice(pos));
+    const reId = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\((\d+)\)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u.exec(s.slice(pos));
     let reentKey: string | null = null;
     if (reId) {
       reentKey = reId[1]!;
@@ -684,7 +684,7 @@ export class FeatStructReader {
     }
     // Optional prefix identifier (word or ?var).
     let prefix: string | Variable | null = null;
-    const pm = /^\s*(\??[\p{L}\p{N}_-]+)\s*/u.exec(s.slice(pos));
+    const pm = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(\??[\p{L}\p{N}_-]+)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u.exec(s.slice(pos));
     if (pm && s.slice(pos + pm[0].length).startsWith("[")) {
       prefix = pm[1]!.startsWith("?") ? new Variable(pm[1]!) : pm[1]!;
       pos += pm[0].length;
@@ -702,14 +702,14 @@ export class FeatStructReader {
     if (s[pos] !== "[") throw pyError("ValueError", `Expected open bracket or identifier at ${pos}`);
     pos++;
     // Dict vs list: lookahead for a top-level '=' or '->' before first ',' or ']'.
-    const isDict = /^[^[\]'"(),=]*=/.test(s.slice(pos)) || /^\s*\]/.test(s.slice(pos)) || /^[^[\]'"(),]*->/.test(s.slice(pos)) || /^\s*[+-][^\s,\]]+/.test(s.slice(pos));
+    const isDict = /^[^[\]'"(),=]*=/.test(s.slice(pos)) || /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\]/u.test(s.slice(pos)) || /^[^[\]'"(),]*->/.test(s.slice(pos)) || /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*[+-][^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000,\]]+/u.test(s.slice(pos));
     const fstruct: FeatDict | FeatList = isDict ? new FeatDict() : new FeatList();
     if (reentKey) this._reent.set(reentKey, fstruct);
     if (fstruct instanceof FeatDict) {
       if (prefix !== null) fstruct.set(TYPE, prefix);
       pos = this._readDict(s, pos, fstruct);
       // optional trailing /slash value
-      const sm = /^\s*\/\s*/.exec(s.slice(pos));
+      const sm = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u.exec(s.slice(pos));
       if (sm) {
         pos += sm[0].length;
         const [v, np] = this._readValue(s, pos);
@@ -725,21 +725,21 @@ export class FeatStructReader {
 
   private _readDict(s: string, pos: number, out: FeatDict): number {
     for (;;) {
-      if (/^\s*\]/.test(s.slice(pos))) return pos + s.slice(pos).indexOf("]") + 1;
+      if (/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\]/u.test(s.slice(pos))) return pos + s.slice(pos).indexOf("]") + 1;
       // feature -> (n) reentrance
-      let m = /^\s*([^\s()<>"'=\-[\],/]+)\s*->\s*\((\d+)\)\s*/.exec(s.slice(pos));
+      let m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000()<>"'=\-[\],/]+)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*->[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\((\d+)\)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u.exec(s.slice(pos));
       if (m) {
         const target = this._reent.get(m[2]!);
         if (target === undefined) throw pyError("ValueError", `bound identifier at ${pos}`);
         out.set(m[1]!, target);
         pos += m[0].length;
-      } else if ((m = /^\s*\+([^\s,\]]+)\s*/.exec(s.slice(pos)))) {
+      } else if ((m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\+([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000,\]]+)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u.exec(s.slice(pos)))) {
         out.set(m[1]!, true);
         pos += m[0].length;
-      } else if ((m = /^\s*-([^\s,\]]+)\s*/.exec(s.slice(pos)))) {
+      } else if ((m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*-([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000,\]]+)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u.exec(s.slice(pos)))) {
         out.set(m[1]!, false);
         pos += m[0].length;
-      } else if ((m = /^\s*([^\s()<>"'=\-[\],/]+)\s*=\s*/.exec(s.slice(pos)))) {
+      } else if ((m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000()<>"'=\-[\],/]+)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*=[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u.exec(s.slice(pos)))) {
         const name = m[1]!;
         pos += m[0].length;
         const [v, np] = this._readValue(s, pos);
@@ -748,7 +748,7 @@ export class FeatStructReader {
       } else {
         throw pyError("ValueError", `Expected feature name/value at ${pos}`);
       }
-      const cm = /^\s*,\s*/.exec(s.slice(pos));
+      const cm = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*,[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u.exec(s.slice(pos));
       if (cm) {
         pos += cm[0].length;
       }
@@ -757,8 +757,8 @@ export class FeatStructReader {
 
   private _readList(s: string, pos: number, out: FeatList): number {
     for (;;) {
-      if (/^\s*\]/.test(s.slice(pos))) return pos + s.slice(pos).indexOf("]") + 1;
-      const rm = /^\s*->\s*\((\d+)\)\s*/.exec(s.slice(pos));
+      if (/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\]/u.test(s.slice(pos))) return pos + s.slice(pos).indexOf("]") + 1;
+      const rm = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*->[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\((\d+)\)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u.exec(s.slice(pos));
       if (rm) {
         const target = this._reent.get(rm[1]!);
         if (target === undefined) throw pyError("ValueError", `bound identifier at ${pos}`);
@@ -769,32 +769,32 @@ export class FeatStructReader {
         out.items.push(v);
         pos = np;
       }
-      const cm = /^\s*,\s*/.exec(s.slice(pos));
+      const cm = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*,[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u.exec(s.slice(pos));
       if (cm) pos += cm[0].length;
     }
   }
 
   private _readValue(s: string, pos: number): [FeatValue, number] {
     const rest = s.slice(pos);
-    let m = /^\s*\((\d+)\)\s*/.exec(rest);
-    if (m || rest.trimStart().startsWith("[") || /^\s*[\p{L}\p{N}_?-]+\s*\[/u.test(rest)) {
+    let m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\((\d+)\)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u.exec(rest);
+    if (m || pyLstrip(rest).startsWith("[") || /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*[\p{L}\p{N}_?-]+[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\[/u.test(rest)) {
       return this.read_partial(s, pos);
     }
-    if ((m = /^\s*\?[\p{L}\p{N}_-]+/u.exec(rest))) return [new Variable(m[0]!.trimStart()), pos + m[0].length];
-    if ((m = /^\s*(None|True|False)(?![\p{L}\p{N}_])/u.exec(rest))) {
+    if ((m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\?[\p{L}\p{N}_-]+/u.exec(rest))) return [new Variable(pyLstrip(m[0]!)), pos + m[0].length];
+    if ((m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(None|True|False)(?![\p{L}\p{N}_])/u.exec(rest))) {
       const v = m[1] === "None" ? null : m[1] === "True";
       return [v, pos + m[0].length];
     }
-    if ((m = /^\s*-?\d+/.exec(rest))) return [parseInt(m[0]!, 10), pos + m[0].length];
-    if ((m = /^\s*->\s*\((\d+)\)\s*/.exec(rest))) {
+    if ((m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*-?\d+/u.exec(rest))) return [parseInt(m[0]!, 10), pos + m[0].length];
+    if ((m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*->[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\((\d+)\)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u.exec(rest))) {
       const target = this._reent.get(m[1]!);
       if (target === undefined) throw pyError("ValueError", `bound identifier at ${pos}`);
       return [target, pos + m[0].length];
     }
-    if ((m = /^\s*<app\((\?[a-z][a-z]*)\s*,\s*(\?[a-z][a-z]*)\)>/.exec(rest))) {
+    if ((m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<app\((\?[a-z][a-z]*)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*,[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(\?[a-z][a-z]*)\)>/u.exec(rest))) {
       return [this._logicParser(`${m[1]!}(${m[2]!})`), pos + m[0].length];
     }
-    if ((m = /^\s*<(.*?)(?<!-)>/.exec(rest))) {
+    if ((m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<(.*?)(?<!-)>/u.exec(rest))) {
       let expr: Expression;
       try {
         expr = this._logicParser(m[1]!);
@@ -803,12 +803,12 @@ export class FeatStructReader {
       }
       return [expr, pos + m[0].length];
     }
-    if ((m = /^\s*'([^']*)'/.exec(rest)) || (m = /^\s*"([^"]*)"/.exec(rest))) {
+    if ((m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*'([^']*)'/u.exec(rest)) || (m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*"([^"]*)"/u.exec(rest))) {
       return [m[1]!, pos + m[0].length];
     }
-    if (rest.trimStart().startsWith("(")) return this._readSeqValue(s, pos, ")", "tuple");
-    if (rest.trimStart().startsWith("{")) return this._readSeqValue(s, pos, "}", "set");
-    if ((m = /^\s*[^\s,\])}]+/.exec(rest))) return [m[0]!.trim(), pos + m[0].length];
+    if (pyLstrip(rest).startsWith("(")) return this._readSeqValue(s, pos, ")", "tuple");
+    if (pyLstrip(rest).startsWith("{")) return this._readSeqValue(s, pos, "}", "set");
+    if ((m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000,\])}]+/u.exec(rest))) return [pyStrip(m[0]!), pos + m[0].length];
     throw pyError("ValueError", `Expected value at ${pos}`);
   }
 
@@ -816,14 +816,14 @@ export class FeatStructReader {
   private _readSeqValue(s: string, pos: number, close: ")" | "}", kind: "tuple" | "set"): [FeatValue, number] {
     pos = pos + s.slice(pos).indexOf(kind === "tuple" ? "(" : "{") + 1;
     const cp = close === ")" ? "\\)" : "\\}";
-    let m = new RegExp(`^\\s*/?\\s*${cp}`).exec(s.slice(pos));
+    let m = new RegExp(`^${PY_WS_CLASS}*/?${PY_WS_CLASS}*${cp}`).exec(s.slice(pos));
     if (m) {
       return [kind === "tuple" ? new FeatureValueTuple() : new FeatureValueSet(), pos + m[0].length];
     }
     const values: FeatValue[] = [];
     let seenPlus = false;
     for (;;) {
-      m = new RegExp(`^\\s*${cp}`).exec(s.slice(pos));
+      m = new RegExp(`^${PY_WS_CLASS}*${cp}`).exec(s.slice(pos));
       if (m) {
         const end = pos + m[0].length;
         if (seenPlus) {
@@ -834,7 +834,7 @@ export class FeatStructReader {
       const [v, np] = this._readValue(s, pos);
       values.push(v);
       pos = np;
-      m = new RegExp(`^\\s*(,|\\+|(?=${cp}))`).exec(s.slice(pos));
+      m = new RegExp(`^${PY_WS_CLASS}*(,|\\+|(?=${cp}))`).exec(s.slice(pos));
       if (!m) throw pyError("ValueError", `',' or '+' or '${close}' at ${pos}`);
       if (m[1] === "+") seenPlus = true;
       pos += m[0].length;
@@ -848,8 +848,8 @@ export class FeatStructReader {
   }
 
   fromstring(s: string): FeatValue {
-    const [v, pos] = this.read_partial(s.trim(), 0);
-    if (pos !== s.trim().length) throw pyError("ValueError", "Expected end of string");
+    const [v, pos] = this.read_partial(pyStrip(s), 0);
+    if (pos !== pyStrip(s).length) throw pyError("ValueError", "Expected end of string");
     return v;
   }
 }

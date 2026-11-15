@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 /**
  * CCGCat — port of category parsing helpers (nltk/ccg/lexicon + api category parsing)
  * Provides slash-type helpers, feature parsing, and string→category parsing.
@@ -12,7 +13,7 @@ import type { AbstractCCGCategory } from "./ccg_api.ts";
 
 export function parseSubscripts(subscr: string | null | undefined): string[] {
   if (!subscr) return [];
-  return subscr.slice(1, -1).split(",").map((s) => s.trim()).filter(Boolean);
+  return subscr.slice(1, -1).split(",").map((s) => pyStrip(s)).filter(Boolean);
 }
 
 export function parseApplication(app: string[]): Direction {
@@ -86,7 +87,7 @@ export function augParseCategory(
   families: Map<string, [AbstractCCGCategory, CCGVar | null]>,
   v: CCGVar | null = null,
 ): [AbstractCCGCategory, CCGVar | null] {
-  let [catString, rest] = nextCategory(line.trim());
+  let [catString, rest] = nextCategory(pyStrip(line));
   let res: AbstractCCGCategory;
 
   if (catString.startsWith("(")) {
@@ -129,7 +130,7 @@ export function parseCategory(
   families: Map<string, [AbstractCCGCategory, CCGVar | null]> = new Map(),
 ): AbstractCCGCategory {
   const primSet = new Set(primitives);
-  const [cat] = augParseCategory(catStr.trim(), primSet, families);
+  const [cat] = augParseCategory(pyStrip(catStr), primSet, families);
   return cat;
 }
 

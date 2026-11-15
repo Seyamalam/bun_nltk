@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 import { wordTokenizeSubset } from "./tokenizers";
 import type { ParseTree } from "./parse";
 
@@ -96,15 +97,15 @@ function featureLabel(base: string, features: FeatureMap): string {
 function splitAlternatives(rhs: string): string[] {
   return rhs
     .split("|")
-    .map((part) => part.trim())
+    .map((part) => pyStrip(part))
     .filter(Boolean);
 }
 
 function tokenizeRuleRhs(rhs: string): string[] {
   const tokens: string[] = [];
-  const matches = rhs.matchAll(/'[^']*'|"[^"]*"|[^\s]+/g);
+  const matches = rhs.matchAll(/'[^']*'|"[^"]*"|[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/gu);
   for (const hit of matches) {
-    const token = hit[0]!.trim();
+    const token = pyStrip(hit[0]!);
     if (token) tokens.push(token);
   }
   return tokens;
@@ -112,12 +113,12 @@ function tokenizeRuleRhs(rhs: string): string[] {
 
 function parseFeatureSpec(spec: string): FeatureMap {
   const out: FeatureMap = {};
-  const trimmed = spec.trim();
+  const trimmed = pyStrip(spec);
   if (!trimmed) return out;
   for (const rawItem of trimmed.split(",")) {
-    const item = rawItem.trim();
+    const item = pyStrip(rawItem);
     if (!item) continue;
-    const match = item.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([^\s,\]]+)$/);
+    const match = item.match(/^([A-Za-z_][A-Za-z0-9_]*)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*=[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000,\]]+)$/u);
     if (match) {
       out[match[1]!] = match[2]!;
     } else {
@@ -146,11 +147,11 @@ export function parseFeatureCfgGrammar(grammarText: string, options?: { startSym
   let firstLhs: FeatureSymbol | null = null;
 
   for (const line of grammarText.split(/\r?\n/g)) {
-    const trimmed = line.trim();
+    const trimmed = pyStrip(line);
     if (!trimmed || trimmed.startsWith("#")) continue;
-    const match = trimmed.match(/^(.+?)\s*->\s*(.+)$/);
+    const match = trimmed.match(/^(.+?)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*->[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(.+)$/u);
     if (!match) continue;
-    const lhs = parseSymbol(match[1]!.trim());
+    const lhs = parseSymbol(pyStrip(match[1]!));
     if (lhs.terminal) throw new Error("feature grammar LHS cannot be terminal");
     if (!firstLhs) firstLhs = lhs;
     const rhsRaw = match[2]!;

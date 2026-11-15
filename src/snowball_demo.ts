@@ -20,7 +20,7 @@ const pyCenter = (s: string, width: number): string => {
 
 /** re.sub(r"(.{,70})\s", r"\1\n", s + " ").rstrip() — python `.{,70}` == `.{0,70}`. */
 const wrap70 = (s: string): string =>
-  (s + " ").replace(/(.{0,70})\s/g, "$1\n").replace(/\s+$/, "");
+  (s + " ").replace(/(.{0,70})[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/gu, "$1\n").replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u, "");
 
 const UDHR_CORPUS: Record<string, string> = {
   arabic: "Arabic_Alarabia-Arabic",

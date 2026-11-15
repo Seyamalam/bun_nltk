@@ -3,7 +3,7 @@
 // XML elements/views come from ./xmldocs (ElementTree clone) and
 // ./corpus_readers4 (XMLCorpusReader/XMLCorpusView).
 
-import { pyError } from "./internals";
+import { PY_WS_RUN, pyError, pyLstrip, pyStrip } from "./internals";
 import { PathPointer } from "./data";
 import { SeekableUnicodeStreamReader } from "./corpus_stream";
 import {
@@ -64,7 +64,7 @@ function pyValueRepr(v: unknown): string {
 
 /** Python int(s): trims whitespace, allows sign and single underscores. */
 function pyInt(s: string): number {
-  const t = s.trim();
+  const t = pyStrip(s);
   if (!/^[+-]?\d+(_\d+)*$/.test(t)) {
     throw pyError("ValueError", `invalid literal for int() with base 10: ${pyStrRepr(s)}`);
   }
@@ -90,7 +90,7 @@ function wsTokenize(s: string | null | undefined): string[] {
   if (s === null || s === undefined) {
     throw pyError("AttributeError", "'NoneType' object has no attribute 'split'");
   }
-  return s.split(/\s+/).filter((x) => x !== "");
+  return s.split(PY_WS_RUN).filter((x) => x !== "");
 }
 
 /** ``elt[key]`` child indexing — IndexError when out of range. */
@@ -125,9 +125,9 @@ function xmlEncodingFromFirstLine(s: string): string {
   if (s.startsWith("\0\0þÿ")) return "utf-32-be";          // BOM_UTF32_BE
   if (s.startsWith("ÿþ\0\0")) return "utf-32-le";          // BOM_UTF32_LE
   if (s.startsWith("ï»¿")) return "utf-8";                 // BOM_UTF8
-  let m = /^\s*<\?xml\b.*\bencoding="([^"]+)"/.exec(s);
+  let m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<\?xml\b.*\bencoding="([^"]+)"/u.exec(s);
   if (m) return m[1]!;
-  m = /^\s*<\?xml\b.*\bencoding='([^']+)'/.exec(s);
+  m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<\?xml\b.*\bencoding='([^']+)'/u.exec(s);
   if (m) return m[1]!;
   return "utf-8";
 }
@@ -304,7 +304,7 @@ export class PropbankCorpusReader extends CorpusReader {
     const block: PropbankInstance[] = [];
     // Read 100 at a time.
     for (let i = 0; i < 100; i++) {
-      const line = stream.readline().trim();
+      const line = pyStrip(stream.readline());
       if (line) {
         const inst = PropbankInstance.parse(line, this._parse_fileid_xform, this._parse_corpus);
         if (instanceFilter === undefined || instanceFilter(inst)) block.push(inst);
@@ -382,7 +382,7 @@ export class PropbankInstance {
 
   static parse(s: string, parseFileidXform: ((fileid: string) => string) | null = null,
     parseCorpus: BankParseCorpus | null = null): PropbankInstance {
-    const pieces = s.trim().split(/\s+/).filter((x) => x !== "");
+    const pieces = pyStrip(s).split(PY_WS_RUN).filter((x) => x !== "");
     if (pieces.length < 7) {
       throw pyError("ValueError", `Badly formatted propbank line: ${pyStrRepr(s)}`);
     }
@@ -699,7 +699,7 @@ export class NombankCorpusReader extends CorpusReader {
     const block: NombankInstance[] = [];
     // Read 100 at a time.
     for (let i = 0; i < 100; i++) {
-      const line = stream.readline().trim();
+      const line = pyStrip(stream.readline());
       if (line) {
         const inst = NombankInstance.parse(line, this._parse_fileid_xform, this._parse_corpus);
         if (instanceFilter === undefined || instanceFilter(inst)) block.push(inst);
@@ -768,7 +768,7 @@ export class NombankInstance {
 
   static parse(s: string, parseFileidXform: ((fileid: string) => string) | null = null,
     parseCorpus: BankParseCorpus | null = null): NombankInstance {
-    const pieces = s.trim().split(/\s+/).filter((x) => x !== "");
+    const pieces = pyStrip(s).split(PY_WS_RUN).filter((x) => x !== "");
     if (pieces.length < 6) {
       throw pyError("ValueError", `Badly formatted nombank line: ${pyStrRepr(s)}`);
     }
@@ -1249,7 +1249,7 @@ export class SensevalCorpusView extends StreamBackedCorpusView<SensevalInstance>
         return [];
       }
       // Start of a lexical element?
-      if (line.trimStart().startsWith("<lexelt")) {
+      if (pyLstrip(line).startsWith("<lexelt")) {
         lexeltNum += 1;
         const m = /item=("[^"]+"|'[^']+')/.exec(line);
         if (m === null) throw pyError("AssertionError", "");
@@ -1262,14 +1262,14 @@ export class SensevalCorpusView extends StreamBackedCorpusView<SensevalInstance>
         }
       }
       // Start of an instance?
-      if (line.trimStart().startsWith("<instance")) {
+      if (pyLstrip(line).startsWith("<instance")) {
         if (instanceLines.length !== 0) throw pyError("AssertionError", "");
         inInstance = true;
       }
       // Body of an instance?
       if (inInstance) instanceLines.push(line);
       // End of an instance?
-      if (line.trimStart().startsWith("</instance")) {
+      if (pyLstrip(line).startsWith("</instance")) {
         const xmlBlock = sensevalFixXml(instanceLines.join("\n"));
         const inst = parseXmlString(xmlBlock);
         return [this._parseInstance(inst, lexelt)];
@@ -1298,17 +1298,17 @@ export class SensevalCorpusView extends StreamBackedCorpusView<SensevalInstance>
             if (ctext === null) {
               throw pyError("AttributeError", "'NoneType' object has no attribute 'strip'");
             }
-            if (!(ctext.trim() !== "" || cword.children.length === 1)) {
+            if (!(pyStrip(ctext) !== "" || cword.children.length === 1)) {
               throw pyError("AssertionError", "");
             }
-            if (ctext.trim() !== "" && cword.children.length === 1) {
+            if (pyStrip(ctext) !== "" && cword.children.length === 1) {
               throw pyError("AssertionError", "");
             }
             // Record the position of the head:
             position = context.length;
             // Add on the head word itself:
-            if (ctext.trim() !== "") {
-              context.push(ctext.trim());
+            if (pyStrip(ctext) !== "") {
+              context.push(pyStrip(ctext));
             } else if (eltAt(cword, 0).tag === "wf") {
               const inner = eltAt(cword, 0);
               context.push(pyTuple<string | null>(inner.text, eltAttr(inner, "pos")));
@@ -1342,13 +1342,13 @@ function sensevalFixXml(text: string): string {
   // <~> or <^> => ~ or ^
   text = text.replace(/<([~^])>/g, "$1");
   // fix lone &
-  text = text.replace(/(\s+)&(\s+)/g, "$1&amp;$2");
+  text = text.replace(/([\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+)&([\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+)/gu, "$1&amp;$2");
   // fix """
   text = text.replace(/"""/g, "'\"'");
   // fix <s snum=dd> => <s snum="dd"/>
   text = text.replace(/(<[^<]*snum=)([^">]+)>/g, '$1"$2"/>');
   // fix foreign word tag
-  text = text.replace(/<&frasl>\s*<p[^>]*>/g, "FRASL");
+  text = text.replace(/<&frasl>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<p[^>]*>/gu, "FRASL");
   // remove <&I .>
   text = text.replace(/<&I[^>]*>/g, "");
   // fix <{word}>
@@ -1368,8 +1368,8 @@ function sensevalFixXml(text: string): string {
   // fix 'abc <p="foo"/>' style tags - now <wf pos="foo">abc</wf>
   // (Python uses possessive quantifiers for ReDoS safety; the possessive and
   // greedy forms are match-for-match identical here.)
-  text = text.replace(/[ \t]*([^<>\s]+)[ \t]*<p="([^"]*"?)"\/>/g, ' <wf pos="$2">$1</wf>');
-  text = text.replace(/\s*"\s*<p='"'?\/>/g, " <wf pos='\"'>\"</wf>");
+  text = text.replace(/[ \t]*([^<>\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+)[ \t]*<p="([^"]*"?)"\/>/gu, ' <wf pos="$2">$1</wf>');
+  text = text.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*"[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<p='"'?\/>/gu, " <wf pos='\"'>\"</wf>");
   return text;
 }
 export { sensevalFixXml as _fixXML };

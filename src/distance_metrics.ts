@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 import { readFileSync } from "node:fs";
 import { syncWasm } from "./sync_wasm.ts";
 import { internLabels } from "./metrics_wasm.ts";
@@ -39,7 +40,7 @@ export function fractionalPresence<T>(label: T): (x: LabelSet<T>, y: LabelSet<T>
 export function customDistance(file: string): (x: string, y: string) => number {
   const data = new Map<string, Map<string, number>>();
   for (const line of readFileSync(file, "utf8").split("\n")) {
-    const trimmed = line.trim();
+    const trimmed = pyStrip(line);
     if (trimmed === "") continue;
     const [a, b, dist] = trimmed.split("\t");
     if (a === undefined || b === undefined || dist === undefined) throw new RangeError(`malformed custom distance line: ${trimmed}`);

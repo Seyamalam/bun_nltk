@@ -66,6 +66,7 @@ import {
   write_megam_file,
   write_tadm_file,
 } from "./maxent_nltk.ts";
+import { PY_WS_RUN, pyStrip } from "./internals";
 
 // ---------------------------------------------------------------------------
 // Python path/env helpers
@@ -276,7 +277,7 @@ export function textwrapFill(
   subsequentIndent = "",
   width = 70,
 ): string {
-  const words = text.replace(/\s+/g, " ").replace(/^ +| +$/g, "").split(" ").filter((w) => w !== "");
+  const words = text.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/gu, " ").replace(/^ +| +$/g, "").split(" ").filter((w) => w !== "");
   const lines: string[] = [];
   let cur = initialIndent;
   const fresh = (s: string) => s === initialIndent || s === subsequentIndent;
@@ -758,7 +759,7 @@ export function* findFileIter(filename: string, options: FindFileOptions = {}): 
       } catch (e) {
         throw pySpawnError("which", e);
       }
-      const path = _decodeStdoutdata(out).trim();
+      const path = pyStrip(_decodeStdoutdata(out));
       if (path.endsWith(alternative) && pyExists(path)) {
         if (verbose) console.log(`[Found ${filename}: ${path}]`);
         yielded = true;
@@ -1017,7 +1018,7 @@ export function validateJavaOptions(options: Iterable<string>): void {
     let bad = false;
     for (const c of flag) {
       const cp = c.codePointAt(0)!;
-      if (/\s/.test(c) || cp < 0x20 || cp === 0x7f || _UNSAFE_OPTION_CHARS.has(c)) {
+      if (/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.test(c) || cp < 0x20 || cp === 0x7f || _UNSAFE_OPTION_CHARS.has(c)) {
         bad = true;
         break;
       }
@@ -1177,7 +1178,7 @@ export function configJava(cfg: { bin?: string | null; options?: string | string
   });
   if (options !== null) {
     let opts: string[];
-    if (typeof options === "string") opts = options.split(/\s+/).filter((s) => s !== "");
+    if (typeof options === "string") opts = options.split(PY_WS_RUN).filter((s) => s !== "");
     else opts = [...options];
     validateJavaOptions(opts);
     _javaState.options = opts;
@@ -1219,12 +1220,12 @@ export function java(cmd: string[] | string, options: JavaOptions = {}): [string
   if (options.options === null || options.options === undefined) {
     optList = _javaState.options.length ? [..._javaState.options] : [];
   } else {
-    optList = typeof options.options === "string" ? options.options.split(/\s+/).filter((s) => s !== "") : [...options.options];
+    optList = typeof options.options === "string" ? options.options.split(PY_WS_RUN).filter((s) => s !== "") : [...options.options];
     validateJavaOptions(optList);
   }
   if (options.trusted_raw_options) {
     const tro = typeof options.trusted_raw_options === "string"
-      ? options.trusted_raw_options.split(/\s+/).filter((s) => s !== "")
+      ? options.trusted_raw_options.split(PY_WS_RUN).filter((s) => s !== "")
       : [...options.trusted_raw_options];
     optList = optList.concat(tro);
   }
@@ -1956,11 +1957,11 @@ export class StanfordTagger {
 
   parseOutput(text: string, _sentences: string[][] | null = null): [string, string][][] {
     const taggedSentences: [string, string][][] = [];
-    for (const taggedSentence of text.trim().split("\n")) {
+    for (const taggedSentence of pyStrip(text).split("\n")) {
       const sentence: [string, string][] = [];
-      for (const taggedWord of taggedSentence.trim().split(/\s+/)) {
+      for (const taggedWord of pyStrip(taggedSentence).split(PY_WS_RUN)) {
         if (taggedWord === "") continue;
-        const wordTags = taggedWord.trim().split(this._cls()._SEPARATOR);
+        const wordTags = pyStrip(taggedWord).split(this._cls()._SEPARATOR);
         sentence.push([wordTags.slice(0, -1).join(""), wordTags[wordTags.length - 1]!.replace(/0/g, "").toUpperCase()]);
       }
       taggedSentences.push(sentence);
@@ -2013,10 +2014,10 @@ export class StanfordNERTagger extends StanfordTagger {
   override parseOutput(text: string, sentences: string[][] | null = null): [string, string][][] {
     if (this._cls<typeof StanfordNERTagger>()._FORMAT === "slashTags") {
       const taggedSentences: [string, string][] = [];
-      for (const taggedSentence of text.trim().split("\n")) {
-        for (const taggedWord of taggedSentence.trim().split(/\s+/)) {
+      for (const taggedSentence of pyStrip(text).split("\n")) {
+        for (const taggedWord of pyStrip(taggedSentence).split(PY_WS_RUN)) {
           if (taggedWord === "") continue;
-          const wordTags = taggedWord.trim().split(this._cls()._SEPARATOR);
+          const wordTags = pyStrip(taggedWord).split(this._cls()._SEPARATOR);
           taggedSentences.push([wordTags.slice(0, -1).join(""), wordTags[wordTags.length - 1]!]);
         }
       }
@@ -2283,7 +2284,7 @@ export class Senna {
     const taggedSentences: Record<string, string>[][] = [[]];
     let sentenceIndex = 0;
     let tokenIndex = 0;
-    for (const taggedWord of sennaOutput.trim().split("\n")) {
+    for (const taggedWord of pyStrip(sennaOutput).split("\n")) {
       if (!taggedWord) {
         taggedSentences.push([]);
         sentenceIndex += 1;
@@ -2293,7 +2294,7 @@ export class Senna {
       const tags = taggedWord.split("\t");
       const result: Record<string, string> = {};
       for (const tag of map.keys()) {
-        result[tag] = tags[map.get(tag)!]!.trim();
+        result[tag] = pyStrip(tags[map.get(tag)!]!);
       }
       const sent = sentences[sentenceIndex];
       if (sent === undefined || sent[tokenIndex] === undefined) {

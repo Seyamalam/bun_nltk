@@ -14,7 +14,7 @@ import {
   conll_data1, conll_data2, pformatDependencyGraph, pyPrint, pyEnd, pyRepr,
   sprintf, treebank_data, pformat, pyStrRepr, pytuple, pyFloatRepr, pyfloat, npFormatMatrix,
 } from "./ext_pure";
-import { pyError } from "./internals";
+import { PY_WS_RUN, pyError, pyStrip } from "./internals";
 import {
   BU_LC_STRATEGY, BU_STRATEGY, LC_STRATEGY, NltkChartParser,
   SteppingChartParser, TD_STRATEGY, TreeEdge,
@@ -222,7 +222,7 @@ export function chartDemo(
     pyPrint(out, "  6: All parsers");
     pyPrint(out, "\nWhich parser (1-6)? ", pyEnd(" "));
     const line = readline();
-    choice = (line ?? "").trim();
+    choice = pyStrip(line ?? "");
     pyPrint(out);
   }
 
@@ -550,7 +550,7 @@ export function pchartDemo(
     }
     pyPrint(out, `Which demo (1-${demos.length})? `, pyEnd(" "));
     const line = readline();
-    choice = parseInt((line ?? "").trim(), 10) - 1;
+    choice = parseInt(pyStrip(line ?? ""), 10) - 1;
     if (Number.isNaN(choice)) choice = -1;
   }
   let sent = ""; let grammar: PCFG | undefined;
@@ -636,14 +636,14 @@ export function pchartDemo(
   if (drawParses === null) {
     pyPrint(out);
     pyPrint(out, "Draw parses (y/n)? ", pyEnd(" "));
-    drawParses = (readline() ?? "").trim().toLowerCase().startsWith("y");
+    drawParses = pyStrip(readline() ?? "").toLowerCase().startsWith("y");
   }
   if (drawParses) pyPrint(out, "  please wait...");
   let printParses = printIn;
   if (printParses === null) {
     pyPrint(out);
     pyPrint(out, "Print parses (y/n)? ", pyEnd(" "));
-    printParses = (readline() ?? "").trim().toLowerCase().startsWith("y");
+    printParses = pyStrip(readline() ?? "").toLowerCase().startsWith("y");
   }
   if (printParses) for (const parse of parsesAll) pyPrint(out, frozenStr(parse));
 }
@@ -673,7 +673,7 @@ export function viterbiDemo(
   };
   let sent = "", grammar: PCFG | undefined;
   try {
-    const snum = parseInt(rl().trim(), 10) - 1;
+    const snum = parseInt(pyStrip(rl()), 10) - 1;
     if (!(snum in demos)) throw new Error("idx");
     [sent, grammar] = demos[snum]!;
   } catch (e) {
@@ -762,10 +762,10 @@ export function viterbiDemo(
   pyPrint(out, sprintf("%11s%11d%19.14f", "n/a", parses2.length, p2));
   pyPrint(out);
   pyPrint(out, "Draw parses (y/n)? ", pyEnd(" "));
-  if (rl().trim().toLowerCase().startsWith("y")) pyPrint(out, "  please wait...");
+  if (pyStrip(rl()).toLowerCase().startsWith("y")) pyPrint(out, "  please wait...");
   pyPrint(out);
   pyPrint(out, "Print parses (y/n)? ", pyEnd(" "));
-  if (rl().trim().toLowerCase().startsWith("y")) for (const p of parses2) pyPrint(out, frozenStr(p));
+  if (pyStrip(rl()).toLowerCase().startsWith("y")) for (const p of parses2) pyPrint(out, frozenStr(p));
 }
 export const viterbi_demo = viterbiDemo;
 
@@ -1062,7 +1062,7 @@ export function projectiveProbParseDemo(out: PrintSink): void {
   ppdp.train(graphs);
   const sent = " Cathy zag hen wild zwaaien . ";
   pyPrint(out, `Parsing '${sent}'...`);
-  for (const tree of ppdp.parse(sent.trim().split(/\s+/))) {
+  for (const tree of ppdp.parse(pyStrip(sent).split(PY_WS_RUN))) {
     pyPrint(out, "Parse:");
     printTree(out, tree);
   }
@@ -1935,7 +1935,7 @@ export function demoEval(
   };
   for (const line of text.split("\n")) {
     pyPrint(out, line);
-    const sentence = line.trim();
+    const sentence = pyStrip(line);
     if (!sentence) continue;
     const gold = tagstr2tree(sentence);
     const tokens = flatTokens(gold as never);
@@ -2032,7 +2032,7 @@ export const demo_read_depgraph = demoReadDepgraph;
 
 /** nltk.tokenize.punkt.demo — train on `text`, print cleaned sentences. */
 export function punktDemo(out: PrintSink, text: string): void {
-  const cleanup = (s: string) => s.replace(/(?:\r|^\s+)/gm, "").replace(/\n/g, " ");
+  const cleanup = (s: string) => s.replace(/(?:\r|^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+)/gmu, "").replace(/\n/g, " ");
   const trainer = new PunktTrainerNltk();
   trainer.INCLUDE_ALL_COLLOCS = true;
   trainer.train(text);
@@ -2068,7 +2068,7 @@ export function porterDemo(out: PrintSink): void {
       stemmed.push(stemmer.stem(word));
     }
   }
-  const wrap70 = (s: string) => (s + " ").replace(/(.{1,70})\s/g, "$1\n").replace(/\s+$/, "");
+  const wrap70 = (s: string) => (s + " ").replace(/(.{1,70})[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/gu, "$1\n").replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u, "");
   const results = wrap70(stemmed.join(" "));
   const original = wrap70(orig.join(" "));
   const banner = (t: string) => {

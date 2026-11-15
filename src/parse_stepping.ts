@@ -17,7 +17,7 @@
  * match() IndexError on empty rtext, and every trace string.
  */
 
-import { pyError } from "./internals";
+import { PY_WS_RUN, pyError } from "./internals";
 import { CFG, Nonterminal, Production, isNonterminal } from "./grammar";
 import { load_parser } from "./inference_discourse";
 
@@ -790,7 +790,7 @@ export class TestGrammar {
       for (const key of ["accept", "reject"] as const) {
         if (!(key in test)) throw pyError("KeyError", `'${key}'`);
         for (const sent of test[key]!) {
-          const tokens = sent.split(/\s+/).filter((t) => t.length > 0);
+          const tokens = sent.split(PY_WS_RUN).filter((t) => t.length > 0);
           const trees = [...(this.cp.parse(tokens) as Iterable<unknown>)];
           if (showTrees && trees.length) {
             this._out("\n");

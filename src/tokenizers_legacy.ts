@@ -1,6 +1,7 @@
+import { pyStrip } from "./internals";
 /** Explicit historical subsets. Prefer the Rust-backed NLTK tokenizers. */
 export function wordTokenizeSubset(text: string): string[] {
-  const raw = text.match(/[A-Za-z0-9]+(?:'[A-Za-z0-9]+)?|[^\s]/g) ?? [];
+  const raw = text.match(/[A-Za-z0-9]+(?:'[A-Za-z0-9]+)?|[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/gu) ?? [];
   const out: string[] = [];
 
   for (const token of raw) {
@@ -26,7 +27,7 @@ export function wordTokenizeSubset(text: string): string[] {
 
 export class LegacyToktokTokenizer {
   tokenize(text: string): string[] {
-    return text.match(/\.\.\.|--+|[A-Za-z]+(?:'[A-Za-z]+)?|\d+(?:[.,]\d+)*|[^\s]/g) ?? [];
+    return text.match(/\.\.\.|--+|[A-Za-z]+(?:'[A-Za-z]+)?|\d+(?:[.,]\d+)*|[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/gu) ?? [];
   }
 }
 
@@ -47,7 +48,7 @@ export class LegacyMWETokenizer {
   }
 
   addMwe(tokens: string[]): void {
-    const clean = tokens.map((row) => row.trim()).filter(Boolean);
+    const clean = tokens.map((row) => pyStrip(row)).filter(Boolean);
     if (clean.length < 2) return;
     const bucket = this.phrases.get(clean.length) ?? new Set<MweKey>();
     bucket.add(mweKey(clean, this.separator));
@@ -93,10 +94,10 @@ function reduceLength(token: string): string {
 }
 
 function buildTweetRegex(matchPhoneNumbers: boolean): RegExp {
-  const phone = String.raw`(?:\(\d{3}\)\s*\d+\s*-\d+|\d{2}-\d{8}|\d{3}-\d{3}-\d{4}|\d+\s*-\s*\d+)`;
+  const phone = String.raw`(?:\(\d{3}\)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\d+[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*-\d+|\d{2}-\d{8}|\d{3}-\d{3}-\d{4}|\d+[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*-[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\d+)`;
   const emoticon = String.raw`(?::|;|=|8)(?:-)?(?:\)|\(|D|P|p|O|o|/|\\)`;
   const emojiSeq = String.raw`\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|\uFE0F)?(?:\u200D\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|\uFE0F)?)*`;
-  const core = String.raw`https?:\/\/\S+|#[\p{L}\p{N}_]+|@[\p{L}\p{N}_]+|${emoticon}|[A-Za-z0-9]+(?:'[A-Za-z0-9]+)?|${emojiSeq}|[^\s]`;
+  const core = String.raw`https?:\/\/[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+|#[\p{L}\p{N}_]+|@[\p{L}\p{N}_]+|${emoticon}|[A-Za-z0-9]+(?:'[A-Za-z0-9]+)?|${emojiSeq}|[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]`;
   const source = matchPhoneNumbers ? `${phone}|${core}` : core;
   return new RegExp(source, "gu");
 }

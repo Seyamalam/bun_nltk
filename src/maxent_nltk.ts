@@ -1,5 +1,6 @@
 // Faithful port of nltk.classify.maxent (NLTK 3.10.3).
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { PY_WS_RUN, pyStrip } from "./internals";
 import { join } from "node:path";
 import { BinaryMaxentFeatureEncoding, type MaxentEncodingExample, type MaxentEncodingOptions, type MaxentFeatureMapping, type MaxentFeatureset, type MaxentMappingValue } from "./maxent_feature_encoding.ts";
 import { DictionaryProbDist } from "./probability.ts";
@@ -739,9 +740,9 @@ export function write_megam_file(
 export function parse_megam_weights(s: string, features_count: number, explicit = true): Float64Array {
   if (!explicit) throw new Error("AssertionError");
   const weights = new Float64Array(features_count);
-  for (const line of s.trim().split("\n")) {
-    if (line.trim()) {
-      const [fid, weight] = line.split(/\s+/);
+  for (const line of pyStrip(s).split("\n")) {
+    if (pyStrip(line)) {
+      const [fid, weight] = line.split(PY_WS_RUN);
       weights[Number.parseInt(fid!, 10)] = Number.parseFloat(weight!);
     }
   }
@@ -767,7 +768,7 @@ export function parse_tadm_weights(paramfile: Iterable<string> | string): Float6
   const lines = typeof paramfile === "string" ? paramfile.split("\n") : paramfile;
   const weights: number[] = [];
   for (const line of lines) {
-    const stripped = line.trim();
+    const stripped = pyStrip(line);
     if (stripped) weights.push(Number.parseFloat(stripped));
   }
   return Float64Array.from(weights);

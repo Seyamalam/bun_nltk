@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 import { Counter, GlueFormula, SPEC_SEMTYPES, OPTIONAL_RELATIONSHIPS, type GlueFormulaFactory } from "./sem_glue_formula";
 import type { Expression as LLExpression } from "./sem_linearlogic";
 import {
@@ -49,7 +50,7 @@ export class GlueDict {
   /** Load semtype entries from a string in NLTK glue.semtype format. */
   loadFromString(contents: string): void {
     for (let line of contents.split("\n")) {
-      line = line.trim();
+      line = pyStrip(line);
       if (!line || line.startsWith("#")) continue;
       const parts = line.split(" : ", 3);
       const glueFormulas: string[][] = [];
@@ -76,15 +77,15 @@ export class GlueDict {
         const p2 = parts[2]!;
         const s = p2.indexOf("[") + 1, e = p2.indexOf("]");
         if (s > 0 && e > s) {
-          const inner = p2.slice(s, e).trim();
-          relationships = inner ? inner.split(",").map(x => x.trim()).filter(Boolean).sort().join(",") : "__empty__";
+          const inner = pyStrip(p2.slice(s, e));
+          relationships = inner ? inner.split(",").map(x => pyStrip(x)).filter(Boolean).sort().join(",") : "__empty__";
         }
       }
       let sem: string; let supertype: string | null = null;
       const s0 = parts[0]!;
       const si = s0.indexOf("("), ei = s0.indexOf(")");
-      if (si !== -1 && ei !== -1) { sem = s0.slice(0, si).trim(); supertype = s0.slice(si + 1, ei); }
-      else sem = s0.trim();
+      if (si !== -1 && ei !== -1) { sem = pyStrip(s0.slice(0, si)); supertype = s0.slice(si + 1, ei); }
+      else sem = pyStrip(s0);
 
       if (!this.data.has(sem)) this.data.set(sem, new Map());
       const semMap = this.data.get(sem)!;

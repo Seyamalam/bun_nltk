@@ -6392,6 +6392,18 @@ declare class ReadError extends Error {
 /** nltk.internals.read_str — read a Python string literal at start_position. */
 declare function readStr(s: string, startPosition: number): [string, number];
 declare const read_str: typeof readStr;
+declare const PY_WS_CLASS = "[\\t\\n\\v\\f\\r \\x1c-\\x1f\\x85\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]";
+declare const PY_WS_INNER = "\\t\\n\\v\\f\\r \\x1c-\\x1f\\x85\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000";
+declare const PY_WS: RegExp;
+declare const PY_WS_RUN: RegExp;
+/** Python str.strip(). */
+declare function pyStrip(s: string): string;
+/** Python str.lstrip(). */
+declare function pyLstrip(s: string): string;
+/** Python str.rstrip(). */
+declare function pyRstrip(s: string): string;
+/** Python str.split(None, maxsplit): runs of whitespace, no empty pieces. */
+declare function pySplit(s: string, maxsplit?: number): string[];
 /** nltk.internals.read_int — read an integer literal at start_position. */
 declare function readInt(s: string, startPosition: number): [number, number];
 declare const read_int: typeof readInt;
@@ -6456,6 +6468,10 @@ type internals_d_Deprecated = Deprecated;
 declare const internals_d_Deprecated: typeof Deprecated;
 type internals_d_FindBinaryOptions = FindBinaryOptions;
 type internals_d_FindFileOptions = FindFileOptions;
+declare const internals_d_PY_WS: typeof PY_WS;
+declare const internals_d_PY_WS_CLASS: typeof PY_WS_CLASS;
+declare const internals_d_PY_WS_INNER: typeof PY_WS_INNER;
+declare const internals_d_PY_WS_RUN: typeof PY_WS_RUN;
 type internals_d_ReadError = ReadError;
 declare const internals_d_ReadError: typeof ReadError;
 type internals_d_UntrustedJarError = UntrustedJarError;
@@ -6479,6 +6495,10 @@ declare const internals_d_is_writable: typeof is_writable;
 declare const internals_d_java: typeof java;
 declare const internals_d_overridden: typeof overridden;
 declare const internals_d_pyError: typeof pyError;
+declare const internals_d_pyLstrip: typeof pyLstrip;
+declare const internals_d_pyRstrip: typeof pyRstrip;
+declare const internals_d_pySplit: typeof pySplit;
+declare const internals_d_pyStrip: typeof pyStrip;
 declare const internals_d_readInt: typeof readInt;
 declare const internals_d_readNumber: typeof readNumber;
 declare const internals_d_readStr: typeof readStr;
@@ -6487,7 +6507,7 @@ declare const internals_d_read_number: typeof read_number;
 declare const internals_d_read_str: typeof read_str;
 declare const internals_d_sliceBounds: typeof sliceBounds;
 declare namespace internals_d {
-  export { Counter$1 as Counter, internals_d_Deprecated as Deprecated, internals_d_ReadError as ReadError, internals_d_UntrustedJarError as UntrustedJarError, internals_d_configJava as configJava, internals_d_config_java as config_java, deprecated$1 as deprecated, internals_d_findBinary as findBinary, internals_d_findBinaryIter as findBinaryIter, internals_d_findDir as findDir, internals_d_findFile as findFile, internals_d_findFileIter as findFileIter, internals_d_findJar as findJar, internals_d_find_binary as find_binary, internals_d_find_binary_iter as find_binary_iter, internals_d_find_dir as find_dir, internals_d_find_file as find_file, internals_d_find_file_iter as find_file_iter, internals_d_find_jar as find_jar, internals_d_isWritable as isWritable, internals_d_is_writable as is_writable, internals_d_java as java, internals_d_overridden as overridden, internals_d_pyError as pyError, internals_d_readInt as readInt, internals_d_readNumber as readNumber, internals_d_readStr as readStr, internals_d_read_int as read_int, internals_d_read_number as read_number, internals_d_read_str as read_str, internals_d_sliceBounds as sliceBounds, slice_bounds$1 as slice_bounds };
+  export { Counter$1 as Counter, internals_d_Deprecated as Deprecated, internals_d_PY_WS as PY_WS, internals_d_PY_WS_CLASS as PY_WS_CLASS, internals_d_PY_WS_INNER as PY_WS_INNER, internals_d_PY_WS_RUN as PY_WS_RUN, internals_d_ReadError as ReadError, internals_d_UntrustedJarError as UntrustedJarError, internals_d_configJava as configJava, internals_d_config_java as config_java, deprecated$1 as deprecated, internals_d_findBinary as findBinary, internals_d_findBinaryIter as findBinaryIter, internals_d_findDir as findDir, internals_d_findFile as findFile, internals_d_findFileIter as findFileIter, internals_d_findJar as findJar, internals_d_find_binary as find_binary, internals_d_find_binary_iter as find_binary_iter, internals_d_find_dir as find_dir, internals_d_find_file as find_file, internals_d_find_file_iter as find_file_iter, internals_d_find_jar as find_jar, internals_d_isWritable as isWritable, internals_d_is_writable as is_writable, internals_d_java as java, internals_d_overridden as overridden, internals_d_pyError as pyError, internals_d_pyLstrip as pyLstrip, internals_d_pyRstrip as pyRstrip, internals_d_pySplit as pySplit, internals_d_pyStrip as pyStrip, internals_d_readInt as readInt, internals_d_readNumber as readNumber, internals_d_readStr as readStr, internals_d_read_int as read_int, internals_d_read_number as read_number, internals_d_read_str as read_str, internals_d_sliceBounds as sliceBounds, slice_bounds$1 as slice_bounds };
   export type { internals_d_FindBinaryOptions as FindBinaryOptions, internals_d_FindFileOptions as FindFileOptions };
 }
 

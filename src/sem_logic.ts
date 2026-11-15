@@ -6,7 +6,7 @@
  * quoted tokens, and `?`/`@`-prefixed predicate variables.
  */
 
-import { pyError } from "./internals";
+import { pyError, pyStrip } from "./internals";
 
 export const APP = "APP";
 
@@ -1388,7 +1388,7 @@ export class LogicParser {
   }
 
   parse(data: string, signature?: Record<string, Type | string>): Expression {
-    data = data.replace(/\s+$/, "");
+    data = data.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u, "");
     this.currentIndex = 0;
     this.parseDepth = 0;
     const [buffer, mapping] = this.process(data);
@@ -1874,7 +1874,7 @@ export function read_logic(
   const statements: Expression[] = [];
   const lines = text.split(/\r?\n/);
   for (let linenum = 0; linenum < lines.length; linenum++) {
-    const line = lines[linenum]!.trim();
+    const line = pyStrip(lines[linenum]!);
     if (line.startsWith("#") || line === "") continue;
     try {
       statements.push(parser.parse(line));

@@ -1,3 +1,4 @@
+import { PY_WS_RUN, pyStrip } from "./internals";
 /**
  * GDFA word-alignment symmetrization (port of nltk.translate.gdfa).
  *
@@ -7,8 +8,8 @@
 type Point = [number, number];
 
 function parsePharaoh(s: string): Point[] {
-  if (!s.trim()) return [];
-  return s.trim().split(/\s+/).map(a => {
+  if (!pyStrip(s)) return [];
+  return pyStrip(s).split(PY_WS_RUN).map(a => {
     const [x, y] = a.split("-").map(Number);
     return [x as number, y as number] as Point;
   });

@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { PY_WS_RUN, pyStrip } from "./internals";
 import { join } from "node:path";
 import type { WordNet, WordNetSynset, WordNetPos } from "./wordnet.ts";
 
@@ -678,9 +679,9 @@ export class WordNetICCorpusReader {
     const lines = text.split("\n");
     for (let num = 0; num < lines.length; num++) {
       if (num === 0) continue;
-      const line = lines[num]!.trim();
+      const line = pyStrip(lines[num]!);
       if (line === "") continue;
-      const fields = line.split(/\s+/);
+      const fields = line.split(PY_WS_RUN);
       const offset = Number.parseInt(fields[0]!.slice(0, -1), 10);
       const value = Number.parseFloat(fields[1]!);
       const last = fields[0]![fields[0]!.length - 1];

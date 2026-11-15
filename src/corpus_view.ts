@@ -3,7 +3,7 @@
 
 import { readdirSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { join as pathJoin, relative, resolve as pathResolve, sep } from "node:path";
-import { pyError } from "./internals";
+import { PY_WS_RUN, pyError, pyStrip } from "./internals";
 import { AbstractLazySequence, LazyConcatenation, LazySubsequence } from "./collections";
 import { FileSystemPathPointer, PathPointer, ZipFilePathPointer } from "./data";
 import { SeekableUnicodeStreamReader } from "./corpus_stream";
@@ -252,7 +252,7 @@ export function read_whitespace_block(stream: SeekableUnicodeStreamReader): stri
   const toks: string[] = [];
   for (let i = 0; i < 20; i++) {
     const line = stream.readline();
-    toks.push(...line.split(/\s+/).filter((t) => t.length > 0));
+    toks.push(...line.split(PY_WS_RUN).filter((t) => t.length > 0));
   }
   return toks;
 }
@@ -284,7 +284,7 @@ export function read_blankline_block(stream: SeekableUnicodeStreamReader): strin
     const line = stream.readline();
     if (!line) {
       return s ? [s] : [];
-    } else if (!line.trim()) {
+    } else if (!pyStrip(line)) {
       if (s) return [s];
     } else {
       s += line;
@@ -335,12 +335,12 @@ function parseSexprBlock(block: string): [string[], number] {
   const tokens: string[] = [];
   let end = 0;
   while (end < block.length) {
-    const m = /\S/.exec(block.slice(end));
+    const m = /[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.exec(block.slice(end));
     if (!m) return [tokens, end];
     const start = end + m.index;
     let stop: number;
     if (m[0] !== "(") {
-      const m2 = /[\s(]/.exec(block.slice(start));
+      const m2 = /[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000(]/u.exec(block.slice(start));
       if (m2) {
         stop = start + m2.index;
       } else {
@@ -385,7 +385,7 @@ export function read_sexpr_block(stream: SeekableUnicodeStreamReader, blockSize 
         block = block.replace(commentRe, (m0) => " ".repeat(m0.length));
       }
       const [tokens, offset0] = parseSexprBlock(block);
-      const ws = /\s*/.exec(block.slice(offset0))!;
+      const ws = /[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/u.exec(block.slice(offset0))!;
       const offset = offset0 + ws[0].length;
       stream.seek(start + offset);
       return tokens;
@@ -397,7 +397,7 @@ export function read_sexpr_block(stream: SeekableUnicodeStreamReader, blockSize 
           block += nextBlock;
           continue;
         }
-        return [block.trim()];
+        return [pyStrip(block)];
       }
       throw e;
     }
@@ -409,10 +409,10 @@ export function tagged_treebank_para_block_reader(stream: SeekableUnicodeStreamR
   let para = "";
   for (;;) {
     const line = stream.readline();
-    if (/^======+\s*$/.test(line)) {
-      if (para.trim()) return [para];
+    if (/^======+[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(line)) {
+      if (pyStrip(para)) return [para];
     } else if (line === "") {
-      return para.trim() ? [para] : [];
+      return pyStrip(para) ? [para] : [];
     } else {
       para += line;
     }

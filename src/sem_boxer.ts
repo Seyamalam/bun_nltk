@@ -14,7 +14,7 @@
  * pure parsing half of `Boxer._parse_to_drs_dict` usable headlessly.
  */
 
-import { pyError } from "./internals";
+import { pyError, pyStrip } from "./internals";
 import {
   ExpectedMoreTokensException,
   Expression,
@@ -66,7 +66,7 @@ abstract class BoxerParserBase {
   abstract getAllSymbols(): string[];
 
   parse(data: string): unknown {
-    data = data.replace(/\s+$/, "");
+    data = data.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u, "");
     this._currentIndex = 0;
     this._parseDepth = 0;
     const [buffer, mapping] = this.process(data);
@@ -1712,7 +1712,7 @@ export function parseToDrsDict(
       }
       if (drsStart <= -1) throw pyError("AssertionError", "drs_start not found");
 
-      const drsInput = line.slice(drsStart, -2).trim();
+      const drsInput = pyStrip(line.slice(drsStart, -2));
       const parsed = parseDrsString(drsInput, discourseId, useDiscId);
       drsDict.set(discourseId, interpreter.interpret(parsed));
     }

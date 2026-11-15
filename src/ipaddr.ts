@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 // ipaddr.ts — minimal ipaddress port for nltk.pathsec SSRF checks.
 // Original: CPython ipaddress.py address classification used by nltk/pathsec.py
 // (is_private/is_global/is_multicast, ipv4_mapped, sixtofour, teredo, NAT64/compat embeds).
@@ -7,7 +8,7 @@ export class IpAddress {
   constructor(readonly version: 4 | 6, readonly ip: bigint) {}
 
   static parse(text: string): IpAddress {
-    const s = text.trim();
+    const s = pyStrip(text);
     const v4 = parseV4(s);
     if (v4 !== null) return new IpAddress(4, v4);
     const v6 = parseV6(s);

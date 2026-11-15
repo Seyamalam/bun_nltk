@@ -2,6 +2,7 @@
 // destructive word tokenizer behind word_tokenize(). Regex tables are
 // translated 1:1; Python (?i) groups map to `i` and re.sub is global (`g` flag).
 import { align_tokens } from "./tokenizers_treebank";
+import { PY_WS_RUN, pyStrip } from "./internals";
 
 type Subst = [RegExp, string];
 
@@ -20,20 +21,20 @@ export class NLTKWordTokenizer {
     [/([»”’])/gu, " $1 "],
     [/''/g, " '' "],
     [/"/g, " '' "],
-    [/\s+/g, " "],
+    [/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/gu, " "],
     [/([^' ])('[sS]|'[mM]|'[dD]|') /g, "$1 $2 "],
     [/([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) /g, "$1 $2 "],
   ];
 
   // Punctuation.
   static readonly PUNCTUATION: Subst[] = [
-    [/([^.])(\.)([\]}>"'»”’]*)\s*$/gu, "$1 $2 $3 "],
+    [/([^.])(\.)([\]}>"'»”’]*)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/gu, "$1 $2 $3 "],
     [/([:,])([^\d])/g, " $1 $2"],
     [/([:,])$/g, " $1 "],
     [/\.{2,}/gu, " $& "],
     [/[;@#$%&]/g, " $& "],
     [/[‒-―]/gu, " $& "],
-    [/([^.])(\.)([\]}>"']*)\s*$/g, "$1 $2$3 "],
+    [/([^.])(\.)([\]}>"']*)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/gu, "$1 $2$3 "],
     [/[?!]/g, " $& "],
     [/([^'])' /g, "$1 ' "],
     [/\*/gu, " $& "],
@@ -57,7 +58,7 @@ export class NLTKWordTokenizer {
     /(?<![\p{L}\p{N}_])(can)(not)(?![\p{L}\p{N}_])/giu, /(?<![\p{L}\p{N}_])(d)('ye)(?![\p{L}\p{N}_])/giu,
     /(?<![\p{L}\p{N}_])(gim)(me)(?![\p{L}\p{N}_])/giu, /(?<![\p{L}\p{N}_])(gon)(na)(?![\p{L}\p{N}_])/giu,
     /(?<![\p{L}\p{N}_])(got)(ta)(?![\p{L}\p{N}_])/giu, /(?<![\p{L}\p{N}_])(lem)(me)(?![\p{L}\p{N}_])/giu,
-    /(?<![\p{L}\p{N}_])(more)('n)(?![\p{L}\p{N}_])/giu, /(?<![\p{L}\p{N}_])(wan)(na)(?=\s)/giu,
+    /(?<![\p{L}\p{N}_])(more)('n)(?![\p{L}\p{N}_])/giu, /(?<![\p{L}\p{N}_])(wan)(na)(?=[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000])/giu,
   ];
   static readonly CONTRACTIONS3: RegExp[] = [/ ('t)(is)(?![\p{L}\p{N}_])/giu, / ('t)(was)(?![\p{L}\p{N}_])/giu];
   static readonly CONTRACTIONS4: RegExp[] = [/(?<![\p{L}\p{N}_])(whad)(dd)(ya)(?![\p{L}\p{N}_])/giu, /(?<![\p{L}\p{N}_])(wha)(t)(cha)(?![\p{L}\p{N}_])/giu];
@@ -79,7 +80,7 @@ export class NLTKWordTokenizer {
     for (const [re, sub] of NLTKWordTokenizer.ENDING_QUOTES) text = text.replace(re, sub);
     for (const re of NLTKWordTokenizer.CONTRACTIONS2) text = text.replace(re, " $1 $2 ");
     for (const re of NLTKWordTokenizer.CONTRACTIONS3) text = text.replace(re, " $1 $2 ");
-    return text.trim().split(/\s+/).filter((t) => t.length > 0);
+    return pyStrip(text).split(PY_WS_RUN).filter((t) => t.length > 0);
   }
 
   *span_tokenize(text: string): Generator<[number, number]> {

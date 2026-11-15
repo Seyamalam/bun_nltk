@@ -4,7 +4,7 @@
 import { existsSync, statSync, openSync, readSync, closeSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve as pathResolve, dirname } from "node:path";
 import { homedir, tmpdir } from "node:os";
-import { pyError } from "./internals";
+import { pyError, pyStrip } from "./internals";
 import { ipAddress, IpAddress } from "./ipaddr";
 import { OpenOnDemandZipFile } from "./zipfile";
 
@@ -75,7 +75,7 @@ function isRelativeTo(target: string, root: string): boolean {
  * data directories.  Throws PermissionError in ENFORCE mode.
  */
 export function validate_path(pathInput: string | number | { path: string } | null | undefined, context = "NLTK", requiredRoot: string | null = null): void {
-  if (typeof pathInput === "number" || !pathInput || !String(pathInput).trim()) return;
+  if (typeof pathInput === "number" || !pathInput || !pyStrip(String(pathInput))) return;
   let raw: string;
   if (typeof pathInput === "object" && "path" in pathInput) raw = String(pathInput.path);
   else raw = String(pathInput);
@@ -241,7 +241,7 @@ function _validate_network_url_inner(
   resolveHost: (h: string) => string[] | Promise<string[]>,
 ): void | Promise<void> {
   const raw = urlInput == null ? "" : (typeof urlInput === "object" ? (urlInput.href ?? String(urlInput)) : String(urlInput));
-  if (!raw || !raw.trim()) return;
+  if (!raw || !pyStrip(raw)) return;
   const parsed = _urlparse(raw);
 
   if (parsed.scheme === "file") {
@@ -283,7 +283,7 @@ export async function validate_network_url_async(urlInput: string | { href?: str
 }
 
 const _PROXIED_FETCH_ALLOWED_ENV = () =>
-  ["1", "true", "yes", "on"].includes((typeof process !== "undefined" ? process.env?.["NLTK_ALLOW_PROXIED_URLOPEN"] ?? "" : "").trim().toLowerCase());
+  ["1", "true", "yes", "on"].includes(pyStrip(typeof process !== "undefined" ? process.env?.["NLTK_ALLOW_PROXIED_URLOPEN"] ?? "" : "").toLowerCase());
 
 function _proxied_fetch_allowed(): boolean {
   return ALLOW_PROXIED_FETCH || _PROXIED_FETCH_ALLOWED_ENV();

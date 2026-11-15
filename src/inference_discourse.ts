@@ -16,7 +16,7 @@ import {
   Variable,
 } from "./sem_logic";
 import { readFileSync } from "node:fs";
-import { pyError } from "./internals";
+import { pyError, pyStrip } from "./internals";
 import { CFG, PCFG } from "./grammar";
 import { Chart, NltkChartParser } from "./chart";
 import { FeatureChart, FeatureChartParser, FeatureGrammar } from "./parse_feature";
@@ -187,7 +187,7 @@ export function load_fol(s: string): Expression[] {
   const statements: Expression[] = [];
   const lines = s.split("\n");
   for (let linenum = 0; linenum < lines.length; linenum++) {
-    const line = lines[linenum]!.trim();
+    const line = pyStrip(lines[linenum]!);
     if (line.startsWith("#") || line === "") continue;
     try {
       statements.push(Expression.fromstring(line));

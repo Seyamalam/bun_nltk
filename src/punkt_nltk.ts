@@ -1,3 +1,4 @@
+import { PY_WS_CLASS, PY_WS_INNER, pyStrip, pyRstrip } from "./internals";
 // Faithful port of nltk.tokenize.punkt (NLTK 3.10.3): the mutable object
 // model — PunktLanguageVars, PunktToken, PunktParameters, PunktBaseClass,
 // PunktTrainer, PunktSentenceTokenizer, PunktTokenizer — plus the tab-file
@@ -40,7 +41,7 @@ function pyEscapeRe(s: string): string {
 export class PunktLanguageVars {
   sent_end_chars: string[] = [".", "?", "!"];
   internal_punctuation = ",:;";
-  re_boundary_realignment = /["')\]}‘’“«»]+?(?:\s+|(?=--)|$)/my;
+  re_boundary_realignment = /["')\]}‘’“«»]+?(?:[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+|(?=--)|$)/myu;
 
   get _re_sent_end_chars(): string {
     return `[${pyEscapeRe(this.sent_end_chars.join(""))}]`;
@@ -53,7 +54,7 @@ export class PunktLanguageVars {
     return `(?:[)";}\\]\\*:@'({\\[‘’“«»${pyEscapeRe(rest)}])`;
   }
 
-  _re_multi_char_punct = "(?:-{2,}|\\.{2,}|(?:\\.\\s){2,}\\.)";
+  _re_multi_char_punct = `(?:-{2,}|\\.{2,}|(?:\\.${PY_WS_CLASS}){2,}\\.)`;
 
   private _re_word_tokenizer?: RegExp;
 
@@ -62,7 +63,7 @@ export class PunktLanguageVars {
     const nonWord = this._re_non_word_chars;
     const multiChar = this._re_multi_char_punct;
     const wordStart = this._re_word_start;
-    const fmt = `(${multiChar}|(?=${wordStart})\\S+?(?=\\s|$|${nonWord}|${multiChar}|,(?=$|\\s|${nonWord}|${multiChar}))|\\S)`;
+    const fmt = `(${multiChar}|(?=${wordStart})[^${PY_WS_INNER}]+?(?=${PY_WS_CLASS}|$|${nonWord}|${multiChar}|,(?=$|${PY_WS_CLASS}|${nonWord}|${multiChar}))|[^${PY_WS_INNER}])`;
     this._re_word_tokenizer = new RegExp(fmt, "gu");
     return this._re_word_tokenizer;
   }
@@ -77,7 +78,7 @@ export class PunktLanguageVars {
     if (this._re_period_context) return this._re_period_context;
     const nonWord = this._re_non_word_chars;
     const sentEnd = this._re_sent_end_chars;
-    const fmt = `${sentEnd}(?=(?<after_tok>${nonWord}|\\s+(?<next_tok>\\S+)))`;
+    const fmt = `${sentEnd}(?=(?<after_tok>${nonWord}|${PY_WS_CLASS}+(?<next_tok>[^${PY_WS_INNER}]+)))`;
     this._re_period_context = new RegExp(fmt, "gu");
     return this._re_period_context;
   }
@@ -251,7 +252,7 @@ export class PunktBaseClass {
   *_tokenize_words(plaintext: string): Generator<PunktToken> {
     let parastart = false;
     for (const line of plaintext.split("\n")) {
-      if (line.trim()) {
+      if (pyStrip(line)) {
         const lineToks = this._lang_vars.word_tokenize(line);
         if (lineToks.length === 0) continue;
         let first = true;
@@ -733,7 +734,7 @@ export class PunktSentenceTokenizer extends PunktBaseClass {
 
   _get_last_whitespace_index(text: string): number {
     for (let i = text.length - 1; i >= 0; i--) {
-      if (/\s/.test(text[i]!)) return i;
+      if (/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.test(text[i]!)) return i;
     }
     return 0;
   }
@@ -778,7 +779,7 @@ export class PunktSentenceTokenizer extends PunktBaseClass {
         last_break = match.next_tok_start >= 0 ? match.next_tok_start : match.end;
       }
     }
-    yield [last_break, text.trimEnd().length];
+    yield [last_break, pyRstrip(text).length];
   }
 
   *_realign_boundaries(text: string, slices: Iterable<Span>): Generator<Span> {
@@ -793,7 +794,7 @@ export class PunktSentenceTokenizer extends PunktBaseClass {
       this._lang_vars.re_boundary_realignment.lastIndex = 0;
       const m = this._lang_vars.re_boundary_realignment.exec(text.slice(sentence2[0], sentence2[1]));
       if (m) {
-        yield [sentence1[0], sentence2[0] + m[0].trimEnd().length];
+        yield [sentence1[0], sentence2[0] + pyRstrip(m[0]).length];
         realign = m[0].length;
       } else {
         realign = 0;
@@ -840,7 +841,7 @@ export class PunktSentenceTokenizer extends PunktBaseClass {
 
   *_build_sentence_list(text: string, tokens: Iterable<PunktToken>): Generator<string> {
     let pos = 0;
-    const white_space_regexp = /\s*/y;
+    const white_space_regexp = /[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/yu;
     let sentence = "";
     for (const aug_tok of tokens) {
       let tok = aug_tok.tok;
@@ -850,7 +851,7 @@ export class PunktSentenceTokenizer extends PunktBaseClass {
       pos += white_space.length;
 
       if (text.slice(pos, pos + tok.length) !== tok) {
-        const pat = [...tok].map((c) => pyEscapeRe(c)).join("\\s*");
+        const pat = [...tok].map((c) => pyEscapeRe(c)).join(`${PY_WS_CLASS}*`);
         const m = new RegExp(pat, "y");
         m.lastIndex = pos;
         const mm = m.exec(text);

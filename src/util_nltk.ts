@@ -2,6 +2,7 @@
 // Adaptations: Python generators map to TS generators; print() maps to console.log returning void
 // (functions that NLTK prints also return the formatted string where practical); exceptions map to Error.
 import { readFileSync, statSync, openSync, readSync, closeSync } from "node:fs";
+import { PY_WS_RUN, pyStrip } from "./internals";
 import { resolve as resolvePath } from "node:path";
 
 type Iter<T> = Iterable<T>;
@@ -33,7 +34,7 @@ export function in_idle(): boolean {
 }
 
 function textwrap(s: string, width: number): string[] {
-  const words = s.split(/\s+/).filter((w) => w.length > 0);
+  const words = s.split(PY_WS_RUN).filter((w) => w.length > 0);
   const lines: string[] = [];
   let line = "";
   for (const word of words) {
@@ -90,7 +91,7 @@ export class Index<K, V> extends Map<K, V[]> {
 /** nltk.util.re_show — print string with matched substrings marked. */
 export function re_show(regexp: string, string: string, left = "{", right = "}"): void {
   const re = new RegExp(regexp, "gm");
-  console.log(string.replace(/\s+$/, "").replace(re, (m) => left + m + right));
+  console.log(string.replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/u, "").replace(re, (m) => left + m + right));
 }
 
 /** nltk.util.filestring — read a path or file-like into a string. */
@@ -515,12 +516,12 @@ export function elementtree_indent(elem: { text?: string | null; tail?: string |
   const i = "\n" + "  ".repeat(level);
   const kids = elem.children ?? [];
   if (kids.length) {
-    if (!elem.text || !elem.text.trim()) elem.text = i + "  ";
+    if (!elem.text || !pyStrip(elem.text)) elem.text = i + "  ";
     for (const child of kids) elementtree_indent(child as typeof elem, level + 1);
     const lastTail = (kids[kids.length - 1] as { tail?: string | null }).tail;
-    if (!lastTail || !lastTail.trim()) (kids[kids.length - 1] as { tail?: string | null }).tail = i;
-    if (!elem.tail || !elem.tail.trim()) elem.tail = i;
-  } else if (level && (!elem.tail || !elem.tail.trim())) {
+    if (!lastTail || !pyStrip(lastTail)) (kids[kids.length - 1] as { tail?: string | null }).tail = i;
+    if (!elem.tail || !pyStrip(elem.tail)) elem.tail = i;
+  } else if (level && (!elem.tail || !pyStrip(elem.tail))) {
     elem.tail = i;
   }
 }

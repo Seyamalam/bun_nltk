@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 /**
  * Port of nltk.misc.wordfinder — word search grid generator.
  */
@@ -85,7 +86,7 @@ export function wordfinder(
   // RNG consumption mirrors Python draw-for-draw: revword randint(0,1), then
   // per attempt randint(0,len), choice(dir), randint(0,rows), randint(0,cols).
   for (const raw of sorted) {
-    const save = raw.trim().toUpperCase();
+    const save = pyStrip(raw).toUpperCase();
     const word = revword(save, rng);
     for (let attempt = 0; attempt < attempts; attempt++) {
       const r = rng.randbelow(word.length + 1);

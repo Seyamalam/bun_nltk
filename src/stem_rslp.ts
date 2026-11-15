@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 /**
  * RSLP stemmer for Portuguese (port of nltk.stem.rslp.RSLPStemmer).
  *
@@ -8,7 +9,7 @@ import { RSLP_STEPS } from "./stem_rslp_data";
 type Rule = [suffix: string, minSize: number, replacement: string, exceptions: string[]];
 
 function parseRules(raw: string): Rule[] {
-  const lines = raw.split("\n").map(l=>l.trim()).filter(l=>l && !l.startsWith("#")).map(l=>l.replace(/\t\t/g,"\t"));
+  const lines = raw.split("\n").map(l=>pyStrip(l)).filter(l=>l && !l.startsWith("#")).map(l=>l.replace(/\t\t/g,"\t"));
   const out: Rule[] = [];
   for (const line of lines) {
     const parts = line.split("\t");
@@ -17,7 +18,7 @@ function parseRules(raw: string): Rule[] {
     const minSize = parseInt(parts[1]!, 10);
     const repl = parts[2]!.slice(1,-1);
     const excRaw = parts[3]!;
-    const exc = excRaw === "*" ? [] : excRaw.split(",").map(s=>s.slice(1,-1).trim()).filter(Boolean);
+    const exc = excRaw === "*" ? [] : excRaw.split(",").map(s=>pyStrip(s.slice(1,-1))).filter(Boolean);
     // NLTK also handles bracketed exception lists like "[...]" — normalize
     out.push([suffix, minSize, repl, exc]);
   }

@@ -13,7 +13,7 @@
 //          ElementTree; entities &amp; &lt; &gt; &quot; &apos; &#d; &#xH;;
 //          comments, PIs, CDATA and DOCTYPE (incl. internal subset) handled.
 
-import { pyError } from "./internals";
+import { pyError, pyStrip } from "./internals";
 
 const XML_ENTITIES: Record<string, string> = {
   amp: "&", lt: "<", gt: ">", quot: "\"", apos: "'",
@@ -189,7 +189,7 @@ function compilePath(path: string, ns?: Record<string, string> | null): PathStep
       const body = p.slice(1, -1);
       let pm = /^@([^=!'"]+)$/.exec(body);
       if (pm) { step.attr = pm[1]!; continue; }
-      pm = /^@([^=!'"]+)\s*=\s*(['"])(.*?)\2$/.exec(body);
+      pm = /^@([^=!'"]+)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*=[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(['"])(.*?)\2$/u.exec(body);
       if (pm) { step.attr = pm[1]!; step.attrValue = pm[3]!; continue; }
       pm = /^(\d+)$/.exec(body);
       if (pm) { step.position = parseInt(pm[1]!, 10); continue; }
@@ -254,8 +254,8 @@ function selectAll(context: XMLElement, steps: PathStep[]): XMLElement[] {
 
 // { Iterative XML parser
 
-const NAME_RE = /^[^\s/>]+/;
-const ATTR_RE = /([^\s=/>?]+)\s*(?:=\s*("[^"]*"|'[^']*'))?/g;
+const NAME_RE = /^[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000/>]+/u;
+const ATTR_RE = /([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000=/>?]+)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(?:=[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*("[^"]*"|'[^']*'))?/gu;
 
 interface OpenFrame {
   elt: XMLElement;
@@ -276,7 +276,7 @@ function resolveName(qname: string, ns: Map<string, string>): string {
   return deflt !== undefined ? `{${deflt}}${qname}` : qname;
 }
 
-const TOKEN_RE = /<!--[\s\S]*?-->|<!\[CDATA\[[\s\S]*?\]\]>|<!DOCTYPE[^[>]*(?:\[[^\]]*\][^[>]*)?>|<\?[\s\S]*?\?>|<\/[^>]+>|<[^>]+>|[^<]+|</g;
+const TOKEN_RE = /<!--[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\S]*?-->|<!\[CDATA\[[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\S]*?\]\]>|<!DOCTYPE[^[>]*(?:\[[^\]]*\][^[>]*)?>|<\?[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\S]*?\?>|<\/[^>]+>|<[^>]+>|[^<]+|</gu;
 
 /** Iteratively parse an XML document/fragment into the first root element.
  * Follows ElementTree semantics: namespaces expand to ``{uri}local`` (default
@@ -325,7 +325,7 @@ export function parseXmlString(xml: string): XMLElement {
       continue;
     }
     if (tok.startsWith("</")) {
-      const qname = tok.slice(2, -1).trim();
+      const qname = pyStrip(tok.slice(2, -1));
       closeElement(qname);
       continue;
     }
@@ -336,8 +336,8 @@ export function parseXmlString(xml: string): XMLElement {
     }
     // start tag or empty-element tag
     let inner = tok.slice(1, -1);
-    const selfClose = /\/\s*$/.test(inner);
-    if (selfClose) inner = inner.replace(/\/\s*$/, "");
+    const selfClose = /\/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(inner);
+    if (selfClose) inner = inner.replace(/\/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u, "");
     const nameMatch = NAME_RE.exec(inner);
     if (!nameMatch) throw pyError("ParseError", `not well-formed: ${tok}`);
     const qname = nameMatch[0];
@@ -349,7 +349,7 @@ export function parseXmlString(xml: string): XMLElement {
     ATTR_RE.lastIndex = 0;
     let am: RegExpExecArray | null;
     while ((am = ATTR_RE.exec(attrSrc)) !== null) {
-      if (am.index > 0 && /[^\s]/.test(attrSrc.slice(0, am.index)) === false && am[1] === undefined) break;
+      if (am.index > 0 && /[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.test(attrSrc.slice(0, am.index)) === false && am[1] === undefined) break;
       const aname = am[1]!;
       if (!aname) break;
       const rawv = am[2];

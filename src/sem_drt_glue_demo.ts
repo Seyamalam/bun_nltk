@@ -10,6 +10,7 @@
  */
 
 import { DrtGlue } from "./sem_glue";
+import { PY_WS_RUN } from "./internals";
 import { Variable } from "./sem_logic";
 
 // ---------------------------------------------------------------------------
@@ -91,7 +92,7 @@ export class DrtGlueDemo {
   /** Parse an example string (space-separated) into DRS readings. Caches the result. */
   getReadingsForExample(example: string): unknown[] {
     try {
-      const tokens = example.split(/\s+/).filter(Boolean);
+      const tokens = example.split(PY_WS_RUN).filter(Boolean);
       // DrtGlue.parseToMeaning requires a working depparser; if none was
       // injected this will throw a helpful error.
       const readings = (this.glue as unknown as { parseToMeaning(t: string[]): unknown[] }).parseToMeaning(tokens);

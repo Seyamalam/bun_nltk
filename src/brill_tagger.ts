@@ -4,7 +4,7 @@ import {
   type TaggedToken,
   type UntaggedSentence,
 } from "./sequential_taggers";
-import { pyError } from "./internals";
+import { pyError, pyStrip } from "./internals";
 
 export type BrillToken = [word: string, tag: string];
 export type BrillSentence = BrillToken[];
@@ -78,7 +78,7 @@ export function pyTextwrapFill(text: string, width: number, initialIndent: strin
     let curLen = 0;
     const indent = lines.length ? subsequentIndent : initialIndent;
     const w = width - indent.length;
-    if (dropWhitespace && chunks[chunks.length - 1]!.trim() === "" && lines.length) {
+    if (dropWhitespace && pyStrip(chunks[chunks.length - 1]!) === "" && lines.length) {
       chunks.pop();
     }
     while (chunks.length) {
@@ -109,7 +109,7 @@ export function pyTextwrapFill(text: string, width: number, initialIndent: strin
         curLine.push(chunks.pop()!);
       }
     }
-    if (dropWhitespace && curLine.length && curLine[curLine.length - 1]!.trim() === "") {
+    if (dropWhitespace && curLine.length && pyStrip(curLine[curLine.length - 1]!) === "") {
       curLine.pop();
     }
     if (curLine.length) {
@@ -1084,7 +1084,7 @@ export class BrillTaggerTrainer {
     if (this.#trace > 2) {
       this.#out(
         `${String(score).padStart(4)}${String(numFixed).padStart(4)}${String(numBroken).padStart(4)}${String(numOther).padStart(4)}  | ` +
-          pyTextwrapFill(rulestr, 79, " ".repeat(20), `${" ".repeat(18)}|   `).trim(),
+          pyStrip(pyTextwrapFill(rulestr, 79, " ".repeat(20), `${" ".repeat(18)}|   `)),
       );
     } else {
       this.#out(rulestr);

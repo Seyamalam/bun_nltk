@@ -5,6 +5,7 @@
  */
 
 import { SimpleTree } from "./corpus_tree";
+import { PY_WS_CLASS, PY_WS_RUN } from "./internals";
 import { pyError } from "./internals.ts";
 import { IEERCorpusReader, BracketParseCorpusReader, ConllChunkCorpusReader } from "./corpus_readers2";
 import { neChunk } from "./named_entity";
@@ -197,7 +198,7 @@ export function extract_rels(
       if (!res || res.index !== 0) return null;
       return res;
     })();
-    const fillerTokens = filler.split(/\s+/).filter(Boolean).length;
+    const fillerTokens = filler.split(PY_WS_RUN).filter(Boolean).length;
     // Python: len(x["filler"].split()) <= window — Note split on whitespace counts tokens, punctuation included
     return x["subjclass"] === subjclass && fillerTokens <= window && m !== null && x["objclass"] === objclass;
   });
@@ -326,7 +327,7 @@ export function roles_demo(trace=0): void {
   // python re.VERBOSE: unescaped whitespace and #-comments ignored.
   const ROLES = new RegExp(
     "(.*(analyst|chair(wo)?man|commissioner|counsel|director|economist|editor|executive|foreman|governor|head|lawyer|leader|librarian).*)|" +
-    "manager|partner|president|producer|professor|researcher|spokes(wo)?man|writer|,\\sof\\sthe?\\s*",
+    `manager|partner|president|producer|professor|researcher|spokes(wo)?man|writer|,${PY_WS_CLASS}of${PY_WS_CLASS}the?${PY_WS_CLASS}*`,
   );
   console.log();
   console.log("IEER: has_role(PER, ORG) -- raw rtuples:");

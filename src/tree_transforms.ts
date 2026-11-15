@@ -2,7 +2,7 @@ import type { ParseTree } from "./parse";
 
 function tokenizeBracket(input: string): string[] {
   const out: string[] = [];
-  const re = /\(|\)|[^\s()]+/g;
+  const re = /\(|\)|[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000()]+/gu;
   for (const m of input.matchAll(re)) out.push(m[0]!);
   return out;
 }

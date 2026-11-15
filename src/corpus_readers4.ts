@@ -5,7 +5,7 @@
 import { readFileSync, mkdtempSync, writeFileSync, unlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join as pathJoin, isAbsolute, resolve as pathResolve } from "node:path";
-import { pyError } from "./internals";
+import { PY_WS_RUN, pyError, pyStrip } from "./internals";
 import { pyTextwrapFill } from "./brill_tagger";
 import { PathPointer, FileSystemPathPointer, ZipFilePathPointer } from "./data";
 import { StreamBackedCorpusView, concat } from "./corpus_view";
@@ -149,9 +149,9 @@ function detectXmlEncoding(fileid: string | PathPointer): string {
   if (startsWithBytes(s, BOM_UTF8)) return "utf-8";
   // regex over the raw first line, latin-1 safe for ascii bytes
   const line = decUtf8.decode(s);
-  let m = /^\s*<\?xml\b.*\bencoding="([^"]+)"/.exec(line);
+  let m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<\?xml\b.*\bencoding="([^"]+)"/u.exec(line);
   if (m) return m[1]!;
-  m = /^\s*<\?xml\b.*\bencoding='([^']+)'/.exec(line);
+  m = /^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<\?xml\b.*\bencoding='([^']+)'/u.exec(line);
   if (m) return m[1]!;
   return "utf-8";
 }
@@ -211,9 +211,9 @@ export class XMLCorpusView<T = unknown> extends StreamBackedCorpusView<T> {
   _tag_context: Map<number, string[]>;
   handle_elt: XmlEltHandler<T> = (elt) => elt as unknown as T;
 
-  static _VALID_XML_RE = /^[^<]*((<!--(?:(?!-->).)*-->|<!\[CDATA\[(?:(?!\]\]>).)*\]\]>|<!DOCTYPE\s+[^[>]*(\[[^\]]*\])?\s*>|<[^!>][^>]*>)[^<]*)*$/s;
-  static _XML_TAG_NAME = /<\s*(?:\/\s*)?([^\s>]+)/;
-  static _XML_PIECE = /(?<COMMENT><!--.*?-->)|(?<CDATA><!\[CDATA\[.*?\]\]>)|(?<PI><\?.*?\?>)|(?<DOCTYPE><!DOCTYPE\s+[^[^>]*(\[[^\]]*\])?\s*>)|(?<EMPTY_ELT_TAG><\s*[^>/?!\s][^>]*\/\s*>)|(?<START_TAG><\s*[^>/?!\s][^>]*>)|(?<END_TAG><\s*\/[^>/?!\s][^>]*>)/gs;
+  static _VALID_XML_RE = /^[^<]*((<!--(?:(?!-->).)*-->|<!\[CDATA\[(?:(?!\]\]>).)*\]\]>|<!DOCTYPE[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+[^[>]*(\[[^\]]*\])?[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*>|<[^!>][^>]*>)[^<]*)*$/su;
+  static _XML_TAG_NAME = /<[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(?:\/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*)?([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000>]+)/u;
+  static _XML_PIECE = /(?<COMMENT><!--.*?-->)|(?<CDATA><!\[CDATA\[.*?\]\]>)|(?<PI><\?.*?\?>)|(?<DOCTYPE><!DOCTYPE[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+[^[^>]*(\[[^\]]*\])?[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*>)|(?<EMPTY_ELT_TAG><[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*[^>/?!\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000][^>]*\/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*>)|(?<START_TAG><[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*[^>/?!\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000][^>]*>)|(?<END_TAG><[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\/[^>/?!\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000][^>]*>)/gsu;
 
   constructor(fileid: string | PathPointer, tagspec: string, elt_handler: XmlEltHandler<T> | null = null) {
     const encoding = normalizeXmlEncoding(detectXmlEncoding(fileid));
@@ -454,7 +454,7 @@ export class BNCCorpusReader extends XMLCorpusReader {
       for (const xmlword of allXmlwordsIn(xmlsent)) {
         let word: unknown = xmlword.text;
         if (!word) word = "";
-        if (strip_space || stem) word = (word as string).trim();
+        if (strip_space || stem) word = pyStrip(word as string);
         if (stem) word = xmlword.get("hw", word as string);
         if (tag === "c5") word = [word, xmlword.get("c5")];
         else if (tag === "pos") word = [word, xmlword.get("pos", xmlword.get("c5"))];
@@ -500,15 +500,15 @@ export class BNCWordView extends XMLCorpusView<unknown> {
 
   handle_header(elt: XMLElement, _context: string): unknown {
     const titles = elt.findall("titleStmt/title");
-    if (titles.length) this.title = titles.map((t) => (t.text ?? "").trim()).join("\n");
+    if (titles.length) this.title = titles.map((t) => pyStrip(t.text ?? "")).join("\n");
     const authors = elt.findall("titleStmt/author");
-    if (authors.length) this.author = authors.map((a) => (a.text ?? "").trim()).join("\n");
+    if (authors.length) this.author = authors.map((a) => pyStrip(a.text ?? "")).join("\n");
     const editors = elt.findall("titleStmt/editor");
-    if (editors.length) this.editor = editors.map((e) => (e.text ?? "").trim()).join("\n");
+    if (editors.length) this.editor = editors.map((e) => pyStrip(e.text ?? "")).join("\n");
     const resps = elt.findall("titleStmt/respStmt");
     if (resps.length) {
       this.resps = resps
-        .map((resp) => resp.children.map((r) => (r.text ?? "").trim()).join("\n"))
+        .map((resp) => resp.children.map((r) => pyStrip(r.text ?? "")).join("\n"))
         .join("\n\n");
     }
     return undefined;
@@ -517,7 +517,7 @@ export class BNCWordView extends XMLCorpusView<unknown> {
   handle_word(elt: XMLElement): unknown {
     let word: unknown = elt.text;
     if (!word) word = "";
-    if (this._strip_space || this._stem) word = (word as string).trim();
+    if (this._strip_space || this._stem) word = pyStrip(word as string);
     if (this._stem) word = elt.get("hw", word as string);
     if (this._tag === "c5") word = [word, elt.get("c5")];
     else if (this._tag === "pos") word = [word, elt.get("pos", elt.get("c5"))];
@@ -752,7 +752,7 @@ export class CHILDESCorpusReader extends XMLCorpusReader {
           else if (_wk !== null && _wk.length) xmlword = _wk!;
           // get text
           let word: unknown = xmlword.text ? xmlword.text : "";
-          if (strip_space) word = (word as string).trim();
+          if (strip_space) word = pyStrip(word as string);
           // stem
           if (relation || stem) {
             try {
@@ -873,7 +873,7 @@ function pyListEq(a: unknown[], b: unknown[]): boolean {
 
 function textwrapFill(s: string, width: number, initial_indent: string, subsequent_indent: string): string {
   // Approximate textwrap.fill for the simple single-paragraph strings VN uses.
-  const words = s.split(/\s+/).filter((w) => w !== "");
+  const words = s.split(PY_WS_RUN).filter((w) => w !== "");
   const lines: string[] = [];
   let cur = initial_indent;
   for (const w of words) {
@@ -925,7 +925,7 @@ export class VerbnetCorpusReader extends XMLCorpusReader {
   wordnetids(vnclass: string | XMLElement | null = null): unknown[] {
     if (vnclass === null) return [...this._wordnet_to_class.keys()].sort();
     const vc = typeof vnclass === "string" ? (this.vnclass(vnclass) as XMLElement) : vnclass;
-    return vc.findall("MEMBERS/MEMBER").flatMap((m) => (m.get("wn", "") ?? "").split(/\s+/).filter((s) => s !== ""));
+    return vc.findall("MEMBERS/MEMBER").flatMap((m) => (m.get("wn", "") ?? "").split(PY_WS_RUN).filter((s) => s !== ""));
   }
   wordnetIds(vnclass: string | XMLElement | null = null): unknown[] { return this.wordnetids(vnclass); }
 
@@ -996,7 +996,7 @@ export class VerbnetCorpusReader extends XMLCorpusReader {
     this._shortid_to_longid.set(this.shortid(vnclass), vnclass);
     for (const member of xmltree.findall("MEMBERS/MEMBER")) {
       pushMap(this._lemma_to_class, member.get("name")!, vnclass);
-      for (const wn of (member.get("wn", "") ?? "").split(/\s+/).filter((s) => s !== "")) {
+      for (const wn of (member.get("wn", "") ?? "").split(PY_WS_RUN).filter((s) => s !== "")) {
         pushMap(this._wordnet_to_class, wn, vnclass);
       }
     }
@@ -1019,7 +1019,7 @@ export class VerbnetCorpusReader extends XMLCorpusReader {
           const [, lemma, wn, subclassId] = m;
           if (lemma !== undefined) {
             pushMap(this._lemma_to_class, lemma, vnclass);
-            for (const w of (wn ?? "").split(/\s+/).filter((s) => s !== "")) {
+            for (const w of (wn ?? "").split(PY_WS_RUN).filter((s) => s !== "")) {
               pushMap(this._wordnet_to_class, w, vnclass);
             }
           } else if (subclassId !== undefined) {
@@ -1807,7 +1807,7 @@ export class NKJPCorpus_Header_View extends XMLCorpusView<unknown> {
   private handleHeaderElt(elt: XMLElement, _context: string): unknown {
     const grab = (name: string): string | string[] => {
       const elts = elt.findall(`bibl/${name}`);
-      return elts.length ? elts.map((e) => (e.text ?? "").trim()).join("\n") : [];
+      return elts.length ? elts.map((e) => pyStrip(e.text ?? "")).join("\n") : [];
     };
     return {
       title: grab("title"), author: grab("author"), date: grab("date"),

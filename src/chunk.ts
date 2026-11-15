@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 import { chunkIobIdsNative } from "./native";
 
 export type TaggedToken = {
@@ -39,10 +40,10 @@ function compilePattern(tagExpr: string, quantifier: string): TagPattern {
 }
 
 function parseRule(line: string): ChunkRule | null {
-  const trimmed = line.trim();
+  const trimmed = pyStrip(line);
   if (!trimmed || trimmed.startsWith("#")) return null;
 
-  const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*:\s*\{(.+)\}\s*$/);
+  const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*:[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\{(.+)\}[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u);
   if (!match) return null;
 
   const label = match[1]!;

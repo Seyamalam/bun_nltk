@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 // Port of nltk.sentiment.vader (NLTK 3.10.3, Apache-2.0).
 // C. J. Hutto et al.; lexicon provenance and MIT license: THIRD_PARTY_NOTICES.md.
 import { pythonIsUpper, splitPythonWhitespace } from "./python_text";
@@ -254,7 +255,7 @@ export class SentimentIntensityAnalyzer {
     const text = lexiconFile ?? this.resolveLexiconFile(this.lexicon_file);
     const dict: Record<string, number> = {};
     for (const line of text.split("\n")) {
-      const parts = line.trim().split("\t");
+      const parts = pyStrip(line).split("\t");
       if (parts[0] !== undefined && parts[0] !== "" && parts[1] !== undefined) {
         dict[parts[0]] = Number.parseFloat(parts[1]);
       }

@@ -1,15 +1,16 @@
 import { loadWordNet, type WordNetSynset } from "./wordnet";
+import { PY_WS_RUN, pyStrip } from "./internals";
 
 export type Synset = WordNetSynset;
 
 export function synsetDefinition(synset: Synset): string {
   const withoutExamples = synset.gloss.replace(/"[^"]*"/g, "");
-  return withoutExamples.trim().replace(/^[; ]+|[; ]+$/g, "");
+  return pyStrip(withoutExamples).replace(/^[; ]+|[; ]+$/g, "");
 }
 
 function signatureTokens(synset: Synset): Set<string> {
   const out = new Set<string>();
-  for (const token of synsetDefinition(synset).split(/\s+/)) {
+  for (const token of synsetDefinition(synset).split(PY_WS_RUN)) {
     if (token.length > 0) out.add(token);
   }
   return out;

@@ -17,7 +17,7 @@ import { homedir } from "node:os";
 import {
   basename, dirname, isAbsolute, join as pathJoin, resolve as pathResolve, sep,
 } from "node:path";
-import { pyError, isWritable } from "./internals";
+import { isWritable, pyError, pyLstrip, pyRstrip, pyStrip } from "./internals";
 import { dataPath } from "./data";
 import {
   is_private_dir, urlopen as pathsecUrlopen, validate_path, zip_member_is_unsafe,
@@ -70,8 +70,8 @@ function pyInt(v: unknown): number {
     return Math.trunc(v);
   }
   const s = String(v);
-  if (/^[\s]*[+-]?\d[\d_]*[\s]*$/.test(s)) {
-    return parseInt(s.trim().replace(/_/g, ""), 10);
+  if (/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*[+-]?\d[\d_]*[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(s)) {
+    return parseInt(pyStrip(s).replace(/_/g, ""), 10);
   }
   throw pyError("ValueError", `invalid literal for int() with base 10: ${pyReprStr(s)}`);
 }
@@ -334,7 +334,7 @@ export class TextWrapper {
     }
     if (this.max_lines !== null) {
       const indent = this.max_lines > 1 ? this.subsequent_indent : this.initial_indent;
-      if (indent.length + this.placeholder.trimStart().length > this.width) {
+      if (indent.length + pyLstrip(this.placeholder).length > this.width) {
         throw pyError("ValueError", "placeholder too large for max width");
       }
     }
@@ -344,7 +344,7 @@ export class TextWrapper {
       let curLen = 0;
       const indent = lines.length ? this.subsequent_indent : this.initial_indent;
       const width = this.width - indent.length;
-      if (this.drop_whitespace && chunks[chunks.length - 1]!.trim() === "" && lines.length) {
+      if (this.drop_whitespace && pyStrip(chunks[chunks.length - 1]!) === "" && lines.length) {
         chunks.pop();
       }
       while (chunks.length) {
@@ -358,7 +358,7 @@ export class TextWrapper {
         this._handle_long_word(chunks, curLine, curLen, width);
         curLen = curLine.reduce((n, c) => n + c.length, 0);
       }
-      if (this.drop_whitespace && curLine.length && curLine[curLine.length - 1]!.trim() === "") {
+      if (this.drop_whitespace && curLine.length && pyStrip(curLine[curLine.length - 1]!) === "") {
         curLen -= curLine[curLine.length - 1]!.length;
         curLine.pop();
       }
@@ -367,14 +367,14 @@ export class TextWrapper {
           this.max_lines === null ||
           lines.length + 1 < this.max_lines ||
           ((!chunks.length ||
-            (this.drop_whitespace && chunks.length === 1 && !chunks[0]!.trim())) &&
+            (this.drop_whitespace && chunks.length === 1 && !pyStrip(chunks[0]!))) &&
             curLen <= width)
         ) {
           lines.push(indent + curLine.join(""));
         } else {
           let broke = false;
           while (curLine.length) {
-            if (curLine[curLine.length - 1]!.trim() && curLen + this.placeholder.length <= width) {
+            if (pyStrip(curLine[curLine.length - 1]!) && curLen + this.placeholder.length <= width) {
               curLine.push(this.placeholder);
               lines.push(indent + curLine.join(""));
               broke = true;
@@ -385,13 +385,13 @@ export class TextWrapper {
           }
           if (!broke) {
             if (lines.length) {
-              const prevLine = lines[lines.length - 1]!.trimEnd();
+              const prevLine = pyRstrip(lines[lines.length - 1]!);
               if (prevLine.length + this.placeholder.length <= this.width) {
                 lines[lines.length - 1] = prevLine + this.placeholder;
                 break;
               }
             }
-            lines.push(indent + this.placeholder.trimStart());
+            lines.push(indent + pyLstrip(this.placeholder));
           }
           break;
         }
@@ -1541,7 +1541,7 @@ export class Downloader {
         this._errors = true;
         if (!quiet) {
           print_to("Error installing package. Retry? [n/y/e]");
-          const choice = pyInput().trim();
+          const choice = pyStrip(pyInput());
           if (choice === "y" || choice === "Y") {
             const pkg = msg.package;
             if (pkg === null || typeof pkg === "string") {
@@ -2015,15 +2015,15 @@ function* _find_collections(root: string): Generator<XMLElement> {
 /** nltk.downloader._indent_xml — 2-space indented element tree. */
 function _indent_xml(xml: XMLElement, prefix = ""): void {
   if (xml.children.length > 0) {
-    xml.text = (xml.text ?? "").trim() + "\n" + prefix + "  ";
+    xml.text = pyStrip(xml.text ?? "") + "\n" + prefix + "  ";
     for (const child of xml.children) {
       _indent_xml(child, prefix + "  ");
     }
     for (const child of xml.children.slice(0, -1)) {
-      child.tail = (child.tail ?? "").trim() + "\n" + prefix + "  ";
+      child.tail = pyStrip(child.tail ?? "") + "\n" + prefix + "  ";
     }
     const last = xml.children[xml.children.length - 1]!;
-    last.tail = (last.tail ?? "").trim() + "\n" + prefix;
+    last.tail = pyStrip(last.tail ?? "") + "\n" + prefix;
   }
 }
 

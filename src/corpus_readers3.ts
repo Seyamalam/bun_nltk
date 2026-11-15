@@ -3,7 +3,7 @@
 // Originals: nltk/corpus/reader/{conll,sinica_treebank,knbc,chasen,lin,
 // toolbox,ycoe,switchboard,bracket_parse}.py, nltk/tree/parsing.py
 
-import { pyError } from "./internals";
+import { PY_WS_RUN, pyError, pyStrip } from "./internals";
 import { PathPointer, FileSystemPathPointer } from "./data";
 import { SeekableUnicodeStreamReader } from "./corpus_stream";
 import {
@@ -81,10 +81,10 @@ export class ConllCorpusReader extends CorpusReader {
   private _readGridBlock(stream: SeekableUnicodeStreamReader): string[][][] {
     const grids: string[][][] = [];
     for (const block0 of read_blankline_block(stream)) {
-      const block = block0.trim();
+      const block = pyStrip(block0);
       if (!block) continue;
       const grid = block.split("\n").map((line) =>
-        this.sep === null ? line.split(/\s+/).filter((x) => x !== "") : line.split(this.sep));
+        this.sep === null ? line.split(PY_WS_RUN).filter((x) => x !== "") : line.split(this.sep));
       if (grid[0]![this._colmap["words"] ?? 0] === "-DOCSTART-") grid.shift();
       for (const row of grid) {
         if (row.length !== grid[0]!.length) {
@@ -491,7 +491,7 @@ export function sinica_parse(s: string): SimpleTree {
 }
 export const sinicaParse = sinica_parse;
 
-const SINICA_IDENTIFIER = /^#\S+\s/;
+const SINICA_IDENTIFIER = /^#\S+[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u;
 // Python $ matches before a trailing newline; JS $ does not, so use
 // [^\n]* — identical span, newline-proof.
 const SINICA_APPENDIX = /(?<=\))#[^\n]*/;
@@ -574,7 +574,7 @@ export class KNBCorpusReader extends SyntaxCorpusReader {
     const res: string[] = [];
     for (const line of splitlines(t as string)) {
       if (!/^(?:EOS|\*|#|\+)/.test(line)) {
-        const cells = line.trim().split(" ");
+        const cells = pyStrip(line).split(" ");
         res.push(cells[0]!);
       }
     }
@@ -585,7 +585,7 @@ export class KNBCorpusReader extends SyntaxCorpusReader {
     const res: Array<[string, string]> = [];
     for (const line of splitlines(t as string)) {
       if (!/^(?:EOS|\*|#|\+)/.test(line)) {
-        const cells = line.trim().split(" ");
+        const cells = pyStrip(line).split(" ");
         res.push([cells[0]!, cells.slice(1).join(" ")]);
       }
     }
@@ -610,7 +610,7 @@ export class KNBCorpusReader extends SyntaxCorpusReader {
       if (line === "") throw pyError("IndexError", "string index out of range");
       if (line[0] === "*" || line[0] === "+") {
         // start of bunsetsu or tag
-        const cells = splitMax(line.trim(), " ", 3);
+        const cells = splitMax(pyStrip(line), " ", 3);
         const cell1 = cells[1];
         if (cell1 === undefined) throw pyError("IndexError", "list index out of range");
         const m = /^([-0-9]*)([ADIP])/.exec(cell1);
@@ -631,7 +631,7 @@ export class KNBCorpusReader extends SyntaxCorpusReader {
         i += 1;
       } else if (line[0] !== "#") {
         // normal morph
-        const cells = line.trim().split(" ");
+        const cells = pyStrip(line).split(" ");
         const morph: [string, string] = [cells[0]!, cells.slice(1).join(" ")];
         const n = node(i - 1);
         if (n.word === null) n.word = [];
@@ -689,7 +689,7 @@ export class ChasenCorpusView extends StreamBackedCorpusView<unknown> {
       const para: unknown[] = [];
       let sent: Array<[string, string]> = [];
       for (const line of splitlines(paraStr)) {
-        const eos = line.trim() === "EOS";
+        const eos = pyStrip(line) === "EOS";
         const cells = line.split("\t");
         const w: [string, string] = [cells[0]!, cells.slice(1).join("\t")];
         if (!eos) sent.push(w);
@@ -761,7 +761,7 @@ export class LinThesaurusCorpusReader extends CorpusReader {
       let first = true;
       let key = "";
       for (const rawLine of text.split("\n")) {
-        const line = rawLine.trim();
+        const line = pyStrip(rawLine);
         if (first) {
           key = line.replace(LinThesaurusCorpusReader._key_re, "$1");
           first = false;
@@ -853,14 +853,14 @@ export class YCOEParseCorpusReader extends BracketParseCorpusReader {
   // parsed_sents() then yields null elements.
   protected override _parse(t: string): SimpleTree {
     const stripped = t.replace(/\((CODE|ID)[^)]*\)/g, "");
-    if (/^\s*\(\s*\)\s*$/.test(stripped)) return null as unknown as SimpleTree;
+    if (/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\([\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*$/u.test(stripped)) return null as unknown as SimpleTree;
     return super._parse(stripped);
   }
 }
 
 export class YCOETaggedCorpusReader extends TaggedCorpusReader {
   constructor(root: string | PathPointer, items: string | string[], encoding: EncodingSpec = "utf8") {
-    const gapsRe = /(?<=\/\.)\s+|\s*\S*_CODE\s*|\s*\S*_ID\s*/g;
+    const gapsRe = /(?<=\/\.)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+|[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\S*_CODE[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*|[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*\S*_ID[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/gu;
     super(root, items, "_", new WhitespaceTokenizer(),
       { tokenize: (s: string) => s.split(gapsRe).filter((x) => x !== "") },
       read_blankline_block, encoding);
@@ -970,7 +970,7 @@ export class SwitchboardTurn extends Array<unknown> {
 
 export class SwitchboardCorpusReader extends CorpusReader {
   static _FILES = ["tagged"];
-  private static _UTTERANCE_RE = /^([\p{L}\p{N}_]+)\.(\d+):\s*(.*)/u;
+  private static _UTTERANCE_RE = /^([\p{L}\p{N}_]+)\.(\d+):[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(.*)/u;
   private static _SEP = "/";
 
   constructor(root: string | PathPointer, tagset: string | null = null) {
@@ -982,7 +982,7 @@ export class SwitchboardCorpusReader extends CorpusReader {
     const m = SwitchboardCorpusReader._UTTERANCE_RE.exec(utterance);
     if (m === null) throw pyError("ValueError", `Bad utterance ${pyRepr(utterance)}`);
     const [, speaker, id, text] = m;
-    let words: unknown[] = text!.split(/\s+/).filter((x) => x !== "").map((s) => str2tuple(s, SwitchboardCorpusReader._SEP));
+    let words: unknown[] = text!.split(PY_WS_RUN).filter((x) => x !== "").map((s) => str2tuple(s, SwitchboardCorpusReader._SEP));
     if (!includeTag) words = (words as Array<[string, string | null]>).map(([w]) => w);
     else if (tagset && tagset !== this._tagset) {
       words = (words as Array<[string, string | null]>).map(([w, t]) => [w, t === null ? t : mapTag(this._tagset!, tagset, t)]);
@@ -994,7 +994,7 @@ export class SwitchboardCorpusReader extends CorpusReader {
     return [
       read_blankline_block(stream)
         .flatMap((b) => b.split("\n"))
-        .filter((u) => u.trim())
+        .filter((u) => pyStrip(u))
         .map((u) => this._parseUtterance(u, tagged, tagset)),
     ];
   }
@@ -1034,7 +1034,7 @@ const ALPINO_NODE = /^[ \t]*<node ([^>\n]*?)(\/?)>/gm;
 const ALPINO_ATTR = /([\p{L}\p{N}_]+)="([^"]*)"/gu;
 const ALPINO_DIGITS = /^\d+$/;
 const ALPINO_WORD = /^[\p{L}\p{N}_]+$/u;
-const SORTTAGWRD = /\((\d+) ([^\s()]+) ([^\s()]+)\)/g;
+const SORTTAGWRD = /\((\d+) ([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000()]+) ([^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000()]+)\)/gu;
 
 function alpinoNodeToSexpr(body: string, selfclose: string, wholeMatch: string, ordered: boolean): string {
   const attrs: Record<string, string> = {};
@@ -1096,7 +1096,7 @@ function textwrapFill(s: string, options: { width?: number; initialIndent?: stri
   const width = options.width ?? 70;
   const initial = options.initialIndent ?? "";
   const subsequent = options.subsequentIndent ?? "";
-  const words = s.split(/\s+/).filter((w) => w.length > 0);
+  const words = s.split(PY_WS_RUN).filter((w) => w.length > 0);
   const lines: string[] = [];
   let cur = initial;
   let first = true;

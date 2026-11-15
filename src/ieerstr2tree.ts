@@ -4,8 +4,8 @@ import { SimpleTree, type SimpleTreeChild } from "./corpus_tree";
 import { pyError } from "./internals";
 
 // re.DOTALL: text spans lines.
-const IEER_DOC_RE = /<DOC>\s*(?:<DOCNO>\s*(?<docno>.+?)\s*<\/DOCNO>\s*)?(?:<DOCTYPE>\s*(?<doctype>.+?)\s*<\/DOCTYPE>\s*)?(?:<DATE_TIME>\s*(?<date_time>.+?)\s*<\/DATE_TIME>\s*)?<BODY>\s*(?:<HEADLINE>\s*(?<headline>.+?)\s*<\/HEADLINE>\s*)?<TEXT>(?<text>.*?)<\/TEXT>\s*<\/BODY>\s*<\/DOC>\s*/s;
-const IEER_TYPE_RE = /^<b_[\p{L}\p{N}_]+\s+[^>]*?type="(?<type>[\p{L}\p{N}_]+)"/u;
+const IEER_DOC_RE = /<DOC>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(?:<DOCNO>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(?<docno>.+?)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<\/DOCNO>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*)?(?:<DOCTYPE>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(?<doctype>.+?)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<\/DOCTYPE>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*)?(?:<DATE_TIME>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(?<date_time>.+?)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<\/DATE_TIME>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*)?<BODY>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(?:<HEADLINE>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*(?<headline>.+?)[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<\/HEADLINE>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*)?<TEXT>(?<text>.*?)<\/TEXT>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<\/BODY>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*<\/DOC>[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]*/su;
+const IEER_TYPE_RE = /^<b_[\p{L}\p{N}_]+[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+[^>]*?type="(?<type>[\p{L}\p{N}_]+)"/u;
 
 export interface IeerTreeDict {
   text: SimpleTree | SimpleTreeChild[];
@@ -20,7 +20,7 @@ function ieerReadText(s: string | undefined, rootLabel: string): SimpleTree | Si
   // s is undefined when there is no headline — python returns the empty
   // list in place of a Tree.
   if (s === undefined) return [];
-  for (const m of s.matchAll(/<[^>]+>|[^\s<]+/g)) {
+  for (const m of s.matchAll(/<[^>]+>|[^\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000<]+/gu)) {
     const piece = m[0];
     let bad = false;
     if (piece.startsWith("<b_")) {

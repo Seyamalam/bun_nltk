@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 import type { ChunkTree, IobRow, TaggedToken } from "./chunk_nltk";
 import { ChunkScore, RegexpParser, tree2conlltags } from "./chunk_nltk";
 import { SimpleTree, tagstr2tree } from "./corpus_tree";
@@ -83,7 +84,7 @@ export function demo_eval(chunkparser: RegexpParser, text: string, out: PrintSin
 
   for (const rawLine of text.split("\n")) {
     pyPrint(out, rawLine);
-    const sentence = rawLine.trim();
+    const sentence = pyStrip(rawLine);
     if (!sentence) continue;
     const gold = toChunkTree(tagstr2tree(sentence));
     const tokens: TaggedToken[] = [];

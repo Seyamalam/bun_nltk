@@ -9,7 +9,7 @@
  *   ProbabilisticTree and nltk.parse.viterbi.ProbabilisticTree
  * - nltk.parse.util.extract_test_sentences
  */
-import { pyError } from "./internals";
+import { PY_WS_RUN, pyError, pyStrip } from "./internals";
 import type { DependencyGraph, DependencyNode } from "./dependency_graph";
 import { NaiveBayesClassifier } from "./classifier_compat";
 import type { FeatureSet, LabeledFeatureset } from "./feature_types";
@@ -540,7 +540,7 @@ export class ProbabilisticTree<L = string> extends Tree<L> {
 // ---- nltk.parse.util.extract_test_sentences ---------------------------------
 
 function pyInt(literal: string): number {
-  const trimmed = literal.trim();
+  const trimmed = pyStrip(literal);
   if (!/^[+-]?\d+$/.test(trimmed)) {
     throw pyError("ValueError", `invalid literal for int() with base 10: '${literal}'`);
   }
@@ -578,7 +578,7 @@ export function extract_test_sentences(
         sentence = sentence.slice(colon + 1);
       }
     }
-    const tokens = sentence.split(/\s+/).filter((token) => token.length > 0);
+    const tokens = sentence.split(PY_WS_RUN).filter((token) => token.length > 0);
     if (tokens.length === 0) continue;
     sentences.push([tokens, result]);
   }

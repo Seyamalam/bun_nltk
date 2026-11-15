@@ -25,7 +25,7 @@ import { existsSync, readdirSync, statSync } from "node:fs";
 import { createServer } from "node:net";
 import { gunzipSync, gzipSync } from "node:zlib";
 import { openSync, closeSync, writeSync } from "node:fs";
-import { pyError } from "./internals";
+import { pyError, pyStrip } from "./internals";
 import { pyBasename, pyJoin, pyNormpath, pySplit } from "./ext_subprocess";
 import { ZipFilePathPointer } from "./data";
 
@@ -1048,7 +1048,7 @@ export function chatbots(out: PrintSink, inputFn: () => string | null = () => nu
     out(`\nEnter a number in the range 1-${botcount}: `);
     const line = inputFn();
     if (line === null) throw pyError("EOFError", "EOF when reading a line");
-    choice = line.trim();
+    choice = pyStrip(line);
     if (/^\d+$/.test(choice) && parseInt(choice, 10) - 1 >= 0 && parseInt(choice, 10) - 1 < botcount) break;
     out("   Error: bad chatbot number\n");
   }

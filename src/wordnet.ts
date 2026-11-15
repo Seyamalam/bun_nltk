@@ -1,3 +1,4 @@
+import { pyStrip } from "./internals";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { NativeWordNetHandle } from "./native";
@@ -79,7 +80,7 @@ function uniqueSynsets(values: WordNetSynset[]): WordNetSynset[] {
 }
 
 function normalizeLemma(lemma: string): string {
-  return lemma.toLowerCase().replace(/\s+/g, "_");
+  return lemma.toLowerCase().replace(/[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/gu, "_");
 }
 
 function unique<T>(values: T[]): T[] {
@@ -93,7 +94,7 @@ export class WordNet {
   private readonly senseKeyIndex = new Map<string, WordNetSynset>();
 
   private makeOffsetKey(pos: WordNetPos, offset: string | number): string {
-    const raw = typeof offset === "number" ? String(Math.floor(Math.max(0, offset))) : String(offset).trim();
+    const raw = typeof offset === "number" ? String(Math.floor(Math.max(0, offset))) : pyStrip(String(offset));
     const digits = raw.replace(/\D+/g, "");
     return `${pos}:${digits.padStart(8, "0")}`;
   }

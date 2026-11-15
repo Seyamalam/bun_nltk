@@ -1,3 +1,4 @@
+import { PY_WS_RUN, pyStrip } from "./internals";
 /**
  * S-Expression tokenizer (port of nltk.tokenize.sexpr / SExprTokenizer).
  *
@@ -35,8 +36,8 @@ export class SExprTokenizer {
       const paren = m[0]!;
       const idx = m.index;
       if (depth === 0) {
-        const chunk = text.slice(pos, idx).trim();
-        if (chunk) result.push(...chunk.split(/\s+/));
+        const chunk = pyStrip(text.slice(pos, idx));
+        if (chunk) result.push(...chunk.split(PY_WS_RUN));
         pos = idx;
       }
       if (paren === this.open) depth++;
@@ -51,10 +52,10 @@ export class SExprTokenizer {
     }
     if (this.strict && depth > 0) throw new Error(`Un-matched open paren at char ${pos}`);
     if (pos < text.length) {
-      const tail = text.slice(pos).trim();
+      const tail = pyStrip(text.slice(pos));
       if (tail) {
         if (depth > 0) result.push(text.slice(pos));
-        else result.push(...tail.split(/\s+/));
+        else result.push(...tail.split(PY_WS_RUN));
       }
     }
     return result;

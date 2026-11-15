@@ -4,7 +4,7 @@
 // udhr,ieer,lin,comparative_sents,pros_cons,ppattach,reviews,indian,ipipan,
 // twitter,toolbox}.py
 
-import { pyError } from "./internals";
+import { PY_WS_RUN, pyError, pyStrip } from "./internals";
 import { PathPointer, find as dataFind } from "./data";
 import { SeekableUnicodeStreamReader } from "./corpus_stream";
 import {
@@ -144,7 +144,7 @@ export class EuroparlCorpusReader extends PlaintextCorpusReader {
     const words: string[] = [];
     for (let i = 0; i < 20; i++) {
       const line = stream.readline();
-      words.push(...line.split(/\s+/).filter((t) => t.length > 0));
+      words.push(...line.split(PY_WS_RUN).filter((t) => t.length > 0));
     }
     return words;
   }
@@ -152,7 +152,7 @@ export class EuroparlCorpusReader extends PlaintextCorpusReader {
   protected override _read_sent_block(stream: SeekableUnicodeStreamReader): string[][] {
     const sents: string[][] = [];
     for (const para of this._para_block_reader(stream)) {
-      for (const sent of para.split("\n")) sents.push(sent.split(/\s+/).filter((t) => t.length > 0));
+      for (const sent of para.split("\n")) sents.push(sent.split(PY_WS_RUN).filter((t) => t.length > 0));
     }
     return sents;
   }
@@ -160,7 +160,7 @@ export class EuroparlCorpusReader extends PlaintextCorpusReader {
   protected override _read_para_block(stream: SeekableUnicodeStreamReader): string[][][] {
     const paras: string[][][] = [];
     for (const para of this._para_block_reader(stream)) {
-      paras.push(para.split("\n").map((sent) => sent.split(/\s+/).filter((t) => t.length > 0)));
+      paras.push(para.split("\n").map((sent) => sent.split(PY_WS_RUN).filter((t) => t.length > 0)));
     }
     return paras;
   }
@@ -281,7 +281,7 @@ export class UnicharsCorpusReader extends WordListCorpusReader {
     if (category !== undefined && category !== null && UnicharsCorpusReader.available_categories.includes(category)) {
       ids = [`${category}.txt`];
     }
-    return [...this.raw(ids).trim()];
+    return [...pyStrip(this.raw(ids))];
   }
 }
 
@@ -299,7 +299,7 @@ export function read_cmudict_block(stream: SeekableUnicodeStreamReader): Array<[
   while (entries.length < 100) {
     const line = stream.readline();
     if (line === "") return entries;
-    const pieces = line.split(/\s+/).filter((p) => p.length > 0);
+    const pieces = line.split(PY_WS_RUN).filter((p) => p.length > 0);
     if (!pieces.length) continue;
     entries.push([pieces[0]!.toLowerCase(), pieces.slice(2)]);
   }
@@ -521,9 +521,9 @@ export class DependencyCorpusView extends StreamBackedCorpusView<unknown> {
 
   private readBlockImpl(stream: SeekableUnicodeStreamReader): unknown[] {
     const parts = read_blankline_block(stream);
-    let sent = parts[0]!.trim();
+    let sent = pyStrip(parts[0]!);
     if (sent.startsWith(DependencyCorpusView._DOCSTART)) {
-      sent = sent.slice(DependencyCorpusView._DOCSTART.length).replace(/^\s+/, "");
+      sent = sent.slice(DependencyCorpusView._DOCSTART.length).replace(/^[\t\n\v\f\r \x1c-\x1f\x85\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/u, "");
     }
     if (this._dependencies) {
       // NLTK: the block is the raw sentence string for DependencyGraph.

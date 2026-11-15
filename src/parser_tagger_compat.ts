@@ -130,6 +130,7 @@ import {
 } from "./parse_feature";
 import { FeatDict, Variable, TYPE, type FeatValue } from "./featstruct";
 import type { FeatureSymbol } from "./feature_parse";
+import { PY_WS_RUN } from "./internals";
 
 function featureSymbolToGrammar(sym: FeatureSymbol): FeatStructNonterminal | string {
   if (sym.terminal) return sym.surface ?? sym.base;
@@ -334,7 +335,7 @@ export class PerceptronTagger {
   }
 
   tagText(text: string): Array<[string, string]> {
-    return posTagPerceptronAscii(joinTokens(text.split(/\s+/g).filter(Boolean)), {
+    return posTagPerceptronAscii(joinTokens(text.split(PY_WS_RUN).filter(Boolean)), {
       model: this.packed ?? loadPerceptronTaggerModel(),
     }).map((row: PerceptronTaggedToken) => [row.token, row.tag]);
   }
