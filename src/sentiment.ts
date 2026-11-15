@@ -1,7 +1,29 @@
 // Port of nltk.sentiment.vader (NLTK 3.10.3, Apache-2.0).
 // C. J. Hutto et al.; lexicon provenance and MIT license: THIRD_PARTY_NOTICES.md.
 import { pythonIsUpper, splitPythonWhitespace } from "./python_text";
-import data from "./data/vader.json";
+
+type VaderData = {
+  lexicon: Record<string, number>;
+  boosters: Record<string, number>;
+  idioms: Record<string, number>;
+  negations: string[];
+  punctuation: string[];
+};
+// Same shipped-artifact pattern as models/ne-chunker-*.json.br. Loaded via
+// getBuiltinModule so no static node: import leaks into browser-graphed builds.
+const _getBuiltin = (globalThis as { process?: { getBuiltinModule?: (m: string) => any } })
+  .process?.getBuiltinModule;
+const data = JSON.parse(
+  (_getBuiltin!("zlib") as typeof import("node:zlib"))
+    .brotliDecompressSync(
+      (_getBuiltin!("fs") as typeof import("node:fs")).readFileSync(
+        new URL(
+          `${import.meta.url.includes("/dist/portable/") ? "../../" : "../"}models/vader.json.br`,
+          import.meta.url,
+        ),
+      ),
+    ).toString(),
+) as VaderData;
 
 const DEFAULT_LEXICON: Readonly<Record<string, number>> = data.lexicon;
 const BOOSTERS: Readonly<Record<string, number>> = data.boosters;

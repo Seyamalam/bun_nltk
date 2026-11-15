@@ -24,6 +24,8 @@
     "package.json",
     "models/ne-chunker-multiclass.json.br",
     "models/ne-chunker-binary.json.br",
+    "models/vader.json.br",
+    "models/punkt-english.json.br",
     "models/nltk-models.manifest.json",
     "THIRD_PARTY_NOTICES.md",
     "LICENSE"

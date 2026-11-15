@@ -1,6 +1,11 @@
 // Browser root: Rust/WASM classifiers and Treebank/basic tokenizers, plus subsets.
 // Native-only Bun APIs are intentionally absent; use bun_nltk/wasm directly for
 // the full portable WASM surface.
+// The static import makes the bundler inline the default Punkt model into
+// index.browser.js (node/bun load models/punkt-english.json.br instead).
+import punktEnglishJson from "../scripts/data/punkt-english.json";
+import { _setEnglishJsonFallback } from "./punkt_english_data";
+_setEnglishJsonFallback(punktEnglishJson);
 export { WasmNltk } from "./wasm.ts";
 export { ParsingRuntime, Tree, Nonterminal, Production, nonterminals, RustCFG, RustEarleyParser } from "./rust_parse";
 export type { StringTree, GrammarSymbol, RustTreePosition, RustTreeOrder, TreeFormatOptions, RustParseOptions, RustParseResult } from "./rust_parse";

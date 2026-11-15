@@ -1,6 +1,6 @@
 import { trainPunkt } from "./punkt_trainer";
-import englishModel from "./data/punkt-english.json";
 import { punktSentences, punktSpans } from "./punkt_engine";
+import { englishJsonFallback } from "./punkt_english_data";
 import { encodePunktModel, type PunktSpan } from "./punkt_wasm";
 import { syncWasm } from "./sync_wasm";
 
@@ -141,13 +141,49 @@ export function sentenceTokenizePunktCompat(text: string, model?: PunktModelSeri
   return sentenceTokenizePunkt(text, model);
 }
 
+type PunktEnglishJson = Omit<PunktModelSerialized, "collocations"> & {
+  collocations: Array<Array<string>>;
+};
+let cachedEnglishJson: PunktEnglishJson | null = null;
+function englishModel(): PunktEnglishJson {
+  if (cachedEnglishJson) return cachedEnglishJson;
+  // Shipped artifact: brotli-compressed model (node/bun, and the portable
+  // node bundle — same pattern as models/ne-chunker-*.json.br).
+  const getBuiltin = (globalThis as { process?: { getBuiltinModule?: (m: string) => any } })
+    .process?.getBuiltinModule;
+  if (getBuiltin) {
+    try {
+      const { readFileSync } = getBuiltin("fs") as typeof import("node:fs");
+      const { brotliDecompressSync } = getBuiltin("zlib") as typeof import("node:zlib");
+      cachedEnglishJson = JSON.parse(
+        brotliDecompressSync(
+          readFileSync(
+            new URL(
+              `${import.meta.url.includes("/dist/portable/") ? "../../" : "../"}models/punkt-english.json.br`,
+              import.meta.url,
+            ),
+          ),
+        ).toString(),
+      ) as PunktEnglishJson;
+      return cachedEnglishJson;
+    } catch { /* fall through to the bundled copy */ }
+  }
+  if (englishJsonFallback !== null) {
+    // Browser bundle: src/index_browser.ts registers the inlined JSON copy.
+    cachedEnglishJson = englishJsonFallback as PunktEnglishJson;
+    return cachedEnglishJson;
+  }
+  throw new Error("punkt-english model is unavailable in this environment");
+}
+
 let cachedDefaultModel: PunktModelSerialized | null = null;
 
 export function defaultPunktModel(): PunktModelSerialized {
   if (cachedDefaultModel) return cachedDefaultModel;
+  const model = englishModel();
   cachedDefaultModel = {
-    ...englishModel,
-    collocations: englishModel.collocations.map((pair) => [pair[0]!, pair[1]!]),
+    ...model,
+    collocations: model.collocations.map((pair) => [pair[0]!, pair[1]!]),
   };
   return cachedDefaultModel;
 }

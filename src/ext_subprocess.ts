@@ -536,9 +536,20 @@ function killedToReturnCode(signalCode: string | null): number | null {
   return n === undefined ? null : -n;
 }
 
+/** Bun.Subprocess-shaped handle (ambient-free so the portable d.ts stays
+ * usable for node/browser consumers without Bun types). */
+export interface PySubprocessLike {
+  readonly pid: number;
+  kill(signal?: string | number): void;
+  readonly exited: Promise<number>;
+  readonly stdin: unknown;
+  readonly stdout: unknown;
+  readonly stderr: unknown;
+}
+
 /** subprocess.Popen equivalent used for non-blocking java() and interactive tools. */
 export class PyPopen {
-  readonly proc: Bun.Subprocess;
+  readonly proc: PySubprocessLike;
   private readonly _stdoutPiped: boolean;
   private readonly _stderrPiped: boolean;
 

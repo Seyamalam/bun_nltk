@@ -1,14 +1,6 @@
 {
   "nltk": "3.10.3",
   "files": {
-    "src/data/vader.json": {
-      "bytes": 121856,
-      "sha256": "86df96fd108f2958ca6c08f4c34b481c7b94e379c83729cf1a3a8b3d3a830380"
-    },
-    "src/data/punkt-english.json": {
-      "bytes": 279192,
-      "sha256": "8fb6648850a18006548d5bdfe45651ad09159293cd6852a222edef3cf3cacb6e"
-    },
     "models/ne-chunker-multiclass.json.br": {
       "bytes": 1623368,
       "sha256": "13756dd5557a2c65c6626eb3a36d713de3633b9934f394fcb3988fcc0c943b9c"
@@ -16,6 +8,14 @@
     "models/ne-chunker-binary.json.br": {
       "bytes": 1538656,
       "sha256": "d61717db2471fda156d79a4c81912e44d2545a489547458c4096c6ecb466154a"
+    },
+    "models/vader.json.br": {
+      "bytes": 28139,
+      "sha256": "d95e5ed53322a55ac453d84b3cd928915ba21d7ba599930fe0c787f5d8eb9d92"
+    },
+    "models/punkt-english.json.br": {
+      "bytes": 69721,
+      "sha256": "e4410b4fa93ab98642552d9605eecb2f48d18a3debf8f4e72bc8f63bf29fc437"
     }
   }
 }

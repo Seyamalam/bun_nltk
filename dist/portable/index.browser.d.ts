@@ -3,7 +3,7 @@ export { M as MWETokenizer, M as RustMWETokenizer, T as RustToktokTokenizer, a a
 export { type G as GrammarSymbol, N as Nonterminal, Y as Production, R as RustCFG, k as RustEarleyParser, type l as RustParseOptions, type m as RustParseResult, type n as RustTreeOrder, type o as RustTreePosition, type S as StringTree, T as Tree, type p as TreeFormatOptions, B as nonterminals } from './types/rust_parse.d-Cheopg5Z.js';
 export { type PositiveFeatureOptions, RustNaiveBayesClassifier, RustPositiveNaiveBayesClassifier } from './feature_nb.js';
 export { type FeatureTreeOptions, RustDecisionTreeClassifier } from './feature_tree.js';
-export { type e as FeatureMaxentOptions, type j as FeatureMaxentSerialized, R as RustMaxentClassifier } from './types/feature_maxent.d-CRSpef1Y.js';
+export { type e as FeatureMaxentOptions, type j as FeatureMaxentSerialized, R as RustMaxentClassifier } from './types/feature_maxent.d-C-1IVPH_.js';
 export { TreebankWordDetokenizer, TreebankWordTokenizer, WordPunctTokenizer, treebankWordTokenize, wordPunctTokenize } from './tokenizers_treebank.js';
 export { BlanklineTokenizer, LineTokenizer, SpaceTokenizer, TabTokenizer, WhitespaceTokenizer, blanklineTokenize, blanklineTokenize as blankline_tokenize, lineTokenize, lineTokenize as line_tokenize } from './tokenizers_basic.js';
 export { type BlanklineHandling, type TokenSpan } from './tokenizer_types.js';
