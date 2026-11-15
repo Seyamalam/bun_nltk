@@ -32,7 +32,7 @@ elif request["kind"] == "word":
 elif request["kind"] == "ngrams":
     result = [outcome(lambda row=row: list(ngrams(iter(row["sequence"]), row["n"], **row.get("options", {})))) for row in request["cases"]]
 elif request["kind"] == "tokenize":
-    model_path = pathlib.Path(__file__).resolve().parents[2] / "src/data/punkt-english.json"
+    model_path = pathlib.Path(__file__).resolve().parents[2] / "scripts/data/punkt-english.json"
     model = json.loads(model_path.read_text())
     params = PunktParameters()
     params.abbrev_types = set(model["abbreviations"])

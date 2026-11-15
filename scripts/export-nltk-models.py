@@ -26,10 +26,12 @@ def write(relative, value, compress=False):
     print(relative, len(content))
 
 v = VaderConstants()
-write("src/data/vader.json", {"lexicon": SentimentIntensityAnalyzer().lexicon, "boosters": v.BOOSTER_DICT,
+# Dev copies feed oracles and the browser bundler; compress-ne-models.ts
+# emits the shipped models/*.json.br payloads from them.
+write("scripts/data/vader.json", {"lexicon": SentimentIntensityAnalyzer().lexicon, "boosters": v.BOOSTER_DICT,
     "negations": sorted(v.NEGATE), "idioms": v.SPECIAL_CASE_IDIOMS, "punctuation": v.PUNC_LIST})
 p = PunktTokenizer("english")._params
-write("src/data/punkt-english.json", {"version": 2, "abbreviations": sorted(p.abbrev_types),
+write("scripts/data/punkt-english.json", {"version": 2, "abbreviations": sorted(p.abbrev_types),
     "collocations": sorted(p.collocations), "sentenceStarters": sorted(p.sent_starters),
     "orthoContext": dict(sorted(p.ortho_context.items()))})
 for mode in ["multiclass", "binary"]:

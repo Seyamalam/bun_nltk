@@ -18,6 +18,18 @@ const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as {
   files: Record<string, { bytes: number; sha256: string }>;
 };
 
+const brotli = (raw: Buffer) => brotliCompressSync(raw, {
+  params: {
+    [constants.BROTLI_PARAM_QUALITY]: 11,
+    [constants.BROTLI_PARAM_MODE]: constants.BROTLI_MODE_TEXT,
+    [constants.BROTLI_PARAM_SIZE_HINT]: raw.length,
+  },
+});
+const record = (target: string) => {
+  const compressed = readFileSync(resolve(root, target));
+  return { bytes: compressed.length, sha256: createHash("sha256").update(compressed).digest("hex") };
+};
+
 for (const mode of ["multiclass", "binary"] as const) {
   const source = resolve(root, `models/ne-chunker-${mode}.json.gz`);
   const target = `models/ne-chunker-${mode}.json.br`;
@@ -25,19 +37,20 @@ for (const mode of ["multiclass", "binary"] as const) {
   // deduplicates mapping strings and implicit dense weight indices; no rounding.
   const model = JSON.parse(gunzipSync(readFileSync(source)).toString()) as NeModel;
   const raw = Buffer.from(JSON.stringify(compactNeModel(model)));
-  const compressed = brotliCompressSync(raw, {
-    params: {
-      [constants.BROTLI_PARAM_QUALITY]: 11,
-      [constants.BROTLI_PARAM_MODE]: constants.BROTLI_MODE_TEXT,
-      [constants.BROTLI_PARAM_SIZE_HINT]: raw.length,
-    },
-  });
-  writeFileSync(resolve(root, target), compressed);
-  manifest.files[target] = {
-    bytes: compressed.length,
-    sha256: createHash("sha256").update(compressed).digest("hex"),
-  };
+  writeFileSync(resolve(root, target), brotli(raw));
+  manifest.files[target] = record(target);
   delete manifest.files[`models/ne-chunker-${mode}.json.gz`];
-  console.log(target, compressed.length);
+  console.log(target, manifest.files[target]!.bytes);
+}
+
+// VADER + default Punkt payloads: the dev JSONs under scripts/data/ are the
+// oracle/bundling sources; the package ships the .br forms.
+for (const name of ["vader", "punkt-english"] as const) {
+  const source = resolve(root, `scripts/data/${name}.json`);
+  const target = `models/${name}.json.br`;
+  const raw = readFileSync(source);
+  writeFileSync(resolve(root, target), brotli(raw));
+  manifest.files[target] = record(target);
+  console.log(target, manifest.files[target]!.bytes);
 }
 writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);

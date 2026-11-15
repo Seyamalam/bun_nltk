@@ -17,53 +17,63 @@ export class SimpleTree {
     this.children = [...children];
   }
 
-  /** nltk.tree.Tree.fromstring — parse a bracketed tree string. */
+  /** nltk.tree.Tree.fromstring — parse a bracketed tree string.
+   *  Faithful port: `(label` is one token, `\\(`/escaped brackets stay
+   *  verbatim, `( )` produces an empty-label empty-children tree, and
+   *  errors use Tree.read()'s caret format. */
   static fromstring(s: string, options?: { remove_empty_top_bracketing?: boolean; brackets?: string }): SimpleTree {
     const brackets = options?.brackets ?? "()";
+    if (typeof brackets !== "string" || [...brackets].length !== 2) throw new TypeError("brackets must be a length-2 string");
+    if (/\s/.test(brackets)) throw new TypeError("whitespace brackets not allowed");
     const openB = brackets[0]!, closeB = brackets[1]!;
     const esc = (c: string) => c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const tokenRe = new RegExp(`[${esc(openB)}${esc(closeB)}]|[^\\s${esc(openB)}${esc(closeB)}]+`, "g");
-    const tokens = s.match(tokenRe) ?? [];
-    for (const [i, tok] of tokens.entries()) {
-      if (tok === openB) tokens[i] = openB;
-      else if (tok === closeB) tokens[i] = closeB;
-      else if (tok.startsWith(openB) || tok.startsWith(closeB) || tok.endsWith(openB) || tok.endsWith(closeB)) {
-        throw pyError("ValueError", `Tree.fromstring: malformed bracket token ${JSON.stringify(tok)}`);
-      }
-    }
-    const stack: SimpleTree[] = [];
-    for (const [index, tok] of tokens.entries()) {
-      if (tok === openB) {
-        stack.push(new SimpleTree(""));
-      } else if (tok === closeB) {
-        if (stack.length === 0) throw pyError("ValueError", `Tree.fromstring: too many close brackets at char ${index}`);
-        const finished = stack.pop()!;
-        if (finished.children.length === 0) throw pyError("ValueError", `Tree.fromstring: read an empty bracket at char ${index}`);
-        if (stack.length === 0) {
-          if (typeof finished.children[0] === "string") {
-            finished.label = finished.children[0] as string;
-            finished.children = finished.children.slice(1);
-          }
-          if (options?.remove_empty_top_bracketing && finished.label === "" && finished.children.length === 1 && finished.children[0] instanceof SimpleTree) {
-            return finished.children[0];
-          }
-          return finished;
+    // token_char: a backslash-escaped bracket (kept verbatim) or any char
+    // that is not whitespace or an unescaped bracket.
+    const tokenChar = `(?:\\\\[${esc(openB)}${esc(closeB)}]|[^\\s${esc(openB)}${esc(closeB)}])`;
+    const tokenRe = new RegExp(`${esc(openB)}\\s*(?:${tokenChar}+)?|${esc(closeB)}|${tokenChar}+`, "g");
+
+    const points = [...s];
+    const parseError = (matchIndex: number | "end-of-string", token: string | undefined, expecting: string): never => {
+      let pos: number, got: string;
+      if (matchIndex === "end-of-string") { pos = points.length; got = "end-of-string"; }
+      else { pos = Array.from(s.slice(0, matchIndex)).length; got = token!; }
+      let msg = `Tree.read(): expected ${pyRepr(expecting)} but got ${pyRepr(got)}\n            at index ${pos}.`;
+      const flat = points.join("").replace(/\n/g, " ").replace(/\t/g, " ");
+      let view = flat, offset = pos;
+      if ([...flat].length > pos + 10) view = [...flat].slice(0, pos + 10).join("") + "...";
+      if (pos > 10) { view = "..." + [...view].slice(pos - 10).join(""); offset = 13; }
+      msg += `\n                "${view}"\n${" ".repeat(17 + offset)}^`;
+      throw pyError("ValueError", msg);
+    };
+
+    const stack: { label: string | null; children: SimpleTreeChild[] }[] = [{ label: null, children: [] }];
+    let m: RegExpExecArray | null;
+    while ((m = tokenRe.exec(s)) !== null) {
+      const token = m[0];
+      if (token[0] === openB) {
+        if (stack.length === 1 && stack[0]!.children.length > 0) parseError(m.index, token, "end-of-string");
+        stack.push({ label: token.slice(1).trimStart(), children: [] });
+        if (stack.length > 500) {
+          throw pyError("ValueError", "Tree nesting depth exceeds MAX_TREE_DEPTH (500); the input may be adversarially deep. Raise nltk.tree.tree.MAX_TREE_DEPTH to allow it.");
         }
-        if (typeof finished.children[0] === "string") {
-          finished.label = finished.children[0] as string;
-          finished.children = finished.children.slice(1);
+      } else if (token === closeB) {
+        if (stack.length === 1) {
+          parseError(m.index, token, stack[0]!.children.length === 0 ? openB : "end-of-string");
         }
-        stack[stack.length - 1]!.children.push(finished);
+        const { label, children } = stack.pop()!;
+        stack[stack.length - 1]!.children.push(new SimpleTree(label!, children));
       } else {
-        if (stack.length === 0) {
-          if (index === 0) continue;
-          throw pyError("ValueError", `Tree.fromstring: token ${JSON.stringify(tok)} at char ${index} is not bracketed`);
-        }
-        stack[stack.length - 1]!.children.push(tok);
+        if (stack.length === 1) parseError(m.index, token, openB);
+        stack[stack.length - 1]!.children.push(token);
       }
     }
-    if (stack.length !== 0) throw pyError("ValueError", `Tree.fromstring: read a tree missing a close bracket`);
-    throw pyError("ValueError", "Tree.fromstring: no trees found");
+    if (stack.length > 1) parseError("end-of-string", undefined, closeB);
+    if (stack[0]!.children.length === 0) parseError("end-of-string", undefined, openB);
+    let tree = stack[0]!.children[0] as SimpleTree;
+    if (options?.remove_empty_top_bracketing && tree.label === "" && tree.length === 1 && tree.get(0) instanceof SimpleTree) {
+      tree = tree.get(0) as SimpleTree;
+    }
+    return tree;
   }
 
   get length(): number { return this.children.length; }
@@ -129,7 +139,9 @@ export class SimpleTree {
     const parens = options.parens ?? ["(", ")"];
     const quotes = options.quotes ?? ["", ""];
     const flat = this._pformatFlat(nodesep, parens, quotes);
-    if (flat.length + indent < margin) return flat;
+    // Python len() counts code points; JS .length counts UTF-16 units —
+    // spread so astral glyphs don't inflate the margin check.
+    if ([...flat].length + indent < margin) return flat;
     let s = `${parens[0]}${this.label}${nodesep}`;
     const indentStr = " ".repeat(indent + 2);
     for (const child of this.children) {

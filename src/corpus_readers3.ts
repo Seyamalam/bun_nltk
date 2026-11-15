@@ -492,7 +492,9 @@ export function sinica_parse(s: string): SimpleTree {
 export const sinicaParse = sinica_parse;
 
 const SINICA_IDENTIFIER = /^#\S+\s/;
-const SINICA_APPENDIX = /(?<=\))#.*$/;
+// Python $ matches before a trailing newline; JS $ does not, so use
+// [^\n]* — identical span, newline-proof.
+const SINICA_APPENDIX = /(?<=\))#[^\n]*/;
 const SINICA_TAGWORD = /:([^:()|]+):([^:()|]+)/g;
 const SINICA_WORD = /:[^:()|]+:([^:()|]+)/g;
 
