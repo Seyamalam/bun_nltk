@@ -528,6 +528,7 @@ export type { SNOWBALL_LANGUAGES as SnowballLanguages } from "./src/snowball";
 export { SNOWBALL_LANGUAGES, snowballStem } from "./src/snowball";
 export { demo as snowball_demo, demo as snowballDemo } from "./src/snowball_demo";
 export { demo as chunk_regexp_demo, demo as chunkRegexpDemo } from "./src/chunk_regexp_demo";
+export { naivebayes_demo, naivebayesDemo, positivenaivebayes_demo, positiveNaiveBayesDemo, maxent_demo, maxentDemo, decisiontree_demo, decisionTreeDemo, names_demo, namesDemo, partial_names_demo, partialNamesDemo, names_demo_features, binary_names_demo_features, namesDemoFeatures, binaryNamesDemoFeatures, PyNaiveBayesClassifier, PyPositiveNaiveBayesClassifier, PyDecisionTreeClassifier, pyFixed } from "./src/classify_demos";
 
 export {
   IBMModel1,

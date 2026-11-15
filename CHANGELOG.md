@@ -100,6 +100,17 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   propagation / `walk => True` string storage / integer `set2rel` bare-string
   values, and Gale-Church's Python-3 `split_at` iterator failure (documented
   divergence; a functional contract is kept).
+- **Classifier demos (`nltk.classify.*.demo`)**: faithful ports of all four
+  — `naivebayes.demo` and `maxent.demo` byte-exact (full 100-iteration IIS
+  trace included), `positivenaivebayes.demo` reproducing the upstream
+  `zip(test, pdists)[:5]` TypeError, and `decisiontree.demo` structurally
+  pinned (verbose stumps + `pretty_format(depth=7)` + `pseudocode(depth=7)`
+  — upstream stump search iterates hash-ordered sets). Adds
+  `PyNaiveBayesClassifier`/`PyPositiveNaiveBayesClassifier`/
+  `PyDecisionTreeClassifier` faithful internals plus the `names_demo`/
+  `partial_names_demo`/`names_demo_features`/`binary_names_demo_features`
+  `classify.util` helpers, and fixes `ConditionalExponentialClassifier.classify`
+  to Python's `max((prob, label))` tuple tie-break.
 
 ### Changed
 

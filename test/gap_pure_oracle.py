@@ -405,4 +405,15 @@ run("chunk_regexp_demo", _cr.demo)
 import nltk.parse.transitionparser as _tparser
 run("transitionparser_demo", _tparser.demo)
 
+
+# ---------------- classify demos (nltk.classify.*) ----------------
+import nltk.classify.naivebayes as _nb
+import nltk.classify.positivenaivebayes as _pnb
+run("classify_nb_demo", _nb.demo)
+run("classify_pnb_demo", _pnb.demo)
+import nltk.classify.maxent as _me
+import nltk.classify.decisiontree as _dt
+run("classify_me_demo", _me.demo)
+run("classify_dt_demo", _dt.demo)
+
 print(json.dumps({"out": out, "errs": errs}))

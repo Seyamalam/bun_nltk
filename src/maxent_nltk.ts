@@ -306,7 +306,19 @@ export class ConditionalExponentialClassifier extends ClassifierI<MaxentFeatures
   weights(): number[] { return this._weights; }
 
   override classify(featureset: MaxentFeatureset): string {
-    return this.prob_classify(featureset).max();
+    // python: prob_classify(fs).max() — DictionaryProbDist.max() picks
+    // max((prob, value)) over samples, so ties resolve to the greatest label.
+    const pdist = this.prob_classify(featureset);
+    let best: string | null = null;
+    let bestProb = -Infinity;
+    for (const label of pdist.samples()) {
+      const p = pdist.prob(label);
+      if (best === null || p > bestProb || (p === bestProb && label > best)) {
+        best = label;
+        bestProb = p;
+      }
+    }
+    return best!;
   }
 
   override prob_classify(featureset: MaxentFeatureset): DictionaryProbDist<string> {

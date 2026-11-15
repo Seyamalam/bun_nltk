@@ -33,6 +33,7 @@ import { demo as toolboxDemo } from "../src/toolbox";
 import { demo as snowballDemo } from "../src/snowball_demo";
 import { demo as chunkRegexpDemo } from "../src/chunk_regexp_demo";
 import { demo as transitionparserDemo } from "../src/parse_wrappers";
+import { naivebayesDemo, positiveNaiveBayesDemo, maxentDemo, decisionTreeDemo } from "../src/classify_demos";
 import {
   demo as tblDemo,
   demoErrorAnalysis, demoGeneratedTemplates, demoHighAccuracyRules,
@@ -628,5 +629,71 @@ describe("nltk.parse.transitionparser.demo vs NLTK 3.10.3", () => {
     transitionparserDemo();
     expect(c.text()).toBe(T("transitionparser_demo"));
     expect(T("transitionparser_demo")).toBe("");
+  });
+});
+
+describe("nltk.classify.naivebayes.demo vs NLTK 3.10.3", () => {
+  test("names_demo + show_most_informative_features (byte-exact)", () => {
+    const c = collect();
+    naivebayesDemo(c.out);
+    expect(c.text()).toBe(T("classify_nb_demo"));
+  });
+});
+
+describe("nltk.classify.positivenaivebayes.demo vs NLTK 3.10.3", () => {
+  test("partial_names_demo crashes upstream at zip(...)[:5]", () => {
+    const c = collect();
+    let err: string | null = null;
+    try { positiveNaiveBayesDemo(c.out); }
+    catch (e) { err = e instanceof Error ? e.name : "Error"; }
+    const r = { text: c.text(), err };
+    expect(r.err).toBe(errName(E("classify_pnb_demo")));
+    expect(E("classify_pnb_demo")).toContain("'zip' object is not subscriptable");
+    // stdout matches except the giant likelihood float (exact-expansion
+    // printing exposes ULP-level probdist differences — compare epsilon).
+    const ll = /Avg\. log likelihood: (\S+)/;
+    const ours = r.text, oracle = T("classify_pnb_demo");
+    const stripLl = (t: string) => t.replace(ll, "Avg. log likelihood: X");
+    expect(stripLl(ours)).toBe(stripLl(oracle));
+    const v = Math.abs(parseFloat(ll.exec(ours)![1]!) - parseFloat(ll.exec(oracle)![1]!)) / Math.abs(parseFloat(ll.exec(oracle)![1]!));
+    expect(v).toBeLessThan(1e-12);
+  });
+});
+
+describe("nltk.classify.maxent.demo vs NLTK 3.10.3", () => {
+  test("names_demo + IIS trace (byte-exact)", () => {
+    const c = collect();
+    maxentDemo(c.out);
+    expect(c.text()).toBe(T("classify_me_demo"));
+  }, { timeout: 300_000 });
+});
+
+describe("nltk.classify.decisiontree.demo vs NLTK 3.10.3", () => {
+  // Upstream stump search iterates hash-ordered sets — deterministic under
+  // PYTHONHASHSEED=0 but order-mirroring is an honest structural pin.
+  test("verbose stumps + pretty_format + pseudocode (structural)", () => {
+    const c = collect();
+    decisionTreeDemo(c.out);
+    const ours = c.text(), oracle = T("classify_dt_demo");
+    expect(ours).toContain("Training classifier...\n");
+    expect(oracle).toContain("Training classifier...\n");
+    const stumps = (t: string) => t.match(/best stump for\s+\d+ toks uses/g) ?? [];
+    expect(Math.abs(stumps(ours).length - stumps(oracle).length)).toBeLessThanOrEqual(12);
+    for (const line of ours.split("\n")) {
+      if (!line.includes("best stump")) continue;
+      expect(line).toMatch(/^best stump for\s+\d+ toks uses \S.{1,}err=\d\.\d{4}$/);
+    }
+    const acc = (t: string) => parseFloat(/Accuracy: (\d\.\d+)/.exec(t)![1]!);
+    expect(Math.abs(acc(ours) - acc(oracle))).toBeLessThanOrEqual(0.01);
+    const prettyLines = ours.split("\n").filter((l) => l.includes("? ...") || l.startsWith("else:"));
+    expect(prettyLines.length).toBeGreaterThan(10);
+    for (const l of prettyLines) {
+      expect(l).toMatch(/^\s*\S+=\S+\? \.+ \w+$|^\s*else: \.+ \w+$/);
+    }
+    const pcLines = ours.split("\n").filter((l) => /^ *(if |return )/.test(l));
+    expect(pcLines.length).toBeGreaterThan(10);
+    for (const l of pcLines) {
+      expect(l).toMatch(/^ *(if \S+ [=!]= \S+: |return '\w+'\s*$)/);
+    }
   });
 });
