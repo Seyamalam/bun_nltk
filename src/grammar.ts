@@ -1,4 +1,5 @@
 import type { CfgGrammar, CfgProduction, PcfgGrammar, PcfgProduction } from "./parse";
+import { pyError } from "./internals";
 
 export type GrammarSymbol = Nonterminal | string;
 
@@ -222,8 +223,10 @@ const ARROW_RE = /\s*->\s*/y;
 const PROBABILITY_RE = /(\[[\d.]+\])\s*/y;
 const TERMINAL_RE = /("[^"]*"|'[^']*')\s*/y;
 const DISJUNCTION_RE = /\|\s*/y;
-const STANDARD_NONTERM_RE = /([\w/][\w/^<>-]*)\s*/uy;
-const STANDARD_NONTERM_FINDALL = /[\w/][\w/^<>-]*/gu;
+// Python \w is Unicode-aware (alphanumeric + underscore); JS \w is ASCII-only.
+// Python's isalnum ≈ \p{L}+\p{N}, so \w = [\p{L}\p{N}_].
+const STANDARD_NONTERM_RE = /([\p{L}\p{N}_/][\p{L}\p{N}_/^<>-]*)\s*/uy;
+const STANDARD_NONTERM_FINDALL = /[\p{L}\p{N}_/][\p{L}\p{N}_/^<>-]*/gu;
 
 function matchAt(re: RegExp, line: string, pos: number): RegExpExecArray | null {
   re.lastIndex = pos;
@@ -232,7 +235,7 @@ function matchAt(re: RegExp, line: string, pos: number): RegExpExecArray | null 
 
 export function standardNontermParser(line: string, pos: number): [Nonterminal, number] {
   const m = matchAt(STANDARD_NONTERM_RE, line, pos);
-  if (!m || m.index !== pos) throw new Error(`Expected a nonterminal, found: ${line.slice(pos)}`);
+  if (!m || m.index !== pos) throw pyError("ValueError", `Expected a nonterminal, found: ${line.slice(pos)}`);
   return [new Nonterminal(m[1]!), m[0].length + pos];
 }
 
@@ -248,7 +251,7 @@ function readProduction(line: string, nontermParser: NontermParser, probabilisti
   pos = lhsEnd;
 
   let m = matchAt(ARROW_RE, line, pos);
-  if (!m || m.index !== pos) throw new Error("Expected an arrow");
+  if (!m || m.index !== pos) throw pyError("ValueError", "Expected an arrow");
   pos += m[0].length;
 
   const probabilities = [0.0];
@@ -259,11 +262,11 @@ function readProduction(line: string, nontermParser: NontermParser, probabilisti
       pos += m[0].length;
       probabilities[probabilities.length - 1] = parseFloat(m[1]!.slice(1, -1));
       if (probabilities[probabilities.length - 1]! > 1.0) {
-        throw new Error(`Production probability ${probabilities[probabilities.length - 1]}, should not be greater than 1.0`);
+        throw pyError("ValueError", `Production probability ${probabilities[probabilities.length - 1]}, should not be greater than 1.0`);
       }
     } else if (line[pos] === "'" || line[pos] === '"') {
       m = matchAt(TERMINAL_RE, line, pos);
-      if (!m || m.index !== pos) throw new Error("Unterminated string");
+      if (!m || m.index !== pos) throw pyError("ValueError", "Unterminated string");
       rhsides[rhsides.length - 1]!.push(m[1]!.slice(1, -1));
       pos += m[0].length;
     } else if (line[pos] === "|") {
@@ -309,19 +312,19 @@ export function readGrammar(
         if (directive === "start") {
           const [s, pos] = nontermParser(args, 0);
           start = s;
-          if (pos !== args.length) throw new Error("Bad argument to start directive");
+          if (pos !== args.length) throw pyError("ValueError", "Bad argument to start directive");
         } else {
-          throw new Error("Bad directive");
+          throw pyError("ValueError", "Bad directive");
         }
       } else {
         productions.push(...readProduction(line, nontermParser, probabilistic));
       }
     } catch (e) {
-      throw new Error(`Unable to parse line ${linenum + 1}: ${line}\n${(e as Error).message}`);
+      throw pyError("ValueError", `Unable to parse line ${linenum + 1}: ${line}\n${(e as Error).message}`);
     }
   }
 
-  if (productions.length === 0) throw new Error("No productions found!");
+  if (productions.length === 0) throw pyError("ValueError", "No productions found!");
   if (!start) start = productions[0]!.lhs() as Nonterminal;
   return [start, productions];
 }
