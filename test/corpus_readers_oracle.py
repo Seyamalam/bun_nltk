@@ -178,7 +178,15 @@ out["pros_cons"] = {
 
 # --- IEERCorpusReader: docs() raw <DOC> blocks
 ie = IEERCorpusReader(ROOT, "ieer\\.txt")
-out["ieer"] = {"docs": list(ie.docs())}
+out["ieer"] = {
+    "docs": list(ie.docs()),
+    "parsed_docs": [
+        [x.docno, x.doctype, x.date_time,
+         x.headline if isinstance(x.headline, str) else str(x.headline),
+         str(x.text)]
+        for x in ie.parsed_docs()
+    ],
+}
 
 # --- ComparativeSentencesCorpusReader
 cmp_reader = ComparativeSentencesCorpusReader(ROOT, "comp\\.txt")

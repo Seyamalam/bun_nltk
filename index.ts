@@ -1027,6 +1027,7 @@ export {
   StringCategoryCorpusReader,
 } from "./src/corpus_readers2";
 export { SimpleTree, tagstr2tree } from "./src/corpus_tree";
+export { ieerstr2tree, ieerstr2tree as ieerStr2tree, type IeerTreeDict } from "./src/ieerstr2tree";
 export {
   SeekableUnicodeStreamReader,
   PathPointer,

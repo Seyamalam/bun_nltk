@@ -18,7 +18,9 @@ import {
   elizaDemo, ieshaDemo, rudeDemo, suntsuDemo, zenDemo, gaacDemo, wordfinderDemo,
   projectiveRuleParseDemo, propdemo, recursivedescentDemo, ruleBasedDemo,
   satdemo, scoresDemo, semUtilDemo, shiftreduceDemo, sortDemo, viterbiDemo,
+  withConsoleLog,
 } from "../src/demos";
+import { in_demo, roles_demo } from "../src/sem_relextract";
 import {
   BasicTweetHandler, LOCAL, LocalTimezoneOffsetWithUTC, PyRandom, TweetHandlerI,
   findJarIter, findJar, findJarsWithinPath, findMaltModel, findMaltparser,
@@ -666,6 +668,19 @@ describe("nltk.classify.maxent.demo vs NLTK 3.10.3", () => {
     maxentDemo(c.out);
     expect(c.text()).toBe(T("classify_me_demo"));
   }, { timeout: 300_000 });
+});
+
+describe("nltk.sem.relextract demos vs NLTK 3.10.3", () => {
+  test("in_demo: ORG/LOC extraction + sqlite3 :memory: (byte-exact)", () => {
+    const c = collect();
+    withConsoleLog(c.out, () => in_demo());
+    expect(c.text()).toBe(T("relextract_in_demo"));
+  });
+  test("roles_demo: PER/ORG rtuples (byte-exact)", () => {
+    const c = collect();
+    withConsoleLog(c.out, () => roles_demo());
+    expect(c.text()).toBe(T("relextract_roles_demo"));
+  });
 });
 
 describe("nltk.classify.decisiontree.demo vs NLTK 3.10.3", () => {

@@ -105,7 +105,7 @@ interface Chat80SqliteDb {
   close(): void;
 }
 
-function openSqliteDb(dbPath: string): Chat80SqliteDb {
+export function openSqliteDb(dbPath: string): Chat80SqliteDb {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const req = (globalThis as Record<string, unknown>).require as ((m: string) => unknown) | undefined
     ?? (typeof require === "function" ? require : undefined);

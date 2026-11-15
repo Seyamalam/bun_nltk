@@ -416,4 +416,9 @@ import nltk.classify.decisiontree as _dt
 run("classify_me_demo", _me.demo)
 run("classify_dt_demo", _dt.demo)
 
+# ---------------- sem.relextract demos (ieer corpus) ----------------
+import nltk.sem.relextract as _rel
+run("relextract_in_demo", _rel.in_demo)
+run("relextract_roles_demo", _rel.roles_demo)
+
 print(json.dumps({"out": out, "errs": errs}))

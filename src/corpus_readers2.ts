@@ -23,7 +23,8 @@ import { TweetTokenizer } from "./tokenizers_social";
 import type { TextTokenizerLike } from "./corpus_text_readers";
 import { str2tuple } from "./tag_util";
 import { mapTag } from "./tag_mapping";
-import { SimpleTree, tagstr2tree, pyRepr } from "./corpus_tree";
+import { SimpleTree, tagstr2tree, pyRepr, type SimpleTreeChild } from "./corpus_tree";
+import { ieerstr2tree } from "./ieerstr2tree";
 import { ZipFilePathPointer } from "./data";
 
 // { bracket_parse
@@ -810,8 +811,13 @@ export class IEERCorpusReader extends CorpusReader {
     return this.readBlock(stream).map((doc) => this.parse(doc));
   }
 
-  private parse(_doc: string): IEERDocument {
-    throw pyError("NotImplementedError", "nltk.chunk.ieerstr2tree is not ported — parsed_docs unavailable");
+  private parse(doc: string): IEERDocument {
+    const val = ieerstr2tree(doc, undefined, "DOCUMENT");
+    if (typeof val === "object" && !(val instanceof SimpleTree) && !Array.isArray(val)) {
+      const d = val as { text: SimpleTree | SimpleTreeChild[]; docno: string | null; doctype: string | null; date_time: string | null; headline: SimpleTree | SimpleTreeChild[] };
+      return new IEERDocument(d.text, d.docno, d.doctype, d.date_time, d.headline as unknown);
+    }
+    return new IEERDocument(val as SimpleTree);
   }
 
   private readBlock(stream: SeekableUnicodeStreamReader): string[] {

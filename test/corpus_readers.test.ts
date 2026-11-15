@@ -207,7 +207,12 @@ describe("corpus readers vs NLTK 3.10.3 oracle", () => {
     if (!hasData) return;
     const ie = new IEERCorpusReader(root!, "ieer\\.txt");
     expect([...ie.docs() as Iterable<string>]).toEqual(o!.ieer.docs);
-    expect(() => [...ie.parsed_docs() as Iterable<unknown>]).toThrow(/ieerstr2tree/);
+    const pd = [...ie.parsed_docs() as Iterable<Record<string, unknown>>].map((x) => [
+      x.docno ?? null, x.doctype ?? null, x.date_time ?? null,
+      x.headline === undefined || x.headline === null ? null : String(x.headline),
+      String(x.text),
+    ]);
+    expect(pd).toEqual(o!.ieer.parsed_docs);
   });
 
   test("ComparativeSentencesCorpusReader comparisons/keywords/sents/words", () => {

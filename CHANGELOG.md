@@ -8,6 +8,13 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+- **IEER relation extraction (`nltk.sem.relextract` demos promoted)**:
+  faithful `ieerstr2tree` port (`src/ieerstr2tree.ts`) driving real
+  `IEERCorpusReader.parsed_docs`, plus byte-exact `in_demo` (incl. the
+  `sqlite3 :memory:` `Locations` table + Atlanta clause output) and
+  `roles_demo` against the provisioned ieer corpus. `extract_rels`
+  promoted: anchors Python `pattern.match` semantics and emits
+  Python-style `rtuple` reprs.
 - **`nltk.downloader` real port (24 mappings promoted)**: `Downloader`,
   `Package`, `Collection`, all 12 message classes, `build_index`,
   `unzip`/`_unzip_iter`, `md5_hexdigest`/`sha256_hexdigest`,

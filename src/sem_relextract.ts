@@ -4,6 +4,12 @@
  * APIs are provided in both snake_case (faithful to NLTK) and camelCase.
  */
 
+import { SimpleTree } from "./corpus_tree";
+import { IEERCorpusReader } from "./corpus_readers2";
+import { find } from "./data";
+import { openSqliteDb } from "./sem_chat80";
+import { pyStrRepr } from "./chunk_nltk";
+
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
@@ -140,6 +146,18 @@ function _isIeDocument(x: unknown): x is IeDocument {
   return typeof x === "object" && x !== null && "text" in (x as Record<string,unknown>) && "headline" in (x as Record<string,unknown>);
 }
 
+/** IEERDocument parts may be SimpleTrees (reader output) or already-flat
+ *  ChunkTree arrays — iterate children like python iterates a Tree. */
+function chunkChildren(part: unknown): ChunkTree {
+  if (Array.isArray(part)) return part as ChunkTree;
+  if (part instanceof SimpleTree) {
+    return part.children.map((c) => c instanceof SimpleTree
+      ? new SimpleNeTree(c.label, c.leaves() as JoinItem[])
+      : c) as ChunkTree;
+  }
+  return part as ChunkTree;
+}
+
 export function extract_rels(
   subjclass: string | null,
   objclass: string | null,
@@ -161,7 +179,7 @@ export function extract_rels(
     pairs = tree2semi_rel(doc as ChunkTree);
   } else if (corpus === "ieer") {
     const ie = doc as IeDocument;
-    pairs = [...tree2semi_rel(ie.text), ...tree2semi_rel(ie.headline)];
+    pairs = [...tree2semi_rel(chunkChildren(ie.text)), ...tree2semi_rel(chunkChildren(ie.headline))];
   } else {
     throw new Error("corpus type not recognized");
   }
@@ -169,13 +187,12 @@ export function extract_rels(
   const pat: RegExp = pattern ?? /.*/;
   return reldicts.filter(x => {
     const filler = x["filler"] ?? "";
-    // emulate Python pattern.match: must match from start; but NLTK patterns contain .* so test suffices
-    // Use exec and check not null; for faithful .match, ensure match starts at 0 when pattern is anchored,
-    // but since patterns are user-supplied with .*, we just test existence.
+    // Python pattern.match: the match must start at position 0 — exec()
+    // finds later matches too, so reject m.index != 0.
     const m = (() => {
       if ((pat as RegExp).global) (pat as RegExp).lastIndex = 0;
       const res = (pat as RegExp).exec(filler);
-      if (!res) return null;
+      if (!res || res.index !== 0) return null;
       return res;
     })();
     const fillerTokens = filler.split(/\s+/).filter(Boolean).length;
@@ -212,9 +229,7 @@ export function mkRelextractPattern(class1: string, class2: string): RegExp {
 // rtuple / clause serialization
 // ---------------------------------------------------------------------------
 
-function pyRepr(s: string): string {
-  return `'${s.replace(/\\/g,"\\\\").replace(/'/g,"\\'")}'`;
-}
+const pyRepr = pyStrRepr;
 
 export function rtuple(reldict: RelDict, lcon=false, rcon=false): string {
   const items: string[] = [
@@ -259,11 +274,74 @@ export function clause(reldict: RelDict, relsym: string): string {
   return `${relsym}(${pyRepr(reldict["subjsym"] ?? "")}, ${pyRepr(reldict["objsym"] ?? "")})`;
 }
 
-// Demo stubs (corpora not bundled)
-export function in_demo(_trace=0, _sql=true): void { console.log("in_demo requires ieer corpus — not available in JS runtime."); }
+// ---------------------------------------------------------------------------
+// Demos (ieer corpus provisioned under NLTK_DATA)
+// ---------------------------------------------------------------------------
+
+function pyTupleRepr(items: unknown[]): string {
+  const inner = items.map((v) => pyRepr(String(v))).join(", ");
+  return `(${inner}${items.length === 1 ? "," : ""})`;
+}
+
+export function in_demo(trace=0, sql=true): void {
+  let conn: { exec(sql: string): unknown; prepare(sql: string): { run(...p: unknown[]): unknown; values(...p: unknown[]): unknown[][] }; close(): void } | null = null;
+  let insert: { run(...p: unknown[]): unknown } | null = null;
+  if (sql) {
+    try {
+      conn = openSqliteDb(":memory:");
+      conn.exec("create table Locations (OrgName text, LocationName text, DocID text)");
+      insert = conn.prepare("insert into Locations values (?, ?, ?)");
+    } catch {
+      console.warn("Cannot import sqlite; sql flag will be ignored.");
+    }
+  }
+  const IN = /.*\bin\b(?!\b.+ing)/;
+  console.log();
+  console.log("IEER: in(ORG, LOC) -- just the clauses:");
+  console.log("=".repeat(45));
+  const ieer = new IEERCorpusReader(find("corpora/ieer"), "(?!README|\\.).*");
+  for (const file of ieer.fileids()) {
+    for (const doc of ieer.parsed_docs(file) as Iterable<IeDocument>) {
+      if (trace) { console.log(doc.docno); console.log("=".repeat(15)); }
+      for (const rel of extract_rels("ORG", "LOC", doc, "ieer", IN)) {
+        console.log(clause(rel, "IN"));
+        if (insert) { try { insert.run(rel["subjtext"], rel["objtext"], doc.docno); } catch { /* NameError path */ } }
+      }
+    }
+  }
+  if (conn) {
+    const rows = conn.prepare("select OrgName from Locations where LocationName = 'Atlanta'").values();
+    console.log();
+    console.log("Extract data from SQL table: ORGs in Atlanta");
+    console.log("-".repeat(15));
+    for (const row of rows) console.log(pyTupleRepr(row));
+    conn.close();
+  }
+}
 export const inDemo = in_demo;
-export function roles_demo(_trace=0): void { console.log("roles_demo requires ieer corpus — not available in JS runtime."); }
+
+export function roles_demo(trace=0): void {
+  // python re.VERBOSE: unescaped whitespace and #-comments ignored.
+  const ROLES = new RegExp(
+    "(.*(analyst|chair(wo)?man|commissioner|counsel|director|economist|editor|executive|foreman|governor|head|lawyer|leader|librarian).*)|" +
+    "manager|partner|president|producer|professor|researcher|spokes(wo)?man|writer|,\\sof\\sthe?\\s*",
+  );
+  console.log();
+  console.log("IEER: has_role(PER, ORG) -- raw rtuples:");
+  console.log("=".repeat(45));
+  const ieer = new IEERCorpusReader(find("corpora/ieer"), "(?!README|\\.).*");
+  const lcon = !!trace, rcon = !!trace;
+  for (const file of ieer.fileids()) {
+    for (const doc of ieer.parsed_docs(file) as Iterable<IeDocument>) {
+      if (trace) { console.log(doc.docno); console.log("=".repeat(15)); }
+      for (const rel of extract_rels("PER", "ORG", doc, "ieer", ROLES)) {
+        console.log(rtuple(rel, lcon, rcon));
+      }
+    }
+  }
+}
 export const rolesDemo = roles_demo;
+
 export function ieer_headlines(): void { console.log("ieer_headlines requires ieer corpus — not available in JS runtime."); }
 export const ieerHeadlines = ieer_headlines;
 export function conllned(_trace=1): void { console.log("conllned requires conll2002 corpus — not available in JS runtime."); }
