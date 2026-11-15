@@ -55,3 +55,20 @@ The pinned oracle, inventory, and all differential evidence stay on
 3.10.3. `termsec`/`csvsec`/`stopwords_extended` are pure-stdlib and
 implementable if the target is bumped to 3.10.4; none are mapped today
 because the inventory's review base is 3.10.3.
+
+## Engine-level regex deltas (JS vs Python) — swept 2026-11-10
+
+The unicode/whitespace sweeps converted every Python-`\w`, `\b`, `\s`,
+`\S`, `str.split()`, and `str.strip()` site to Python semantics
+(`[\p{L}\p{N}_]`, Unicode lookarounds, `PY_WS*` helpers). One class is
+deliberately deferred:
+
+- `.` (dot): Python `.` = `[^\n]`; JS `.` = `[^\n\r\u2028\u2029]`. ~1,300
+  literal sites make a mechanical sweep high-risk for low-frequency
+  gain (corpus text is line-split before most `.`-patterns run, so `\r`
+  / `\u2028` / `\u2029` almost never reach them). Convert `[^\n]` at
+  individual sites if a real corpus exhibits the divergence.
+- `\d`: Python `\d` = `\p{Nd}` (Unicode decimal digits); JS `\d` =
+  `[0-9]`. Remaining `\d` sites are ASCII-bound format specs (TIMIT
+  filenames, RFC2822 dates, ages, numeric coercion) where Unicode
+  digits do not occur; same per-site treatment if needed.

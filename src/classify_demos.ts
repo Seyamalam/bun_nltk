@@ -313,7 +313,7 @@ export class PyNaiveBayesClassifier implements ClassifierLike {
     const minprob = new Map<string, number>();
     for (const { label: _l, fname, dist } of this.featureProbdist.values()) {
       for (const fval of dist.samples()) {
-        const key = fname + " " + sampleKey(fval);
+        const key = fname + "\u0000" + sampleKey(fval);
         features.add(key);
         featureOf.set(key, [fname, fval]);
         const p = dist.prob(fval);
