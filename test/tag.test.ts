@@ -5,10 +5,9 @@ import {
   brill24,
   ConfusionMatrix,
   describe_template_sets,
-  demo_pos,
+  demo_bw,
+  demo_pos_bw,
   fntbl37,
-  hmmDemo,
-  load_pos,
   HiddenMarkovModelTrainer,
   HunposTagger,
   logsumexp2,
@@ -124,9 +123,8 @@ describe("nltk.tag.hmm", () => {
   });
 
   it("corpus-bound demos throw honestly", () => {
-    expect(() => hmmDemo()).toThrowError(/nltk_data/);
-    expect(() => load_pos()).toThrowError(/nltk_data/);
-    expect(() => demo_pos()).toThrowError(/nltk_data/);
+    expect(() => demo_bw()).toThrowError(/Baum-Welch/);
+    expect(() => demo_pos_bw()).toThrowError(/Baum-Welch/);
   });
 });
 

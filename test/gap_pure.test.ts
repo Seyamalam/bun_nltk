@@ -28,6 +28,7 @@ import { bots } from "../src/ext_pure";
 import { RegexpParser } from "../src/chunk_nltk";
 import { resetUniqueVariableCounter } from "../src/sem_logic";
 import { clearTemplateRegistry } from "../src/brill_tagger";
+import { demo as hmmDemo, demo_pos } from "../src/hmm_tagger";
 import {
   demo as tblDemo,
   demoErrorAnalysis, demoGeneratedTemplates, demoHighAccuracyRules,
@@ -45,7 +46,7 @@ const NLTK_DATA = process.env.NLTK_DATA ?? join(process.cwd(), ".cache/nltk-data
 function oracle(): { out: Record<string, any>; errs: Record<string, string> } {
   const res = spawnSync("python3", ["test/gap_pure_oracle.py"], {
     encoding: "utf-8",
-    env: { ...process.env, NLTK_DATA },
+    env: { ...process.env, NLTK_DATA, PYTHONHASHSEED: "0" },
   });
   if (res.status !== 0) throw new Error(`oracle failed: ${res.stderr}`);
   return JSON.parse(res.stdout.trim().split("\n").pop()!);
@@ -499,5 +500,28 @@ describe("nltk.tbl.demo", () => {
     expect(py.slice(ours.length)).toBe(
       "Wrote pickled tagger to tagger.pcl\nReloaded pickled tagger from tagger.pcl\n",
     );
+  });
+});
+
+describe("nltk.tag.hmm demos vs NLTK 3.10.3", () => {
+  test("demo (market HMM probability)", () => {
+    const c = collect();
+    hmmDemo(c.out);
+    expect(c.text()).toBe(T("hmm_demo"));
+  });
+  test("demo_pos (brown supervised)", { timeout: 120_000 }, () => {
+    const c = collect();
+    demo_pos(c.out);
+    // `Entropy:` lines carry ulp-level float noise: python itself varies by
+    // ~1e-12 across hash seeds because load_pos builds tag_set/symbols via
+    // list(set). Everything else must match byte-for-byte.
+    const normEnt = (s: string) => s.replace(/Entropy: -?[\d.eE+]+/g, "Entropy: F");
+    const ents = (s: string) => [...s.matchAll(/Entropy: (-?[\d.eE+]+)/g)].map((m) => Number(m[1]));
+    const py = T("hmm_demo_pos");
+    const ours = c.text();
+    expect(normEnt(ours)).toBe(normEnt(py));
+    const [pe, oe] = [ents(py), ents(ours)];
+    expect(oe.length).toBe(pe.length);
+    pe.forEach((v, i) => expect(Math.abs(oe[i]! - v)).toBeLessThan(1e-9));
   });
 });

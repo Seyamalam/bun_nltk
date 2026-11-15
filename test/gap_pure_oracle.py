@@ -365,4 +365,10 @@ def tblfile(name, f, files):
 tblfile("tbl_demo_error_analysis", _tbl.demo_error_analysis, ["errors.txt"])
 tblfile("tbl_demo_serialize", _tbl.demo_serialize_tagger, ["tagger.pcl"])
 
+# ---------------- hmm demos (nltk.tag.hmm) ----------------
+import nltk.tag.hmm as _hmm
+
+run("hmm_demo", _hmm.demo)
+run("hmm_demo_pos", _hmm.demo_pos)
+
 print(json.dumps({"out": out, "errs": errs}))

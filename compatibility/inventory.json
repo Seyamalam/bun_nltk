@@ -842,6 +842,7 @@
    "demoLearningCurve": "src/tbl_demo.ts",
    "demoMultifeatureTemplate": "src/tbl_demo.ts",
    "demoMultipositionFeature": "src/tbl_demo.ts",
+   "demoPos": "src/hmm_tagger.ts",
    "demoReadDepgraph": "src/demos.ts",
    "demoReprRuleFormat": "src/tbl_demo.ts",
    "demoSerializeTagger": "src/tbl_demo.ts",
@@ -1018,6 +1019,7 @@
    "load": "src/data.ts",
    "loadFol": "src/inference_discourse.ts",
    "loadParser": "src/inference_discourse.ts",
+   "loadPos": "src/hmm_tagger.ts",
    "loadPunktParams": "src/punkt_nltk.ts",
    "loadWordNet": "src/wordnet.ts",
    "load_fol": "src/inference_discourse.ts",
@@ -33261,31 +33263,34 @@
   {
    "target": "nltk.tag.hmm.demo",
    "exports": [
+    "demo",
     "hmmDemo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/hmm_tagger.ts",
-     "anchor": "export function demo"
+     "anchor": "export function demo("
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "demo fns take a PrintSink out-arg instead of writing to stdout; tag_set/symbols use insertion order rather than python's per-process set order."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sink-injected demo; oracle-pinned output (Entropy lines epsilon-compared for demo_pos)."
     ]
    },
-   "notes": "Corpus-bound demo (treebank); unsupported without nltk_data."
+   "notes": "Port of nltk.tag.hmm.demo — Market-HMM probability demo; entropy/entropy-exhaustive/point-entropy + tag output byte-pinned."
   },
   {
    "target": "nltk.tag.hmm.demo_bw",
@@ -33319,10 +33324,11 @@
   {
    "target": "nltk.tag.hmm.demo_pos",
    "exports": [
-    "demo_pos"
+    "demo_pos",
+    "demoPos"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/hmm_tagger.ts",
@@ -33330,20 +33336,22 @@
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "demo fns take a PrintSink out-arg instead of writing to stdout; tag_set/symbols use insertion order rather than python's per-process set order."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sink-injected demo; oracle-pinned output (Entropy lines epsilon-compared for demo_pos)."
     ]
    },
-   "notes": "Corpus-bound demo; unsupported without nltk_data."
+   "notes": "Port of nltk.tag.hmm.demo_pos — brown-news supervised HMM demo; pinned verbatim except Entropy lines which carry python-hashseed ulp noise (epsilon-compared)."
   },
   {
    "target": "nltk.tag.hmm.demo_pos_bw",
@@ -33377,31 +33385,34 @@
   {
    "target": "nltk.tag.hmm.load_pos",
    "exports": [
-    "load_pos"
+    "load_pos",
+    "loadPos"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
      "file": "src/hmm_tagger.ts",
-     "anchor": "export function load_pos"
+     "anchor": "export function loadPos"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "demo fns take a PrintSink out-arg instead of writing to stdout; tag_set/symbols use insertion order rather than python's per-process set order."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Sink-injected demo; oracle-pinned output (Entropy lines epsilon-compared for demo_pos)."
     ]
    },
-   "notes": "Corpus loader (treebank POS); unsupported without nltk_data."
+   "notes": "Port of nltk.tag.hmm.load_pos — brown news loader; tag regex + lowercase parity; tag_set/symbols order is insertion-order (python uses list(set) — per-process hash order)."
   },
   {
    "target": "nltk.tag.hmm.logsumexp2",
