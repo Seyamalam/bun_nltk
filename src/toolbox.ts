@@ -2,7 +2,7 @@
 // ElementTree is replaced by a minimal ToolboxElement that preserves tag /
 // text / ordered-children semantics used by the toolbox helpers.
 
-import { PathPointer } from "./data";
+import { PathPointer, find } from "./data";
 import { pathsec_open } from "./pathsec";
 import { pyError } from "./internals";
 import { regexpChunkParse } from "./chunk";
@@ -109,6 +109,13 @@ export class StandardFormat {
     const enc = this._encoding ?? "utf-8";
     let text: string;
     if (sfm_file instanceof PathPointer) {
+      // Python's PathPointer.open(None) returns a raw binary stream; raw_fields
+      // then hits "TypeError: cannot use a string pattern on a bytes-like
+      // object". Reproduce that byte-iteration path.
+      if (this._encoding === null) {
+        this._file = [new Uint8Array(0) as unknown as string][Symbol.iterator]();
+        return;
+      }
       text = sfm_file.open(enc).read();
     } else {
       text = new TextDecoder(enc === "utf8" ? "utf-8" : enc as "utf-8").decode(
@@ -133,6 +140,9 @@ export class StandardFormat {
     const it = this._file!;
     let r = it.next();
     if (r.done) return;
+    if (typeof r.value !== "string") {
+      throw pyError("TypeError", "cannot use a string pattern on a bytes-like object");
+    }
     let mobj = firstLinePat.exec(r.value)!;
     let mkr: string | null = mobj[1] ?? null;
     let valueLines = [mobj[2]!];
@@ -405,3 +415,15 @@ export const removeBlanks = remove_blanks;
 export const addDefaultFields = add_default_fields;
 export const sortFields = sort_fields;
 export const addBlankLines = add_blank_lines;
+
+/**
+ * nltk.toolbox.demo — crashes upstream in NLTK 3.10.3: PathPointer.open(None)
+ * yields a binary stream and raw_fields hits
+ * "TypeError: cannot use a string pattern on a bytes-like object" at the very
+ * first line. The port is faithful — it throws the same error at the same
+ * call site.
+ */
+export function demo(): ToolboxElement {
+  const filePath = find("corpora/toolbox/rotokas.dic");
+  return new ToolboxData(filePath).parse();
+}

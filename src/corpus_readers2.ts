@@ -485,31 +485,10 @@ export class SentiWordNetCorpusReader extends CorpusReader {
   }
 }
 
-// { udhr — plain text with README/license stripped
+// { udhr — canonical implementation moved to corpus_text_readers.ts (per-fileid
+//   ENCODINGS table; matches python's UdhrCorpusReader). }
 
-export class UdhrCorpusReader extends CorpusReader {
-  private static readonly SKIP = ["README", "LICENSE"];
-
-  override raw(fileids?: string | string[] | null): string {
-    return super.raw(fileids);
-  }
-
-  words(fileids?: string | string[] | null): string[] {
-    let ids: string[];
-    if (fileids === undefined || fileids === null) {
-      ids = this._fileids.filter((f) => !f.endsWith(".skip"));
-    } else if (typeof fileids === "string") ids = [fileids];
-    else ids = fileids;
-    const ws = new WhitespaceTokenizer();
-    return ids.flatMap((f) => ws.tokenize(this.raw(f)));
-  }
-
-  langs(): string[] {
-    const names = new Set(this._fileids.map((f) => f.split("-")[0]!));
-    const skip = new Set(UdhrCorpusReader.SKIP);
-    return [...names].filter((n) => !skip.has(n));
-  }
-}
+export { UdhrCorpusReader } from "./corpus_text_readers";
 
 // { string_category — fileid lists words with categories in filename
 

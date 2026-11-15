@@ -373,4 +373,26 @@ run("hmm_demo_pos", _hmm.demo_pos)
 run("hmm_demo_bw", _hmm.demo_bw)
 run("hmm_demo_pos_bw", _hmm.demo_pos_bw)
 
+# ---------------- toolbox demo (nltk.toolbox) ----------------
+import nltk.toolbox as _tb
+run("toolbox_demo", _tb.demo)
+
+# ---------------- snowball demo (nltk.stem.snowball) ----------------
+import builtins as _builtins
+import nltk.stem.snowball as _sb
+
+def _snowball_demo_inputs(seq):
+    it = iter(seq)
+    def f():
+        orig = _builtins.input
+        _builtins.input = lambda p="": (print(p, end=""), next(it))[1]
+        try:
+            _sb.demo()
+        finally:
+            _builtins.input = orig
+    return f
+
+run("snowball_demo_en", _snowball_demo_inputs(["bogus", "english", "exit"]))
+run("snowball_demo_fr", _snowball_demo_inputs(["french", "exit"]))
+
 print(json.dumps({"out": out, "errs": errs}))

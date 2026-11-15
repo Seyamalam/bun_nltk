@@ -29,6 +29,8 @@ import { RegexpParser } from "../src/chunk_nltk";
 import { resetUniqueVariableCounter } from "../src/sem_logic";
 import { clearTemplateRegistry } from "../src/brill_tagger";
 import { demo as hmmDemo, demo_bw, demo_pos, demo_pos_bw } from "../src/hmm_tagger";
+import { demo as toolboxDemo } from "../src/toolbox";
+import { demo as snowballDemo } from "../src/snowball_demo";
 import {
   demo as tblDemo,
   demoErrorAnalysis, demoGeneratedTemplates, demoHighAccuracyRules,
@@ -578,5 +580,28 @@ describe("nltk.tag.hmm demos vs NLTK 3.10.3", () => {
     const [pl, ol] = [floats(py, lpRe), floats(ours, lpRe)];
     expect(ol.length).toBe(pl.length);
     pl.forEach((v, i) => expect(Math.abs(ol[i]! - v)).toBeLessThan(1e-9));
+  });
+});
+
+describe("nltk.toolbox.demo vs NLTK 3.10.3", () => {
+  test("toolbox.demo crashes upstream: PathPointer.open(None) yields bytes", () => {
+    const r = errWrap(() => toolboxDemo());
+    expect(r.err).toBe(errName(E("toolbox_demo")));
+    expect(E("toolbox_demo")).toContain("bytes-like object");
+  });
+});
+
+describe("nltk.stem.snowball.demo vs NLTK 3.10.3", () => {
+  test("snowball.demo bogus+english+exit (byte-exact)", () => {
+    const inputs = ["bogus", "english", "exit"];
+    const c = collect();
+    snowballDemo(() => inputs.shift() ?? null, c.out);
+    expect(c.text()).toBe(T("snowball_demo_en"));
+  });
+  test("snowball.demo french+exit (byte-exact)", () => {
+    const inputs = ["french", "exit"];
+    const c = collect();
+    snowballDemo(() => inputs.shift() ?? null, c.out);
+    expect(c.text()).toBe(T("snowball_demo_fr"));
   });
 });

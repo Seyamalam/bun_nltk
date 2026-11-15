@@ -20,8 +20,9 @@ export class HFDatasetPathPointer {
 export function hf_download(..._a: unknown[]): never { return unavailable("nltk.huggingface.dataset.download"); }
 export function hf_load_data(..._a: unknown[]): never { return unavailable("nltk.huggingface.dataset.load_data"); }
 
-// { nltk.toolbox.demo — interactive demo over the rotokas corpus resource. }
-export function toolbox_demo(..._a: unknown[]): never { return unavailable("nltk.toolbox.demo"); }
+// { nltk.toolbox.demo — real port lives in toolbox.ts; it faithfully crashes
+//   upstream (PathPointer.open(None) yields bytes -> TypeError). }
+export { demo as toolbox_demo } from "./toolbox";
 
 // { nltk.chat demo wrappers — interactive menu. }
 export { chatbots, bots } from "./ext_pure";

@@ -5,11 +5,11 @@
 // twitter,toolbox}.py
 
 import { pyError } from "./internals";
-import { PathPointer } from "./data";
+import { PathPointer, find as dataFind } from "./data";
 import { SeekableUnicodeStreamReader } from "./corpus_stream";
 import {
   StreamBackedCorpusView, concat,
-  read_blankline_block, read_regexp_block,
+  read_blankline_block, read_regexp_block, find_corpus_fileids,
 } from "./corpus_view";
 import type { BlockReader } from "./corpus_view";
 import {
@@ -174,6 +174,56 @@ export class EuroparlCorpusReader extends PlaintextCorpusReader {
 
   override paras(_fileids?: string | string[] | null): unknown {
     throw pyError("NotImplementedError", "The Europarl corpus reader does not support paragraphs. Please use chapters() instead.");
+  }
+}
+
+// { udhr
+
+/** nltk.corpus.reader.udhr.UdhrCorpusReader — UDHR with per-fileid encodings. */
+export class UdhrCorpusReader extends PlaintextCorpusReader {
+  static readonly ENCODINGS: ReadonlyArray<readonly [string, string]> = [
+    [".*-Latin1$", "latin-1"],
+    [".*-Hebrew$", "hebrew"],
+    [".*-Arabic$", "cp1256"],
+    ["Czech_Cesky-UTF8", "cp1250"],
+    ["Polish-Latin2", "cp1250"],
+    ["Polish_Polski-Latin2", "cp1250"],
+    [".*-Cyrillic$", "cyrillic"],
+    [".*-SJIS$", "SJIS"],
+    [".*-GB2312$", "GB2312"],
+    [".*-Latin2$", "ISO-8859-2"],
+    [".*-Greek$", "greek"],
+    [".*-UTF8$", "utf-8"],
+    ["Hungarian_Magyar-Unicode", "utf-16-le"],
+    ["Amahuaca", "latin1"],
+    ["Turkish_Turkce-Turkish", "latin5"],
+    ["Lithuanian_Lietuviskai-Baltic", "latin4"],
+    ["Japanese_Nihongo-EUC", "EUC-JP"],
+    ["Japanese_Nihongo-JIS", "iso2022_jp"],
+    ["Chinese_Mandarin-HZ", "hz"],
+    ["Abkhaz\\-Cyrillic\\+Abkh", "cp1251"],
+  ];
+
+  static readonly SKIP: ReadonlySet<string> = new Set([
+    "Burmese_Myanmar-UTF8", "Japanese_Nihongo-JIS", "Chinese_Mandarin-HZ",
+    "Chinese_Mandarin-UTF8", "Gujarati-UTF8", "Hungarian_Magyar-Unicode",
+    "Lao-UTF8", "Magahi-UTF8", "Marathi-UTF8", "Tamil-UTF8",
+    "Vietnamese-VPS", "Vietnamese-VIQR", "Vietnamese-TCVN", "Magahi-Agra",
+    "Bhojpuri-Agra", "Esperanto-T61",
+    "Burmese_Myanmar-WinResearcher", "Armenian-DallakHelv",
+    "Tigrinya_Tigrigna-VG2Main", "Amharic-Afenegus6..60375",
+    "Navaho_Dine-Navajo-Navaho-font",
+    "Azeri_Azerbaijani_Cyrillic-Az.Times.Cyr.Normal0117",
+    "Azeri_Azerbaijani_Latin-Az.Times.Lat0117",
+    "Czech-Latin2-err", "Russian_Russky-UTF8~",
+  ]);
+
+  constructor(root: string | PathPointer = "udhr") {
+    const ptr = typeof root === "string" ? dataFind(`corpora/${root}`) : root;
+    const fileids = find_corpus_fileids(ptr, "(?!README|\\.).*")
+      .filter((f) => !UdhrCorpusReader.SKIP.has(f));
+    super(ptr, fileids, undefined, undefined, undefined,
+      UdhrCorpusReader.ENCODINGS as unknown as EncodingSpec);
   }
 }
 

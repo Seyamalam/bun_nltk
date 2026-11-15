@@ -1338,7 +1338,9 @@
    "zen_chat": "src/chat.ts",
    "zen_demo": "src/demos.ts",
    "demoBw": "src/hmm_tagger.ts",
-   "demoPosBw": "src/hmm_tagger.ts"
+   "demoPosBw": "src/hmm_tagger.ts",
+   "snowball_demo": "src/snowball_demo.ts",
+   "snowballDemo": "src/snowball_demo.ts"
   }
  },
  "modules": [
@@ -12214,31 +12216,35 @@
   {
    "target": "nltk.stem.snowball.demo",
    "exports": [
-    "demo"
+    "demo",
+    "snowball_demo",
+    "snowballDemo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/platform_helpers.ts",
+     "file": "src/snowball_demo.ts",
      "anchor": "export function demo"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo or platform/pickle-bound helper; not applicable to the TS runtime contract."
+     "input() injected via an inputFn argument; output via PrintSink instead of stdout/stdin."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope: interactive demo, external-binary, or pickle-serialization helper."
+     "Oracle-driven input sequences; byte-exact output for english/french runs."
     ]
    },
-   "notes": "NLTK demo is an interactive demo / external-tool / pickle helper without a TS-parity surface."
+   "notes": "Port of nltk.stem.snowball.demo — interactive input() loop injectable; udhr.words via the new UdhrCorpusReader ENCODINGS table; byte-exact vs oracle."
   },
   {
    "target": "nltk.tag.perceptron.AveragedPerceptron",
@@ -52640,8 +52646,8 @@
    "status": "partial",
    "source": [
     {
-     "file": "src/corpus_readers2.ts",
-     "anchor": "export class UdhrCorpusReader extends CorpusReader {"
+     "file": "src/corpus_text_readers.ts",
+     "anchor": "export class UdhrCorpusReader"
     }
    ],
    "signatures": {
@@ -54846,8 +54852,8 @@
    "status": "partial",
    "source": [
     {
-     "file": "src/corpus_readers2.ts",
-     "anchor": "export class UdhrCorpusReader extends CorpusReader {"
+     "file": "src/corpus_text_readers.ts",
+     "anchor": "export class UdhrCorpusReader"
     }
    ],
    "signatures": {
@@ -56992,8 +56998,8 @@
    "status": "partial",
    "source": [
     {
-     "file": "src/corpus_readers2.ts",
-     "anchor": "export class UdhrCorpusReader extends CorpusReader {"
+     "file": "src/corpus_text_readers.ts",
+     "anchor": "export class UdhrCorpusReader"
     }
    ],
    "signatures": {
@@ -92107,28 +92113,30 @@
     "UdhrCorpusReader"
    ],
    "category": "ts-algorithm",
-   "status": "partial",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/corpus_readers2.ts",
-     "anchor": "export class UdhrCorpusReader extends CorpusReader {"
+     "file": "src/corpus_text_readers.ts",
+     "anchor": "export class UdhrCorpusReader"
     }
    ],
    "signatures": {
-    "status": "partial",
+    "status": "adapted",
     "members": [],
     "gaps": [
-     "Corpus reader/data-layer port; member coverage pinned selectively via differential tests."
+     "Canonical implementation moved to corpus_text_readers.ts (per-fileid ENCODINGS regex table, SKIP set, find_corpus_fileids)."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "unit-only",
+    "status": "pinned-differential",
     "gaps": [
-     "Real NLTK corpus resources not provisioned; reader logic verified on synthetic fixtures."
+     "words() output matches python byte-exactly on latin-1/cp1256/utf-8 fileids; exercised via snowball.demo oracle."
     ]
    },
-   "notes": "Port of nltk.corpus.reader.udhr.UdhrCorpusReader onto the JS corpus data layer (PathPointer/SeekableUnicodeStreamReader/stream-backed views)."
+   "notes": "Port of nltk.corpus.reader.udhr.UdhrCorpusReader — per-fileid encoding table + SKIP set; real udhr corpus provisioned and verified."
   },
   {
    "target": "nltk.corpus.reader.udhr.find_corpus_fileids",
@@ -97511,29 +97519,31 @@
    "exports": [
     "toolbox_demo"
    ],
-   "category": "gap",
-   "status": "unsupported",
+   "category": "ts-algorithm",
+   "status": "implemented-subset",
    "source": [
     {
-     "file": "src/misc_gaps.ts",
-     "anchor": "export function toolbox_demo"
+     "file": "src/toolbox.ts",
+     "anchor": "export function demo"
     }
    ],
    "signatures": {
     "status": "adapted",
     "members": [],
     "gaps": [
-     "Interactive demo, network/IO-bound, or Python-introspection-bound; no TS-parity surface."
+     "Demo crashes upstream in NLTK 3.10.3 (bytes-like TypeError); faithful port reproduces the throw."
     ]
    },
-   "evidence": [],
+   "evidence": [
+    "gap-pure-differential"
+   ],
    "fixtures": {
-    "status": "missing",
+    "status": "pinned-differential",
     "gaps": [
-     "Documented as out-of-scope for this runtime."
+     "Demo crashes upstream (TypeError: cannot use a string pattern on a bytes-like object); pinned via oracle errs."
     ]
    },
-   "notes": "Interactive demo over the rotokas.dic corpus resource."
+   "notes": "Port of nltk.toolbox.demo — faithfully reproduces the upstream NLTK 3.10.3 crash: PathPointer.open(None) yields a binary stream and raw_fields hits TypeError at the first regex."
   },
   {
    "target": "nltk.toolbox.pathsec_open",

@@ -526,6 +526,7 @@ export type { Drs } from "./src/drt";
 export { skolemize } from "./src/skolemize";
 export type { SNOWBALL_LANGUAGES as SnowballLanguages } from "./src/snowball";
 export { SNOWBALL_LANGUAGES, snowballStem } from "./src/snowball";
+export { demo as snowball_demo, demo as snowballDemo } from "./src/snowball_demo";
 
 export {
   IBMModel1,

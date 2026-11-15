@@ -19,7 +19,27 @@ function decodeBytes(bytes: Uint8Array, encoding: string): string {
     return out;
   }
   if (label === "ascii" || label === "us-ascii") return new TextDecoder("ascii").decode(bytes);
-  return new TextDecoder(encoding as ConstructorParameters<typeof TextDecoder>[0]).decode(bytes);
+  // Python codec names → WHATWG labels (udhr + other corpus readers).
+  const pyCodecs: Record<string, string> = {
+    hebrew: "iso-8859-8",
+    cyrillic: "iso-8859-5",
+    greek: "iso-8859-7",
+    latin2: "iso-8859-2",
+    latin3: "iso-8859-3",
+    latin4: "iso-8859-4",
+    latin5: "iso-8859-9",
+    cp1250: "windows-1250",
+    cp1251: "windows-1251",
+    cp1256: "windows-1256",
+    sjis: "shift_jis",
+    gb2312: "gbk",
+    "iso2022_jp": "iso-2022-jp",
+    hz: "hz-gb-2312",
+    "utf-16-le": "utf-16le",
+    "utf-16-be": "utf-16be",
+  };
+  const resolved = pyCodecs[label] ?? encoding;
+  return new TextDecoder(resolved as ConstructorParameters<typeof TextDecoder>[0]).decode(bytes);
 }
 
 export class SeekableUnicodeStreamReader {
