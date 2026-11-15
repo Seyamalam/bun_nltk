@@ -41476,8 +41476,8 @@
       "exports": [
         "ne_chunked"
       ],
-      "category": "gap",
-      "status": "unsupported",
+      "category": "ts-algorithm",
+      "status": "implemented-subset",
       "source": [
         {
           "file": "src/sem_relextract.ts",
@@ -41488,17 +41488,19 @@
         "status": "adapted",
         "members": [],
         "gaps": [
-          "ne_chunked: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+          "Prints via console.log; crashes faithfully before corpus access."
         ]
       },
-      "evidence": [],
+      "evidence": [
+        "gap-pure-differential"
+      ],
       "fixtures": {
-        "status": "missing",
+        "status": "pinned-differential",
         "gaps": [
-          "ne_chunked: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+          "Upstream NameError pinned; working variant exported as ne_chunked_fixed."
         ]
       },
-      "notes": "ne_chunked: interactive demo / corpus-or-SQL-bound / external-tool helper; honest stub."
+      "notes": "Upstream bug reproduced: relextract.py never binds nltk so ne_chunked NameErrors after the header. ne_chunked_fixed() runs the intended loop over provisioned treebank + maxent_ne_chunker."
     },
     {
       "target": "nltk.sem.relextract.roles_demo",

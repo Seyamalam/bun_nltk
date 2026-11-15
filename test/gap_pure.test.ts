@@ -20,7 +20,7 @@ import {
   satdemo, scoresDemo, semUtilDemo, shiftreduceDemo, sortDemo, viterbiDemo,
   withConsoleLog,
 } from "../src/demos";
-import { in_demo, roles_demo, ieer_headlines } from "../src/sem_relextract";
+import { in_demo, roles_demo, ieer_headlines, ne_chunked, ne_chunked_fixed } from "../src/sem_relextract";
 import {
   BasicTweetHandler, LOCAL, LocalTimezoneOffsetWithUTC, PyRandom, TweetHandlerI,
   findJarIter, findJar, findJarsWithinPath, findMaltModel, findMaltparser,
@@ -686,6 +686,23 @@ describe("nltk.sem.relextract demos vs NLTK 3.10.3", () => {
     withConsoleLog(c.out, () => ieer_headlines());
     expect(c.text()).toBe(T("relextract_ieer_headlines"));
   });
+  test("ne_chunked crashes upstream: 'nltk' unbound in relextract.py", () => {
+    const c = collect();
+    let err: string | null = null;
+    try { withConsoleLog(c.out, () => ne_chunked()); }
+    catch (e) { err = e instanceof Error ? e.name : "Error"; }
+    expect(err).toBe(errName(E("relextract_ne_chunked")));
+    expect(E("relextract_ne_chunked")).toContain("name 'nltk' is not defined");
+    expect(c.text()).toBe(T("relextract_ne_chunked"));
+  });
+  test("ne_chunked_fixed: intended loop over treebank+NE chunker", () => {
+    const c = collect();
+    withConsoleLog(c.out, () => ne_chunked_fixed());
+    const lines = c.text().split("\n");
+    expect(lines[1]).toBe("1500 Sentences from Penn Treebank, as processed by NLTK NE Chunker");
+    // PER-ORG ROLE relations — output shape: "{i:<5}{rtuple}".
+    expect(lines.filter((l) => /^\d+\s+\[PER:/.test(l)).length).toBeGreaterThan(5);
+  }, { timeout: 120_000 });
 });
 
 describe("nltk.classify.decisiontree.demo vs NLTK 3.10.3", () => {

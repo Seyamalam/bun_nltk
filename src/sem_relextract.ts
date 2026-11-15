@@ -5,7 +5,9 @@
  */
 
 import { SimpleTree } from "./corpus_tree";
-import { IEERCorpusReader } from "./corpus_readers2";
+import { pyError } from "./internals.ts";
+import { IEERCorpusReader, BracketParseCorpusReader } from "./corpus_readers2";
+import { neChunk } from "./named_entity";
 import { find } from "./data";
 import { openSqliteDb } from "./sem_chat80";
 import { pyStrRepr } from "./chunk_nltk";
@@ -360,7 +362,35 @@ export function ieer_headlines(): void {
 export const ieerHeadlines = ieer_headlines;
 export function conllned(_trace=1): void { console.log("conllned requires conll2002 corpus — not available in JS runtime."); }
 export function conllesp(): void { console.log("conllesp requires conll2002 corpus — not available in JS runtime."); }
-export function ne_chunked(): void { console.log("ne_chunked requires treebank corpus — not available in JS runtime."); }
+export function ne_chunked(): void {
+  console.log();
+  console.log("1500 Sentences from Penn Treebank, as processed by NLTK NE Chunker");
+  console.log("=".repeat(45));
+  // Upstream bug: relextract.py never binds `nltk`, so nltk.corpus.treebank
+  // raises NameError on the first iteration — before any rels print.
+  throw pyError("NameError", "name 'nltk' is not defined");
+}
+
+/** Working equivalent of the upstream-broken ne_chunked() — the loop NLTK
+ *  3.10.3 intended, over provisioned treebank + maxent_ne_chunker. Not bound
+ *  to the python name because upstream crashes before running it. */
+export function ne_chunked_fixed(): void {
+  console.log();
+  console.log("1500 Sentences from Penn Treebank, as processed by NLTK NE Chunker");
+  console.log("=".repeat(45));
+  const ROLE = /.*(chairman|president|trader|scientist|economist|analyst|partner).*/;
+  const tb = new BracketParseCorpusReader(find("corpora/treebank/combined"), "wsj_.*\\.mrg");
+  const sents = [...tb.tagged_sents() as Iterable<TaggedWord[]>].slice(0, 1500);
+  sents.forEach((sent, i) => {
+    const chunked = neChunk(sent.map(([w, t]) => ({ token: w, tag: t })));
+    const doc = chunked.map((el) => "kind" in el
+      ? new SimpleNeTree(el.label, el.tokens.map((tk) => [tk.token, tk.tag] as TaggedWord))
+      : [el.token, el.tag] as TaggedWord) as ChunkTree;
+    for (const rel of extract_rels("PER", "ORG", doc, "ace", ROLE, 7)) {
+      console.log(`${String(i).padEnd(5)}${rtuple(rel)}`);
+    }
+  });
+}
 export const neChunked = ne_chunked;
 
 // Back-compat: expose RelDict as type
