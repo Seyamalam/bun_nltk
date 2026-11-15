@@ -68994,29 +68994,31 @@
       "exports": [
         "mimic_wrap"
       ],
-      "category": "gap",
-      "status": "unsupported",
+      "category": "ts-algorithm",
+      "status": "implemented-subset",
       "source": [
         {
-          "file": "src/corpus_gaps.ts",
-          "anchor": "mimic_wrap"
+          "file": "src/corpus_readers4.ts",
+          "anchor": "export function* mimic_wrap"
         }
       ],
       "signatures": {
-        "status": "missing",
+        "status": "adapted",
         "members": [],
         "gaps": [
-          "mimic_wrap: corpus reader surface not yet ported; honest stub throws."
+          "Generator yielding string[] per input line (python yields lists)."
         ]
       },
-      "evidence": [],
+      "evidence": [
+        "gap-pure-differential"
+      ],
       "fixtures": {
-        "status": "missing",
+        "status": "pinned-differential",
         "gaps": [
-          "mimic_wrap: not implemented in the TS runtime."
+          "Oracle-pinned byte-exact incl. drop_whitespace=False trailing chunks and empty lines."
         ]
       },
-      "notes": "Honest gap: nltk.corpus.reader.framenet.mimic_wrap not yet ported (corpus-family stub)."
+      "notes": "Faithful port: textwrap.fill(wrap_at, drop_whitespace=False) then cuts remaining lines at the first line's chunk lengths."
     },
     {
       "target": "nltk.corpus.reader.ieer.CorpusReader",

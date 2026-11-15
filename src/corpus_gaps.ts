@@ -51,7 +51,7 @@ export {
 export { ZipFile } from "./pathsec";
 export class error { constructor(..._a: unknown[]) { unavailable("error"); } }
 export class import_from_stdlib { constructor(..._a: unknown[]) { unavailable("import_from_stdlib"); } }
-export class mimic_wrap { constructor(..._a: unknown[]) { unavailable("mimic_wrap"); } }
+export { mimic_wrap } from "./corpus_readers4";
 export class restricted_pickle_load { constructor(..._a: unknown[]) { unavailable("restricted_pickle_load"); } }
 export { retrieve } from "./data";
 export class switch_chunker { constructor(..._a: unknown[]) { unavailable("switch_chunker"); } }

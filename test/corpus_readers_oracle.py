@@ -188,6 +188,35 @@ out["ieer"] = {
     ],
 }
 
+# --- framenet.mimic_wrap: textwrap-mimicking line cutter (pure)
+from nltk.corpus.reader.framenet import mimic_wrap as _mw
+out["mimic_wrap"] = {
+    "lines": [
+        "the quick brown fox jumps over the lazy dog and then runs far away into the dark forest beyond the hills",
+        "short line",
+        "another much longer line that goes on and on past the wrap boundary to trigger trailing textwrap behavior yes indeed it does",
+        "x" * 100,
+        "a" * 130,
+        "",
+        "one two three",
+        "four five six seven eight nine ten eleven twelve thirteen fourteen fifteen",
+    ],
+    "result": list(_mw([
+        "the quick brown fox jumps over the lazy dog and then runs far away into the dark forest beyond the hills",
+        "short line",
+        "another much longer line that goes on and on past the wrap boundary to trigger trailing textwrap behavior yes indeed it does",
+        "x" * 100,
+        "a" * 130,
+        "",
+        "one two three",
+        "four five six seven eight nine ten eleven twelve thirteen fourteen fifteen",
+    ])),
+    "wrap40": list(_mw([
+        "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu xi omicron pi rho sigma",
+        "second input line cut at the first line's chunk lengths",
+    ], wrap_at=40)),
+}
+
 # --- ComparativeSentencesCorpusReader
 cmp_reader = ComparativeSentencesCorpusReader(ROOT, "comp\\.txt")
 out["comparative"] = {

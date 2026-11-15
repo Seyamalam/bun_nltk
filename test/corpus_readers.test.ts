@@ -14,6 +14,7 @@ import {
   TwitterCorpusReader,
 } from "../src/corpus_readers2";
 import { CorpusReader as NLTKCorpusReader } from "../src/corpus_api";
+import { mimic_wrap } from "../src/corpus_readers4";
 import { WhitespaceTokenizer } from "../src/tokenizers";
 import { RegexpTokenizer } from "../src/tokenizers_regexp";
 import { SeekableUnicodeStreamReader } from "../src/corpus_stream";
@@ -201,6 +202,15 @@ describe("corpus readers vs NLTK 3.10.3 oracle", () => {
     expect([...pc.sents() as Iterable<string[]>]).toEqual(o!.pros_cons.sents);
     expect([...pc.sents(undefined, "Cons") as Iterable<string[]>]).toEqual(o!.pros_cons.sents_cons);
     expect([...pc.words(undefined, "Pros") as Iterable<string>]).toEqual(o!.pros_cons.words_pros);
+  });
+
+  test("framenet.mimic_wrap line cutter (byte-exact)", () => {
+    if (!hasData) return;
+    expect([...mimic_wrap(o!.mimic_wrap.lines)]).toEqual(o!.mimic_wrap.result);
+    expect([...mimic_wrap([
+      "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu xi omicron pi rho sigma",
+      "second input line cut at the first line's chunk lengths",
+    ], 40)]).toEqual(o!.mimic_wrap.wrap40);
   });
 
   test("IEERCorpusReader docs()", () => {

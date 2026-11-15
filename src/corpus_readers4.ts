@@ -6,6 +6,7 @@ import { readFileSync, mkdtempSync, writeFileSync, unlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join as pathJoin, isAbsolute, resolve as pathResolve } from "node:path";
 import { pyError } from "./internals";
+import { pyTextwrapFill } from "./brill_tagger";
 import { PathPointer, FileSystemPathPointer, ZipFilePathPointer } from "./data";
 import { StreamBackedCorpusView, concat } from "./corpus_view";
 import { SeekableUnicodeStreamReader } from "./corpus_stream";
@@ -2308,6 +2309,28 @@ function fnProj(v: unknown): unknown {
 /** JSON projection of framenet values (Futures resolved, AttrDicts unwrapped). */
 export function framenetProj(v: unknown): unknown {
   return fnProj(v);
+}
+
+/** nltk.corpus.reader.framenet.mimic_wrap — wrap the first line with
+ *  textwrap (drop_whitespace=False), then cut remaining lines at the same
+ *  lengths. Yields a list of strings per input line. */
+export function* mimic_wrap(lines: string[], wrap_at = 65): Generator<string[]> {
+  const l0 = pyTextwrapFill(lines[0]!, wrap_at, "", "", false).split("\n");
+  yield l0;
+  function* cut(line: string): Generator<string> {
+    let il0 = 0;
+    while (line && il0 < l0.length - 1) {
+      yield line.slice(0, l0[il0]!.length);
+      line = line.slice(l0[il0]!.length);
+      il0++;
+    }
+    if (line) {
+      yield* pyTextwrapFill(line, wrap_at, "", "", false).split("\n");
+    }
+  }
+  for (const l of lines.slice(1)) {
+    yield [...cut(l)];
+  }
 }
 
 /** nltk.corpus.reader.framenet.FramenetCorpusReader */

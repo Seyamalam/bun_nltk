@@ -12733,6 +12733,10 @@ declare class PrettyList$1 extends Array<unknown> {
 }
 declare class PrettyLazyMap$1<T, U> extends LazyMap<T, U> {
 }
+/** nltk.corpus.reader.framenet.mimic_wrap — wrap the first line with
+ *  textwrap (drop_whitespace=False), then cut remaining lines at the same
+ *  lengths. Yields a list of strings per input line. */
+declare function mimic_wrap(lines: string[], wrap_at?: number): Generator<string[]>;
 /** nltk.corpus.reader.framenet.FramenetCorpusReader */
 declare class FramenetCorpusReader extends XMLCorpusReader {
     _bad_statuses: string[];
@@ -13577,9 +13581,7 @@ declare class error {
 declare class import_from_stdlib {
     constructor(..._a: unknown[]);
 }
-declare class mimic_wrap {
-    constructor(..._a: unknown[]);
-}
+
 declare class restricted_pickle_load {
     constructor(..._a: unknown[]);
 }

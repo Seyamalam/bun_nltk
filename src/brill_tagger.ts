@@ -65,7 +65,7 @@ const WORDSEP_RE =
 
 /** CPython textwrap.fill — TextWrapper defaults (break_long_words=True,
  * break_on_hyphens=True, drop_whitespace=True, max_lines=None). */
-function pyTextwrapFill(text: string, width: number, initialIndent: string, subsequentIndent: string): string {
+export function pyTextwrapFill(text: string, width: number, initialIndent: string, subsequentIndent: string, dropWhitespace = true): string {
   // _munge_whitespace: expandtabs then translate whitespace -> ' '
   const munged = pyExpandTabs(text, 8).replace(/[ \t\n\v\f\r]/g, " ");
   const chunks = munged.split(WORDSEP_RE).filter((c) => c !== "");
@@ -76,7 +76,7 @@ function pyTextwrapFill(text: string, width: number, initialIndent: string, subs
     let curLen = 0;
     const indent = lines.length ? subsequentIndent : initialIndent;
     const w = width - indent.length;
-    if (chunks[chunks.length - 1]!.trim() === "" && lines.length) {
+    if (dropWhitespace && chunks[chunks.length - 1]!.trim() === "" && lines.length) {
       chunks.pop();
     }
     while (chunks.length) {
@@ -107,7 +107,7 @@ function pyTextwrapFill(text: string, width: number, initialIndent: string, subs
         curLine.push(chunks.pop()!);
       }
     }
-    if (curLine.length && curLine[curLine.length - 1]!.trim() === "") {
+    if (dropWhitespace && curLine.length && curLine[curLine.length - 1]!.trim() === "") {
       curLine.pop();
     }
     if (curLine.length) {
